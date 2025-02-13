@@ -19,6 +19,7 @@
       />
 
       <baw-error-card
+        id="file-errors"
         class="d-block mt-2"
         [errors]="importErrors"
         [errorStyle]="errorCardStyles.Alert"
@@ -184,6 +185,7 @@
             [errors]="value"
             [errorStyle]="errorCardStyles.Inline"
             [showSuccessState]="true"
+            class="event-errors"
           ></baw-error-card>
         </ng-template>
       </ngx-datatable-column>

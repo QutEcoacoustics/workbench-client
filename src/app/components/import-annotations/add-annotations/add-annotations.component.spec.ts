@@ -23,8 +23,10 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
 import { fakeAsync } from "@angular/core/testing";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { Router } from "@angular/router";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { UNPROCESSABLE_ENTITY } from "http-status";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -36,7 +38,7 @@ describe("AddAnnotationsComponent", () => {
   let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
-  let mockImportResponse: AudioEventImportFile[];
+  let mockImportResponse: AudioEventImportFile[] | BawApiError;
   let mockTagsResponse: Tag[];
 
   const createComponent = createRoutingFactory({
@@ -55,12 +57,17 @@ describe("AddAnnotationsComponent", () => {
     },
   });
 
+  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
   const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
   const importFilesButton = () =>
     spectator.query<HTMLButtonElement>("#import-btn");
   const additionalTagsInput = () =>
     spectator.query<HTMLElement>("#additional-tags-input");
-  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
+
+  const fileAlerts = () =>
+    spectator
+      .query<HTMLDivElement>("#file-errors")
+      .querySelectorAll(".error-output");
 
   function addFiles(files: File[]): void {
     inputFile(spectator, fileInput(), files);
@@ -292,13 +299,81 @@ describe("AddAnnotationsComponent", () => {
   });
 
   describe("error handling", () => {
+    // Because the api returns 422 responses if the dry run fails, we would
+    // normally expect an error notification to be raised.
+    // However, because we support more descriptive error messages in the
+    // identified events table, we do not want to raise an error notification
+    // if a dry run fails, and instead show the errors in the table.
     it("should not raise error notifications if a dry run fails", () => {});
 
-    it("should not show a success alert if a dry run succeeds", () => {});
+    // We have error alerts for files because sometimes the server will fail
+    // a dry run for reasons other than contents of the file.
+    // e.g. an unsupported file type
+    // In these cases, we want to show the error next to the file in the form
+    // of an error alert.
+    it("should show a single error alert if single file import fails", () => {
+      const mockErrorMessage =
+        "is not unique. Duplicate recording found with id: 191";
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        mockImportResponse as any,
+        { file: mockErrorMessage }
+      );
 
-    it("should show a single error alert if single file import fails", () => {});
+      fileImportSpy.dryCreate.and.callThrough();
+      fileImportSpy.dryCreate.andCallFake(() =>
+        throwError(() => mockImportResponse)
+      );
 
-    it("should show multiple error alerts if multiple file import fails", () => {});
+      addFiles([modelData.file()]);
+
+      expect(fileAlerts()).toHaveLength(1);
+
+      const expectedErrorAlert = `file: ${mockErrorMessage}`;
+      expect(fileAlerts()[0]).toHaveExactTrimmedText(expectedErrorAlert);
+    });
+
+    it("should show multiple error alerts if multiple file import fails", () => {
+      const mockErrorMessage = "validation failed";
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        mockImportResponse as any,
+        { file: mockErrorMessage }
+      );
+
+      fileImportSpy.dryCreate.and.callThrough();
+      fileImportSpy.dryCreate.andCallFake(() =>
+        throwError(() => mockImportResponse)
+      );
+
+      addFiles([modelData.file(), modelData.file()]);
+
+      // even though the files could have different error messages, we expect
+      // that the error message for both files will be the same because
+      // we have mocked the response above to always return the same error
+      // ideally, this test would assert against different errors for each file
+      // but that would make this test much more complex (requiring a lot of
+      // time, for not much benefit).
+      // TODO: given time, make this test test against different errors
+      const expectedErrorAlerts = [
+        `file: ${mockErrorMessage}`,
+        `file: ${mockErrorMessage}`,
+      ];
+
+      expect(fileAlerts()).toHaveLength(expectedErrorAlerts.length);
+
+      for (const i in expectedErrorAlerts) {
+        expect(fileAlerts()[i]).toHaveExactTrimmedText(expectedErrorAlerts[i]);
+      }
+    });
+
+    it("should not show a success alert if a dry run succeeds", () => {
+      // by adding files to the file input, we are performing a dry run
+      addFiles([modelData.file()]);
+      expect(fileAlerts()).not.toExist();
+    });
   });
 
   xdescribe("identified events table", () => {
