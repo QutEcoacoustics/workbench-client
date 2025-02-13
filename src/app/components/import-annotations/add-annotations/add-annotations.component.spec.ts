@@ -8,23 +8,34 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
 import { assertDatatable } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { AUDIO_EVENT_IMPORT_FILE } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_IMPORT_FILE, TAG } from "@baw-api/ServiceTokens";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
-import { clickButton, inputFile } from "@test/helpers/html";
+import {
+  clickButton,
+  inputFile,
+  selectFromTypeahead,
+} from "@test/helpers/html";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Tag } from "@models/Tag";
+import { generateTag } from "@test/fakes/Tag";
+import { fakeAsync } from "@angular/core/testing";
+import { of } from "rxjs";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
   let spectator: Spectator<AddAnnotationsComponent>;
 
-  let eventFileImportApi: SpyObject<AudioEventImportFileService>;
+  let fileImportServiceSpy: SpyObject<AudioEventImportFileService>;
+  let tagServiceSpy: SpyObject<TagsService>;
   let notificationsSpy: SpyObject<ToastrService>;
 
   let audioEventImport: AudioEventImport;
   let mockImportResponse: AudioEventImportFile[];
+  let mockTagsResponse: Tag[];
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
@@ -45,7 +56,13 @@ describe("AddAnnotationsComponent", () => {
   const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
   const importFilesButton = () =>
     spectator.query<HTMLButtonElement>("#import-btn");
+  const additionalTagsInput = () =>
+    spectator.query<HTMLElement>("#additional-tags-input");
   const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
+
+  function addFiles(files: File[]): void {
+    inputFile(spectator, fileInput(), files);
+  }
 
   function commitImport(): void {
     clickButton(spectator, importFilesButton());
@@ -57,14 +74,17 @@ describe("AddAnnotationsComponent", () => {
     // TODO: this should probably mock the route resolver
     spectator.component.audioEventImport = audioEventImport;
 
-    eventFileImportApi = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    fileImportServiceSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    tagServiceSpy = spectator.inject(TAG.token);
     notificationsSpy = spectator.inject(ToastrService);
 
     notificationsSpy.success.and.stub();
     notificationsSpy.error.and.stub();
 
-    eventFileImportApi.create.and.callFake(() => mockImportResponse);
-    eventFileImportApi.dryCreate.and.callFake(() => mockImportResponse);
+    fileImportServiceSpy.create.and.callFake(() => of(mockImportResponse));
+    fileImportServiceSpy.dryCreate.and.callFake(() => of(mockImportResponse));
+
+    tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
 
     spectator.detectChanges();
   }
@@ -81,6 +101,12 @@ describe("AddAnnotationsComponent", () => {
             audioEventImportId: audioEventImport.id,
           })
         )
+    );
+
+    mockTagsResponse = modelData.randomArray(
+      1,
+      10,
+      () => new Tag(generateTag())
     );
 
     setup();
@@ -103,9 +129,9 @@ describe("AddAnnotationsComponent", () => {
     it("should not convert the type of a correct csv file", () => {
       const testFile = modelData.file({ name: "test.csv", type: "text/csv" });
 
-      inputFile(spectator, fileInput(), [testFile]);
+      addFiles([testFile]);
 
-      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
@@ -126,23 +152,25 @@ describe("AddAnnotationsComponent", () => {
         type: "application/vnd.ms-excel",
       });
 
-      inputFile(spectator, fileInput(), [testFile]);
+      addFiles([testFile]);
 
-      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport
       );
-
     });
 
     it("should not change the type of an excel file", () => {
-      const testFile = modelData.file({ name: "test.xlsx", type: "application/vnd.ms-excel" });
+      const testFile = modelData.file({
+        name: "test.xlsx",
+        type: "application/vnd.ms-excel",
+      });
 
-      inputFile(spectator, fileInput(), [testFile]);
+      addFiles([testFile]);
 
-      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
@@ -151,18 +179,36 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
+  // the navigation warning depends on the UnsavedInputGuard
+  // therefore, we can test that the "hasUnsavedChanges" getter returns the
+  // correct value.
+  // the assertions to check that this guard works correctly can be found in
+  // the UnsavedInputGuard spec file
   describe("navigation warning", () => {
-    it("should warn if the navigates without committing an uploaded file", () => {});
+    it("should warn if the navigates without committing an uploaded file", () => {
+      addFiles([modelData.file()]);
 
-    it("should not warn if the user did not upload any files", () => {});
+      expect(spectator.component.hasUnsavedChanges).toBeTrue();
+    });
+
+    it("should warn if the user has added additional tags", fakeAsync(() => {
+      const selectedTag = mockTagsResponse[0];
+      selectFromTypeahead(spectator, additionalTagsInput(), selectedTag.text);
+
+      expect(spectator.component.hasUnsavedChanges).toBeTrue();
+    }));
+
+    it("should not warn if the user did not upload any files", () => {
+      expect(spectator.component.hasUnsavedChanges).toBeFalse();
+    });
   });
 
   describe("dry run", () => {
     it("should dry run a single file correctly", () => {
       const file = modelData.file();
-      inputFile(spectator, fileInput(), [file]);
+      addFiles([file]);
 
-      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport
       );
@@ -170,9 +216,10 @@ describe("AddAnnotationsComponent", () => {
 
     it("should dry run multiple files correctly", () => {
       const files = [modelData.file(), modelData.file()];
-      inputFile(spectator, fileInput(), files);
+      addFiles(files);
 
-      // expect(eventFileImportApi.dryCreate).toHaveBeenCalledTimes(2);
+      // each file should be individually dry run through the api
+      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledTimes(2);
     });
 
     it("should update the identified event table when a dry run completes", () => {});
@@ -205,7 +252,7 @@ describe("AddAnnotationsComponent", () => {
   xdescribe("identified events table", () => {
     assertDatatable(() => ({
       root: () => eventsTable(),
-      service: eventFileImportApi,
+      service: fileImportServiceSpy,
       columns: [
         "Recording",
         "Start Time",
