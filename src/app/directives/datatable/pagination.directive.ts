@@ -227,7 +227,12 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     // Set table rows and the total number of rows on change
     this.rows$.pipe(takeUntil(this.unsubscribe)).subscribe((rows): void => {
       this.datatable.rows = rows;
-      this.datatable.count = rows[0]?.getMetadata?.()?.paging?.total ?? rows?.length ?? 0;
+
+      if (rows && rows.length > 0) {
+        this.datatable.count = rows[0].getMetadata?.()?.paging?.total ?? rows?.length ?? 0;
+      } else {
+        this.datatable.count = 0;
+      }
     });
 
     // Set loading state on change
