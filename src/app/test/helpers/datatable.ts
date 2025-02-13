@@ -93,3 +93,16 @@ export function assertDatatable<
     }
   });
 }
+
+export function assertDatatableRow(row: HTMLDivElement, expectedValues: string[]) {
+  const cells = Array.from(
+    row.querySelectorAll("datatable-body-cell"),
+  );
+
+  for (const i in expectedValues) {
+    const expectedValue = expectedValues[i];
+    const realizedValue = cells[i];
+
+    expect(realizedValue).toHaveExactTrimmedText(expectedValue);
+  }
+}

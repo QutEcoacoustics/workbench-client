@@ -6,7 +6,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
-import { assertDatatable } from "@test/helpers/datatable";
+import { assertDatatableRow, assertDatatable } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AUDIO_EVENT_IMPORT_FILE, TAG } from "@baw-api/ServiceTokens";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -23,7 +23,7 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
 import { fakeAsync } from "@angular/core/testing";
-import { of, throwError } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { UNPROCESSABLE_ENTITY } from "http-status";
@@ -57,8 +57,10 @@ describe("AddAnnotationsComponent", () => {
     },
   });
 
-  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
   const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
+  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
+  const eventTableRows = () =>
+    eventsTable().querySelectorAll<HTMLDivElement>(".datatable-row-group");
   const importFilesButton = () =>
     spectator.query<HTMLButtonElement>("#import-btn");
   const additionalTagsInput = () =>
@@ -239,11 +241,75 @@ describe("AddAnnotationsComponent", () => {
       });
     });
 
-    it("should update the identified event table when a dry run completes", () => {});
+    fit("should update the identified event table when a dry run completes", () => {
+      addFiles([modelData.file()]);
 
-    it("should disable the import button when performing a dry run", () => {});
+      const mockResponse = mockImportResponse as AudioEventImportFile[];
+      const tableRows = eventTableRows();
 
-    it("should disable the import button if there are errors in the dry run", () => {});
+      expect(tableRows).toHaveLength(mockResponse.length);
+
+      for (const i in mockResponse) {
+        const model = mockResponse[i];
+        const row = tableRows[i];
+
+        for (const event of model.importedEvents) {
+          const expectedRowValues = [
+            event.audioRecordingId.toString(),
+            event.startTimeSeconds.toString(),
+            event.endTimeSeconds.toString(),
+            event.lowFrequencyHertz.toString(),
+            event.highFrequencyHertz.toString(),
+            event.tags.map((tag) => tag.text).join(", "),
+            event.errors.join(""),
+          ];
+
+          assertDatatableRow(row, expectedRowValues);
+        }
+      }
+    });
+
+    it("should enable the import button when a dry run completes", () => {
+      // because the default mock of the dry run api return an observable for a
+      // valid dry run, we expect that the import button will be enabled
+      // directly after adding files
+      addFiles([modelData.file()]);
+      expect(importFilesButton()).not.toBeDisabled();
+    });
+
+    it("should disable the import button when performing a dry run", () => {
+      // we create an observable that never completes to simulate a dry run
+      // that is still waiting for an api response
+      fileImportSpy.dryCreate.and.callFake(() => new Observable());
+
+      addFiles([modelData.file()]);
+
+      expect(importFilesButton()).toBeDisabled();
+    });
+
+    it("should disable the import button if there are errors in the dry run", () => {
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        mockImportResponse as any,
+        { file: "validation failed" }
+      );
+
+      fileImportSpy.dryCreate.and.callThrough();
+      fileImportSpy.dryCreate.andCallFake(() =>
+        throwError(() => mockImportResponse)
+      );
+
+      addFiles([modelData.file()]);
+
+      expect(importFilesButton()).toBeDisabled();
+    });
+  });
+
+  describe("additional tags", () => {
+    it("should perform a dry run when additional tags are added", () => {});
+
+    it("should commit additional tags when the import is committed", () => {});
   });
 
   describe("committing an annotation import", () => {
