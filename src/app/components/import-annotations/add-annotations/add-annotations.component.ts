@@ -65,6 +65,9 @@ class AddAnnotationsComponent
 
   @ViewChild(NgForm) private form: NgForm;
 
+  /** The route model that the annotation import is scoped to */
+  public audioEventImport: AudioEventImport;
+
   protected errorCardStyles = ErrorCardStyle;
 
   /**
@@ -82,9 +85,6 @@ class AddAnnotationsComponent
    * E.g. duplicate file uploads, names, etc...
    */
   protected importErrors: BawDataError[] = [];
-
-  /** The route model that the annotation import is scoped to */
-  protected audioEventImport: AudioEventImport;
 
   // we use an array for the audio event import files because users can upload
   // multiple files through the file input
@@ -249,6 +249,8 @@ class AddAnnotationsComponent
     this.valid = true;
 
     this.clearIdentifiedEvents();
+
+    console.log(this.audioEventImport);
 
     const fileUploadObservables = this.importFiles.map((file) =>
       this.dryRunFile(file)

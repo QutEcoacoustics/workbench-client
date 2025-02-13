@@ -11,8 +11,76 @@ import { Spectator } from "@ngneat/spectator";
  */
 export function inputValue(wrapper: any, selector: string, value: string) {
   const input = wrapper.querySelector(selector);
+  if (input.disabled) {
+    fail("Input is disabled");
+  }
+
   input.value = value;
   input.dispatchEvent(new Event("input"));
+}
+
+export function clickButton(
+  spectator: Spectator<any>,
+  selector: string | Element
+): void {
+  const element =
+    typeof selector === "string" ? spectator.query(selector) : selector;
+
+  // if we directly emitted a click event or used the click() method on a
+  // disabled button, the button would still act as if it was clicked
+  // this does not reflect the real world where the button would fail to click
+  // if the user clicks on a disabled button
+  if (!element) {
+    fail("Could not perform click: Button not found");
+  } else if (!(element instanceof HTMLButtonElement)) {
+    fail("Could not perform click: Element is not a button element");
+  } else if (element.disabled) {
+    fail("Could not perform click: Button is disabled");
+  }
+
+  // using spectator.click() will cause a change detection cycle
+  spectator.click(selector);
+}
+
+export function inputFile(
+  spectator: Spectator<any>,
+  selector: string | HTMLInputElement,
+  files: File[]
+): void {
+  const element =
+    typeof selector === "string"
+      ? spectator.query<HTMLInputElement>(selector)
+      : selector;
+
+  if (!element) {
+    fail("Could not perform file input: Input not found");
+  } else if (!(element instanceof HTMLInputElement)) {
+    fail("Could not perform file input: Element is not an input element");
+  } else if (element.disabled) {
+    fail("Could not perform file input: Input is disabled");
+  }
+
+  // Use the JS data transfer API to simulate a user
+  // drag and dropping a file into the file image input.
+  // this is done to add a mock file to the input field which we can
+  // then test to see if it is removed with the getButton().click() method
+  const dataTransfer = new DataTransfer();
+
+  // Add the mock file to dataTransfer's DataTransferItemList object
+  // DataTransferItemList is an object which stores a list of all DataTransfer
+  // Objects
+  for (const file of files) {
+    dataTransfer.items.add(file);
+  }
+
+  // Set the Image Input file field to the DataTransferItemList Objects list of
+  // items by value
+  element.files = dataTransfer.files;
+
+  element.dispatchEvent(new Event("change"));
+  spectator.detectChanges();
+
+  expect(element.value).toBeTruthy();
 }
 
 /**

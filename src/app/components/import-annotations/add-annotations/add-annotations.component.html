@@ -42,8 +42,9 @@
   <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
   <span class="d-inline-block mt-2" [ngbTooltip]="uploadTooltip" [attr.ngbTooltip]="uploadTooltip !== null">
     <button
+      id="import-btn"
       type="submit"
-      class="btn btn-primary import-btn"
+      class="btn btn-primary"
       [disabled]="!canCommitUploads() || uploading"
       (click)="commitImports()"
     >

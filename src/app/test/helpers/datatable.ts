@@ -39,6 +39,13 @@ export function assertDatatable<
     const { service } = setup();
     const filterService = filterApi(service);
 
+    if (!filterService.calls) {
+      fail("Service does not have a filter spy");
+    } else if (filterService.calls.count() !== 1) {
+      fail("Service filter spy was not called once on load");
+      return;
+    }
+
     expect(filterService.calls.mostRecent().args[0]).toEqual(
       jasmine.objectContaining({
         paging: { page: 1 },
