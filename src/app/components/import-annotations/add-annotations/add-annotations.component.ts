@@ -36,6 +36,7 @@ import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { toCamelCase } from "@helpers/case-converter/case-converter";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { INTERNAL_SERVER_ERROR } from "http-status";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -310,6 +311,12 @@ class AddAnnotationsComponent
     file: File,
     error: BawApiError<AudioEventImportFile>
   ): BawErrorData[] {
+    if (error.status === INTERNAL_SERVER_ERROR) {
+      return [
+        { [file.name]: "An unrecoverable internal server error occurred." },
+      ];
+    }
+
     // because we are mutating the error object (for nicer error message), I
     // create a new object so that I don't accidentally mutate the original
     // error by reference
