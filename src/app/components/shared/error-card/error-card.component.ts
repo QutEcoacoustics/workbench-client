@@ -12,14 +12,14 @@ export enum ErrorCardStyle {
   selector: "baw-error-card",
   template: `
     @if (showSuccessState() && errors().length === 0) {
-      <div class="error-card {{ divStyle }} {{ divStyle }}-success">
+      <div class="error-output {{ divStyle }} {{ divStyle }}-success">
         No errors
       </div>
     }
 
     @for (error of errors(); track error) {
       @for (errorKey of extractErrorKeys(error); track errorKey) {
-        <div class="error-card {{ divStyle }} {{ divStyle }}-danger">
+        <div class="error-output {{ divStyle }} {{ divStyle }}-danger">
           {{ errorKey }}:
           {{ extractErrorValues(error, errorKey) }}
         </div>

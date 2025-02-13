@@ -250,8 +250,6 @@ class AddAnnotationsComponent
 
     this.clearIdentifiedEvents();
 
-    console.log(this.audioEventImport);
-
     const fileUploadObservables = this.importFiles.map((file) =>
       this.dryRunFile(file)
     );
