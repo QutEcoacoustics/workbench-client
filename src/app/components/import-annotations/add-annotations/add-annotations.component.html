@@ -9,12 +9,12 @@
       <input
         id="annotationsFileInput"
         type="file"
-        accept=".csv, .selections.txt, .json, .txt"
+        accept=".csv, .tsv, .selections.txt, .json"
         class="form-control border"
         [ngClass]="{ 'is-invalid': !ngForm.valid }"
         [files]="importGroup?.files"
         [disabled]="uploading"
-        (change)="pushToImportGroups($event)"
+        (change)="handleFileChange($event)"
         multiple
       />
 

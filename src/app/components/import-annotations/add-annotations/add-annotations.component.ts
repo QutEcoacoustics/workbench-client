@@ -167,14 +167,35 @@ class AddAnnotationsComponent
     return items.map((item: AbstractModel): Id => item.id);
   }
 
-  protected pushToImportGroups(event: Event): void {
+  protected handleFileChange(event: Event): void {
     const target = event.target;
     if (!(target instanceof HTMLInputElement)) {
       throw new Error("Target is not an input element");
     }
 
     const files: FileList = target.files;
-    this.importFiles = Array.from(files);
+    const bufferedFiles = Array.from(files);
+
+    // sometimes the operating system will report files such as csv files as
+    // excel file types.
+    // because the api cannot process excel files, it will reject it and return
+    // an error.
+    // to fix this, we will change the file type to the correct type using the
+    // file extension.
+    const fileExtensionMappings = new Map<string, string>([
+      ["csv", "text/csv"],
+    ]);
+
+    this.importFiles = bufferedFiles.map((file: File) => {
+      const extension = this.extractFileExtension(file);
+
+      const fileTypeMapping = fileExtensionMappings.get(extension.toLowerCase());
+      if (fileTypeMapping) {
+        return this.changeFileTypes(file, fileExtensionMappings.get(extension));
+      }
+
+      return file;
+    });
 
     this.performDryRun();
   }
@@ -287,6 +308,14 @@ class AddAnnotationsComponent
 
   private extractFileErrors(error: BawApiError<AudioEventImportFile>): BawDataError[] {
     return [error.info as any];
+  }
+
+  private extractFileExtension(file: File): string {
+    return file.name.split(".").pop();
+  }
+
+  private changeFileTypes(files: File, type: string): File {
+    return new File([files], files.name, { type });
   }
 }
 
