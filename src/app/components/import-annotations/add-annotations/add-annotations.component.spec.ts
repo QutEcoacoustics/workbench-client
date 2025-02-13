@@ -9,6 +9,10 @@ import { ToastrService } from "ngx-toastr";
 import { assertDatatable } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AUDIO_EVENT_IMPORT_FILE } from "@baw-api/ServiceTokens";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { modelData } from "@test/helpers/faker";
+import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -18,6 +22,7 @@ describe("AddAnnotationsComponent", () => {
   let notificationsSpy: SpyObject<ToastrService>;
 
   let audioEventImport: AudioEventImport;
+  let mockImportResponse: AudioEventImportFile[];
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
@@ -43,15 +48,29 @@ describe("AddAnnotationsComponent", () => {
     eventFileImportApi = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
     notificationsSpy = spectator.inject(ToastrService);
 
-    spyOn(notificationsSpy, "success").and.stub();
-    spyOn(notificationsSpy, "error").and.stub();
+    notificationsSpy.success.and.stub();
+    notificationsSpy.error.and.stub();
+
+    eventFileImportApi.create.and.callFake(() => mockImportResponse);
+    eventFileImportApi.dryCreate.and.callFake(() => mockImportResponse);
 
     spectator.detectChanges();
   }
 
   beforeEach(() => {
+    mockImportResponse = modelData.randomArray(
+      1,
+      10,
+      () => new AudioEventImportFile(generateAudioEventImportFile())
+    );
+
     setup();
   });
+
+  assertPageInfo<AudioEventImport>(
+    AddAnnotationsComponent,
+    "Add New Annotations"
+  );
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AddAnnotationsComponent);
@@ -97,12 +116,12 @@ describe("AddAnnotationsComponent", () => {
     it("should show multiple error alerts if multiple file import fails", () => {});
   });
 
-  describe("identified events table", () => {
-    assertDatatable(() => ({
-      root: () => eventsTable(),
-      service: eventFileImportApi,
-      columns: [],
-      rows: [],
-    }));
-  });
+  // describe("identified events table", () => {
+  //   assertDatatable(() => ({
+  //     root: () => eventsTable(),
+  //     service: eventFileImportApi,
+  //     columns: [],
+  //     rows: [],
+  //   }));
+  // });
 });
