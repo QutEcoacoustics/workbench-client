@@ -5,6 +5,7 @@ import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent"
 import { BawErrorData, Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
+  BehaviorSubject,
   catchError,
   first,
   forkJoin,
@@ -86,16 +87,15 @@ class AddAnnotationsComponent
    * E.g. duplicate file uploads, names, etc...
    */
   protected importErrors: BawErrorData[] = [];
+  // we use a BehaviorSubject for the audio event import files because users can upload
+  // multiple files through the file input and new subscribers should get the most recent value
+  protected importFiles$ = new BehaviorSubject<AudioEventImportFile[]>([]);
 
-  // we use an array for the audio event import files because users can upload
-  // multiple files through the file input
-  protected importFiles$ = new Observable<AudioEventImportFile[]>(
-    (subscriber: Subscriber<AudioEventImportFile[]>) => {
-      this.importFilesSubscriber$ = subscriber;
-    }
-  ).pipe(startWith([{}]));
-
-  private importFilesSubscriber$: Subscriber<AudioEventImportFile[]>;
+  private importFilesSubscriber$: Subscriber<AudioEventImportFile[]> = new Subscriber({
+    next: (value: AudioEventImportFile[]) => this.importFiles$.next(value),
+    error: (err: any) => this.importFiles$.error(err),
+    complete: () => this.importFiles$.complete(),
+  });
 
   public get hasUnsavedChanges(): boolean {
     return this.hasFiles || this.hasAdditionalTags;

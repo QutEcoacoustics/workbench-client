@@ -76,7 +76,7 @@
   <div>
     <ngx-datatable
       bawDatatableDefaults
-      [bawDatatablePagination]="{ getModels: getEventModels }"
+      [bawVirtualDatatablePagination]="getEventModels"
     >
       <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="">
         <ng-template let-column="column" ngx-datatable-header-template>
