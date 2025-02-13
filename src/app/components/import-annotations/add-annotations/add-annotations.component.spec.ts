@@ -13,6 +13,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
+import { clickButton, inputFile } from "@test/helpers/html";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -34,16 +36,26 @@ describe("AddAnnotationsComponent", () => {
     imports: [SharedModule, MockBawApiModule],
     mocks: [ToastrService],
     data: {
-      resolvers: { model: audioEventImport },
+      resolvers: {
+        model: audioEventImport,
+      },
     },
   });
 
-  function eventsTable(): Element {
-    return spectator.query("ngx-datatable");
+  const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
+  const importFilesButton = () =>
+    spectator.query<HTMLButtonElement>("#import-btn");
+  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
+
+  function commitImport(): void {
+    clickButton(spectator, importFilesButton());
   }
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+
+    // TODO: this should probably mock the route resolver
+    spectator.component.audioEventImport = audioEventImport;
 
     eventFileImportApi = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
     notificationsSpy = spectator.inject(ToastrService);
@@ -58,10 +70,17 @@ describe("AddAnnotationsComponent", () => {
   }
 
   beforeEach(() => {
+    audioEventImport = new AudioEventImport(generateAudioEventImport());
+
     mockImportResponse = modelData.randomArray(
       1,
       10,
-      () => new AudioEventImportFile(generateAudioEventImportFile())
+      () =>
+        new AudioEventImportFile(
+          generateAudioEventImportFile({
+            audioEventImportId: audioEventImport.id,
+          })
+        )
     );
 
     setup();
@@ -76,7 +95,61 @@ describe("AddAnnotationsComponent", () => {
     expect(spectator.component).toBeInstanceOf(AddAnnotationsComponent);
   });
 
-  it("should disable the import button if no files are uploaded", () => {});
+  it("should disable the import button if no files are uploaded", () => {
+    expect(importFilesButton()).toBeDisabled();
+  });
+
+  describe("file type correction", () => {
+    it("should not convert the type of a correct csv file", () => {
+      const testFile = modelData.file({ name: "test.csv", type: "text/csv" });
+
+      inputFile(spectator, fileInput(), [testFile]);
+
+      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          file: jasmine.objectContaining({ type: "text/csv" }),
+        }),
+        audioEventImport
+      );
+    });
+
+    it("should correctly convert the type for a incorrectly typed csv", () => {
+      // There is a "feature" in Windows where the uploading a csv file through
+      // the HTML file input will emit the type as "application/vnd.ms-excel"
+      // this can cause server side issues where the server tries to parse the
+      // file as an excel file instead of a csv file.
+      // To fix this, we convert the file type of files with the .csv extension
+      // and the type "application/vnd.ms-excel" to "text/csv".
+
+      const testFile = modelData.file({
+        name: "test.csv",
+        type: "application/vnd.ms-excel",
+      });
+
+      inputFile(spectator, fileInput(), [testFile]);
+
+      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          file: jasmine.objectContaining({ type: "text/csv" }),
+        }),
+        audioEventImport
+      );
+
+    });
+
+    it("should not change the type of an excel file", () => {
+      const testFile = modelData.file({ name: "test.xlsx", type: "application/vnd.ms-excel" });
+
+      inputFile(spectator, fileInput(), [testFile]);
+
+      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
+        }),
+        audioEventImport
+      );
+    });
+  });
 
   describe("navigation warning", () => {
     it("should warn if the navigates without committing an uploaded file", () => {});
@@ -85,9 +158,22 @@ describe("AddAnnotationsComponent", () => {
   });
 
   describe("dry run", () => {
-    it("should dry run a single file correctly", () => {});
+    it("should dry run a single file correctly", () => {
+      const file = modelData.file();
+      inputFile(spectator, fileInput(), [file]);
 
-    it("should dry run multiple files correctly", () => {});
+      expect(eventFileImportApi.dryCreate).toHaveBeenCalledWith(
+        jasmine.any(AudioEventImportFile),
+        audioEventImport
+      );
+    });
+
+    it("should dry run multiple files correctly", () => {
+      const files = [modelData.file(), modelData.file()];
+      inputFile(spectator, fileInput(), files);
+
+      // expect(eventFileImportApi.dryCreate).toHaveBeenCalledTimes(2);
+    });
 
     it("should update the identified event table when a dry run completes", () => {});
 
@@ -116,12 +202,20 @@ describe("AddAnnotationsComponent", () => {
     it("should show multiple error alerts if multiple file import fails", () => {});
   });
 
-  // describe("identified events table", () => {
-  //   assertDatatable(() => ({
-  //     root: () => eventsTable(),
-  //     service: eventFileImportApi,
-  //     columns: [],
-  //     rows: [],
-  //   }));
-  // });
+  xdescribe("identified events table", () => {
+    assertDatatable(() => ({
+      root: () => eventsTable(),
+      service: eventFileImportApi,
+      columns: [
+        "Recording",
+        "Start Time",
+        "End Time",
+        "Low Frequency",
+        "High Frequency",
+        "Tags",
+        "Errors",
+      ],
+      rows: [],
+    }));
+  });
 });
