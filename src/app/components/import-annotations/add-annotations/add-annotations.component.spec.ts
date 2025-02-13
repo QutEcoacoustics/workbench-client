@@ -24,14 +24,16 @@ import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
 import { fakeAsync } from "@angular/core/testing";
 import { of } from "rxjs";
+import { Router } from "@angular/router";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
   let spectator: Spectator<AddAnnotationsComponent>;
 
-  let fileImportServiceSpy: SpyObject<AudioEventImportFileService>;
+  let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let notificationsSpy: SpyObject<ToastrService>;
+  let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
   let mockImportResponse: AudioEventImportFile[];
@@ -74,15 +76,16 @@ describe("AddAnnotationsComponent", () => {
     // TODO: this should probably mock the route resolver
     spectator.component.audioEventImport = audioEventImport;
 
-    fileImportServiceSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    fileImportSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
     tagServiceSpy = spectator.inject(TAG.token);
     notificationsSpy = spectator.inject(ToastrService);
+    routerSpy = spectator.inject(Router);
 
     notificationsSpy.success.and.stub();
     notificationsSpy.error.and.stub();
 
-    fileImportServiceSpy.create.and.callFake(() => of(mockImportResponse));
-    fileImportServiceSpy.dryCreate.and.callFake(() => of(mockImportResponse));
+    fileImportSpy.create.and.callFake(() => of(mockImportResponse));
+    fileImportSpy.dryCreate.and.callFake(() => of(mockImportResponse));
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
 
@@ -131,7 +134,7 @@ describe("AddAnnotationsComponent", () => {
 
       addFiles([testFile]);
 
-      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
@@ -154,7 +157,7 @@ describe("AddAnnotationsComponent", () => {
 
       addFiles([testFile]);
 
-      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
@@ -170,7 +173,7 @@ describe("AddAnnotationsComponent", () => {
 
       addFiles([testFile]);
 
-      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
@@ -208,18 +211,25 @@ describe("AddAnnotationsComponent", () => {
       const file = modelData.file();
       addFiles([file]);
 
-      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledWith(
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport
       );
     });
 
     it("should dry run multiple files correctly", () => {
-      const files = [modelData.file(), modelData.file()];
-      addFiles(files);
+      const testedFiles = [modelData.file(), modelData.file()];
+      addFiles(testedFiles);
 
       // each file should be individually dry run through the api
-      expect(fileImportServiceSpy.dryCreate).toHaveBeenCalledTimes(2);
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledTimes(2);
+
+      testedFiles.forEach((file) => {
+        expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
+          jasmine.objectContaining({ file }),
+          audioEventImport
+        );
+      });
     });
 
     it("should update the identified event table when a dry run completes", () => {});
@@ -230,13 +240,55 @@ describe("AddAnnotationsComponent", () => {
   });
 
   describe("committing an annotation import", () => {
-    it("should commit a single file correctly", () => {});
+    it("should commit a single file correctly", () => {
+      addFiles([modelData.file()]);
 
-    it("should commit multiple files correctly", () => {});
+      // we want to test that the commit api has not been called until we click
+      // the import button
+      expect(fileImportSpy.create).not.toHaveBeenCalled();
 
-    it("should navigate to the import details page when an import completes", () => {});
+      commitImport();
 
-    it("should display a toast notification when an import completes", () => {});
+      expect(fileImportSpy.create).toHaveBeenCalledWith(
+        jasmine.any(AudioEventImportFile),
+        audioEventImport
+      );
+    });
+
+    it("should commit multiple files correctly", () => {
+      const testedFiles = [modelData.file(), modelData.file()];
+      addFiles(testedFiles);
+
+      expect(fileImportSpy.create).not.toHaveBeenCalled();
+
+      commitImport();
+
+      // each file should be individually committed through the api
+      expect(fileImportSpy.create).toHaveBeenCalledTimes(2);
+
+      testedFiles.forEach((file) => {
+        expect(fileImportSpy.create).toHaveBeenCalledWith(
+          jasmine.objectContaining({ file }),
+          audioEventImport
+        );
+      });
+    });
+
+    it("should navigate to the import details page when an import completes", () => {
+      addFiles([modelData.file()]);
+      commitImport();
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(
+        `/batch_annotations/${audioEventImport.id}`
+      );
+    });
+
+    it("should display a toast notification when an import completes", () => {
+      addFiles([modelData.file()]);
+      commitImport();
+      expect(notificationsSpy.success).toHaveBeenCalledOnceWith(
+        "Successfully imported annotations"
+      );
+    });
   });
 
   describe("error handling", () => {
@@ -252,7 +304,7 @@ describe("AddAnnotationsComponent", () => {
   xdescribe("identified events table", () => {
     assertDatatable(() => ({
       root: () => eventsTable(),
-      service: fileImportServiceSpy,
+      service: fileImportSpy,
       columns: [
         "Recording",
         "Start Time",
