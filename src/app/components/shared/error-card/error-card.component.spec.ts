@@ -1,10 +1,10 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { BawDataError } from "@interfaces/apiInterfaces";
+import { BawErrorData } from "@interfaces/apiInterfaces";
 import { ErrorCardComponent } from "./error-card.component";
 
 interface ErrorCardTest {
   name: string;
-  errors: BawDataError[];
+  errors: BawErrorData[];
   expected: string[];
 }
 
@@ -17,7 +17,7 @@ describe("ErrorCardComponent", () => {
 
   const errorCards = () => spectator.queryAll(".error-card");
 
-  function setup(errors: BawDataError[]) {
+  function setup(errors: BawErrorData[]) {
     spectator = createComponent({ detectChanges: false });
 
     // we have to use the lower level Angular TestBed API to set the input

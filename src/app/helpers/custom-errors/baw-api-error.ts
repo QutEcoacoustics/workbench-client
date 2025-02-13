@@ -1,13 +1,15 @@
+import { BawErrorData } from "@interfaces/apiInterfaces";
+
 /** Error thrown by API services whenever the API returns a non 2xx response */
 export class BawApiError<T = Record<PropertyKey, unknown>> extends Error {
   public name = "BawApiError";
-  public info: Record<string, string | string[]>;
+  public info: BawErrorData;
 
   public constructor(
     public status: number,
     public _message: string,
     public data: T | T[],
-    info?: Record<string, string | string[]>,
+    info?: BawErrorData,
   ) {
     super(_message);
     this.info = info || {};

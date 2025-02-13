@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { BawDataError } from "@interfaces/apiInterfaces";
+import { BawErrorData } from "@interfaces/apiInterfaces";
 
 export enum ErrorCardStyle {
   /** Styles the error card to fit inside a table cell */
@@ -29,7 +29,7 @@ export enum ErrorCardStyle {
   styleUrl: "error-card.component.scss",
 })
 export class ErrorCardComponent {
-  public errors = input.required<BawDataError[]>();
+  public errors = input.required<BawErrorData[]>();
   public errorStyle = input<ErrorCardStyle>(ErrorCardStyle.Alert);
   public showSuccessState = input<boolean>(false);
 
@@ -39,11 +39,11 @@ export class ErrorCardComponent {
       : "callout";
   }
 
-  protected extractErrorKeys(error: BawDataError) {
+  protected extractErrorKeys(error: BawErrorData) {
     return Object.keys(error);
   }
 
-  protected extractErrorValues(error: BawDataError, key: keyof BawDataError) {
+  protected extractErrorValues(error: BawErrorData, key: keyof BawErrorData) {
     return error[key];
   }
 }

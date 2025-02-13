@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { BawDataError, Id } from "@interfaces/apiInterfaces";
+import { BawErrorData, Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
   catchError,
@@ -84,7 +84,7 @@ class AddAnnotationsComponent
    * table.
    * E.g. duplicate file uploads, names, etc...
    */
-  protected importErrors: BawDataError[] = [];
+  protected importErrors: BawErrorData[] = [];
 
   // we use an array for the audio event import files because users can upload
   // multiple files through the file input
@@ -182,16 +182,14 @@ class AddAnnotationsComponent
     // an error.
     // to fix this, we will change the file type to the correct type using the
     // file extension.
-    const fileExtensionMappings = new Map<string, string>([
-      ["csv", "text/csv"],
-    ]);
+    const extensionMappings = new Map<string, string>([["csv", "text/csv"]]);
 
     this.importFiles = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
-      const fileTypeMapping = fileExtensionMappings.get(extension.toLowerCase());
+      const fileTypeMapping = extensionMappings.get(extension.toLowerCase());
       if (fileTypeMapping) {
-        return this.changeFileTypes(file, fileExtensionMappings.get(extension));
+        return this.changeFileTypes(file, extensionMappings.get(extension));
       }
 
       return file;
@@ -258,7 +256,9 @@ class AddAnnotationsComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (result: AudioEventImportFile[]) => {
-          const instantiatedResults = result.filter((model) => isInstantiated(model));
+          const instantiatedResults = result.filter((model) =>
+            isInstantiated(model)
+          );
           this.importFilesSubscriber$.next(instantiatedResults);
         },
         error: () => {
@@ -284,7 +284,7 @@ class AddAnnotationsComponent
     return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
       first(),
       catchError((error: BawApiError<AudioEventImportFile>) => {
-        this.importErrors.push(...this.extractFileErrors(error));
+        this.importErrors.push(...this.extractFileErrors(file, error));
         return of(toCamelCase(error.data) as any);
       })
     );
@@ -306,8 +306,30 @@ class AddAnnotationsComponent
     this.importErrors = [];
   }
 
-  private extractFileErrors(error: BawApiError<AudioEventImportFile>): BawDataError[] {
-    return [error.info as any];
+  private extractFileErrors(
+    file: File,
+    error: BawApiError<AudioEventImportFile>
+  ): BawErrorData[] {
+    // because we are mutating the error object (for nicer error message), I
+    // create a new object so that I don't accidentally mutate the original
+    // error by reference
+    const newErrors: BawErrorData[] = Array.isArray(error.info)
+      ? Object.assign({}, error.info)
+      : [Object.assign({}, error.info)];
+
+    const fileNameKey = "file" satisfies keyof BawErrorData;
+    for (const errorInfo of newErrors) {
+      // if the "file" key is in the error message, replace the file key with
+      // the file name
+      // this makes the error message more user friendly and easier to
+      // understand when you upload multiple files
+      if (fileNameKey in errorInfo) {
+        errorInfo[file.name] = errorInfo[fileNameKey];
+        delete errorInfo[fileNameKey];
+      }
+    }
+
+    return newErrors;
   }
 
   private extractFileExtension(file: File): string {

@@ -41,9 +41,7 @@ export type ExecutableCommand = string;
 
 export type FilePath = string;
 
-export interface BawDataError {
-  [key: string]: string[];
-}
+export type BawErrorData = Record<string, string | string[]>;
 
 /**
  * BAW API Permission Levels
