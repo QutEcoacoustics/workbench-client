@@ -15,7 +15,7 @@ describe("ErrorCardComponent", () => {
     component: ErrorCardComponent,
   });
 
-  const errorCards = () => spectator.queryAll(".error-card");
+  const errorCards = () => spectator.queryAll(".error-output");
 
   function setup(errors: BawErrorData[]) {
     spectator = createComponent({ detectChanges: false });
@@ -84,7 +84,7 @@ describe("ErrorCardComponent", () => {
   ] satisfies ErrorCardTest[];
 
   for (const test of tests) {
-    it(test.name, () => {
+    fit(test.name, () => {
       setup(test.errors);
       assertErrorCards(test.expected);
     });

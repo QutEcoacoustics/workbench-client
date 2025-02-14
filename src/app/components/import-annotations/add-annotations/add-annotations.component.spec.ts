@@ -27,6 +27,7 @@ import { Observable, of, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { UNPROCESSABLE_ENTITY } from "http-status";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -38,7 +39,7 @@ describe("AddAnnotationsComponent", () => {
   let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
-  let mockImportResponse: AudioEventImportFile[] | BawApiError;
+  let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
 
   const createComponent = createRoutingFactory({
@@ -60,7 +61,7 @@ describe("AddAnnotationsComponent", () => {
   const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
   const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
   const eventTableRows = () =>
-    eventsTable().querySelectorAll<HTMLDivElement>(".datatable-row-group");
+    eventsTable().querySelectorAll<HTMLDivElement>("datatable-body-row");
   const importFilesButton = () =>
     spectator.query<HTMLButtonElement>("#import-btn");
   const additionalTagsInput = () =>
@@ -82,7 +83,6 @@ describe("AddAnnotationsComponent", () => {
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
 
-    // TODO: this should probably mock the route resolver
     spectator.component.audioEventImport = audioEventImport;
 
     fileImportSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
@@ -104,15 +104,10 @@ describe("AddAnnotationsComponent", () => {
   beforeEach(() => {
     audioEventImport = new AudioEventImport(generateAudioEventImport());
 
-    mockImportResponse = modelData.randomArray(
-      1,
-      10,
-      () =>
-        new AudioEventImportFile(
-          generateAudioEventImportFile({
-            audioEventImportId: audioEventImport.id,
-          })
-        )
+    mockImportResponse = new AudioEventImportFile(
+      generateAudioEventImportFile({
+        audioEventImportId: audioEventImport.id,
+      })
     );
 
     mockTagsResponse = modelData.randomArray(
@@ -244,29 +239,37 @@ describe("AddAnnotationsComponent", () => {
     it("should update the identified event table when a dry run completes", () => {
       addFiles([modelData.file()]);
 
-      const mockResponse = mockImportResponse as AudioEventImportFile[];
+      const mockResponse = mockImportResponse as AudioEventImportFile;
       const tableRows = eventTableRows();
 
-      expect(tableRows).toHaveLength(mockResponse.length);
+      const expectedRowCount = Math.min(
+        mockResponse.importedEvents.length,
+        defaultApiPageSize
+      );
+      expect(tableRows).toHaveLength(expectedRowCount);
 
-      for (const i in mockResponse) {
-        const model = mockResponse[i];
+      mockResponse.importedEvents.forEach((event, i) => {
         const row = tableRows[i];
 
-        for (const event of model.importedEvents) {
-          const expectedRowValues = [
-            event.audioRecordingId.toString(),
-            event.startTimeSeconds.toString(),
-            event.endTimeSeconds.toString(),
-            event.lowFrequencyHertz.toString(),
-            event.highFrequencyHertz.toString(),
-            event.tags.map((tag) => tag.text).join(", "),
-            event.errors.join(""),
-          ];
+        const expectedTagValue =
+          event.tags.length > 0
+            ? event.tags.map((tag) => tag.text).join(", ")
+            : "No associated tags";
 
-          assertDatatableRow(row, expectedRowValues);
-        }
-      }
+        const expectedErrorValue = event.errors.length > 0 ? event.errors.join("") : "No errors";
+
+        const expectedRowValues = [
+          event.audioRecordingId.toLocaleString(),
+          event.startTimeSeconds.toLocaleString(),
+          event.endTimeSeconds.toLocaleString(),
+          event.lowFrequencyHertz.toLocaleString(),
+          event.highFrequencyHertz.toLocaleString(),
+          expectedTagValue,
+          expectedErrorValue,
+        ];
+
+        assertDatatableRow(row, expectedRowValues);
+      });
     });
 
     it("should enable the import button when a dry run completes", () => {

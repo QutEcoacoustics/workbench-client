@@ -136,7 +136,6 @@ class AddAnnotationsComponent
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
     return this.importFiles$.pipe(
       mergeMap((files: AudioEventImportFile[]) => {
-        console.debug(files);
         return files.map((file) => file.importedEvents);
       })
     );
