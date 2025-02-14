@@ -5,8 +5,8 @@ import {
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
 import { getCallArgs } from "@test/helpers/general";
-import { DatatableSortKeyDirective } from "./sort-key.directive";
 import { DatatableSortEvent } from "../pagination/pagination.directive";
+import { DatatableSortKeyDirective } from "./sort-key.directive";
 
 describe("DatatableSortKeyDirective", () => {
   let spec: SpectatorDirective<DatatableComponent>;
