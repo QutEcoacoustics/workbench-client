@@ -1,6 +1,6 @@
 import { Directive, Input, OnChanges } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
-import { DatatablePaginationDirective } from "@directives/datatable/pagination.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
 import { AbstractModel } from "@models/AbstractModel";
 import { map, Observable, startWith } from "rxjs";
 

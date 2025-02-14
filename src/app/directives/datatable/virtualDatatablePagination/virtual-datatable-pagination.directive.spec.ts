@@ -8,10 +8,10 @@ import { MockModel } from "@models/AbstractModel.spec";
 import { Observable, Subscriber } from "rxjs";
 import { modelData } from "@test/helpers/faker";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { DatatableDefaultsDirective } from "../defaults.directive";
-import { DatatableSortKeyDirective } from "../sort-key.directive";
-import { DatatablePaginationDirective } from "../pagination.directive";
-import { VirtualDatatablePaginationDirective } from "./virtualDatatablePagination.directive";
+import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
+import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
+import { DatatablePaginationDirective } from "../pagination/pagination.directive";
+import { VirtualDatatablePaginationDirective } from "./virtual-datatable-pagination.directive";
 
 // because this directive extends the bawDatatablePagination directive, most of
 // the table rendering logic is tested elsewhere. This spec will focus on the
@@ -52,11 +52,11 @@ describe("bawVirtualDatatablePagination", () => {
     return spec.queryAll("datatable-row-wrapper");
   }
 
-  function getRowValues(row: number): HTMLElement[] {
-    return spec.queryAll(
-      `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
-    );
-  }
+  // function getRowValues(row: number): HTMLElement[] {
+  //   return spec.queryAll(
+  //     `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
+  //   );
+  // }
 
   function setPage(page: number) {
     spec.query(DataTablePagerComponent).selectPage(page);
@@ -78,6 +78,10 @@ describe("bawVirtualDatatablePagination", () => {
       { hostProps: props }
     );
   }
+
+  fit("should create", () => {
+    setup({ models$: createModels(modelData.datatype.number()) });
+  });
 
   it("should display an empty table when no models are provided", () => {
     setup({ models$: undefined });
