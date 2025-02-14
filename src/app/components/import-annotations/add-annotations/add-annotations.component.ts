@@ -12,8 +12,6 @@ import {
   mergeMap,
   Observable,
   of,
-  startWith,
-  Subscriber,
   takeUntil,
 } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -35,7 +33,6 @@ import {
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { toCamelCase } from "@helpers/case-converter/case-converter";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import {
@@ -91,12 +88,6 @@ class AddAnnotationsComponent
   // multiple files through the file input and new subscribers should get the most recent value
   protected importFiles$ = new BehaviorSubject<AudioEventImportFile[]>([]);
 
-  private importFilesSubscriber$: Subscriber<AudioEventImportFile[]> = new Subscriber({
-    next: (value: AudioEventImportFile[]) => this.importFiles$.next(value),
-    error: (err: any) => this.importFiles$.error(err),
-    complete: () => this.importFiles$.complete(),
-  });
-
   public get hasUnsavedChanges(): boolean {
     return this.hasFiles || this.hasAdditionalTags;
   }
@@ -145,6 +136,7 @@ class AddAnnotationsComponent
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
     return this.importFiles$.pipe(
       mergeMap((files: AudioEventImportFile[]) => {
+        console.debug(files);
         return files.map((file) => file.importedEvents);
       })
     );
@@ -257,17 +249,19 @@ class AddAnnotationsComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (result: AudioEventImportFile[]) => {
+          // if a file upload fails due to an internal server error, the
+          // model will be null.
+          // therefore, we need to filter out any null models.
+          // the user will receive a file error that the file could not be
+          // uploaded
           const instantiatedResults = result.filter((model) =>
             isInstantiated(model)
           );
-          this.importFilesSubscriber$.next(instantiatedResults);
+
+          this.importFiles$.next(instantiatedResults);
         },
-        error: () => {
-          this.valid = false;
-        },
-        complete: () => {
-          this.uploading = false;
-        },
+        error: () => (this.valid = false),
+        complete: () => (this.uploading = false),
       });
   }
 
@@ -286,7 +280,15 @@ class AddAnnotationsComponent
       first(),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         this.importErrors.push(...this.extractFileErrors(file, error));
-        return of(toCamelCase(error.data) as any);
+
+        // the error data can either be an AudioEventImportFile or an array of
+        // AudioEventImportFile
+        // because we know that dryRun will only return a single model, we can
+        // safely cast the array type away
+        //
+        // TODO: this should be properly fixed by modifying the typing of the
+        // BawApiError class
+        return of(error.data as AudioEventImportFile);
       })
     );
   }
@@ -303,7 +305,7 @@ class AddAnnotationsComponent
   }
 
   private clearIdentifiedEvents(): void {
-    this.importFilesSubscriber$.next([]);
+    this.importFiles$.next([]);
     this.importErrors = [];
   }
 
