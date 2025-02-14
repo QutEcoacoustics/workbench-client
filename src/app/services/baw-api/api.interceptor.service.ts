@@ -130,7 +130,7 @@ export class BawApiInterceptor implements HttpInterceptor {
       const error = new BawApiError(
         response.status,
         response.error.meta.error.details,
-        responseData,
+        toCamelCase(responseData),
         toCamelCase(response.error.meta.error?.info)
       );
       return throwError(() => error);

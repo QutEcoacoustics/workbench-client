@@ -1,7 +1,9 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
-import { toSnakeCase } from "@helpers/case-converter/case-converter";
+import {
+  toSnakeCase,
+} from "@helpers/case-converter/case-converter";
 import {
   BawApiError,
   isBawApiError,
@@ -119,6 +121,14 @@ export class BawApiService<
     cb: ClassBuilder
   ) => (resp: ApiResponse<Model>) => Model;
 
+  public handleCollectionResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
+
+  public handleSingleResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
+
   /**
    * Handle API empty response
    */
@@ -220,6 +230,32 @@ export class BawApiService<
         }
         return createModel(cb, resp.data, resp.meta);
       };
+
+    this.handleCollectionResponseError =
+      (cb: ClassBuilder) =>
+      (resp: BawApiError<Model>): BawApiError<Model> => {
+        if (!(resp.data instanceof Array)) {
+          throw new Error(
+            "Received a single API result when an array of results was expected"
+          );
+        }
+
+        resp.data = resp.data.map((data) => createModel(cb, data, resp));
+        return resp;
+      };
+
+    this.handleSingleResponseError =
+      (cb: ClassBuilder) =>
+      (resp: BawApiError<Model>): BawApiError<Model> => {
+        if (resp.data instanceof Array) {
+          throw new Error(
+            "Received an array of API results when only a single result was expected"
+          );
+        }
+
+        resp.data = createModel(cb, resp.data, resp);
+        return resp;
+      };
   }
 
   /**
@@ -231,7 +267,8 @@ export class BawApiService<
    */
   public handleError = (
     err: BawApiError | Error,
-    disableNotification?: boolean
+    disableNotification?: boolean,
+    classBuilder?: ClassBuilder
   ): Observable<never> => {
     const error = isBawApiError(err)
       ? err
@@ -241,6 +278,16 @@ export class BawApiService<
     if (!disableNotification && !this.isServer) {
       this.notifications.error(error.formattedMessage("<br />"));
     }
+
+    // the errors data property should be instantiated using the class builder
+    if (classBuilder && error.data) {
+      const handler = error.data instanceof Array
+        ? this.handleCollectionResponseError(classBuilder)
+        : this.handleSingleResponseError(classBuilder);
+
+      return throwError(() => handler(error as any));
+    }
+
     return throwError((): BawApiError => error);
   };
 
@@ -258,7 +305,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -278,7 +327,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -298,7 +349,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -316,7 +369,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -385,7 +440,9 @@ export class BawApiService<
       tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -441,7 +498,9 @@ export class BawApiService<
       // because other requests such as cached associations will still return a
       // stale model in their response
       tap(() => this.clearCache()),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
