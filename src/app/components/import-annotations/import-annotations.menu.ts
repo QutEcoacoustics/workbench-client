@@ -1,5 +1,5 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { defaultEditIcon, isLoggedInPredicate, isProjectWriterPredicate } from "src/app/app.menus";
+import { defaultEditIcon, isLoggedInPredicate } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
@@ -69,8 +69,8 @@ export const addAnnotationImportMenuItem = menuRoute({
   icon: ["fas", "plus"],
   label: "Add New Annotations",
   parent: annotationImportMenuItem,
-  predicate: isProjectWriterPredicate,
+  predicate: isLoggedInPredicate,
   route: addAnnotationImportRoute,
-  tooltip: () => "(BETA) Add new annotations to this project",
+  tooltip: () => "(BETA) Add new annotations",
   title: () => "Add New Annotations",
 });

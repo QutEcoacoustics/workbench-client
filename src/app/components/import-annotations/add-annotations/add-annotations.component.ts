@@ -190,6 +190,10 @@ class AddAnnotationsComponent
     this.performDryRun();
   }
 
+  protected hasRecordingErrors(model: ImportedAudioEvent): boolean {
+    return model.errors.some((error) => "audioRecordingId" in error);
+  }
+
   // uses a reference to the ImportGroup object and update the additional tag ids property
   protected updateAdditionalTagIds(additionalTagIds: Id[]): void {
     this.additionalTagIds = additionalTagIds;

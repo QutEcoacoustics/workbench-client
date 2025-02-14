@@ -84,8 +84,8 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value.audioRecordingId }}
-          <!-- <baw-loading
+          @if (!hasRecordingErrors(value)) {
+          <baw-loading
             *ngIf="
               value.audioRecording | isUnresolved;
               else audioRecordingTemplate
@@ -97,7 +97,16 @@
             <a [bawUrl]="value.audioRecording.viewUrl">
               {{ value.audioRecording.id }}
             </a>
-          </ng-template> -->
+          </ng-template>
+          } @else {
+            <strong
+              class="d-flex align-items-center text-danger font-semibold"
+              ngbTooltip="This field contains an error. See errors for more information."
+            >
+              <fa-icon [icon]="['fas', 'xmark-circle']" class="me-1"></fa-icon>
+              <span class="text-decoration-underline">Error</span>
+            </strong>
+          }
         </ng-template>
       </ngx-datatable-column>
 
