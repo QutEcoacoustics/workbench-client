@@ -77,6 +77,11 @@ export class AudioEventImportFileService
     );
   }
 
+  /**
+   * Similar to create, but does not result in a saved record being committed
+   * to the database.
+   * Specifically designed for testing if a payload passes validation.
+   */
   public dryCreate(
     model: AudioEventImportFile,
     audioEventImport: AudioEventImport

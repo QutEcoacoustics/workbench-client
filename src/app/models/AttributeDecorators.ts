@@ -284,10 +284,6 @@ export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
   });
 }
 
-export function unscopedAttribute<Model>(opts?: BawDecoratorOptions<Model>) {
-  return createDecorator<Model>(opts, () => {});
-}
-
 /**
  * Abstract code required for baw decorators
  *
