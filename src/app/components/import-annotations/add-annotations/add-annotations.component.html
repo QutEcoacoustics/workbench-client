@@ -78,6 +78,21 @@
       bawDatatableDefaults
       [bawVirtualDatatablePagination]="getEventModels"
     >
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="id">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <span
+            class="text-decoration-underline"
+            ngbTooltip="The unique identifier for this event"
+          >
+            ID
+          </span>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          0:0
+        </ng-template>
+      </ngx-datatable-column>
+
       <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording

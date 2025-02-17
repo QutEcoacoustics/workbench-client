@@ -49,7 +49,9 @@ export class AudioEvent
   public readonly kind = "Audio Event";
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
-  @bawPersistAttr()
+  // TODO: enable bawPersistAttr() once the API adds supports
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/717
+  // @bawPersistAttr()
   public readonly channel?: number;
   @bawPersistAttr()
   public readonly startTimeSeconds?: number;
@@ -61,7 +63,6 @@ export class AudioEvent
   public readonly highFrequencyHertz?: number;
   @bawPersistAttr()
   public readonly isReference?: boolean;
-  @bawPersistAttr()
   public readonly score?: number;
   public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
@@ -73,7 +74,6 @@ export class AudioEvent
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  @bawPersistAttr()
   public readonly provenanceId?: Id;
   public readonly audioEventImportFileId?: Id;
 

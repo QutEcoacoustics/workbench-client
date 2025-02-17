@@ -44,7 +44,10 @@ export interface BawServiceOptions {
   /** If set, requests will include the users authentication token and cookies */
   withCredentials?: boolean;
 
-  /** Unscoped form data to be sent with the request */
+  /**
+   * Additional parameters to merged in with model payload to be sent with the
+   * request
+   */
   params?: Record<any, any>;
 
   /**

@@ -109,8 +109,7 @@ class AddAnnotationsComponent
       return "Please wait for the current upload to complete";
     }
 
-    // we should never hit this condition, but if we do, I return null so that
-    // we don't end up in an unknown state
+    // should never hit, but be safe
     return null;
   }
 

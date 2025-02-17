@@ -34,7 +34,6 @@ export class AudioEventImportFile
   public readonly kind = "audio_event_import_file";
   public readonly id?: Id;
   public readonly name?: string;
-  @bawPersistAttr()
   public readonly fileHash?: string;
   @bawPersistAttr()
   public readonly path?: FilePath;
@@ -45,7 +44,6 @@ export class AudioEventImportFile
   public readonly importedEvents?: ImportedAudioEvent[];
 
   // form data fields
-  @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly analysisJobsItemId?: Id;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly audioEventImportId?: Id;
