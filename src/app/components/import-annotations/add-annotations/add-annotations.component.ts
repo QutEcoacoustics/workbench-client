@@ -41,6 +41,11 @@ import {
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
 
+interface BufferedFile {
+  file: File;
+  errors: BawErrorData[];
+}
+
 const audioEventImportKey = "audioEventImport";
 
 @Component({
