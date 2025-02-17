@@ -39,6 +39,11 @@ export class AudioEventImportFile
   public readonly path?: FilePath;
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
+
+  /**
+   * A field that is present only after creation (dry or not) that indicates if
+   * the file and its events have been committed to the database.
+   */
   public readonly committed?: boolean;
   @bawSubModelCollection<AudioEventImportFile, ImportedAudioEvent>(ImportedAudioEvent)
   public readonly importedEvents?: ImportedAudioEvent[];
