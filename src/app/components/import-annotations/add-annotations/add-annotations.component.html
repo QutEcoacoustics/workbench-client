@@ -64,7 +64,7 @@
           id="additional-tags-input"
           label="Extra Tags"
           [inputPlaceholder]="'search for tags by name'"
-          [searchCallback]="searchTagsTypeaheadCallback"
+          [searchCallback]="tagsApi.typeaheadCallback()"
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="uploading"
           (modelChange)="
