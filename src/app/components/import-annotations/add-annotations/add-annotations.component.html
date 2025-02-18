@@ -28,7 +28,7 @@
       <div class="mt-2">
         <baw-typeahead-input
           id="additional-tags-input"
-          label="Associated Tags"
+          label="Extra Tags"
           [inputPlaceholder]="'search for tags by name'"
           [searchCallback]="searchTagsTypeaheadCallback"
           [resultTemplate]="tagsTypeaheadTemplate"
@@ -41,22 +41,24 @@
     </div>
   </div>
 
-  <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
-  <span
-    class="d-inline-block mt-2"
-    [ngbTooltip]="uploadTooltip"
-    [attr.ngbTooltip]="uploadTooltip !== null"
-  >
-    <button
-      id="import-btn"
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!canCommitUploads() || uploading"
-      (click)="commitImports()"
+  <div class="d-flex justify-content-end">
+    <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
+    <span
+      class="d-inline-block mt-2"
+      [ngbTooltip]="uploadTooltip"
+      [attr.ngbTooltip]="uploadTooltip !== null"
     >
-      Import Annotations
-    </button>
-  </span>
+      <button
+        id="import-btn"
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!canCommitUploads() || uploading"
+        (click)="commitImports()"
+      >
+        Import Annotations
+      </button>
+    </span>
+  </div>
 </form>
 
 <hr />
@@ -115,13 +117,13 @@
             </a>
           </ng-template>
           } @else {
-            <strong
-              class="d-flex align-items-center text-danger font-semibold"
-              ngbTooltip="This field contains an error. See errors for more information."
-            >
-              <fa-icon [icon]="['fas', 'xmark-circle']" class="me-1"></fa-icon>
-              <span class="text-decoration-underline">Error</span>
-            </strong>
+          <strong
+            class="d-flex align-items-center text-danger font-semibold"
+            ngbTooltip="This field contains an error. See errors for more information."
+          >
+            <fa-icon [icon]="['fas', 'xmark-circle']" class="me-1"></fa-icon>
+            <span class="text-decoration-underline">Error</span>
+          </strong>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -227,7 +229,7 @@
 </ng-template>
 
 <ng-template #noAssociatedTagsTemplate>
-  <span>No associated tags</span>
+  <span class="text-muted">Empty</span>
 </ng-template>
 
 <ng-template #noAdditionalTagsTemplate>
