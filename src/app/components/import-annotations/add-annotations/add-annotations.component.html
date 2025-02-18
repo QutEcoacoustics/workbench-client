@@ -226,6 +226,70 @@
         </ng-template>
       </ngx-datatable-column>
 
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="channel"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Channel
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="duration"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Duration
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="isReference"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Reference
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column
+        [sortable]="false"
+        [maxWidth]="100"
+        prop="score"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Score
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value; else missingTemplate">
+            {{ value | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
       <ngx-datatable-column [sortable]="false" prop="tags">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
