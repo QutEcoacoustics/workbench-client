@@ -248,6 +248,7 @@ class AddAnnotationsComponent
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
+        error: () => (this.importState = ImportState.FAILURE),
         complete: () => {
           this.notifications.success("Successfully imported annotations");
 
