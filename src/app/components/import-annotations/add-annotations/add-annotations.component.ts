@@ -108,8 +108,10 @@ class AddAnnotationsComponent
   /** The route model that the annotation import is scoped to */
   private audioEventImport?: AudioEventImport;
 
-  private extensionMappings = new Map([["csv", "text/csv"]]);
-
+  // I use an object here when I should be using a readonly map because I want
+  // to use the "as const" assertion to make the object immutable, get
+  // bundling optimizations, have stricter type checking, and auto completion.
+  private extensionMappings = { csv: "text/csv" } as const;
 
   public get hasUnsavedChanges(): boolean {
     return this.hasAdditionalTags || this.importState !== ImportState.NONE;
@@ -204,9 +206,9 @@ class AddAnnotationsComponent
     this.importFiles = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
-      const fileTypeMapping = this.extensionMappings.get(extension.toLowerCase());
+      const fileTypeMapping = this.extensionMappings[extension.toLowerCase()];
       if (fileTypeMapping) {
-        return this.changeFileTypes(file, this.extensionMappings.get(extension));
+        return this.changeFileTypes(file, fileTypeMapping);
       }
 
       return file;
