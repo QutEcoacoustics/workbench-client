@@ -91,9 +91,15 @@ class AddAnnotationsComponent
 
   @ViewChild(NgForm) private form!: NgForm;
 
+  /**
+   * A state machine representation that can be used to lock UI elements during
+   * uploading / error states.
+   */
   protected importState: ImportState = ImportState.NONE;
-  // we use a BehaviorSubject for the audio event import files because users can upload
-  // multiple files through the file input and new subscribers should get the most recent value
+
+  // we use a BehaviorSubject for the audio event import files because users can
+  // upload multiple files through the file input and new subscribers should get
+  // the most recent value
   protected importFiles$ = new BehaviorSubject<BufferedFile[]>([]);
   private importFiles: File[] = [];
 
@@ -101,6 +107,9 @@ class AddAnnotationsComponent
 
   /** The route model that the annotation import is scoped to */
   private audioEventImport?: AudioEventImport;
+
+  private extensionMappings = new Map([["csv", "text/csv"]]);
+
 
   public get hasUnsavedChanges(): boolean {
     return this.hasAdditionalTags || this.importState !== ImportState.NONE;
@@ -192,14 +201,12 @@ class AddAnnotationsComponent
     // an error.
     // to fix this, we will change the file type to the correct type using the
     // file extension.
-    const extensionMappings = new Map<string, string>([["csv", "text/csv"]]);
-
     this.importFiles = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
-      const fileTypeMapping = extensionMappings.get(extension.toLowerCase());
+      const fileTypeMapping = this.extensionMappings.get(extension.toLowerCase());
       if (fileTypeMapping) {
-        return this.changeFileTypes(file, extensionMappings.get(extension));
+        return this.changeFileTypes(file, this.extensionMappings.get(extension));
       }
 
       return file;
@@ -235,8 +242,7 @@ class AddAnnotationsComponent
       return;
     }
 
-    // creates a lock so that no more files can be added to the upload queue while the upload is in progress
-    this.uploading = true;
+    this.importState = ImportState.UPLOADING;
 
     const fileUploadObservables = this.importFiles.map((file: File) =>
       this.uploadFile(file)
