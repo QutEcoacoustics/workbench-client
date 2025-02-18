@@ -8,6 +8,11 @@ export enum ErrorCardStyle {
   Alert,
 }
 
+interface ErrorTemplate {
+  key: string;
+  value: string;
+}
+
 @Component({
   selector: "baw-error-card",
   template: `
@@ -43,7 +48,7 @@ export class ErrorCardComponent {
   public errorStyle = input<ErrorCardStyle>(ErrorCardStyle.Alert);
   public showSuccessState = input<boolean>(false);
 
-  @ContentChild(TemplateRef) public errorTemplate?: TemplateRef<any>;
+  @ContentChild(TemplateRef) public errorTemplate?: TemplateRef<ErrorTemplate>;
 
   protected get divStyle(): string {
     return this.errorStyle() === ErrorCardStyle.Alert

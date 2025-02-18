@@ -1,10 +1,4 @@
 .file-list-item {
-  display: grid;
-  grid-template-columns: 0.1fr 1fr 1fr 1fr;
-  gap: 0.5rem;
-
-  & > * {
-    display: flex;
-    align-items: center;
-  }
+  display: flex;
+  justify-content: space-between;
 }

@@ -1,5 +1,5 @@
 import { AUDIO_EVENT_IMPORT, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { BawErrorData, Id } from "@interfaces/apiInterfaces";
+import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { hasOne } from "@models/AssociationDecorators";
 import { bawPersistAttr, bawSubModelCollection } from "@models/AttributeDecorators";
@@ -8,8 +8,12 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag, Tag } from "@models/Tag";
 
+export type EventImportError = {
+  [K in keyof IImportedAudioEvent]?: string[];
+}
+
 export interface IImportedAudioEvent extends IAudioEvent {
-  errors?: BawErrorData[];
+  errors?: EventImportError[];
   tags?: ITag[];
 }
 
@@ -36,7 +40,7 @@ export class ImportedAudioEvent
   public isReference?: boolean;
   public creatorId?: Id;
   public context?: Record<string, string | null>;
-  public errors?: BawErrorData[];
+  public errors?: EventImportError[];
   @bawSubModelCollection<ImportedAudioEvent, Tag>(Tag)
   public tags?: Tag[];
 
