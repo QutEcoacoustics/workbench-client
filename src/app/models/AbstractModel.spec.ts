@@ -26,11 +26,6 @@ export class MockModel extends AbstractModel {
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
-    const assertToJson = (model: AbstractModel, result: Record<string, any>) =>
-      expect(model.getJsonAttributes()).toEqual({
-        ...result,
-        kind: "Mock Model",
-      });
     const assertToJsonWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
@@ -58,7 +53,6 @@ describe("AbstractModel", () => {
     ].forEach(({ type, value, output }) => {
       it(`should handle ${type} on basic toJSON() request`, () => {
         const model = new MockModel({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, {});
         assertToJsonWithUpdate(model, {});
       });
@@ -73,7 +67,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, { test: output });
         assertToJsonWithUpdate(model, {});
       });
@@ -88,7 +81,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, {});
         assertToJsonWithUpdate(model, { test: output });
       });
@@ -114,11 +106,6 @@ describe("AbstractModel", () => {
       expect<any>(
         Object.keys(model.getJsonAttributesForUpdate())
       ).not.toContain("injector");
-    });
-
-    it("should handle multiple on basic toJSON() request", () => {
-      const model = new MockModel(defaultData);
-      assertToJson(model, { id: 1, name: "name", set: [1, 2, 3] });
     });
 
     it("should handle multiple on toJSON({create: true}) request", () => {
@@ -365,11 +352,6 @@ describe("AbstractModel", () => {
   });
 
   describe("toFormData", () => {
-    const assertToFormData = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) =>
-      expect(model.getFormDataOnlyAttributes()).toEqual(createFormData(result));
     const assertToFormDataWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
@@ -410,7 +392,6 @@ describe("AbstractModel", () => {
     ].forEach(({ type, value, output }) => {
       it(`should handle ${type} on basic toFormData() request`, () => {
         const model = new MockModel({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, {});
         assertToFormDataWithUpdate(model, {});
       });
@@ -425,7 +406,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, { test: output });
         assertToFormDataWithUpdate(model, {});
       });
@@ -440,7 +420,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, {});
         assertToFormDataWithUpdate(model, { test: output });
       });
@@ -466,11 +445,6 @@ describe("AbstractModel", () => {
       expect<any>(Object.keys(model.getFormDataOnlyAttributesForUpdate())).not.toContain(
         "injector"
       );
-    });
-
-    it("should handle multiple on basic toFormData() request", () => {
-      const model = new MockModel(defaultData);
-      assertToFormData(model, { id: 1, name: "name", set: [1, 2, 3] });
     });
 
     it("should handle multiple on toFormData({create: true}) request", () => {

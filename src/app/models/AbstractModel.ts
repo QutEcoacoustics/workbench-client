@@ -158,14 +158,6 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.formDataOnlyAttributes({ update: true });
   }
 
-  public getFormDataOnlyAttributes(): FormData {
-    return this.formDataOnlyAttributes();
-  }
-
-  public getJsonAttributes(): Partial<this> {
-    return this.jsonAttributes();
-  }
-
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
     return this.getModelAttributes({ ...opts, formData: false }).some((attr) =>
       isInstantiated(this[attr])
