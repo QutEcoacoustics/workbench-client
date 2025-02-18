@@ -317,7 +317,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           continue;
         }
 
-        output.append(`${modelName}[${snakeCaseAttr}][]`, dataValue as any);
+        for (const dataValueItem of dataValue) {
+          output.append(`${modelName}[${snakeCaseAttr}][]`, dataValueItem);
+        }
       } else {
         output.append(`${modelName}[${snakeCaseAttr}]`, dataValue);
       }
