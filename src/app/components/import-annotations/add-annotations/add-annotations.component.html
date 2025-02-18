@@ -26,7 +26,7 @@
             <div class="file-list-item">
               <span>
                 <button
-                  class="btn btn-sm btn-outline-danger me-1"
+                  class="remove-btn btn btn-sm btn-outline-danger me-1"
                   (click)="removeBufferedFile(fileModel)"
                 >
                   <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
@@ -41,25 +41,31 @@
                 [showSuccessState]="true"
                 class="file-errors"
               >
-                <ng-template let-key="key" let-value="value">
-                  @if (key === 'file') {
-                    {{ fileModel.file.name }}: {{ value }}
-                  } @else {
-                    {{ key }}: {{ value }}
-                  }
+                <!--
+                  Because we are inside the file list, there is no need to
+                  specify the error keys as all of the errors will be referring
+                  to the file in the list item.
+                -->
+                <ng-template let-value="value">
+                  {{ value }}
                 </ng-template>
               </baw-error-card>
 
-              <baw-typeahead-input
-                id="tags-input"
-                inputPlaceholder="Add tags"
-                [searchCallback]="searchTagsTypeaheadCallback"
-                [resultTemplate]="tagsTypeaheadTemplate"
-                [inputDisabled]="uploading"
-                (modelChange)="
-                  updateTagIds(getIdsFromAbstractModelArray($event), fileModel)
-                "
-              ></baw-typeahead-input>
+              <div>
+                <baw-typeahead-input
+                  class="additional-file-tags"
+                  inputPlaceholder="Add tags"
+                  [searchCallback]="searchTagsTypeaheadCallback"
+                  [resultTemplate]="tagsTypeaheadTemplate"
+                  [inputDisabled]="uploading"
+                  (modelChange)="
+                    updateTagIds(
+                      getIdsFromAbstractModelArray($event),
+                      fileModel
+                    )
+                  "
+                ></baw-typeahead-input>
+              </div>
             </div>
           </li>
           }
@@ -81,6 +87,10 @@
             updateAdditionalTagIds(getIdsFromAbstractModelArray($event))
           "
         ></baw-typeahead-input>
+
+        <p class="text-muted">
+          Extra tags will be applied to all files in the annotation import.
+        </p>
       </div>
     </div>
   </div>
@@ -236,11 +246,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="channel"
-      >
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="channel">
         <ng-template let-column="column" ngx-datatable-header-template>
           Channel
         </ng-template>
@@ -252,11 +258,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="duration"
-      >
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="duration">
         <ng-template let-column="column" ngx-datatable-header-template>
           Duration
         </ng-template>
@@ -284,11 +286,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="score"
-      >
+      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="score">
         <ng-template let-column="column" ngx-datatable-header-template>
           Score
         </ng-template>
