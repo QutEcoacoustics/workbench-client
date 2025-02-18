@@ -16,15 +16,15 @@ import {
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export type TypeaheadSearchCallback = (
+export type TypeaheadSearchCallback<T = object> = (
   text: string,
-  activeItems: object[]
-) => Observable<object[]>;
+  activeItems: T[]
+) => Observable<T[]>;
 
 @Component({
   selector: "baw-typeahead-input",
   templateUrl: "typeahead-input.component.html",
-  styleUrls: ["typeahead-input.component.scss"],
+  styleUrl: "typeahead-input.component.scss",
 })
 export class TypeaheadInputComponent {
   /**

@@ -18,8 +18,6 @@ import {
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Tag } from "@models/Tag";
-import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -79,8 +77,8 @@ class AddAnnotationsComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
   public constructor(
+    protected tagsApi: TagsService,
     private api: AudioEventImportFileService,
-    private tagsApi: TagsService,
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastrService,
@@ -167,20 +165,7 @@ class AddAnnotationsComponent
     );
   };
 
-  // callback used by the typeahead input to search for associated tags
-  protected searchTagsTypeaheadCallback = (
-    text: string,
-    activeItems: Tag[]
-  ): Observable<Tag[]> =>
-    this.tagsApi.filter({
-      filter: filterAnd(
-        contains<Tag, "text">("text", text),
-        notIn<Tag>("text", activeItems)
-      ),
-    });
-
-  // since the typeahead input returns an array of models, but the api wants the associated tags as an array of id's
-  // we use this helper function to convert the array of models to an array of id's that can be sent in the api request
+  // typeahead returns models, we need ids for filtering
   protected getIdsFromAbstractModelArray(items: object[]): Id[] {
     return items.map((item: AbstractModel): Id => item.id);
   }
@@ -225,7 +210,8 @@ class AddAnnotationsComponent
     return model.errors.some((error) => "audioRecordingId" in error);
   }
 
-  // uses a reference to the ImportGroup object and update the additional tag ids property
+  // uses a reference to the ImportGroup object and update the additional tag
+  // ids property
   protected updateAdditionalTagIds(additionalTagIds: Id[]): void {
     this.additionalTagIds = additionalTagIds;
     this.performDryRun();
