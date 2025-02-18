@@ -38,7 +38,15 @@
                 [errorStyle]="errorCardStyles.Inline"
                 [showSuccessState]="true"
                 class="file-errors"
-              ></baw-error-card>
+              >
+                <ng-template let-key="key" let-value="value">
+                  @if (key === 'file') {
+                    {{ fileModel.file.name }}: {{ value }}
+                  } @else {
+                    {{ key }}: {{ value }}
+                  }
+                </ng-template>
+              </baw-error-card>
 
               <baw-typeahead-input
                 id="tags-input"

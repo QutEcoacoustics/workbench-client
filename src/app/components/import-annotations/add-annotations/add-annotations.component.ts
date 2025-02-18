@@ -40,7 +40,7 @@ import {
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
 
-interface BufferedFile {
+interface QueuedFile {
   file: Readonly<File>;
 
   model: Readonly<AudioEventImportFile>;
@@ -98,7 +98,7 @@ class AddAnnotationsComponent
   // we use a BehaviorSubject for the audio event import files because users can
   // upload multiple files through the file input and new subscribers should get
   // the most recent value
-  protected importFiles$ = new BehaviorSubject<BufferedFile[]>([]);
+  protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
   private importFiles: File[] = [];
 
   protected errorCardStyles = ErrorCardStyle;
@@ -159,7 +159,7 @@ class AddAnnotationsComponent
 
   protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
     return this.importFiles$.pipe(
-      mergeMap((files: BufferedFile[]) => {
+      mergeMap((files: QueuedFile[]) => {
         return files.map((file) => file.model.importedEvents);
       })
     );
@@ -217,7 +217,7 @@ class AddAnnotationsComponent
     this.performDryRun();
   }
 
-  protected removeBufferedFile(model: BufferedFile): void {
+  protected removeBufferedFile(model: QueuedFile): void {
     this.importFiles = this.importFiles.filter((file) => file !== model.file);
     this.performDryRun();
   }
@@ -263,7 +263,7 @@ class AddAnnotationsComponent
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: (result: BufferedFile[]) => {
+        next: (result: QueuedFile[]) => {
           // if a file upload fails due to an internal server error, the
           // model will be null.
           // therefore, we need to filter out any null models.
@@ -288,23 +288,23 @@ class AddAnnotationsComponent
       .pipe(first());
   }
 
-  private dryRunFile(file: File): Observable<BufferedFile> {
+  private dryRunFile(file: File): Observable<QueuedFile> {
     const importFileModel = this.createAudioEventImportFile(file);
 
     return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
       first(),
       map(
-        (model: AudioEventImportFile): BufferedFile =>
-          this.importFileToBufferedFile(file, model)
+        (model: AudioEventImportFile): QueuedFile =>
+          this.importFileToBufferedFile(file, model, [])
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
-        this.importErrors.push(...this.extractFileErrors(file, error));
+        const errors = this.extractFileErrors(file, error);
 
         if (Array.isArray(error.data)) {
           throw new Error("Expected a single model");
         }
 
-        const result = this.importFileToBufferedFile(file, error.data);
+        const result = this.importFileToBufferedFile(file, error.data, errors);
         return of(result);
       })
     );
@@ -312,13 +312,14 @@ class AddAnnotationsComponent
 
   private importFileToBufferedFile(
     file: File,
-    model: AudioEventImportFile
-  ): BufferedFile {
+    model: AudioEventImportFile,
+    errors: BawErrorData[]
+  ): QueuedFile {
     return {
+      additionalTagIds: [],
       file,
       model,
-      errors: [],
-      additionalTagIds: [],
+      errors,
     };
   }
 
@@ -354,20 +355,8 @@ class AddAnnotationsComponent
     // create a new object so that I don't accidentally mutate the original
     // error by reference
     const newErrors: BawErrorData[] = Array.isArray(error.info)
-      ? Object.assign({}, error.info)
-      : [Object.assign({}, error.info)];
-
-    const fileNameKey = "file" satisfies keyof BawErrorData;
-    for (const errorInfo of newErrors) {
-      // if the "file" key is in the error message, replace the file key with
-      // the file name
-      // this makes the error message more user friendly and easier to
-      // understand when you upload multiple files
-      if (fileNameKey in errorInfo) {
-        errorInfo[file.name] = errorInfo[fileNameKey];
-        delete errorInfo[fileNameKey];
-      }
-    }
+      ? error.info
+      : [error.info];
 
     return newErrors;
   }
