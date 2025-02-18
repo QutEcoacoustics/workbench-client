@@ -126,34 +126,122 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.getMetadata().capabilities[capability];
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true })
+   * public x = 2
+   * ```
+   *
+   * ```ts
+   * hasJsonOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
   public hasJsonOnlyAttributesForCreate(): boolean {
     return this.hasJsonOnlyAttributes({ create: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getJsonAttributesForCreate() => { x: 2 }
+   * ```
+   */
   public getJsonAttributesForCreate(): Partial<this> {
     return this.jsonAttributes({ create: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasJsonOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
   public hasJsonOnlyAttributesForUpdate(): boolean {
     return this.hasJsonOnlyAttributes({ update: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getJsonAttributesForUpdate() => { x: 2 }
+   * ```
+   */
   public getJsonAttributesForUpdate(): Partial<this> {
     return this.jsonAttributes({ update: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasFormDataOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
   public hasFormDataOnlyAttributesForCreate(): boolean {
     return this.hasFormDataOnlyAttributes({ create: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getFormDataOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
   public getFormDataOnlyAttributesForCreate(): FormData {
     return this.formDataOnlyAttributes({ create: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasFormDataOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
   public hasFormDataOnlyAttributesForUpdate(): boolean {
     return this.hasFormDataOnlyAttributes({ update: true });
   }
 
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getFormDataOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
   public getFormDataOnlyAttributesForUpdate(): FormData {
     return this.formDataOnlyAttributes({ update: true });
   }
