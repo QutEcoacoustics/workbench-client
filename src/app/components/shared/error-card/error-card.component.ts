@@ -29,7 +29,7 @@ export enum ErrorCardStyle {
   styleUrl: "error-card.component.scss",
 })
 export class ErrorCardComponent {
-  public errors = input.required<BawErrorData[]>();
+  public errors = input.required<ReadonlyArray<BawErrorData>>();
   public errorStyle = input<ErrorCardStyle>(ErrorCardStyle.Alert);
   public showSuccessState = input<boolean>(false);
 

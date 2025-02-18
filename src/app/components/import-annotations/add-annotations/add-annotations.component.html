@@ -18,12 +18,46 @@
         multiple
       />
 
-      <baw-error-card
-        id="file-errors"
-        class="d-block mt-2"
-        [errors]="importErrors"
-        [errorStyle]="errorCardStyles.Alert"
-      ></baw-error-card>
+      <section class="file-list mt-2">
+        @if(hasFiles) {
+        <ol>
+          @for (fileModel of importFiles$ | async; track file) {
+          <li>
+            <div class="file-list-item">
+              <button
+                class="btn btn-outline-danger"
+                (click)="removeBufferedFile(fileModel)"
+              >
+                <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+              </button>
+
+              <span>{{ fileModel.file.name }}</span>
+
+              <baw-error-card
+                [errors]="fileModel.errors"
+                [errorStyle]="errorCardStyles.Inline"
+                [showSuccessState]="true"
+                class="file-errors"
+              ></baw-error-card>
+
+              <baw-typeahead-input
+                id="tags-input"
+                inputPlaceholder="Add tags"
+                [searchCallback]="searchTagsTypeaheadCallback"
+                [resultTemplate]="tagsTypeaheadTemplate"
+                [inputDisabled]="uploading"
+                (modelChange)="
+                  updateTagIds(getIdsFromAbstractModelArray($event), fileModel)
+                "
+              ></baw-typeahead-input>
+            </div>
+          </li>
+          }
+        </ol>
+        } @else {
+        <ng-container [ngTemplateOutlet]="noFilesTemplate"></ng-container>
+        }
+      </section>
 
       <div class="mt-2">
         <baw-typeahead-input
@@ -52,7 +86,7 @@
         id="import-btn"
         type="submit"
         class="btn btn-primary"
-        [disabled]="!canCommitUploads() || uploading"
+        [disabled]="!canCommitUploads || uploading"
         (click)="commitImports()"
       >
         Import Annotations
@@ -241,7 +275,7 @@
 </ng-template>
 
 <ng-template #noFilesTemplate>
-  <i>No files found</i>
+  <span class="text-muted">No files found</span>
 </ng-template>
 
 <ng-template #missingTemplate>
