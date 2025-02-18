@@ -24,14 +24,16 @@
           @for (fileModel of importFiles$ | async; track file) {
           <li>
             <div class="file-list-item">
-              <button
-                class="btn btn-outline-danger"
-                (click)="removeBufferedFile(fileModel)"
-              >
-                <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
-              </button>
+              <span>
+                <button
+                  class="btn btn-sm btn-outline-danger me-1"
+                  (click)="removeBufferedFile(fileModel)"
+                >
+                  <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+                </button>
 
-              <span>{{ fileModel.file.name }}</span>
+                <span>{{ fileModel.file.name }}</span>
+              </span>
 
               <baw-error-card
                 [errors]="fileModel.errors"

@@ -2,16 +2,14 @@ import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "
 import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
 import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
-import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import { hasOne } from "./AssociationDecorators";
 import { User } from "./User";
-import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
 import { AnalysisJob } from "./AnalysisJob";
 
 export interface IAudioEventImport extends HasAllUsers, HasDescription {
   id?: Id;
   name?: string;
-  importedEvents?: IImportedAudioEvent[];
   analysisJobId?: Id;
 }
 
@@ -37,8 +35,6 @@ export class AudioEventImport
   public readonly deleterId?: Id;
   public readonly updaterId?: Id;
   public readonly analysisJobId?: Id;
-  @bawSubModelCollection<AudioEventImport, ImportedAudioEvent>(ImportedAudioEvent)
-  public readonly importedEvents?: ImportedAudioEvent[];
 
   // Associations
   @hasOne<AudioEventImport, User>(USER, "creatorId")

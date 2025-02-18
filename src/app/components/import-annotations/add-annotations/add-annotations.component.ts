@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { BawErrorData, Id } from "@interfaces/apiInterfaces";
+import {
+  ImportedAudioEvent,
+  EventImportError,
+} from "@models/AudioEventImport/ImportedAudioEvent";
+import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
   BehaviorSubject,
@@ -50,7 +53,7 @@ interface QueuedFile {
    * table.
    * E.g. duplicate file uploads, names, etc...
    */
-  errors: ReadonlyArray<BawErrorData>;
+  errors: ReadonlyArray<EventImportError>;
 
   /**
    * Audio events that will be applied to every event row in the file.
@@ -206,7 +209,13 @@ class AddAnnotationsComponent
     return this.importFiles$.pipe(map((files) => files.length > 0));
   }
 
-  protected hasRecordingErrors(model: ImportedAudioEvent): boolean {
+  protected hasRecordingErrors(
+    model: ImportedAudioEvent
+  ): model is ImportedAudioEvent & {
+    errors: {
+      audioRecordingId: Required<EventImportError["audioRecordingId"]>;
+    };
+  } {
     return model.errors.some((error) => "audioRecordingId" in error);
   }
 
@@ -313,7 +322,7 @@ class AddAnnotationsComponent
   private importFileToBufferedFile(
     file: File,
     model: AudioEventImportFile,
-    errors: BawErrorData[]
+    errors: EventImportError[]
   ): QueuedFile {
     return {
       additionalTagIds: [],
@@ -344,7 +353,7 @@ class AddAnnotationsComponent
   private extractFileErrors(
     file: File,
     error: BawApiError<AudioEventImportFile>
-  ): BawErrorData[] {
+  ): EventImportError[] {
     if (error.status === INTERNAL_SERVER_ERROR) {
       return [
         { [file.name]: "An unrecoverable internal server error occurred." },
@@ -354,7 +363,7 @@ class AddAnnotationsComponent
     // because we are mutating the error object (for nicer error message), I
     // create a new object so that I don't accidentally mutate the original
     // error by reference
-    const newErrors: BawErrorData[] = Array.isArray(error.info)
+    const newErrors: EventImportError[] = Array.isArray(error.info)
       ? error.info
       : [error.info];
 

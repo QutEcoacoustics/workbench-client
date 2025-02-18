@@ -4,7 +4,18 @@ import { generateImportedAudioEvent } from "./ImportedAudioEvent";
 
 export function generateAudioEventImportFile(
   data?: Partial<IAudioEventImportFile>
-): Required<IAudioEventImportFile> {
+): IAudioEventImportFile {
+  if (data.file && data.path) {
+    throw new Error(
+      "Cannot provide both file and path to mock AudioEventImportFile"
+    );
+  }
+
+  const useMockFile = !data.file && !data.path ? !!data.file : modelData.bool();
+  const mockFileData = useMockFile
+    ? { file: data.file ?? modelData.file() }
+    : { path: data.path ?? modelData.system.filePath() };
+
   return {
     id: modelData.id(),
     name: modelData.param(),
@@ -17,8 +28,8 @@ export function generateAudioEventImportFile(
     ),
     analysisJobsItemId: modelData.id(),
     audioEventImportId: modelData.id(),
-    file: modelData.file(),
     additionalTagIds: modelData.ids(),
+    ...mockFileData,
     ...data,
   };
 }
