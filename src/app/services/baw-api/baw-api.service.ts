@@ -383,13 +383,13 @@ export class BawApiService<
    * this will make an additional update request.
    *
    * @param classBuilder Model to create
-   * @param createPath API create path
+   * @param path API create path
    * @param updatePath API update path
    * @param model Model to insert into API request
    */
   public create(
     classBuilder: ClassBuilder,
-    createPath: string,
+    path: string,
     updatePath: (model: Model) => string,
     model: AbstractModel,
     options: BawServiceOptions = {}
@@ -399,10 +399,27 @@ export class BawApiService<
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    let formData = model.getFormDataOnlyAttributesForCreate();
-    if (options.params) {
-      formData = this.addUnscopedParams(formData, options.params);
+    let formData = model.getFormDataOnlyAttributesForUpdate();
+    if (options.params && formData) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we use query
+      // string parameters on the JSON payload.
+      // We do this to prevent sending out multiple requests when we only need
+      // to send one.
+      if (formData) {
+        formData = this.addUnscopedParams(formData, options.params);
+      } else {
+        const url = new URL(path);
+        Object.entries(options.params).forEach(([key, value]) => {
+          url.searchParams.append(key, value);
+        });
+
+        path = url.href;
+      }
     }
+
 
     const formDataMethod = model.hasJsonOnlyAttributesForCreate()
       ? "httpPut"
@@ -415,7 +432,7 @@ export class BawApiService<
     return of(null).pipe(
       concatMap(
         model.hasJsonOnlyAttributesForCreate()
-          ? () => this.httpPost(createPath, body, undefined, options).pipe()
+          ? () => this.httpPost(path, body, undefined, options).pipe()
           : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
@@ -469,8 +486,24 @@ export class BawApiService<
       : jsonData ?? model;
 
     let formData = model.getFormDataOnlyAttributesForUpdate();
-    if (options.params) {
-      formData = this.addUnscopedParams(formData, options.params);
+    if (options.params && formData) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we use query
+      // string parameters on the JSON payload.
+      // We do this to prevent sending out multiple requests when we only need
+      // to send one.
+      if (formData) {
+        formData = this.addUnscopedParams(formData, options.params);
+      } else {
+        const url = new URL(path);
+        Object.entries(options.params).forEach(([key, value]) => {
+          url.searchParams.append(key, value);
+        });
+
+        path = url.href;
+      }
     }
 
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON PATCH request
