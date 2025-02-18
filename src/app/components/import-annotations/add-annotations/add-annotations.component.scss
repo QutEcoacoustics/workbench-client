@@ -1,4 +1,23 @@
 .file-list-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+
+  & > * {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.remove-btn {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.additional-file-tags {
+  width: 100%;
 }
