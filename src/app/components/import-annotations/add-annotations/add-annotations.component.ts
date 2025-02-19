@@ -41,6 +41,7 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -187,7 +188,11 @@ class AddAnnotationsComponent
   protected getEventModels = (): Observable<TableRow[]> => {
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
-        return files.flatMap((file, fileIndex: number) => {
+        const instantiatedFiles = files.filter((file) =>
+          isInstantiated(file.model)
+        );
+
+        return instantiatedFiles.flatMap((file, fileIndex: number) => {
           return file.model?.importedEvents.map(
             (event: ImportedAudioEvent, eventIndex: number) => {
               return new TableRow({
@@ -195,7 +200,8 @@ class AddAnnotationsComponent
                 eventId: eventIndex + 1,
                 event,
               });
-          });
+            }
+          );
         });
       })
     );

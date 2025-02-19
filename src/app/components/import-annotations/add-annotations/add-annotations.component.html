@@ -150,7 +150,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
@@ -182,124 +182,124 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="startTimeSeconds">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.startTimeSeconds; else missingTemplate">
+            {{ value.startTimeSeconds | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="endTimeSeconds">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.endTimeSecondselse missingTemplate">
+            {{ value.endTimeSeconds | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="lowFrequencyHertz">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.lowFrequencyHertz else missingTemplate">
+            {{ value.lowFrequencyHertz | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="highFrequencyHertz">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.highFrequencyHertzlse missingTemplate">
+            {{ value.highFrequencyHertz | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="channel">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Channel
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.channel; else missingTemplate">
+            {{ value.channel | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="duration">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Duration
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.duration; else missingTemplate">
+            {{ value.duration | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="isReference">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Reference
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value }}
+          <ng-container *ngIf="value.isReference else missingTemplate">
+            {{ value.isReference }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="score">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Score
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+          <ng-container *ngIf="value.score; else missingTemplate">
+            {{ value.score | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="tags">
+      <ngx-datatable-column [sortable]="false" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           <baw-inline-list
-            [items]="value"
+            [items]="value.tags"
             [itemKey]="'text'"
             [emptyTemplate]="noAssociatedTagsTemplate"
           ></baw-inline-list>
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="errors">
+      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           <baw-error-card
-            [errors]="value"
+            [errors]="value.errors"
             [errorStyle]="errorCardStyles.Inline"
             [showSuccessState]="true"
             class="event-errors"
