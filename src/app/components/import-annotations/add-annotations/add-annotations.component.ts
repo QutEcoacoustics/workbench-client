@@ -1,4 +1,10 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
@@ -42,12 +48,19 @@ import {
 import { annotationImportRoute } from "../import-annotations.routes";
 
 interface QueuedFile {
-  /** A file id that can be used in the table */
-  // id: number;
+  /**
+   * A file id that can be used to represent the file (regarless of async)
+   * operations.
+   */
+  id?: number;
 
   file: Readonly<File>;
 
-  model: Readonly<AudioEventImportFile>;
+  /**
+   * An audio event model that represents the file that was uploaded.
+   * This can be null if the file has not been dry run yet.
+   */
+  model: Readonly<AudioEventImportFile | null>;
 
   /**
    * Errors that apply to the entire file that we cannot display in the events
@@ -59,7 +72,7 @@ interface QueuedFile {
   /**
    * Audio events that will be applied to every event row in the file.
    */
-  additionalTagIds: ReadonlyArray<Id>;
+  additionalTagIds: Id[];
 }
 
 enum ImportState {
@@ -106,7 +119,6 @@ class AddAnnotationsComponent
   // upload multiple files through the file input and new subscribers should get
   // the most recent value
   protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
-  private importFiles: File[] = [];
 
   protected errorCardStyles = ErrorCardStyle;
 
@@ -161,10 +173,10 @@ class AddAnnotationsComponent
     this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
   }
 
-  protected getEventModels = (): Observable<any> => {
+  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
-        return files.flatMap((file) => file.model.importedEvents) as any;
+        return files.flatMap((file) => file.model?.importedEvents ?? []);
       })
     );
   };
@@ -192,7 +204,7 @@ class AddAnnotationsComponent
     // an error.
     // to fix this, we will change the file type to the correct type using the
     // file extension.
-    this.importFiles = bufferedFiles.map((file: File) => {
+    const filesToImport: File[] = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
       const fileTypeMapping = this.extensionMappings[extension.toLowerCase()];
@@ -203,6 +215,11 @@ class AddAnnotationsComponent
       return file;
     });
 
+    const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
+      this.importFileToBufferedFile(file, null, [])
+    );
+
+    this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
     this.performDryRun();
   }
 
@@ -231,23 +248,22 @@ class AddAnnotationsComponent
     for (const file of this.importFiles$.value) {
       file.additionalTagIds = additionalTagIds;
     }
-
-    this.performDryRun();
   }
 
-  protected updateFileAdditionalTagIds(
-    fileModel: QueuedFile,
-    tagIds: Id[]
-  ): void {
-    fileModel.additionalTagIds = tagIds;
+  protected updateFileAdditionalTagIds(model: QueuedFile, tagIds: Id[]): void {
+    model.additionalTagIds = tagIds;
     this.performDryRun();
   }
 
   protected removeBufferedFile(model: QueuedFile): void {
-    this.importFiles = this.importFiles.filter((file) => file !== model.file);
+    this.importFiles$.next(
+      this.importFiles$.value.filter(
+        (file: QueuedFile) => file.file !== model.file
+      )
+    );
 
     const dataTransfer = new DataTransfer();
-    this.importFiles.forEach(file => dataTransfer.items.add(file));
+    this.importFiles$.value.forEach((file) => dataTransfer.items.add(file.file));
     this.fileInput.nativeElement.files = dataTransfer.files;
 
     this.performDryRun();
@@ -263,8 +279,8 @@ class AddAnnotationsComponent
 
     this.importState = ImportState.UPLOADING;
 
-    const fileUploadObservables = this.importFiles.map((file: File) =>
-      this.uploadFile(file)
+    const fileUploadObservables = this.importFiles$.value.map((model: QueuedFile) =>
+      this.commitFile(model)
     );
 
     forkJoin(fileUploadObservables)
@@ -288,13 +304,12 @@ class AddAnnotationsComponent
       });
   }
 
-  private performDryRun() {
+  private performDryRun(): void {
     this.importState = ImportState.UPLOADING;
 
-    this.clearIdentifiedEvents();
-
-    const fileUploadObservables = this.importFiles.map((file: File) =>
-      this.dryRunFile(file)
+    const models: QueuedFile[] = this.importFiles$.value;
+    const fileUploadObservables = models.map((model: QueuedFile) =>
+      this.dryRunFile(model)
     );
 
     forkJoin(fileUploadObservables)
@@ -311,16 +326,17 @@ class AddAnnotationsComponent
       });
   }
 
-  private uploadFile(file: File): Observable<AudioEventImportFile> {
-    const importFileModel = this.createAudioEventImportFile(file);
+  private commitFile(model: QueuedFile): Observable<AudioEventImportFile> {
+    const importFileModel = this.createAudioEventImportFile(model);
 
     return this.api
       .create(importFileModel, this.audioEventImport)
       .pipe(first());
   }
 
-  private dryRunFile(file: File): Observable<QueuedFile> {
-    const importFileModel = this.createAudioEventImportFile(file);
+  private dryRunFile(queueModel: QueuedFile): Observable<QueuedFile> {
+    const importFileModel = this.createAudioEventImportFile(queueModel);
+    const file = queueModel.file;
 
     return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
       first(),
@@ -355,22 +371,11 @@ class AddAnnotationsComponent
     };
   }
 
-  private createAudioEventImportFile(file: File): AudioEventImportFile {
-    return new AudioEventImportFile(
-      {
-        // we can guarantee that the audio event import model is defined
-        // because this page component will error if the model is not resolved
-        id: this.audioEventImport!.id,
-        file,
-        additionalTagIds: this.additionalTagIds,
-      },
-      this.injector
-    );
-  }
+  private createAudioEventImportFile(model: QueuedFile): AudioEventImportFile {
+    const file = model.file;
+    const additionalTagIds = model.additionalTagIds;
 
-  private clearIdentifiedEvents(): void {
-    this.importFiles$.next([]);
-    this.importErrors = [];
+    return new AudioEventImportFile({ file, additionalTagIds }, this.injector);
   }
 
   private extractFileErrors(
