@@ -7,12 +7,12 @@
         Annotation File(s)
       </label>
       <input
+        #fileInput
         id="annotationsFileInput"
         type="file"
         accept=".csv, .tsv, .selections.txt, .json"
         class="form-control border"
         [ngClass]="{ 'is-invalid': !ngForm.valid }"
-        [files]="importGroup?.files"
         [disabled]="uploading"
         (change)="handleFileChange($event)"
         multiple
