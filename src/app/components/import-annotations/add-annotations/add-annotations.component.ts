@@ -27,7 +27,7 @@ import {
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastrService } from "ngx-toastr";
@@ -48,12 +48,6 @@ import {
 import { annotationImportRoute } from "../import-annotations.routes";
 
 interface QueuedFile {
-  /**
-   * A file id that can be used to represent the file (regarless of async)
-   * operations.
-   */
-  id?: number;
-
   file: Readonly<File>;
 
   /**
@@ -75,10 +69,14 @@ interface QueuedFile {
   additionalTagIds: Id[];
 }
 
-interface TableRow {
-  fileId: number;
-  eventId: number;
-  event: ImportedAudioEvent;
+class TableRow extends AbstractModelWithoutId {
+  public fileId: number;
+  public eventId: number;
+  public event: ImportedAudioEvent;
+
+  public get viewUrl(): string {
+    throw new Error("Method not implemented.");
+  }
 }
 
 enum ImportState {
@@ -191,12 +189,13 @@ class AddAnnotationsComponent
       map((files: QueuedFile[]) => {
         return files.flatMap((file, fileIndex: number) => {
           return file.model?.importedEvents.map(
-            (event: ImportedAudioEvent, eventIndex: number) => ({
-              fileId: fileIndex + 1,
-              eventId: eventIndex + 1,
-              event,
-            })
-          );
+            (event: ImportedAudioEvent, eventIndex: number) => {
+              return new TableRow({
+                fileId: fileIndex + 1,
+                eventId: eventIndex + 1,
+                event,
+              });
+          });
         });
       })
     );

@@ -134,7 +134,7 @@
       bawDatatableDefaults
       [bawVirtualDatatablePagination]="getEventModels"
     >
-      <ngx-datatable-column [sortable]="false" prop="id">
+      <ngx-datatable-column [sortable]="false" prop="">
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
@@ -146,7 +146,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          0:0
+          {{ value.fileId }}:{{ value.eventId }}
         </ng-template>
       </ngx-datatable-column>
 
