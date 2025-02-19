@@ -93,6 +93,9 @@ class AddAnnotationsComponent
 
   @ViewChild("fileInput") private fileInput!: ElementRef<HTMLInputElement>;
 
+  /** The route model that the annotation import is scoped to */
+  public audioEventImport?: AudioEventImport;
+
   /**
    * A state machine representation that can be used to lock UI elements during
    * uploading / error states.
@@ -106,9 +109,6 @@ class AddAnnotationsComponent
   private importFiles: File[] = [];
 
   protected errorCardStyles = ErrorCardStyle;
-
-  /** The route model that the annotation import is scoped to */
-  private audioEventImport?: AudioEventImport;
 
   // I use an object here when I should be using a readonly map because I want
   // to use the "as const" assertion to make the object immutable, get
