@@ -77,7 +77,7 @@
 
       <div class="mt-2">
         <baw-typeahead-input
-          id="additional-tags-input"
+          id="extra-tags-input"
           label="Extra Tags"
           [inputPlaceholder]="'search for tags by name'"
           [searchCallback]="tagsApi.typeaheadCallback()"
@@ -200,7 +200,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.endTimeSecondselse missingTemplate">
+          <ng-container *ngIf="value.endTimeSeconds; else missingTemplate">
             {{ value.endTimeSeconds | number }}
           </ng-container>
         </ng-template>
@@ -224,7 +224,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.highFrequencyHertzlse missingTemplate">
+          <ng-container *ngIf="value.highFrequencyHertz; else missingTemplate">
             {{ value.highFrequencyHertz | number }}
           </ng-container>
         </ng-template>

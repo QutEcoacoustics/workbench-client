@@ -3,32 +3,36 @@
     {{ label }}
   </label>
   <div class="typeahead-input-container form-control">
-    <ng-container *ngIf="multipleInputs">
-      <span
-        *ngFor="let item of value; let i = index"
-        class="item-pill badge"
-        tabindex="0"
-        (keydown.backspace)="removeItem(i)"
-        (keydown.delete)="removeItem(i)"
-      >
-        <fa-icon
-          class="remove-button text-sm"
-          (click)="removeItem(i)"
-          [icon]="['fas', 'square-xmark']"
-        ></fa-icon>
+    @if (multipleInputs) {
+    <span
+      *ngFor="let item of value; let i = index"
+      class="item-pill badge"
+      tabindex="0"
+      (keydown.backspace)="removeItem(i)"
+      (keydown.delete)="removeItem(i)"
+    >
+      <fa-icon
+        class="remove-button text-sm"
+        (click)="removeItem(i)"
+        [icon]="['fas', 'square-xmark']"
+      ></fa-icon>
 
-        <ng-container *ngIf="resultTemplate; else defaultTemplate">
-          <ng-container
-            [ngTemplateOutletContext]="{ result: item, term: inputModel, formatter: templateFormatter }"
-            [ngTemplateOutlet]="resultTemplate"
-          ></ng-container>
-        </ng-container>
+      <ng-container *ngIf="resultTemplate; else defaultTemplate">
+        <ng-container
+          [ngTemplateOutletContext]="{
+            result: item,
+            term: inputModel,
+            formatter: templateFormatter
+          }"
+          [ngTemplateOutlet]="resultTemplate"
+        ></ng-container>
+      </ng-container>
 
-        <ng-template #defaultTemplate>
-          {{ item }}
-        </ng-template>
-      </span>
-    </ng-container>
+      <ng-template #defaultTemplate>
+        {{ item }}
+      </ng-template>
+    </span>
+    }
 
     <input
       id="typeahead-input"

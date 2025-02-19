@@ -73,8 +73,8 @@ describe("AddAnnotationsComponent", () => {
     eventsTable().querySelectorAll<HTMLDivElement>("datatable-body-row");
   const importFilesButton = () =>
     spectator.query<HTMLButtonElement>("#import-btn");
-  const additionalTagsInput = () =>
-    spectator.query<HTMLElement>("#additional-tags-input");
+  const extraTagsInput = () =>
+    spectator.query<HTMLElement>("#extra-tags-input");
 
   const fileAlerts = () =>
     spectator
@@ -217,7 +217,7 @@ describe("AddAnnotationsComponent", () => {
 
     it("should warn if the user has added additional tags", fakeAsync(() => {
       const selectedTag = mockTagsResponse[0];
-      selectFromTypeahead(spectator, additionalTagsInput(), selectedTag.text);
+      selectFromTypeahead(spectator, extraTagsInput(), selectedTag.text);
 
       expect(spectator.component.hasUnsavedChanges).toBeTrue();
     }));
