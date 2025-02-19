@@ -22,8 +22,8 @@
         @if(hasFiles) {
         <ol>
           @for (fileModel of importFiles$ | async; track file) {
-          <li>
-            <div class="file-list-item">
+          <li class="file-list-item">
+            <div class="file-list-item-content">
               <span>
                 <button
                   class="remove-btn btn btn-sm btn-outline-danger me-1"
@@ -55,13 +55,13 @@
                 <baw-typeahead-input
                   class="additional-file-tags"
                   inputPlaceholder="Add tags"
-                  [searchCallback]="searchTagsTypeaheadCallback"
+                  [searchCallback]="tagsApi.typeaheadCallback()"
                   [resultTemplate]="tagsTypeaheadTemplate"
                   [inputDisabled]="uploading"
                   (modelChange)="
-                    updateTagIds(
-                      getIdsFromAbstractModelArray($event),
-                      fileModel
+                    updateFileAdditionalTagIds(
+                      fileModel,
+                      getIdsFromAbstractModelArray($event)
                     )
                   "
                 ></baw-typeahead-input>
@@ -84,7 +84,7 @@
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="uploading"
           (modelChange)="
-            updateAdditionalTagIds(getIdsFromAbstractModelArray($event))
+            updateExtraTags(getIdsFromAbstractModelArray($event))
           "
         ></baw-typeahead-input>
 
