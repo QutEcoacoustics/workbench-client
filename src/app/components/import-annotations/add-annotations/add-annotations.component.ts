@@ -227,6 +227,10 @@ class AddAnnotationsComponent
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
+
+    const updatedFiles = this.importFiles$.value.map((file) => file.file);
+    this.updateFileInputFiles(updatedFiles);
+
     this.performDryRun();
   }
 
@@ -270,13 +274,7 @@ class AddAnnotationsComponent
     );
 
     const importedFiles = this.importFiles$.value.map((file) => file.file);
-
-    const dataTransfer = new DataTransfer();
-    for (const file of importedFiles) {
-      dataTransfer.items.add(file)
-    }
-
-    this.fileInput.nativeElement.files = dataTransfer.files;
+    this.updateFileInputFiles(importedFiles);
 
     if (importedFiles.length === 0) {
       // we transition to the "none" state if there are no files to import
@@ -376,6 +374,19 @@ class AddAnnotationsComponent
         return of(result);
       })
     );
+  }
+
+  /**
+   * Updates the file input so that it displays the correct number of uploaded
+   * files and file names.
+   */
+  private updateFileInputFiles(files: File[]): void {
+    const dataTransfer = new DataTransfer();
+    for (const file of files) {
+      dataTransfer.items.add(file);
+    }
+
+    this.fileInput.nativeElement.files = dataTransfer.files;
   }
 
   private importFileToBufferedFile(
