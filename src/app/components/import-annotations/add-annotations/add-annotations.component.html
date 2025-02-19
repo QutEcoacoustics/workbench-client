@@ -106,7 +106,7 @@
         id="import-btn"
         type="submit"
         class="btn btn-primary"
-        [disabled]="!canCommitUploads || uploading"
+        [disabled]="!canCommitUploads"
         (click)="commitImports()"
       >
         Import Annotations
@@ -134,7 +134,7 @@
       bawDatatableDefaults
       [bawVirtualDatatablePagination]="getEventModels"
     >
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="id">
+      <ngx-datatable-column [sortable]="false" prop="id">
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
@@ -150,7 +150,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="">
+      <ngx-datatable-column [sortable]="false" prop="">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
@@ -182,11 +182,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="startTimeSeconds"
-      >
+      <ngx-datatable-column [sortable]="false" prop="startTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
@@ -198,11 +194,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="endTimeSeconds"
-      >
+      <ngx-datatable-column [sortable]="false" prop="endTimeSeconds">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
@@ -214,11 +206,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="120"
-        prop="lowFrequencyHertz"
-      >
+      <ngx-datatable-column [sortable]="false" prop="lowFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
@@ -230,11 +218,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="120"
-        prop="highFrequencyHertz"
-      >
+      <ngx-datatable-column [sortable]="false" prop="highFrequencyHertz">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
@@ -246,7 +230,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="channel">
+      <ngx-datatable-column [sortable]="false" prop="channel">
         <ng-template let-column="column" ngx-datatable-header-template>
           Channel
         </ng-template>
@@ -258,7 +242,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="duration">
+      <ngx-datatable-column [sortable]="false" prop="duration">
         <ng-template let-column="column" ngx-datatable-header-template>
           Duration
         </ng-template>
@@ -270,11 +254,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column
-        [sortable]="false"
-        [maxWidth]="100"
-        prop="isReference"
-      >
+      <ngx-datatable-column [sortable]="false" prop="isReference">
         <ng-template let-column="column" ngx-datatable-header-template>
           Reference
         </ng-template>
@@ -286,7 +266,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [maxWidth]="100" prop="score">
+      <ngx-datatable-column [sortable]="false" prop="score">
         <ng-template let-column="column" ngx-datatable-header-template>
           Score
         </ng-template>
@@ -312,7 +292,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="errors">
+      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="errors">
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>
