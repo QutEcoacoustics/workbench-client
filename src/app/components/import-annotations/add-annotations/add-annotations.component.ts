@@ -13,7 +13,6 @@ import {
   first,
   forkJoin,
   map,
-  mergeMap,
   Observable,
   of,
   takeUntil,
@@ -45,6 +44,9 @@ import {
 import { annotationImportRoute } from "../import-annotations.routes";
 
 interface QueuedFile {
+  /** A file id that can be used in the table */
+  // id: number;
+
   file: Readonly<File>;
 
   model: Readonly<AudioEventImportFile>;
@@ -161,10 +163,10 @@ class AddAnnotationsComponent
     this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
   }
 
-  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
+  protected getEventModels = (): Observable<any> => {
     return this.importFiles$.pipe(
-      mergeMap((files: QueuedFile[]) => {
-        return files.map((file) => file.model.importedEvents);
+      map((files: QueuedFile[]) => {
+        return files.flatMap((file) => file.model.importedEvents) as any;
       })
     );
   };
