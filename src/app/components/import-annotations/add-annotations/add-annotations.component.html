@@ -261,7 +261,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           <ng-container *ngIf="value; else missingTemplate">
-            {{ value | number }}
+            {{ value }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>

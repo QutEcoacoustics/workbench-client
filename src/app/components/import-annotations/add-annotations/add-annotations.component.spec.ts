@@ -8,7 +8,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
 import { assertDatatableRow, assertDatatable } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { AUDIO_EVENT_IMPORT_FILE, TAG } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_IMPORT_FILE, AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
@@ -28,19 +28,28 @@ import { Router } from "@angular/router";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { UNPROCESSABLE_ENTITY } from "http-status";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { AudioRecording } from "@models/AudioRecording";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
   let spectator: Spectator<AddAnnotationsComponent>;
 
+  let injectorSpy: SpyObject<AssociationInjector>;
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
+  let recordingServiceSpy: SpyObject<AudioRecordingsService>;
+
   let notificationsSpy: SpyObject<ToastrService>;
   let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
+  let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
@@ -82,40 +91,48 @@ describe("AddAnnotationsComponent", () => {
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+    injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     spectator.component.audioEventImport = audioEventImport;
+    audioEventImport["injector"] = injectorSpy;
 
     fileImportSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
     tagServiceSpy = spectator.inject(TAG.token);
+    recordingServiceSpy = spectator.inject(AUDIO_RECORDING.token);
+
     notificationsSpy = spectator.inject(ToastrService);
     routerSpy = spectator.inject(Router);
 
     notificationsSpy.success.and.stub();
     notificationsSpy.error.and.stub();
 
+    mockImportResponse = new AudioEventImportFile(
+      generateAudioEventImportFile({
+        audioEventImportId: audioEventImport.id,
+      }),
+      injectorSpy
+    );
+
+    mockTagsResponse = modelData.randomArray(
+      1,
+      10,
+      () => new Tag(generateTag(), injectorSpy)
+    );
+
+    mockRecordingsResponse = new AudioRecording(generateAudioRecording(), injectorSpy);
+
     fileImportSpy.create.and.callFake(() => of(mockImportResponse));
     fileImportSpy.dryCreate.and.callFake(() => of(mockImportResponse));
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
+
+    recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
 
     spectator.detectChanges();
   }
 
   beforeEach(() => {
     audioEventImport = new AudioEventImport(generateAudioEventImport());
-
-    mockImportResponse = new AudioEventImportFile(
-      generateAudioEventImportFile({
-        audioEventImportId: audioEventImport.id,
-      })
-    );
-
-    mockTagsResponse = modelData.randomArray(
-      1,
-      10,
-      () => new Tag(generateTag())
-    );
-
     setup();
   });
 
