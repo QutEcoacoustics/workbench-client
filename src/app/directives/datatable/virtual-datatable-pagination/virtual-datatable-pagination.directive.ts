@@ -30,6 +30,7 @@ export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
   extends DatatablePaginationDirective<Model>
   implements OnChanges
 {
+  // TODO: This component should accept models that are not an AbstractModel
   @Input("bawVirtualDatatablePagination") public models: VirtualDatabaseModelInput<Model>;
 
   public ngOnChanges(): void {
@@ -51,7 +52,7 @@ export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
     return this.models().pipe(
       startWith([]),
       // we don't support sorting, but we can apply the paging filter
-      map((models) => {
+      map((models: Model[]) => {
         const start = (pageNumber - 1) * pageSize;
         const end = Math.min(start + pageSize, models.length);
 
