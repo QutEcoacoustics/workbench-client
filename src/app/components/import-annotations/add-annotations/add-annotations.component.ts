@@ -80,6 +80,14 @@ enum ImportState {
   SUCCESS,
   FAILURE,
   UPLOADING,
+
+  /**
+   * The final stage of the upload after the imports have been successfully
+   * committed to the database.
+   *
+   * Transitioning to this stage allows the page to navigate without warning.
+   */
+  COMMITTED,
 }
 
 const audioEventImportKey = "audioEventImport";
@@ -128,7 +136,10 @@ class AddAnnotationsComponent
   private extensionMappings = { csv: "text/csv" } as const;
 
   public get hasUnsavedChanges(): boolean {
-    return this.hasAdditionalTags || this.importState !== ImportState.NONE;
+    return (
+      this.importState !== ImportState.NONE &&
+      this.importState !== ImportState.COMMITTED
+    );
   }
 
   // a predicate to check if every import group is valid
@@ -156,10 +167,6 @@ class AddAnnotationsComponent
 
     // should never hit, but be safe
     return null;
-  }
-
-  private get hasAdditionalTags(): boolean {
-    return this.additionalTagIds.length > 0;
   }
 
   public ngOnInit(): void {
@@ -262,11 +269,23 @@ class AddAnnotationsComponent
       )
     );
 
+    const importedFiles = this.importFiles$.value.map((file) => file.file);
+
     const dataTransfer = new DataTransfer();
-    this.importFiles$.value.forEach((file) => dataTransfer.items.add(file.file));
+    for (const file of importedFiles) {
+      dataTransfer.items.add(file)
+    }
+
     this.fileInput.nativeElement.files = dataTransfer.files;
 
-    this.performDryRun();
+    if (importedFiles.length === 0) {
+      // we transition to the "none" state if there are no files to import
+      // this allows the user to navigate away from the page without a
+      // warning message
+      this.importState = ImportState.NONE;
+    } else {
+      this.performDryRun();
+    }
   }
 
   // sends all import groups to the api if there are no errors
@@ -279,8 +298,8 @@ class AddAnnotationsComponent
 
     this.importState = ImportState.UPLOADING;
 
-    const fileUploadObservables = this.importFiles$.value.map((model: QueuedFile) =>
-      this.commitFile(model)
+    const fileUploadObservables = this.importFiles$.value.map(
+      (model: QueuedFile) => this.commitFile(model)
     );
 
     forkJoin(fileUploadObservables)
@@ -293,6 +312,7 @@ class AddAnnotationsComponent
             return;
           }
 
+          this.importState = ImportState.COMMITTED;
           this.notifications.success("Successfully imported annotations");
 
           this.router.navigateByUrl(
