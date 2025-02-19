@@ -35,7 +35,6 @@ import {
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import {
   addAnnotationImportMenuItem,
@@ -237,7 +236,10 @@ class AddAnnotationsComponent
     this.performDryRun();
   }
 
-  protected updateFileAdditionalTagIds(fileModel: QueuedFile, tagIds: Id[]): void {
+  protected updateFileAdditionalTagIds(
+    fileModel: QueuedFile,
+    tagIds: Id[]
+  ): void {
     fileModel.additionalTagIds = tagIds;
     this.performDryRun();
   }
@@ -295,16 +297,7 @@ class AddAnnotationsComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (result: QueuedFile[]) => {
-          // if a file upload fails due to an internal server error, the
-          // model will be null.
-          // therefore, we need to filter out any null models.
-          // the user will receive a file error that the file could not be
-          // uploaded
-          const instantiatedResults = result.filter((model) =>
-            isInstantiated(model.model)
-          );
-
-          this.importFiles$.next(instantiatedResults);
+          this.importFiles$.next(result);
         },
         complete: () => {
           if (this.importState !== ImportState.FAILURE) {
@@ -333,7 +326,7 @@ class AddAnnotationsComponent
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
-        this.importState = ImportState.FAILURE
+        this.importState = ImportState.FAILURE;
 
         if (Array.isArray(error.data)) {
           return throwError(() => new Error("Expected a single model"));
