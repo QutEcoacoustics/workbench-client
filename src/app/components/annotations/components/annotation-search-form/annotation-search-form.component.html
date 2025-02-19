@@ -11,7 +11,7 @@
     id="tags-input"
     label="Tags of Interest"
     inputPlaceholder="All"
-    [searchCallback]="createSearchCallback(tagsApi, 'text')"
+    [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     [value]="searchParameters.tagModels"
     (modelChange)="updateSubModel('tags', $event)"

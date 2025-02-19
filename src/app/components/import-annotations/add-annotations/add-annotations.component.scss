@@ -1,4 +1,10 @@
 .file-list-item {
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+}
+
+.file-list-item-content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1em;
