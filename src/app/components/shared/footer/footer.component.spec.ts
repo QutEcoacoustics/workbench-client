@@ -2,6 +2,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import {
   contactUsMenuItem,
   creditsMenuItem,
+  dataSharingPolicyMenuItem,
   disclaimersMenuItem,
   ethicsMenuItem,
 } from "@components/about/about.menus";
@@ -47,6 +48,7 @@ describe("FooterComponent", () => {
       disclaimersMenuItem,
       creditsMenuItem,
       ethicsMenuItem,
+      dataSharingPolicyMenuItem,
       contactUsMenuItem,
     ].forEach((link, index) => {
       function getId() {
