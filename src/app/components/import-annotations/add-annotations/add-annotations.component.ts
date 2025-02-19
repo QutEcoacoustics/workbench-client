@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
@@ -25,7 +25,6 @@ import { AbstractModel } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastrService } from "ngx-toastr";
-import { NgForm } from "@angular/forms";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
@@ -92,7 +91,7 @@ class AddAnnotationsComponent
     super();
   }
 
-  @ViewChild(NgForm) private form!: NgForm;
+  @ViewChild("fileInput") private fileInput!: ElementRef<HTMLInputElement>;
 
   /**
    * A state machine representation that can be used to lock UI elements during
@@ -246,6 +245,11 @@ class AddAnnotationsComponent
 
   protected removeBufferedFile(model: QueuedFile): void {
     this.importFiles = this.importFiles.filter((file) => file !== model.file);
+
+    const dataTransfer = new DataTransfer();
+    this.importFiles.forEach(file => dataTransfer.items.add(file));
+    this.fileInput.nativeElement.files = dataTransfer.files;
+
     this.performDryRun();
   }
 
