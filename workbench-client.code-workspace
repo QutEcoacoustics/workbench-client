@@ -30,6 +30,7 @@
       "datatable",
       "ngneat",
       "pageable",
+      "xdescribe",
       "ncpus",
       "ngpus",
       "walltime"
