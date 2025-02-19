@@ -75,6 +75,12 @@ interface QueuedFile {
   additionalTagIds: Id[];
 }
 
+interface TableRow {
+  fileId: number;
+  eventId: number;
+  event: ImportedAudioEvent;
+}
+
 enum ImportState {
   NONE,
   SUCCESS,
@@ -180,10 +186,18 @@ class AddAnnotationsComponent
     this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
   }
 
-  protected getEventModels = (): Observable<ImportedAudioEvent[]> => {
+  protected getEventModels = (): Observable<TableRow[]> => {
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
-        return files.flatMap((file) => file.model?.importedEvents ?? []);
+        return files.flatMap((file, fileIndex: number) => {
+          return file.model?.importedEvents.map(
+            (event: ImportedAudioEvent, eventIndex: number) => ({
+              fileId: fileIndex + 1,
+              eventId: eventIndex + 1,
+              event,
+            })
+          );
+        });
       })
     );
   };
