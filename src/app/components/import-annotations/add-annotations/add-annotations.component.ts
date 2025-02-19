@@ -17,6 +17,7 @@ import {
   Observable,
   of,
   takeUntil,
+  throwError,
 } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
@@ -250,6 +251,11 @@ class AddAnnotationsComponent
       .subscribe({
         error: () => (this.importState = ImportState.FAILURE),
         complete: () => {
+          if (this.importState === ImportState.FAILURE) {
+            console.error("Failed to import annotations");
+            return;
+          }
+
           this.notifications.success("Successfully imported annotations");
 
           this.router.navigateByUrl(
@@ -285,8 +291,11 @@ class AddAnnotationsComponent
 
           this.importFiles$.next(instantiatedResults);
         },
-        error: () => (this.importState = ImportState.FAILURE),
-        complete: () => (this.importState = ImportState.SUCCESS),
+        complete: () => {
+          if (this.importState !== ImportState.FAILURE) {
+            this.importState = ImportState.SUCCESS;
+          }
+        },
       });
   }
 
@@ -309,9 +318,10 @@ class AddAnnotationsComponent
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
+        this.importState = ImportState.FAILURE
 
         if (Array.isArray(error.data)) {
-          throw new Error("Expected a single model");
+          return throwError(() => new Error("Expected a single model"));
         }
 
         const result = this.importFileToBufferedFile(file, error.data, errors);
