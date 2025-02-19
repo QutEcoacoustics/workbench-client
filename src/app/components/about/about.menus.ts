@@ -36,3 +36,10 @@ export const ethicsMenuItem = menuRoute({
   route: aboutRoute.add("ethics"),
   tooltip: () => "Ethics",
 });
+
+export const dataSharingPolicyMenuItem = menuRoute({
+  icon: ["fas", "file-shield"],
+  label: "Data Sharing",
+  route: aboutRoute.add("data_sharing_policy"),
+  tooltip: () => "Data Sharing Policy",
+});

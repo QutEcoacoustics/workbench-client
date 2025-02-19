@@ -17,6 +17,7 @@ export enum CMS {
   home = "",
   credits = "credits",
   dataUpload = "data_upload",
+  dataSharingPolicy = "data_sharing_policy",
   ethics = "ethics",
   privacy = "privacy",
 }

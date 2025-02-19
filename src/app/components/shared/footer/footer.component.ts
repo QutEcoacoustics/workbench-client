@@ -5,6 +5,7 @@ import { websiteStatusMenuItem } from "@components/website-status/website-status
 import {
   contactUsMenuItem,
   creditsMenuItem,
+  dataSharingPolicyMenuItem,
   disclaimersMenuItem,
   ethicsMenuItem,
 } from "../../about/about.menus";
@@ -52,6 +53,7 @@ export class FooterComponent implements OnInit {
     disclaimersMenuItem,
     creditsMenuItem,
     ethicsMenuItem,
+    dataSharingPolicyMenuItem,
     contactUsMenuItem,
   ];
 
