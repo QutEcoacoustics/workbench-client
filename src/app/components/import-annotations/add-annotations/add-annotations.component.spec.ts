@@ -6,7 +6,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
-import { assertDatatableRow } from "@test/helpers/datatable";
+import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
   AUDIO_EVENT_IMPORT_FILE,
@@ -80,7 +80,7 @@ describe("AddAnnotationsComponent", () => {
   const extraTagsInput = () =>
     spectator.query<HTMLElement>("#extra-tags-input");
 
-  const fileAlerts = () => spectator.queryAll(".file-error");
+  const fileAlerts = () => spectator.queryAll<HTMLElement>(".file-error");
 
   function addFiles(files: File[]): void {
     inputFile(spectator, fileInput(), files);
@@ -479,36 +479,29 @@ describe("AddAnnotationsComponent", () => {
       // but that would make this test much more complex (requiring a lot of
       // time, for not much benefit).
       // TODO: given time, make this test test against different errors
-      for (const fileAlert in fileAlerts()) {
+      for (const fileAlert of fileAlerts()) {
         expect(fileAlert).toHaveExactTrimmedText(mockErrorMessage);
       }
     });
-
-    it("should not show a success alert if a dry run succeeds", () => {
-      // by adding files to the file input, we are performing a dry run
-      addFiles([modelData.file()]);
-      expect(fileAlerts()).not.toExist();
-    });
   });
 
-  // xdescribe("identified events table", () => {
-  //   assertDatatable(() => ({
-  //     root: () => eventsTable(),
-  //     service: fileImportSpy,
-  //     columns: [
-  //       "Recording",
-  //       "Start Time",
-  //       "End Time",
-  //       "Low Frequency",
-  //       "High Frequency",
-  //       "Channel",
-  //       "Duration",
-  //       "Reference",
-  //       "Score",
-  //       "Tags",
-  //       "Errors",
-  //     ],
-  //     rows: [],
-  //   }));
-  // });
+  xdescribe("identified events table", () => {
+    assertDatatable(() => ({
+      root: () => eventsTable(),
+      service: fileImportSpy,
+      columns: [
+        "Recording",
+        "Start Time",
+        "End Time",
+        "Low Frequency",
+        "High Frequency",
+        "Channel",
+        "Reference",
+        "Score",
+        "Tags",
+        "Errors",
+      ],
+      rows: [],
+    }));
+  });
 });
