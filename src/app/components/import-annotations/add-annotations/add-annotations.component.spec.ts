@@ -40,7 +40,7 @@ import { fakeAsync } from "@angular/core/testing";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
-  let spectator: Spectator<AddAnnotationsComponent>;
+  let spec: Spectator<AddAnnotationsComponent>;
 
   let injectorSpy: SpyObject<AssociationInjector>;
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
@@ -71,43 +71,49 @@ describe("AddAnnotationsComponent", () => {
     },
   });
 
-  const fileInput = () => spectator.query<HTMLInputElement>("input[type=file]");
-  const eventsTable = () => spectator.query<HTMLTableElement>("ngx-datatable");
+  const fileInput = () => spec.query<HTMLInputElement>("input[type=file]");
+  const eventsTable = () => spec.query<HTMLTableElement>("ngx-datatable");
   const eventTableRows = () =>
     eventsTable().querySelectorAll<HTMLDivElement>("datatable-body-row");
   const importFilesButton = () =>
-    spectator.query<HTMLButtonElement>("#import-btn");
+    spec.query<HTMLButtonElement>("#import-btn");
   const extraTagsInput = () =>
-    spectator.query<HTMLElement>("#extra-tags-input");
+    spec.query<HTMLElement>("#extra-tags-input");
 
-  const fileAlerts = () => spectator.queryAll<HTMLElement>(".file-error");
+  const fileListItems = () => spec.queryAll<HTMLLIElement>(".file-list-item");
+  const fileAlerts = () => spec.queryAll<HTMLElement>(".file-error");
+  const removeFileButtons = () => spec.queryAll<HTMLButtonElement>(".remove-file-btn");
 
   function addFiles(files: File[]): void {
-    inputFile(spectator, fileInput(), files);
+    inputFile(spec, fileInput(), files);
   }
 
   function addExtraTag(tag: string): void {
     const target = extraTagsInput();
-    selectFromTypeahead(spectator, target, tag);
+    selectFromTypeahead(spec, target, tag);
   }
 
   function commitImport(): void {
-    clickButton(spectator, importFilesButton());
+    clickButton(spec, importFilesButton());
+  }
+
+  function removeFile(index: number): void {
+    clickButton(spec, removeFileButtons()[index]);
   }
 
   function setup(): void {
-    spectator = createComponent({ detectChanges: false });
-    injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
+    spec = createComponent({ detectChanges: false });
+    injectorSpy = spec.inject(ASSOCIATION_INJECTOR);
 
-    spectator.component.audioEventImport = audioEventImport;
+    spec.component.audioEventImport = audioEventImport;
     audioEventImport["injector"] = injectorSpy;
 
-    fileImportSpy = spectator.inject(AUDIO_EVENT_IMPORT_FILE.token);
-    tagServiceSpy = spectator.inject(TAG.token);
-    recordingServiceSpy = spectator.inject(AUDIO_RECORDING.token);
+    fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    tagServiceSpy = spec.inject(TAG.token);
+    recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
 
-    notificationsSpy = spectator.inject(ToastrService);
-    routerSpy = spectator.inject(Router);
+    notificationsSpy = spec.inject(ToastrService);
+    routerSpy = spec.inject(Router);
 
     notificationsSpy.success.and.stub();
     notificationsSpy.error.and.stub();
@@ -137,7 +143,7 @@ describe("AddAnnotationsComponent", () => {
 
     recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
 
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   beforeEach(() => {
@@ -151,7 +157,7 @@ describe("AddAnnotationsComponent", () => {
   );
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AddAnnotationsComponent);
+    expect(spec.component).toBeInstanceOf(AddAnnotationsComponent);
   });
 
   it("should disable the import button if no files are uploaded", () => {
@@ -212,8 +218,41 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
-  describe("file input", () => {
-    it("should remove files from the file input if the remove button is clicked", () => {});
+  describe("removing files", () => {
+    it("should remove files from the file input if the remove button is clicked", () => {
+      addFiles([modelData.file(), modelData.file()]);
+
+      removeFile(0);
+
+      const expectedFileCount = 1;
+      expect(fileInput().files).toHaveLength(expectedFileCount);
+      expect(fileListItems()).toHaveLength(expectedFileCount);
+    });
+
+    it("should perform a dry run when a file is removed", () => {
+      const testedFiles = [modelData.file(), modelData.file()];
+      addFiles(testedFiles);
+
+      fileImportSpy.dryCreate.calls.reset();
+      removeFile(0);
+
+      expect(fileImportSpy.dryCreate).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not perform a dry run if all files are removed", () => {
+      addFiles([modelData.file()]);
+
+      fileImportSpy.dryCreate.calls.reset();
+      removeFile(0);
+
+      expect(fileImportSpy.dryCreate).not.toHaveBeenCalled();
+
+      // we do expect that all of the identified events and files have been
+      // removed from the page
+      expect(eventTableRows()).toHaveLength(0);
+      expect(fileListItems()).toHaveLength(0);
+      expect(fileInput().files).toHaveLength(0);
+    });
   });
 
   // the navigation warning depends on the UnsavedInputGuard
@@ -225,18 +264,18 @@ describe("AddAnnotationsComponent", () => {
     it("should warn if the navigates without committing an uploaded file", () => {
       addFiles([modelData.file()]);
 
-      expect(spectator.component.hasUnsavedChanges).toBeTrue();
+      expect(spec.component.hasUnsavedChanges).toBeTrue();
     });
 
     it("should not warn if the user did not upload any files", () => {
-      expect(spectator.component.hasUnsavedChanges).toBeFalse();
+      expect(spec.component.hasUnsavedChanges).toBeFalse();
     });
 
     it("should not warn if the user has committed their files", () => {
       addFiles([modelData.file()]);
       commitImport();
 
-      expect(spectator.component.hasUnsavedChanges).toBeFalse();
+      expect(spec.component.hasUnsavedChanges).toBeFalse();
     });
 
     it("should warn if the user fails to commit their files", () => {
@@ -259,7 +298,7 @@ describe("AddAnnotationsComponent", () => {
 
       commitImport();
 
-      expect(spectator.component.hasUnsavedChanges).toBeTrue();
+      expect(spec.component.hasUnsavedChanges).toBeTrue();
     });
   });
 
@@ -448,7 +487,27 @@ describe("AddAnnotationsComponent", () => {
     // However, because we support more descriptive error messages in the
     // identified events table, we do not want to raise an error notification
     // if a dry run fails, and instead show the errors in the table.
-    it("should not raise error notifications if a dry run fails", () => {});
+    it("should not raise error notifications if a dry run fails", () => {
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        mockImportResponse as any,
+        { file: "validation failed" }
+      );
+
+      fileImportSpy.dryCreate.and.callThrough();
+      fileImportSpy.dryCreate.andCallFake(() =>
+        throwError(() => mockImportResponse)
+      );
+
+      // by adding files, we expect that the website will perform a dry run
+      // and therefore, we expect that the api will return an error
+      // however, we expect that he error will not be shown as a notification
+      addFiles([modelData.file()]);
+
+      expect(notificationsSpy.error).not.toHaveBeenCalledTimes(1);
+      expect(notificationsSpy.error).not.toHaveBeenCalled();
+    });
 
     // We have error alerts for files because sometimes the server will fail
     // a dry run for reasons other than contents of the file.
