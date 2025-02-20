@@ -28,6 +28,7 @@
                 <button
                   class="remove-btn btn btn-sm btn-outline-danger me-1"
                   (click)="removeBufferedFile(fileModel)"
+                  aria-label="Remove file"
                 >
                   <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
                 </button>
@@ -39,7 +40,7 @@
                 [errors]="fileModel.errors"
                 [errorStyle]="errorCardStyles.Inline"
                 [showSuccessState]="true"
-                class="file-errors"
+                class="file-error"
               >
                 <!--
                   Because we are inside the file list, there is no need to
@@ -190,7 +191,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.startTimeSeconds; else missingTemplate">
+          <ng-container *ngIf="value.startTimeSeconds | isInstantiated; else missingTemplate">
             {{ value.startTimeSeconds | number }}
           </ng-container>
         </ng-template>
@@ -202,7 +203,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.endTimeSeconds; else missingTemplate">
+          <ng-container *ngIf="value.endTimeSeconds | isInstantiated; else missingTemplate">
             {{ value.endTimeSeconds | number }}
           </ng-container>
         </ng-template>
@@ -214,7 +215,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.lowFrequencyHertz; else missingTemplate">
+          <ng-container *ngIf="value.lowFrequencyHertz | isInstantiated; else missingTemplate">
             {{ value.lowFrequencyHertz | number }}
           </ng-container>
         </ng-template>
@@ -226,7 +227,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.highFrequencyHertz; else missingTemplate">
+          <ng-container *ngIf="value.highFrequencyHertz | isInstantiated; else missingTemplate">
             {{ value.highFrequencyHertz | number }}
           </ng-container>
         </ng-template>
@@ -238,7 +239,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.channel; else missingTemplate">
+          <ng-container *ngIf="value.channel | isInstantiated; else missingTemplate">
             {{ value.channel | number }}
           </ng-container>
         </ng-template>
@@ -250,8 +251,8 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.duration; else missingTemplate">
-            {{ value.duration | number }}
+          <ng-container *ngIf="value.durationSeconds | isInstantiated; else missingTemplate">
+            {{ value.durationSeconds | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
@@ -262,8 +263,8 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.isReference; else missingTemplate">
-            {{ value.isReference }}
+          <ng-container *ngIf="value.isReference | isInstantiated; else missingTemplate">
+            {{ value.isReference ? 'Yes' : 'No' }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>

@@ -7,10 +7,12 @@ import { TimezonePipe } from "./timezone/timezone.pipe";
 import { WithLoadingPipe } from "./with-loading/with-loading.pipe";
 import { TimePipe } from "./time/time.pipe";
 import { DateTimePipe } from "./date/date.pipe";
+import { isInstantiatedPipe } from "./is-instantiated/is-instantiated.pipe";
 
 const pipes = [
   IsGhostUserPipe,
   IsUnresolvedPipe,
+  isInstantiatedPipe,
   SafePipe,
   TimezonePipe,
   WithLoadingPipe,

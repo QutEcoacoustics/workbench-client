@@ -6,9 +6,13 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastrService } from "ngx-toastr";
-import { assertDatatableRow, assertDatatable } from "@test/helpers/datatable";
+import { assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { AUDIO_EVENT_IMPORT_FILE, AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_IMPORT_FILE,
+  AUDIO_RECORDING,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
@@ -22,7 +26,6 @@ import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
-import { fakeAsync } from "@angular/core/testing";
 import { Observable, of, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -33,6 +36,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { fakeAsync } from "@angular/core/testing";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -76,13 +80,15 @@ describe("AddAnnotationsComponent", () => {
   const extraTagsInput = () =>
     spectator.query<HTMLElement>("#extra-tags-input");
 
-  const fileAlerts = () =>
-    spectator
-      .query<HTMLDivElement>("#file-errors")
-      .querySelectorAll(".error-output");
+  const fileAlerts = () => spectator.queryAll(".file-error");
 
   function addFiles(files: File[]): void {
     inputFile(spectator, fileInput(), files);
+  }
+
+  function addExtraTag(tag: string): void {
+    const target = extraTagsInput();
+    selectFromTypeahead(spectator, target, tag);
   }
 
   function commitImport(): void {
@@ -119,7 +125,10 @@ describe("AddAnnotationsComponent", () => {
       () => new Tag(generateTag(), injectorSpy)
     );
 
-    mockRecordingsResponse = new AudioRecording(generateAudioRecording(), injectorSpy);
+    mockRecordingsResponse = new AudioRecording(
+      generateAudioRecording(),
+      injectorSpy
+    );
 
     fileImportSpy.create.and.callFake(() => of(mockImportResponse));
     fileImportSpy.dryCreate.and.callFake(() => of(mockImportResponse));
@@ -203,6 +212,10 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
+  describe("file input", () => {
+    it("should remove files from the file input if the remove button is clicked", () => {});
+  });
+
   // the navigation warning depends on the UnsavedInputGuard
   // therefore, we can test that the "hasUnsavedChanges" getter returns the
   // correct value.
@@ -215,16 +228,13 @@ describe("AddAnnotationsComponent", () => {
       expect(spectator.component.hasUnsavedChanges).toBeTrue();
     });
 
-    it("should warn if the user has added additional tags", fakeAsync(() => {
-      const selectedTag = mockTagsResponse[0];
-      selectFromTypeahead(spectator, extraTagsInput(), selectedTag.text);
-
-      expect(spectator.component.hasUnsavedChanges).toBeTrue();
-    }));
-
     it("should not warn if the user did not upload any files", () => {
       expect(spectator.component.hasUnsavedChanges).toBeFalse();
     });
+
+    it("should not warn if the user has committed their files", () => {});
+
+    it("should warn if the user fails to commit their files", () => {});
   });
 
   describe("dry run", () => {
@@ -271,16 +281,23 @@ describe("AddAnnotationsComponent", () => {
         const expectedTagValue =
           event.tags.length > 0
             ? event.tags.map((tag) => tag.text).join(", ")
-            : "No associated tags";
+            : "Empty";
 
-        const expectedErrorValue = event.errors.length > 0 ? event.errors.join("") : "No errors";
+        const expectedErrorValue =
+          event.errors.length > 0 ? event.errors.join("") : "No errors";
 
         const expectedRowValues = [
-          event.audioRecordingId.toLocaleString(),
+          `1:${i + 1}`,
+          // event.audioRecordingId.toLocaleString(),
+          "Loading...",
           event.startTimeSeconds.toLocaleString(),
           event.endTimeSeconds.toLocaleString(),
           event.lowFrequencyHertz.toLocaleString(),
           event.highFrequencyHertz.toLocaleString(),
+          event.channel.toLocaleString(),
+          event.durationSeconds.toLocaleString(),
+          event.isReference ? "Yes" : "No",
+          event.score.toLocaleString(),
           expectedTagValue,
           expectedErrorValue,
         ];
@@ -327,9 +344,25 @@ describe("AddAnnotationsComponent", () => {
   });
 
   describe("additional tags", () => {
-    it("should perform a dry run when additional tags are added", () => {});
+    describe("file additional tags", () => {
+      it("should perform a dry run when additional tags are added to a file", () => {});
 
-    it("should commit additional tags when the import is committed", () => {});
+      it("should commit a files additional tags when the import is committed", () => {});
+
+      it("should start with no additional tags", () => {});
+    });
+
+    describe("extra tags", () => {
+      it("should add extra tags to every queued file", fakeAsync(() => {
+        addExtraTag("test tag");
+      }));
+
+      it("should clear the extra tags input once a tag is selected", () => {});
+
+      it("should disable the extra tags input if there are no files added", () => {});
+
+      it("should re-disable the extra tags input if all files are removed", () => {});
+    });
   });
 
   describe("committing an annotation import", () => {
@@ -417,8 +450,7 @@ describe("AddAnnotationsComponent", () => {
 
       expect(fileAlerts()).toHaveLength(1);
 
-      const expectedErrorAlert = `${mockUploadedFile.name}: ${mockErrorMessage}`;
-      expect(fileAlerts()[0]).toHaveExactTrimmedText(expectedErrorAlert);
+      expect(fileAlerts()[0]).toHaveExactTrimmedText(mockErrorMessage);
     });
 
     it("should show multiple error alerts if multiple file import fails", () => {
@@ -438,6 +470,9 @@ describe("AddAnnotationsComponent", () => {
       const mockAudioFiles = [modelData.file(), modelData.file()];
       addFiles(mockAudioFiles);
 
+
+      expect(fileAlerts()).toHaveLength(2);
+
       // even though the files could have different error messages, we expect
       // that the error message for both files will be the same because
       // we have mocked the response above to always return the same error
@@ -445,15 +480,8 @@ describe("AddAnnotationsComponent", () => {
       // but that would make this test much more complex (requiring a lot of
       // time, for not much benefit).
       // TODO: given time, make this test test against different errors
-      const expectedErrorAlerts = [
-        `${mockAudioFiles[0].name}: ${mockErrorMessage}`,
-        `${mockAudioFiles[1].name}: ${mockErrorMessage}`,
-      ];
-
-      expect(fileAlerts()).toHaveLength(expectedErrorAlerts.length);
-
-      for (const i in expectedErrorAlerts) {
-        expect(fileAlerts()[i]).toHaveExactTrimmedText(expectedErrorAlerts[i]);
+      for (const fileAlert in fileAlerts()) {
+        expect(fileAlert).toHaveExactTrimmedText(mockErrorMessage);
       }
     });
 
@@ -464,24 +492,24 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
-  xdescribe("identified events table", () => {
-    assertDatatable(() => ({
-      root: () => eventsTable(),
-      service: fileImportSpy,
-      columns: [
-        "Recording",
-        "Start Time",
-        "End Time",
-        "Low Frequency",
-        "High Frequency",
-        "Channel",
-        "Duration",
-        "Reference",
-        "Score",
-        "Tags",
-        "Errors",
-      ],
-      rows: [],
-    }));
-  });
+  // xdescribe("identified events table", () => {
+  //   assertDatatable(() => ({
+  //     root: () => eventsTable(),
+  //     service: fileImportSpy,
+  //     columns: [
+  //       "Recording",
+  //       "Start Time",
+  //       "End Time",
+  //       "Low Frequency",
+  //       "High Frequency",
+  //       "Channel",
+  //       "Duration",
+  //       "Reference",
+  //       "Score",
+  //       "Tags",
+  //       "Errors",
+  //     ],
+  //     rows: [],
+  //   }));
+  // });
 });

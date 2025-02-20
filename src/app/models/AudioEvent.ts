@@ -35,6 +35,7 @@ export interface IAudioEvent extends HasAllUsers {
   endTimeSeconds?: number;
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
+  durationSeconds?: number;
   isReference?: boolean;
   score?: number;
   taggings?: ITagging[] | Tagging[];
@@ -63,6 +64,7 @@ export class AudioEvent
   public readonly highFrequencyHertz?: number;
   @bawPersistAttr()
   public readonly isReference?: boolean;
+  public readonly durationSeconds?: number;
   public readonly score?: number;
   public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
