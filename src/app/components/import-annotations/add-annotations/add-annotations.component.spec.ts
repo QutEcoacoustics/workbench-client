@@ -617,11 +617,11 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
-  xdescribe("identified events table", () => {
+  describe("identified events table", () => {
     assertDatatable(() => ({
       root: () => eventsTable(),
-      service: fileImportSpy,
       columns: [
+        "ID",
         "Recording",
         "Start Time",
         "End Time",

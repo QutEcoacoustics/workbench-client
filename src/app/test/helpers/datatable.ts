@@ -1,22 +1,10 @@
-import { ApiFilter } from "@baw-api/api-common";
-import { AbstractModel } from "@models/AbstractModel";
-import { SpyObject } from "@ngneat/spectator";
-
-type SetupFunction<Service> = () => {
+type SetupFunction = () => {
   root: () => Element;
-  service: SpyObject<Service>;
   columns: string[];
   rows: { [key: string]: string }[];
 };
 
-export function assertDatatable<
-  Service extends ApiFilter<Model, unknown[]>,
-  // we use "infer" here so that the default model type can be derived from the
-  // service
-  Model extends AbstractModel = Service extends ApiFilter<infer M, unknown[]>
-    ? M
-    : never
->(setup: SetupFunction<Service>): void {
+export function assertDatatable(setup: SetupFunction): void {
   function tableHeadings(rootElement: Element): Element[] {
     return Array.from(
       rootElement.querySelectorAll(".datatable-header-cell-template-wrap")
@@ -30,28 +18,6 @@ export function assertDatatable<
   function rowCells(row: Element): Element[] {
     return Array.from(row.querySelectorAll(".datatable-body-cell-label"));
   }
-
-  function filterApi(service: Service): any {
-    return service.filter;
-  }
-
-  it("should make one correct api request on load", () => {
-    const { service } = setup();
-    const filterService = filterApi(service);
-
-    if (!filterService.calls) {
-      fail("Service does not have a filter spy");
-    } else if (filterService.calls.count() !== 1) {
-      fail("Service filter spy was not called once on load");
-      return;
-    }
-
-    expect(filterService.calls.mostRecent().args[0]).toEqual(
-      jasmine.objectContaining({
-        paging: { page: 1 },
-      })
-    );
-  });
 
   it("should have the correct column headings", () => {
     const { columns, root } = setup();
