@@ -275,7 +275,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.score; else missingTemplate">
+          <ng-container *ngIf="value.score | isInstantiated; else missingTemplate">
             {{ value.score | number }}
           </ng-container>
         </ng-template>
