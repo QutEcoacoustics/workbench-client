@@ -295,7 +295,6 @@ describe("AddAnnotationsComponent", () => {
           event.lowFrequencyHertz.toLocaleString(),
           event.highFrequencyHertz.toLocaleString(),
           event.channel.toLocaleString(),
-          event.durationSeconds.toLocaleString(),
           event.isReference ? "Yes" : "No",
           event.score.toLocaleString(),
           expectedTagValue,
