@@ -4,6 +4,7 @@ import {
   Inject,
   OnInit,
   ViewChild,
+  ViewChildren,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -42,6 +43,7 @@ import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -117,7 +119,11 @@ class AddAnnotationsComponent
     super();
   }
 
-  @ViewChild("fileInput") private fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild("fileInput")
+  private fileInput!: ElementRef<HTMLInputElement>;
+
+  @ViewChildren("additionalFileTagInput")
+  private additionalFileTagInputs!: TypeaheadInputComponent[];
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -269,15 +275,27 @@ class AddAnnotationsComponent
 
   // uses a reference to the ImportGroup object and update the additional tag
   // ids property
-  protected updateExtraTags(additionalTagIds: Id[]): void {
+  protected updateExtraTags(
+    extraTags: object[],
+    host: TypeaheadInputComponent
+  ): void {
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
     // tags are applied
     this.importState = ImportState.UPLOADING;
 
-    for (const file of this.importFiles$.value) {
-      file.additionalTagIds = additionalTagIds;
+    const additionalTagInputs = this.additionalFileTagInputs;
+    for (const input of additionalTagInputs) {
+      input.value.push(...extraTags);
     }
+
+    // for (const file of this.importFiles$.value) {
+    //   file.additionalTagIds = additionalTagIds;
+    // }
+
+    this.performDryRun();
+
+    host.value = [];
   }
 
   protected updateFileAdditionalTagIds(model: QueuedFile, tagIds: Id[]): void {
