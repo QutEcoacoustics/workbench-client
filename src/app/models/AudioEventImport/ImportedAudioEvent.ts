@@ -17,32 +17,35 @@ export interface IImportedAudioEvent extends IAudioEvent {
   tags?: ITag[];
 }
 
+// TODO: this should probably extend AudioEvent
 export class ImportedAudioEvent
   extends AbstractModel<IImportedAudioEvent>
   implements IImportedAudioEvent
 {
   public readonly king = "Imported Audio Event";
   @bawPersistAttr()
-  public audioRecordingId?: Id;
+  public readonly audioRecordingId?: Id;
   @bawPersistAttr()
-  public channel?: number;
+  public readonly channel?: number;
   @bawPersistAttr()
-  public startTimeSeconds?: number;
+  public readonly startTimeSeconds?: number;
   @bawPersistAttr()
-  public endTimeSeconds?: number;
+  public readonly endTimeSeconds?: number;
   @bawPersistAttr()
-  public lowFrequencyHertz?: number;
+  public readonly lowFrequencyHertz?: number;
   @bawPersistAttr()
-  public highFrequencyHertz?: number;
+  public readonly highFrequencyHertz?: number;
   @bawPersistAttr()
-  public audioEventImportId?: Id;
+  public readonly audioEventImportId?: Id;
   @bawPersistAttr()
-  public isReference?: boolean;
-  public creatorId?: Id;
-  public context?: Record<string, string | null>;
-  public errors?: EventImportError[];
+  public readonly isReference?: boolean;
+  public readonly durationSeconds?: number;
+  public readonly creatorId?: Id;
+  public readonly score?: number;
+  public readonly context?: Record<string, string | null>;
+  public readonly errors?: EventImportError[];
   @bawSubModelCollection<ImportedAudioEvent, Tag>(Tag)
-  public tags?: Tag[];
+  public readonly tags?: Tag[];
 
   // Associations
   @hasOne<ImportedAudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")

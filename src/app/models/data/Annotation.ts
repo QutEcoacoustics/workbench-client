@@ -20,26 +20,27 @@ export interface IAnnotation extends Required<IAudioEvent> {
 //
 // this model is created from the AnnotationService and MediaService's
 export class Annotation extends AbstractModelWithoutId implements IAnnotation {
-  public id: number;
-  public audioRecordingId: number;
-  public startTimeSeconds: number;
-  public endTimeSeconds: number;
-  public lowFrequencyHertz: number;
-  public highFrequencyHertz: number;
-  public isReference: boolean;
-  public taggings: Tagging[] | ITagging[];
-  public provenanceId: number;
-  public creatorId: number;
-  public createdAt: string | DateTimeTimezone;
-  public updaterId: number;
-  public updatedAt: string | DateTimeTimezone;
-  public deleterId: number;
-  public deletedAt: string | DateTimeTimezone;
-  public tags: ITag[];
-  public audioRecording: AudioRecording;
-  public score: number;
-  public channel: number;
-  public audioEventImportFileId: number;
+  public readonly id: number;
+  public readonly audioRecordingId: number;
+  public readonly startTimeSeconds: number;
+  public readonly endTimeSeconds: number;
+  public readonly lowFrequencyHertz: number;
+  public readonly highFrequencyHertz: number;
+  public readonly isReference: boolean;
+  public readonly taggings: Tagging[] | ITagging[];
+  public readonly provenanceId: number;
+  public readonly creatorId: number;
+  public readonly createdAt: string | DateTimeTimezone;
+  public readonly updaterId: number;
+  public readonly updatedAt: string | DateTimeTimezone;
+  public readonly deleterId: number;
+  public readonly deletedAt: string | DateTimeTimezone;
+  public readonly tags: ITag[];
+  public readonly audioRecording: AudioRecording;
+  public readonly score: number;
+  public readonly durationSeconds: number;
+  public readonly channel: number;
+  public readonly audioEventImportFileId: number;
 
   public get mediaService(): MediaService {
     return this.injector.get(MEDIA.token);
