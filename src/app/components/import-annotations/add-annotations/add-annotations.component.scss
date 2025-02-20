@@ -27,12 +27,3 @@
 .additional-file-tags {
   width: 100%;
 }
-
-.missing-field-warning {
-  display: flex;
-  align-items: center;
-
-  // we set fit-content so that the box model that the tooltip is attached to
-  // is the same size as the text and will be directly above the text
-  width: fit-content;
-}

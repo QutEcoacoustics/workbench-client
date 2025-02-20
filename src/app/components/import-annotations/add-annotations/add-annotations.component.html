@@ -174,13 +174,13 @@
             </a>
           </ng-template>
           } @else {
-          <strong
-            class="d-flex align-items-center text-danger font-semibold"
-            ngbTooltip="This field contains an error. See errors for more information."
-          >
-            <fa-icon [icon]="['fas', 'xmark-circle']" class="me-1"></fa-icon>
-            <span class="text-decoration-underline">Error</span>
-          </strong>
+            <!--
+              If there are errors about the associated recording column, we
+              can't have a link to the recording.
+              We therefore show the recording id as plain text so that the user
+              can see what the error is referring to.
+             -->
+            {{ value.audioRecordingId }}
           }
         </ng-template>
       </ngx-datatable-column>
