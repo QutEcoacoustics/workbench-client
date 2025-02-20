@@ -53,6 +53,7 @@
 
               <div>
                 <baw-typeahead-input
+                  #additionalFileTagInput
                   class="additional-file-tags"
                   inputPlaceholder="Add tags"
                   [searchCallback]="tagsApi.typeaheadCallback()"
@@ -77,6 +78,7 @@
 
       <div class="mt-2">
         <baw-typeahead-input
+          #extraTagsInput
           id="extra-tags-input"
           label="Extra Tags"
           [inputPlaceholder]="'search for tags by name'"
@@ -84,7 +86,7 @@
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="uploading"
           (modelChange)="
-            updateExtraTags(getIdsFromAbstractModelArray($event))
+            updateExtraTags($event, extraTagsInput)
           "
         ></baw-typeahead-input>
 
@@ -212,7 +214,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.lowFrequencyHertz else missingTemplate">
+          <ng-container *ngIf="value.lowFrequencyHertz; else missingTemplate">
             {{ value.lowFrequencyHertz | number }}
           </ng-container>
         </ng-template>
@@ -260,7 +262,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.isReference else missingTemplate">
+          <ng-container *ngIf="value.isReference; else missingTemplate">
             {{ value.isReference }}
           </ng-container>
         </ng-template>
