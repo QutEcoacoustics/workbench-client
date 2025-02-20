@@ -75,21 +75,22 @@ describe("AddAnnotationsComponent", () => {
   const eventsTable = () => spec.query<HTMLTableElement>("ngx-datatable");
   const eventTableRows = () =>
     eventsTable().querySelectorAll<HTMLDivElement>("datatable-body-row");
-  const importFilesButton = () =>
-    spec.query<HTMLButtonElement>("#import-btn");
-  const extraTagsInput = () =>
-    spec.query<HTMLElement>("#extra-tags-input");
+  const importFilesButton = () => spec.query<HTMLButtonElement>("#import-btn");
 
   const fileListItems = () => spec.queryAll<HTMLLIElement>(".file-list-item");
   const fileAlerts = () => spec.queryAll<HTMLElement>(".file-error");
-  const removeFileButtons = () => spec.queryAll<HTMLButtonElement>(".remove-file-btn");
+  const removeFileButtons = () =>
+    spec.queryAll<HTMLButtonElement>(".remove-file-btn");
+  const additionalFileTagInputs = () => spec.queryAll(".additional-file-tags");
+  const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
+    spec.query("#extra-tags-input");
 
   function addFiles(files: File[]): void {
     inputFile(spec, fileInput(), files);
   }
 
   function addExtraTag(tag: string): void {
-    const target = extraTagsInput();
+    const target = extraTagsTypeahead();
     selectFromTypeahead(spec, target, tag);
   }
 
@@ -99,6 +100,17 @@ describe("AddAnnotationsComponent", () => {
 
   function removeFile(index: number): void {
     clickButton(spec, removeFileButtons()[index]);
+  }
+
+  function addTagToFile(index: number, tag: string): void {
+    const target = additionalFileTagInputs()[index];
+    selectFromTypeahead(spec, target, tag);
+  }
+
+  function filesAdditionalTags(index: number): string[] {
+    const tagInput = additionalFileTagInputs()[index];
+    const itemPills = tagInput.querySelectorAll(".item-pill");
+    return Array.from(itemPills).map((item) => item.textContent.trim());
   }
 
   function setup(): void {
@@ -140,6 +152,7 @@ describe("AddAnnotationsComponent", () => {
     fileImportSpy.dryCreate.and.callFake(() => of(mockImportResponse));
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
+    tagServiceSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
 
     recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
 
@@ -288,11 +301,7 @@ describe("AddAnnotationsComponent", () => {
       fileImportSpy.create.andCallFake(() =>
         throwError(
           () =>
-            new BawApiError(
-              UNPROCESSABLE_ENTITY,
-              "Internal Server Error",
-              null
-            )
+            new BawApiError(UNPROCESSABLE_ENTITY, "Internal Server Error", null)
         )
       );
 
@@ -407,25 +416,64 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
-  xdescribe("additional tags", () => {
+  describe("additional tags", () => {
     describe("file additional tags", () => {
-      it("should perform a dry run when additional tags are added to a file", () => {});
+      it("should perform a dry run when additional tags are added to a file", fakeAsync(() => {
+        addFiles([modelData.file()]);
 
-      it("should commit a files additional tags when the import is committed", () => {});
+        fileImportSpy.dryCreate.calls.reset();
 
-      it("should start with no additional tags", () => {});
+        const testedTag = mockTagsResponse[0];
+        addTagToFile(0, testedTag.text);
+
+        expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
+          jasmine.objectContaining({
+             additionalTagIds: [testedTag.id],
+          }),
+          audioEventImport
+        );
+      }));
+
+      it("should commit a files additional tags when the import is committed", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        const testedTag = mockTagsResponse[0];
+        addTagToFile(0, testedTag.text);
+
+        commitImport();
+
+        expect(fileImportSpy.create).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            additionalTagIds: [testedTag.id],
+          }),
+          audioEventImport
+        );
+      }));
+
+      it("should start with no additional tags", () => {
+        addFiles([modelData.file(), modelData.file()]);
+        expect(filesAdditionalTags(0)).toHaveLength(0);
+      });
     });
 
     describe("extra tags", () => {
       it("should add extra tags to every queued file", fakeAsync(() => {
-        addExtraTag("test tag");
+        addFiles([modelData.file(), modelData.file()]);
+
+        const testedTag = mockTagsResponse[0];
+        addExtraTag(testedTag.text);
+
+        expect(filesAdditionalTags(0)).toContain(testedTag.text);
       }));
 
-      it("should clear the extra tags input once a tag is selected", () => {});
+      it("should clear the extra tags input once a tag is selected", fakeAsync(() => {
+        addFiles([modelData.file(), modelData.file()]);
 
-      it("should disable the extra tags input if there are no files added", () => {});
+        const testedTag = mockTagsResponse[0];
+        addExtraTag(testedTag.text);
 
-      it("should re-disable the extra tags input if all files are removed", () => {});
+        expect(extraTagsTypeahead().value).toHaveLength(0);
+      }));
     });
   });
 

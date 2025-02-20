@@ -85,7 +85,7 @@
           [inputPlaceholder]="'search for tags by name'"
           [searchCallback]="tagsApi.typeaheadCallback()"
           [resultTemplate]="tagsTypeaheadTemplate"
-          [inputDisabled]="uploading"
+          [inputDisabled]="(hasFiles() | async) === false"
           (modelChange)="
             updateExtraTags($event, extraTagsInput)
           "

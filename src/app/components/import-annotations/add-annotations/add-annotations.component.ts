@@ -248,7 +248,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [])
+      this.importFileToBufferedFile(file, null, [], [])
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -284,14 +284,16 @@ class AddAnnotationsComponent
     // tags are applied
     this.importState = ImportState.UPLOADING;
 
+    const extraTagIds = this.getIdsFromAbstractModelArray(extraTags);
+
     const additionalTagInputs = this.additionalFileTagInputs;
     for (const input of additionalTagInputs) {
       input.value.push(...extraTags);
     }
 
-    // for (const file of this.importFiles$.value) {
-    //   file.additionalTagIds = additionalTagIds;
-    // }
+    for (const file of this.importFiles$.value) {
+      file.additionalTagIds.push(...extraTagIds);
+    }
 
     this.performDryRun();
 
@@ -397,7 +399,7 @@ class AddAnnotationsComponent
       first(),
       map(
         (model: AudioEventImportFile): QueuedFile =>
-          this.importFileToBufferedFile(file, model, [])
+          this.importFileToBufferedFile(file, model, [], queueModel.additionalTagIds)
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
@@ -407,7 +409,7 @@ class AddAnnotationsComponent
           return throwError(() => new Error("Expected a single model"));
         }
 
-        const result = this.importFileToBufferedFile(file, error.data, errors);
+        const result = this.importFileToBufferedFile(file, error.data, errors, queueModel.additionalTagIds);
         return of(result);
       })
     );
@@ -429,10 +431,11 @@ class AddAnnotationsComponent
   private importFileToBufferedFile(
     file: File,
     model: AudioEventImportFile,
-    errors: EventImportError[]
+    errors: EventImportError[],
+    additionalTagIds: Id[]
   ): QueuedFile {
     return {
-      additionalTagIds: [],
+      additionalTagIds,
       file,
       model,
       errors,
