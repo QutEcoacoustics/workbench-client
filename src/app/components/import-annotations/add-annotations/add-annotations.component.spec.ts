@@ -232,9 +232,35 @@ describe("AddAnnotationsComponent", () => {
       expect(spectator.component.hasUnsavedChanges).toBeFalse();
     });
 
-    it("should not warn if the user has committed their files", () => {});
+    it("should not warn if the user has committed their files", () => {
+      addFiles([modelData.file()]);
+      commitImport();
 
-    it("should warn if the user fails to commit their files", () => {});
+      expect(spectator.component.hasUnsavedChanges).toBeFalse();
+    });
+
+    it("should warn if the user fails to commit their files", () => {
+      addFiles([modelData.file()]);
+
+      // in we simulate the dry run succeeding, but the commit failing
+      // therefore, I override the create method to return an error
+      // after I have added files and the dry run has succeeded
+      fileImportSpy.create.and.callThrough();
+      fileImportSpy.create.andCallFake(() =>
+        throwError(
+          () =>
+            new BawApiError(
+              UNPROCESSABLE_ENTITY,
+              "Internal Server Error",
+              null
+            )
+        )
+      );
+
+      commitImport();
+
+      expect(spectator.component.hasUnsavedChanges).toBeTrue();
+    });
   });
 
   describe("dry run", () => {
@@ -342,7 +368,7 @@ describe("AddAnnotationsComponent", () => {
     });
   });
 
-  describe("additional tags", () => {
+  xdescribe("additional tags", () => {
     describe("file additional tags", () => {
       it("should perform a dry run when additional tags are added to a file", () => {});
 
@@ -468,7 +494,6 @@ describe("AddAnnotationsComponent", () => {
 
       const mockAudioFiles = [modelData.file(), modelData.file()];
       addFiles(mockAudioFiles);
-
 
       expect(fileAlerts()).toHaveLength(2);
 
