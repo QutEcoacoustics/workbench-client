@@ -620,7 +620,7 @@ describe("AddAnnotationsComponent", () => {
   describe("identified events table", () => {
     assertDatatable(() => ({
       root: () => eventsTable(),
-      columns: [
+      columns: () => [
         "ID",
         "Recording",
         "Start Time",
@@ -633,7 +633,7 @@ describe("AddAnnotationsComponent", () => {
         "Tags",
         "Errors",
       ],
-      rows: [],
+      rows: () => [],
     }));
   });
 });

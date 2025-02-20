@@ -53,10 +53,12 @@ describe("AnnotationsDetailsComponent", () => {
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
 
   let mockAudioEventImport: AudioEventImport;
-  let mockTagModels: Tag[];
+  let mockTagModel: Tag;
   let mockAudioEvents: AudioEvent[];
   let mockAudioEventImportFiles: AudioEventImportFile[];
   let mockAudioRecording: AudioRecording;
+
+  let expectedAudioEventTable: any;
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -106,11 +108,7 @@ describe("AnnotationsDetailsComponent", () => {
 
     mockAudioRecording = new AudioRecording(generateAudioRecording(), injector);
 
-    mockTagModels = modelData.randomArray(
-      1,
-      10,
-      () => new Tag(generateTag(), injector)
-    );
+    mockTagModel = new Tag(generateTag(), injector);
 
     mockAudioEvents = modelData.randomArray(
       1,
@@ -118,7 +116,9 @@ describe("AnnotationsDetailsComponent", () => {
       () => new AudioEvent(generateAudioEvent(), injector)
     );
     mockAudioEvents.forEach((event) =>
-      event.addMetadata(modelData.model.generatePagingMetadata())
+      event.addMetadata(modelData.model.generatePagingMetadata({
+        items: mockAudioEvents.length,
+      }))
     );
 
     mockAudioEventImportFiles = modelData.randomArray(
@@ -127,21 +127,13 @@ describe("AnnotationsDetailsComponent", () => {
       () => new AudioEventImportFile(generateAudioEventImportFile(), injector)
     );
     mockAudioEventImportFiles.forEach((file) =>
-      file.addMetadata(modelData.model.generatePagingMetadata())
+      file.addMetadata(modelData.model.generatePagingMetadata({
+        items: mockAudioEventImportFiles.length,
+      }))
     );
 
     mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
     mockRecordingsService.show.and.callFake(() => of(mockAudioRecording));
-
-    mockTagsService = spec.inject(TAG.token);
-    mockTagsService.filter = jasmine.createSpy("filter") as any;
-    mockTagsService.filter.and.callFake(() => of(mockTagModels));
-
-    mockTagsService.show = jasmine.createSpy("show") as any;
-    mockTagsService.show.and.callFake(() => of(mockTagModels[0]));
-
-    mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
-    mockEventsService.filter.and.callFake(() => of(mockAudioEvents));
 
     mockAudioEventFileService = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
     mockAudioEventFileService.list.and.callFake(() =>
@@ -157,11 +149,18 @@ describe("AnnotationsDetailsComponent", () => {
     );
 
     const audioEventSubject = new Subject<AudioEventImport>();
+    const tagsSubject = new Subject<Tag[]>();
 
-    const promise = Promise.all([nStepObservable(
-      audioEventSubject,
-      () => new AudioEventImport(generateAudioEventImport(), injector)
-    )]);
+    const promise = Promise.all([
+      nStepObservable(audioEventSubject, () => mockAudioEvents as any),
+      nStepObservable(tagsSubject, () => mockTagModel as any),
+    ]);
+
+    mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    mockEventsService.filter.and.callFake(() => audioEventSubject);
+
+    mockTagsService = spec.inject(TAG.token);
+    mockTagsService.show.and.callFake(() => tagsSubject);
 
     // without mocking the timezone, tests that assert time will fail in CI
     // and other timezones that are not the same as the developers local timezone (UTC+8)
@@ -171,6 +170,13 @@ describe("AnnotationsDetailsComponent", () => {
     spec.detectChanges();
     await promise;
     spec.detectChanges();
+
+    expectedAudioEventTable = mockAudioEvents.map((event) => ({
+      "Audio Recording": event.audioRecording?.id.toString(),
+      "Created At": event.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
+      Tags: mockTagModel.text,
+      Actions: "",
+    }));
   }
 
   beforeEach(async () => {
@@ -190,14 +196,14 @@ describe("AnnotationsDetailsComponent", () => {
     }
   );
 
-  fit("should create", () => {
+  it("should create", () => {
     expect(spec.component).toBeInstanceOf(AnnotationImportDetailsComponent);
   });
 
   describe("audio event table", () => {
     assertDatatable(() => ({
-      columns: ["Audio Recording", "Created At", "Tags", "Actions"],
-      rows: [],
+      columns: () => ["Audio Recording", "Created At", "Tags", "Actions"],
+      rows: () => expectedAudioEventTable,
       root: () => activeTabContent(),
     }));
 
@@ -231,8 +237,8 @@ describe("AnnotationsDetailsComponent", () => {
 
       assertDatatable(() => ({
         service: mockAudioEventFileService,
-        columns: ["File Name", "Date Imported", "Additional Tags", "Actions"],
-        rows: [],
+        columns: () => ["File Name", "Date Imported", "Additional Tags", "Actions"],
+        rows: () => [],
         root: () => activeTabContent(),
       }));
     });
