@@ -271,4 +271,15 @@ describe("TypeaheadInputComponent", () => {
     flush();
     discardPeriodicTasks();
   }));
+
+  it("should return no items if the search callback is not set", fakeAsync(() => {
+    spectator.component.searchCallback = undefined;
+    spectator.detectChanges();
+
+    typeInInput(modelData.param());
+    tick(defaultDebounceTime);
+
+    const dropdownItems: HTMLButtonElement[] = dropdownOptions();
+    expect(dropdownItems).toHaveLength(0);
+  }));
 });

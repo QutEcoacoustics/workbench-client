@@ -26,9 +26,9 @@
             <div class="file-list-item-content">
               <span>
                 <button
-                  class="remove-btn btn btn-sm btn-outline-danger me-1"
+                  class="remove-btn btn btn-link text-dark me-1"
+                  [ngbTooltip]="'Remove file'"
                   (click)="removeBufferedFile(fileModel)"
-                  aria-label="Remove file"
                 >
                   <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
                 </button>
@@ -191,7 +191,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.startTimeSeconds | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.startTimeSeconds | isInstantiated; else emptyTemplate">
             {{ value.startTimeSeconds | number }}
           </ng-container>
         </ng-template>
@@ -203,7 +203,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.endTimeSeconds | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.endTimeSeconds | isInstantiated; else emptyTemplate">
             {{ value.endTimeSeconds | number }}
           </ng-container>
         </ng-template>
@@ -215,7 +215,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.lowFrequencyHertz | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.lowFrequencyHertz | isInstantiated; else emptyTemplate">
             {{ value.lowFrequencyHertz | number }}
           </ng-container>
         </ng-template>
@@ -227,7 +227,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.highFrequencyHertz | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.highFrequencyHertz | isInstantiated; else emptyTemplate">
             {{ value.highFrequencyHertz | number }}
           </ng-container>
         </ng-template>
@@ -239,20 +239,8 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.channel | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.channel | isInstantiated; else emptyTemplate">
             {{ value.channel | number }}
-          </ng-container>
-        </ng-template>
-      </ngx-datatable-column>
-
-      <ngx-datatable-column [sortable]="false" prop="event">
-        <ng-template let-column="column" ngx-datatable-header-template>
-          Duration
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.durationSeconds | isInstantiated; else missingTemplate">
-            {{ value.durationSeconds | number }}
           </ng-container>
         </ng-template>
       </ngx-datatable-column>
@@ -263,7 +251,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.isReference | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.isReference | isInstantiated; else emptyTemplate">
             {{ value.isReference ? 'Yes' : 'No' }}
           </ng-container>
         </ng-template>
@@ -275,7 +263,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.score | isInstantiated; else missingTemplate">
+          <ng-container *ngIf="value.score | isInstantiated; else emptyTemplate">
             {{ value.score | number }}
           </ng-container>
         </ng-template>
@@ -290,7 +278,7 @@
           <baw-inline-list
             [items]="value.tags"
             [itemKey]="'text'"
-            [emptyTemplate]="noAssociatedTagsTemplate"
+            [emptyTemplate]="emptyTemplate"
           ></baw-inline-list>
         </ng-template>
       </ngx-datatable-column>
@@ -317,12 +305,8 @@
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
 </ng-template>
 
-<ng-template #noAssociatedTagsTemplate>
+<ng-template #emptyTemplate>
   <span class="text-muted">Empty</span>
-</ng-template>
-
-<ng-template #noAdditionalTagsTemplate>
-  <span>No additional tags</span>
 </ng-template>
 
 <ng-template #defaultDescription>
@@ -331,14 +315,4 @@
 
 <ng-template #noFilesTemplate>
   <span class="text-muted">No files found</span>
-</ng-template>
-
-<ng-template #missingTemplate>
-  <strong
-    class="missing-field-warning text-warning font-semibold"
-    ngbTooltip="This field is could not be found in the uploaded file"
-  >
-    <fa-icon [icon]="['fas', 'exclamation-triangle']" class="me-1"></fa-icon>
-    <span class="text-decoration-underline">Missing</span>
-  </strong>
 </ng-template>
