@@ -121,7 +121,8 @@ describe("BawFormApiService", () => {
           expect(err).toEqual(
             new BawApiError(
               unknownErrorCode,
-              "Unable to retrieve authenticity token for form request."
+              "Unable to retrieve authenticity token for form request.",
+              null
             )
           );
           done();
@@ -178,7 +179,8 @@ describe("BawFormApiService", () => {
           expect(err).toEqual(
             new BawApiError(
               unknownErrorCode,
-              "Captcha response was not correct."
+              "Captcha response was not correct.",
+              null
             )
           );
           done();
@@ -265,7 +267,11 @@ describe("BawFormApiService", () => {
         next: shouldNotSucceed,
         error: (err) => {
           expect(err).toEqual(
-            new BawApiError(unknownErrorCode, "Unable to setup recaptcha.")
+            new BawApiError(
+              unknownErrorCode,
+              "Unable to setup recaptcha.",
+              null
+            )
           );
           done();
         },

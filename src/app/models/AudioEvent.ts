@@ -30,13 +30,17 @@ import { AssociationInjector } from "./ImplementsInjector";
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
   audioRecordingId?: Id;
+  channel?: number;
   startTimeSeconds?: number;
   endTimeSeconds?: number;
   lowFrequencyHertz?: number;
   highFrequencyHertz?: number;
+  durationSeconds?: number;
   isReference?: boolean;
+  score?: number;
   taggings?: ITagging[] | Tagging[];
   provenanceId?: Id;
+  audioEventImportFileId?: Id;
 }
 
 export class AudioEvent
@@ -46,6 +50,10 @@ export class AudioEvent
   public readonly kind = "Audio Event";
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
+  // TODO: enable bawPersistAttr() once the API adds supports
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/717
+  // @bawPersistAttr()
+  public readonly channel?: number;
   @bawPersistAttr()
   public readonly startTimeSeconds?: number;
   @bawPersistAttr()
@@ -56,6 +64,8 @@ export class AudioEvent
   public readonly highFrequencyHertz?: number;
   @bawPersistAttr()
   public readonly isReference?: boolean;
+  public readonly durationSeconds?: number;
+  public readonly score?: number;
   public readonly taggings?: Tagging[];
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -67,6 +77,7 @@ export class AudioEvent
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
   public readonly provenanceId?: Id;
+  public readonly audioEventImportFileId?: Id;
 
   // Associations
   @creator<AudioEvent>()

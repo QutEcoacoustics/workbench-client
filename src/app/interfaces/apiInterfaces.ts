@@ -39,6 +39,10 @@ export type AuthToken = string;
 
 export type ExecutableCommand = string;
 
+export type FilePath = string;
+
+export type BawErrorData = Record<string, string | string[]>;
+
 /**
  * BAW API Permission Levels
  */

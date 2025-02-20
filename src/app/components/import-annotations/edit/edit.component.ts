@@ -22,7 +22,7 @@ const audioEventImportKey = "audioEventImport";
   template: `
     <baw-form
       *ngIf="!failure"
-      [title]="'Edit ' + model.name"
+      [title]="title"
       [model]="model"
       [fields]="fields"
       [submitLoading]="loading"
@@ -49,6 +49,12 @@ class EditAnnotationsComponent
   }
 
   public fields = schema.fields;
+  protected title: string;
+
+  public ngOnInit(): void {
+    super.ngOnInit();
+    this.title = `Edit ${this.model.name}`;
+  }
 
   protected apiAction(model: Partial<AudioEventImport>) {
     return this.api.update(new AudioEventImport(model));

@@ -10,21 +10,22 @@ import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/type
 import {
   debounceTime,
   distinctUntilChanged,
+  iif,
   map,
   Observable,
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export type TypeaheadSearchCallback = (
+export type TypeaheadSearchCallback<T = object> = (
   text: string,
-  activeItems: object[]
-) => Observable<object[]>;
+  activeItems: T[]
+) => Observable<T[]>;
 
 @Component({
   selector: "baw-typeahead-input",
   templateUrl: "typeahead-input.component.html",
-  styleUrls: ["typeahead-input.component.scss"],
+  styleUrl: "typeahead-input.component.scss",
 })
 export class TypeaheadInputComponent {
   /**
@@ -56,11 +57,15 @@ export class TypeaheadInputComponent {
   public findOptions = (text$: Observable<string>): Observable<object[]> => {
     const maximumResults = 10;
 
-    return text$.pipe(
-      debounceTime(defaultDebounceTime),
-      distinctUntilChanged(),
-      switchMap((term: string) => this.searchCallback(term, this.value)),
-      map((items: object[]) => items.slice(0, maximumResults))
+    return iif(
+      () => !this.searchCallback,
+      [],
+      text$.pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        switchMap((term: string) => this.searchCallback(term, this.value)),
+        map((items: object[]) => items.slice(0, maximumResults))
+      )
     );
   };
 

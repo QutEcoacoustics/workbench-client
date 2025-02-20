@@ -19,6 +19,7 @@ describe("BawApiError", () => {
     const error = new BawApiError(
       UNPROCESSABLE_ENTITY,
       "Unprocessable Entity",
+      null,
       info
     );
     expect(error.info).toEqual(info);
@@ -26,7 +27,7 @@ describe("BawApiError", () => {
 
   describe("message", () => {
     it("should return message", () => {
-      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
       expect(error.message).toEqual("Unauthorized Access");
     });
 
@@ -35,6 +36,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.message).toEqual(
@@ -49,6 +51,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.message).toEqual(
@@ -59,7 +62,7 @@ describe("BawApiError", () => {
 
   describe("formattedMessage", () => {
     it("should return error message", () => {
-      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+      const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
       expect(error.formattedMessage("___")).toBe("Unauthorized Access");
     });
 
@@ -68,6 +71,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.formattedMessage("___")).toEqual(
@@ -82,6 +86,7 @@ describe("BawApiError", () => {
       const error = new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Unprocessable Entity",
+        null,
         info
       );
       expect(error.formattedMessage("___")).toEqual(
@@ -93,7 +98,7 @@ describe("BawApiError", () => {
 
 describe("isBawApiError", () => {
   it("should return true for bawApiError", () => {
-    const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access");
+    const error = new BawApiError(UNAUTHORIZED, "Unauthorized Access", null);
     expect(isBawApiError(error)).toBeTrue();
   });
 
@@ -101,6 +106,7 @@ describe("isBawApiError", () => {
     const error = new BawApiError(
       UNPROCESSABLE_ENTITY,
       "Unprocessable Entity",
+      null,
       { name: ["Duplicate name for entity"] }
     );
     expect(isBawApiError(error)).toBeTrue();
@@ -124,19 +130,19 @@ describe("isBawApiError", () => {
 
 describe("isApiErrorDetails", () => {
   it("should return true for ApiErrorDetails", () => {
-    const error: ApiErrorDetails = {
+    const error = {
       status: UNAUTHORIZED,
       message: "Unauthorized Access",
-    };
+    } satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 
   it("should return true for ApiErrorDetails with info", () => {
-    const error: ApiErrorDetails = {
+    const error = {
       status: UNPROCESSABLE_ENTITY,
       message: "Unprocessable Entity",
       info: { name: ["Duplicate name for entity"] },
-    };
+    } satisfies ApiErrorDetails;
     expect(isApiErrorDetails(error)).toBeTrue();
   });
 

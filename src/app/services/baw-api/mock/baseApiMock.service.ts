@@ -10,7 +10,11 @@ export class MockModel extends AbstractModel {
     super({ id: 1, ...raw }, injector);
   }
 
-  public getJsonAttributes(_?: any) {
+  public override getJsonAttributesForCreate(): Partial<this> {
+    return { id: this.id } as any;
+  }
+
+  public override getJsonAttributesForUpdate(): Partial<this> {
     return { id: this.id } as any;
   }
 

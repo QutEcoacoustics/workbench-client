@@ -1,0 +1,29 @@
+.file-list-item {
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+}
+
+.file-list-item-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+
+  & > * {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.remove-file-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.additional-file-tags {
+  width: 100%;
+}
