@@ -133,6 +133,14 @@ export const modelData = {
       ...modelData.model.generateUpdater(),
       ...modelData.model.generateDeleter(),
     }),
+    generatePagingMetadata: () => ({
+      paging: {
+        items: modelData.datatype.number(),
+        page: modelData.datatype.number(),
+        total: modelData.datatype.number(),
+        maxPage: modelData.datatype.number(),
+      },
+    }),
   },
   ...faker,
 };

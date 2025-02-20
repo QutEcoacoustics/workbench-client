@@ -3,7 +3,7 @@ import { modelData } from "@test/helpers/faker";
 import { generateImportedAudioEvent } from "./ImportedAudioEvent";
 
 export function generateAudioEventImportFile(
-  data?: Partial<IAudioEventImportFile>
+  data: Partial<IAudioEventImportFile> = {}
 ): IAudioEventImportFile {
   if (data.file && data.path) {
     throw new Error(
