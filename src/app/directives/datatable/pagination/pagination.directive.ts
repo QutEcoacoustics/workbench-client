@@ -18,11 +18,6 @@ import {
   tap,
 } from "rxjs";
 
-interface DatatablePaginationInput<Model extends AbstractModel> {
-  filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
-  getModels: (filters: Filters<Model>) => Observable<Model[]>;
-}
-
 /**
  * DatatablePaginationDirective
  *
@@ -260,6 +255,11 @@ type Sort<Model> = Sorting<keyof Model>;
 interface PageAndSort<Model> {
   page: Page;
   sort?: Sort<Model>;
+}
+
+interface DatatablePaginationInput<Model extends AbstractModel> {
+  filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
+  getModels: (filters: Filters<Model>) => Observable<Model[]>;
 }
 
 /** TableColumns with  */
