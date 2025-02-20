@@ -17,8 +17,10 @@ import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/au
 import {
   BehaviorSubject,
   catchError,
+  defer,
   first,
   forkJoin,
+  iif,
   map,
   Observable,
   of,
@@ -342,7 +344,6 @@ class AddAnnotationsComponent
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        error: () => (this.importState = ImportState.FAILURE),
         complete: () => {
           if (this.importState === ImportState.FAILURE) {
             console.error("Failed to import annotations");
@@ -383,23 +384,39 @@ class AddAnnotationsComponent
       });
   }
 
-  private commitFile(model: QueuedFile): Observable<AudioEventImportFile> {
-    const importFileModel = this.createAudioEventImportFile(model);
-
-    return this.api
-      .create(importFileModel, this.audioEventImport)
-      .pipe(first());
+  private commitFile(model: QueuedFile): Observable<QueuedFile> {
+    return this.importFile(model, true);
   }
 
-  private dryRunFile(queueModel: QueuedFile): Observable<QueuedFile> {
+  private dryRunFile(model: QueuedFile): Observable<QueuedFile> {
+    return this.importFile(model, false);
+  }
+
+  private importFile(
+    queueModel: QueuedFile,
+    commit: boolean
+  ): Observable<QueuedFile> {
     const importFileModel = this.createAudioEventImportFile(queueModel);
     const file = queueModel.file;
 
-    return this.api.dryCreate(importFileModel, this.audioEventImport).pipe(
+    // We use defer inside this iif to ensure that the api is only called when
+    // the observable is subscribed to (the commit flag is evaluated).
+    // If we did not have the "defer" here, both api calls would be made, but
+    // the result of one api call would be ignored by the iif operator.
+    return iif(
+      () => commit,
+      defer(() => this.api.create(importFileModel, this.audioEventImport)),
+      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport))
+    ).pipe(
       first(),
       map(
         (model: AudioEventImportFile): QueuedFile =>
-          this.importFileToBufferedFile(file, model, [], queueModel.additionalTagIds)
+          this.importFileToBufferedFile(
+            file,
+            model,
+            [],
+            queueModel.additionalTagIds
+          )
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
@@ -409,9 +426,14 @@ class AddAnnotationsComponent
           return throwError(() => new Error("Expected a single model"));
         }
 
-        const result = this.importFileToBufferedFile(file, error.data, errors, queueModel.additionalTagIds);
+        const result = this.importFileToBufferedFile(
+          file,
+          error.data,
+          errors,
+          queueModel.additionalTagIds
+        );
         return of(result);
-      })
+      }),
     );
   }
 
