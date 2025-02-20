@@ -9,6 +9,7 @@ import {
 import { faker } from "@faker-js/faker";
 import { DateTime, Duration } from "luxon";
 import { PbsResources } from "@interfaces/pbsInterfaces";
+import { Meta } from "@baw-api/baw-api.service";
 
 const specialCharRegex = /[^\w\s]/gi;
 
@@ -133,12 +134,13 @@ export const modelData = {
       ...modelData.model.generateUpdater(),
       ...modelData.model.generateDeleter(),
     }),
-    generatePagingMetadata: () => ({
+    generatePagingMetadata: (data?: Partial<Meta["paging"]>): Meta => ({
       paging: {
         items: modelData.datatype.number(),
         page: modelData.datatype.number(),
         total: modelData.datatype.number(),
         maxPage: modelData.datatype.number(),
+        ...data,
       },
     }),
   },
