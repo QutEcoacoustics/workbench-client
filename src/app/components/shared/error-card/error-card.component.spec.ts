@@ -84,7 +84,7 @@ describe("ErrorCardComponent", () => {
   ] satisfies ErrorCardTest[];
 
   for (const test of tests) {
-    fit(test.name, () => {
+    it(test.name, () => {
       setup(test.errors);
       assertErrorCards(test.expected);
     });

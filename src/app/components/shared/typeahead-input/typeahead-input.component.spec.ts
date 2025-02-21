@@ -35,8 +35,7 @@ describe("TypeaheadInputComponent", () => {
       <baw-typeahead-input [resultTemplate]="siteTypeaheadTemplate"></baw-typeahead-input>
     `;
 
-    spectator = createComponent(testBedTemplate);
-    spectator.detectChanges();
+    spectator = createComponent(testBedTemplate, { detectChanges: false });
 
     defaultFakeSites = Array.from(
       { length: modelData.datatype.number({ min: 3, max: 10 }) },
@@ -44,7 +43,7 @@ describe("TypeaheadInputComponent", () => {
     );
 
     mockSitesService = spectator.inject(SHALLOW_SITE.token);
-    mockSitesService.filter.and.returnValue(of(defaultFakeSites));
+    mockSitesService.filter.and.callFake(() => of(defaultFakeSites));
 
     spectator.component.searchCallback = mockSitesService.filter;
 
@@ -66,7 +65,9 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
   }
 
-  beforeEach(() => setup());
+  beforeEach(() => {
+    setup();
+  });
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(TypeaheadInputComponent);

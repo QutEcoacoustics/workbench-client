@@ -10,7 +10,6 @@ import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/type
 import {
   debounceTime,
   distinctUntilChanged,
-  iif,
   map,
   Observable,
   switchMap,
@@ -57,15 +56,13 @@ export class TypeaheadInputComponent {
   public findOptions = (text$: Observable<string>): Observable<object[]> => {
     const maximumResults = 10;
 
-    return iif(
-      () => !this.searchCallback,
-      [],
-      text$.pipe(
-        debounceTime(defaultDebounceTime),
-        distinctUntilChanged(),
-        switchMap((term: string) => this.searchCallback(term, this.value)),
-        map((items: object[]) => items.slice(0, maximumResults))
-      )
+    return text$.pipe(
+      debounceTime(defaultDebounceTime),
+      distinctUntilChanged(),
+      switchMap((term: string) =>
+        this.searchCallback ? this.searchCallback(term, this.value) : []
+      ),
+      map((items: object[]) => items.slice(0, maximumResults))
     );
   };
 
