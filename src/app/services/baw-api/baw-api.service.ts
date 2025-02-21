@@ -1,9 +1,7 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
-import {
-  toSnakeCase,
-} from "@helpers/case-converter/case-converter";
+import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
   BawApiError,
   isBawApiError,
@@ -48,7 +46,10 @@ export interface BawServiceOptions {
    * Additional parameters to merged in with model payload to be sent with the
    * request
    */
-  params?: Record<any, any>;
+  params?: Record<
+    PropertyKey,
+    (string | number | boolean) | (string | number | boolean)[]
+  >;
 
   /**
    * Allows you to modify the http cache options per request
@@ -58,7 +59,7 @@ export interface BawServiceOptions {
    * helper
    *
    * ```
-   * api.show("/status", { isCachable: disableCache })
+   * api.show("/status", { isCacheable: disableCache })
    * ```
    */
   cacheOptions?: NgHttpCachingConfig;
@@ -284,9 +285,10 @@ export class BawApiService<
 
     // the errors data property should be instantiated using the class builder
     if (classBuilder && error.data) {
-      const handler = error.data instanceof Array
-        ? this.handleCollectionResponseError(classBuilder)
-        : this.handleSingleResponseError(classBuilder);
+      const handler =
+        error.data instanceof Array
+          ? this.handleCollectionResponseError(classBuilder)
+          : this.handleSingleResponseError(classBuilder);
 
       return throwError(() => handler(error as any));
     }
@@ -395,31 +397,23 @@ export class BawApiService<
     options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForCreate();
-    const body = model.kind
+    let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
     let formData = model.getFormDataOnlyAttributesForUpdate();
-    if (options.params && formData) {
+    if (options.params) {
       // If there is already a form data request going out, we want to attach
       // the unscoped params to the form data request.
       //
-      // If there is not a form data request already going out, we use query
-      // string parameters on the JSON payload.
-      // We do this to prevent sending out multiple requests when we only need
-      // to send one.
+      // If there is not a form data request already going out, we want to add
+      // the unscoped params to the JSON body.
       if (formData) {
-        formData = this.addUnscopedParams(formData, options.params);
+        formData = this.addUnscopedFormdataParams(formData, options.params);
       } else {
-        const url = new URL(path);
-        Object.entries(options.params).forEach(([key, value]) => {
-          url.searchParams.append(key, value);
-        });
-
-        path = url.href;
+        body = this.addUnscopedJsonParams(body, options.params);
       }
     }
-
 
     const formDataMethod = model.hasJsonOnlyAttributesForCreate()
       ? "httpPut"
@@ -481,7 +475,7 @@ export class BawApiService<
     options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForUpdate();
-    const body = model.kind
+    let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
@@ -495,14 +489,9 @@ export class BawApiService<
       // We do this to prevent sending out multiple requests when we only need
       // to send one.
       if (formData) {
-        formData = this.addUnscopedParams(formData, options.params);
+        formData = this.addUnscopedFormdataParams(formData, options.params);
       } else {
-        const url = new URL(path);
-        Object.entries(options.params).forEach(([key, value]) => {
-          url.searchParams.append(key, value);
-        });
-
-        path = url.href;
+        body = this.addUnscopedJsonParams(body, options.params);
       }
     }
 
@@ -808,15 +797,31 @@ export class BawApiService<
     };
   }
 
-  private addUnscopedParams(
+  private addUnscopedFormdataParams(
     data: FormData,
     params: BawServiceOptions["params"]
   ): FormData {
     for (const [key, value] of Object.entries(params)) {
-      data.append(key, value);
+      if (Array.isArray(value)) {
+        for (const dataValueItem of value) {
+          data.append(`${key}[]`, dataValueItem.toString());
+        }
+      } else {
+        data.append(key, value.toString());
+      }
     }
 
     return data;
+  }
+
+  private addUnscopedJsonParams<T = AbstractModel>(
+    data: Partial<T>,
+    params: BawServiceOptions["params"]
+  ): Partial<T> {
+    return {
+      ...data,
+      ...params,
+    };
   }
 }
 
