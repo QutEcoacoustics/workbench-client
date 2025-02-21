@@ -97,6 +97,7 @@ import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
+import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -296,6 +297,10 @@ const serviceList = [
     resolvers: audioEventImportResolvers,
   },
   {
+    serviceToken: Tokens.AUDIO_EVENT_IMPORT_FILE,
+    service: AudioEventImportFileService,
+  },
+  {
     serviceToken: Tokens.WEBSITE_STATUS,
     service: WebsiteStatusService,
   },
@@ -307,7 +312,7 @@ const serviceList = [
   {
     serviceToken: Tokens.MEDIA,
     service: MediaService,
-  }
+  },
 ] satisfies ServiceProvider<unknown>[];
 
 const services = serviceList.map(({ service }) => service) satisfies Provider[];

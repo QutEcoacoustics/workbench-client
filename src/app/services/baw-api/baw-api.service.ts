@@ -43,6 +43,15 @@ export interface BawServiceOptions {
   withCredentials?: boolean;
 
   /**
+   * Additional parameters to merged in with model payload to be sent with the
+   * request
+   */
+  params?: Record<
+    PropertyKey,
+    (string | number | boolean) | (string | number | boolean)[]
+  >;
+
+  /**
    * Allows you to modify the http cache options per request
    *
    * @example
@@ -50,7 +59,7 @@ export interface BawServiceOptions {
    * helper
    *
    * ```
-   * api.show("/status", { isCachable: disableCache })
+   * api.show("/status", { isCacheable: disableCache })
    * ```
    */
   cacheOptions?: NgHttpCachingConfig;
@@ -76,6 +85,7 @@ export const defaultBawServiceOptions = Object.freeze({
   disableNotification: false,
   withCredentials: true,
   cacheOptions: defaultCachingConfig,
+  params: undefined,
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -114,6 +124,14 @@ export class BawApiService<
   public handleSingleResponse: (
     cb: ClassBuilder
   ) => (resp: ApiResponse<Model>) => Model;
+
+  public handleCollectionResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
+
+  public handleSingleResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
 
   /**
    * Handle API empty response
@@ -172,7 +190,8 @@ export class BawApiService<
     protected session: BawSessionService,
     protected notifications: ToastrService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR) protected associationInjector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR)
+    protected associationInjector: AssociationInjector,
     @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override
@@ -204,12 +223,42 @@ export class BawApiService<
     this.handleSingleResponse =
       (cb: ClassBuilder) =>
       (resp: ApiResponse<Model>): Model => {
+        if (!resp) {
+          return;
+        }
+
         if (resp.data instanceof Array) {
           throw new Error(
             "Received an array of API results when only a single result was expected"
           );
         }
         return createModel(cb, resp.data, resp.meta);
+      };
+
+    this.handleCollectionResponseError =
+      (cb: ClassBuilder) =>
+      (resp: BawApiError<Model>): BawApiError<Model> => {
+        if (!(resp.data instanceof Array)) {
+          throw new Error(
+            "Received a single API result when an array of results was expected"
+          );
+        }
+
+        resp.data = resp.data.map((data) => createModel(cb, data, resp));
+        return resp;
+      };
+
+    this.handleSingleResponseError =
+      (cb: ClassBuilder) =>
+      (resp: BawApiError<Model>): BawApiError<Model> => {
+        if (resp.data instanceof Array) {
+          throw new Error(
+            "Received an array of API results when only a single result was expected"
+          );
+        }
+
+        resp.data = createModel(cb, resp.data, resp);
+        return resp;
       };
   }
 
@@ -222,16 +271,28 @@ export class BawApiService<
    */
   public handleError = (
     err: BawApiError | Error,
-    disableNotification?: boolean
+    disableNotification?: boolean,
+    classBuilder?: ClassBuilder
   ): Observable<never> => {
     const error = isBawApiError(err)
       ? err
-      : new BawApiError(unknownErrorCode, err.message);
+      : new BawApiError(unknownErrorCode, err.message, {});
     // Do not show error notifications during SSR, otherwise they cannot be
     // cleared
     if (!disableNotification && !this.isServer) {
       this.notifications.error(error.formattedMessage("<br />"));
     }
+
+    // the errors data property should be instantiated using the class builder
+    if (classBuilder && error.data) {
+      const handler =
+        error.data instanceof Array
+          ? this.handleCollectionResponseError(classBuilder)
+          : this.handleSingleResponseError(classBuilder);
+
+      return throwError(() => handler(error as any));
+    }
+
     return throwError((): BawApiError => error);
   };
 
@@ -249,7 +310,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -269,7 +332,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -289,7 +354,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -307,7 +374,9 @@ export class BawApiService<
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -316,22 +385,39 @@ export class BawApiService<
    * this will make an additional update request.
    *
    * @param classBuilder Model to create
-   * @param createPath API create path
+   * @param path API create path
    * @param updatePath API update path
    * @param model Model to insert into API request
    */
   public create(
     classBuilder: ClassBuilder,
-    createPath: string,
+    path: string,
     updatePath: (model: Model) => string,
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const jsonData = model.getJsonAttributes?.({ create: true });
-    const formData = model.getFormDataOnlyAttributes({ create: true });
-    const body = model.kind
+    const jsonData = model.getJsonAttributesForCreate();
+    let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
+
+    let formData = model.getFormDataOnlyAttributesForUpdate();
+    if (options.params) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we want to add
+      // the unscoped params to the JSON body.
+      if (formData) {
+        formData = this.addUnscopedFormdataParams(formData, options.params);
+      } else {
+        body = this.addUnscopedJsonParams(body, options.params);
+      }
+    }
+
+    const formDataMethod = model.hasJsonOnlyAttributesForCreate()
+      ? "httpPut"
+      : "httpPost";
 
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
     // if there is only a formData body, we want to return the output of the formData PUT request
@@ -339,8 +425,8 @@ export class BawApiService<
     // we default to returning null if there is no JSON or formData body
     return of(null).pipe(
       concatMap(
-        model.hasJsonOnlyAttributes({ create: true })
-          ? () => this.httpPost(createPath, body, undefined, options).pipe()
+        model.hasJsonOnlyAttributesForCreate()
+          ? () => this.httpPost(path, body, undefined, options).pipe()
           : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
@@ -352,8 +438,8 @@ export class BawApiService<
         // we use an if statement here because we want to create a new observable and apply a map function to it
         // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
-          () => model.hasFormDataOnlyAttributes({ create: true }),
-          this.httpPut(
+          () => model.hasFormDataOnlyAttributesForCreate(),
+          this[formDataMethod](
             updatePath(data),
             formData,
             multiPartApiHeaders,
@@ -368,7 +454,9 @@ export class BawApiService<
       tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -386,11 +474,26 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const jsonData = model.getJsonAttributes?.({ update: true });
-    const formData = model.getFormDataOnlyAttributes({ update: true });
-    const body = model.kind
+    const jsonData = model.getJsonAttributesForUpdate();
+    let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
+
+    let formData = model.getFormDataOnlyAttributesForUpdate();
+    if (options.params && formData) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we use query
+      // string parameters on the JSON payload.
+      // We do this to prevent sending out multiple requests when we only need
+      // to send one.
+      if (formData) {
+        formData = this.addUnscopedFormdataParams(formData, options.params);
+      } else {
+        body = this.addUnscopedJsonParams(body, options.params);
+      }
+    }
 
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON PATCH request
     // if there is only a formData body, we want to return the output of the formData PUT request
@@ -401,12 +504,12 @@ export class BawApiService<
         // we use (data) => of(data) here instead of the identity function because the identify function
         // returns a value, and not an observable. Because we use concatMap below, we need the existing
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
-        model.hasJsonOnlyAttributes({ update: true })
+        model.hasJsonOnlyAttributesForUpdate()
           ? () => this.httpPatch(path, body, undefined, options)
           : (data) => of(data)
       ),
       concatMap(
-        model.hasFormDataOnlyAttributes({ update: true })
+        model.hasFormDataOnlyAttributesForUpdate()
           ? () => this.httpPut(path, formData, multiPartApiHeaders, options)
           : (data) => of(data)
       ),
@@ -420,7 +523,9 @@ export class BawApiService<
       // because other requests such as cached associations will still return a
       // stale model in their response
       tap(() => this.clearCache()),
-      catchError((err) => this.handleError(err, this.suppressErrors(options)))
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -689,6 +794,33 @@ export class BawApiService<
           [comparison]: models instanceof AbstractModel ? models.id : models,
         },
       },
+    };
+  }
+
+  private addUnscopedFormdataParams(
+    data: FormData,
+    params: BawServiceOptions["params"]
+  ): FormData {
+    for (const [key, value] of Object.entries(params)) {
+      if (Array.isArray(value)) {
+        for (const dataValueItem of value) {
+          data.append(`${key}[]`, dataValueItem.toString());
+        }
+      } else {
+        data.append(key, value.toString());
+      }
+    }
+
+    return data;
+  }
+
+  private addUnscopedJsonParams<T = AbstractModel>(
+    data: Partial<T>,
+    params: BawServiceOptions["params"]
+  ): Partial<T> {
+    return {
+      ...data,
+      ...params,
     };
   }
 }

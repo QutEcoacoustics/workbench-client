@@ -14,18 +14,19 @@ type Model = AudioEvent;
 type Params = [IdOr<AudioRecording>];
 type Service = AudioEventsService;
 
-describe("AudioEventsService", (): void => {
+describe("AudioEventsService", () => {
   const createModel = () => new AudioEvent(generateAudioEvent({ id: 10 }));
   const baseUrl = "/audio_recordings/5/audio_events/";
   const updateUrl = baseUrl + "10";
   let spec: SpectatorService<AudioEventsService>;
+
   const createService = createServiceFactory({
     service: AudioEventsService,
     imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 
-  beforeEach((): void => {
+  beforeEach(() => {
     spec = createService();
   });
 

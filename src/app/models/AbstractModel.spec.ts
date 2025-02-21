@@ -1,6 +1,6 @@
-import { Injector } from "@angular/core";
-import { DateTime, Duration } from "luxon";
 import { modelData } from "@test/helpers/faker";
+import { DateTime, Duration } from "luxon";
+import { Injector } from "@angular/core";
 import { AbstractModel, getUnknownViewUrl } from "./AbstractModel";
 import {
   BawAttributeMeta,
@@ -12,7 +12,10 @@ import { AssociationInjector } from "./ImplementsInjector";
 export class MockModel extends AbstractModel {
   public kind = "Mock Model";
 
-  public constructor(raw: Record<string, any>, protected injector?: AssociationInjector) {
+  public constructor(
+    raw: Record<string, any>,
+    protected injector?: AssociationInjector
+  ) {
     super(raw, injector);
   }
 
@@ -23,19 +26,14 @@ export class MockModel extends AbstractModel {
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
-    const assertToJson = (model: AbstractModel, result: Record<string, any>) =>
-      expect(model.getJsonAttributes()).toEqual({
-        ...result,
-        kind: "Mock Model",
-      });
     const assertToJsonWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
-    ) => expect(model.getJsonAttributes({ create: true })).toEqual(result);
+    ) => expect(model.getJsonAttributesForCreate()).toEqual(result);
     const assertToJsonWithUpdate = (
       model: AbstractModel,
       result: Record<string, any>
-    ) => expect(model.getJsonAttributes({ update: true })).toEqual(result);
+    ) => expect(model.getJsonAttributesForUpdate()).toEqual(result);
 
     [
       { type: "undefined", value: undefined, output: undefined },
@@ -55,7 +53,6 @@ describe("AbstractModel", () => {
     ].forEach(({ type, value, output }) => {
       it(`should handle ${type} on basic toJSON() request`, () => {
         const model = new MockModel({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, {});
         assertToJsonWithUpdate(model, {});
       });
@@ -70,7 +67,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, { test: output });
         assertToJsonWithUpdate(model, {});
       });
@@ -85,7 +81,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToJson(model, { id: 1, test: output });
         assertToJsonWithCreate(model, {});
         assertToJsonWithUpdate(model, { test: output });
       });
@@ -105,14 +100,12 @@ describe("AbstractModel", () => {
       const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(Object.keys(model.getJsonAttributes())).not.toContain(
-        "injector"
-      );
-    });
-
-    it("should handle multiple on basic toJSON() request", () => {
-      const model = new MockModel(defaultData);
-      assertToJson(model, { id: 1, name: "name", set: [1, 2, 3] });
+      expect<any>(
+        Object.keys(model.getJsonAttributesForCreate())
+      ).not.toContain("injector");
+      expect<any>(
+        Object.keys(model.getJsonAttributesForUpdate())
+      ).not.toContain("injector");
     });
 
     it("should handle multiple on toJSON({create: true}) request", () => {
@@ -143,50 +136,67 @@ describe("AbstractModel", () => {
 
     it("should emit null when serializing a model via JSON and deleting a file", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: null });
-      const actual = model.getJsonAttributes({ create: true });
-      expect(actual).toEqual(jasmine.objectContaining({
-        image: null,
-      }));
+      const actual = model.getJsonAttributesForCreate();
+      expect(actual).toEqual(
+        jasmine.objectContaining({
+          image: null,
+        })
+      );
     });
 
     it("should not emit file type objects in JSON attributes", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: testFile });
-      const actual = model.getJsonAttributes({ create: true });
+      const actual = model.getJsonAttributesForCreate();
       expect(Object.keys(actual)).not.toContain("image");
     });
 
     it("should emit file type objects when serializing a model via formData", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: testFile });
-      const actual = model.getFormDataOnlyAttributes({ create: true });
+      const actual = model.getFormDataOnlyAttributesForCreate();
       expect(actual.get("mock_model[image]")).toEqual(model.image);
     });
 
     it("should not emit null values when serializing a model via formData", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: null });
-      const actual = model.getFormDataOnlyAttributes({ create: true });
+      const actual = model.getFormDataOnlyAttributesForCreate();
       expect(actual.has("mock_model[image]")).toBeFalse();
       expect(actual.keys()).toHaveSize(0);
     });
 
     it("toJSON emits values as is (null case)", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: null });
@@ -196,7 +206,10 @@ describe("AbstractModel", () => {
 
     it("toJSON emits values as is (File type object case)", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: testFile });
@@ -206,28 +219,37 @@ describe("AbstractModel", () => {
 
     it("should emit file type objects when serializing a model via formData", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: testFile });
-      const actual = model.getFormDataOnlyAttributes({ create: true });
+      const actual = model.getFormDataOnlyAttributesForCreate();
       expect(actual.get("mock_model[image]")).toEqual(model.image);
     });
 
     it("should not emit null values when serializing a model via formData", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: null });
-      const actual = model.getFormDataOnlyAttributes({ create: true });
+      const actual = model.getFormDataOnlyAttributesForCreate();
       expect(actual.has("mock_model[image]")).toBeFalse();
       expect(actual.keys()).toHaveSize(0);
     });
 
     it("toJSON emits values as is (null case)", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: null });
@@ -237,7 +259,10 @@ describe("AbstractModel", () => {
 
     it("toJSON emits values as is (File type object case)", () => {
       class Model extends MockModel {
-        @bawPersistAttr({ create: true, supportedFormats: ["json", "formData"] })
+        @bawPersistAttr({
+          create: true,
+          supportedFormats: ["json", "formData"],
+        })
         public image: any;
       }
       const model = new Model({ id: 1, image: testFile });
@@ -254,9 +279,9 @@ describe("AbstractModel", () => {
     ].forEach((test) => {
       describe(test.label, () => {
         function hasFormDataOnlyAttributes(model: AbstractModel) {
-          return model.hasFormDataOnlyAttributes(
-            test.create ? { create: true } : { update: true }
-          );
+          return test.create
+            ? model.hasFormDataOnlyAttributesForCreate()
+            : model.hasFormDataOnlyAttributesForUpdate();
         }
 
         it("should return true if form data exists", () => {
@@ -327,23 +352,18 @@ describe("AbstractModel", () => {
   });
 
   describe("toFormData", () => {
-    const assertToFormData = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) =>
-      expect(model.getFormDataOnlyAttributes()).toEqual(createFormData(result));
     const assertToFormDataWithCreate = (
       model: AbstractModel,
       result: Record<string, any>
     ) =>
-      expect(model.getFormDataOnlyAttributes({ create: true })).toEqual(
+      expect(model.getFormDataOnlyAttributesForCreate()).toEqual(
         createFormData(result)
       );
     const assertToFormDataWithUpdate = (
       model: AbstractModel,
       result: Record<string, any>
     ) =>
-      expect(model.getFormDataOnlyAttributes({ update: true })).toEqual(
+      expect(model.getFormDataOnlyAttributesForUpdate()).toEqual(
         createFormData(result)
       );
     const createFormData = (obj: Record<string, any>) => {
@@ -372,7 +392,6 @@ describe("AbstractModel", () => {
     ].forEach(({ type, value, output }) => {
       it(`should handle ${type} on basic toFormData() request`, () => {
         const model = new MockModel({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, {});
         assertToFormDataWithUpdate(model, {});
       });
@@ -387,7 +406,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, { test: output });
         assertToFormDataWithUpdate(model, {});
       });
@@ -402,7 +420,6 @@ describe("AbstractModel", () => {
           public test: any;
         }
         const model = new Model({ id: 1, test: value });
-        assertToFormData(model, { id: 1, test: output });
         assertToFormDataWithCreate(model, {});
         assertToFormDataWithUpdate(model, { test: output });
       });
@@ -422,14 +439,12 @@ describe("AbstractModel", () => {
       const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(Object.keys(model.getFormDataOnlyAttributes())).not.toContain(
+      expect<any>(Object.keys(model.getFormDataOnlyAttributesForCreate())).not.toContain(
         "injector"
       );
-    });
-
-    it("should handle multiple on basic toFormData() request", () => {
-      const model = new MockModel(defaultData);
-      assertToFormData(model, { id: 1, name: "name", set: [1, 2, 3] });
+      expect<any>(Object.keys(model.getFormDataOnlyAttributesForUpdate())).not.toContain(
+        "injector"
+      );
     });
 
     it("should handle multiple on toFormData({create: true}) request", () => {

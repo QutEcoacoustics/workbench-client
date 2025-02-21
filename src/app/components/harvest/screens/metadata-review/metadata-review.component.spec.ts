@@ -94,10 +94,12 @@ describe("MetadataReviewComponent", () => {
     return stages;
   }
 
-  const getModalNextButton = (): HTMLButtonElement =>
+  // because the modal element is not a child element of the tested component,
+  // we need to use the { root: true } option so that the query is not scoped
+  // to the component's template, but to the entire document
+  const getModalNextButton = () =>
     spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
-
-  const getModalCancelButton = (): HTMLButtonElement =>
+  const getModalCancelButton = () =>
     spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
 
   function getAbortButton(): HTMLButtonElement {

@@ -127,7 +127,7 @@ describe("SecurityService", () => {
     const handleError = (err) => {
       const error = isBawApiError(err)
         ? err
-        : new BawApiError(unknownErrorCode, err.message);
+        : new BawApiError(unknownErrorCode, err.message, null);
       return throwError(() => error);
     };
 
@@ -436,7 +436,7 @@ describe("SecurityService", () => {
           next: shouldNotSucceed,
           error: (err) => {
             expect(err).toEqual(
-              new BawApiError(unknownErrorCode, "custom error")
+              new BawApiError(unknownErrorCode, "custom error", null)
             );
             done();
           },
@@ -589,7 +589,8 @@ describe("SecurityService", () => {
             expect(err).toEqual(
               new BawApiError(
                 unknownErrorCode,
-                "An unknown error has occurred, if this persists please use the Report Problem page"
+                "An unknown error has occurred, if this persists please use the Report Problem page",
+                null
               )
             );
             done();

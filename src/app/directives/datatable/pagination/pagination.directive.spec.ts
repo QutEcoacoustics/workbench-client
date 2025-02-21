@@ -11,8 +11,8 @@ import {
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
-import { DatatableSortKeyDirective } from "./sort-key.directive";
-import { DatatableDefaultsDirective } from "./defaults.directive";
+import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
+import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
 
 describe("DatatablePaginationDirective", () => {

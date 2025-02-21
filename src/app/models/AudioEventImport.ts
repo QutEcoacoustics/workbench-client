@@ -1,33 +1,18 @@
-import { DateTimeTimezone, Description, Id } from "@interfaces/apiInterfaces";
-import { USER } from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
+import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
 import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
-import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import { hasOne } from "./AssociationDecorators";
 import { User } from "./User";
-import { AudioEventImportFileRead, IAudioEventImportFileRead } from "./AudioEventImport/AudioEventImportFileRead";
-import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
+import { AnalysisJob } from "./AnalysisJob";
 
-export interface IAudioEventImport {
+export interface IAudioEventImport extends HasAllUsers, HasDescription {
   id?: Id;
   name?: string;
-  description?: Description;
-  descriptionHtml?: Description;
-  descriptionHtmlTagline?: Description;
-  createdAt?: DateTimeTimezone;
-  updatedAt?: DateTimeTimezone;
-  deletedAt?: DateTimeTimezone;
-  creatorId?: Id;
-  deleterId?: Id;
-  updaterId?: Id;
-  files?: IAudioEventImportFileRead[];
-  importedEvents?: IImportedAudioEvent[];
+  analysisJobId?: Id;
 }
 
-/**
- * ! Due to planned api changes, this model is subject to change
- * @see https://github.com/QutEcoacoustics/baw-server/issues/664
- */
 export class AudioEventImport
   extends AbstractModel<IAudioEventImport>
   implements IAudioEventImport
@@ -49,10 +34,7 @@ export class AudioEventImport
   public readonly creatorId?: Id;
   public readonly deleterId?: Id;
   public readonly updaterId?: Id;
-  @bawSubModelCollection<AudioEventImport, AudioEventImportFileRead>(AudioEventImportFileRead)
-  public readonly files?: AudioEventImportFileRead[];
-  @bawSubModelCollection<AudioEventImport, ImportedAudioEvent>(ImportedAudioEvent)
-  public readonly importedEvents?: ImportedAudioEvent[];
+  public readonly analysisJobId?: Id;
 
   // Associations
   @hasOne<AudioEventImport, User>(USER, "creatorId")
@@ -61,6 +43,8 @@ export class AudioEventImport
   public deleter?: User;
   @hasOne<AudioEventImport, User>(USER, "updaterId")
   public updater?: User;
+  @hasOne<AudioEventImport, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
+  public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
     return annotationImportRoute.format({

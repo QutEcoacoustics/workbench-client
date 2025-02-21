@@ -113,7 +113,7 @@ class AnnotationSearchComponent
 
   // the PaginationTemplate that we extend only supports a single filter
   // query string parameter e.g. a projects name
-  // since we have multiple conditions, I have overridden the updateQueryParms
+  // since we have multiple conditions, I have overridden the updateQueryParams
   // method
   //
   // TODO: the correct fix here would be to add support for any length qsps

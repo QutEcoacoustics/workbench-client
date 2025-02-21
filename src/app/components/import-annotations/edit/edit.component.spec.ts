@@ -13,6 +13,8 @@ import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event
 import { Subject } from "rxjs";
 import { testFormlyFields } from "@test/helpers/formly";
 import { modelData } from "@test/helpers/faker";
+import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import schema from "../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
 
@@ -28,23 +30,29 @@ describe("EditAnnotationsComponent", () => {
     declarations: [],
     imports: [FormsModule, SharedModule, MockBawApiModule],
     mocks: [ToastrService],
+    data: {
+      resolvers: {
+        audioEventImport: { model: defaultModel },
+      },
+    },
   });
 
   function setup(): void {
-    defaultModel = new AudioEventImport({
-      name: modelData.name.jobTitle(),
-      description: modelData.description(),
-    });
+    defaultModel = new AudioEventImport(
+      generateAudioEventImport({
+        name: modelData.name.jobTitle(),
+        description: modelData.description(),
+      })
+    );
 
     spectator = createComponent({
       detectChanges: false,
     });
 
-    apiSpy = spectator.inject(AudioEventImportService);
+    apiSpy = spectator.inject(AUDIO_EVENT_IMPORT.token);
     apiSpy.update = jasmine.createSpy("update") as any;
     apiSpy.update.and.callFake(() => new Subject());
 
-    spectator.detectChanges();
     spectator.component.model = defaultModel;
     spectator.detectChanges();
   }

@@ -102,6 +102,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
   implements AfterContentInit
 {
+  public constructor(@Host() private datatable: DatatableComponent) {
+    super();
+  }
+
   /**
    * @param filters Base api filters for table. If this is an observable, on
    * trigger, it will update the table to match the new filters. If this is a
@@ -111,10 +115,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * for the current page of the table, and should output the matching models
    */
   // eslint-disable-next-line @typescript-eslint/quotes
-  @Input("bawDatatablePagination") public pagination: {
-    filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
-    getModels: (filters: Filters<Model>) => Observable<Model[]>;
-  };
+  @Input("bawDatatablePagination") public pagination: DatatablePaginationInput<Model>;
 
   /** Base API filters, this is extracted from the pagination input */
   private filters$: Observable<Filters<Model>>;
@@ -130,8 +131,8 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    */
   private pageAndSort$ = new BehaviorSubject<PageAndSort<Model>>({ page: 0 });
 
-  public constructor(@Host() private datatable: DatatableComponent) {
-    super();
+  protected get rowLimit(): number {
+    return this.datatable.limit;
   }
 
   public ngAfterContentInit(): void {
@@ -254,6 +255,11 @@ type Sort<Model> = Sorting<keyof Model>;
 interface PageAndSort<Model> {
   page: Page;
   sort?: Sort<Model>;
+}
+
+interface DatatablePaginationInput<Model extends AbstractModel> {
+  filters?: BehaviorSubject<Filters<Model>> | Filters<Model>;
+  getModels: (filters: Filters<Model>) => Observable<Model[]>;
 }
 
 /** TableColumns with  */

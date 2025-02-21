@@ -7,6 +7,7 @@ import {
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
+import { inputFile } from "@test/helpers/html";
 import { ImageInputComponent } from "./image-input.component";
 import { formlyConfig } from "./custom-inputs.module";
 
@@ -14,6 +15,7 @@ describe("FormlyImageInput", () => {
   let model: any;
   let formGroup: FormGroup;
   let spectator: SpectatorHost<ImageInputComponent>;
+
   const createHost = createHostFactory({
     component: ImageInputComponent,
     imports: [
@@ -108,19 +110,8 @@ describe("FormlyImageInput", () => {
       const imageInput = getInput();
 
       const testingFile = new File([""], "testFile.png");
+      inputFile(spectator, imageInput, [testingFile]);
 
-      // Use the JS data transfer API to simulate a user
-      // drag and dropping a file into the file image input.
-      // this is done to add a mock file to the input field which we can
-      // then test to see if it is removed with the getButton().click() method
-      const dataTransfer = new DataTransfer();
-      // Add the mock file to dataTransfer's DataTransferItemList object
-      // DataTransferItemList is an object which stores a list of all DataTransfer Objects
-      dataTransfer.items.add(testingFile);
-      // Set the Image Input file field to the DataTransferItemList Objects list of items by value
-      imageInput.files = dataTransfer.files;
-
-      expect(imageInput.value).toBeTruthy();
       getButton().click();
       expect(imageInput.value).toBeFalsy();
     });
