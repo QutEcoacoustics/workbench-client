@@ -244,11 +244,12 @@ describe("BawApiService", () => {
     responses = {
       single: model,
       multi: [model],
-      error: new BawApiError(UNAUTHORIZED, "Unauthorized Access"),
+      error: new BawApiError(UNAUTHORIZED, "Unauthorized Access", null),
       errorInfo: new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Record could not be saved",
-        { name: ["has already been taken"], image: [] }
+        null,
+        { name: ["has already been taken"], image: [] },
       ),
     };
   });
@@ -466,6 +467,14 @@ describe("BawApiService", () => {
           functionCall(undefined, shouldNotSucceed, (err) => {
             expect(err).toEqual(responses.errorInfo);
             done();
+          });
+          flushResponse(catchFunctionCall(), response);
+        });
+
+        it("should handle error responses with data", () => {
+          const response = { meta: meta.error, data: responses.single };
+          functionCall(undefined, shouldNotSucceed, (err) => {
+            expect(err).toEqual(responses.error);
           });
           flushResponse(catchFunctionCall(), response);
         });

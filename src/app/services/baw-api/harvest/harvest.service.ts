@@ -191,7 +191,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   ): Observable<Harvest> {
     const mappingData: IHarvestMapping[] = mappings.map((mapping) =>
       mapping instanceof HarvestMapping
-        ? mapping.getJsonAttributes({ update: true })
+        ? mapping.getJsonAttributesForUpdate()
         : mapping
     );
 

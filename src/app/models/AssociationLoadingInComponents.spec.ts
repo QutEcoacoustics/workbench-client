@@ -30,7 +30,12 @@ class MockModel extends AbstractModel {
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public getJsonAttributes(_: any): any {
+
+  public override getJsonAttributesForCreate(): any {
+    throw new Error("Method not implemented.");
+  }
+
+  public override getJsonAttributesForUpdate(): any {
     throw new Error("Method not implemented.");
   }
 }

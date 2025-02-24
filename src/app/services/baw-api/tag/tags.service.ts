@@ -5,6 +5,8 @@ import { Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
+import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import { createSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
 import {
   emptyParam,
   filterParam,
@@ -72,6 +74,10 @@ export class TagsService implements StandardApi<Tag> {
     return this.filter(
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
+  }
+
+  public typeaheadCallback(): TypeaheadSearchCallback<Tag> {
+    return createSearchCallback<Tag>(this, "text");
   }
 
   /**

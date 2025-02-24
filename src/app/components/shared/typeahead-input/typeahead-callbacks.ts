@@ -10,7 +10,7 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
   filters: InnerFilter<T> = {}
-): TypeaheadSearchCallback {
+): TypeaheadSearchCallback<T> {
   return (text: any, activeItems: T[]): Observable<T[]> =>
     api.filter({
       filter: filterAnd(
@@ -26,7 +26,7 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
   filters: InnerFilter<T> = {}
-): TypeaheadSearchCallback {
+): TypeaheadSearchCallback<T> {
   return (text: any): Observable<T[]> => {
     const id = Number(text);
     if (!isFinite(id)) {

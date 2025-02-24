@@ -74,6 +74,7 @@ describe("AnnotationSearchFormComponent", () => {
     // we mock both filter and show requests because we need to have consistent
     // mock data for the typeahead queries that use filter requests, and the
     // has-many associations that use show requests
+    tagsApiSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
     tagsApiSpy.filter.andCallFake(() => of(mockTagsResponse));
     tagsApiSpy.show.andCallFake((id: Id) =>
       of(mockTagsResponse.find((tag) => tag.id === id))

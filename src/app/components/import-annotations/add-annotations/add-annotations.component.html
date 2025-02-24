@@ -1,0 +1,318 @@
+<h2>Add New Annotations</h2>
+
+<form #ngForm="ngForm">
+  <div class="annotationsimportInput">
+    <div class="import-groups">
+      <label for="annotationsFileInput" class="form-label required">
+        Annotation File(s)
+      </label>
+      <input
+        #fileInput
+        id="annotationsFileInput"
+        type="file"
+        accept=".csv, .tsv, .selections.txt, .json"
+        class="form-control border"
+        [ngClass]="{ 'is-invalid': !ngForm.valid }"
+        [disabled]="uploading"
+        (change)="handleFileChange($event)"
+        multiple
+      />
+
+      <section class="file-list mt-2">
+        @if(hasFiles) {
+        <ol>
+          @for (fileModel of importFiles$ | async; track file) {
+          <li class="file-list-item">
+            <div class="file-list-item-content">
+              <span>
+                <button
+                  class="remove-file-btn btn btn-link text-dark me-1"
+                  [ngbTooltip]="'Remove file'"
+                  (click)="removeBufferedFile(fileModel)"
+                >
+                  <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+                </button>
+
+                <span>{{ fileModel.file.name }}</span>
+              </span>
+
+              <baw-error-card
+                [errors]="fileModel.errors"
+                [errorStyle]="errorCardStyles.Inline"
+                [showSuccessState]="true"
+                class="file-error"
+              >
+                <!--
+                  Because we are inside the file list, there is no need to
+                  specify the error keys as all of the errors will be referring
+                  to the file in the list item.
+                -->
+                <ng-template let-value="value">
+                  {{ value }}
+                </ng-template>
+              </baw-error-card>
+
+              <div>
+                <baw-typeahead-input
+                  #additionalFileTagInput
+                  class="additional-file-tags"
+                  inputPlaceholder="Add tags"
+                  [searchCallback]="tagsApi.typeaheadCallback()"
+                  [resultTemplate]="tagsTypeaheadTemplate"
+                  [inputDisabled]="uploading"
+                  (modelChange)="
+                    updateFileAdditionalTagIds(
+                      fileModel,
+                      getIdsFromAbstractModelArray($event)
+                    )
+                  "
+                ></baw-typeahead-input>
+              </div>
+            </div>
+          </li>
+          }
+        </ol>
+        } @else {
+        <ng-container [ngTemplateOutlet]="noFilesTemplate"></ng-container>
+        }
+      </section>
+
+      <div class="mt-2">
+        <baw-typeahead-input
+          #extraTagsInput
+          id="extra-tags-input"
+          label="Extra Tags"
+          [inputPlaceholder]="'search for tags by name'"
+          [searchCallback]="tagsApi.typeaheadCallback()"
+          [resultTemplate]="tagsTypeaheadTemplate"
+          [inputDisabled]="(hasFiles() | async) === false"
+          (modelChange)="
+            updateExtraTags($event, extraTagsInput)
+          "
+        ></baw-typeahead-input>
+
+        <p class="text-muted">
+          Extra tags will be applied to all files in the annotation import.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
+    <span
+      class="d-inline-block mt-2"
+      [ngbTooltip]="uploadTooltip"
+      [attr.ngbTooltip]="uploadTooltip !== null"
+    >
+      <button
+        id="import-btn"
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!canCommitUploads"
+        (click)="commitImports()"
+      >
+        Import Annotations
+      </button>
+    </span>
+  </div>
+</form>
+
+<hr />
+
+<div class="identified-annotations mt-4">
+  <h4>Identified Events</h4>
+  <p>
+    The following events have been identified in your dataset, but have not been
+    saved.
+  </p>
+
+  <p>
+    You can review these events before saving them with the "Import Annotations"
+    button.
+  </p>
+
+  <div>
+    <ngx-datatable
+      bawDatatableDefaults
+      [bawVirtualDatatablePagination]="getEventModels"
+    >
+      <ngx-datatable-column [sortable]="false" prop="">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          <span
+            class="text-decoration-underline"
+            ngbTooltip="File index and the index of the event in the file"
+            container="body"
+          >
+            ID
+          </span>
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value.fileId }}:{{ value.eventId }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Recording
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          @if (!hasRecordingErrors(value)) {
+          <baw-loading
+            *ngIf="
+              value.audioRecording | isUnresolved;
+              else audioRecordingTemplate
+            "
+            size="sm"
+          ></baw-loading>
+
+          <ng-template #audioRecordingTemplate>
+            <a [bawUrl]="value.audioRecording.viewUrl">
+              {{ value.audioRecording.id }}
+            </a>
+          </ng-template>
+          } @else {
+            <!--
+              If there are errors about the associated recording column, we
+              can't have a link to the recording.
+              We therefore show the recording id as plain text so that the user
+              can see what the error is referring to.
+             -->
+            {{ value.audioRecordingId }}
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Start Time
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.startTimeSeconds | isInstantiated; else emptyTemplate">
+            {{ value.startTimeSeconds | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          End Time
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.endTimeSeconds | isInstantiated; else emptyTemplate">
+            {{ value.endTimeSeconds | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Low Frequency
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.lowFrequencyHertz | isInstantiated; else emptyTemplate">
+            {{ value.lowFrequencyHertz | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          High Frequency
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.highFrequencyHertz | isInstantiated; else emptyTemplate">
+            {{ value.highFrequencyHertz | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Channel
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.channel | isInstantiated; else emptyTemplate">
+            {{ value.channel | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Reference
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.isReference | isInstantiated; else emptyTemplate">
+            {{ value.isReference ? 'Yes' : 'No' }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Score
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="value.score | isInstantiated; else emptyTemplate">
+            {{ value.score | number }}
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Tags
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-inline-list
+            [items]="value.tags"
+            [itemKey]="'text'"
+            [emptyTemplate]="emptyTemplate"
+          ></baw-inline-list>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="event">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Errors
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-error-card
+            [errors]="value.errors"
+            [errorStyle]="errorCardStyles.Inline"
+            [showSuccessState]="true"
+            class="event-errors"
+          ></baw-error-card>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #emptyTemplate>
+  <span class="text-muted">Empty</span>
+</ng-template>
+
+<ng-template #defaultDescription>
+  <i>No description found</i>
+</ng-template>
+
+<ng-template #noFilesTemplate>
+  <span class="text-muted">No files found</span>
+</ng-template>

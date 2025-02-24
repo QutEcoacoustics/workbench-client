@@ -12,7 +12,6 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
-import { AudioEventImportFileWrite } from "@models/AudioEventImport/AudioEventImportFileWrite";
 import { Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
@@ -21,9 +20,6 @@ const endpoint = stringTemplate`/audio_event_imports/${eventImportId}${option}`;
 /**
  * Audio event import service.
  * Handles API routes pertaining to audio event imports (e.g. annotation imports).
- *
- * ! This service is subject to change due to forecasted breaking api changes.
- * @see https://github.com/QutEcoacoustics/baw-server/issues/664
  */
 @Injectable()
 export class AudioEventImportService implements StandardApi<AudioEventImport> {
@@ -60,14 +56,6 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
     return this.api.update(
       AudioEventImport,
       endpoint(model, emptyParam),
-      model
-    );
-  }
-
-  public importFile(model: AudioEventImportFileWrite): Observable<AudioEventImport> {
-    return this.api.update(
-      AudioEventImport,
-      endpoint(model.id, emptyParam),
       model
     );
   }

@@ -9,6 +9,7 @@ import {
 import { faker } from "@faker-js/faker";
 import { DateTime, Duration } from "luxon";
 import { PbsResources } from "@interfaces/pbsInterfaces";
+import { Meta } from "@baw-api/baw-api.service";
 
 const specialCharRegex = /[^\w\s]/gi;
 
@@ -90,6 +91,7 @@ export const modelData = {
     }),
   dateTime: (): DateTime => DateTime.fromJSDate(faker.date.past()),
   uuid: () => faker.datatype.uuid(),
+  file: randomFile,
   pbsResources: (): Required<PbsResources> => ({
     ncpus: modelData.datatype.number(),
     ngpus: modelData.datatype.number(),
@@ -131,6 +133,15 @@ export const modelData = {
       ...modelData.model.generateCreator(),
       ...modelData.model.generateUpdater(),
       ...modelData.model.generateDeleter(),
+    }),
+    generatePagingMetadata: (data?: Partial<Meta["paging"]>): Meta => ({
+      paging: {
+        items: modelData.datatype.number(),
+        page: modelData.datatype.number(),
+        total: modelData.datatype.number(),
+        maxPage: modelData.datatype.number(),
+        ...data,
+      },
     }),
   },
   ...faker,
@@ -280,4 +291,16 @@ function randomObject(min: number, max: number): Record<string, string> {
   }
 
   return obj;
+}
+
+function randomFile(
+  data: Partial<{
+    type: string;
+    name: string;
+    contents: BlobPart[];
+  }> = {}
+) {
+  return new File(data.contents ?? [], data?.name ?? faker.system.fileName(), {
+    type: data.type ?? "text/plain",
+  });
 }

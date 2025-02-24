@@ -72,7 +72,7 @@ export class WebsiteStatusService {
       catchError((err: BawApiError | Error) => {
         const bawError = isBawApiError(err)
           ? err
-          : new BawApiError(unknownErrorCode, err.message);
+          : new BawApiError(unknownErrorCode, err.message, {});
 
         console.error("Error fetching API /status endpoint:", bawError.message);
 

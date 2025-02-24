@@ -29,6 +29,8 @@
       "luxon",
       "datatable",
       "ngneat",
+      "pageable",
+      "xdescribe",
       "ncpus",
       "ngpus",
       "walltime"
@@ -64,7 +66,8 @@
     },
     "angularKarmaTestExplorer.debugMode": true,
     "explorer.compactFolders": false,
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "prettier.trailingComma": "all"
   },
   "extensions": {
     "recommendations": [

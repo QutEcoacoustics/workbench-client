@@ -17,11 +17,23 @@ export type AbstractModelConstructor<Model> = new (
   _injector?: AssociationInjector
 ) => Model;
 
+interface SerializationConversionOptions {
+  convertCase?: boolean;
+  formData?: boolean;
+}
+
+type SerializationTargets = XOR<{ create: boolean }, { update: boolean }>;
+type ModelSerializationOptions = SerializationTargets &
+  SerializationConversionOptions;
+
 /**
  * BAW Server Abstract Model
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
-  public constructor(raw: Readonly<Model>, protected injector?: AssociationInjector) {
+  public constructor(
+    raw: Readonly<Model>,
+    protected injector?: AssociationInjector
+  ) {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .reduce((acc, attr) => {
@@ -78,7 +90,163 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.toObject(this.getModelAttributes());
   }
 
-  public hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
+  /**
+   * Convert model to string.
+   *
+   * @param value Display custom value
+   */
+  public toString(value: string): string {
+    return `${this.kind}: ${value}`;
+  }
+
+  /**
+   * Add hidden metadata to model
+   *
+   * @param meta Metadata
+   */
+  public addMetadata(meta: Meta): void {
+    this[AbstractModel.keys.meta] = meta;
+  }
+
+  /** Get hidden model metadata */
+  public getMetadata(): Meta {
+    return this[AbstractModel.keys.meta];
+  }
+
+  public addPersistentAttribute(meta: BawAttributeMeta) {
+    return this.getPersistentAttributes().push(meta);
+  }
+
+  public getPersistentAttributes(): BawAttributeMeta[] {
+    // TODO #1005 Store this statically in the model
+    return (this[AbstractModel.keys.attributes] ??= []);
+  }
+
+  public can(capability: CapabilityKey): Capability {
+    return this.getMetadata().capabilities[capability];
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true })
+   * public x = 2
+   * ```
+   *
+   * ```ts
+   * hasJsonOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
+  public hasJsonOnlyAttributesForCreate(): boolean {
+    return this.hasJsonOnlyAttributes({ create: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getJsonAttributesForCreate() => { x: 2 }
+   * ```
+   */
+  public getJsonAttributesForCreate(): Partial<this> {
+    return this.jsonAttributes({ create: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasJsonOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
+  public hasJsonOnlyAttributesForUpdate(): boolean {
+    return this.hasJsonOnlyAttributes({ update: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getJsonAttributesForUpdate() => { x: 2 }
+   * ```
+   */
+  public getJsonAttributesForUpdate(): Partial<this> {
+    return this.jsonAttributes({ update: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasFormDataOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
+  public hasFormDataOnlyAttributesForCreate(): boolean {
+    return this.hasFormDataOnlyAttributes({ create: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getFormDataOnlyAttributesForCreate() => { x: 2 }
+   * ```
+   */
+  public getFormDataOnlyAttributesForCreate(): FormData {
+    return this.formDataOnlyAttributes({ create: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * hasFormDataOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
+  public hasFormDataOnlyAttributesForUpdate(): boolean {
+    return this.hasFormDataOnlyAttributes({ update: true });
+  }
+
+  /**
+   * @example
+   * ```ts
+   * @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
+   * public x = 2;
+   * ```
+   *
+   * ```ts
+   * getFormDataOnlyAttributesForUpdate() => { x: 2 }
+   * ```
+   */
+  public getFormDataOnlyAttributesForUpdate(): FormData {
+    return this.formDataOnlyAttributes({ update: true });
+  }
+
+  private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
     return this.getModelAttributes({ ...opts, formData: false }).some((attr) =>
       isInstantiated(this[attr])
     );
@@ -88,7 +256,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Convert model to JSON compatible object containing attributes which should
    * be sent in a JSON API request
    */
-  public getJsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
+  private jsonAttributes(opts?: ModelSerializationOptions): Partial<this> {
     return this.toObject(this.getModelAttributes(opts), opts);
   }
 
@@ -96,7 +264,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * Determine if the current model has any attributes set which should be sent
    * in a multipart form API request
    */
-  public hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
+  private hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
     return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
       isInstantiated(this[attr])
     );
@@ -107,7 +275,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * multipart form API request. Call `hasFormDataOnlyAttributes` before using
    * this value.
    */
-  public getFormDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
+  private formDataOnlyAttributes(
+    opts?: ModelSerializationOptions
+  ): FormData {
     const output = new FormData();
     const keys = this.getModelAttributes({ ...opts, formData: true });
     const data = this.toObject(keys, opts);
@@ -147,49 +317,15 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           continue;
         }
 
-        output.append(`${modelName}[${snakeCaseAttr}][]`, dataValue as any);
+        for (const dataValueItem of dataValue) {
+          output.append(`${modelName}[${snakeCaseAttr}][]`, dataValueItem);
+        }
       } else {
         output.append(`${modelName}[${snakeCaseAttr}]`, dataValue);
       }
     }
 
     return output;
-  }
-
-  /**
-   * Convert model to string.
-   *
-   * @param value Display custom value
-   */
-  public toString(value: string): string {
-    return `${this.kind}: ${value}`;
-  }
-
-  /**
-   * Add hidden metadata to model
-   *
-   * @param meta Metadata
-   */
-  public addMetadata(meta: Meta): void {
-    this[AbstractModel.keys.meta] = meta;
-  }
-
-  /** Get hidden model metadata */
-  public getMetadata(): Meta {
-    return this[AbstractModel.keys.meta];
-  }
-
-  public addPersistentAttribute(meta: BawAttributeMeta) {
-    return this.getPersistentAttributes().push(meta);
-  }
-
-  public getPersistentAttributes(): Array<BawAttributeMeta> {
-    // TODO #1005 Store this statically in the model
-    return (this[AbstractModel.keys.attributes] ??= []);
-  }
-
-  public can(capability: CapabilityKey): Capability {
-    return this.getMetadata().capabilities[capability];
   }
 
   /**
@@ -230,17 +366,21 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   private getModelAttributes(opts?: ModelSerializationOptions): string[] {
     if (opts?.create || opts?.update) {
-      return this.getPersistentAttributes()
-        .filter((meta) => (opts.create ? meta.create : meta.update))
-        // The following filter splits values for attributes that support both json and formData formats
-        // when a  null value is present, we send the value in the json request
-        // when a File value is present, we send the value in the formData request
-        // The null/json scenario is used to support deleting images.
-        .filter((meta) => this[meta.key] instanceof File ? opts.formData : true)
-        .filter((meta) =>
-          meta.supportedFormats.includes(opts.formData ? "formData" : "json")
-        )
-        .map((meta) => meta.key);
+      return (
+        this.getPersistentAttributes()
+          .filter((meta) => (opts.create ? meta.create : meta.update))
+          // The following filter splits values for attributes that support both json and formData formats
+          // when a  null value is present, we send the value in the json request
+          // when a File value is present, we send the value in the formData request
+          // The null/json scenario is used to support deleting images.
+          .filter((meta) =>
+            this[meta.key] instanceof File ? opts.formData : true
+          )
+          .filter((meta) =>
+            meta.supportedFormats.includes(opts.formData ? "formData" : "json")
+          )
+          .map((meta) => meta.key)
+      );
     } else {
       return Object.keys(this).filter((key) => key !== "injector");
     }
@@ -304,11 +444,3 @@ export function getUnknownViewUrl(errorMsg: string) {
   console.warn(errorMsg);
   return unknownViewUrl;
 }
-
-export type ModelSerializationOptions = XOR<
-  { create: boolean },
-  { update: boolean }
-> & {
-  convertCase?: boolean;
-  formData?: boolean;
-};
