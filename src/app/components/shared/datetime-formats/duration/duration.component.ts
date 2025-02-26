@@ -74,5 +74,5 @@ export class DurationComponent extends AbstractTemplateComponent<InputType, Dura
     return luxonDuration.rescale();
   }
 
-  protected static readonly DURATION_SEXAGESIMAL = "hh:mm:ss.SS" as const;
+  protected static readonly DURATION_SEXAGESIMAL = "hh:mm:ss.SS";
 }

@@ -19,7 +19,7 @@ import {
   WithContext,
 } from "@helpers/context/context-decorators";
 
-export const gridTileContentSelector = "baw-grid-tile-content" as const;
+export const gridTileContentSelector = "baw-grid-tile-content";
 
 @Component({
   standalone: true,

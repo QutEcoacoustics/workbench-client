@@ -39,6 +39,7 @@ export class Verification
   public readonly confirmed?: ConfirmedStatus;
   @bawPersistAttr()
   public readonly tagId?: Id;
+  @bawPersistAttr()
   public readonly audioEventId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()

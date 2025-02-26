@@ -63,7 +63,7 @@ import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
-  let spectator: SpectatorRouting<VerificationComponent>;
+  let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
   let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
@@ -101,7 +101,7 @@ describe("VerificationComponent", () => {
   });
 
   async function setup(queryParameters: Params = {}) {
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       params: {
         projectId: routeProject.id,
@@ -117,9 +117,9 @@ describe("VerificationComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    mediaServiceSpy = spectator.inject(MEDIA.token);
+    mediaServiceSpy = spec.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
     mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
 
@@ -158,21 +158,21 @@ describe("VerificationComponent", () => {
       injector
     );
 
-    spectator.component.searchParameters = mockSearchParameters;
-    spectator.component.project = routeProject;
-    spectator.component.region = routeRegion;
-    spectator.component.site = routeSite;
+    spec.component.searchParameters = mockSearchParameters;
+    spec.component.project = routeProject;
+    spec.component.region = routeRegion;
+    spec.component.site = routeSite;
 
-    mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
-    tagsApiSpy = spectator.inject(TAG.token);
-    projectApiSpy = spectator.inject(PROJECT.token);
-    regionApiSpy = spectator.inject(SHALLOW_REGION.token);
-    sitesApiSpy = spectator.inject(SHALLOW_SITE.token);
+    mockAudioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    tagsApiSpy = spec.inject(TAG.token);
+    projectApiSpy = spec.inject(PROJECT.token);
+    regionApiSpy = spec.inject(SHALLOW_REGION.token);
+    sitesApiSpy = spec.inject(SHALLOW_SITE.token);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
-    modalsSpy = spectator.inject(NgbModal);
-    modalConfigService = spectator.inject(NgbModalConfig);
+    modalsSpy = spec.inject(NgbModal);
+    modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
     // TODO: this should probably be replaced with callThrough()
@@ -185,7 +185,7 @@ describe("VerificationComponent", () => {
     regionApiSpy.filter.and.callFake(() => of([routeRegion]));
     sitesApiSpy.filter.and.callFake(() => of([routeSite]));
 
-    await detectChanges(spectator);
+    await detectChanges(spec);
   }
 
   beforeEach(async () => {
@@ -227,7 +227,7 @@ describe("VerificationComponent", () => {
   });
 
   const dialogToggleButton = () =>
-    spectator.query<HTMLButtonElement>(".filter-button");
+    spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
@@ -235,7 +235,7 @@ describe("VerificationComponent", () => {
     document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
   const verificationGrid = () =>
-    spectator.query<VerificationGridComponent>("oe-verification-grid");
+    spec.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
 
   // a lot of the web components elements of interest are in the shadow DOM
@@ -256,7 +256,7 @@ describe("VerificationComponent", () => {
     dataSourceRoot().querySelector("[data-testid='download-results-button']");
 
   function toggleParameters(): void {
-    spectator.click(dialogToggleButton());
+    spec.click(dialogToggleButton());
     tick(1_000);
     discardPeriodicTasks();
   }
@@ -266,7 +266,7 @@ describe("VerificationComponent", () => {
     decisionButtonTarget.click();
     verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
 
-    detectChanges(spectator);
+    detectChanges(spec);
   }
 
   async function downloadResults() {
@@ -279,7 +279,7 @@ describe("VerificationComponent", () => {
 
     await waitUntil(() => fileWriteSpy.calls.count() > 0);
 
-    detectChanges(spectator);
+    detectChanges(spec);
   }
 
   function saveFilePickerApiSpy(): jasmine.Spy {
@@ -310,7 +310,7 @@ describe("VerificationComponent", () => {
 
   it("should create", async () => {
     await setup();
-    expect(spectator.component).toBeInstanceOf(VerificationComponent);
+    expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
@@ -319,7 +319,7 @@ describe("VerificationComponent", () => {
         await setup();
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
       // TODO: fix this test. Something is leaking causing there to be no results in the dropdown
@@ -329,9 +329,9 @@ describe("VerificationComponent", () => {
         const expectedTagId = targetTag.id;
 
         toggleParameters();
-        selectFromTypeahead(spectator, tagsTypeahead(), tagText);
+        selectFromTypeahead(spec, tagsTypeahead(), tagText);
 
-        const realizedComponentParams = spectator.component.searchParameters;
+        const realizedComponentParams = spec.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
@@ -358,11 +358,11 @@ describe("VerificationComponent", () => {
         await setup(testedQueryParameters);
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spectator.component.searchParameters;
+        const realizedParameterModel = spec.component.searchParameters;
 
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
@@ -403,9 +403,9 @@ describe("VerificationComponent", () => {
           const tagText = targetTag.text;
 
           toggleParameters();
-          selectFromTypeahead(spectator, tagsTypeahead(), tagText);
-          spectator.click(updateFiltersButton());
-          detectChanges(spectator);
+          selectFromTypeahead(spec, tagsTypeahead(), tagText);
+          spec.click(updateFiltersButton());
+          detectChanges(spec);
 
           const newPagingCallback = verificationGrid().getPage;
           expect(newPagingCallback).not.toBe(initialPagingCallback);
