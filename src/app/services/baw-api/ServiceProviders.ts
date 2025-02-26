@@ -1,4 +1,7 @@
-import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import {
+  annotationResolvers,
+  AnnotationService,
+} from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
@@ -14,7 +17,10 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
-import { AudioEventImportService, audioEventImportResolvers } from "./audio-event-import/audio-event-import.service";
+import {
+  AudioEventImportService,
+  audioEventImportResolvers,
+} from "./audio-event-import/audio-event-import.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -55,7 +61,10 @@ import {
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
-import { audioEventProvenanceResolvers, AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import {
+  audioEventProvenanceResolvers,
+  AudioEventProvenanceService,
+} from "./AudioEventProvenance/AudioEventProvenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -95,9 +104,18 @@ import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
-import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
+import {
+  EventSummaryReportService,
+  eventSummaryResolvers,
+} from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
 import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
+import {
+  shallowVerificationResolvers,
+  ShallowVerificationService,
+  verificationResolvers,
+  VerificationService,
+} from "./verification/verification.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -315,7 +333,13 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.VERIFICATION,
-    service: AnnotationService,
+    service: VerificationService,
+    resolvers: verificationResolvers,
+  },
+  {
+    serviceToken: Tokens.SHALLOW_VERIFICATION,
+    service: ShallowVerificationService,
+    resolvers: shallowVerificationResolvers,
   },
 ] satisfies ServiceProvider<unknown>[];
 

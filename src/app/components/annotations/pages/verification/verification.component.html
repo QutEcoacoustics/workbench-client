@@ -40,9 +40,10 @@
   #verificationGrid
   id="verification-grid"
   (loaded)="handleGridLoaded()"
-  (decision-made)="handleDecision()"
+  (decision-made)="handleDecision($event)"
   (focus)="verificationGridFocused = true"
   (blur)="verificationGridFocused = false"
+  grid-size="1"
 >
   <template>
     <baw-grid-tile-content></baw-grid-tile-content>

@@ -96,7 +96,7 @@ import type { EventSummaryReportService } from "./reports/event-report/event-sum
 import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
 import type { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
-import type { VerificationService } from "./verification/verification.service";
+import { ShallowVerificationService, type VerificationService } from "./verification/verification.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -161,4 +161,5 @@ export const AUDIO_EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportFileServ
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const VERIFICATION = new ServiceToken<VerificationService, Verification>("VERIFICATION");
+export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService, Verification>("S_VERIFICATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");

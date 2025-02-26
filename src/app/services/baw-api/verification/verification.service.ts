@@ -23,8 +23,7 @@ const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParam<AudioEvent> = id;
 const endpoint =
   stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}/verifications/${verificationId}${option}`;
-const endpointShallow =
-  stringTemplate`/verifications/${verificationId}${option}`;
+const endpointShallow = stringTemplate`/verifications/${verificationId}${option}`;
 
 @Injectable()
 export class VerificationService implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]> {
