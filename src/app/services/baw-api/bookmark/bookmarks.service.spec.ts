@@ -11,7 +11,7 @@ import {
 } from "@test/helpers/api-common";
 import { BookmarksService } from "./bookmarks.service";
 
-describe("BookmarksService", (): void => {
+describe("BookmarksService", () => {
   const createModel = () => new Bookmark(generateBookmark({ id: 5 }));
   const baseUrl = "/bookmarks/";
   const updateUrl = baseUrl + "5";

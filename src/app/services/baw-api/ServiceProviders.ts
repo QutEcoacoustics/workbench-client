@@ -313,6 +313,10 @@ const serviceList = [
     serviceToken: Tokens.MEDIA,
     service: MediaService,
   },
+  {
+    serviceToken: Tokens.VERIFICATION,
+    service: AnnotationService,
+  },
 ] satisfies ServiceProvider<unknown>[];
 
 const services = serviceList.map(({ service }) => service) satisfies Provider[];
