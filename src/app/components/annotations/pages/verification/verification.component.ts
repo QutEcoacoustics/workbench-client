@@ -166,7 +166,7 @@ class VerificationComponent
       // we need to subscribe otherwise the observable is never evaluated and
       // the api request is never made
       this.verificationApi
-        .create(verification)
+        .createOrUpdate(verification)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((newModel: Verification) => {
           console.debug(newModel);
@@ -245,7 +245,8 @@ class VerificationComponent
   }
 
   private updateGridShape(): void {
-    this.verificationGridElement.nativeElement.targetGridSize = 12;
+    // this.verificationGridElement.nativeElement.targetGridSize = 12;
+    this.verificationGridElement.nativeElement.targetGridSize = 1;
   }
 
   private scrollToVerificationGrid(): void {
