@@ -42,8 +42,9 @@ import type { WebsiteStatus } from "@models/WebsiteStatus";
 import type { Annotation } from "@models/data/Annotation";
 import type { AnnotationService } from "@services/models/annotation.service";
 import type { MediaService } from "@services/media/media.service";
-import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { AccountsService } from "./account/accounts.service";
+import type { AudioEventImportFile } from "@models/AudioEventImportFile";
+import type { Verification } from "@models/Verification";
+import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
 import type {
@@ -92,9 +93,10 @@ import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
 import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
-import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
+import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
-import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
+import type { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
+import type { VerificationService } from "./verification/verification.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -158,4 +160,5 @@ export const AUDIO_EVENT_IMPORT = new ServiceToken<AudioEventImportService, Audi
 export const AUDIO_EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportFileService, AudioEventImportFile>("AUDIO_EVENT_IMPORT_FILE")
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
+export const VERIFICATION = new ServiceToken<VerificationService, Verification>("VERIFICATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
