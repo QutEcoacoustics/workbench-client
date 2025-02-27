@@ -135,13 +135,12 @@ class VerificationComponent
     this.doneInitialScroll = true;
   }
 
-  protected handleDecision(decisionEvent: CustomEvent<unknown[][]>): void {
+  protected handleDecision(decisionEvent: CustomEvent<any[]>): void {
     this.hasUnsavedChanges = true;
 
-    const decisions = decisionEvent.detail;
-    for (const decision of decisions) {
-      const [tile, userDecision] = decision as any;
-      const subject = tile.model.subject as AudioEvent;
+    const subjectWrappers = decisionEvent.detail;
+    for (const subjectWrapper of subjectWrappers) {
+      const subject = subjectWrapper.subject;
 
       const confirmedMapping = {
         true: ConfirmedStatus.Correct,
@@ -150,10 +149,9 @@ class VerificationComponent
         skip: ConfirmedStatus.Skip,
       } as const satisfies Record<string, ConfirmedStatus>;
 
-      const mappedDecision = confirmedMapping[userDecision[0].confirmed];
+      const mappedDecision = confirmedMapping[subjectWrapper.verification.confirmed];
 
-      const tagId =
-        subject.taggings.length > 0 ? subject.tag.id : undefined;
+      const tagId = subject.taggings.length > 0 ? subject.tag.id : undefined;
 
       const verificationData = {
         audioEventId: subject.id,
