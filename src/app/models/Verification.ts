@@ -16,8 +16,8 @@ import { AudioEvent } from "./AudioEvent";
 // representation of the verification status, while this enum if a reflection of
 // the servers representation of the verification status
 export enum ConfirmedStatus {
-  True = "correct",
-  False = "incorrect",
+  Correct = "correct",
+  Incorrect = "incorrect",
   Unsure = "unsure",
   Skip = "skip",
 }
