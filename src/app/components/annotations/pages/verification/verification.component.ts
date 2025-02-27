@@ -144,8 +144,8 @@ class VerificationComponent
       const subject = tile.model.subject as AudioEvent;
 
       const confirmedMapping = {
-        true: ConfirmedStatus.True,
-        false: ConfirmedStatus.False,
+        true: ConfirmedStatus.Correct,
+        false: ConfirmedStatus.Incorrect,
         unsure: ConfirmedStatus.Unsure,
         skip: ConfirmedStatus.Skip,
       } as const satisfies Record<string, ConfirmedStatus>;
@@ -153,7 +153,7 @@ class VerificationComponent
       const mappedDecision = confirmedMapping[userDecision[0].confirmed];
 
       const tagId =
-        subject.taggings.length > 0 ? subject.taggings[0].tagId : undefined;
+        subject.taggings.length > 0 ? subject.tag.id : undefined;
 
       const verificationData = {
         audioEventId: subject.id,
