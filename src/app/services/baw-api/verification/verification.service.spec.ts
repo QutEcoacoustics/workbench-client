@@ -17,7 +17,7 @@ import { generateUser } from "@test/fakes/User";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { CONFLICT, INTERNAL_SERVER_ERROR } from "http-status";
-import { firstValueFrom, of } from "rxjs";
+import { catchError, firstValueFrom, of, throwError } from "rxjs";
 import {
   ShallowVerificationService,
   VerificationService,
@@ -121,9 +121,23 @@ describe("ShallowVerificationService", () => {
 
       api = spec.inject<BawApiService<Model>>(BawApiService);
 
-      spyOn(api, "create").and.callFake(() => of(mockCreateResponse as any));
-      spyOn(api, "update").and.callFake(() => of(mockUpdateResponse as any));
-      spyOn(api, "filter").and.callFake(() => of(mockFilterResponse as any));
+      spyOn(api, "create").and.callFake(() =>
+        mockCreateResponse instanceof BawApiError
+          ? throwError(() => mockCreateResponse)
+          : of(mockCreateResponse)
+      );
+
+      spyOn(api, "update").and.callFake(() =>
+        mockUpdateResponse instanceof BawApiError
+          ? throwError(() => mockUpdateResponse)
+          : of(mockUpdateResponse)
+      );
+
+      spyOn(api, "filter").and.callFake(() =>
+        mockFilterResponse instanceof BawApiError
+          ? throwError(() => mockFilterResponse)
+          : of(mockFilterResponse)
+      );
     });
 
     describe("audioEventUserVerification", () => {
@@ -147,7 +161,7 @@ describe("ShallowVerificationService", () => {
       });
 
       it("should return the verification if the audio event is verified", async () => {
-        const response = firstValueFrom(
+        const response = await firstValueFrom(
           spec.service.audioEventUserVerification(mockAudioEvent.id, mockUser)
         );
 
@@ -173,32 +187,40 @@ describe("ShallowVerificationService", () => {
         expect(api.create).toHaveBeenCalledTimes(1);
       });
 
-      it("should emit an update request if there is a verification conflict", () => {
+      it("should emit an update request if there is a verification conflict", async () => {
         mockCreateResponse = new BawApiError<Verification>(
           CONFLICT,
           "Conflict",
           null
         );
-        spec.service
-          .createOrUpdate(mockModel, mockAudioEvent, mockUser)
-          .subscribe();
+
+        const response = await firstValueFrom(
+          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser)
+        );
 
         expect(api.create).toHaveBeenCalledTimes(1);
         expect(api.update).toHaveBeenCalledTimes(1);
+
+        expect(response).toEqual(mockUpdateResponse as any);
       });
 
-      it("should not emit an update request if there is an internal server error", () => {
+      it("should not emit an update request if there is an internal server error", async () => {
         mockCreateResponse = new BawApiError<Verification>(
           INTERNAL_SERVER_ERROR,
           "Internal Server Error",
           null
         );
-        spec.service
-          .createOrUpdate(mockModel, mockAudioEvent, mockUser)
-          .subscribe();
+
+        const response = await firstValueFrom(
+          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).pipe(
+            catchError(() => of(null))
+          )
+        );
 
         expect(api.create).toHaveBeenCalledTimes(1);
         expect(api.update).toHaveBeenCalledTimes(0);
+
+        expect(response).toBeNull();
       });
     });
   });

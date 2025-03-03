@@ -153,6 +153,8 @@ export class ShallowVerificationService
               })
             );
           }
+
+          throw err;
         })
       );
   }
