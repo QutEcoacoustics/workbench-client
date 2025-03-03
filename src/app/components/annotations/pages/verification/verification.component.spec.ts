@@ -20,6 +20,7 @@ import {
   SHALLOW_AUDIO_EVENT,
   SHALLOW_REGION,
   SHALLOW_SITE,
+  SHALLOW_VERIFICATION,
   TAG,
 } from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
@@ -59,6 +60,8 @@ import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { Verification } from "@models/Verification";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -66,11 +69,11 @@ describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
-  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
+  let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
   let fileWriteSpy: jasmine.Spy;
 
-
+  let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let tagsApiSpy: SpyObject<TagsService>;
   let projectApiSpy: SpyObject<ProjectsService>;
   let regionApiSpy: SpyObject<ShallowRegionsService>;
@@ -88,6 +91,7 @@ describe("VerificationComponent", () => {
   let defaultFakeTags: Tag[];
   let mockAudioRecording: AudioRecording;
   let mockAnnotationResponse: Annotation;
+  let verificationResponse: Verification;
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
@@ -163,7 +167,8 @@ describe("VerificationComponent", () => {
     spec.component.region = routeRegion;
     spec.component.site = routeSite;
 
-    mockAudioEventsApi = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
+    audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
     tagsApiSpy = spec.inject(TAG.token);
     projectApiSpy = spec.inject(PROJECT.token);
     regionApiSpy = spec.inject(SHALLOW_REGION.token);
@@ -179,11 +184,14 @@ describe("VerificationComponent", () => {
     modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
 
     // needed for AnnotationSearchParameters associated models
-    mockAudioEventsApi.filter.and.callFake(() => of(mockAudioEventsResponse));
+    audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
     tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
     projectApiSpy.filter.and.callFake(() => of([routeProject]));
     regionApiSpy.filter.and.callFake(() => of([routeRegion]));
     sitesApiSpy.filter.and.callFake(() => of([routeSite]));
+
+    verificationApiSpy.createOrUpdate.and.callFake(() => of(verificationResponse));
+    verificationApiSpy.update.and.callFake(() => of(verificationResponse));
 
     await detectChanges(spec);
   }
@@ -238,6 +246,8 @@ describe("VerificationComponent", () => {
     spec.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
 
+  const gridTiles = () => spec.queryAll("oe-verification-grid-tile");
+
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
   const helpElement = (): VerificationBootstrapComponent =>
@@ -267,6 +277,15 @@ describe("VerificationComponent", () => {
     verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
 
     detectChanges(spec);
+  }
+
+  /** Uses shift + click selection to select a range */
+  async function makeSelection(start: number, end: number) {
+    const startTile = gridTiles()[start];
+    const endTile = gridTiles()[end];
+
+    startTile.dispatchEvent(new MouseEvent("click"));
+    endTile.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
   }
 
   async function downloadResults() {
@@ -372,13 +391,37 @@ describe("VerificationComponent", () => {
       });
 
       describe("verification api", () => {
-        it("should make a verification api when a single decision is made", () => {});
+        it("should make a verification api when a single decision is made", async () => {
+          await makeDecision(0);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith({});
+        });
 
-        it("should make multiple verification api calls when multiple decisions are made", () => {});
+        it("should make multiple verification api calls when multiple decisions are made", () => {
+          makeSelection(0, 2);
 
-        it("should make the correct api calls when a decision is overwritten", () => {});
+          const expectedApiCalls = [{}, {}, {}];
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(expectedApiCalls.length);
 
-        it("should make an update api call if a verification conflicts", () => {});
+          for (const apiCall of expectedApiCalls) {
+            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(apiCall);
+          }
+        });
+
+        it("should make the correct api calls when a decision is overwritten", () => {
+          makeDecision(0);
+          makeDecision(1);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(2);
+
+          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
+        });
+
+        it("should make an update api call if a verification conflicts", () => {
+          makeDecision(1);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith({});
+          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
+        });
       });
 
       describe("verification grid functionality", () => {
