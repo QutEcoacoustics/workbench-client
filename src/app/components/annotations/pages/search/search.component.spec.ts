@@ -84,8 +84,7 @@ describe("AnnotationSearchComponent", () => {
 
     injector = spectator.inject(ASSOCIATION_INJECTOR);
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
 
     spectator.component.searchParameters = mockSearchParameters;
 

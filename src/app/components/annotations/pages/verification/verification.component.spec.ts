@@ -124,8 +124,7 @@ describe("VerificationComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spec.inject(MEDIA.token);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
