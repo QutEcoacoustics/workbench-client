@@ -79,5 +79,11 @@ describe("ShallowVerificationService", () => {
     testModelId,
   );
 
-  describe("audioEventUserVerification", () => {});
+  describe("audioEventUserVerification", () => {
+    it("should call the filter api with the correct data", () => {});
+
+    it("should return null if the audio event is not verified", () => {});
+
+    it("should return the verification if the audio event is verified", () => {});
+  });
 });

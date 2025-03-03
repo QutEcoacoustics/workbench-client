@@ -10,7 +10,7 @@ import {
   ReadonlyApi,
   StandardApi,
 } from "@baw-api/api-common";
-import { BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Id } from "@interfaces/apiInterfaces";
@@ -122,7 +122,10 @@ export class ShallowVerificationService
         // that there are no race conditions
         catchError((err) => {
           if (err.status === CONFLICT) {
-            const verificationModel = this.audioEventUserVerification(audioEvent.id, user);
+            const verificationModel = this.audioEventUserVerification(
+              audioEvent.id,
+              user
+            );
             return verificationModel.pipe(
               mergeMap((verification) => {
                 if (!verification) {
@@ -135,7 +138,7 @@ export class ShallowVerificationService
                 });
 
                 return this.update(newModel);
-              }),
+              })
             );
           }
         })
@@ -159,9 +162,13 @@ export class ShallowVerificationService
     user: User
   ): Observable<Verification | null> {
     const filter = {
-      id: { eq: eventId },
-      creatorId: { eq: user.id },
-    } as any satisfies InnerFilter<AudioEvent>;
+      filter: {
+        and: [
+          { audioEventId: { eq: eventId } },
+          { creatorId: { eq: user.id } },
+        ],
+      },
+    } as const satisfies Filters<Verification>;
 
     return this.filter(filter).pipe(
       map((results) => (results.length > 0 ? results[0] : null))
