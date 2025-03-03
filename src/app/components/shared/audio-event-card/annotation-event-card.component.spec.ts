@@ -56,10 +56,7 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(
-      testAsset("example.flac")
-    );
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
