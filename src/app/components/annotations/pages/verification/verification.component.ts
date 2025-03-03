@@ -40,6 +40,7 @@ import { ConfirmedStatus, IVerification, Verification } from "@models/Verificati
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
+import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -159,7 +160,7 @@ class VerificationComponent
         false: ConfirmedStatus.Incorrect,
         unsure: ConfirmedStatus.Unsure,
         skip: ConfirmedStatus.Skip,
-      } as const satisfies Record<string, ConfirmedStatus>;
+      } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
       const mappedDecision =
         confirmedMapping[subjectWrapper.verification.confirmed as string];
@@ -180,9 +181,7 @@ class VerificationComponent
       this.verificationApi
         .createOrUpdate(verification, subject, this.currentUser)
         .pipe(takeUntil(this.unsubscribe))
-        .subscribe((newModel: Verification) => {
-          console.debug(newModel);
-        });
+        .subscribe();
     }
   }
 
