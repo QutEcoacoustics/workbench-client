@@ -860,9 +860,9 @@ export interface Paging {
 }
 
 export interface Combinations<T> {
-  and?: InnerFilter<T>;
-  or?: InnerFilter<T>;
-  not?: InnerFilter<T>;
+  and?: InnerFilter<T> | InnerFilter<T>[];
+  or?: InnerFilter<T> | InnerFilter<T>[];
+  not?: InnerFilter<T> | InnerFilter<T>[];
 }
 
 /**
@@ -977,6 +977,8 @@ export interface Subsets {
  */
 export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   Comparisons &
+  // TODO: improve the typing for Partial<SerializableObject>
+  Partial<SerializableObject> &
   Subsets & {
     [P in keyof Writeable<Model>]?: Combinations<Writeable<Model>> &
       Comparisons &
