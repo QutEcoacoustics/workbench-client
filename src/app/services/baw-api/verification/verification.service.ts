@@ -10,14 +10,16 @@ import {
   ReadonlyApi,
   StandardApi,
 } from "@baw-api/api-common";
-import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawApiService, Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { User } from "@models/User";
 import { Verification } from "@models/Verification";
 import { CONFLICT } from "http-status";
-import { catchError, Observable } from "rxjs";
+import { catchError, map, mergeMap, Observable } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -102,7 +104,11 @@ export class ShallowVerificationService
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
    */
-  public createOrUpdate(model: Verification): Observable<Verification> {
+  public createOrUpdate(
+    model: Verification,
+    audioEvent: AudioEvent,
+    user: User
+  ): Observable<Verification> {
     return this.api
       .create(
         Verification,
@@ -112,17 +118,31 @@ export class ShallowVerificationService
         { disableNotification: true }
       )
       .pipe(
+        // fetching the verification model here is the only way to be certain
+        // that there are no race conditions
         catchError((err) => {
           if (err.status === CONFLICT) {
-            return this.update(model);
+            const verificationModel = this.audioEventUserVerification(audioEvent.id, user);
+            return verificationModel.pipe(
+              mergeMap((verification) => {
+                if (!verification) {
+                  throw err;
+                }
+
+                const newModel = new Verification({
+                  ...verification,
+                  ...model,
+                });
+
+                return this.update(newModel);
+              }),
+            );
           }
-          throw err;
         })
       );
   }
 
   public update(model: Verification): Observable<Verification> {
-    console.debug("updating model", model);
     return this.api.update(
       Verification,
       endpointShallow(model, emptyParam),
@@ -132,6 +152,20 @@ export class ShallowVerificationService
 
   public destroy(model: IdOr<Verification>): Observable<void | Verification> {
     return this.api.destroy(endpointShallow(model, emptyParam));
+  }
+
+  public audioEventUserVerification(
+    eventId: Id,
+    user: User
+  ): Observable<Verification | null> {
+    const filter = {
+      id: { eq: eventId },
+      creatorId: { eq: user.id },
+    } as any satisfies InnerFilter<AudioEvent>;
+
+    return this.filter(filter).pipe(
+      map((results) => (results.length > 0 ? results[0] : null))
+    );
   }
 }
 

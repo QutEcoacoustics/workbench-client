@@ -17,7 +17,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, takeUntil } from "rxjs";
+import { firstValueFrom, map, Observable, of, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -36,7 +36,10 @@ import {
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { ConfirmedStatus, Verification } from "@models/Verification";
+import { ConfirmedStatus, IVerification, Verification } from "@models/Verification";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { User } from "@models/User";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -62,6 +65,7 @@ class VerificationComponent
     private verificationApi: ShallowVerificationService,
     private annotationsService: AnnotationService,
 
+    private session: BawSessionService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
@@ -84,6 +88,14 @@ class VerificationComponent
   public hasUnsavedChanges = false;
   protected verificationGridFocused = true;
   private doneInitialScroll = false;
+
+  protected get currentUser(): User {
+    if (this.session.isLoggedIn) {
+      return this.session.loggedInUser;
+    }
+
+    return User.getUnknownUser(undefined);
+  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -135,12 +147,12 @@ class VerificationComponent
     this.doneInitialScroll = true;
   }
 
-  protected handleDecision(decisionEvent: CustomEvent<any[]>): void {
+  protected handleDecision(decisionEvent: CustomEvent<SubjectWrapper[]>): void {
     this.hasUnsavedChanges = true;
 
     const subjectWrappers = decisionEvent.detail;
     for (const subjectWrapper of subjectWrappers) {
-      const subject = subjectWrapper.subject;
+      const subject = subjectWrapper.subject as any as AudioEvent;
 
       const confirmedMapping = {
         true: ConfirmedStatus.Correct,
@@ -149,22 +161,24 @@ class VerificationComponent
         skip: ConfirmedStatus.Skip,
       } as const satisfies Record<string, ConfirmedStatus>;
 
-      const mappedDecision = confirmedMapping[subjectWrapper.verification.confirmed];
+      const mappedDecision =
+        confirmedMapping[subjectWrapper.verification.confirmed as string];
 
-      const tagId = subject.taggings.length > 0 ? subject.tag.id : undefined;
+      const tagId =
+        subject.taggings.length > 0 ? subject.taggings[0].tagId : undefined;
 
       const verificationData = {
         audioEventId: subject.id,
-        tagId: tagId,
         confirmed: mappedDecision,
-      };
+        tagId,
+      } as const satisfies IVerification;
 
       const verification = new Verification(verificationData, this.injector);
 
       // we need to subscribe otherwise the observable is never evaluated and
       // the api request is never made
       this.verificationApi
-        .createOrUpdate(verification)
+        .createOrUpdate(verification, subject, this.currentUser)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((newModel: Verification) => {
           console.debug(newModel);
@@ -242,9 +256,26 @@ class VerificationComponent
     this.hasUnsavedChanges = false;
   }
 
+  protected asAny(data: unknown): any {
+    return data as any;
+  }
+
+  private areAllEventsVerified(): Observable<boolean> {
+    return of(false);
+  }
+
+  private hasUserVerifiedEvent(event: AudioEvent): Observable<boolean> {
+    return this.verificationApi
+      .audioEventUserVerification(event.id, this.currentUser)
+      .pipe(
+        map((verification) => !!verification),
+        takeUntil(this.unsubscribe)
+      );
+  }
+
   private updateGridShape(): void {
-    // this.verificationGridElement.nativeElement.targetGridSize = 12;
     this.verificationGridElement.nativeElement.targetGridSize = 1;
+    // this.verificationGridElement.nativeElement.targetGridSize = 12;
   }
 
   private scrollToVerificationGrid(): void {

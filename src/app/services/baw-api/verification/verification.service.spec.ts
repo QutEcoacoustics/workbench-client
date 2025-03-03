@@ -78,4 +78,6 @@ describe("ShallowVerificationService", () => {
     createModel,
     testModelId,
   );
+
+  describe("audioEventUserVerification", () => {});
 });
