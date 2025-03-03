@@ -25,7 +25,7 @@ import {
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
+import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import {
@@ -240,7 +240,7 @@ describe("VerificationComponent", () => {
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
-  const helpElement = (): VerificationHelpDialogComponent =>
+  const helpElement = (): VerificationBootstrapComponent =>
     verificationGridRoot().querySelector("oe-verification-help-dialog");
   const helpCloseButton = (): HTMLButtonElement =>
     helpElement().shadowRoot.querySelector(".close-btn");
@@ -369,6 +369,16 @@ describe("VerificationComponent", () => {
             tags: jasmine.arrayContaining(mockTagIds),
           })
         );
+      });
+
+      describe("verification api", () => {
+        it("should make a verification api when a single decision is made", () => {});
+
+        it("should make multiple verification api calls when multiple decisions are made", () => {});
+
+        it("should make the correct api calls when a decision is overwritten", () => {});
+
+        it("should make an update api call if a verification conflicts", () => {});
       });
 
       describe("verification grid functionality", () => {
