@@ -329,7 +329,7 @@ describe("VerificationComponent", () => {
   // if this test fails, the test runners server might not be running with the
   // correct headers
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements
-  xit("should have sharedArrayBuffer defined", () => {
+  it("should have sharedArrayBuffer defined", () => {
     // note that this test does not use the setup() function
     expect(SharedArrayBuffer).toBeDefined();
   });
@@ -348,8 +348,7 @@ describe("VerificationComponent", () => {
         await detectChanges(spec);
       });
 
-      // TODO: fix this test. Something is leaking causing there to be no results in the dropdown
-      xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      it("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
@@ -458,15 +457,14 @@ describe("VerificationComponent", () => {
             }
           });
 
-          xit("should have the correct grid size target", () => {
+          it("should have the correct grid size target", () => {
             const expectedTarget = 10;
             const realizedTarget = verificationGrid().targetGridSize;
             expect(realizedTarget).toEqual(expectedTarget);
           });
         });
 
-        // TODO: this test seems to fail only when running in CI because the tags typeahead isn't populated correctly
-        xit("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
+        it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];
           const tagText = targetTag.text;
