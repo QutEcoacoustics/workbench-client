@@ -40,7 +40,7 @@
   #verificationGrid
   id="verification-grid"
   (loaded)="handleGridLoaded()"
-  (decision-made)="handleDecision($event)"
+  (decision-made)="handleDecision(asAny($event))"
   (focus)="verificationGridFocused = true"
   (blur)="verificationGridFocused = false"
   grid-size="1"

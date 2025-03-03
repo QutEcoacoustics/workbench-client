@@ -50,7 +50,7 @@ const reportKey = "report";
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
-  styleUrls: ["./view.component.scss"],
+  styleUrl: "./view.component.scss",
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

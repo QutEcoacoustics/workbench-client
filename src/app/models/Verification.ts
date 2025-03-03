@@ -37,9 +37,9 @@ export class Verification
   public readonly id?: Id;
   @bawPersistAttr()
   public readonly confirmed?: ConfirmedStatus;
-  @bawPersistAttr()
+  @bawPersistAttr({ create: true, update: false })
   public readonly tagId?: Id;
-  @bawPersistAttr()
+  @bawPersistAttr({ create: true, update: false })
   public readonly audioEventId?: Id;
   public readonly creatorId?: Id;
   @bawDateTime()

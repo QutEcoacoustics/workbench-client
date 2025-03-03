@@ -50,9 +50,7 @@ export class AudioEvent
   public readonly kind = "Audio Event";
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
-  // TODO: enable bawPersistAttr() once the API adds supports
-  // see: https://github.com/QutEcoacoustics/baw-server/issues/717
-  // @bawPersistAttr()
+  @bawPersistAttr()
   public readonly channel?: number;
   @bawPersistAttr()
   public readonly startTimeSeconds?: number;
