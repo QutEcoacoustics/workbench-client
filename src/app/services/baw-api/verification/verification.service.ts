@@ -100,6 +100,18 @@ export class ShallowVerificationService
     );
   }
 
+  public update(model: Verification): Observable<Verification> {
+    return this.api.update(
+      Verification,
+      endpointShallow(model, emptyParam),
+      model
+    );
+  }
+
+  public destroy(model: IdOr<Verification>): Observable<void | Verification> {
+    return this.api.destroy(endpointShallow(model, emptyParam));
+  }
+
   /**
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
@@ -143,18 +155,6 @@ export class ShallowVerificationService
           }
         })
       );
-  }
-
-  public update(model: Verification): Observable<Verification> {
-    return this.api.update(
-      Verification,
-      endpointShallow(model, emptyParam),
-      model
-    );
-  }
-
-  public destroy(model: IdOr<Verification>): Observable<void | Verification> {
-    return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
   public audioEventUserVerification(
