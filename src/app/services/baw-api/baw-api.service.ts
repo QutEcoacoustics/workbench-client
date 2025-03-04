@@ -977,7 +977,6 @@ export interface Subsets {
  */
 export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   Comparisons &
-  // TODO: improve the typing for Partial<SerializableObject>
   Partial<SerializableObject> &
   Subsets & {
     [P in keyof Writeable<Model>]?: Combinations<Writeable<Model>> &
