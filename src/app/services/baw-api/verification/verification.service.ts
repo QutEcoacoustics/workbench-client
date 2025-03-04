@@ -69,69 +69,6 @@ export class VerificationService
 }
 
 @Injectable()
-/**
- * Service for handling shallow verification operations.
- * Implements the StandardApi interface for Verification models.
- *
- * @template Verification - The type of the verification model.
- * @template [] - The type of the filters.
- *
- * @example
- * ```typescript
- * const service = new ShallowVerificationService(apiService);
- * service.list().subscribe((verifications) => console.log(verifications));
- * ```
- *
- * @remarks
- * This service provides methods to list, filter, show, create, update, and destroy
- * verification models. It also includes a method to create or update a verification
- * model based on its existence, and a method to fetch the current user's verification
- * model for a specific audio event.
- *
- * @param api - The BawApiService instance used to make API requests.
- *
- * @method list
- * Retrieves a list of all verification models.
- * @returns Observable<Verification[]>
- *
- * @method filter
- * Filters verification models based on the provided filters.
- * @param filters - The filters to apply.
- * @returns Observable<Verification[]>
- *
- * @method show
- * Retrieves a specific verification model by its ID.
- * @param model - The ID or instance of the verification model.
- * @returns Observable<Verification>
- *
- * @method create
- * Creates a new verification model.
- * @param model - The verification model to create.
- * @returns Observable<Verification>
- *
- * @method update
- * Updates an existing verification model.
- * @param model - The verification model to update.
- * @returns Observable<Verification>
- *
- * @method destroy
- * Deletes a specific verification model by its ID.
- * @param model - The ID or instance of the verification model.
- * @returns Observable<void | Verification>
- *
- * @method createOrUpdate
- * Creates a verification model if it doesn't already exist, otherwise updates the existing model.
- * @param model - The verification model to create or update.
- * @param audioEvent - The associated audio event.
- * @param user - The user performing the operation.
- * @returns Observable<Verification>
- *
- * @method audioEventUserVerification
- * Fetches the current user's verification model for a specific audio event.
- * @param event - The audio event.
- * @param user - The user.
- * @returns Observable<Verification | null>
- */
 export class ShallowVerificationService
   implements StandardApi<Verification, []>
 {
@@ -241,6 +178,9 @@ export class ShallowVerificationService
       },
     } as const satisfies Filters<Verification>;
 
+    // the api enforces having one verification per user per audio event
+    // therefore, it is safe to assume that there will only be one result
+    // and return the first element of the array
     return this.filter(filter).pipe(
       map((results) => (results.length > 0 ? results[0] : null))
     );
