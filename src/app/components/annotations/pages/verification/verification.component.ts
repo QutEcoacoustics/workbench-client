@@ -17,7 +17,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, map, Observable, of, takeUntil } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -36,7 +36,11 @@ import {
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { ConfirmedStatus, IVerification, Verification } from "@models/Verification";
+import {
+  ConfirmedStatus,
+  IVerification,
+  Verification,
+} from "@models/Verification";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
@@ -100,9 +104,7 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      annotationsKey
-    ] as AnnotationSearchParameters;
+    this.searchParameters ??= models[annotationsKey] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
     this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
@@ -148,12 +150,17 @@ class VerificationComponent
     this.doneInitialScroll = true;
   }
 
-  protected handleDecision(decisionEvent: CustomEvent<SubjectWrapper[]>): void {
+  protected handleDecision(decisionEvent: Event): void {
+    if (!this.isDecisionEvent(decisionEvent)) {
+      console.error("Received invalid decision event", decisionEvent);
+      return;
+    }
+
     this.hasUnsavedChanges = true;
 
     const subjectWrappers = decisionEvent.detail;
     for (const subjectWrapper of subjectWrappers) {
-      const subject = subjectWrapper.subject as any as AudioEvent;
+      const subject = subjectWrapper.subject as Readonly<AudioEvent>;
 
       const confirmedMapping = {
         true: ConfirmedStatus.Correct,
@@ -162,11 +169,12 @@ class VerificationComponent
         skip: ConfirmedStatus.Skip,
       } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
+      // I have to use "as string" here because the upstream typing is incorrect
+      // TODO: We should remove this "as string" and improve the upstream typing
       const mappedDecision =
         confirmedMapping[subjectWrapper.verification.confirmed as string];
 
-      const tagId =
-        subject.taggings.length > 0 ? subject.taggings[0].tagId : undefined;
+      const tagId = subjectWrapper.tag.id;
 
       const verificationData = {
         audioEventId: subject.id,
@@ -179,7 +187,8 @@ class VerificationComponent
       // we need to subscribe otherwise the observable is never evaluated and
       // the api request is never made
       this.verificationApi
-        .createOrUpdate(verification, subject, this.currentUser)
+        // I have to use "as any" here to remove the readonly typing
+        .createOrUpdate(verification, subject as AudioEvent, this.currentUser)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe();
     }
@@ -255,21 +264,17 @@ class VerificationComponent
     this.hasUnsavedChanges = false;
   }
 
-  protected asAny(data: unknown): any {
-    return data as any;
-  }
-
-  private areAllEventsVerified(): Observable<boolean> {
-    return of(false);
-  }
-
-  private hasUserVerifiedEvent(event: AudioEvent): Observable<boolean> {
-    return this.verificationApi
-      .audioEventUserVerification(event.id, this.currentUser)
-      .pipe(
-        map((verification) => !!verification),
-        takeUntil(this.unsubscribe)
-      );
+  // TODO: this function can be improved with instanceof checks once we export
+  // data model constructors from the web components
+  // see: https://github.com/ecoacoustics/web-components/issues/303
+  private isDecisionEvent(
+    event: Event
+  ): event is CustomEvent<SubjectWrapper[]> {
+    return (
+      event instanceof CustomEvent &&
+      event.detail instanceof Array &&
+      event.detail.length > 0
+    );
   }
 
   private updateGridShape(): void {
@@ -284,9 +289,9 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
+    const paging: Paging = { page };
     const filter: InnerFilter<AudioEvent> =
       this.searchParameters.toFilter().filter;
-    const paging: Paging = { page };
 
     return { filter, paging };
   }
