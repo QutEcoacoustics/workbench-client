@@ -59,8 +59,6 @@ export class Verification
   @hasOne<Verification, AudioEvent>(AUDIO_EVENT, "audioEventId")
   public audioEvent?: AudioEvent;
 
-  // TODO: Implement viewUrl once the verification view is implemented
-  // see: https://github.com/QutEcoacoustics/workbench-client/pull/2221
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
   }

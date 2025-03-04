@@ -43,7 +43,6 @@ import {
 } from "@models/Verification";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { User } from "@models/User";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -55,6 +54,13 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const annotationsKey = "annotations";
+
+const confirmedMapping = {
+  true: ConfirmedStatus.Correct,
+  false: ConfirmedStatus.Incorrect,
+  unsure: ConfirmedStatus.Unsure,
+  skip: ConfirmedStatus.Skip,
+} as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
 @Component({
   selector: "baw-verification",
@@ -93,14 +99,6 @@ class VerificationComponent
   public hasUnsavedChanges = false;
   protected verificationGridFocused = true;
   private doneInitialScroll = false;
-
-  protected get currentUser(): User {
-    if (this.session.isLoggedIn) {
-      return this.session.loggedInUser;
-    }
-
-    return User.getUnknownUser(undefined);
-  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -162,13 +160,6 @@ class VerificationComponent
     for (const subjectWrapper of subjectWrappers) {
       const subject = subjectWrapper.subject as Readonly<AudioEvent>;
 
-      const confirmedMapping = {
-        true: ConfirmedStatus.Correct,
-        false: ConfirmedStatus.Incorrect,
-        unsure: ConfirmedStatus.Unsure,
-        skip: ConfirmedStatus.Skip,
-      } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
-
       // I have to use "as string" here because the upstream typing is incorrect
       // TODO: We should remove this "as string" and improve the upstream typing
       const mappedDecision =
@@ -186,11 +177,12 @@ class VerificationComponent
 
       // we need to subscribe otherwise the observable is never evaluated and
       // the api request is never made
-      this.verificationApi
+      const apiRequest = this.verificationApi
         // I have to use "as any" here to remove the readonly typing
-        .createOrUpdate(verification, subject as AudioEvent, this.currentUser)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe();
+        .createOrUpdate(verification, subject as AudioEvent, this.session.currentUser)
+        .pipe(takeUntil(this.unsubscribe));
+
+      firstValueFrom(apiRequest);
     }
   }
 
@@ -273,7 +265,8 @@ class VerificationComponent
     return (
       event instanceof CustomEvent &&
       event.detail instanceof Array &&
-      event.detail.length > 0
+      event.detail.length > 0 &&
+      "subject" in event.detail[0]
     );
   }
 
