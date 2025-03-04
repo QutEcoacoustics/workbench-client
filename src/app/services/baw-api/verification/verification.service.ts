@@ -111,6 +111,8 @@ export class ShallowVerificationService
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
+  // TODO: simplify when baw-server implements an upsert route
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/724
   /**
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
@@ -175,6 +177,9 @@ export class ShallowVerificationService
           { audioEventId: { eq: event.id } },
           { creatorId: { eq: user.id } },
         ],
+      },
+      paging: {
+        items: 1,
       },
     } as const satisfies Filters<Verification>;
 
