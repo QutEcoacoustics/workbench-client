@@ -293,6 +293,8 @@ describe("VerificationComponent", () => {
 
     startTile.dispatchEvent(new MouseEvent("click"));
     endTile.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
+
+    detectChanges(spec);
   }
 
   async function downloadResults() {
@@ -396,7 +398,7 @@ describe("VerificationComponent", () => {
         );
       });
 
-      xdescribe("verification api", () => {
+      describe("verification api", () => {
         it("should make a verification api when a single decision is made", async () => {
           await makeDecision(0);
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(

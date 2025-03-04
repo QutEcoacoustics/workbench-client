@@ -13,7 +13,6 @@ import {
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { User } from "@models/User";
@@ -24,9 +23,9 @@ import { catchError, map, mergeMap, Observable } from "rxjs";
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParam<AudioEvent> = id;
+const endpointShallow = stringTemplate`/verifications/${verificationId}${option}`;
 const endpoint =
   stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}/verifications/${verificationId}${option}`;
-const endpointShallow = stringTemplate`/verifications/${verificationId}${option}`;
 
 @Injectable()
 export class VerificationService
@@ -70,6 +69,69 @@ export class VerificationService
 }
 
 @Injectable()
+/**
+ * Service for handling shallow verification operations.
+ * Implements the StandardApi interface for Verification models.
+ *
+ * @template Verification - The type of the verification model.
+ * @template [] - The type of the filters.
+ *
+ * @example
+ * ```typescript
+ * const service = new ShallowVerificationService(apiService);
+ * service.list().subscribe((verifications) => console.log(verifications));
+ * ```
+ *
+ * @remarks
+ * This service provides methods to list, filter, show, create, update, and destroy
+ * verification models. It also includes a method to create or update a verification
+ * model based on its existence, and a method to fetch the current user's verification
+ * model for a specific audio event.
+ *
+ * @param api - The BawApiService instance used to make API requests.
+ *
+ * @method list
+ * Retrieves a list of all verification models.
+ * @returns Observable<Verification[]>
+ *
+ * @method filter
+ * Filters verification models based on the provided filters.
+ * @param filters - The filters to apply.
+ * @returns Observable<Verification[]>
+ *
+ * @method show
+ * Retrieves a specific verification model by its ID.
+ * @param model - The ID or instance of the verification model.
+ * @returns Observable<Verification>
+ *
+ * @method create
+ * Creates a new verification model.
+ * @param model - The verification model to create.
+ * @returns Observable<Verification>
+ *
+ * @method update
+ * Updates an existing verification model.
+ * @param model - The verification model to update.
+ * @returns Observable<Verification>
+ *
+ * @method destroy
+ * Deletes a specific verification model by its ID.
+ * @param model - The ID or instance of the verification model.
+ * @returns Observable<void | Verification>
+ *
+ * @method createOrUpdate
+ * Creates a verification model if it doesn't already exist, otherwise updates the existing model.
+ * @param model - The verification model to create or update.
+ * @param audioEvent - The associated audio event.
+ * @param user - The user performing the operation.
+ * @returns Observable<Verification>
+ *
+ * @method audioEventUserVerification
+ * Fetches the current user's verification model for a specific audio event.
+ * @param event - The audio event.
+ * @param user - The user.
+ * @returns Observable<Verification | null>
+ */
 export class ShallowVerificationService
   implements StandardApi<Verification, []>
 {
@@ -135,7 +197,7 @@ export class ShallowVerificationService
         catchError((err) => {
           if (err.status === CONFLICT) {
             const verificationModel = this.audioEventUserVerification(
-              audioEvent.id,
+              audioEvent,
               user
             );
             return verificationModel.pipe(
@@ -159,14 +221,21 @@ export class ShallowVerificationService
       );
   }
 
+  /**
+   * Fetches a users verification model for a specific audio event
+   *
+   * @returns
+   * A verification model if the user has verified the audio event.
+   * If the user has not verified the audio event, null is returned.
+   */
   public audioEventUserVerification(
-    eventId: Id,
+    event: AudioEvent,
     user: User
   ): Observable<Verification | null> {
     const filter = {
       filter: {
         and: [
-          { audioEventId: { eq: eventId } },
+          { audioEventId: { eq: event.id } },
           { creatorId: { eq: user.id } },
         ],
       },
