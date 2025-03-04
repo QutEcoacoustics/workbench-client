@@ -6,18 +6,9 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
-import {
-  regionResolvers,
-  ShallowRegionsService,
-} from "@baw-api/region/regions.service";
-import {
-  ShallowSitesService,
-  siteResolvers,
-} from "@baw-api/site/sites.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { regionResolvers } from "@baw-api/region/regions.service";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { retrieveResolvers } from "@baw-api/resolver-common";
@@ -26,11 +17,10 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { TagsService } from "@baw-api/tag/tags.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -39,13 +29,24 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import {
+  annotationResolvers,
+  AnnotationService,
+} from "@services/models/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import {
+  ConfirmedStatus,
+  IVerification,
+  Verification,
+} from "@models/Verification";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { User } from "@models/User";
+import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
-// TODO: using extends here makes the interface loosely typed
-// we should some sort of "satisfies" operation instead
 interface PagingContext extends PageFetcherContext {
   page: number;
 }
@@ -65,15 +66,12 @@ class VerificationComponent
   implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
   public constructor(
-    public modals: NgbModal,
+    private audioEventApi: ShallowAudioEventsService,
+    private verificationApi: ShallowVerificationService,
+    private annotationsService: AnnotationService,
 
-    protected audioEventApi: ShallowAudioEventsService,
-    protected projectsApi: ProjectsService,
-    protected regionsApi: ShallowRegionsService,
-    protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService,
-    protected annotationsService: AnnotationService,
-
+    private session: BawSessionService,
+    private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -95,6 +93,14 @@ class VerificationComponent
   public hasUnsavedChanges = false;
   protected verificationGridFocused = true;
   private doneInitialScroll = false;
+
+  protected get currentUser(): User {
+    if (this.session.isLoggedIn) {
+      return this.session.loggedInUser;
+    }
+
+    return User.getUnknownUser(undefined);
+  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -144,8 +150,48 @@ class VerificationComponent
     this.doneInitialScroll = true;
   }
 
-  protected handleDecision(): void {
+  protected handleDecision(decisionEvent: Event): void {
+    if (!this.isDecisionEvent(decisionEvent)) {
+      console.error("Received invalid decision event", decisionEvent);
+      return;
+    }
+
     this.hasUnsavedChanges = true;
+
+    const subjectWrappers = decisionEvent.detail;
+    for (const subjectWrapper of subjectWrappers) {
+      const subject = subjectWrapper.subject as Readonly<AudioEvent>;
+
+      const confirmedMapping = {
+        true: ConfirmedStatus.Correct,
+        false: ConfirmedStatus.Incorrect,
+        unsure: ConfirmedStatus.Unsure,
+        skip: ConfirmedStatus.Skip,
+      } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
+
+      // I have to use "as string" here because the upstream typing is incorrect
+      // TODO: We should remove this "as string" and improve the upstream typing
+      const mappedDecision =
+        confirmedMapping[subjectWrapper.verification.confirmed as string];
+
+      const tagId = subjectWrapper.tag.id;
+
+      const verificationData = {
+        audioEventId: subject.id,
+        confirmed: mappedDecision,
+        tagId,
+      } as const satisfies IVerification;
+
+      const verification = new Verification(verificationData, this.injector);
+
+      // we need to subscribe otherwise the observable is never evaluated and
+      // the api request is never made
+      this.verificationApi
+        // I have to use "as any" here to remove the readonly typing
+        .createOrUpdate(verification, subject as AudioEvent, this.currentUser)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe();
+    }
   }
 
   protected focusVerificationGrid(): void {
@@ -218,6 +264,19 @@ class VerificationComponent
     this.hasUnsavedChanges = false;
   }
 
+  // TODO: this function can be improved with instanceof checks once we export
+  // data model constructors from the web components
+  // see: https://github.com/ecoacoustics/web-components/issues/303
+  private isDecisionEvent(
+    event: Event
+  ): event is CustomEvent<SubjectWrapper[]> {
+    return (
+      event instanceof CustomEvent &&
+      event.detail instanceof Array &&
+      event.detail.length > 0
+    );
+  }
+
   private updateGridShape(): void {
     this.verificationGridElement.nativeElement.targetGridSize = 12;
   }
@@ -230,8 +289,9 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const filter: InnerFilter<AudioEvent> = this.searchParameters.toFilter().filter;
     const paging: Paging = { page };
+    const filter: InnerFilter<AudioEvent> =
+      this.searchParameters.toFilter().filter;
 
     return { filter, paging };
   }

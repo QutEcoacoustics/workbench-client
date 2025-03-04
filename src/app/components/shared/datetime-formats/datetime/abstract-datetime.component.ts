@@ -87,7 +87,7 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
     return AbstractDatetimeComponent.FULL_DATETIME;
   }
 
-  protected static readonly FULL_DATETIME = "yyyy-MM-dd HH:mm:ss" as const;
-  protected static readonly DATE_ONLY = "yyyy-MM-dd" as const;
-  protected static readonly SEXAGESIMAL = "HH:mm:ss" as const;
+  protected static readonly FULL_DATETIME = "yyyy-MM-dd HH:mm:ss";
+  protected static readonly DATE_ONLY = "yyyy-MM-dd";
+  protected static readonly SEXAGESIMAL = "HH:mm:ss";
 }
