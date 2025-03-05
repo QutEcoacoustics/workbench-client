@@ -102,7 +102,9 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters ??= models[
+      annotationsKey
+    ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
     this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
@@ -175,13 +177,17 @@ class VerificationComponent
 
       const verification = new Verification(verificationData, this.injector);
 
-      // we need to subscribe otherwise the observable is never evaluated and
-      // the api request is never made
-      const apiRequest = this.verificationApi
-        // I have to use "as any" here to remove the readonly typing
-        .createOrUpdate(verification, subject as AudioEvent, this.session.currentUser)
-        .pipe(takeUntil(this.unsubscribe));
+      // I have to use "as any" here to remove the readonly typing
+      const apiRequest = this.verificationApi.createOrUpdate(
+        verification,
+        subject as AudioEvent,
+        this.session.currentUser
+      );
 
+      // I use firstValueFrom so that the observable is evaluated
+      // but I don't have to subscribe or unsubscribe.
+      // Additionally, notice that the function is not awaited so that the
+      // render thread can continue to run while the request is being made
       firstValueFrom(apiRequest);
     }
   }
