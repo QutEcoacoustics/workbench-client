@@ -20,12 +20,13 @@ import {
   SHALLOW_AUDIO_EVENT,
   SHALLOW_REGION,
   SHALLOW_SITE,
+  SHALLOW_VERIFICATION,
   TAG,
 } from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
+import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import {
@@ -59,18 +60,20 @@ import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { Verification } from "@models/Verification";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
-  let spectator: SpectatorRouting<VerificationComponent>;
+  let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
-  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
+  let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
   let fileWriteSpy: jasmine.Spy;
 
-
+  let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let tagsApiSpy: SpyObject<TagsService>;
   let projectApiSpy: SpyObject<ProjectsService>;
   let regionApiSpy: SpyObject<ShallowRegionsService>;
@@ -88,6 +91,7 @@ describe("VerificationComponent", () => {
   let defaultFakeTags: Tag[];
   let mockAudioRecording: AudioRecording;
   let mockAnnotationResponse: Annotation;
+  let verificationResponse: Verification;
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
@@ -101,7 +105,7 @@ describe("VerificationComponent", () => {
   });
 
   async function setup(queryParameters: Params = {}) {
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       params: {
         projectId: routeProject.id,
@@ -117,11 +121,12 @@ describe("VerificationComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    mediaServiceSpy = spectator.inject(MEDIA.token);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
+    mediaServiceSpy = spec.inject(MEDIA.token);
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(
+      testAsset("example.flac")
+    );
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
@@ -158,34 +163,45 @@ describe("VerificationComponent", () => {
       injector
     );
 
-    spectator.component.searchParameters = mockSearchParameters;
-    spectator.component.project = routeProject;
-    spectator.component.region = routeRegion;
-    spectator.component.site = routeSite;
+    spec.component.searchParameters = mockSearchParameters;
+    spec.component.project = routeProject;
+    spec.component.region = routeRegion;
+    spec.component.site = routeSite;
 
-    mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
-    tagsApiSpy = spectator.inject(TAG.token);
-    projectApiSpy = spectator.inject(PROJECT.token);
-    regionApiSpy = spectator.inject(SHALLOW_REGION.token);
-    sitesApiSpy = spectator.inject(SHALLOW_SITE.token);
+    verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
+    audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    tagsApiSpy = spec.inject(TAG.token);
+    projectApiSpy = spec.inject(PROJECT.token);
+    regionApiSpy = spec.inject(SHALLOW_REGION.token);
+    sitesApiSpy = spec.inject(SHALLOW_SITE.token);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
-    modalsSpy = spectator.inject(NgbModal);
-    modalConfigService = spectator.inject(NgbModalConfig);
+    modalsSpy = spec.inject(NgbModal);
+    modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
     // TODO: this should probably be replaced with callThrough()
     modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
 
     // needed for AnnotationSearchParameters associated models
-    mockAudioEventsApi.filter.and.callFake(() => of(mockAudioEventsResponse));
+    audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
     tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
     projectApiSpy.filter.and.callFake(() => of([routeProject]));
     regionApiSpy.filter.and.callFake(() => of([routeRegion]));
     sitesApiSpy.filter.and.callFake(() => of([routeSite]));
 
-    await detectChanges(spectator);
+    verificationApiSpy.createOrUpdate = jasmine.createSpy(
+      "createOrUpdate"
+    ) as any;
+    verificationApiSpy.createOrUpdate.and.callFake(() =>
+      of(verificationResponse)
+    );
+
+    verificationApiSpy.update = jasmine.createSpy("update") as any;
+    verificationApiSpy.update.and.callFake(() => of(verificationResponse));
+
+    await detectChanges(spec);
   }
 
   beforeEach(async () => {
@@ -227,7 +243,7 @@ describe("VerificationComponent", () => {
   });
 
   const dialogToggleButton = () =>
-    spectator.query<HTMLButtonElement>(".filter-button");
+    spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
@@ -235,28 +251,29 @@ describe("VerificationComponent", () => {
     document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
   const verificationGrid = () =>
-    spectator.query<VerificationGridComponent>("oe-verification-grid");
+    spec.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
+
+  const gridTiles = () => spec.queryAll("oe-verification-grid-tile");
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
-  const helpElement = (): VerificationHelpDialogComponent =>
-    verificationGridRoot().querySelector("oe-verification-help-dialog");
+  const bootstrapElement = (): VerificationBootstrapComponent =>
+    verificationGridRoot().querySelector("oe-verification-bootstrap");
   const helpCloseButton = (): HTMLButtonElement =>
-    helpElement().shadowRoot.querySelector(".close-btn");
+    bootstrapElement().shadowRoot.querySelector(".close-button");
 
   const decisionButtons = (): NodeListOf<HTMLButtonElement> =>
     document.querySelectorAll("oe-verification");
 
   const dataSourceComponent = (): HTMLElement =>
     document.querySelector("oe-data-source");
-  const dataSourceRoot = (): ShadowRoot =>
-    dataSourceComponent().shadowRoot;
+  const dataSourceRoot = (): ShadowRoot => dataSourceComponent().shadowRoot;
   const downloadResultsButton = (): HTMLButtonElement =>
     dataSourceRoot().querySelector("[data-testid='download-results-button']");
 
   function toggleParameters(): void {
-    spectator.click(dialogToggleButton());
+    spec.click(dialogToggleButton());
     tick(1_000);
     discardPeriodicTasks();
   }
@@ -266,7 +283,18 @@ describe("VerificationComponent", () => {
     decisionButtonTarget.click();
     verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
 
-    detectChanges(spectator);
+    detectChanges(spec);
+  }
+
+  /** Uses shift + click selection to select a range */
+  async function makeSelection(start: number, end: number) {
+    const startTile = gridTiles()[start];
+    const endTile = gridTiles()[end];
+
+    startTile.dispatchEvent(new MouseEvent("click"));
+    endTile.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
+
+    detectChanges(spec);
   }
 
   async function downloadResults() {
@@ -279,7 +307,7 @@ describe("VerificationComponent", () => {
 
     await waitUntil(() => fileWriteSpy.calls.count() > 0);
 
-    detectChanges(spectator);
+    detectChanges(spec);
   }
 
   function saveFilePickerApiSpy(): jasmine.Spy {
@@ -303,14 +331,14 @@ describe("VerificationComponent", () => {
   // if this test fails, the test runners server might not be running with the
   // correct headers
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements
-  xit("should have sharedArrayBuffer defined", () => {
+  it("should have sharedArrayBuffer defined", () => {
     // note that this test does not use the setup() function
     expect(SharedArrayBuffer).toBeDefined();
   });
 
   it("should create", async () => {
     await setup();
-    expect(spectator.component).toBeInstanceOf(VerificationComponent);
+    expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
@@ -319,23 +347,22 @@ describe("VerificationComponent", () => {
         await setup();
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
-      // TODO: fix this test. Something is leaking causing there to be no results in the dropdown
-      xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      it("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
 
         toggleParameters();
-        selectFromTypeahead(spectator, tagsTypeahead(), tagText);
+        selectFromTypeahead(spec, tagsTypeahead(), tagText);
 
-        const realizedComponentParams = spectator.component.searchParameters;
+        const realizedComponentParams = spec.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
-      it("should show and hide the search paramters dialog correctly", fakeAsync(() => {
+      it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
         expect(modalsSpy.open).not.toHaveBeenCalled();
         toggleParameters();
         expect(modalsSpy.open).toHaveBeenCalledTimes(1);
@@ -358,17 +385,59 @@ describe("VerificationComponent", () => {
         await setup(testedQueryParameters);
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spectator.component.searchParameters;
+        const realizedParameterModel = spec.component.searchParameters;
 
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
             tags: jasmine.arrayContaining(mockTagIds),
           })
         );
+      });
+
+      describe("verification api", () => {
+        it("should make a verification api when a single decision is made", async () => {
+          await makeDecision(0);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+            {}
+          );
+        });
+
+        it("should make multiple verification api calls when multiple decisions are made", () => {
+          makeSelection(0, 2);
+
+          const expectedApiCalls = [{}, {}, {}];
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            expectedApiCalls.length
+          );
+
+          for (const apiCall of expectedApiCalls) {
+            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
+              apiCall
+            );
+          }
+        });
+
+        it("should make the correct api calls when a decision is overwritten", () => {
+          makeDecision(0);
+          makeDecision(1);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(2);
+
+          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
+        });
+
+        it("should make an update api call if a verification conflicts", () => {
+          makeDecision(1);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+            {}
+          );
+          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
+        });
       });
 
       describe("verification grid functionality", () => {
@@ -381,6 +450,7 @@ describe("VerificationComponent", () => {
               "oe-media-controls",
               "oe-indicator",
               "oe-axes",
+              "oe-verification-bootstrap",
             ];
 
             for (const selector of expectedCustomElements) {
@@ -396,16 +466,15 @@ describe("VerificationComponent", () => {
           });
         });
 
-        // TODO: this test seems to fail only when running in CI because the tags typeahead isn't populated correctly
-        xit("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
+        it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];
           const tagText = targetTag.text;
 
           toggleParameters();
-          selectFromTypeahead(spectator, tagsTypeahead(), tagText);
-          spectator.click(updateFiltersButton());
-          detectChanges(spectator);
+          selectFromTypeahead(spec, tagsTypeahead(), tagText);
+          spec.click(updateFiltersButton());
+          detectChanges(spec);
 
           const newPagingCallback = verificationGrid().getPage;
           expect(newPagingCallback).not.toBe(initialPagingCallback);
