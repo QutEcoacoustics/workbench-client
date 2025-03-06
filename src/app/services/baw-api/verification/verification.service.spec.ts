@@ -151,7 +151,7 @@ describe("ShallowVerificationService", () => {
           },
         } as const satisfies Filters<Verification>;
 
-        spec.service.audioEventUserVerification(mockAudioEvent.id, mockUser);
+        spec.service.audioEventUserVerification(mockAudioEvent, mockUser);
 
         expect(api.filter).toHaveBeenCalledOnceWith(
           Verification,
@@ -162,7 +162,7 @@ describe("ShallowVerificationService", () => {
 
       it("should return the verification if the audio event is verified", async () => {
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent.id, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
         );
 
         expect(response).toEqual(mockFilterResponse[0]);
@@ -172,7 +172,7 @@ describe("ShallowVerificationService", () => {
         mockFilterResponse = [];
 
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent.id, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
         );
 
         expect(response).toBeNull();
