@@ -149,6 +149,9 @@ describe("ShallowVerificationService", () => {
               { creatorId: { eq: mockUser.id } },
             ],
           },
+          paging: {
+            items: 1,
+          },
         } as const satisfies Filters<Verification>;
 
         spec.service.audioEventUserVerification(mockAudioEvent, mockUser);
