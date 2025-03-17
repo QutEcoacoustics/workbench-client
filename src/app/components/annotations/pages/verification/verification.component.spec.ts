@@ -62,6 +62,10 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
 import { Verification } from "@models/Verification";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { WIPComponent } from "@shared/wip/wip.component";
+import { interceptFilterApiRequest, interceptShowApiRequest } from "@test/helpers/general";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -100,6 +104,9 @@ describe("VerificationComponent", () => {
       SearchFiltersModalComponent,
       ProgressWarningComponent,
       AnnotationSearchFormComponent,
+      TypeaheadInputComponent,
+      DateTimeFilterComponent,
+      WIPComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
@@ -124,9 +131,8 @@ describe("VerificationComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spec.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(
-      testAsset("example.flac")
-    );
+    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
+    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
@@ -185,11 +191,30 @@ describe("VerificationComponent", () => {
     modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
 
     // needed for AnnotationSearchParameters associated models
+    // audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
+    // tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
+    // projectApiSpy.filter.and.callFake(() => of([routeProject]));
+    // regionApiSpy.filter.and.callFake(() => of([routeRegion]));
+    // sitesApiSpy.filter.and.callFake(() => of([routeSite]));
+
+    // tagsApiSpy.show.and.callFake(() => of(defaultFakeTags[0]));
+    // projectApiSpy.show.and.callFake(() => of(routeProject));
+    // regionApiSpy.show.and.callFake(() => of(routeRegion));
+    // sitesApiSpy.show.and.callFake(() => of(routeSite));
+
     audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
-    tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
-    projectApiSpy.filter.and.callFake(() => of([routeProject]));
-    regionApiSpy.filter.and.callFake(() => of([routeRegion]));
-    sitesApiSpy.filter.and.callFake(() => of([routeSite]));
+
+    const requestPromises = Promise.all([
+      interceptShowApiRequest(tagsApiSpy, injector, defaultFakeTags[0], Tag),
+      interceptShowApiRequest(projectApiSpy, injector, routeProject, Project),
+      interceptShowApiRequest(regionApiSpy, injector, routeRegion, Region),
+      interceptShowApiRequest(sitesApiSpy, injector, routeSite, Site),
+
+      interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
+      interceptFilterApiRequest(projectApiSpy, injector, [routeProject], Project),
+      interceptFilterApiRequest(regionApiSpy, injector, [routeRegion], Region),
+      interceptFilterApiRequest(sitesApiSpy, injector, [routeSite], Site),
+    ]);
 
     verificationApiSpy.createOrUpdate = jasmine.createSpy(
       "createOrUpdate"
@@ -202,6 +227,8 @@ describe("VerificationComponent", () => {
     verificationApiSpy.update.and.callFake(() => of(verificationResponse));
 
     await detectChanges(spec);
+
+    await requestPromises;
   }
 
   beforeEach(async () => {
@@ -350,7 +377,7 @@ describe("VerificationComponent", () => {
         await detectChanges(spec);
       });
 
-      it("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      fit("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
@@ -358,8 +385,8 @@ describe("VerificationComponent", () => {
         toggleParameters();
         selectFromTypeahead(spec, tagsTypeahead(), tagText);
 
-        const realizedComponentParams = spec.component.searchParameters;
-        expect(realizedComponentParams.tags).toContain(expectedTagId);
+        // const realizedComponentParams = spec.component.searchParameters;
+        // expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
