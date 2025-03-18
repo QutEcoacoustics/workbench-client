@@ -29,7 +29,7 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
     // cycle to ensure that we wait for all of them to be stable
     const webComponentSelectors = [
       "oe-verification-grid-tile",
-      "oe-verification-help-dialog",
+      "oe-verification-bootstrap",
       "oe-verification",
       "oe-media-controls",
       "oe-indicator",
