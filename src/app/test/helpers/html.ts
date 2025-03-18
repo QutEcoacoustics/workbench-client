@@ -105,6 +105,11 @@ export function selectFromTypeahead<T>(
   const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
     ".dropdown-item.active"
   );
+
+  // We do not use the spectator.click() helper here because ng-neat spectator
+  // will call detectChanges() after the click event.
+  // Because we want to conditionally detect changes, we manually call click
+  // and detect changes.
   selectedTypeaheadOption.click();
 
   if (detectChanges) {

@@ -33,7 +33,8 @@
       "xdescribe",
       "ncpus",
       "ngpus",
-      "walltime"
+      "walltime",
+      "testid"
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",

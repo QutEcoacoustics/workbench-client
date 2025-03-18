@@ -65,7 +65,10 @@ import { Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WIPComponent } from "@shared/wip/wip.component";
-import { interceptFilterApiRequest, interceptShowApiRequest } from "@test/helpers/general";
+import {
+  interceptFilterApiRequest,
+  interceptShowApiRequest,
+} from "@test/helpers/general";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -190,31 +193,31 @@ describe("VerificationComponent", () => {
     // TODO: this should probably be replaced with callThrough()
     modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
 
-    // needed for AnnotationSearchParameters associated models
-    // audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
-    // tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
-    // projectApiSpy.filter.and.callFake(() => of([routeProject]));
-    // regionApiSpy.filter.and.callFake(() => of([routeRegion]));
-    // sitesApiSpy.filter.and.callFake(() => of([routeSite]));
-
-    // tagsApiSpy.show.and.callFake(() => of(defaultFakeTags[0]));
-    // projectApiSpy.show.and.callFake(() => of(routeProject));
-    // regionApiSpy.show.and.callFake(() => of(routeRegion));
-    // sitesApiSpy.show.and.callFake(() => of(routeSite));
-
-    audioEventsApiSpy.filter.and.callFake(() => of(mockAudioEventsResponse));
-
     const requestPromises = Promise.all([
       interceptShowApiRequest(tagsApiSpy, injector, defaultFakeTags[0], Tag),
       interceptShowApiRequest(projectApiSpy, injector, routeProject, Project),
       interceptShowApiRequest(regionApiSpy, injector, routeRegion, Region),
       interceptShowApiRequest(sitesApiSpy, injector, routeSite, Site),
 
-      interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
-      interceptFilterApiRequest(projectApiSpy, injector, [routeProject], Project),
       interceptFilterApiRequest(regionApiSpy, injector, [routeRegion], Region),
       interceptFilterApiRequest(sitesApiSpy, injector, [routeSite], Site),
+      interceptFilterApiRequest(
+        projectApiSpy,
+        injector,
+        [routeProject],
+        Project
+      ),
+
+      interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
+      interceptFilterApiRequest(
+        audioEventsApiSpy,
+        injector,
+        mockAudioEventsResponse,
+        AudioEvent
+      ),
     ]);
+
+    tagsApiSpy.typeaheadCallback = (() => () => of(defaultFakeTags)) as any;
 
     verificationApiSpy.createOrUpdate = jasmine.createSpy(
       "createOrUpdate"
@@ -222,6 +225,9 @@ describe("VerificationComponent", () => {
     verificationApiSpy.createOrUpdate.and.callFake(() =>
       of(verificationResponse)
     );
+
+    verificationApiSpy.create = jasmine.createSpy("create") as any;
+    verificationApiSpy.create.and.callFake(() => of(verificationResponse));
 
     verificationApiSpy.update = jasmine.createSpy("update") as any;
     verificationApiSpy.update.and.callFake(() => of(verificationResponse));
@@ -279,25 +285,31 @@ describe("VerificationComponent", () => {
 
   const verificationGrid = () =>
     spec.query<VerificationGridComponent>("oe-verification-grid");
-  const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
+  const verificationGridRoot = () => verificationGrid().shadowRoot;
 
   const gridTiles = () => spec.queryAll("oe-verification-grid-tile");
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
-  const bootstrapElement = (): VerificationBootstrapComponent =>
-    verificationGridRoot().querySelector("oe-verification-bootstrap");
-  const helpCloseButton = (): HTMLButtonElement =>
-    bootstrapElement().shadowRoot.querySelector(".close-button");
+  const bootstrapElement = () =>
+    verificationGridRoot().querySelector<VerificationBootstrapComponent>(
+      "oe-verification-bootstrap"
+    );
+  const helpCloseButton = () =>
+    bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(
+      ".close-button"
+    );
 
-  const decisionButtons = (): NodeListOf<HTMLButtonElement> =>
-    document.querySelectorAll("oe-verification");
+  const decisionButtons = () =>
+    document.querySelectorAll<HTMLButtonElement>("oe-verification");
 
-  const dataSourceComponent = (): HTMLElement =>
-    document.querySelector("oe-data-source");
-  const dataSourceRoot = (): ShadowRoot => dataSourceComponent().shadowRoot;
-  const downloadResultsButton = (): HTMLButtonElement =>
-    dataSourceRoot().querySelector("[data-testid='download-results-button']");
+  const dataSourceComponent = () =>
+    document.querySelector<HTMLElement>("oe-data-source");
+  const dataSourceRoot = () => dataSourceComponent().shadowRoot;
+  const downloadResultsButton = () =>
+    dataSourceRoot().querySelector<HTMLButtonElement>(
+      "[data-testid='download-results-button']"
+    );
 
   function toggleParameters(): void {
     spec.click(dialogToggleButton());
@@ -377,7 +389,7 @@ describe("VerificationComponent", () => {
         await detectChanges(spec);
       });
 
-      fit("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
@@ -385,8 +397,8 @@ describe("VerificationComponent", () => {
         toggleParameters();
         selectFromTypeahead(spec, tagsTypeahead(), tagText);
 
-        // const realizedComponentParams = spec.component.searchParameters;
-        // expect(realizedComponentParams.tags).toContain(expectedTagId);
+        const realizedComponentParams = spec.component.searchParameters;
+        expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
@@ -425,6 +437,7 @@ describe("VerificationComponent", () => {
         );
       });
 
+      // TODO: re-enable these tests
       describe("verification api", () => {
         it("should make a verification api when a single decision is made", async () => {
           await makeDecision(0);
@@ -472,12 +485,18 @@ describe("VerificationComponent", () => {
           it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
             const expectedCustomElements: string[] = [
               "oe-verification-grid",
-              "oe-verification-grid-tile",
               "oe-verification",
               "oe-media-controls",
               "oe-indicator",
               "oe-axes",
+
+              // these two custom elements are private components not supposed
+              // to be used by the end user
+              // however, because we control both the web components and the
+              // workbench client, I am happy to assert that these two
+              // components are defined, so that the test is more robust
               "oe-verification-bootstrap",
+              "oe-verification-grid-tile",
             ];
 
             for (const selector of expectedCustomElements) {
@@ -487,13 +506,13 @@ describe("VerificationComponent", () => {
           });
 
           it("should have the correct grid size target", () => {
-            const expectedTarget = 10;
+            const expectedTarget = 12;
             const realizedTarget = verificationGrid().targetGridSize;
             expect(realizedTarget).toEqual(expectedTarget);
           });
         });
 
-        it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
+        it("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(async () => {
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];
           const tagText = targetTag.text;

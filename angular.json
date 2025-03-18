@@ -105,6 +105,7 @@
           "builder": "@angular-builders/custom-webpack:karma",
           "options": {
             "codeCoverage": true,
+            "sourceMap": false,
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",

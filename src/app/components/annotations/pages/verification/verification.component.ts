@@ -134,7 +134,6 @@ class VerificationComponent
     // verification grid (e.g. to make a sub-selection) before being able to
     // use the shortcut keys
     this.focusVerificationGrid();
-    this.updateGridShape();
 
     const timeoutDurationMilliseconds = 1_000 as const;
 
@@ -274,10 +273,6 @@ class VerificationComponent
       event.detail.length > 0 &&
       "subject" in event.detail[0]
     );
-  }
-
-  private updateGridShape(): void {
-    this.verificationGridElement.nativeElement.targetGridSize = 12;
   }
 
   private scrollToVerificationGrid(): void {

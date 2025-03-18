@@ -7,12 +7,6 @@
  */
 
 module.exports = {
-  experiments: {
-    outputModule: true,
-  },
-  output: {
-    module: true,
-  },
   module: {
     parser: {
       javascript: {
