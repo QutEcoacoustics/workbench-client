@@ -68,6 +68,7 @@ import { WIPComponent } from "@shared/wip/wip.component";
 import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
+  viewports,
 } from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
@@ -232,6 +233,10 @@ describe("VerificationComponent", () => {
 
     verificationApiSpy.update = jasmine.createSpy("update") as any;
     verificationApiSpy.update.and.callFake(() => of(verificationResponse));
+
+    // I explicitly set the viewport size so that the grid size is always
+    // consistent no matter what size the karma browser window is
+    viewport.set(viewports.extraLarge);
 
     await detectChanges(spec);
 
@@ -511,6 +516,7 @@ describe("VerificationComponent", () => {
               jasmine.anything()
             ],
           ];
+
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
             expectedApiCalls.length
           );
