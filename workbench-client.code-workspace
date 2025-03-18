@@ -34,7 +34,8 @@
       "ncpus",
       "ngpus",
       "walltime",
-      "testid"
+      "testid",
+      "flac"
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",

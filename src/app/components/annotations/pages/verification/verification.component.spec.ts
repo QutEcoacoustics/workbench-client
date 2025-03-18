@@ -69,6 +69,7 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
+import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -287,7 +288,10 @@ describe("VerificationComponent", () => {
     spec.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = () => verificationGrid().shadowRoot;
 
-  const gridTiles = () => spec.queryAll("oe-verification-grid-tile");
+  const gridTiles = () =>
+    verificationGridRoot().querySelectorAll<VerificationGridTileComponent>(
+      "oe-verification-grid-tile"
+    );
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
@@ -300,8 +304,12 @@ describe("VerificationComponent", () => {
       ".close-button"
     );
 
-  const decisionButtons = () =>
+  const decisionComponents = () =>
     document.querySelectorAll<HTMLButtonElement>("oe-verification");
+  const decisionButton = (index: number) =>
+    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+      "button"
+    );
 
   const dataSourceComponent = () =>
     document.querySelector<HTMLElement>("oe-data-source");
@@ -318,22 +326,44 @@ describe("VerificationComponent", () => {
   }
 
   async function makeDecision(index: number) {
-    const decisionButtonTarget = decisionButtons()[index];
-    decisionButtonTarget.click();
-    verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
+    const decisionComponent = decisionComponents()[index];
+    decisionComponent.disabled = false;
 
-    detectChanges(spec);
+    const decisionButtonTarget = decisionButton(index);
+    spec.click(decisionButtonTarget);
+
+    await detectChanges(spec);
   }
 
   /** Uses shift + click selection to select a range */
   async function makeSelection(start: number, end: number) {
-    const startTile = gridTiles()[start];
-    const endTile = gridTiles()[end];
+    const targetGridTiles = gridTiles();
 
-    startTile.dispatchEvent(new MouseEvent("click"));
-    endTile.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
+    const startTile = targetGridTiles[start];
+    const startTileClickTarget = startTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
 
-    detectChanges(spec);
+    const endTile = targetGridTiles[end];
+    const endTileClickTarget = endTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
+
+    startTileClickTarget.dispatchEvent(new MouseEvent("pointerdown"));
+
+    // If the start is the same as the end, we do not want to dispatch a shift
+    // click event on the tile because that would result in the tile being
+    // de-selected.
+    // I have made this decision because I deemed it helpful for this function
+    // to be able to select a single tile.
+    // e.g. makeSelection(0, 0) should select the first tile
+    if (startTile !== endTile) {
+      endTileClickTarget.dispatchEvent(
+        new MouseEvent("pointerdown", { shiftKey: true })
+      );
+    }
+
+    await detectChanges(spec);
   }
 
   async function downloadResults() {
@@ -363,6 +393,10 @@ describe("VerificationComponent", () => {
 
     window["showSaveFilePicker"] = mockApi;
     return fileWriteApi;
+  }
+
+  function gridSize(): number {
+    return gridTiles().length;
   }
 
   assertPageInfo(VerificationComponent, "Verify Annotations");
@@ -437,46 +471,70 @@ describe("VerificationComponent", () => {
         );
       });
 
-      // TODO: re-enable these tests
       describe("verification api", () => {
-        it("should make a verification api when a single decision is made", async () => {
+        it("should make the correct api calls when a decision is made about the entire grid", async () => {
           await makeDecision(0);
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
-            {}
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            gridSize()
           );
         });
 
-        it("should make multiple verification api calls when multiple decisions are made", () => {
-          makeSelection(0, 2);
+        it("should make a verification api when a single decision is made", async () => {
+          await makeSelection(0, 0);
+          await makeDecision(0);
 
-          const expectedApiCalls = [{}, {}, {}];
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+            jasmine.anything(),
+            jasmine.anything(),
+            jasmine.anything()
+          );
+        });
+
+        it("should make multiple verification api calls when multiple decisions are made", async () => {
+          await makeSelection(0, 2);
+          await makeDecision(0);
+
+          const expectedApiCalls = [
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+          ];
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
             expectedApiCalls.length
           );
 
           for (const apiCall of expectedApiCalls) {
             expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
-              apiCall
+              ...apiCall
             );
           }
         });
 
-        it("should make the correct api calls when a decision is overwritten", () => {
-          makeDecision(0);
-          makeDecision(1);
+        it("should make the correct api calls when a decision is overwritten", async () => {
+          await makeSelection(0, 0);
+          await makeDecision(0);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(1);
 
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(2);
-
-          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
-        });
-
-        it("should make an update api call if a verification conflicts", () => {
-          makeDecision(1);
+          verificationApiSpy.createOrUpdate.calls.reset();
+          await makeDecision(1);
 
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
-            {}
+            jasmine.anything(),
+            jasmine.anything(),
+            jasmine.anything()
           );
-          expect(verificationApiSpy.update).toHaveBeenCalledOnceWith({});
         });
       });
 
