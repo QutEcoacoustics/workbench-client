@@ -256,7 +256,9 @@ class VerificationComponent
       return;
     }
 
+    // TODO: this is a hacky solution to get the verification grid to update
     this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
+    this.verificationGridElement.nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges = false;
   }
