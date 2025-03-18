@@ -43,7 +43,7 @@
     "@angular/platform-server": "17.1.2",
     "@angular/router": "17.1.2",
     "@angular/ssr": "^17.1.2",
-    "@ecoacoustics/web-components": "^2.1.0",
+    "@ecoacoustics/web-components": "^1.2.5",
     "@fortawesome/angular-fontawesome": "^0.14.1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
