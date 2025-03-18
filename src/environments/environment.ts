@@ -5,7 +5,7 @@ export const environment = {
   /** Timeout for web requests in server side renderer */
   ssrTimeout: 1_000,
   /** Timeout for web requests in browser */
-  browserTimeout: 10_000,
+  browserTimeout: 20_000,
   /**
    * Current build version of this code. This is set by the docker container
    * and should not be modified without care
