@@ -3,7 +3,6 @@
  * Angular components and external Lit web components for use in tests
  */
 
-import { discardPeriodicTasks, fakeAsync, flush } from "@angular/core/testing";
 import { Spectator } from "@ngneat/spectator";
 
 /**
@@ -15,11 +14,6 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
   do {
     // Detect changes in Angular components
     spectator.detectChanges();
-
-    fakeAsync(() => {
-      flush();
-      discardPeriodicTasks();
-    });
 
     // wait for the lit lifecycle to complete
     //

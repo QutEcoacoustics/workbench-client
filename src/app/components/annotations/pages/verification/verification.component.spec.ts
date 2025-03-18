@@ -32,7 +32,6 @@ import { Tag } from "@models/Tag";
 import {
   discardPeriodicTasks,
   fakeAsync,
-  flush,
   tick,
 } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
@@ -477,6 +476,10 @@ describe("VerificationComponent", () => {
       });
 
       describe("verification api", () => {
+        beforeEach(async () => {
+          await waitUntil(() => gridSize() > 2);
+        });
+
         it("should make the correct api calls when a decision is made about the entire grid", async () => {
           await makeDecision(0);
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
@@ -487,6 +490,8 @@ describe("VerificationComponent", () => {
         it("should make a verification api when a single decision is made", async () => {
           await makeSelection(0, 0);
           await makeDecision(0);
+
+          await detectChanges(spec);
 
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
             jasmine.anything(),
@@ -576,25 +581,27 @@ describe("VerificationComponent", () => {
           });
         });
 
-        xit("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(async () => {
+        it("should reset the verification grids getPage function when the search parameters are changed", async () => {
           await detectChanges(spec);
+
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];
           const tagText = targetTag.text;
 
-          toggleParameters();
-          selectFromTypeahead(spec, tagsTypeahead(), tagText);
+          fakeAsync(() => {
+            toggleParameters();
+            selectFromTypeahead(spec, tagsTypeahead(), tagText);
+          })();
+
           spec.click(updateFiltersButton());
+
           await detectChanges(spec);
 
           // we use the "toBe" matcher so that we compare the "getPage" callback
           // by reference
           const newPagingCallback = verificationGrid().getPage;
           expect(newPagingCallback).not.toBe(initialPagingCallback);
-
-          flush();
-          discardPeriodicTasks();
-        }));
+        });
 
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
