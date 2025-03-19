@@ -31,6 +31,7 @@ import { WebsiteStatusModule } from "@components/website-status/website-status.m
 import { AnnotationModule } from "@components/annotations/annotation.module";
 import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
+import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { toastrRoot } from "./app.helper";
@@ -87,6 +88,10 @@ export const appImports = [
   StatisticsModule,
   WebsiteStatusModule,
   VisualizeModule,
+
+  // standalone components
+  ToastProviderComponent,
+
   // these last two must be last!
   HomeModule,
   ErrorModule,

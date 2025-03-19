@@ -1,16 +1,18 @@
-import { TestBed } from '@angular/core/testing';
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { ToastsService } from "./toasts.service";
 
-import { ToastsService } from './toasts.service';
+describe("ToastsService", () => {
+  let spec: SpectatorService<ToastsService>;
 
-describe('ToastsService', () => {
-  let service: ToastsService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ToastsService);
+  const createService = createServiceFactory({
+    service: ToastsService,
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  beforeEach(() => {
+    spec = createService();
+  });
+
+  it("should create", () => {
+    expect(spec.service).toBeInstanceOf(ToastsService);
   });
 });
