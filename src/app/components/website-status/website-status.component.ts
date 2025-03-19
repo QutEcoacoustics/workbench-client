@@ -80,6 +80,11 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
         ...this.listItemContent(this.model?.isUploadingHealthy),
       },
       {
+        name: "Batch Analysis",
+        icon: ["fas", "server"],
+        ...this.listItemContent(this.model?.isBatchAnalysisHealthy),
+      },
+      {
         name: "User Internet Connection",
         icon: ["fas", "wifi"],
         ...this.listItemContent(this.model?.onLine),

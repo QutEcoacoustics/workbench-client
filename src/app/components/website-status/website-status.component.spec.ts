@@ -70,6 +70,7 @@ describe("WebsiteStatusComponent", () => {
       { name: "Cache", value: "Healthy" },
       { name: "Storage", value: "Healthy" },
       { name: "User Uploads", value: "Healthy" },
+      { name: "Batch Analysis", value: "Healthy" },
       { name: "User Internet Connection", value: "Healthy" },
     ];
 
@@ -81,6 +82,7 @@ describe("WebsiteStatusComponent", () => {
       redis: "PONG",
       storage: "1 audio recording storage directory available.",
       upload: "Alive",
+      batchAnalysis: "Connected",
     });
 
     setup(fakeWebsiteStatus);
@@ -98,6 +100,7 @@ describe("WebsiteStatusComponent", () => {
       { name: "Cache", value: "Unhealthy" },
       { name: "Storage", value: "Unhealthy" },
       { name: "User Uploads", value: "Unhealthy" },
+      { name: "Batch Analysis", value: "Unhealthy" },
       { name: "User Internet Connection", value: "Healthy" },
     ];
 
@@ -109,6 +112,7 @@ describe("WebsiteStatusComponent", () => {
       redis: "",
       storage: "No audio recording storage directories are available.",
       upload: "Dead",
+      batchAnalysis: "Failed to connect",
     });
 
     setup(fakeWebsiteStatus);
@@ -126,6 +130,7 @@ describe("WebsiteStatusComponent", () => {
       { name: "Cache", value: "Unhealthy" },
       { name: "Storage", value: "Healthy" },
       { name: "User Uploads", value: "Unhealthy" },
+      { name: "Batch Analysis", value: "Healthy" },
       { name: "User Internet Connection", value: "Healthy" },
     ];
 
@@ -137,6 +142,7 @@ describe("WebsiteStatusComponent", () => {
       redis: "",
       storage: "1 audio recording storage directory available.",
       upload: "Dead",
+      batchAnalysis: "Connected",
     });
 
     setup(fakeWebsiteStatus);
@@ -154,6 +160,7 @@ describe("WebsiteStatusComponent", () => {
       { name: "Cache", value: "Unknown" },
       { name: "Storage", value: "Unknown" },
       { name: "User Uploads", value: "Unknown" },
+      { name: "Batch Analysis", value: "Unknown" },
       { name: "User Internet Connection", value: "Healthy" },
     ];
 
@@ -175,6 +182,7 @@ describe("WebsiteStatusComponent", () => {
       { name: "Cache", value: "Unknown" },
       { name: "Storage", value: "Unknown" },
       { name: "User Uploads", value: "Unknown" },
+      { name: "Batch Analysis", value: "Unknown" },
       { name: "User Internet Connection", value: "Unhealthy" },
     ];
 

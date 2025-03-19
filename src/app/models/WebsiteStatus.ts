@@ -9,6 +9,7 @@ export type UploadStatus = "Alive" | "Dead";
 export type StorageStatus =
   | "No audio recording storage directories are available."
   | `${number} audio recording storage directory available.`;
+export type BatchAnalysisStatus = "Connected" | "Failed to connect";
 
 export interface IWebsiteStatus {
   status: WebsiteOverallStatus | undefined;
@@ -17,6 +18,7 @@ export interface IWebsiteStatus {
   redis: RedisStatus | undefined;
   storage: StorageStatus | undefined;
   upload: UploadStatus | undefined;
+  batchAnalysis: BatchAnalysisStatus | undefined;
 }
 
 export class WebsiteStatus
@@ -34,6 +36,7 @@ export class WebsiteStatus
   public readonly redis: RedisStatus | undefined;
   public readonly storage: StorageStatus | undefined;
   public readonly upload: UploadStatus | undefined;
+  public readonly batchAnalysis: BatchAnalysisStatus | undefined;
 
   public get isStatusHealthy(): boolean | null {
     return isInstantiated(this.status) ? this.status === "good" : null;
@@ -59,6 +62,10 @@ export class WebsiteStatus
 
   public get isUploadingHealthy(): boolean | null {
     return isInstantiated(this.upload) ? this.upload === "Alive" : null;
+  }
+
+  public get isBatchAnalysisHealthy(): boolean | null {
+    return isInstantiated(this.batchAnalysis) ? this.batchAnalysis === "Connected" : null;
   }
 
   public get onLine(): boolean {
