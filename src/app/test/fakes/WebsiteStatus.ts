@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import {
+  BatchAnalysisStatus,
   IWebsiteStatus,
   RedisStatus,
   StorageStatus,
@@ -21,6 +22,7 @@ export function generateWebsiteStatus(
       "No audio recording storage directories are available.",
     ]),
     upload: faker.helpers.arrayElement<UploadStatus>(["Alive", "Dead"]),
+    batchAnalysis: faker.helpers.arrayElement<BatchAnalysisStatus>(["Connected", "Failed to connect"]),
     ...data,
   };
 }
