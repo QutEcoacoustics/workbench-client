@@ -1,15 +1,30 @@
-oe-axes, oe-indicator {
-  height: 100%;
-}
-
-.spectrogram-container {
-  height: 400px;
-}
-
-.card-container {
-  min-width: 180px;
+// There used to be a spectrogram component bug where the spectrograms initial
+// inline-flex size would be the default size of the html <canvas> element.
+// This would make all of the spectrograms a uniform size.
+// However, this bug was fixed and then the spectrograms "stretch" sizing could
+// correctly shrink to match its container size. However, this meant that the
+// spectrogram would stretch to the size of the card title (because it was the
+// the widest element in the card).
+// So that all of the spectrograms are a uniform size again, I set the axes
+// size to the old size when the spectrogram was based off the default <canvas>
+// size (because that is the shape I initially designed the UI around).
+oe-axes {
+  display: block;
+  width: 332px;
 }
 
 .info-line {
   display: block;
+  width: 100%;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+
+  .card-title {
+    flex: 0 0 auto;
+    max-width: 210px;
+    align-content: center;
+  }
 }
