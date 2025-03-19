@@ -25,7 +25,7 @@
   </div>
 
   <div class="card-body">
-    <span class="info-line">
+    <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
       <span *ngFor="let text of annotation.tags; last as isLast">
         <a [href]="text.viewUrl">{{ text.text }}</a>
