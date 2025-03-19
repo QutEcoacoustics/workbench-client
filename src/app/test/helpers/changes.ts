@@ -3,7 +3,6 @@
  * Angular components and external Lit web components for use in tests
  */
 
-import { discardPeriodicTasks, fakeAsync, flush } from "@angular/core/testing";
 import { Spectator } from "@ngneat/spectator";
 
 /**
@@ -16,11 +15,6 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
     // Detect changes in Angular components
     spectator.detectChanges();
 
-    fakeAsync(() => {
-      flush();
-      discardPeriodicTasks();
-    });
-
     // wait for the lit lifecycle to complete
     //
     // we re-query for web component because some web components might create
@@ -29,7 +23,7 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
     // cycle to ensure that we wait for all of them to be stable
     const webComponentSelectors = [
       "oe-verification-grid-tile",
-      "oe-verification-help-dialog",
+      "oe-verification-bootstrap",
       "oe-verification",
       "oe-media-controls",
       "oe-indicator",

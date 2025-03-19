@@ -50,14 +50,14 @@ const reportKey = "report";
 @Component({
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
-  styleUrls: ["./view.component.scss"],
+  styleUrl: "./view.component.scss",
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
     protected eventSummaryReportApi: EventSummaryReportService,
+    protected session: BawSessionService,
     private route: ActivatedRoute,
     private router: Router,
-    private session: BawSessionService,
     private location: Location,
     private modalService: NgbModal
   ) {
@@ -108,14 +108,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
       event.preventDefault();
       this.openPrintModal();
     }
-  }
-
-  protected get currentUser(): User {
-    if (this.session.isLoggedIn) {
-      return this.session.loggedInUser;
-    }
-
-    return User.getUnknownUser(undefined);
   }
 
   public getModels = (_filters: any): Observable<any> =>

@@ -47,5 +47,5 @@ export abstract class AbstractTemplateComponent<
   protected abstract normalizeValue(value: InputType): NormalizedType;
   public abstract update(): void;
 
-  protected static readonly TOOLTIP_DATETIME = "yyyy-MM-dd HH:mm:ss.SSS" as const;
+  protected static readonly TOOLTIP_DATETIME = "yyyy-MM-dd HH:mm:ss.SSS";
 }

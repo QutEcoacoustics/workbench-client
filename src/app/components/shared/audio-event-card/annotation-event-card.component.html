@@ -1,22 +1,37 @@
-<div class="card p-2">
-  <oe-axes>
-    <oe-indicator>
-      <oe-spectrogram
-        [id]="spectrogramId"
-        [src]="annotation.audioLink"
-        scaling="stretch"
-        color-map="grayscale"
-        class="spectrogram"
-      ></oe-spectrogram>
-    </oe-indicator>
-  </oe-axes>
+<div class="card-container card p-2">
+  <div class="spectrogram-container">
+    <!--
+      Use the same spectrogram settings that the baw-server uses for spectrograms
+      so that there is consistency across the website.
+      see: QutEcoacoustics/baw-server > config/settings/default.yml#L243-L244
+    -->
+    <oe-axes>
+      <oe-indicator>
+        <oe-spectrogram
+          [id]="spectrogramId"
+          [src]="annotation.audioLink"
+          scaling="stretch"
+          color-map="grayscale"
+          window-size="512"
+          window-function="hamming"
+        ></oe-spectrogram>
+      </oe-indicator>
+    </oe-axes>
+  </div>
 
   <div class="card-header">
-    <h5 class="card-title m-0">{{ annotation.tags }}</h5>
     <oe-media-controls #mediaControls></oe-media-controls>
   </div>
 
   <div class="card-body">
+    <span class="info-line tag-information">
+      <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
+      <span *ngFor="let text of annotation.tags; last as isLast">
+        <a [href]="text.viewUrl">{{ text.text }}</a>
+        <ng-container *ngIf="!isLast">, </ng-container>
+      </span>
+    </span>
+
     <span class="info-line">
       <baw-loading
         *ngIf="annotation.audioRecording.site | isUnresolved; else site"

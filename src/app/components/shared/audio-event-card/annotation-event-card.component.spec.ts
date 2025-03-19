@@ -56,10 +56,7 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(
-      testAsset("example.flac")
-    );
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
@@ -98,7 +95,7 @@ describe("AudioEventCardComponent", () => {
     spectator.query<SpectrogramComponent>("oe-spectrogram");
   const listenLink = () =>
     spectator.query<HTMLAnchorElement>(".more-information-link");
-  const cardTitle = () => spectator.query(".card-title");
+  const tagInfoElement = () => spectator.query(".tag-information");
 
   beforeEach(() => {
     patchSharedArrayBuffer();
@@ -120,9 +117,9 @@ describe("AudioEventCardComponent", () => {
     expect(listenLink()).toHaveAttribute("href", expectedHref);
   });
 
-  it("should use the tag text as the card title", () => {
-    const expectedTitle = mockTag.text;
-    expect(cardTitle()).toHaveText(expectedTitle);
+  it("should have the tag text and link in the info", () => {
+    const expectedText = mockTag.text;
+    expect(tagInfoElement()).toHaveText(expectedText);
   });
 
   xit("should be able to play the spectrogram", () => {});

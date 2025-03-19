@@ -39,10 +39,11 @@
 <oe-verification-grid
   #verificationGrid
   id="verification-grid"
-  (loaded)="handleGridLoaded()"
-  (decision-made)="handleDecision()"
+  (grid-loaded)="handleGridLoaded()"
+  (decision-made)="handleDecision($event)"
   (focus)="verificationGridFocused = true"
   (blur)="verificationGridFocused = false"
+  grid-size="12"
 >
   <template>
     <baw-grid-tile-content></baw-grid-tile-content>

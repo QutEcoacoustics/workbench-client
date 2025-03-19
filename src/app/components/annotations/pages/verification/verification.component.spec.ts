@@ -20,18 +20,18 @@ import {
   SHALLOW_AUDIO_EVENT,
   SHALLOW_REGION,
   SHALLOW_SITE,
+  SHALLOW_VERIFICATION,
   TAG,
 } from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationHelpDialogComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/help-dialog";
+import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import {
   discardPeriodicTasks,
   fakeAsync,
-  flush,
   tick,
 } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
@@ -59,18 +59,29 @@ import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { Verification } from "@models/Verification";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { WIPComponent } from "@shared/wip/wip.component";
+import {
+  interceptFilterApiRequest,
+  interceptShowApiRequest,
+  viewports,
+} from "@test/helpers/general";
+import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
-  let spectator: SpectatorRouting<VerificationComponent>;
+  let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
-  let mockAudioEventsApi: SpyObject<ShallowAudioEventsService>;
+  let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
   let fileWriteSpy: jasmine.Spy;
 
-
+  let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let tagsApiSpy: SpyObject<TagsService>;
   let projectApiSpy: SpyObject<ProjectsService>;
   let regionApiSpy: SpyObject<ShallowRegionsService>;
@@ -88,6 +99,7 @@ describe("VerificationComponent", () => {
   let defaultFakeTags: Tag[];
   let mockAudioRecording: AudioRecording;
   let mockAnnotationResponse: Annotation;
+  let verificationResponse: Verification;
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
@@ -96,12 +108,15 @@ describe("VerificationComponent", () => {
       SearchFiltersModalComponent,
       ProgressWarningComponent,
       AnnotationSearchFormComponent,
+      TypeaheadInputComponent,
+      DateTimeFilterComponent,
+      WIPComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
   async function setup(queryParameters: Params = {}) {
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       params: {
         projectId: routeProject.id,
@@ -117,9 +132,9 @@ describe("VerificationComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    mediaServiceSpy = spectator.inject(MEDIA.token);
+    mediaServiceSpy = spec.inject(MEDIA.token);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
     mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
 
@@ -158,34 +173,73 @@ describe("VerificationComponent", () => {
       injector
     );
 
-    spectator.component.searchParameters = mockSearchParameters;
-    spectator.component.project = routeProject;
-    spectator.component.region = routeRegion;
-    spectator.component.site = routeSite;
+    spec.component.searchParameters = mockSearchParameters;
+    spec.component.project = routeProject;
+    spec.component.region = routeRegion;
+    spec.component.site = routeSite;
 
-    mockAudioEventsApi = spectator.inject(SHALLOW_AUDIO_EVENT.token);
-    tagsApiSpy = spectator.inject(TAG.token);
-    projectApiSpy = spectator.inject(PROJECT.token);
-    regionApiSpy = spectator.inject(SHALLOW_REGION.token);
-    sitesApiSpy = spectator.inject(SHALLOW_SITE.token);
+    verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
+    audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    tagsApiSpy = spec.inject(TAG.token);
+    projectApiSpy = spec.inject(PROJECT.token);
+    regionApiSpy = spec.inject(SHALLOW_REGION.token);
+    sitesApiSpy = spec.inject(SHALLOW_SITE.token);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
-    modalsSpy = spectator.inject(NgbModal);
-    modalConfigService = spectator.inject(NgbModalConfig);
+    modalsSpy = spec.inject(NgbModal);
+    modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
     // TODO: this should probably be replaced with callThrough()
     modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
 
-    // needed for AnnotationSearchParameters associated models
-    mockAudioEventsApi.filter.and.callFake(() => of(mockAudioEventsResponse));
-    tagsApiSpy.filter.and.callFake(() => of(defaultFakeTags));
-    projectApiSpy.filter.and.callFake(() => of([routeProject]));
-    regionApiSpy.filter.and.callFake(() => of([routeRegion]));
-    sitesApiSpy.filter.and.callFake(() => of([routeSite]));
+    const requestPromises = Promise.all([
+      interceptShowApiRequest(tagsApiSpy, injector, defaultFakeTags[0], Tag),
+      interceptShowApiRequest(projectApiSpy, injector, routeProject, Project),
+      interceptShowApiRequest(regionApiSpy, injector, routeRegion, Region),
+      interceptShowApiRequest(sitesApiSpy, injector, routeSite, Site),
 
-    await detectChanges(spectator);
+      interceptFilterApiRequest(regionApiSpy, injector, [routeRegion], Region),
+      interceptFilterApiRequest(sitesApiSpy, injector, [routeSite], Site),
+      interceptFilterApiRequest(
+        projectApiSpy,
+        injector,
+        [routeProject],
+        Project
+      ),
+
+      interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
+      interceptFilterApiRequest(
+        audioEventsApiSpy,
+        injector,
+        mockAudioEventsResponse,
+        AudioEvent
+      ),
+    ]);
+
+    tagsApiSpy.typeaheadCallback = (() => () => of(defaultFakeTags)) as any;
+
+    verificationApiSpy.createOrUpdate = jasmine.createSpy(
+      "createOrUpdate"
+    ) as any;
+    verificationApiSpy.createOrUpdate.and.callFake(() =>
+      of(verificationResponse)
+    );
+
+    verificationApiSpy.create = jasmine.createSpy("create") as any;
+    verificationApiSpy.create.and.callFake(() => of(verificationResponse));
+
+    verificationApiSpy.update = jasmine.createSpy("update") as any;
+    verificationApiSpy.update.and.callFake(() => of(verificationResponse));
+
+    // I explicitly set the viewport size so that the grid size is always
+    // consistent no matter what size the karma browser window is
+    viewport.set(viewports.extraLarge);
+
+    await detectChanges(spec);
+
+    await requestPromises;
   }
 
   beforeEach(async () => {
@@ -227,7 +281,7 @@ describe("VerificationComponent", () => {
   });
 
   const dialogToggleButton = () =>
-    spectator.query<HTMLButtonElement>(".filter-button");
+    spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
@@ -235,38 +289,85 @@ describe("VerificationComponent", () => {
     document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
   const verificationGrid = () =>
-    spectator.query<VerificationGridComponent>("oe-verification-grid");
-  const verificationGridRoot = (): ShadowRoot => verificationGrid().shadowRoot;
+    spec.query<VerificationGridComponent>("oe-verification-grid");
+  const verificationGridRoot = () => verificationGrid().shadowRoot;
+
+  const gridTiles = () =>
+    verificationGridRoot().querySelectorAll<VerificationGridTileComponent>(
+      "oe-verification-grid-tile"
+    );
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
-  const helpElement = (): VerificationHelpDialogComponent =>
-    verificationGridRoot().querySelector("oe-verification-help-dialog");
-  const helpCloseButton = (): HTMLButtonElement =>
-    helpElement().shadowRoot.querySelector(".close-btn");
+  const bootstrapElement = () =>
+    verificationGridRoot().querySelector<VerificationBootstrapComponent>(
+      "oe-verification-bootstrap"
+    );
+  const helpCloseButton = () =>
+    bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(
+      ".close-button"
+    );
 
-  const decisionButtons = (): NodeListOf<HTMLButtonElement> =>
-    document.querySelectorAll("oe-verification");
+  const decisionComponents = () =>
+    document.querySelectorAll<HTMLButtonElement>("oe-verification");
+  const decisionButton = (index: number) =>
+    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+      "button"
+    );
 
-  const dataSourceComponent = (): HTMLElement =>
-    document.querySelector("oe-data-source");
-  const dataSourceRoot = (): ShadowRoot =>
-    dataSourceComponent().shadowRoot;
-  const downloadResultsButton = (): HTMLButtonElement =>
-    dataSourceRoot().querySelector("[data-testid='download-results-button']");
+  const dataSourceComponent = () =>
+    document.querySelector<HTMLElement>("oe-data-source");
+  const dataSourceRoot = () => dataSourceComponent().shadowRoot;
+  const downloadResultsButton = () =>
+    dataSourceRoot().querySelector<HTMLButtonElement>(
+      "[data-testid='download-results-button']"
+    );
 
   function toggleParameters(): void {
-    spectator.click(dialogToggleButton());
+    spec.click(dialogToggleButton());
     tick(1_000);
     discardPeriodicTasks();
   }
 
   async function makeDecision(index: number) {
-    const decisionButtonTarget = decisionButtons()[index];
-    decisionButtonTarget.click();
-    verificationGrid().dispatchEvent(new CustomEvent("decision-made"));
+    const decisionComponent = decisionComponents()[index];
+    decisionComponent.disabled = false;
 
-    detectChanges(spectator);
+    const decisionButtonTarget = decisionButton(index);
+    spec.click(decisionButtonTarget);
+
+    await detectChanges(spec);
+  }
+
+  /** Uses shift + click selection to select a range */
+  async function makeSelection(start: number, end: number) {
+    const targetGridTiles = gridTiles();
+
+    const startTile = targetGridTiles[start];
+    const startTileClickTarget = startTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
+
+    const endTile = targetGridTiles[end];
+    const endTileClickTarget = endTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
+
+    startTileClickTarget.dispatchEvent(new MouseEvent("pointerdown"));
+
+    // If the start is the same as the end, we do not want to dispatch a shift
+    // click event on the tile because that would result in the tile being
+    // de-selected.
+    // I have made this decision because I deemed it helpful for this function
+    // to be able to select a single tile.
+    // e.g. makeSelection(0, 0) should select the first tile
+    if (startTile !== endTile) {
+      endTileClickTarget.dispatchEvent(
+        new MouseEvent("pointerdown", { shiftKey: true })
+      );
+    }
+
+    await detectChanges(spec);
   }
 
   async function downloadResults() {
@@ -279,7 +380,7 @@ describe("VerificationComponent", () => {
 
     await waitUntil(() => fileWriteSpy.calls.count() > 0);
 
-    detectChanges(spectator);
+    detectChanges(spec);
   }
 
   function saveFilePickerApiSpy(): jasmine.Spy {
@@ -298,19 +399,23 @@ describe("VerificationComponent", () => {
     return fileWriteApi;
   }
 
+  function gridSize(): number {
+    return gridTiles().length;
+  }
+
   assertPageInfo(VerificationComponent, "Verify Annotations");
 
   // if this test fails, the test runners server might not be running with the
   // correct headers
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements
-  xit("should have sharedArrayBuffer defined", () => {
+  it("should have sharedArrayBuffer defined", () => {
     // note that this test does not use the setup() function
     expect(SharedArrayBuffer).toBeDefined();
   });
 
   it("should create", async () => {
     await setup();
-    expect(spectator.component).toBeInstanceOf(VerificationComponent);
+    expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
 
   describe("search parameters", () => {
@@ -319,23 +424,22 @@ describe("VerificationComponent", () => {
         await setup();
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
-      // TODO: fix this test. Something is leaking causing there to be no results in the dropdown
       xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
 
         toggleParameters();
-        selectFromTypeahead(spectator, tagsTypeahead(), tagText);
+        selectFromTypeahead(spec, tagsTypeahead(), tagText);
 
-        const realizedComponentParams = spectator.component.searchParameters;
+        const realizedComponentParams = spec.component.searchParameters;
         expect(realizedComponentParams.tags).toContain(expectedTagId);
       }));
 
-      it("should show and hide the search paramters dialog correctly", fakeAsync(() => {
+      it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
         expect(modalsSpy.open).not.toHaveBeenCalled();
         toggleParameters();
         expect(modalsSpy.open).toHaveBeenCalledTimes(1);
@@ -358,11 +462,11 @@ describe("VerificationComponent", () => {
         await setup(testedQueryParameters);
 
         helpCloseButton().click();
-        await detectChanges(spectator);
+        await detectChanges(spec);
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spectator.component.searchParameters;
+        const realizedParameterModel = spec.component.searchParameters;
 
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
@@ -371,16 +475,97 @@ describe("VerificationComponent", () => {
         );
       });
 
+      describe("verification api", () => {
+        beforeEach(async () => {
+          await waitUntil(() => gridSize() > 2);
+        });
+
+        it("should make the correct api calls when a decision is made about the entire grid", async () => {
+          await makeDecision(0);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            gridSize()
+          );
+        });
+
+        it("should make a verification api when a single decision is made", async () => {
+          await makeSelection(0, 0);
+          await makeDecision(0);
+
+          await detectChanges(spec);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+            jasmine.anything(),
+            jasmine.anything(),
+            jasmine.anything()
+          );
+        });
+
+        it("should make multiple verification api calls when multiple decisions are made", async () => {
+          await makeSelection(0, 2);
+          await makeDecision(0);
+
+          const expectedApiCalls = [
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+          ];
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            expectedApiCalls.length
+          );
+
+          for (const apiCall of expectedApiCalls) {
+            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
+              ...apiCall
+            );
+          }
+        });
+
+        it("should make the correct api calls when a decision is overwritten", async () => {
+          await makeSelection(0, 0);
+          await makeDecision(0);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(1);
+
+          verificationApiSpy.createOrUpdate.calls.reset();
+          await makeDecision(1);
+
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+            jasmine.anything(),
+            jasmine.anything(),
+            jasmine.anything()
+          );
+        });
+      });
+
       describe("verification grid functionality", () => {
         describe("initial state", () => {
           it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
             const expectedCustomElements: string[] = [
               "oe-verification-grid",
-              "oe-verification-grid-tile",
               "oe-verification",
               "oe-media-controls",
               "oe-indicator",
               "oe-axes",
+
+              // these two custom elements are private components not supposed
+              // to be used by the end user
+              // however, because we control both the web components and the
+              // workbench client, I am happy to assert that these two
+              // components are defined, so that the test is more robust
+              "oe-verification-bootstrap",
+              "oe-verification-grid-tile",
             ];
 
             for (const selector of expectedCustomElements) {
@@ -390,29 +575,33 @@ describe("VerificationComponent", () => {
           });
 
           it("should have the correct grid size target", () => {
-            const expectedTarget = 10;
+            const expectedTarget = 12;
             const realizedTarget = verificationGrid().targetGridSize;
             expect(realizedTarget).toEqual(expectedTarget);
           });
         });
 
-        // TODO: this test seems to fail only when running in CI because the tags typeahead isn't populated correctly
-        xit("should reset the verification grids getPage function when the search parameters are changed", fakeAsync(() => {
+        it("should reset the verification grids getPage function when the search parameters are changed", async () => {
+          await detectChanges(spec);
+
           const initialPagingCallback = verificationGrid().getPage;
           const targetTag = defaultFakeTags[0];
           const tagText = targetTag.text;
 
-          toggleParameters();
-          selectFromTypeahead(spectator, tagsTypeahead(), tagText);
-          spectator.click(updateFiltersButton());
-          detectChanges(spectator);
+          fakeAsync(() => {
+            toggleParameters();
+            selectFromTypeahead(spec, tagsTypeahead(), tagText);
+          })();
 
+          spec.click(updateFiltersButton());
+
+          await detectChanges(spec);
+
+          // we use the "toBe" matcher so that we compare the "getPage" callback
+          // by reference
           const newPagingCallback = verificationGrid().getPage;
           expect(newPagingCallback).not.toBe(initialPagingCallback);
-
-          flush();
-          discardPeriodicTasks();
-        }));
+        });
 
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
