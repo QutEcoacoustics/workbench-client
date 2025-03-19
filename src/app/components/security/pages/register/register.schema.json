@@ -24,6 +24,13 @@
       "props": {
         "required": true
       }
+    },
+    {
+      "key": "communicationsOptIn",
+      "type": "checkbox",
+      "props": {
+        "label": "I would like to receive communications"
+      }
     }
   ]
 }

@@ -68,6 +68,9 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
           this.notifications.error("Unable to redirect back to previous page");
         }
       },
+      onSuccess: () => {
+        this.notifications.show("Do you want to receive communications from brandName?");
+      },
     });
   }
 
