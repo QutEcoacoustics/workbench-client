@@ -3,9 +3,10 @@ import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { DateTimeTimezone } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { bawSubModelCollection } from "@models/AttributeDecorators";
 import { IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { ITag } from "@models/Tag";
+import { ITag, Tag } from "@models/Tag";
 import { ITagging, Tagging } from "@models/Tagging";
 import { MediaService } from "@services/media/media.service";
 
@@ -35,7 +36,8 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public readonly updatedAt: string | DateTimeTimezone;
   public readonly deleterId: number;
   public readonly deletedAt: string | DateTimeTimezone;
-  public readonly tags: ITag[];
+  @bawSubModelCollection(Tag)
+  public readonly tags: Tag[];
   public readonly audioRecording: AudioRecording;
   public readonly score: number;
   public readonly durationSeconds: number;
