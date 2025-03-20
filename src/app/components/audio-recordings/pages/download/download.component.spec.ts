@@ -25,7 +25,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { MockComponent } from "ng-mocks";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
@@ -60,7 +60,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls
     providers: [
-      mockProvider(ToastrService),
+      mockProvider(ToastsService),
       BawSessionService,
       BawApiService,
       AudioRecordingsService,

@@ -5,12 +5,12 @@ import {
   audioEventImportResolvers,
 } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { AudioEventImport } from "@models/AudioEventImport";
 import {
   FormTemplate,
   defaultSuccessMsg,
 } from "@helpers/formTemplate/formTemplate";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
 import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
@@ -37,9 +37,9 @@ class EditAnnotationsComponent
 {
   public constructor(
     private api: AudioEventImportService,
-    route: ActivatedRoute,
-    notifications: ToastrService,
-    router: Router
+    protected route: ActivatedRoute,
+    protected notifications: ToastsService,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[audioEventImportKey] as AudioEventImport,

@@ -1,11 +1,13 @@
-@for (toast of toastService.toasts; track toast) {
+@for (toast of toastService.toasts(); track toast) {
 <ngb-toast
+  class="toast-item"
   [header]="toast.title"
-  [autohide]="true"
-  [delay]="toast.delay ?? 5000"
+  [ngClass]="'bg-' + toast.variant"
+  [ngClass]="'text-bg-' + toast.variant"
+  [autohide]="toast.options?.autoHide ?? true"
+  [delay]="toast.options?.delay ?? 5000"
   (hidden)="toastService.remove(toast)"
 >
-  {{ toast.message }}
-</ngb-toast
->
+  <div [innerHtml]="domTemplate(toast.message)"></div>
+</ngb-toast>
 }

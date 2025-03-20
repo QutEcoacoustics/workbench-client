@@ -35,7 +35,7 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertOk } from "@test/helpers/general";
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -147,7 +147,7 @@ describe("BawApiService", () => {
     imports: [MockConfigModule, CacheModule],
     providers: [
       BawSessionService,
-      mockProvider(ToastrService),
+      mockProvider(ToastsService),
       { provide: SecurityService, useClass: MockSecurityService },
       { provide: UserService, useClass: MockShowApiService },
       {

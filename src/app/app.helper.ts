@@ -1,11 +1,11 @@
 import { isPlatformServer } from "@angular/common";
 import { inject, InjectionToken, PLATFORM_ID } from "@angular/core";
-import { GlobalConfig } from "ngx-toastr";
+import { ToastOptions } from "@services/toasts/toasts.service";
 
 /**
  * Toastr Service global defaults
  */
-export const toastrRoot: Partial<GlobalConfig> = {
+export const toastrRoot: Partial<ToastOptions> = {
   closeButton: true,
   enableHtml: true,
   positionClass: "toast-top-center",

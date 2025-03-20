@@ -10,7 +10,7 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ContactUs, IContactUs } from "@models/data/ContactUs";
 import { RecaptchaState } from "@shared/form/form.component";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs/operators";
 import schema from "./contact-us.schema.json";
 
@@ -42,7 +42,7 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
 
   public constructor(
     private api: ContactUsService,
-    notifications: ToastrService,
+    notifications: ToastsService,
     route: ActivatedRoute,
     router: Router
   ) {

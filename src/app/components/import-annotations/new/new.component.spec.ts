@@ -1,6 +1,6 @@
 import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { FormComponent } from "@shared/form/form.component";
@@ -22,7 +22,7 @@ describe("NewAnnotationsComponent", () => {
     component: NewAnnotationsComponent,
     declarations: [MockComponent(FormComponent)],
     imports: [MockBawApiModule],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
   });
 
   function setup(): void {

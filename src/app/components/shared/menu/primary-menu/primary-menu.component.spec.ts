@@ -38,7 +38,7 @@ import { viewports } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import camelCase from "just-camel-case";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
 import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
@@ -52,7 +52,7 @@ describe("PrimaryMenuComponent", () => {
   let spec: Spectator<PrimaryMenuComponent>;
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
-    providers: [MockProvider(ToastrService)],
+    providers: [MockProvider(ToastsService)],
     declarations: [
       MockComponent(WebsiteStatusIndicatorComponent),
       HeaderItemComponent,

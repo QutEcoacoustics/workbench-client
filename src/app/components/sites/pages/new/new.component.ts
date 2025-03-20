@@ -16,7 +16,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 
@@ -32,9 +32,9 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
 
   public constructor(
     protected api: SitesService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

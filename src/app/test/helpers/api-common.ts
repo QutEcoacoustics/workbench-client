@@ -10,7 +10,7 @@ import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Provider } from "@angular/core";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
@@ -42,7 +42,7 @@ export const mockServiceProviders: Provider[] = [
   BawFormApiService,
   BawSessionService,
   mockAssociationInjector,
-  mockProvider(ToastrService),
+  mockProvider(ToastsService),
 ];
 
 type CustomList<Model extends AbstractModel, Params extends any[]> = (

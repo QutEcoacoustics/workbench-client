@@ -16,9 +16,9 @@ import {
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import schema from "../../region.base.json";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { regionsMenuItemActions } from "../list/list.component";
+import schema from "../../region.base.json";
 
 const projectKey = "project";
 
@@ -45,9 +45,9 @@ class NewComponent extends FormTemplate<Region> {
 
   public constructor(
     private api: RegionsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

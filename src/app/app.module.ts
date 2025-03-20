@@ -23,7 +23,7 @@ import { ConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
-import { ToastrModule } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
@@ -59,7 +59,6 @@ export const appLibraryImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
-  ToastrModule.forRoot(toastrRoot),
 ];
 
 export const appImports = [
@@ -89,9 +88,6 @@ export const appImports = [
   WebsiteStatusModule,
   VisualizeModule,
 
-  // standalone components
-  ToastProviderComponent,
-
   // these last two must be last!
   HomeModule,
   ErrorModule,
@@ -117,6 +113,7 @@ export const appImports = [
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    ToastsService,
   ],
   exports: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

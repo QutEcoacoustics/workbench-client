@@ -1,5 +1,9 @@
 import { Location } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import {
+  Component,
+  Inject,
+  OnInit,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -16,7 +20,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
@@ -38,6 +42,8 @@ export const loginMenuItemActions = [
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     ></baw-form>
+
+    <ng-template #communicationsTemplate> </ng-template>
   `,
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
@@ -50,9 +56,9 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     private securityApi: SecurityService,
     private session: BawSessionService,
     private location: Location,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       hasFormCheck: false,
@@ -69,7 +75,18 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         }
       },
       onSuccess: () => {
-        this.notifications.show("Do you want to receive communications from brandName?");
+        this.notifications.show(
+          `
+            <p>Would you like to subscribe to communications?</p>
+
+            <button class="btn btn-primary">Yes</button>
+            <button class="btn btn-danger text-white">No</button>
+          `,
+          "Notification",
+          {
+            autoHide: false,
+          }
+        );
       },
     });
   }

@@ -10,7 +10,7 @@ import {
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
@@ -37,7 +37,7 @@ class MockModel extends AbstractModel {
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
-    protected notifications: ToastrService,
+    protected notifications: ToastsService,
     route: ActivatedRoute,
     router: Router
   ) {
@@ -54,14 +54,14 @@ const formProps: Partial<FormProps<MockModel>> = {};
 describe("formTemplate", () => {
   let defaultError: BawApiError;
   let defaultModel: MockModel;
-  let notifications: ToastrService;
+  let notifications: ToastsService;
   let spec: SpectatorRouting<MockComponent>;
   let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   const createComponent = createRoutingFactory({
     component: MockComponent,
     imports: [SharedModule, ...appLibraryImports],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
   });
 
   function setup(
@@ -75,7 +75,7 @@ describe("formTemplate", () => {
     Object.assign(formProps, templateProps);
     spec = createComponent(componentOptions);
 
-    notifications = spec.inject(ToastrService);
+    notifications = spec.inject(ToastsService);
   }
 
   function makeResolvedModel(
@@ -358,7 +358,7 @@ describe("formTemplate", () => {
   });
 
   describe("notifications", () => {
-    function assertNotification(type: keyof ToastrService, msg: string) {
+    function assertNotification(type: keyof ToastsService, msg: string) {
       expect(notifications[type]).toHaveBeenCalledWith(msg);
     }
 

@@ -25,7 +25,7 @@ import {
   generateProjectMeta
 } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
 import { HarvestItem } from "@models/HarvestItem";
 import { UTCOffsetSelectorComponent } from "@components/harvest/components/inputs/utc-offset-selector.component";
@@ -67,7 +67,7 @@ describe("MetadataReviewComponent", () => {
       }),
     ],
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
   });
 
   function setup(): SpyObject<HarvestStagesService> {

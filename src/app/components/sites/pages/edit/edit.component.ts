@@ -17,7 +17,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
@@ -39,9 +39,9 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
 
   public constructor(
     private api: SitesService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,

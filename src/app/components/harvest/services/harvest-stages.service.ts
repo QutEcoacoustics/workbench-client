@@ -13,7 +13,7 @@ import {
 import { Project } from "@models/Project";
 import { Step } from "@shared/stepper/stepper.component";
 import { Map } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import {
   BehaviorSubject,
   catchError,
@@ -48,7 +48,7 @@ export class HarvestStagesService implements OnDestroy {
   private unsubscribe = new Subject<void>();
 
   public constructor(
-    private notifications: ToastrService,
+    private notifications: ToastsService,
     private harvestApi: HarvestsService,
     private harvestItemApi: HarvestItemsService
   ) {

@@ -6,7 +6,7 @@ import { ScriptsService } from "@baw-api/script/scripts.service";
 import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminScriptsNewComponent } from "./new.component";
@@ -15,7 +15,7 @@ describe("AdminScriptsNewComponent", () => {
   let api: SpyObject<ScriptsService>;
   let component: AdminScriptsNewComponent;
   let fixture: ComponentFixture<AdminScriptsNewComponent>;
-  let notifications: ToastrService;
+  let notifications: ToastsService;
   let router: Router;
 
   assertPageInfo(AdminScriptsNewComponent, "New Script");
@@ -34,7 +34,7 @@ describe("AdminScriptsNewComponent", () => {
     fixture = TestBed.createComponent(AdminScriptsNewComponent);
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastrService);
+    notifications = TestBed.inject(ToastsService);
     component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();

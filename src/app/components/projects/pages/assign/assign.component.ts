@@ -13,7 +13,7 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { forkJoin } from "rxjs";
 import { mergeMap, takeUntil } from "rxjs/operators";
 import { projectMenuItemActions } from "../details/details.component";
@@ -45,7 +45,7 @@ class AssignComponent
 
   public constructor(
     siteApi: ShallowSitesService,
-    private notifications: ToastrService,
+    private notifications: ToastsService,
     route: ActivatedRoute
   ) {
     super(

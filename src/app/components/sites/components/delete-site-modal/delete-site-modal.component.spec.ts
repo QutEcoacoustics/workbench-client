@@ -1,6 +1,6 @@
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
@@ -14,7 +14,7 @@ describe("DeleteSiteModalComponent", () => {
   const createComponent = createRoutingFactory({
     component: DeleteSiteModalComponent,
     imports: [MockBawApiModule],
-    mocks: [ToastrService, NgbModalRef],
+    mocks: [ToastsService, NgbModalRef],
   });
 
   function setup(): void {

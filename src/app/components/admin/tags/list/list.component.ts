@@ -6,7 +6,7 @@ import { ModalComponent } from "@menu/widget.component";
 import { Tag } from "@models/Tag";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import {
   adminEditTagMenuItem,
@@ -40,7 +40,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public constructor(
     protected tagsApi: TagsService,
     protected modals: NgbModal,
-    protected notifications: ToastrService,
+    protected notifications: ToastsService,
   ) {
     super(tagsApi, (tags) =>
       tags.map((tag) => ({

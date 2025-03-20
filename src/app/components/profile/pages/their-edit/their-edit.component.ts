@@ -14,9 +14,9 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import schema from "../../profile.schema.json";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { theirProfileActions } from "../profile/their-profile.component";
+import schema from "../../profile.schema.json";
 
 const accountKey = "account";
 
@@ -50,9 +50,9 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
   public constructor(
     private api: AccountsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[accountKey] as User,

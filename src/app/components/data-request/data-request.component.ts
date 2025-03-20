@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { DataRequestService } from "@baw-api/data-request/data-request.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { DataRequest, IDataRequest } from "@models/data/DataRequest";
-import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import schema from "./data-request.schema.json";
 
@@ -52,9 +52,9 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
 
   public constructor(
     private api: DataRequestService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router,
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: () =>

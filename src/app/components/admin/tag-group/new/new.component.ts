@@ -7,7 +7,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
 import {
   adminNewTagGroupMenuItem,
@@ -34,7 +34,7 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
 
   public constructor(
     private api: TagGroupsService,
-    notifications: ToastrService,
+    notifications: ToastsService,
     route: ActivatedRoute,
     router: Router
   ) {

@@ -12,7 +12,7 @@ import {
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
@@ -23,7 +23,7 @@ describe("titleComponent", () => {
   const createComponent = createComponentFactory({
     component: TitleComponent,
     imports: [FormsModule],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
   });
 
   function setup(): SpyObject<ShallowHarvestsService> {

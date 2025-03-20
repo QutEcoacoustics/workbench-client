@@ -1,7 +1,14 @@
+@import "bootstrap";
+
 :host {
   position: fixed;
   top: 0;
-  right: 0;
-  margin: 0.5em;
+  left: 50%;
+  transform: translateX(-50%);
+
   z-index: 1200;
+}
+
+.toast-item {
+  margin-top: 0.5em;
 }

@@ -24,7 +24,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
@@ -86,7 +86,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
     protected route: ActivatedRoute,
     private sitesApi: SitesService,
     private router: Router,
-    private notifications: ToastrService,
+    private notifications: ToastsService,
     private config: ConfigService,
   ) {
     super();

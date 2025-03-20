@@ -11,9 +11,9 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import schema from "../../project.schema.json";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { projectsMenuItemActions } from "../list/list.component";
+import schema from "../../project.schema.json";
 
 @Component({
   selector: "baw-projects-new",
@@ -34,7 +34,7 @@ class NewComponent extends FormTemplate<Project> {
 
   public constructor(
     private api: ProjectsService,
-    notifications: ToastrService,
+    notifications: ToastsService,
     route: ActivatedRoute,
     router: Router
   ) {

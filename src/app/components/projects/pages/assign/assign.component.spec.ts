@@ -6,7 +6,7 @@ import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
@@ -24,7 +24,7 @@ describe("AssignComponent", () => {
   const createComponent = createRoutingFactory({
     component: AssignComponent,
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
   });
 
   function setup(): void {

@@ -12,7 +12,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { myAccountActions } from "../profile/my-profile.component";
 import schema from "./my-password.schema.json";
 
@@ -39,9 +39,9 @@ class MyPasswordComponent extends FormTemplate<User> {
 
   public constructor(
     private api: AccountsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[userKey] as User,

@@ -18,7 +18,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { INTERNAL_SERVER_ERROR } from "http-status";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { noop, Subject } from "rxjs";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { NgHttpCachingService } from "ng-http-caching";
@@ -40,7 +40,7 @@ describe("BawFormApiService", () => {
     providers: [
       BawSessionService,
       BawApiService,
-      mockProvider(ToastrService),
+      mockProvider(ToastsService),
       mockAssociationInjector,
       {
         provide: HTTP_INTERCEPTORS,

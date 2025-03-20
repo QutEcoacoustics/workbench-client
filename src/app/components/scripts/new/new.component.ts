@@ -7,7 +7,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import schema from "../script.base.schema.json";
 import {
@@ -35,9 +35,9 @@ import {
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(
     private api: ScriptsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

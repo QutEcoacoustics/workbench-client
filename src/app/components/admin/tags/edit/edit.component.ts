@@ -8,7 +8,7 @@ import {
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
@@ -42,7 +42,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
 
   public constructor(
     private api: TagsService,
-    notifications: ToastrService,
+    notifications: ToastsService,
     route: ActivatedRoute,
     router: Router
   ) {

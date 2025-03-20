@@ -13,8 +13,8 @@ import {
   RegisterDetails,
 } from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
-import { ToastrService } from "ngx-toastr";
 import { takeUntil } from "rxjs/operators";
+import { ToastsService } from "@services/toasts/toasts.service";
 import schema from "./register.schema.json";
 
 @Component({
@@ -42,9 +42,9 @@ class RegisterComponent
   public constructor(
     private securityApi: SecurityService,
     private session: BawSessionService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       hasFormCheck: false,

@@ -35,7 +35,7 @@ import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { FORBIDDEN, UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { noop, Subject, throwError } from "rxjs";
 import { NgHttpCachingService } from "ng-http-caching";
 import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
@@ -72,7 +72,7 @@ describe("SecurityService", () => {
       BawSessionService,
       CookieService,
       NgHttpCachingService,
-      mockProvider(ToastrService),
+      mockProvider(ToastsService),
       {
         provide: HTTP_INTERCEPTORS,
         useClass: BawApiInterceptor,

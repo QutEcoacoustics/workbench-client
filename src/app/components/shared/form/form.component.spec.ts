@@ -4,7 +4,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { noop } from "rxjs";
 import { FormComponent } from "./form.component";
 
@@ -28,7 +28,7 @@ export function click(
 
 describe("FormComponent", () => {
   let defaultFields: FormlyFieldConfig[];
-  let toastr: ToastrService;
+  let toastr: ToastsService;
   let spec: Spectator<FormComponent>;
   const createComponent = createComponentFactory({
     component: FormComponent,
@@ -85,7 +85,7 @@ describe("FormComponent", () => {
 
   function setup(props?: Partial<FormComponent>) {
     spec = createComponent({ detectChanges: false, props });
-    toastr = TestBed.inject(ToastrService);
+    toastr = TestBed.inject(ToastsService);
 
     spyOn(toastr, "success").and.stub();
     spyOn(toastr, "error").and.stub();

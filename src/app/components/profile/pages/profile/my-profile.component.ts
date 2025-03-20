@@ -37,7 +37,7 @@ import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { IItem } from "@shared/items/item/item.component";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -121,7 +121,7 @@ class MyProfileComponent
     public router?: Router,
     protected securityApi?: SecurityService,
     private accountsApi?: AccountsService,
-    private notifications?: ToastrService,
+    private notifications?: ToastsService,
   ) {
     super();
   }

@@ -34,7 +34,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { merge, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { analysesMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
@@ -150,7 +150,7 @@ class DetailsComponent
     private projectsApi: ProjectsService,
     private regionsApi: RegionsService,
     private sitesApi: SitesService,
-    public notifications: ToastrService,
+    public notifications: ToastsService,
   ) {
     super(
       router,

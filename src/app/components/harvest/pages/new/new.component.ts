@@ -13,7 +13,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Harvest, IHarvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 
 const projectKey = "project";
 
@@ -28,7 +28,7 @@ class NewComponent extends PageComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private notifications: ToastrService,
+    private notifications: ToastsService,
     private harvestApi: HarvestsService
   ) {
     super();

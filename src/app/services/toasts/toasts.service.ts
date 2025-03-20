@@ -1,32 +1,65 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
+
+export interface ToastOptions {
+  closeButton?: boolean;
+  disableTimeOut?: boolean;
+  tapToDismiss?: boolean;
+  positionClass?: string;
+  enableHtml?: boolean;
+  preventDuplicates?: boolean;
+  includeTitleDuplicates?: boolean;
+  resetTimeoutOnDuplicate?: boolean;
+
+  delay?: number;
+  autoHide?: boolean;
+}
 
 export interface ToastInfo {
   title: string;
   message: string;
-  delay?: number;
+  variant: "default" | "primary" | "success" | "info" | "warning" | "danger";
+  options?: ToastOptions;
 }
 
 @Injectable()
 export class ToastsService {
-  public toasts: ToastInfo[] = [];
+  public toasts = signal<ToastInfo[]>([]);
 
-  // We used to use a different library for toasts called "ngx-toastr"
+  // We used to use a different library for toasts called "@services/toasts/toasts.service"
   // however, because we were already using ng-bootstrap, we decided to switch
-  // to remove ngx-toastr as a dependency.
+  // to remove @services/toasts/toasts.service as a dependency.
   //
-  public show(message: string, title: string) {
-    this.toasts.push({ title, message });
+  public show(message: string, title = "", options: ToastOptions = {}) {
+    this.toasts.update((values) =>
+      values.concat({ title, message, options, variant: "default" })
+    );
   }
 
-  public success() {}
+  public success(message: string, title = "", options: ToastOptions = {}) {
+    this.toasts.update((values) =>
+      values.concat({ title, message, options, variant: "success" })
+    );
+  }
 
-  public error() {}
+  public error(message: string, title = "", options: ToastOptions = {}) {
+    this.toasts.update((values) =>
+      values.concat({ title, message, options, variant: "danger" })
+    );
+  }
 
-  public info() {}
+  public info(message: string, title = "", options: ToastOptions = {}) {
+    this.toasts.update((values) =>
+      values.concat({ title, message, options, variant: "info" })
+    );
+  }
 
-  public warning() {}
+  public warning(message: string, title = "", options: ToastOptions = {}) {
+    this.toasts.update((values) =>
+      values.concat({ title, message, options, variant: "warning" })
+    );
+  }
 
   public remove(toast: ToastInfo) {
-    this.toasts = this.toasts.filter((t) => t !== toast);
+    this.toasts.update((t) => t.filter((value) => value !== toast));
   }
 }

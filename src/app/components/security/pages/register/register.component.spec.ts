@@ -12,7 +12,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { RegisterComponent } from "./register.component";
 import schema from "./register.schema.json";
@@ -20,7 +20,7 @@ import schema from "./register.schema.json";
 describe("RegisterComponent", () => {
   let api: SecurityService;
   let session: BawSessionService;
-  let toastr: ToastrService;
+  let toastr: ToastsService;
   let spec: Spectator<RegisterComponent>;
   const { fields } = schema;
   const createComponent = createComponentFactory({
@@ -67,7 +67,7 @@ describe("RegisterComponent", () => {
     beforeEach(() => {
       spec = createComponent({ detectChanges: false });
       api = spec.inject(SecurityService);
-      toastr = spec.inject(ToastrService);
+      toastr = spec.inject(ToastsService);
       session = spec.inject(BawSessionService);
 
       spyOn(toastr, "success").and.stub();

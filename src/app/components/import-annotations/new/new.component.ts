@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   FormTemplate,
@@ -8,6 +7,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
+import { ToastsService } from "@services/toasts/toasts.service";
 import schema from "../audio-event-import.schema.json";
 import {
   annotationsImportMenuItem,
@@ -36,7 +36,7 @@ export const newAnnotationMenuItemActions = [
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   public constructor(
-    protected notifications: ToastrService,
+    protected notifications: ToastsService,
     protected route: ActivatedRoute,
     protected router: Router,
     private api: AudioEventImportService

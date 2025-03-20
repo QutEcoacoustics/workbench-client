@@ -5,7 +5,7 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
@@ -47,7 +47,7 @@ describe("AddAnnotationsComponent", () => {
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
 
-  let notificationsSpy: SpyObject<ToastrService>;
+  let notificationsSpy: SpyObject<ToastsService>;
   let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
@@ -63,7 +63,7 @@ describe("AddAnnotationsComponent", () => {
       LoadingComponent,
     ],
     imports: [SharedModule, MockBawApiModule],
-    mocks: [ToastrService],
+    mocks: [ToastsService],
     data: {
       resolvers: {
         model: audioEventImport,
@@ -124,7 +124,7 @@ describe("AddAnnotationsComponent", () => {
     tagServiceSpy = spec.inject(TAG.token);
     recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
 
-    notificationsSpy = spec.inject(ToastrService);
+    notificationsSpy = spec.inject(ToastsService);
     routerSpy = spec.inject(Router);
 
     notificationsSpy.success.and.stub();

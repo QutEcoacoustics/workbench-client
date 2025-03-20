@@ -10,7 +10,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { adminScriptActions } from "../details/details.component";
 import schema from "../script.base.schema.json";
 import {
@@ -37,9 +37,9 @@ const scriptKey = "script";
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public constructor(
     private api: ScriptsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastsService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[scriptKey] as Script,

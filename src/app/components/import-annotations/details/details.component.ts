@@ -12,7 +12,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
@@ -60,7 +60,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     private eventsApi: ShallowAudioEventsService,
     private eventImportsApi: AudioEventImportService,
     private eventImportFileApi: AudioEventImportFileService,
-    private notifications: ToastrService,
+    private notifications: ToastsService,
     private router: Router
   ) {
     super();

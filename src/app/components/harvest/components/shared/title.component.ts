@@ -5,7 +5,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { ToastrService } from "ngx-toastr";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { takeUntil, throwError } from "rxjs";
 
 @Component({
@@ -21,7 +21,7 @@ export class TitleComponent extends withUnsubscribe()  {
 
   public constructor(
     public harvestService: ShallowHarvestsService,
-    private notifications: ToastrService,
+    private notifications: ToastsService,
   ){ super() }
 
   public updateHarvestName(form: NgForm) {
