@@ -53,7 +53,7 @@ export const regionMenuItem = menuRoute({
     retrieveResolvedModel(pageInfo, Region)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel.region.model.name;
+    return componentModel?.region?.model?.name ?? "Unknown";
   },
 });
 
