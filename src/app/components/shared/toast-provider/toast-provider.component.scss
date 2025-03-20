@@ -9,10 +9,18 @@
   z-index: 1200;
 }
 
+.toast-content {
+  display: flex;
+}
+
 .variant-icon {
   margin-right: 0.5em;
 }
 
 .toast-item {
   margin-top: 0.5em;
+
+  &:hover {
+    @extend .shadow;
+  }
 }

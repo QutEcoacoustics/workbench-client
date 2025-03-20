@@ -9,19 +9,35 @@
   (hidden)="toastService.remove(toast)"
 >
   <div class="toast-content p-1">
-    <span class="variant-icon">
-      @if (toast.variant === "success") {
-      <fa-icon [icon]="['fas', 'check']"></fa-icon>
-      } @else if (toast.variant === "danger") {
-      <fa-icon [icon]="['fas', 'hand']"></fa-icon>
-      } @else if (toast.variant === "warning") {
-      <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
-      } @else if (toast.variant === "info") {
-      <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
-      }
+    <span>
+      <span class="variant-icon">
+        @if (toast.variant === "success") {
+        <fa-icon [icon]="['fas', 'check']"></fa-icon>
+        } @else if (toast.variant === "danger") {
+        <fa-icon [icon]="['fas', 'hand']"></fa-icon>
+        } @else if (toast.variant === "warning") {
+        <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+        } @else if (toast.variant === "info") {
+        <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+        }
+      </span>
+
+      <span [innerHtml]="domTemplate(toast.message)"></span>
     </span>
 
-    <span [innerHtml]="domTemplate(toast.message)"></span>
+    <!--
+      If there is no title, ng-bootstrap will not add a close button.
+      So that there is a close button for users to dismiss the toast,
+      we add a close button if there is no title.
+    -->
+    @if (!toast.title) {
+    <button
+      type="button"
+      class="dismiss-toast-button btn-close"
+      aria-label="Close"
+      (click)="toastService.remove(toast)"
+    ></button>
+    }
   </div>
 </ngb-toast>
 }
