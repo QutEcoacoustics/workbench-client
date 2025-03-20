@@ -26,6 +26,7 @@ describe("LoginComponent", () => {
   let notifications: ToastService;
   let spec: SpectatorRouting<LoginComponent>;
   const { fields } = schema;
+
   const createComponent = createRoutingFactory({
     component: LoginComponent,
     imports: [...testFormImports, MockBawApiModule],

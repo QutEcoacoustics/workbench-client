@@ -70,6 +70,7 @@ export class AccountsService implements StandardApi<User> {
   }
 
   public update(model: User): Observable<User> {
+    console.log(model);
     return this.api.update(User, endpoint(model, emptyParam), model);
   }
 
@@ -77,16 +78,16 @@ export class AccountsService implements StandardApi<User> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
 
-  public optInContactable(updatedId: Id): Observable<User> {
-    return this.updateContactableConcent(updatedId, UserConcent.yes);
+  public optInContactable(targetUserId: Id): Observable<User> {
+    return this.updateContactableConcent(targetUserId, UserConcent.yes);
   }
 
-  public optOutContactable(updatedId: Id): Observable<User> {
-    return this.updateContactableConcent(updatedId, UserConcent.no);
+  public optOutContactable(targetUserId: Id): Observable<User> {
+    return this.updateContactableConcent(targetUserId, UserConcent.no);
   }
 
-  public updateContactableConcent(updatedId: Id, contactable: UserConcent): Observable<User> {
-    return this.update(new User({ id: updatedId, contactable }));
+  public updateContactableConcent(targetUserId: Id, contactable: UserConcent): Observable<User> {
+    return this.update(new User({ id: targetUserId, contactable }));
   }
 }
 
