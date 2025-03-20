@@ -13,7 +13,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
@@ -23,14 +23,15 @@ describe("LoginComponent", () => {
   let session: BawSessionService;
   let router: Router;
   let location: Location;
-  let notifications: ToastrService;
+  let notifications: ToastService;
   let spec: SpectatorRouting<LoginComponent>;
   const { fields } = schema;
+
   const createComponent = createRoutingFactory({
     component: LoginComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    mocks: [ToastrService],
+    mocks: [ToastService],
   });
 
   function isSignedIn(signedIn: boolean = true) {
@@ -43,7 +44,7 @@ describe("LoginComponent", () => {
     api = spec.inject(SecurityService);
     session = spec.inject(BawSessionService);
     location = spec.inject(Location);
-    notifications = spec.inject(ToastrService);
+    notifications = spec.inject(ToastService);
     spyOn(location, "getState").and.callFake(() => ({
       // Default to no history (navigationId = 1)
       navigationId: navigationId ?? 1,
@@ -204,6 +205,28 @@ describe("LoginComponent", () => {
       expect(notifications.error).toHaveBeenCalledWith(
         "You are already logged in."
       );
+    });
+  });
+
+  describe("communication concent", () => {
+    describe("prompting conditions", () => {
+      it("should show a toast asking to opt-in to communications if they have not been asked", () => {});
+
+      it("should not show a toast if they have given a 'no' response", () => {});
+
+      it("should not show a toast if they have given a 'yes' response", () => {});
+
+      it("should not show a toast if the user logs in with incorrect credentials", () => {});
+    });
+
+    describe("capturing responses", () => {
+      it("should update the session model correctly", () => {});
+
+      it("should not make any api calls if the toast is dismissed without a response", () => {});
+
+      it("should make the correct api calls for a 'yes' response", () => {});
+
+      it("should make the correct api calls for a 'no' response", () => {});
     });
   });
 });

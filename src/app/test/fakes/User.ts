@@ -28,6 +28,7 @@ export function generateUser(
     updatedAt: modelData.timestamp(),
     lastSeenAt: modelData.timestamp(),
     tzinfoTz: modelData.tzInfoTz(),
+    contactable: modelData.concent(),
     ...data,
   };
 }

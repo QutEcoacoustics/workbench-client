@@ -15,9 +15,7 @@ import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { LoadingModule } from "@shared/loading/loading.module";
 import { IMockBuilder } from "ng-mocks";
 import { NgxCaptchaModule } from "ngx-captcha";
-import { ToastrModule } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
-import { toastrRoot } from "src/app/app.helper";
 
 export const testFormImports = [
   CommonModule,
@@ -27,7 +25,6 @@ export const testFormImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
-  ToastrModule.forRoot(toastrRoot),
   HttpClientTestingModule,
   LoadingModule,
   NgxCaptchaModule,

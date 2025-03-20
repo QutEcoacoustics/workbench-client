@@ -21,7 +21,7 @@ import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import {
   BehaviorSubject,
   filter,
@@ -93,7 +93,7 @@ class PermissionsComponent
   ];
 
   public constructor(
-    private notifications: ToastrService,
+    private notifications: ToastService,
     private permissionsApi: PermissionsService,
     private accountsApi: AccountsService,
     private route: ActivatedRoute,

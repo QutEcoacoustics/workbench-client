@@ -58,7 +58,7 @@ describe("DownloadTableComponent", () => {
     siteApi = spec.inject(SHALLOW_SITE.token);
     injector = spec.inject(ASSOCIATION_INJECTOR);
     // injector = spec.inject(Injector as any);
-    // console.log("service", injector.get(ToastrService));
+    // console.log("service", injector.get(ToastsService));
     defaultRecording = new AudioRecording(generateAudioRecording(), injector);
     defaultSite = new Site(generateSite(), injector);
   }

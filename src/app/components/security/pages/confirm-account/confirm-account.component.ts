@@ -11,7 +11,7 @@ import {
   IConfirmPassword,
 } from "@models/data/ConfirmPassword";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./confirm-account.schema.json";
 
@@ -33,9 +33,9 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
 
   public constructor(
     private api: UserService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       successMsg: () =>

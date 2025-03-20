@@ -30,7 +30,7 @@ import { asFormControl } from "./helper";
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mb-3">
       <label for="confirmation">
         Password Confirmation {{ props.required ? " *" : "" }}
       </label>

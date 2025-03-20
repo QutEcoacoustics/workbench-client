@@ -23,7 +23,6 @@ import { ConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
-import { ToastrModule } from "ngx-toastr";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
@@ -31,9 +30,9 @@ import { WebsiteStatusModule } from "@components/website-status/website-status.m
 import { AnnotationModule } from "@components/annotations/annotation.module";
 import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
+import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
-import { toastrRoot } from "./app.helper";
 import { AboutModule } from "./components/about/about.module";
 import { AdminModule } from "./components/admin/admin.module";
 import { DataRequestModule } from "./components/data-request/data-request.module";
@@ -58,7 +57,6 @@ export const appLibraryImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
-  ToastrModule.forRoot(toastrRoot),
 ];
 
 export const appImports = [
@@ -87,6 +85,10 @@ export const appImports = [
   StatisticsModule,
   WebsiteStatusModule,
   VisualizeModule,
+
+  // standalone components
+  ToastProviderComponent,
+
   // these last two must be last!
   HomeModule,
   ErrorModule,

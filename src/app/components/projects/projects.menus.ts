@@ -74,7 +74,7 @@ export const projectMenuItem = menuRoute({
     retrieveResolvedModel(pageInfo, Project)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel.project.model.name;
+    return componentModel?.project?.model?.name ?? "Unknown";
   },
 });
 

@@ -15,7 +15,7 @@ import { Project } from "@models/Project";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { concatMap, Subject, takeUntil, tap } from "rxjs";
 
 enum RowType {
@@ -114,7 +114,7 @@ export class MetadataReviewComponent
     public modals: NgbModal,
     private stages: HarvestStagesService,
     private config: ConfigService,
-    private notification: ToastrService,
+    private notification: ToastService,
     private harvestApi: ShallowHarvestsService
   ) {
     super();

@@ -8,7 +8,7 @@ import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { viewports } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
 import { HeaderComponent } from "./header.component";
 
@@ -19,7 +19,7 @@ describe("HeaderComponent", () => {
   const createComponent = createComponentFactory({
     component: HeaderComponent,
     providers: [
-      MockProvider(ToastrService),
+      MockProvider(ToastService),
       MockProvider(MenuService, { isFullscreen: false }),
     ],
     declarations: [

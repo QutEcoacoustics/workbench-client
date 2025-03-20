@@ -2,7 +2,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
@@ -30,7 +30,7 @@ describe("AllUploadsComponent", () => {
     declarations: [LoadingComponent, ConfirmationComponent, UserLinkComponent],
     component: AllUploadsComponent,
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastrService],
+    mocks: [ToastService],
   });
 
   function setup(): void {

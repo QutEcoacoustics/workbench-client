@@ -7,7 +7,13 @@ import { ResetPassword } from "@models/data/ResetPassword";
 import { UnlockAccount } from "@models/data/UnlockAccount";
 import { User } from "@models/User";
 import { Observable } from "rxjs";
-import { ApiShow, emptyParam, newParam, option, param } from "../api-common";
+import {
+  ApiShow,
+  emptyParam,
+  newParam,
+  option,
+  param,
+} from "../api-common";
 import { ShowResolver } from "../resolver-common";
 
 const confirmationParam = "confirmation/" as const;

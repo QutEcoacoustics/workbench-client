@@ -1,18 +1,5 @@
 import { isPlatformServer } from "@angular/common";
 import { inject, InjectionToken, PLATFORM_ID } from "@angular/core";
-import { GlobalConfig } from "ngx-toastr";
-
-/**
- * Toastr Service global defaults
- */
-export const toastrRoot: Partial<GlobalConfig> = {
-  closeButton: true,
-  enableHtml: true,
-  positionClass: "toast-top-center",
-  preventDuplicates: true,
-  includeTitleDuplicates: false,
-  resetTimeoutOnDuplicate: true,
-};
 
 /**
  * Default number of milliseconds to wait when de-bouncing an input

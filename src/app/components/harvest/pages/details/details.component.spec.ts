@@ -19,7 +19,7 @@ import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
@@ -46,7 +46,7 @@ describe("DetailsComponent", () => {
     ],
     providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastrService],
+    mocks: [ToastService],
   });
 
   assertPageInfo<Harvest>(DetailsComponent, "test name", {

@@ -10,7 +10,7 @@ import {
 } from "@helpers/app-initializer/app-initializer";
 import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
 import { ThemeService } from "@services/theme/theme.service";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -28,7 +28,7 @@ export class ConfigService {
   private http: HttpClient;
 
   public constructor(
-    private notification: ToastrService,
+    private notification: ToastService,
     private theme: ThemeService,
     handler: HttpBackend,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean
@@ -109,12 +109,7 @@ export class ConfigService {
       this.notification.error(
         "The website is not configured correctly. Try coming back at another time.",
         "Unrecoverable Error",
-        {
-          closeButton: false,
-          disableTimeOut: true,
-          tapToDismiss: false,
-          positionClass: "toast-center-center",
-        }
+        { autoHide: false }
       );
       return;
     }
