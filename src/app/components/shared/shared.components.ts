@@ -23,6 +23,7 @@ import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { ToastsService } from "@services/toasts/toasts.service";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
 import { BawClientModule } from "./baw-client/baw-client.module";
 import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
@@ -133,6 +134,9 @@ export const sharedModules = [
   DurationComponent,
   ZonedDateTimeComponent,
   DatetimeComponent,
+
+  // standalone services
+  ToastsService,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

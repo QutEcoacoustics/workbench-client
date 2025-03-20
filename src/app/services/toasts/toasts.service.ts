@@ -27,7 +27,6 @@ export class ToastsService {
   public warning() {}
 
   public remove(toast: ToastInfo) {
-    console.debug("Removing toast", toast);
     this.toasts = this.toasts.filter((t) => t !== toast);
   }
 }
