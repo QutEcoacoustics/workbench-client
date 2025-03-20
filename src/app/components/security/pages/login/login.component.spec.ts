@@ -207,4 +207,26 @@ describe("LoginComponent", () => {
       );
     });
   });
+
+  describe("communication concent", () => {
+    describe("prompting conditions", () => {
+      it("should show a toast asking to opt-in to communications if they have not been asked", () => {});
+
+      it("should not show a toast if they have given a 'no' response", () => {});
+
+      it("should not show a toast if they have given a 'yes' response", () => {});
+
+      it("should not show a toast if the user logs in with incorrect credentials", () => {});
+    });
+
+    describe("capturing responses", () => {
+      it("should update the session model correctly", () => {});
+
+      it("should not make any api calls if the toast is dismissed without a response", () => {});
+
+      it("should make the correct api calls for a 'yes' response", () => {});
+
+      it("should make the correct api calls for a 'no' response", () => {});
+    });
+  });
 });

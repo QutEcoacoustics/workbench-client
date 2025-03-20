@@ -100,6 +100,14 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         }
       },
       onSuccess: () => {
+        // When logging in we check to see if the user has been asked to opt in
+        // to communications.
+        // If they have never been asked, we show a toast asking if they would
+        // like to opt in.
+        //
+        // Although we ask the user to opt in/out of communications are
+        // registration, we have a backlog of users who have not been asked
+        // before.
         const hasOptedIn = this.session.currentUser?.contactable;
         if (hasOptedIn === undefined || hasOptedIn === UserConcent.unasked) {
           this.communicationsToastElement.open();
