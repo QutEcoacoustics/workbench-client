@@ -8,7 +8,7 @@ import {
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { IResetPassword, ResetPassword } from "@models/data/ResetPassword";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./reset-password.schema.json";
 
@@ -30,7 +30,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
 
   public constructor(
     private api: UserService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

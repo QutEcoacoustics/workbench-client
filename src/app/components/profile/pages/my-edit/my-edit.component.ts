@@ -12,7 +12,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { myAccountActions } from "../profile/my-profile.component";
 import schema from "./my-edit.schema.json";
 
@@ -39,7 +39,7 @@ class MyEditComponent extends FormTemplate<User> {
 
   public constructor(
     private api: AccountsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

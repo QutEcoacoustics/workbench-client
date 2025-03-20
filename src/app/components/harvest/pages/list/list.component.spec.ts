@@ -14,7 +14,7 @@ import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { DateTime } from "luxon";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -42,7 +42,7 @@ describe("ListComponent", () => {
     ],
     component: ListComponent,
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(project: Project | null, mockHarvest: Harvest) {

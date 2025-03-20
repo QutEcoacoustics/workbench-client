@@ -1,11 +1,11 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { ToastsService } from "./toasts.service";
+import { ToastService } from "./toasts.service";
 
 describe("ToastsService", () => {
-  let spec: SpectatorService<ToastsService>;
+  let spec: SpectatorService<ToastService>;
 
   const createService = createServiceFactory({
-    service: ToastsService,
+    service: ToastService,
   });
 
   beforeEach(() => {
@@ -13,6 +13,6 @@ describe("ToastsService", () => {
   });
 
   it("should create", () => {
-    expect(spec.service).toBeInstanceOf(ToastsService);
+    expect(spec.service).toBeInstanceOf(ToastService);
   });
 });

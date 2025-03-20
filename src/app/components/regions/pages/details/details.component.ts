@@ -28,7 +28,7 @@ import { Site } from "@models/Site";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 
@@ -118,7 +118,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     config: NgbPaginationConfig,
     sitesApi: SitesService,
     private regionsApi: RegionsService,
-    private notifications: ToastsService,
+    private notifications: ToastService,
     private clientConfig: ConfigService,
   ) {
     super(

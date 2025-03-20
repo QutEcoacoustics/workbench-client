@@ -13,7 +13,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
@@ -23,14 +23,14 @@ describe("LoginComponent", () => {
   let session: BawSessionService;
   let router: Router;
   let location: Location;
-  let notifications: ToastsService;
+  let notifications: ToastService;
   let spec: SpectatorRouting<LoginComponent>;
   const { fields } = schema;
   const createComponent = createRoutingFactory({
     component: LoginComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function isSignedIn(signedIn: boolean = true) {
@@ -43,7 +43,7 @@ describe("LoginComponent", () => {
     api = spec.inject(SecurityService);
     session = spec.inject(BawSessionService);
     location = spec.inject(Location);
-    notifications = spec.inject(ToastsService);
+    notifications = spec.inject(ToastService);
     spyOn(location, "getState").and.callFake(() => ({
       // Default to no history (navigationId = 1)
       navigationId: navigationId ?? 1,

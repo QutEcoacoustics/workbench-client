@@ -7,7 +7,7 @@ import { SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsNewComponent } from "./new.component";
@@ -16,7 +16,7 @@ describe("AdminTagGroupsNewComponent", () => {
   let api: SpyObject<TagGroupsService>;
   let component: AdminTagGroupsNewComponent;
   let fixture: ComponentFixture<AdminTagGroupsNewComponent>;
-  let notifications: ToastsService;
+  let notifications: ToastService;
   let router: Router;
 
   assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
@@ -44,7 +44,7 @@ describe("AdminTagGroupsNewComponent", () => {
       fixture = TestBed.createComponent(AdminTagGroupsNewComponent);
       api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
       router = TestBed.inject(Router);
-      notifications = TestBed.inject(ToastsService);
+      notifications = TestBed.inject(ToastService);
       component = fixture.componentInstance;
 
       spyOn(notifications, "success").and.stub();

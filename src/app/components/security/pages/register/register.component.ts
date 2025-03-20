@@ -14,7 +14,7 @@ import {
 } from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import schema from "./register.schema.json";
 
 @Component({
@@ -42,7 +42,7 @@ class RegisterComponent
   public constructor(
     private securityApi: SecurityService,
     private session: BawSessionService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

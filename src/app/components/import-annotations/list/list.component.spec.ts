@@ -6,7 +6,7 @@ import {
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
@@ -34,7 +34,7 @@ describe("AnnotationsListComponent", () => {
     component: AnnotationsListComponent,
     declarations: [UserLinkComponent],
     imports: [SharedModule, MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(): void {

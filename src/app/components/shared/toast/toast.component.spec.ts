@@ -1,23 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { ToastComponent } from "./toast.component";
 
-import { ToastComponent } from './toast.component';
+describe("ToastComponent", () => {
+  let spec: Spectator<ToastComponent>;
 
-describe('ToastComponent', () => {
-  let component: ToastComponent;
-  let fixture: ComponentFixture<ToastComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ToastComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(ToastComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  const createComponent = createComponentFactory({
+    component: ToastComponent,
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  function setup(): void {
+    spec = createComponent({ detectChanges: false });
+    spec.detectChanges();
+  }
+
+  beforeEach(() => {
+    setup();
+  });
+
+  it("should create", () => {
+    expect(spec.component).toBeInstanceOf(ToastComponent);
   });
 });

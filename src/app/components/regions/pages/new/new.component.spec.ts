@@ -33,7 +33,7 @@ import {
 } from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
 import schema from "../../region.base.json";
@@ -46,7 +46,7 @@ describe("RegionsNewComponent", () => {
     component: NewComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    mocks: [ToastsService],
+    mocks: [ToastService],
     stubsEnabled: true,
   });
 

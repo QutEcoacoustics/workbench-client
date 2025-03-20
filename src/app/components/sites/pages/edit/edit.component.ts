@@ -17,7 +17,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
@@ -39,7 +39,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
 
   public constructor(
     private api: SitesService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

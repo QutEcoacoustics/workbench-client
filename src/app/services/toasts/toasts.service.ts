@@ -1,4 +1,6 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, signal, TemplateRef } from "@angular/core";
+
+export type ToastVariant = "default" | "primary" | "success" | "info" | "warning" | "danger";
 
 export interface ToastOptions {
   closeButton?: boolean;
@@ -16,13 +18,13 @@ export interface ToastOptions {
 
 export interface ToastInfo {
   title: string;
-  message: string;
-  variant: "default" | "primary" | "success" | "info" | "warning" | "danger";
+  message: TemplateRef<unknown> | string;
+  variant: ToastVariant;
   options?: ToastOptions;
 }
 
 @Injectable({ providedIn: "root" })
-export class ToastsService {
+export class ToastService {
   public toasts = signal<ToastInfo[]>([]);
 
   // We used to use a different library for toasts called "@services/toasts/toasts.service"
@@ -60,5 +62,9 @@ export class ToastsService {
 
   public remove(toast: ToastInfo) {
     this.toasts.update((t) => t.filter((value) => value !== toast));
+  }
+
+  public showToastInfo(toast: ToastInfo) {
+    this.toasts.update((values) => values.concat(toast));
   }
 }

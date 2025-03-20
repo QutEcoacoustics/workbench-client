@@ -17,7 +17,7 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { regionMenuItemActions } from "../details/details.component";
 import schema from "../../region.base.json";
 
@@ -47,7 +47,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
 
   public constructor(
     private api: RegionsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

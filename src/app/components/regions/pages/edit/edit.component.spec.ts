@@ -20,7 +20,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import schema from "../../region.base.json";
 import { EditComponent } from "./edit.component";
@@ -32,7 +32,7 @@ describe("RegionsEditComponent", () => {
     component: EditComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent],
-    mocks: [ToastsService],
+    mocks: [ToastService],
     stubsEnabled: true,
   });
 

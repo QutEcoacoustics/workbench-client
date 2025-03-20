@@ -31,7 +31,7 @@ import {
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { PageTitleStrategy } from "src/app/app.component";
 import { DetailsComponent } from "./details.component";
@@ -52,7 +52,7 @@ describe("ProjectDetailsComponent", () => {
   const createComponent = createRoutingFactory({
     imports: [SharedModule, MockBawApiModule],
     declarations: [mock.map, mock.card],
-    mocks: [ToastsService],
+    mocks: [ToastService],
     component: DetailsComponent,
     providers: [PageTitleStrategy],
   });

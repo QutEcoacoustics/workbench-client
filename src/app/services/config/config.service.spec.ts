@@ -6,7 +6,7 @@ import {
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
@@ -15,11 +15,11 @@ import { testApiConfig } from "./configMock.service";
 describe("ConfigService", () => {
   let spec: SpectatorHttp<ConfigService>;
   let service: ConfigService;
-  let toastr: ToastsService;
+  let toastr: ToastService;
   const createService = createHttpFactory({
     service: ConfigService,
     imports: [HttpClientTestingModule],
-    providers: [mockProvider(ToastsService)],
+    providers: [mockProvider(ToastService)],
   });
 
   async function setup(
@@ -30,7 +30,7 @@ describe("ConfigService", () => {
       providers: [{ provide: API_ROOT, useValue: apiRoot }],
     });
 
-    toastr = spec.inject(ToastsService);
+    toastr = spec.inject(ToastService);
     service = spec.inject(ConfigService);
 
     const promise = spec.service.init();
@@ -56,7 +56,7 @@ describe("ConfigService", () => {
       ],
     });
 
-    toastr = spec.inject(ToastsService);
+    toastr = spec.inject(ToastService);
     service = spec.inject(ConfigService);
 
     await spec.service.init(spec.inject(API_CONFIG));

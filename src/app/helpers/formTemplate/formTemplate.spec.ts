@@ -10,7 +10,7 @@ import {
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
@@ -37,7 +37,7 @@ class MockModel extends AbstractModel {
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     route: ActivatedRoute,
     router: Router
   ) {
@@ -54,14 +54,14 @@ const formProps: Partial<FormProps<MockModel>> = {};
 describe("formTemplate", () => {
   let defaultError: BawApiError;
   let defaultModel: MockModel;
-  let notifications: ToastsService;
+  let notifications: ToastService;
   let spec: SpectatorRouting<MockComponent>;
   let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   const createComponent = createRoutingFactory({
     component: MockComponent,
     imports: [SharedModule, ...appLibraryImports],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(
@@ -75,7 +75,7 @@ describe("formTemplate", () => {
     Object.assign(formProps, templateProps);
     spec = createComponent(componentOptions);
 
-    notifications = spec.inject(ToastsService);
+    notifications = spec.inject(ToastService);
   }
 
   function makeResolvedModel(
@@ -358,7 +358,7 @@ describe("formTemplate", () => {
   });
 
   describe("notifications", () => {
-    function assertNotification(type: keyof ToastsService, msg: string) {
+    function assertNotification(type: keyof ToastService, msg: string) {
       expect(notifications[type]).toHaveBeenCalledWith(msg);
     }
 

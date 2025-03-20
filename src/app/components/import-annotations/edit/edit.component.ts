@@ -10,7 +10,7 @@ import {
   FormTemplate,
   defaultSuccessMsg,
 } from "@helpers/formTemplate/formTemplate";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
 import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
@@ -38,7 +38,7 @@ class EditAnnotationsComponent
   public constructor(
     private api: AudioEventImportService,
     protected route: ActivatedRoute,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected router: Router
   ) {
     super(notifications, route, router, {

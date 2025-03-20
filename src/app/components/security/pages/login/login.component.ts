@@ -1,9 +1,5 @@
 import { Location } from "@angular/common";
-import {
-  Component,
-  Inject,
-  OnInit,
-} from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -20,7 +16,10 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
+import { ToastComponent } from "@shared/toast/toast.component";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { firstValueFrom } from "rxjs";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
@@ -43,7 +42,28 @@ export const loginMenuItemActions = [
       (onSubmit)="submit($event)"
     ></baw-form>
 
-    <ng-template #communicationsTemplate> </ng-template>
+    <baw-toast
+      #communicationsToast
+      [title]="'Subscribe to communications'"
+      [options]="{ autoHide: false }"
+    >
+      <ng-template>
+        <p>Would you like to subscribe to communications?</p>
+
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary me-2" (click)="optInContactable()">
+            Yes
+          </button>
+
+          <button
+            class="btn btn-danger text-white"
+            (click)="optOutContactable()"
+          >
+            No
+          </button>
+        </div>
+      </ng-template>
+    </baw-toast>
   `,
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
@@ -51,12 +71,16 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   private redirectBack: boolean;
   private redirectUrl: string | StrongRoute;
 
+  @ViewChild("communicationsToast")
+  private communicationsToastElement: ToastComponent;
+
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     private securityApi: SecurityService,
     private session: BawSessionService,
     private location: Location,
-    protected notifications: ToastsService,
+    private accountsApi: AccountsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {
@@ -75,20 +99,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         }
       },
       onSuccess: () => {
-        this.notifications.show(
-          `
-            <p>Would you like to subscribe to communications?</p>
-
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-primary me-2">Yes</button>
-              <button class="btn btn-danger text-white">No</button>
-            </div>
-          `,
-          "Notification",
-          {
-            autoHide: false,
-          }
-        );
+        this.communicationsToastElement.open();
       },
     });
   }
@@ -135,6 +146,20 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
   protected apiAction(model: ILoginDetails) {
     return this.securityApi.signIn(new LoginDetails(model));
+  }
+
+  protected optInContactable() {
+    this.communicationsToastElement.close();
+    firstValueFrom(
+      this.accountsApi.optInContactable(this.session.currentUser.id)
+    );
+  }
+
+  protected optOutContactable() {
+    this.communicationsToastElement.close();
+    firstValueFrom(
+      this.accountsApi.optOutContactable(this.session.currentUser.id)
+    );
   }
 }
 

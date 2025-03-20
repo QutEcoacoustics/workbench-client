@@ -60,6 +60,7 @@ import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.m
 import { IfLoggedInComponent } from "./can/can.component";
 import { MapModule } from "./map/map.module";
 import { ErrorCardComponent } from "./error-card/error-card.component";
+import { ToastComponent } from "./toast/toast.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -133,6 +134,8 @@ export const sharedModules = [
   DurationComponent,
   ZonedDateTimeComponent,
   DatetimeComponent,
+
+  ToastComponent,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

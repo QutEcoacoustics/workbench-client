@@ -13,7 +13,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RecaptchaState } from "@shared/form/form.component";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { PageComponent } from "../page/pageComponent";
 import { IPageInfo } from "../page/pageInfo";
 
@@ -63,7 +63,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
    * @param opts Form template options
    */
   public constructor(
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
     opts: Partial<FormProps<Model>>

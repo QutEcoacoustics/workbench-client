@@ -7,7 +7,7 @@ import { ModalComponent } from "@menu/widget.component";
 import { TagGroup } from "@models/TagGroup";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import {
   adminEditTagGroupMenuItem,
@@ -35,7 +35,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
 
   public constructor(
     protected tagGroupsApi: TagGroupsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected modals: NgbModal,
   ) {
     super(tagGroupsApi, (tagGroups) =>

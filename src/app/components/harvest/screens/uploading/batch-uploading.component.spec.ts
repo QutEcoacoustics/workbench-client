@@ -18,7 +18,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -44,7 +44,7 @@ describe("BatchUploadingComponent", () => {
       }),
     ],
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(project: Project, harvest: Harvest, sites: Site[]) {

@@ -5,7 +5,7 @@ import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { DataRequest, IDataRequest } from "@models/data/DataRequest";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import schema from "./data-request.schema.json";
 
@@ -52,7 +52,7 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
 
   public constructor(
     private api: DataRequestService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
   ) {

@@ -10,7 +10,7 @@ import {
 } from "@helpers/app-initializer/app-initializer";
 import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
 import { ThemeService } from "@services/theme/theme.service";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
@@ -28,7 +28,7 @@ export class ConfigService {
   private http: HttpClient;
 
   public constructor(
-    private notification: ToastsService,
+    private notification: ToastService,
     private theme: ThemeService,
     handler: HttpBackend,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean

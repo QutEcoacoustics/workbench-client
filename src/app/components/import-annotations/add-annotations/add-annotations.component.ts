@@ -33,7 +33,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import {
@@ -115,7 +115,7 @@ class AddAnnotationsComponent
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
     private router: Router,
-    private notifications: ToastsService,
+    private notifications: ToastService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();

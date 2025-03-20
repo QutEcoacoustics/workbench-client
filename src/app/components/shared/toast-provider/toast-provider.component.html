@@ -22,7 +22,12 @@
         }
       </span>
 
-      <span [innerHtml]="domTemplate(toast.message)"></span>
+      @if (isTemplateRef(toast.message)) {
+      <ng-container *ngTemplateOutlet="toast.message"></ng-container>
+      }
+      @else {
+      <span>{{ toast.message }}</span>
+      }
     </span>
 
     <!--

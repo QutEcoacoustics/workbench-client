@@ -10,7 +10,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsComponent } from "./list.component";
@@ -35,7 +35,7 @@ describe("AdminTagGroupsComponent", () => {
       ],
     }).compileComponents();
 
-    TestBed.inject(ToastsService);
+    TestBed.inject(ToastService);
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
     api = TestBed.inject(TagGroupsService);
 

@@ -5,7 +5,7 @@ import {
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { ReportProblemComponent } from "./report-problem.component";
 
 describe("ReportProblemComponent", () => {
@@ -14,7 +14,7 @@ describe("ReportProblemComponent", () => {
   const createComponent = createRoutingFactory({
     component: ReportProblemComponent,
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

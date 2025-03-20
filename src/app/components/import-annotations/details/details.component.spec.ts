@@ -6,7 +6,7 @@ import {
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -64,7 +64,7 @@ describe("AnnotationsDetailsComponent", () => {
     component: AnnotationImportDetailsComponent,
     declarations: [InlineListComponent, LoadingComponent],
     imports: [SharedModule, MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function fileTabButton(): Element | null {

@@ -7,7 +7,7 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { Filters } from "@baw-api/baw-api.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { annotationsImportCategory, annotationsImportMenuItem, newAnnotationImportMenuItem } from "../import-annotations.menu";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
@@ -19,7 +19,7 @@ export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportService,
-    private notifications: ToastsService,
+    private notifications: ToastService,
     private modals: NgbModal
   ) {
     super();

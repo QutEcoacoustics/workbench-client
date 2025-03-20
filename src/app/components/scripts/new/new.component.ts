@@ -7,7 +7,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Script } from "@models/Script";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import schema from "../script.base.schema.json";
 import {
@@ -35,7 +35,7 @@ import {
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(
     private api: ScriptsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

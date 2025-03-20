@@ -11,7 +11,7 @@ import {
   IConfirmPassword,
 } from "@models/data/ConfirmPassword";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./confirm-account.schema.json";
 
@@ -33,7 +33,7 @@ class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
 
   public constructor(
     private api: UserService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

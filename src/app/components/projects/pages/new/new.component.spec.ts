@@ -9,7 +9,7 @@ import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
 import { NewComponent } from "./new.component";
@@ -22,7 +22,7 @@ describe("ProjectsNewComponent", () => {
     component: NewComponent,
     declarations: [MockComponent(FormComponent)],
     imports: [MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   assertPageInfo(NewComponent, "New Project");

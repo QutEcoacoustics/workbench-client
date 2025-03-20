@@ -7,6 +7,7 @@ import { Observable, of, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Id, UserConcent } from "@interfaces/apiInterfaces";
 import {
   emptyParam,
   filterParam,
@@ -74,6 +75,18 @@ export class AccountsService implements StandardApi<User> {
 
   public destroy(model: IdOr<User>): Observable<User | void> {
     return this.api.destroy(endpoint(model, emptyParam));
+  }
+
+  public optInContactable(updatedId: Id): Observable<User> {
+    return this.updateContactableConcent(updatedId, UserConcent.yes);
+  }
+
+  public optOutContactable(updatedId: Id): Observable<User> {
+    return this.updateContactableConcent(updatedId, UserConcent.no);
+  }
+
+  public updateContactableConcent(updatedId: Id, contactable: UserConcent): Observable<User> {
+    return this.update(new User({ id: updatedId, contactable }));
   }
 }
 

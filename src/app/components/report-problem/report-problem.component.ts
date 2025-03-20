@@ -6,7 +6,7 @@ import { ReportProblem } from "@models/data/ReportProblem";
 import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
@@ -43,7 +43,7 @@ class ReportProblemComponent
   public constructor(
     private api: ReportProblemService,
     private config: ConfigService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

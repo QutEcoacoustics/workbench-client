@@ -14,7 +14,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { theirProfileActions } from "../profile/their-profile.component";
 import schema from "../../profile.schema.json";
 
@@ -50,7 +50,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
   public constructor(
     private api: AccountsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

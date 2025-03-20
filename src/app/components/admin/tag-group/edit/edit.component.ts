@@ -11,7 +11,7 @@ import {
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
@@ -46,7 +46,7 @@ class AdminTagGroupsEditComponent
 
   public constructor(
     private api: TagGroupsService,
-    notifications: ToastsService,
+    notifications: ToastService,
     route: ActivatedRoute,
     router: Router
   ) {

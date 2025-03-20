@@ -11,7 +11,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { projectsMenuItemActions } from "../list/list.component";
 import schema from "../../project.schema.json";
 
@@ -34,7 +34,7 @@ class NewComponent extends FormTemplate<Project> {
 
   public constructor(
     private api: ProjectsService,
-    notifications: ToastsService,
+    notifications: ToastService,
     route: ActivatedRoute,
     router: Router
   ) {

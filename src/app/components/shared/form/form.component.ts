@@ -12,7 +12,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { ReCaptchaV3Service } from "ngx-captcha";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 
 /**
  * Formly Form Wrapper
@@ -47,7 +47,7 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   public form = new FormGroup({});
 
   public constructor(
-    private notifications: ToastsService,
+    private notifications: ToastService,
     private recaptcha: ReCaptchaV3Service
   ) {
     super();

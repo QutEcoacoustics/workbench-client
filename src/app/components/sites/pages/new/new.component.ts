@@ -16,7 +16,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 
@@ -32,7 +32,7 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
 
   public constructor(
     protected api: SitesService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

@@ -15,7 +15,7 @@ import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -27,7 +27,7 @@ describe("AdminScriptsEditComponent", () => {
   let component: AdminScriptsEditComponent;
   let defaultModel: Script;
   let fixture: ComponentFixture<AdminScriptsEditComponent>;
-  let notifications: ToastsService;
+  let notifications: ToastService;
   let router: Router;
   let injector: AssociationInjector;
 
@@ -54,7 +54,7 @@ describe("AdminScriptsEditComponent", () => {
     fixture = TestBed.createComponent(AdminScriptsEditComponent);
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastsService);
+    notifications = TestBed.inject(ToastService);
 
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
     if (model) {

@@ -12,7 +12,7 @@ import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
 import { EditComponent } from "./edit.component";
@@ -26,7 +26,7 @@ describe("ProjectsEditComponent", () => {
     component: EditComponent,
     declarations: [MockComponent(FormComponent)],
     imports: [MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   assertPageInfo(EditComponent, "Edit");

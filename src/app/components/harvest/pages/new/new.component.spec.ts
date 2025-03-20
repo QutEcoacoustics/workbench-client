@@ -8,7 +8,7 @@ import {
 } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { NewComponent } from "./new.component";
 
 describe("newHarvestComponent", () => {
@@ -21,7 +21,7 @@ describe("newHarvestComponent", () => {
       mockProvider(HarvestsService),
     ],
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   assertPageInfo(NewComponent, "New Upload");

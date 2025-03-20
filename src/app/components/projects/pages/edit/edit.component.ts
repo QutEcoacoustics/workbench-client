@@ -15,7 +15,7 @@ import {
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { projectMenuItemActions } from "../details/details.component";
 import schema from "../../project.schema.json";
 
@@ -41,7 +41,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
 
   public constructor(
     private api: ProjectsService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

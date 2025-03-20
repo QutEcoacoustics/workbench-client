@@ -4,14 +4,14 @@ import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { UnlockAccountComponent } from "./unlock-account.component";
 import schema from "./unlock-account.schema.json";
 
 describe("UnlockAccountComponent", () => {
   let component: UnlockAccountComponent;
   let fixture: ComponentFixture<UnlockAccountComponent>;
-  let notifications: ToastsService;
+  let notifications: ToastService;
   const { fields } = schema;
 
   describe("form", () => {
@@ -37,7 +37,7 @@ describe("UnlockAccountComponent", () => {
 
       fixture = TestBed.createComponent(UnlockAccountComponent);
       component = fixture.componentInstance;
-      notifications = TestBed.inject(ToastsService);
+      notifications = TestBed.inject(ToastService);
       fixture.detectChanges();
 
       spyOn(notifications, "success").and.stub();

@@ -6,7 +6,7 @@ import {
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormsModule } from "@angular/forms";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -29,7 +29,7 @@ describe("EditAnnotationsComponent", () => {
     component: EditAnnotationsComponent,
     declarations: [],
     imports: [FormsModule, SharedModule, MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
     data: {
       resolvers: {
         audioEventImport: { model: defaultModel },

@@ -1,7 +1,7 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { createRoutingFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { MyPasswordComponent } from "./my-password.component";
 
 describe("MyPasswordComponent", () => {
@@ -12,7 +12,7 @@ describe("MyPasswordComponent", () => {
     providers: [
       mockProvider(AccountsService),
     ],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(): void {

@@ -7,7 +7,7 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import schema from "../audio-event-import.schema.json";
 import {
   annotationsImportMenuItem,
@@ -36,7 +36,7 @@ export const newAnnotationMenuItemActions = [
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   public constructor(
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
     private api: AudioEventImportService

@@ -35,7 +35,7 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MyProfileComponent } from "./my-profile.component";
@@ -53,7 +53,7 @@ describe("MyProfileComponent", () => {
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
     stubsEnabled: false,
   });
 

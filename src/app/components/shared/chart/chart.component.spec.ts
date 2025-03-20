@@ -1,7 +1,7 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Data } from "vega-lite/build/src/data";
 import { Map } from "immutable";
 import { fakeAsync } from "@angular/core/testing";
@@ -18,7 +18,7 @@ describe("ChartComponent", () => {
   const createComponent = createComponentFactory({
     component: ChartComponent,
     imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastsService],
+    mocks: [ToastService],
   });
 
   function setup(

@@ -19,7 +19,7 @@ import { generateTagging } from "@test/fakes/Tagging";
 import { generateUser } from "@test/fakes/User";
 import { nStepObservable } from "@test/helpers/general";
 import { MockProvider } from "ng-mocks";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -36,7 +36,7 @@ describe("RecentAnnotationsComponent", () => {
     component: RecentAnnotationsComponent,
     imports: [MockBawApiModule, SharedModule, RouterTestingModule],
     providers: [
-      MockProvider(ToastsService, {
+      MockProvider(ToastService, {
         error: jasmine.createSpy("error").and.stub(),
       }),
     ],

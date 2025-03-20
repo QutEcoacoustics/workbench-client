@@ -95,7 +95,7 @@ export class User extends AbstractModel<IUser> implements IUser {
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
-  @bawPersistAttr()
+  @bawPersistAttr({ update: true })
   public readonly contactable?: UserConcent;
   @bawPersistAttr()
   public readonly tzinfoTz?: string;

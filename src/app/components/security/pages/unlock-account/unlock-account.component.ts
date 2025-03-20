@@ -8,7 +8,7 @@ import {
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { IUnlockAccount, UnlockAccount } from "@models/data/UnlockAccount";
 import { List } from "immutable";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./unlock-account.schema.json";
 
@@ -30,7 +30,7 @@ class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
 
   public constructor(
     private api: UserService,
-    protected notifications: ToastsService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
   ) {

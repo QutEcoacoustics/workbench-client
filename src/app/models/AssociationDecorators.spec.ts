@@ -14,7 +14,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { UNAUTHORIZED } from "http-status";
 import { of, Subject } from "rxjs";
-import { ToastsService } from "@services/toasts/toasts.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
@@ -26,7 +26,7 @@ import { AssociationInjector } from "./ImplementsInjector";
 describe("Association Decorators", () => {
   let injector: AssociationInjector;
   let api: MockStandardApiService;
-  let toastSpy: ToastsService;
+  let toastSpy: ToastService;
 
   function updateDecorator<T extends Record<string, any>>(
     model: T,
@@ -55,14 +55,14 @@ describe("Association Decorators", () => {
       providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
-        mockProvider(ToastsService),
+        mockProvider(ToastService),
       ],
     });
 
     api = TestBed.inject(MockStandardApiService);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
 
-    toastSpy = TestBed.inject(ToastsService);
+    toastSpy = TestBed.inject(ToastService);
     toastSpy.error = jasmine.createSpy("error");
   });
 
