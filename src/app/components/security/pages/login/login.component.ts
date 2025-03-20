@@ -20,6 +20,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { ToastComponent } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
@@ -99,7 +100,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         }
       },
       onSuccess: () => {
-        this.communicationsToastElement.open();
+        const hasOptedIn = this.session.currentUser?.contactable;
+        if (hasOptedIn === undefined || hasOptedIn === UserConcent.unasked) {
+          this.communicationsToastElement.open();
+        }
       },
     });
   }
