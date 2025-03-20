@@ -79,8 +79,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
           `
             <p>Would you like to subscribe to communications?</p>
 
-            <button class="btn btn-primary">Yes</button>
-            <button class="btn btn-danger text-white">No</button>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-primary me-2">Yes</button>
+              <button class="btn btn-danger text-white">No</button>
+            </div>
           `,
           "Notification",
           {

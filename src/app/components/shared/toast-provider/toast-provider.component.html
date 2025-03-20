@@ -8,6 +8,20 @@
   [delay]="toast.options?.delay ?? 5000"
   (hidden)="toastService.remove(toast)"
 >
-  <div [innerHtml]="domTemplate(toast.message)"></div>
+  <div class="toast-content p-1">
+    <span class="variant-icon">
+      @if (toast.variant === "success") {
+      <fa-icon [icon]="['fas', 'check']"></fa-icon>
+      } @else if (toast.variant === "danger") {
+      <fa-icon [icon]="['fas', 'hand']"></fa-icon>
+      } @else if (toast.variant === "warning") {
+      <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+      } @else if (toast.variant === "info") {
+      <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+      }
+    </span>
+
+    <span [innerHtml]="domTemplate(toast.message)"></span>
+  </div>
 </ngb-toast>
 }
