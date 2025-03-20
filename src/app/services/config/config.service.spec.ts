@@ -119,12 +119,7 @@ describe("ConfigService", () => {
         expect(toastr.error).toHaveBeenCalledWith(
           "The website is not configured correctly. Try coming back at another time.",
           "Unrecoverable Error",
-          {
-            closeButton: false,
-            disableTimeOut: true,
-            tapToDismiss: false,
-            positionClass: "toast-center-center",
-          }
+          { autoHide: false }
         );
       });
     });

@@ -280,7 +280,7 @@ export class HarvestStagesService implements OnDestroy {
           this.notifications.error(
             "Failed to load harvest data, refresh this page to reconnect",
             undefined,
-            { disableTimeOut: true }
+            { autoHide: false }
           );
           return throwError(() => err);
         }),

@@ -5,6 +5,7 @@ import {
   ImageSizes,
   ImageUrl,
   TimezoneInformation,
+  UserConcent,
 } from "@interfaces/apiInterfaces";
 import { faker } from "@faker-js/faker";
 import { DateTime, Duration } from "luxon";
@@ -98,6 +99,11 @@ export const modelData = {
     mem: modelData.datatype.number(),
     walltime: modelData.datatype.number(),
   }),
+  concent: () => faker.helpers.arrayElement([
+    UserConcent.yes,
+    UserConcent.no,
+    UserConcent.unasked,
+  ]),
   hexaDecimal,
   randomArray,
   randomObject,

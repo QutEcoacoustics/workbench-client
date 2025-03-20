@@ -3,15 +3,6 @@ import { Injectable, signal, TemplateRef } from "@angular/core";
 export type ToastVariant = "default" | "primary" | "success" | "info" | "warning" | "danger";
 
 export interface ToastOptions {
-  closeButton?: boolean;
-  disableTimeOut?: boolean;
-  tapToDismiss?: boolean;
-  positionClass?: string;
-  enableHtml?: boolean;
-  preventDuplicates?: boolean;
-  includeTitleDuplicates?: boolean;
-  resetTimeoutOnDuplicate?: boolean;
-
   delay?: number;
   autoHide?: boolean;
 }
