@@ -21,7 +21,7 @@ export interface ToastInfo {
   options?: ToastOptions;
 }
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class ToastsService {
   public toasts = signal<ToastInfo[]>([]);
 

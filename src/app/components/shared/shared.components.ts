@@ -60,7 +60,6 @@ import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.m
 import { IfLoggedInComponent } from "./can/can.component";
 import { MapModule } from "./map/map.module";
 import { ErrorCardComponent } from "./error-card/error-card.component";
-import { ToastProviderComponent } from "./toast-provider/toast-provider.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -79,9 +78,6 @@ export const sharedComponents = [
   WebsiteStatusWarningComponent,
   IfLoggedInComponent,
   ErrorCardComponent,
-
-  // standalone components
-  ToastProviderComponent,
 
   // modals
   ConfirmationComponent,
