@@ -15,6 +15,12 @@ import { testFormImports } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
+import { UserConcent } from "@interfaces/apiInterfaces";
+import { ToastComponent } from "@shared/toast/toast.component";
+import { clickButton, getElementByInnerText } from "@test/helpers/html";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { User } from "@models/User";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
 
@@ -24,32 +30,54 @@ describe("LoginComponent", () => {
   let router: Router;
   let location: Location;
   let notifications: ToastService;
+  let accountSpy: AccountsService;
   let spec: SpectatorRouting<LoginComponent>;
   const { fields } = schema;
 
   const createComponent = createRoutingFactory({
     component: LoginComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [...testFormImports, MockBawApiModule, ToastComponent],
     declarations: [FormComponent],
     mocks: [ToastService],
   });
+
+  const communicationsDismissButton = () => spec.query(".btn-close");
+  const communicationsYesButton = () =>
+    getElementByInnerText<HTMLButtonElement>(spec, "Yes");
+  const communicationsNoButton = () =>
+    getElementByInnerText<HTMLButtonElement>(spec, "No");
+  const communicationsConcentToast = () =>
+    spec.query("baw-toast") as any as ToastComponent;
 
   function isSignedIn(signedIn: boolean = true) {
     spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 
+  function isContactable(contactable: UserConcent): void {
+    spyOnProperty(session, "isContactable").and.callFake(() => contactable);
+  }
+
   function setup(redirect?: string | boolean, navigationId?: number) {
     spec = createComponent({ detectChanges: false, queryParams: { redirect } });
     router = spec.router;
+
     api = spec.inject(SecurityService);
     session = spec.inject(BawSessionService);
     location = spec.inject(Location);
+    accountSpy = spec.inject(ACCOUNT.token);
+
     notifications = spec.inject(ToastService);
+
+    spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
       // Default to no history (navigationId = 1)
       navigationId: navigationId ?? 1,
     }));
-    spyOn(location, "back").and.stub();
+
+    accountSpy.updateContactableConcent = jasmine
+      .createSpy("updateContactableConcent")
+      .and.callThrough();
+    accountSpy.update = jasmine.createSpy("update").and.callThrough();
   }
 
   function setLoginError() {
@@ -66,6 +94,8 @@ describe("LoginComponent", () => {
     spyOn(api, "signIn").and.callFake(() => subject);
     return promise;
   }
+
+  assertPageInfo(LoginComponent, "Log In");
 
   describe("form", () => {
     testFormlyFields([
@@ -91,8 +121,6 @@ describe("LoginComponent", () => {
   });
 
   describe("component", () => {
-    assertPageInfo(LoginComponent, "Log In");
-
     it("should create", () => {
       setup();
       isSignedIn(false);
@@ -209,24 +237,92 @@ describe("LoginComponent", () => {
   });
 
   describe("communication concent", () => {
+    beforeEach(() => {
+      setup();
+      isSignedIn(false);
+
+      communicationsConcentToast().open = jasmine
+        .createSpy("open")
+        .and.callThrough();
+    });
+
     describe("prompting conditions", () => {
-      it("should show a toast asking to opt-in to communications if they have not been asked", () => {});
+      xit("should show a toast asking to opt-in to communications if they have not been asked", () => {
+        isContactable(UserConcent.unasked);
+        spec.component.submit({ login: "username", password: "password" });
+        spec.detectChanges();
 
-      it("should not show a toast if they have given a 'no' response", () => {});
+        expect(communicationsConcentToast().open).toHaveBeenCalledTimes(1);
+      });
 
-      it("should not show a toast if they have given a 'yes' response", () => {});
+      it("should not show a toast if they have given a 'no' response", () => {
+        isContactable(UserConcent.no);
+        spec.component.submit({ login: "username", password: "password" });
+        spec.detectChanges();
 
-      it("should not show a toast if the user logs in with incorrect credentials", () => {});
+        expect(communicationsConcentToast().open).not.toHaveBeenCalled();
+      });
+
+      it("should not show a toast if they have given a 'yes' response", () => {
+        isContactable(UserConcent.yes);
+        spec.component.submit({ login: "username", password: "password" });
+        spec.detectChanges();
+
+        expect(communicationsConcentToast().open).not.toHaveBeenCalled();
+      });
+
+      it("should not show a toast if the user logs in with incorrect credentials", async () => {
+        const errorPromise = setLoginError();
+
+        // we set the contactable property to "unasked" so that if the
+        isContactable(UserConcent.unasked);
+        spec.component.submit({ login: "username", password: "password" });
+        spec.detectChanges();
+
+        await errorPromise;
+
+        expect(communicationsConcentToast().open).not.toHaveBeenCalled();
+      });
     });
 
     describe("capturing responses", () => {
-      it("should update the session model correctly", () => {});
+      it("should update the session model correctly after changing communications concent", () => {
+        // After opting into communications, we should see that the sessions
+        // user model is correctly updated with the new communications concent
+        // value.
+        clickButton(spec, communicationsYesButton());
 
-      it("should not make any api calls if the toast is dismissed without a response", () => {});
+        expect(session.currentUser).toContain({
+          communications: UserConcent.yes,
+        });
+      });
 
-      it("should make the correct api calls for a 'yes' response", () => {});
+      it("should not make any api calls if the toast is dismissed without a response", () => {
+        clickButton(spec, communicationsDismissButton());
+        expect(accountSpy.update).not.toHaveBeenCalled();
+      });
 
-      it("should make the correct api calls for a 'no' response", () => {});
+      it("should make the correct api calls for a 'yes' response", () => {
+        clickButton(spec, communicationsYesButton());
+
+        expect(accountSpy.update).toHaveBeenCalledOnceWith(
+          jasmine.objectContaining<User>({
+            id: session.currentUser.id,
+            contactable: UserConcent.yes,
+          })
+        );
+      });
+
+      it("should make the correct api calls for a 'no' response", () => {
+        clickButton(spec, communicationsNoButton());
+
+        expect(accountSpy.update).toHaveBeenCalledOnceWith(
+          jasmine.objectContaining<User>({
+            id: session.currentUser.id,
+            contactable: UserConcent.yes,
+          })
+        );
+      });
     });
   });
 });

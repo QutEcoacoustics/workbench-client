@@ -70,7 +70,6 @@ export class AccountsService implements StandardApi<User> {
   }
 
   public update(model: User): Observable<User> {
-    console.log(model);
     return this.api.update(User, endpoint(model, emptyParam), model);
   }
 

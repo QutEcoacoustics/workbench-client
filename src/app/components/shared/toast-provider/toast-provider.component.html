@@ -3,7 +3,7 @@
   class="toast-item"
   [header]="toast.title"
   [ngClass]="'bg-' + toast.variant"
-  [ngClass]="'text-bg-' + toast.variant"
+  [ngClass]="'bg-text-' + toast.variant"
   [autohide]="toast.options?.autoHide ?? true"
   [delay]="toast.options?.delay ?? 5000"
   (hidden)="toastService.remove(toast)"

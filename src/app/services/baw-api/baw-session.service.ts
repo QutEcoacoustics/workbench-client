@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AuthToken } from "@interfaces/apiInterfaces";
+import { AuthToken, UserConcent } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -37,6 +37,10 @@ export class BawSessionService {
     }
 
     return User.getUnknownUser(undefined);
+  }
+
+  public get isContactable(): UserConcent {
+    return this.currentUser.contactable;
   }
 
   /** Set user details */
