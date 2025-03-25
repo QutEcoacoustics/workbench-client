@@ -46,8 +46,8 @@ export function clickButton<T>(
   spectator.click(selector);
 }
 
-export function inputFile(
-  spectator: Spectator<any>,
+export function inputFile<T>(
+  spectator: Spectator<T>,
   selector: string | HTMLInputElement,
   files: File[]
 ): void {
