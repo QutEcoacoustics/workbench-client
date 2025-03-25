@@ -338,7 +338,7 @@ describe("LoginComponent", () => {
       });
     });
 
-    xdescribe("capturing responses", () => {
+    describe("capturing responses", () => {
       beforeEach(() => {
         isContactable(UserConcent.unasked);
         spec.detectChanges();

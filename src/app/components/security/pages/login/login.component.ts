@@ -108,6 +108,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         // Although we ask the user to opt in/out of communications are
         // registration, we have a backlog of users who have not been asked
         // before.
+        //
+        // the onSuccess callback is executed before the redirectUser callback
+        // meaning that this component can create the toast before the user is
+        // redirected.
         if (this.session.isContactable === UserConcent.unasked) {
           this.communicationsToastElement.open();
         }

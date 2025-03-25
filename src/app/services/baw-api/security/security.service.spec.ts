@@ -290,6 +290,7 @@ describe("SecurityService", () => {
           password: "sign_up password",
           passwordConfirmation: "sign_up password",
           recaptchaToken: "xxxxxxxxxx",
+          contactable: modelData.datatype.boolean(),
         });
         const expectation =
           "user%5Buser_name%5D=sign_up+details&" +

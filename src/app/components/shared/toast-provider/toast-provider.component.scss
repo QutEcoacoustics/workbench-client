@@ -2,9 +2,14 @@
 
 :host {
   position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  width: fit-content;
+  height: fit-content;
+
+  top: 10px;
+  left: 0px;
+  right: 0px;
+
+  margin: auto;
 
   z-index: 1200;
 }

@@ -2,7 +2,7 @@
 <ngb-toast
   class="toast-item"
   [header]="toast.title"
-  [ngClass]="['bg-' + toast.variant, 'bg-text-' + toast.variant]"
+  [ngClass]="['bg-' + toast.variant, 'text-bg-' + toast.variant]"
   [autohide]="toast.options?.autoHide ?? true"
   [delay]="toast.options?.delay ?? 5000"
   (hidden)="toastService.remove(toast)"

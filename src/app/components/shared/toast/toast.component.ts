@@ -15,8 +15,11 @@ import {
 
 /**
  * @description
- * Creates a custom notification template which can be passed to the
- * notification service.
+ * Creates a temptable ToastInfo model which can be passed to the notification
+ * service or opened/closed through the open/close methods.
+ *
+ * This component provides an ergonomic way to create toast notifications
+ * with templated content.
  */
 @Component({
   selector: "baw-toast",

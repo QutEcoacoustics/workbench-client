@@ -95,6 +95,8 @@ export class User extends AbstractModel<IUser> implements IUser {
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
+  // TODO: contactable should be writable on create once the api supports
+  // a proper JSON API format for creating users.
   @bawPersistAttr({ update: true })
   public readonly contactable?: UserConcent;
   @bawPersistAttr()

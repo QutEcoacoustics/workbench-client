@@ -167,7 +167,7 @@ describe("ToastProviderComponent", () => {
 
         const targetToast = toasts()[0];
         expect(targetToast).toHaveClass(`bg-${test.expectedVariant}`);
-        expect(targetToast).toHaveClass(`bg-text-${test.expectedVariant}`);
+        expect(targetToast).toHaveClass(`text-bg-${test.expectedVariant}`);
       });
 
       it(`should have the correct icon for a '${test.expectedVariant}' toast variant`, () => {

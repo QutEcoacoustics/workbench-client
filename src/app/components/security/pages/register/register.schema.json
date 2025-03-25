@@ -26,10 +26,10 @@
       }
     },
     {
-      "key": "communicationsOptIn",
+      "key": "contactable",
       "type": "checkbox",
       "props": {
-        "label": "I would like to receive communications"
+        "label": "Can we email you with update to our platform?"
       }
     }
   ]

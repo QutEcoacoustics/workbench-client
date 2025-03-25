@@ -29,7 +29,7 @@ describe("AccountsService", () => {
     providers: mockServiceProviders,
   });
 
-  beforeEach((): void => {
+  beforeEach(() => {
     spec = createService();
   });
 

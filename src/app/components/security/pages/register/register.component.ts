@@ -13,8 +13,11 @@ import {
   RegisterDetails,
 } from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
-import { takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { firstValueFrom } from "rxjs";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./register.schema.json";
 
 @Component({
@@ -42,6 +45,7 @@ class RegisterComponent
   public constructor(
     private securityApi: SecurityService,
     private session: BawSessionService,
+    private accountsApi: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router
@@ -49,8 +53,9 @@ class RegisterComponent
     super(notifications, route, router, {
       hasFormCheck: false,
       successMsg: () => "Successfully registered new account",
-      redirectUser: () =>
-        this.router.navigateByUrl(homeMenuItem.route.toRouterLink()),
+      redirectUser: () => {
+        this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
+      },
     });
   }
 
@@ -68,8 +73,9 @@ class RegisterComponent
       .signUpSeed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: ({ seed, action }) =>
-          (this.recaptchaSeed = { state: "loaded", seed, action }),
+        next: ({ seed, action }) => {
+          this.recaptchaSeed = { state: "loaded", seed, action };
+        },
         error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");
@@ -78,7 +84,20 @@ class RegisterComponent
   }
 
   protected apiAction(model: IRegisterDetails) {
-    return this.securityApi.signUp(new RegisterDetails(model));
+    const signUpObservable = this.securityApi
+      .signUp(new RegisterDetails(model))
+      .pipe(
+        map(() => {
+          firstValueFrom(
+            this.accountsApi.updateContactableConcent(
+              this.session.currentUser.id,
+              model.contactable ? UserConcent.yes : UserConcent.no
+            )
+          );
+        })
+      );
+
+    return signUpObservable;
   }
 }
 

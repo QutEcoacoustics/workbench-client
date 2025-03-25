@@ -13,16 +13,22 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterComponent } from "./register.component";
 import schema from "./register.schema.json";
 
 describe("RegisterComponent", () => {
+  const { fields } = schema;
+  let spec: Spectator<RegisterComponent>;
+
   let api: SecurityService;
   let session: BawSessionService;
-  let toastr: ToastService;
-  let spec: Spectator<RegisterComponent>;
-  const { fields } = schema;
+  let notifications: ToastService;
+  let accounts: AccountsService;
+
   const createComponent = createComponentFactory({
     component: RegisterComponent,
     imports: [...testFormImports, MockBawApiModule],
@@ -31,6 +37,17 @@ describe("RegisterComponent", () => {
 
   function isSignedIn(signedIn: boolean = true) {
     spyOnProperty(session, "isLoggedIn").and.returnValue(signedIn);
+  }
+
+  function mockSignUp(isFailure: boolean): Promise<void> {
+    const subject = new Subject<any>();
+
+    const mockResponse = isFailure ? generateBawApiError() : of();
+    const promise = nStepObservable(subject, () => mockResponse, isFailure);
+
+    spyOn(api, "signUp").and.callFake(() => subject);
+
+    return promise;
   }
 
   describe("form", () => {
@@ -63,18 +80,27 @@ describe("RegisterComponent", () => {
     ]);
   });
 
+  assertPageInfo(RegisterComponent, "Register");
+
   describe("component", () => {
-    beforeEach(() => {
+    function setup(): void {
       spec = createComponent({ detectChanges: false });
       api = spec.inject(SecurityService);
-      toastr = spec.inject(ToastService);
+      notifications = spec.inject(ToastService);
       session = spec.inject(BawSessionService);
+      accounts = spec.inject(ACCOUNT.token);
 
-      spyOn(toastr, "success").and.stub();
-      spyOn(toastr, "error").and.stub();
+      spyOn(notifications, "success").and.stub();
+      spyOn(notifications, "error").and.stub();
+
+      accounts.updateContactableConcent = jasmine
+        .createSpy("updateContactableConcent")
+        .and.returnValue(of());
+    }
+
+    beforeEach(() => {
+      setup();
     });
-
-    assertPageInfo(RegisterComponent, "Register");
 
     it("should create", () => {
       isSignedIn(false);
@@ -89,7 +115,8 @@ describe("RegisterComponent", () => {
 
       const registerDetails = generateRegisterDetails();
       spec.component.submit(registerDetails);
-      expect(api.signUp).toHaveBeenCalledWith(
+
+      expect(api.signUp).toHaveBeenCalledOnceWith(
         new RegisterDetails(registerDetails)
       );
     });
@@ -100,7 +127,7 @@ describe("RegisterComponent", () => {
       it("should request recaptcha seed", () => {
         spyOn(api, "signUpSeed").and.callThrough();
         spec.detectChanges();
-        expect(api.signUpSeed).toHaveBeenCalled();
+        expect(api.signUpSeed).toHaveBeenCalledTimes(1);
         expect(spec.component.recaptchaSeed).toEqual({ state: "loading" });
       });
 
@@ -112,6 +139,7 @@ describe("RegisterComponent", () => {
         spyOn(api, "signUpSeed").and.callFake(() => subject);
         spec.detectChanges();
         await promise;
+
         expect(spec.component.recaptchaSeed).toEqual({
           state: "loaded",
           seed,
@@ -126,10 +154,14 @@ describe("RegisterComponent", () => {
           () => generateBawApiError(),
           true
         );
+
         spyOn(api, "signUpSeed").and.callFake(() => subject);
         spec.detectChanges();
         await promise;
-        expect(toastr.error).toHaveBeenCalledWith("Failed to load form");
+
+        expect(notifications.error).toHaveBeenCalledOnceWith(
+          "Failed to load form"
+        );
       });
     });
 
@@ -137,7 +169,9 @@ describe("RegisterComponent", () => {
       it("should show error for authenticated user", () => {
         isSignedIn(true);
         spec.detectChanges();
-        expect(toastr.error).toHaveBeenCalledWith("You are already logged in.");
+        expect(notifications.error).toHaveBeenCalledOnceWith(
+          "You are already logged in."
+        );
       });
 
       it("should disable submit button for authenticated user", () => {
@@ -146,6 +180,60 @@ describe("RegisterComponent", () => {
         const button = spec.query<HTMLButtonElement>("button[type='submit']");
         expect(button).toBeTruthy();
         expect(button.disabled).toBeTruthy();
+      });
+    });
+
+    // Setting the user models "contactable" field cannot be done through the
+    // user registration request. To set the "contactable" field, we have to
+    // make a follow up request after the user has been successfully registered.
+    describe("contactable user concent", () => {
+      it("should emit 'yes' concent if the user checks the checkbox", async () => {
+        const apiResponse = mockSignUp(false);
+
+        spec.component.submit(generateRegisterDetails({ contactable: true }));
+        spec.detectChanges();
+        await apiResponse;
+
+        expect(api.signUp).toHaveBeenCalledWith(
+          jasmine.objectContaining<RegisterDetails>({
+            contactable: true,
+          })
+        );
+
+        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
+          jasmine.any(Number),
+          UserConcent.yes
+        );
+      });
+
+      it("should emit 'no' concent if the user unchecks the checkbox", async () => {
+        const apiResponse = mockSignUp(false);
+
+        spec.component.submit(generateRegisterDetails({ contactable: false }));
+        spec.detectChanges();
+        await apiResponse;
+
+        expect(api.signUp).toHaveBeenCalledOnceWith(
+          jasmine.objectContaining<RegisterDetails>({
+            contactable: false,
+          })
+        );
+
+        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
+          jasmine.any(Number),
+          UserConcent.no
+        );
+      });
+
+      it("should not attempt to update the users concent if registration fails", async () => {
+        const apiResponse = mockSignUp(true);
+
+        spec.component.submit(generateRegisterDetails({ contactable: true }));
+        spec.detectChanges();
+        await apiResponse;
+
+        expect(api.signUp).toHaveBeenCalledTimes(1);
+        expect(accounts.updateContactableConcent).not.toHaveBeenCalled();
       });
     });
   });

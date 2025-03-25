@@ -8,6 +8,7 @@ export interface IRegisterDetails {
   password: Param;
   passwordConfirmation: Param;
   recaptchaToken: string;
+  contactable: boolean;
 }
 
 export class RegisterDetails
@@ -25,6 +26,7 @@ export class RegisterDetails
   public readonly passwordConfirmation: Param;
   @bawPersistAttr()
   public readonly recaptchaToken: string;
+  public readonly contactable: boolean;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();
