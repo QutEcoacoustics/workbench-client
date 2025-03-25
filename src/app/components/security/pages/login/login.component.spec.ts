@@ -24,6 +24,8 @@ import { Component } from "@angular/core";
 import { SecurityModule } from "@components/security/security.module";
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { modelData } from "@test/helpers/faker";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
 
@@ -64,7 +66,8 @@ describe("LoginComponent", () => {
 
   const component = () => spec.query(LoginComponent);
 
-  const communicationsDismissButton = () => spec.query(".btn-close");
+  const communicationsDismissButton = () =>
+    spec.query<HTMLButtonElement>(".btn-close");
   const communicationsYesButton = () =>
     getElementByInnerText<HTMLButtonElement>(spec, "Yes");
   const communicationsNoButton = () =>
@@ -88,7 +91,6 @@ describe("LoginComponent", () => {
 
   function submitForm(): void {
     clickButton(spec, submitButton());
-    (component() as any).opts.onSuccess();
     spec.detectChanges();
   }
 
@@ -100,14 +102,27 @@ describe("LoginComponent", () => {
     spyOnProperty(session, "isContactable").and.callFake(() => contactable);
   }
 
+  function mockSignIn(): Promise<void> {
+    const subject = new Subject<any>();
+    const promise = nStepObservable(subject, () => of(), false);
+
+    spyOn(api, "signIn").and.callFake(() => subject);
+
+    return promise;
+  }
+
   function setup(redirect?: string | boolean, navigationId?: number) {
     spec = createComponent({ detectChanges: false, queryParams: { redirect } });
     router = spec.router;
 
     api = spec.inject(SecurityService);
-    session = spec.inject(BawSessionService);
     location = spec.inject(Location);
     accountSpy = spec.inject(ACCOUNT.token);
+
+    session = spec.inject(BawSessionService);
+    spyOnProperty(session, "currentUser").and.returnValue(
+      new User(generateUser())
+    );
 
     notifications = spec.inject(ToastService);
     spyOn(notifications, "error").and.callThrough();
@@ -195,7 +210,7 @@ describe("LoginComponent", () => {
     }
 
     it("should redirect user to previous page on login", async () => {
-      setup(undefined, 3);
+      setup(undefined, 2);
       isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
@@ -292,15 +307,19 @@ describe("LoginComponent", () => {
     });
 
     describe("prompting conditions", () => {
-      it("should show a toast asking to opt-in to communications if they have not been asked", () => {
+      it("should show a toast asking to opt-in to communications if they have not been asked", async () => {
+        const mockResponse = mockSignIn();
+
         isContactable(UserConcent.unasked);
         spec.detectChanges();
 
         typeInForm();
         submitForm();
 
+        await mockResponse;
+        spec.detectChanges();
+
         expect(notifications.showToastInfo).toHaveBeenCalledTimes(1);
-        expect();
       });
 
       it("should not show a toast if they have given a 'no' response", () => {
@@ -339,22 +358,17 @@ describe("LoginComponent", () => {
     });
 
     describe("capturing responses", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        const mockResponse = mockSignIn();
+
         isContactable(UserConcent.unasked);
         spec.detectChanges();
 
         typeInForm();
         submitForm();
-      });
 
-      xit("should update the session model correctly after changing communications concent", () => {
-        // After opting into communications, we should see that the sessions
-        // user model is correctly updated with the new communications concent
-        // value.
-        clickButton(spec, communicationsYesButton());
-        expect(session.currentUser).toContain({
-          communications: UserConcent.yes,
-        });
+        await mockResponse;
+        spec.detectChanges();
       });
 
       it("should not make any api calls if the toast is dismissed without a response", () => {
