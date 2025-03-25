@@ -13,6 +13,11 @@ import {
   ToastVariant,
 } from "@services/toasts/toasts.service";
 
+/**
+ * @description
+ * Creates a custom notification template which can be passed to the
+ * notification service.
+ */
 @Component({
   selector: "baw-toast",
   template: "<ng-content></ng-content>",

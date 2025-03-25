@@ -45,11 +45,11 @@ export const loginMenuItemActions = [
 
     <baw-toast
       #communicationsToast
-      [title]="'Subscribe to communications'"
+      [title]="'Subscribe to email updates'"
       [options]="{ autoHide: false }"
     >
       <ng-template>
-        <p>Would you like to subscribe to communications?</p>
+        <p>Can we email you with updates to our platform?</p>
 
         <div class="d-flex justify-content-end">
           <button class="btn btn-primary me-2" (click)="optInContactable()">
@@ -108,8 +108,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         // Although we ask the user to opt in/out of communications are
         // registration, we have a backlog of users who have not been asked
         // before.
-        const hasOptedIn = this.session.currentUser?.contactable;
-        if (hasOptedIn === undefined || hasOptedIn === UserConcent.unasked) {
+        if (this.session.isContactable === UserConcent.unasked) {
           this.communicationsToastElement.open();
         }
       },

@@ -119,6 +119,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (model: Model) => {
+          console.log("here");
           /*
            * First pass attempt a generating success message. This is required
            * for forms which do not initially have a model (ie. new model form).
