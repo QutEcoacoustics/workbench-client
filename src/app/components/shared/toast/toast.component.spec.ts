@@ -102,12 +102,6 @@ describe("ToastComponent", () => {
     });
   });
 
-  it("should close the toast correctly", () => {
-    openToast();
-    closeToast();
-    expect(toastServiceSpy.remove).toHaveBeenCalledTimes(1);
-  });
-
   it("should open a toast with options correctly", () => {
     const testedOptions: ToastOptions = {
       autoHide: modelData.bool(),
@@ -124,5 +118,28 @@ describe("ToastComponent", () => {
         options: testedOptions,
       }),
     );
+  });
+
+  it("should be able to open a toast multiple times", () => {
+    openToast();
+    openToast();
+    expect(toastServiceSpy.showToastInfo).toHaveBeenCalledTimes(2);
+  });
+
+  it("should close the toast correctly", () => {
+    openToast();
+    closeToast();
+    expect(toastServiceSpy.remove).toHaveBeenCalledTimes(1);
+  });
+
+  // the main purpose of this test is to test that no errors are thrown when
+  // closing a toast that has not been opened
+  it("should have no effect if a toast is closed without being opened", () => {
+    closeToast();
+
+    // we still expect that the remove method is called, but it should not a
+    // have any effect
+    expect(toastServiceSpy.remove).toHaveBeenCalledTimes(1);
+    expect(toastServiceSpy.toasts).toHaveLength(0);
   });
 });
