@@ -55,6 +55,7 @@ describe("ToastsService", () => {
       expect(spec.service.toasts()).toContain({
         ...toastInfo,
         title: "",
+        variant: "default",
         options: {},
       });
     });
@@ -74,11 +75,11 @@ describe("ToastsService", () => {
     it("should have no effect if a toast doesn't exist", () => {
       // In this test, I create multiple toasts so that it is more likely that
       // this test will fail if the service removes the incorrect toast.
-      const initialToasts = spec.service.toasts();
-
       for (let i = 0; i < 5; i++) {
         spec.service.show(`non-removable toast ${i}`);
       }
+
+      const initialToasts = spec.service.toasts();
 
       spec.service.remove(generateToastInfo());
 
@@ -117,9 +118,14 @@ describe("ToastsService", () => {
           toastOptions
         );
 
-        expect(spec.service.toasts()).toContain(
-          { ...toastInfo, variant: testCase.expectedVariant }
-        );
+        expect(spec.service.toasts()).toEqual([
+          {
+            title: toastInfo.title,
+            message: toastInfo.message,
+            options: toastOptions,
+            variant: testCase.expectedVariant,
+          }
+        ]);
       });
     }
   });
