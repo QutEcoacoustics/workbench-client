@@ -12,7 +12,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsEditComponent } from "./edit.component";
@@ -23,7 +23,7 @@ describe("AdminTagsEditComponent", () => {
   let defaultTag: Tag;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsEditComponent>;
-  let notifications: ToastrService;
+  let notifications: ToastService;
   let router: Router;
 
   function configureTestingModule(
@@ -60,7 +60,7 @@ describe("AdminTagsEditComponent", () => {
     fixture = TestBed.createComponent(AdminTagsEditComponent);
     api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastrService);
+    notifications = TestBed.inject(ToastService);
     component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();

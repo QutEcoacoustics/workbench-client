@@ -14,7 +14,7 @@ import {
 } from "@models/AbstractModel";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Observable, iif, of, throwError } from "rxjs";
 import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -188,7 +188,7 @@ export class BawApiService<
     protected cacheService: NgHttpCachingService,
     protected http: HttpClient,
     protected session: BawSessionService,
-    protected notifications: ToastrService,
+    protected notifications: ToastService,
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
     @Inject(ASSOCIATION_INJECTOR)
     protected associationInjector: AssociationInjector,

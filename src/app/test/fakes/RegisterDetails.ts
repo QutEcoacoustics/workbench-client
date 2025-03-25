@@ -11,6 +11,7 @@ export function generateRegisterDetails(
     password,
     passwordConfirmation: password,
     recaptchaToken: modelData.random.alphaNumeric(484),
+    contactable: modelData.datatype.boolean(),
     ...data,
   };
 }

@@ -15,4 +15,6 @@ updates:
       # Ignore all patch updates
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 3

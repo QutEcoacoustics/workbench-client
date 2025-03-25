@@ -11,7 +11,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagsNewComponent } from "./new.component";
@@ -21,7 +21,7 @@ describe("AdminTagsNewComponent", () => {
   let component: AdminTagsNewComponent;
   let defaultTagTypes: TagType[];
   let fixture: ComponentFixture<AdminTagsNewComponent>;
-  let notifications: ToastrService;
+  let notifications: ToastService;
   let router: Router;
 
   function configureTestingModule(model: TagType[], error?: BawApiError) {
@@ -47,7 +47,7 @@ describe("AdminTagsNewComponent", () => {
     fixture = TestBed.createComponent(AdminTagsNewComponent);
     api = TestBed.inject(TagsService) as SpyObject<TagsService>;
     router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastrService);
+    notifications = TestBed.inject(ToastService);
     component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();

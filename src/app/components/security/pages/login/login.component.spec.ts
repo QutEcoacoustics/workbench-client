@@ -13,42 +13,134 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
-import { ToastrService } from "ngx-toastr";
-import { Subject } from "rxjs";
+import { ToastService } from "@services/toasts/toasts.service";
+import { of, Subject } from "rxjs";
+import { UserConcent } from "@interfaces/apiInterfaces";
+import { ToastComponent } from "@shared/toast/toast.component";
+import { clickButton, getElementByInnerText } from "@test/helpers/html";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { Component } from "@angular/core";
+import { SecurityModule } from "@components/security/security.module";
+import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
+import { modelData } from "@test/helpers/faker";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
+
+// we need this component to test the toasts produced by the login component
+// we cannot use the typical createComponentFactory because the toast provider
+// is typically injected at the app level, and therefore is not embedded through
+// the LoginComponent
+@Component({
+  selector: "baw-test-host",
+  template: `
+    <baw-toast-provider></baw-toast-provider>
+    <baw-authentication-login></baw-authentication-login>
+  `,
+})
+class TestHostComponent {}
 
 describe("LoginComponent", () => {
   let api: SecurityService;
   let session: BawSessionService;
   let router: Router;
   let location: Location;
-  let notifications: ToastrService;
-  let spec: SpectatorRouting<LoginComponent>;
+  let notifications: ToastService;
+  let accountSpy: AccountsService;
+  let spec: SpectatorRouting<TestHostComponent>;
   const { fields } = schema;
+
   const createComponent = createRoutingFactory({
-    component: LoginComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    component: TestHostComponent,
+    imports: [
+      ...testFormImports,
+      SecurityModule,
+      MockBawApiModule,
+      ToastComponent,
+      ToastProviderComponent,
+    ],
     declarations: [FormComponent],
-    mocks: [ToastrService],
   });
+
+  const component = () => spec.query(LoginComponent);
+
+  const communicationsDismissButton = () =>
+    spec.query<HTMLButtonElement>(".btn-close");
+  const communicationsYesButton = () =>
+    getElementByInnerText<HTMLButtonElement>(spec, "Yes");
+  const communicationsNoButton = () =>
+    getElementByInnerText<HTMLButtonElement>(spec, "No");
+
+  const usernameField = () =>
+    spec.query<HTMLInputElement>("[autocomplete='username']");
+  const passwordField = () =>
+    spec.query<HTMLInputElement>("[autocomplete='current-password']");
+  const submitButton = () =>
+    spec.query<HTMLButtonElement>("button[type='submit']");
+
+  function typeInForm(
+    username = modelData.internet.userName(),
+    password = modelData.internet.password()
+  ): void {
+    spec.typeInElement(username, usernameField());
+    spec.typeInElement(password, passwordField());
+    spec.detectChanges();
+  }
+
+  function submitForm(): void {
+    clickButton(spec, submitButton());
+    spec.detectChanges();
+  }
 
   function isSignedIn(signedIn: boolean = true) {
     spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 
+  function isContactable(contactable: UserConcent): void {
+    spyOnProperty(session, "isContactable").and.callFake(() => contactable);
+  }
+
+  function mockSignIn(): Promise<void> {
+    const subject = new Subject<any>();
+    const promise = nStepObservable(subject, () => of(), false);
+
+    spyOn(api, "signIn").and.callFake(() => subject);
+
+    return promise;
+  }
+
   function setup(redirect?: string | boolean, navigationId?: number) {
     spec = createComponent({ detectChanges: false, queryParams: { redirect } });
     router = spec.router;
+
     api = spec.inject(SecurityService);
-    session = spec.inject(BawSessionService);
     location = spec.inject(Location);
-    notifications = spec.inject(ToastrService);
+    accountSpy = spec.inject(ACCOUNT.token);
+
+    session = spec.inject(BawSessionService);
+    spyOnProperty(session, "currentUser").and.returnValue(
+      new User(generateUser())
+    );
+
+    notifications = spec.inject(ToastService);
+    spyOn(notifications, "error").and.callThrough();
+    spyOn(notifications, "success").and.callThrough();
+    spyOn(notifications, "showToastInfo").and.callThrough();
+
+    spyOn(location, "back").and.stub();
     spyOn(location, "getState").and.callFake(() => ({
       // Default to no history (navigationId = 1)
       navigationId: navigationId ?? 1,
     }));
-    spyOn(location, "back").and.stub();
+
+    accountSpy.optOutContactable = jasmine
+      .createSpy("optOutContactable")
+      .and.returnValue(of([]));
+    accountSpy.optInContactable = jasmine
+      .createSpy("optInContactable")
+      .and.returnValue(of([]));
   }
 
   function setLoginError() {
@@ -65,6 +157,8 @@ describe("LoginComponent", () => {
     spyOn(api, "signIn").and.callFake(() => subject);
     return promise;
   }
+
+  assertPageInfo(LoginComponent, "Log In");
 
   describe("form", () => {
     testFormlyFields([
@@ -90,13 +184,11 @@ describe("LoginComponent", () => {
   });
 
   describe("component", () => {
-    assertPageInfo(LoginComponent, "Log In");
-
     it("should create", () => {
       setup();
       isSignedIn(false);
       spec.detectChanges();
-      expect(spec.component).toBeTruthy();
+      expect(component()).toBeTruthy();
     });
 
     it("should call api", () => {
@@ -105,7 +197,7 @@ describe("LoginComponent", () => {
       spyOn(api, "signIn").and.callThrough();
       spec.detectChanges();
 
-      spec.component.submit({ login: "username", password: "password" });
+      component().submit({ login: "username", password: "password" });
       expect(api.signIn).toHaveBeenCalledWith(
         new LoginDetails({ login: "username", password: "password" })
       );
@@ -114,7 +206,7 @@ describe("LoginComponent", () => {
 
   describe("redirection", () => {
     function redirectUser() {
-      spec.component["opts"].redirectUser(undefined);
+      component()["opts"].redirectUser(undefined);
     }
 
     it("should redirect user to previous page on login", async () => {
@@ -169,7 +261,7 @@ describe("LoginComponent", () => {
     });
 
     it("should give error notification if external redirect", async () => {
-      setup(testApiConfig.endpoints.apiRoot + "/broken_link");
+      setup(`${testApiConfig.endpoints.apiRoot}/broken_link`);
       isSignedIn(false);
       const promise = setLoginError();
       spec.detectChanges();
@@ -204,6 +296,100 @@ describe("LoginComponent", () => {
       expect(notifications.error).toHaveBeenCalledWith(
         "You are already logged in."
       );
+    });
+  });
+
+  describe("communication concent", () => {
+    beforeEach(() => {
+      setup();
+      isSignedIn(false);
+      spec.detectChanges();
+    });
+
+    describe("prompting conditions", () => {
+      it("should show a toast asking to opt-in to communications if they have not been asked", async () => {
+        const mockResponse = mockSignIn();
+
+        isContactable(UserConcent.unasked);
+        spec.detectChanges();
+
+        typeInForm();
+        submitForm();
+
+        await mockResponse;
+        spec.detectChanges();
+
+        expect(notifications.showToastInfo).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not show a toast if they have given a 'no' response", () => {
+        isContactable(UserConcent.no);
+        spec.detectChanges();
+
+        typeInForm();
+        submitForm();
+
+        expect(notifications.showToastInfo).not.toHaveBeenCalled();
+      });
+
+      it("should not show a toast if they have given a 'yes' response", () => {
+        isContactable(UserConcent.yes);
+        spec.detectChanges();
+
+        typeInForm();
+        submitForm();
+
+        expect(notifications.showToastInfo).not.toHaveBeenCalled();
+      });
+
+      xit("should not show a toast if the user logs in with incorrect credentials", async () => {
+        // we set the contactable property to "unasked" so that if the
+        isContactable(UserConcent.unasked);
+        const errorPromise = setLoginError();
+        spec.detectChanges();
+
+        typeInForm();
+        submitForm();
+
+        await errorPromise;
+
+        expect(notifications.showToastInfo).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("capturing responses", () => {
+      beforeEach(async () => {
+        const mockResponse = mockSignIn();
+
+        isContactable(UserConcent.unasked);
+        spec.detectChanges();
+
+        typeInForm();
+        submitForm();
+
+        await mockResponse;
+        spec.detectChanges();
+      });
+
+      it("should not make any api calls if the toast is dismissed without a response", () => {
+        clickButton(spec, communicationsDismissButton());
+        expect(accountSpy.optInContactable).not.toHaveBeenCalled();
+        expect(accountSpy.optOutContactable).not.toHaveBeenCalled();
+      });
+
+      it("should make the correct api calls for a 'yes' response", () => {
+        clickButton(spec, communicationsYesButton());
+        expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
+          session.currentUser.id
+        );
+      });
+
+      it("should make the correct api calls for a 'no' response", () => {
+        clickButton(spec, communicationsNoButton());
+        expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
+          session.currentUser.id
+        );
+      });
     });
   });
 });

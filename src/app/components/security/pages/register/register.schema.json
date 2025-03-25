@@ -24,6 +24,13 @@
       "props": {
         "required": true
       }
+    },
+    {
+      "key": "contactable",
+      "type": "checkbox",
+      "props": {
+        "label": "Can we email you with update to our platform?"
+      }
     }
   ]
 }

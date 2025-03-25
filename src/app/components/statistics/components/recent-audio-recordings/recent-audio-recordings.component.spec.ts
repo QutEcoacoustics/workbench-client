@@ -21,7 +21,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { interceptShowApiRequest } from "@test/helpers/general";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -35,7 +35,7 @@ describe("RecentAudioRecordingsComponent", () => {
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
     imports: [SharedModule, MockBawApiModule, RouterTestingModule],
-    providers: [mockProvider(ToastrService)],
+    providers: [mockProvider(ToastService)],
   });
 
   function interceptSiteRequest(

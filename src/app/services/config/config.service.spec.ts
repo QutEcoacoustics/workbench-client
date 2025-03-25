@@ -6,7 +6,7 @@ import {
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
@@ -15,11 +15,11 @@ import { testApiConfig } from "./configMock.service";
 describe("ConfigService", () => {
   let spec: SpectatorHttp<ConfigService>;
   let service: ConfigService;
-  let toastr: ToastrService;
+  let toastr: ToastService;
   const createService = createHttpFactory({
     service: ConfigService,
     imports: [HttpClientTestingModule],
-    providers: [mockProvider(ToastrService)],
+    providers: [mockProvider(ToastService)],
   });
 
   async function setup(
@@ -30,7 +30,7 @@ describe("ConfigService", () => {
       providers: [{ provide: API_ROOT, useValue: apiRoot }],
     });
 
-    toastr = spec.inject(ToastrService);
+    toastr = spec.inject(ToastService);
     service = spec.inject(ConfigService);
 
     const promise = spec.service.init();
@@ -56,7 +56,7 @@ describe("ConfigService", () => {
       ],
     });
 
-    toastr = spec.inject(ToastrService);
+    toastr = spec.inject(ToastService);
     service = spec.inject(ConfigService);
 
     await spec.service.init(spec.inject(API_CONFIG));
@@ -119,12 +119,7 @@ describe("ConfigService", () => {
         expect(toastr.error).toHaveBeenCalledWith(
           "The website is not configured correctly. Try coming back at another time.",
           "Unrecoverable Error",
-          {
-            closeButton: false,
-            disableTimeOut: true,
-            tapToDismiss: false,
-            positionClass: "toast-center-center",
-          }
+          { autoHide: false }
         );
       });
     });

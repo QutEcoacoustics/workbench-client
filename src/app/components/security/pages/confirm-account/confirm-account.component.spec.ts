@@ -4,14 +4,14 @@ import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
 import schema from "./confirm-account.schema.json";
 
 describe("ConfirmPasswordComponent", () => {
   let component: ConfirmPasswordComponent;
   let fixture: ComponentFixture<ConfirmPasswordComponent>;
-  let notifications: ToastrService;
+  let notifications: ToastService;
   const { fields } = schema;
 
   describe("form", () => {
@@ -37,7 +37,7 @@ describe("ConfirmPasswordComponent", () => {
 
       fixture = TestBed.createComponent(ConfirmPasswordComponent);
       component = fixture.componentInstance;
-      notifications = TestBed.inject(ToastrService);
+      notifications = TestBed.inject(ToastService);
       fixture.detectChanges();
 
       spyOn(notifications, "success").and.stub();

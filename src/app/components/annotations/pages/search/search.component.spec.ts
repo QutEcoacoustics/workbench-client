@@ -177,7 +177,7 @@ describe("AnnotationSearchComponent", () => {
           },
         ],
       },
-    } as any;
+    };
 
     expect(audioEventsApiSpy.filter).toHaveBeenCalledWith(expectedBody);
   });

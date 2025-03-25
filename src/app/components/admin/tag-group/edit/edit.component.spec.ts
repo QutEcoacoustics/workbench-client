@@ -15,7 +15,7 @@ import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
 import { AdminTagGroupsEditComponent } from "./edit.component";
@@ -25,7 +25,7 @@ describe("AdminTagGroupsEditComponent", () => {
   let component: AdminTagGroupsEditComponent;
   let defaultTagGroup: TagGroup;
   let fixture: ComponentFixture<AdminTagGroupsEditComponent>;
-  let notifications: ToastrService;
+  let notifications: ToastService;
   let router: Router;
 
   function configureTestingModule(model: TagGroup, error?: BawApiError) {
@@ -51,7 +51,7 @@ describe("AdminTagGroupsEditComponent", () => {
     fixture = TestBed.createComponent(AdminTagGroupsEditComponent);
     api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
     router = TestBed.inject(Router);
-    notifications = TestBed.inject(ToastrService);
+    notifications = TestBed.inject(ToastService);
     component = fixture.componentInstance;
 
     spyOn(notifications, "success").and.stub();

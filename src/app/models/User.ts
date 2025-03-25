@@ -5,6 +5,7 @@ import {
 } from "../components/profile/profile.menus";
 import {
   AuthToken,
+  UserConcent,
   DateTimeTimezone,
   Id,
   ImageUrl,
@@ -44,6 +45,7 @@ export interface IUser {
   createdAt?: DateTimeTimezone | string;
   updatedAt?: DateTimeTimezone | string;
   lastSeenAt?: DateTimeTimezone | string;
+  contactable?: UserConcent;
 }
 
 /**
@@ -93,6 +95,10 @@ export class User extends AbstractModel<IUser> implements IUser {
   public readonly isConfirmed?: boolean;
   public readonly rolesMask?: number;
   public readonly rolesMaskNames?: string[];
+  // TODO: contactable should be writable on create once the api supports
+  // a proper JSON API format for creating users.
+  @bawPersistAttr({ update: true })
+  public readonly contactable?: UserConcent;
   @bawPersistAttr()
   public readonly tzinfoTz?: string;
   @bawPersistAttr()

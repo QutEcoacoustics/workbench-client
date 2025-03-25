@@ -9,6 +9,7 @@ import {
   NgbNavModule,
   NgbPaginationModule,
   NgbProgressbarModule,
+  NgbToast,
   NgbTooltipModule,
   NgbTypeaheadModule,
 } from "@ng-bootstrap/ng-bootstrap";
@@ -19,7 +20,6 @@ import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
-import { ToastrModule } from "ngx-toastr";
 import { DirectivesModule } from "src/app/directives/directives.module";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
@@ -60,6 +60,7 @@ import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.m
 import { IfLoggedInComponent } from "./can/can.component";
 import { MapModule } from "./map/map.module";
 import { ErrorCardComponent } from "./error-card/error-card.component";
+import { ToastComponent } from "./toast/toast.component";
 
 export const sharedComponents = [
   AnnotationDownloadComponent,
@@ -104,7 +105,7 @@ export const sharedModules = [
   NgxDatatableModule,
   ReactiveFormsModule,
   RouterModule,
-  ToastrModule,
+  NgbToast,
 
   BawClientModule,
   BreadcrumbModule,
@@ -133,6 +134,8 @@ export const sharedModules = [
   DurationComponent,
   ZonedDateTimeComponent,
   DatetimeComponent,
+
+  ToastComponent,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

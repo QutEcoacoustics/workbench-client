@@ -19,8 +19,12 @@ export function inputValue(wrapper: any, selector: string, value: string) {
   input.dispatchEvent(new Event("input"));
 }
 
-export function clickButton(
-  spectator: Spectator<any>,
+/**
+ * A click button test helper that performs assertions that the element is a
+ * button and is enabled.
+ */
+export function clickButton<T>(
+  spectator: Spectator<T>,
   selector: string | Element
 ): void {
   const element =
@@ -42,8 +46,8 @@ export function clickButton(
   spectator.click(selector);
 }
 
-export function inputFile(
-  spectator: Spectator<any>,
+export function inputFile<T>(
+  spectator: Spectator<T>,
   selector: string | HTMLInputElement,
   files: File[]
 ): void {

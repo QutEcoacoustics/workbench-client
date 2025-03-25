@@ -15,7 +15,7 @@ import {
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { Router } from "@angular/router";
@@ -42,7 +42,7 @@ describe("SiteDetailsComponent", () => {
     imports: [SharedModule, MockBawApiModule],
     providers: [PageTitleStrategy],
     declarations: [mockSiteComponent],
-    mocks: [ToastrService],
+    mocks: [ToastService],
     component: SiteDetailsComponent,
   });
 

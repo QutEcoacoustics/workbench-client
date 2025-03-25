@@ -1,0 +1,32 @@
+@import "bootstrap";
+
+:host {
+  position: fixed;
+  width: fit-content;
+  height: fit-content;
+
+  top: 10px;
+  left: 0px;
+  right: 0px;
+
+  margin: auto;
+
+  z-index: 1200;
+}
+
+.toast-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.variant-icon {
+  margin-right: 0.5em;
+}
+
+.toast-item {
+  margin-top: 0.5em;
+
+  &:hover {
+    @extend .shadow;
+  }
+}

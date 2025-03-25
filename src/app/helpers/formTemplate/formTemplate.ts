@@ -11,25 +11,51 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RecaptchaState } from "@shared/form/form.component";
-import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ToastService } from "@services/toasts/toasts.service";
 import { PageComponent } from "../page/pageComponent";
 import { IPageInfo } from "../page/pageInfo";
 
+/**
+ * If a form is successfully submitted, callbacks will be executed in the
+ * following order:
+ *
+ * 1. successMsg
+ * 2. onSuccess
+ * 3. redirectUser
+ */
 export interface FormProps<Model> {
+  /** A callback to create a success message if form submission is successful */
   successMsg: (model: Partial<Model>) => string;
+
+  /** A callback to construct an error message if the form fails to submit */
   failureMsg?: (err: BawApiError) => string;
+
+  /**
+   * A callback that is executed when a form is successfully submitted.
+   * This callback is executed before the user is redirected with the
+   * redirectUser callback.
+   */
   onSuccess?: (model: Model | void) => void;
+
+  /**
+   * A callback that is executed when a form is successfully submitted.
+   * This callback is executed after the onSuccess callback.
+   */
   redirectUser?: (model: Model) => void;
+
+  /** A model that can be used in toast messages */
   getModel: (models: ResolvedModelList) => Partial<Model>;
+
   hasFormCheck?: boolean;
 }
-const defaultOptions: FormProps<any> = {
+
+const defaultOptions = {
   successMsg: () => defaultSuccessMsg("updated", "model"),
   getModel: () => ({}),
   hasFormCheck: true,
-};
+} as const satisfies FormProps<unknown>;
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
@@ -63,7 +89,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
    * @param opts Form template options
    */
   public constructor(
-    protected notifications: ToastrService,
+    protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
     opts: Partial<FormProps<Model>>

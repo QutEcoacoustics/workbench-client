@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -16,7 +16,11 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
+import { ToastComponent } from "@shared/toast/toast.component";
+import { AccountsService } from "@baw-api/account/accounts.service";
+import { firstValueFrom } from "rxjs";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
@@ -38,6 +42,29 @@ export const loginMenuItemActions = [
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
     ></baw-form>
+
+    <baw-toast
+      #communicationsToast
+      [title]="'Subscribe to email updates'"
+      [options]="{ autoHide: false }"
+    >
+      <ng-template>
+        <p>Can we email you with updates to our platform?</p>
+
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary me-2" (click)="optInContactable()">
+            Yes
+          </button>
+
+          <button
+            class="btn btn-danger text-white"
+            (click)="optOutContactable()"
+          >
+            No
+          </button>
+        </div>
+      </ng-template>
+    </baw-toast>
   `,
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
@@ -45,14 +72,18 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   private redirectBack: boolean;
   private redirectUrl: string | StrongRoute;
 
+  @ViewChild("communicationsToast")
+  private communicationsToastElement: ToastComponent;
+
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     private securityApi: SecurityService,
     private session: BawSessionService,
     private location: Location,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    private accountsApi: AccountsService,
+    protected notifications: ToastService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       hasFormCheck: false,
@@ -66,6 +97,23 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
           this.router.navigateByUrl(this.redirectUrl);
         } else {
           this.notifications.error("Unable to redirect back to previous page");
+        }
+      },
+      onSuccess: () => {
+        // When logging in we check to see if the user has been asked to opt in
+        // to communications.
+        // If they have never been asked, we show a toast asking if they would
+        // like to opt in.
+        //
+        // Although we ask the user to opt in/out of communications are
+        // registration, we have a backlog of users who have not been asked
+        // before.
+        //
+        // the onSuccess callback is executed before the redirectUser callback
+        // meaning that this component can create the toast before the user is
+        // redirected.
+        if (this.session.isContactable === UserConcent.unasked) {
+          this.communicationsToastElement.open();
         }
       },
     });
@@ -113,6 +161,20 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
   protected apiAction(model: ILoginDetails) {
     return this.securityApi.signIn(new LoginDetails(model));
+  }
+
+  protected optInContactable() {
+    this.communicationsToastElement.close();
+    firstValueFrom(
+      this.accountsApi.optInContactable(this.session.currentUser.id)
+    );
+  }
+
+  protected optOutContactable() {
+    this.communicationsToastElement.close();
+    firstValueFrom(
+      this.accountsApi.optOutContactable(this.session.currentUser.id)
+    );
   }
 }
 

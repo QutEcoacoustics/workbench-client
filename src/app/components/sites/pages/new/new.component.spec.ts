@@ -16,7 +16,7 @@ import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports } from "@test/helpers/testbed";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MockComponent } from "ng-mocks";
 import { MapComponent } from "@shared/map/map.component";
@@ -30,7 +30,7 @@ describe("SiteNewComponent", () => {
     component: SiteNewComponent,
     imports: [...testFormImports, MockBawApiModule],
     declarations: [FormComponent, MockComponent(MapComponent)],
-    mocks: [ToastrService],
+    mocks: [ToastService],
   });
 
   // Only sites with regions have their own page, normal sites are part of a wizard

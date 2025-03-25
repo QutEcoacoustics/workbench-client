@@ -15,9 +15,9 @@ import {
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import schema from "../../project.schema.json";
+import { ToastService } from "@services/toasts/toasts.service";
 import { projectMenuItemActions } from "../details/details.component";
+import schema from "../../project.schema.json";
 
 const projectKey = "project";
 
@@ -41,9 +41,9 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
 
   public constructor(
     private api: ProjectsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[projectKey] as Project,

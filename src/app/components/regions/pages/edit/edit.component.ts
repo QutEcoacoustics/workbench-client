@@ -17,9 +17,9 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
-import { ToastrService } from "ngx-toastr";
-import schema from "../../region.base.json";
+import { ToastService } from "@services/toasts/toasts.service";
 import { regionMenuItemActions } from "../details/details.component";
+import schema from "../../region.base.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -47,9 +47,9 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
 
   public constructor(
     private api: RegionsService,
-    notifications: ToastrService,
-    route: ActivatedRoute,
-    router: Router
+    protected notifications: ToastService,
+    protected route: ActivatedRoute,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[regionKey] as Region,

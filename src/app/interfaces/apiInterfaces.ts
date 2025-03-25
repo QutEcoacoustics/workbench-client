@@ -121,6 +121,17 @@ export type Latitude = string;
 export type Longitude = string;
 
 /**
+ * A concent enum that can be used to determine if a user has given concent
+ * for a particular action.
+ * e.g. Opt-in to a newsletter
+ */
+export enum UserConcent {
+  unasked = "unasked",
+  yes = "yes",
+  no = "no",
+}
+
+/**
  * BAW API Image Sizes
  */
 export enum ImageSizes {
