@@ -22,8 +22,9 @@ import { Subject } from "rxjs";
 import { AllowsOriginalDownloadComponent } from "./allows-original-download.component";
 
 describe("AllowsOriginalDownloadComponent", () => {
-  let pageInfo$: Subject<IPageInfo>;
   let spec: Spectator<AllowsOriginalDownloadComponent>;
+  let pageInfo$: Subject<IPageInfo>;
+
   const createComponent = createComponentFactory({
     component: AllowsOriginalDownloadComponent,
     imports: [NgbTooltipModule],

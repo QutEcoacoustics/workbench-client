@@ -11,7 +11,7 @@ interface LicenseInformation {
   selector: "baw-license-information-modal",
   template: `
     <div class="modal-header">
-      <h4 class="modal-title fw-bold">{{ license.name }}</h4>
+      <h4 class="modal-title fw-bold">{{ license?.name }}</h4>
     </div>
 
     <div class="modal-body modal-large">

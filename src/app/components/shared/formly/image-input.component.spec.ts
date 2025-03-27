@@ -12,9 +12,10 @@ import { ImageInputComponent } from "./image-input.component";
 import { formlyConfig } from "./custom-inputs.module";
 
 describe("FormlyImageInput", () => {
+  let spectator: SpectatorHost<ImageInputComponent>;
+
   let model: any;
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<ImageInputComponent>;
 
   const createHost = createHostFactory({
     component: ImageInputComponent,
