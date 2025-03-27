@@ -39,13 +39,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         }
 
         const license = project.license;
-
-        // in the spxLicenseList object, find the sub object where the license
-        // name is equal to the license name of the project
-        const licenseInformation = Object.values(spdxLicenseList).filter(
-          (x) => x.name === license
-        )[0];
-
+        const licenseInformation = spdxLicenseList[license];
         if (!licenseInformation) {
           return;
         }

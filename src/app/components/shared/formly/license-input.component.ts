@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -25,12 +26,11 @@ import { asFormControl } from "./helper";
           [formlyAttributes]="field"
           (ngModelChange)="updateSelectedLicense($event)"
         >
-          <option
-            *ngFor="let license of licenseOptions"
-            [ngValue]="license"
-          >
-            {{ license.name }}
-          </option>
+          @for (license of licenseOptions; track license) {
+            <option [value]="license[0]">
+              {{ license[1].name }}
+            </option>
+          }
         </select>
 
         <button
@@ -46,17 +46,21 @@ import { asFormControl } from "./helper";
     <ng-template #licenseInformationModal let-licenseModal>
       <baw-license-information-modal
         [modal]="licenseModal"
-        [license]="selectedLicense"
+        [license]="currentLicense(selectedLicense)"
       >
-        {{ selectedLicense?.licenseText }}
+        {{ currentLicense(selectedLicense)?.licenseText }}
       </baw-license-information-modal>
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LicenseInputComponent extends FieldType {
+export class LicenseInputComponent extends FieldType implements AfterViewInit {
   public constructor(private modals: NgbModal) {
     super();
+  }
+
+  public ngAfterViewInit(): void {
+    this.selectedLicense = this.formControl.value;
   }
 
   @ViewChild("licenseInformationModal")
@@ -66,20 +70,19 @@ export class LicenseInputComponent extends FieldType {
   public licenseInput: ElementRef<HTMLSelectElement>;
 
   public asFormControl = asFormControl;
-  protected selectedLicense: (typeof spdxLicenseList)[0];
+  protected selectedLicense: string;
 
-  protected licenseOptions = Object.entries(spdxLicenseList).flatMap(
-    ([_key, value]) => {
-      return [value];
-    }
-  );
+  protected licenseOptions = Object.entries(spdxLicenseList);
 
-  protected updateSelectedLicense(value: (typeof spdxLicenseList)[0]): void {
-    console.log(value);
+  protected updateSelectedLicense(value: string): void {
     this.selectedLicense = value;
   }
 
   protected openLicenseInformation(): void {
     this.modals.open(this.licenseInformationModal, { size: "xl" });
+  }
+
+  protected currentLicense(license: string): (typeof spdxLicenseList)[0] {
+    return license ? spdxLicenseList[license] : null;
   }
 }
