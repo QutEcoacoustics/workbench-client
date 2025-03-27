@@ -30,18 +30,10 @@
     },
     {
       "key": "license",
-      "type": "select",
+      "type": "license",
       "props": {
         "label": "License",
-        "required": false,
-        "options": [
-          { "label": "MIT", "value": "MIT" },
-          { "label": "MIT", "value": "MIT" },
-          { "label": "MIT", "value": "MIT" },
-          { "label": "MIT", "value": "MIT" },
-          { "label": "MIT", "value": "MIT" },
-          { "label": "MIT", "value": "MIT" }
-        ]
+        "required": false
       }
     },
     {
