@@ -21,7 +21,7 @@ import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -167,7 +167,10 @@ DetailsComponent.linkToRoute({
   pageRoute: regionMenuItem,
   menus: {
     actions: List(regionMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

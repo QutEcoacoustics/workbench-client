@@ -19,7 +19,7 @@ import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -131,7 +131,10 @@ SiteDetailsComponent.linkToRoute({
   pageRoute: siteMenuItem,
   menus: {
     actions: List(siteMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -142,7 +145,10 @@ SiteDetailsComponent.linkToRoute({
   pageRoute: pointMenuItem,
   menus: {
     actions: List(pointMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

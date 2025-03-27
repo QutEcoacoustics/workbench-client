@@ -18,7 +18,9 @@ import spdxLicenseList from "spdx-license-list";
     <section class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small class="m-0">
-        <a [href]="license().url">{{ license().name }}</a>
+        <a [href]="license().url" target="_blank" rel="noopener noreferrer">
+          {{ license().name }}
+        </a>
       </small>
     </section>
     }
