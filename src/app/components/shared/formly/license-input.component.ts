@@ -28,7 +28,6 @@ import { asFormControl } from "./helper";
           <option
             *ngFor="let license of licenseOptions"
             [ngValue]="license"
-            [value]="license.name"
           >
             {{ license.name }}
           </option>
@@ -43,11 +42,6 @@ import { asFormControl } from "./helper";
         </button>
       </div>
     </div>
-
-    <p class="alert alert-warning">
-      <strong>Warning:</strong> This is not legal advice. Please consult a legal
-      professional for advice on licensing.
-    </p>
 
     <ng-template #licenseInformationModal let-licenseModal>
       <baw-license-information-modal
@@ -81,6 +75,7 @@ export class LicenseInputComponent extends FieldType {
   );
 
   protected updateSelectedLicense(value: (typeof spdxLicenseList)[0]): void {
+    console.log(value);
     this.selectedLicense = value;
   }
 
