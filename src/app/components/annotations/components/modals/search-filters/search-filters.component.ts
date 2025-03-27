@@ -22,7 +22,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       ></baw-annotation-search-form>
     </div>
 
-    <div class="modal-footer justify-content-start">
+    <div class="modal-footer justify-content-end">
       <div>
         @if (isDirty) {
         <p>

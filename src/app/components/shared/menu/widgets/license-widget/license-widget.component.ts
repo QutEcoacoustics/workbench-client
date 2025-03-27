@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from "@angular/core";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { WidgetComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
@@ -23,7 +28,7 @@ import spdxLicenseList from "spdx-license-list";
 export class LicenseWidgetComponent implements OnInit, WidgetComponent {
   public constructor(private sharedRoute: SharedActivatedRouteService) {}
 
-  public license = signal<typeof spdxLicenseList[0] | null>(undefined);
+  public license = signal<(typeof spdxLicenseList)[0] | null>(undefined);
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
@@ -34,7 +39,13 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         }
 
         const license = project.license;
-        const licenseInformation = spdxLicenseList[license];
+
+        // in the spxLicenseList object, find the sub object where the license
+        // name is equal to the license name of the project
+        const licenseInformation = Object.values(spdxLicenseList).filter(
+          (x) => x.name === license
+        )[0];
+
         if (!licenseInformation) {
           return;
         }

@@ -13,11 +13,14 @@ import { ImageInputComponent } from "./image-input.component";
 import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
+import { LicenseInputComponent } from "./license-input.component";
+import { LicenseInformationModalComponent } from "./modals/license-information.component";
 
 export const formlyConfig: ConfigOption = {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
+    { name: "license", component: LicenseInputComponent },
     { name: "timezone", component: TimezoneInputComponent },
     { name: "location", component: LocationInputComponent },
     {
@@ -61,6 +64,8 @@ const components = [
   LocationInputComponent,
   PasswordConfirmationInputComponent,
   TimezoneInputComponent,
+  LicenseInputComponent,
+  LicenseInformationModalComponent,
 ];
 
 @NgModule({
