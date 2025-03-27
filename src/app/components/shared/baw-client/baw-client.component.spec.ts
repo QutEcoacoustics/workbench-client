@@ -11,6 +11,7 @@ import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { waitUntil } from "@test/helpers/html";
 
 // TODO Add tests for components page input if/when used
 describe("BawClientComponent", () => {
@@ -35,20 +36,15 @@ describe("BawClientComponent", () => {
     return spec.query("iframe");
   }
 
-  function waitForLoad() {
+  function waitForLoad(): Promise<void> {
     // Wait for component to finish loading
-    return new Promise<void>((resolve) => {
-      loadClientTimer = setInterval(() => {
-        if (!spec.component.loading) {
-          clearInterval(loadClientTimer);
-          resolve();
-        }
-      }, 10);
-    });
+    return waitUntil(
+      () => !spec.component.loading,
+    );
   }
 
   function preventLoadingBawClient() {
-    spyOn(spec.component, "updateUrl").and.callFake(() => {
+    spyOn(spec.component as any, "updateUrl").and.callFake(() => {
       spec.component.url = sanitizer.bypassSecurityTrustResourceUrl(
         "https://broken_link"
       );

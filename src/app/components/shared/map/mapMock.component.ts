@@ -16,7 +16,7 @@ import { sanitizeMapMarkers } from "./map.component";
       <div class="map-placeholder"><span>No locations specified</span></div>
     }
   `,
-  styleUrls: ["./map.component.scss"],
+  styleUrl: "./map.component.scss",
 })
 export class MockMapComponent implements OnInit {
   @Input() public markers: List<MapMarkerOptions>;

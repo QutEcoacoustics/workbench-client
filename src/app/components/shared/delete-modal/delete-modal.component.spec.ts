@@ -26,7 +26,11 @@ describe("ConfirmationModalComponent", () => {
     spectator.component.successCallback = () => null;
 
     mockSharedActivatedRoute = spectator.inject(SharedActivatedRouteService);
-    spyOnProperty(mockSharedActivatedRoute, "pageComponentInstance", "get").and.returnValue(mockPageComponent);
+    spyOnProperty(
+      mockSharedActivatedRoute,
+      "pageComponentInstance",
+      "get"
+    ).and.returnValue(mockPageComponent);
   }
 
   beforeEach(() => setup());
@@ -37,8 +41,10 @@ describe("ConfirmationModalComponent", () => {
     ).nativeElement as T;
   }
 
-  const getDeleteButton = (): HTMLAnchorElement => getElementByInnerText<HTMLAnchorElement>("Delete");
-  const getCancelButton = (): HTMLAnchorElement => getElementByInnerText<HTMLAnchorElement>("Cancel");
+  const getDeleteButton = () =>
+    getElementByInnerText<HTMLAnchorElement>("Delete");
+  const getCancelButton = () =>
+    getElementByInnerText<HTMLAnchorElement>("Cancel");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(DeleteModalComponent);

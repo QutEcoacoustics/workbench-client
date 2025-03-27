@@ -192,6 +192,14 @@ export class Site extends AbstractModel<ISite> implements ISite {
     return isInstantiated(this.regionId);
   }
 
+  public get license() {
+    if (!this.projects) {
+      return [];
+    }
+
+    return this.projects.map((project: Project) => project.license);
+  }
+
   /**
    * Get site latitude
    */

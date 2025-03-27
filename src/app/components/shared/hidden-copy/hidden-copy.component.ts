@@ -37,7 +37,7 @@ import { ClipboardModule } from "ngx-clipboard";
       -->
       <span
         #copyTooltip="ngbTooltip"
-        ngbTooltip="Copied!"
+        [ngbTooltip]="'Copied!'"
         triggers="manual"
         container="body"
       >

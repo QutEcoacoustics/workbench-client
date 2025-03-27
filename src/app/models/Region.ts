@@ -48,7 +48,10 @@ export interface IRegion extends HasAllUsers, HasDescription {
 /**
  * A region model.
  */
-export class Region extends AbstractModel<IRegion> implements IRegion {
+export class Region
+  extends AbstractModel<IRegion>
+  implements IRegion
+{
   public readonly kind = "Region";
   public readonly id?: Id;
   @bawPersistAttr()
@@ -98,6 +101,10 @@ export class Region extends AbstractModel<IRegion> implements IRegion {
 
   public get visualizeUrl(): string {
     return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
+  }
+
+  public get license() {
+    return this.project?.license;
   }
 
   public getAudioRecordingsUrl(): string {

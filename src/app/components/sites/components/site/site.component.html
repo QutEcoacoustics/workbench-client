@@ -55,11 +55,11 @@
           potential edge case as a precaution.
         -->
         <baw-zoned-datetime
-          [value]="oldestRecording.recordedDate"
+          [value]="oldestRecording?.recordedDate"
           [timezone]="site.timezoneInformation"
         /> to
         <baw-zoned-datetime
-          [value]="newestRecording.recordedDate"
+          [value]="newestRecording?.recordedDate"
           [timezone]="site.timezoneInformation"
         />.
       </p>

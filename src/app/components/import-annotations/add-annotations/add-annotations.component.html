@@ -13,15 +13,15 @@
         accept=".csv, .tsv, .selections.txt, .json"
         class="form-control border"
         [ngClass]="{ 'is-invalid': !ngForm.valid }"
-        [disabled]="uploading"
+        [disabled]="isUploading"
         (change)="handleFileChange($event)"
         multiple
       />
 
       <section class="file-list mt-2">
-        @if(hasFiles) {
+        @if (hasFiles) {
           <ol>
-            @for (fileModel of importFiles$ | async; track file) {
+            @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">
                 <div class="file-list-item-content">
                   <span>
@@ -59,7 +59,7 @@
                       inputPlaceholder="Add tags"
                       [searchCallback]="tagsApi.typeaheadCallback()"
                       [resultTemplate]="tagsTypeaheadTemplate"
-                      [inputDisabled]="uploading"
+                      [inputDisabled]="isUploading"
                       (modelChange)="
                         updateFileAdditionalTagIds(
                           fileModel,
@@ -86,9 +86,7 @@
           [searchCallback]="tagsApi.typeaheadCallback()"
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="(hasFiles() | async) === false"
-          (modelChange)="
-            updateExtraTags($event, extraTagsInput)
-          "
+          (modelChange)="updateExtraTags($event, extraTagsInput)"
         ></baw-typeahead-input>
 
         <p class="text-muted">
@@ -141,7 +139,7 @@
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
-            ngbTooltip="File index and the index of the event in the file"
+            [ngbTooltip]="'File index and the index of the event in the file'"
             container="body"
           >
             ID
@@ -160,7 +158,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (!hasRecordingErrors(value)) {
-            @if ( value.audioRecording | isUnresolved) {
+            @if (value.audioRecording | isUnresolved) {
               <baw-loading size="sm"></baw-loading>
             } @else {
               <a [bawUrl]="value.audioRecording.viewUrl">
@@ -256,7 +254,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.isReference | isInstantiated) {
-            {{ value.isReference ? 'Yes' : 'No' }}
+            {{ value.isReference ? "Yes" : "No" }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }

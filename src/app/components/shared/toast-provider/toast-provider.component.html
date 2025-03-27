@@ -23,8 +23,7 @@
 
       @if (isTemplateRef(toast.message)) {
       <ng-container *ngTemplateOutlet="toast.message"></ng-container>
-      }
-      @else {
+      } @else {
       <span>{{ toast.message }}</span>
       }
     </span>

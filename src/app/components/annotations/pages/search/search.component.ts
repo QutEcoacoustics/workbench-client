@@ -132,8 +132,8 @@ class AnnotationSearchComponent
   // since we have multiple conditions, I have overridden the updateQueryParams
   // method
   //
-  // TODO: the correct fix here would be to add support for any length qsps
-  // to the pagination template
+  // TODO: the correct fix here would be to add support for any length query
+  // string parameters to the pagination template
   protected override updateQueryParams(page: number): void {
     const queryParams: Params = this.searchParameters.toQueryParams();
 

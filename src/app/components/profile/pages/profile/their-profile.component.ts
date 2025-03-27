@@ -43,7 +43,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-profile",
   templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.scss"],
+  styleUrl: "./profile.component.scss",
   imports: [
     AuthenticatedImageDirective,
     FaIconComponent,

@@ -103,7 +103,7 @@ describe("DatatablePaginationDirective", () => {
   describe("rows", () => {
     it("should output model as row in a single column datatable", () => {
       generateModels({ numModels: 3 });
-      setup({ filters: {}, getModels: getModels() }, [{ prop: "id" }]);
+      setup({ filters: {}, getModels: getModels() } as any, [{ prop: "id" }]);
 
       const rows = getRows();
       expect(rows).toHaveLength(3);
@@ -117,7 +117,7 @@ describe("DatatablePaginationDirective", () => {
 
     it("should output model as row in a multi column datatable", () => {
       generateModels({ numModels: 3 });
-      setup({ filters: {}, getModels: getModels() }, [
+      setup({ filters: {}, getModels: getModels() } as any, [
         { prop: "id" },
         { prop: "name" },
       ]);
@@ -147,14 +147,14 @@ describe("DatatablePaginationDirective", () => {
     it("should return false by default", () => {
       generateModels();
       // Turn off change detection so that we get the initial value
-      setup({ filters: {}, getModels: getModels(delayMs) }, undefined, false);
+      setup({ filters: {} as any, getModels: getModels(delayMs) } as any, undefined, false);
       assertLoading(false);
     });
 
     it("should return true on first load", () => {
       generateModels();
       // Delay getting models so that loading will still be set
-      setup({ filters: {}, getModels: getModels(delayMs) });
+      setup({ filters: {} as any, getModels: getModels(delayMs) } as any);
       assertLoading(true);
     });
 
@@ -162,7 +162,7 @@ describe("DatatablePaginationDirective", () => {
       const filter$ = new BehaviorSubject<Filters<MockModel>>({});
       generateModels();
       // Delay getting models so that loading will still be set
-      setup({ filters: filter$, getModels: getModels(delayMs) });
+      setup({ filters: filter$, getModels: getModels(delayMs) } as any);
       flushGetModels();
       assertLoading(false);
       filter$.next({ filter: { id: { eq: 1 } } });
@@ -174,7 +174,7 @@ describe("DatatablePaginationDirective", () => {
     it("should return true on page change", fakeAsync(() => {
       generateModels({ numModels: 25, totalModels: 100 });
       // Delay getting models so that loading will still be set
-      setup({ filters: {}, getModels: getModels(delayMs) });
+      setup({ filters: {}, getModels: getModels(delayMs) } as any);
       flushGetModels();
       assertLoading(false);
       setPage(3);
@@ -185,7 +185,7 @@ describe("DatatablePaginationDirective", () => {
     it("should return true on sort change", fakeAsync(() => {
       generateModels({ numModels: 25, totalModels: 100 });
       // Delay getting models so that loading will still be set
-      setup({ filters: {}, getModels: getModels(delayMs) });
+      setup({ filters: {}, getModels: getModels(delayMs) } as any);
       flushGetModels();
       assertLoading(false);
       sortColumn(0);
@@ -196,7 +196,7 @@ describe("DatatablePaginationDirective", () => {
     it("should return false when models returned", fakeAsync(() => {
       generateModels();
       // Delay getting models so that loading will still be set
-      setup({ filters: {}, getModels: getModels(delayMs) });
+      setup({ filters: {} , getModels: getModels(delayMs) } as any);
       assertLoading(true);
       flushGetModels();
       assertLoading(false);
@@ -206,7 +206,7 @@ describe("DatatablePaginationDirective", () => {
       const mockGetModels = jasmine.createSpy("getModels").and.callFake(() => of(defaultModels));
 
       generateModels();
-      setup({ filters: {}, getModels: mockGetModels });
+      setup({ filters: {}, getModels: mockGetModels } as any);
 
       flushGetModels();
 
@@ -222,19 +222,19 @@ describe("DatatablePaginationDirective", () => {
     it("should initially be 0", () => {
       generateModels();
       // Turn off change detection so that we get the initial value
-      setup({ filters: {}, getModels: getModels() }, undefined, false);
+      setup({ filters: {}, getModels: getModels() } as any, undefined, false);
       assertTotal(0);
     });
 
     it("should match the metadata of the models returned by the api", () => {
       generateModels({ numModels: 25, totalModels: 100 });
-      setup({ filters: {}, getModels: getModels() });
+      setup({ filters: {}, getModels: getModels() } as any);
       assertTotal(100);
     });
 
     it("should be 0 if api returns 0 results", () => {
       generateModels({ numModels: 0 });
-      setup({ filters: {}, getModels: getModels() });
+      setup({ filters: {}, getModels: getModels() } as any);
       assertTotal(0);
     });
   });
@@ -247,7 +247,7 @@ describe("DatatablePaginationDirective", () => {
 
     it("should update on page event", () => {
       generateModels({ numModels: 25, totalModels: 100 });
-      setup({ filters: {}, getModels: getModels() });
+      setup({ filters: {}, getModels: getModels() } as any);
       setPage(2);
       assertPage(2);
     });
@@ -256,7 +256,7 @@ describe("DatatablePaginationDirective", () => {
     it("should reset to 0 on filter change", () => {
       const filters$ = new BehaviorSubject<Filters<MockModel>>({});
       generateModels({ numModels: 25, totalModels: 100 });
-      setup({ filters: filters$, getModels: getModels() });
+      setup({ filters: filters$, getModels: getModels() } as any);
       setPage(3);
       assertPage(3);
       filters$.next({ filter: { id: { eq: 1 } } });
@@ -265,7 +265,7 @@ describe("DatatablePaginationDirective", () => {
 
     it("should reset to 0 on sort change", () => {
       generateModels({ numModels: 25, totalModels: 100 });
-      setup({ filters: {}, getModels: getModels() });
+      setup({ filters: {}, getModels: getModels() } as any);
       setPage(2);
       assertPage(2);
       sortColumn(0);

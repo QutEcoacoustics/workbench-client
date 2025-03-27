@@ -79,7 +79,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
       this.tagsApi.destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
-          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.text)),
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.text)),
         });
     }
   }

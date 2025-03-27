@@ -67,7 +67,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
       {{ tooltip }}
     </ng-template>
   `,
-  styleUrls: ["./link.component.scss"],
+  styleUrl: "./link.component.scss",
   imports: [
     NgbTooltip,
     StrongRouteActiveDirective,

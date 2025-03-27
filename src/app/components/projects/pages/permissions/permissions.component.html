@@ -155,7 +155,7 @@
   >
     <ng-template let-column="column" ngx-datatable-header-template>
       <fa-icon
-        ngbTooltip="The effective permission for a user is the highest permission that applies to them"
+        [ngbTooltip]="'The effective permission for a user is the highest permission that applies to them'"
         container="body"
         [icon]="helpIcon"
       ></fa-icon>

@@ -42,7 +42,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
       }
     }
   `,
-  styleUrls: ["breadcrumb.component.scss"],
+  styleUrl: "breadcrumb.component.scss",
   imports: [
     FaIconComponent,
     StrongRouteDirective,

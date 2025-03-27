@@ -21,7 +21,7 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
       ></baw-annotation-search-form>
     </div>
 
-    <div class="modal-footer justify-content-start">
+    <div class="modal-footer justify-content-end">
       <div>
         @if (isDirty) {
           <p>

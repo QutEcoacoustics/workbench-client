@@ -22,7 +22,7 @@ import { CardComponent } from "../card/card.component";
       </div>
     </div>
   `,
-  styleUrls: ["./cards.component.scss"],
+  styleUrl: "./cards.component.scss",
   imports: [CardComponent],
 })
 export class CardsComponent {

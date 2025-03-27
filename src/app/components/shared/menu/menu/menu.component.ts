@@ -42,7 +42,7 @@ import { MenuLinkComponent } from "../link/link.component";
 @Component({
   selector: "baw-menu",
   templateUrl: "./menu.component.html",
-  styleUrls: ["./menu.component.scss"],
+  styleUrl: "./menu.component.scss",
   imports: [
     FaIconComponent,
     MenuButtonComponent,

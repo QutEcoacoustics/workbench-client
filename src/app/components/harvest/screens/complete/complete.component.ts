@@ -29,7 +29,7 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 @Component({
   selector: "baw-harvest-complete",
   templateUrl: "complete.component.html",
-  styleUrls: ["complete.component.scss"],
+  styleUrl: "complete.component.scss",
   imports: [
     StatisticsComponent,
     StatisticGroupComponent,

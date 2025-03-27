@@ -17,7 +17,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   selector: "baw-wip",
   template: `
     @if (showWipContent) {
-      <div class="wip-wrapper" ngbTooltip="This feature is a work in progress">
+      <div class="wip-wrapper" [ngbTooltip]="'This feature is a work in progress'">
         <ng-container *ngTemplateOutlet="icon"></ng-container>
 
         <div class="wip-content">
@@ -27,7 +27,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
     } @else {
       <div
         class="wip-placeholder"
-        ngbTooltip="This feature is a work in progress"
+        [ngbTooltip]="'This feature is a work in progress'"
       >
         <ng-container *ngTemplateOutlet="icon"></ng-container>
         <p class="wip-text">
@@ -42,7 +42,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       </div>
     </ng-template>
   `,
-  styleUrls: ["wip.component.scss"],
+  styleUrl: "wip.component.scss",
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -59,11 +59,12 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
-import { FileValueAccessorDirective } from "@shared/formly/file-input.directive";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
+import { Tag } from "@models/Tag";
 import { annotationImportRoute } from "../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -166,7 +167,7 @@ class AddAnnotationsComponent
   private fileInput!: ElementRef<HTMLInputElement>;
 
   @ViewChildren("additionalFileTagInput")
-  private additionalFileTagInputs!: TypeaheadInputComponent[];
+  private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -202,6 +203,10 @@ class AddAnnotationsComponent
     return this.importState === ImportState.SUCCESS;
   }
 
+  public get isUploading(): boolean {
+    return this.importState === ImportState.UPLOADING;
+  }
+
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
   // tooltip
@@ -227,7 +232,6 @@ class AddAnnotationsComponent
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
-      this.failure = true;
       return;
     }
 
@@ -319,8 +323,8 @@ class AddAnnotationsComponent
   // uses a reference to the ImportGroup object and update the additional tag
   // ids property
   protected updateExtraTags(
-    extraTags: object[],
-    host: TypeaheadInputComponent
+    extraTags: Tag[],
+    host: TypeaheadInputComponent<Tag>
   ): void {
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra

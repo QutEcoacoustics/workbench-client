@@ -1,11 +1,14 @@
 import { ApiFilter } from "@baw-api/api-common";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { TypeaheadSearchCallback } from "./typeahead-input.component";
+import { TypeaheadSearchCallback } from "../../components/shared/typeahead-input/typeahead-input.component";
 
 // create a callback that can be used to filter for items in a typeahead
+// TODO: Places that use this helper should be replaced with a service method
+// e.g. createSearchCallback(this.tagsService) should be replaced with a service
+// method such as this.tagsService.searchCallback()
 export function createSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
@@ -16,12 +19,14 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
       filter: filterAnd(
         contains<T, keyof T>(key, text, filters),
 
-        // we add a "not in" condition to exclude items that are already selected
+        // we add a "not in" condition to exclude items that are already
+        // selected
         notIn<T>(key, activeItems)
       ),
     });
 }
 
+// TODO: Places that use this helper should be replaced with a service method
 export function createIdSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
@@ -36,5 +41,23 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
     return api.filter({
       filter: filterAnd({ [key]: { eq: id } }, filters),
     });
+  };
+}
+
+/**
+ * Creates a search callback that can be used by the typeahead input to search
+ * through an array of items.
+ */
+export function createItemSearchCallback<T>(
+  items: T[]
+): TypeaheadSearchCallback<T> {
+  const maxResults = 10;
+  return (searchTerm: string) => {
+    const filteredItems = items.filter((item) => {
+      const itemText = item.toString().toLowerCase();
+      return itemText.includes(searchTerm.toLowerCase());
+    });
+
+    return of(filteredItems.slice(0, maxResults));
   };
 }

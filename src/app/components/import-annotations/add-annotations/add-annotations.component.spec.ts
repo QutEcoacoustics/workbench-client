@@ -282,7 +282,7 @@ describe("AddAnnotationsComponent", () => {
       expect(spec.component.hasUnsavedChanges).toBeTrue();
     });
 
-    it("should not warn if the user did not upload any files", () => {
+    it("should not warn if the user has not staged files", () => {
       expect(spec.component.hasUnsavedChanges).toBeFalse();
     });
 
