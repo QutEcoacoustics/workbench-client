@@ -27,12 +27,13 @@ import { asFormControl } from "./helper";
           (ngModelChange)="updateSelectedLicense($event)"
         >
           @for (license of licenseOptions; track license) {
-            <option [value]="license[0]">
-              {{ license[1].name }}
-            </option>
+          <option [value]="license[0]">
+            {{ license[1].name }}
+          </option>
           }
         </select>
 
+        @if (selectedLicense) {
         <button
           type="button"
           class="btn btn-secondary"
@@ -40,6 +41,8 @@ import { asFormControl } from "./helper";
         >
           Show
         </button>
+
+        }
       </div>
     </div>
 
