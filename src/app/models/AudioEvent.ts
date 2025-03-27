@@ -8,6 +8,7 @@ import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
   DateTimeTimezone,
   HasAllUsers,
+  HasLicense,
   Id,
   Ids,
 } from "@interfaces/apiInterfaces";
@@ -45,7 +46,7 @@ export interface IAudioEvent extends HasAllUsers {
 
 export class AudioEvent
   extends AbstractModel<IAudioEvent>
-  implements IAudioEvent
+  implements IAudioEvent, HasLicense
 {
   public readonly kind = "Audio Event";
   @bawPersistAttr()
@@ -121,5 +122,9 @@ export class AudioEvent
 
   public get tagIds(): Ids {
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
+  }
+
+  public get license(): string | undefined {
+    return this.audioRecording?.license
   }
 }

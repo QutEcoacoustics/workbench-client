@@ -20,6 +20,7 @@ import {
   ImageUrl,
   Param,
   TimezoneInformation,
+  HasLicense,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { creator, hasMany, updater } from "./AssociationDecorators";
@@ -56,7 +57,7 @@ export interface ISite extends HasAllUsers, HasDescription {
 /**
  * A site model.
  */
-export class Site extends AbstractModel<ISite> implements ISite {
+export class Site extends AbstractModel<ISite> implements ISite, HasLicense {
   public readonly kind = "Site";
   public readonly id?: Id;
   @bawPersistAttr()
@@ -190,6 +191,10 @@ export class Site extends AbstractModel<ISite> implements ISite {
    */
   public get isPoint(): boolean {
     return isInstantiated(this.regionId);
+  }
+
+  public get license(): string | undefined {
+    return this.projects?.[0]?.license;
   }
 
   /**

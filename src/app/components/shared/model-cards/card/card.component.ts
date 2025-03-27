@@ -43,6 +43,7 @@ import { map, Observable } from "rxjs";
           <div *ngIf="isOwner" id="owner" class="badge text-bg-highlight">
             Owner
           </div>
+          <ng-container [ngTemplateOutlet]="projectLicenseTemplate"></ng-container>
           <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </div>
       </div>
@@ -63,6 +64,12 @@ import { map, Observable } from "rxjs";
           <span *ngIf="hasNoAudio.value">No audio yet</span>
         </div>
       </ng-container>
+    </ng-template>
+
+    <ng-template #projectLicenseTemplate>
+      <div *ngIf="isOwner" id="owner" class="badge text-bg-secondary">
+        License: {{ model.license ?? "Unknown" }}
+      </div>
     </ng-template>
   `,
 })

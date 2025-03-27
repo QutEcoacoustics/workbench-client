@@ -213,6 +213,10 @@ export interface HasDescription {
   descriptionHtmlTagline?: Description;
 }
 
+export interface HasLicense {
+  license: string | undefined;
+}
+
 /**
  * An interface that can be implemented if a model echos back a filter object
  * representation.
