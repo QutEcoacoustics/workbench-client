@@ -24,7 +24,7 @@
               [ngTemplateOutletContext]="{
                 result: item,
                 term: inputModel,
-                formatter: templateFormatter
+                formatter: templateFormatter,
               }"
               [ngTemplateOutlet]="resultTemplate"
             ></ng-container>
@@ -44,6 +44,7 @@
       [ngbTypeahead]="findOptions"
       [resultTemplate]="resultTemplate"
       [(ngModel)]="inputModel"
+      (focus)="focus$.next($any($event).target.value)"
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"
       [disabled]="inputDisabled"

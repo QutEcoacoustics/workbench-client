@@ -38,7 +38,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       {{ tooltip }}
     </ng-template>
   `,
-  styleUrls: ["./button.component.scss"],
+  styleUrl: "./button.component.scss",
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgbTooltip, FaIconComponent],

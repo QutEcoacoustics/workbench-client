@@ -129,7 +129,7 @@
 
     @if (models$ | withLoading | async; as models) {
       @if (models.loading) {
-        <baw-loading [size]="lg"></baw-loading>
+        <baw-loading [size]="'lg'"></baw-loading>
       }
 
       @if (models.error) {

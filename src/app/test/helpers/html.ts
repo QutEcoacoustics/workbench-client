@@ -24,7 +24,7 @@ export function inputValue(wrapper: any, selector: string, value: string) {
  * button and is enabled.
  */
 export function clickButton<T>(
-  spectator: Spectator<T>,
+  spectator: Spectator<T> | SpectatorHost<T>,
   selector: string | Element
 ): void {
   const element =
@@ -92,7 +92,7 @@ export function inputFile<T>(
  * This function must be used inside a fakeAsync block
  */
 export function selectFromTypeahead<T>(
-  spectator: Spectator<T>,
+  spectator: Spectator<T> | SpectatorHost<T>,
   target: Element | HTMLElement,
   text: string,
   detectChanges = true
@@ -138,7 +138,7 @@ export function waitForDropdown<T>(spectator: Spectator<T>): void {
 }
 
 export function getElementByInnerText<T extends HTMLElement>(
-  spectator: Spectator<unknown>,
+  spectator: Spectator<unknown> | SpectatorHost<unknown>,
   text: string
 ): T | null {
   return spectator.debugElement.query(

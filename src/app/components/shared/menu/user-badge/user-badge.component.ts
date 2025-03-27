@@ -74,7 +74,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </div>
     }
   `,
-  styleUrls: ["./user-badge.component.scss"],
+  styleUrl: "user-badge.component.scss",
   imports: [
     LoadingComponent,
     UrlDirective,

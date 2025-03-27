@@ -18,6 +18,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { licenseWidgetMenuItem } from "@menu/widget.menus";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -123,6 +124,7 @@ function getPageInfo(
             Please try again later.
           `,
         }),
+        licenseWidgetMenuItem,
       ]),
     },
     resolvers: {

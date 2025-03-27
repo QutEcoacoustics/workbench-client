@@ -46,7 +46,7 @@ export interface DateTimeFilterModel {
 @Component({
   selector: "baw-date-time-filter",
   templateUrl: "date-time-filter.component.html",
-  styleUrls: ["date-time-filter.component.scss"],
+  styleUrl: "date-time-filter.component.scss",
   imports: [
     FormsModule,
     NgbCollapse,

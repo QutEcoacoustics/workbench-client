@@ -20,7 +20,7 @@
           <p id="last-seen-at">
             <fa-icon
               class="pe-2"
-              ngbTooltip="Last time {{ user.userName }} was seen"
+              [ngbTooltip]="'Last time {{ user.userName }} was seen'"
               [icon]="['fas', 'clock']"
             ></fa-icon>
             <small>{{ lastSeenAt }}</small>
@@ -29,7 +29,7 @@
           <p id="membership-length">
             <fa-icon
               class="pe-2"
-              ngbTooltip="Length of {{ user.userName }}'s membership"
+              [ngbTooltip]="'Length of {{ user.userName }}\'s membership'"
               [icon]="['fas', 'user']"
             ></fa-icon>
             <small>{{ membershipLength }}</small>

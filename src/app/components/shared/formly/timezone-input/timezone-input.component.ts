@@ -14,7 +14,7 @@ import {
 } from "rxjs/operators";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Timezone Input

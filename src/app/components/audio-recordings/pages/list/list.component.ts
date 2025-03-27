@@ -14,6 +14,7 @@ import { filterModel } from "@helpers/filters/filters";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { licenseWidgetMenuItem } from "@menu/widget.menus";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -208,6 +209,7 @@ function getPageInfo(subRoute: keyof typeof menuItems): IPageInfo {
             Please try again later.
           `,
         }),
+        licenseWidgetMenuItem,
       ]),
     },
     resolvers: {

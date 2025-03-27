@@ -2,8 +2,8 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { asFormControl } from "./helper";
-import { FileValueAccessorDirective } from "./file-input.directive";
+import { asFormControl } from "../helper";
+import { FileValueAccessorDirective } from "../file-input/file-input.directive";
 
 /**
  * Image Input

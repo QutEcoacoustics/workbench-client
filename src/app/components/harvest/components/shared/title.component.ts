@@ -12,7 +12,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 @Component({
   selector: "baw-harvest-title",
   templateUrl: "./title.component.html",
-  styleUrls: ["./title.component.scss"],
+  styleUrl: "./title.component.scss",
   imports: [FormsModule, FaIconComponent]
 })
 export class TitleComponent extends withUnsubscribe()  {

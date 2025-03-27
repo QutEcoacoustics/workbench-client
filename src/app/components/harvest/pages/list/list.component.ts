@@ -27,6 +27,7 @@ import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/da
 import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmationComponent } from "../../components/modal/confirmation.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -57,7 +58,8 @@ class HarvestListComponent extends PageComponent implements OnInit {
   public constructor(
     public modals: NgbModal,
     private harvestsApi: ShallowHarvestsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifications: ToastService,
   ) {
     super();
   }

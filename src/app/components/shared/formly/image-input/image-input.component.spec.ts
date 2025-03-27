@@ -1,29 +1,19 @@
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
+import { FormlyFieldProps } from "@ngx-formly/core";
 import { inputFile } from "@test/helpers/html";
+import { testFormProviders } from "@test/helpers/testbed";
 import { ImageInputComponent } from "./image-input.component";
-import { formlyConfig } from "./custom-inputs.module";
 
 describe("FormlyImageInput", () => {
+  let spectator: SpectatorHost<ImageInputComponent>;
+
   let model: any;
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<ImageInputComponent>;
 
   const createHost = createHostFactory({
     component: ImageInputComponent,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      FormlyModule.forRoot(formlyConfig),
-      FormlyBootstrapModule,
-    ],
+    providers: testFormProviders,
   });
 
   function getInput() {
@@ -34,31 +24,32 @@ describe("FormlyImageInput", () => {
     return spectator.query<HTMLButtonElement>("button");
   }
 
-  function setup(key: string = "file", options: FormlyFieldProps = {}) {
+  function setup(options: FormlyFieldProps = {}) {
+    const key = "file";
+
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
       image: "",
       imageUrls: [],
     };
 
-    spectator = createHost(
-      `
+    const hostTemplate = `
       <form [formGroup]="formGroup">
         <baw-image-input [field]="field"></baw-image-input>
       </form>
-    `,
-      {
-        hostProps: {
-          formGroup,
-          field: {
-            model,
-            key,
-            formControl: formGroup.get("asFormControl"),
-            props: options,
-          },
+    `;
+
+    spectator = createHost(hostTemplate, {
+      hostProps: {
+        formGroup,
+        field: {
+          model,
+          key,
+          formControl: formGroup.get("asFormControl"),
+          props: options,
         },
-      }
-    );
+      },
+    });
     spectator.detectChanges();
   }
 

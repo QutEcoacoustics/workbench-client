@@ -83,7 +83,6 @@ describe("VerificationComponent", () => {
   let sitesApiSpy: SpyObject<ShallowSitesService>;
 
   let modalsSpy: NgbModal;
-  let modalConfigService: NgbModalConfig;
 
   let routeProject: Project;
   let routeRegion: Region;
@@ -185,11 +184,10 @@ describe("VerificationComponent", () => {
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
     modalsSpy = spec.inject(NgbModal);
-    modalConfigService = spec.inject(NgbModalConfig);
+    const modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
-    // TODO: this should probably be replaced with callThrough()
-    modalsSpy.open = jasmine.createSpy("open").and.callFake(modalsSpy.open);
+    spyOn(modalsSpy, "open").and.callThrough();
 
     const requestPromises = Promise.all([
       interceptShowApiRequest(tagsApiSpy, injector, defaultFakeTags[0], Tag),

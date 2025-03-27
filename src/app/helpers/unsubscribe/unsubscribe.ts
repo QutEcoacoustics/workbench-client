@@ -7,9 +7,14 @@ import { Subject } from "rxjs";
  *
  * @param base Base Class
  */
-export function withUnsubscribe<T extends Type<any>>(
-  base: T = class {} as any
-) {
+export function withUnsubscribe<
+  T extends Type<{
+    constructor: unknown;
+    ngOnDestroy?();
+    ngOnInit?();
+    ngAfterViewInit?();
+  }>
+>(base: T = class {} as any) {
   return class extends base implements OnDestroy {
     public unsubscribe = new Subject<void>();
 

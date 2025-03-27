@@ -23,7 +23,7 @@ import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time
 import {
   createIdSearchCallback,
   createSearchCallback,
-} from "@shared/typeahead-input/typeahead-callbacks";
+} from "@helpers/typeahead/typeaheadCallbacks";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
@@ -59,7 +59,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     new EventEmitter<AnnotationSearchParameters>();
 
   @ViewChild("recordingsTypeahead")
-  private recordingsTypeahead: TypeaheadInputComponent;
+  private recordingsTypeahead: TypeaheadInputComponent<AudioRecording>;
 
   protected recordingDateTimeFilters: DateTimeFilterModel = {};
   protected createSearchCallback = createSearchCallback;

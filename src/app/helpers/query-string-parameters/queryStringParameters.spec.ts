@@ -9,7 +9,7 @@ import {
   luxonDuration,
   luxonDurationArray,
   serializeObjectToParams,
-} from "./query-string-parameters";
+} from "./queryStringParameters";
 
 describe("queryStringParameters", () => {
   describe("serialization", () => {

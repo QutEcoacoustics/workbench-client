@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
-import { IQueryStringParameterSpec } from "@helpers/query-string-parameters/query-string-parameters";
+import { IQueryStringParameterSpec } from "@helpers/query-string-parameters/queryStringParameters";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 
 export interface IParameterModel<T extends AbstractModelWithoutId> {

@@ -110,26 +110,26 @@ describe("bawVirtualDatatablePagination", () => {
   }
 
   it("should display an empty table when no models are provided", () => {
-    setup({ models$: undefined });
+    setup({ models$: undefined } as any);
     expect(getRows()).toHaveLength(0);
   });
 
   it("should return a single page of results correctly", () => {
-    setup({ models$: createModels(defaultApiPageSize) });
+    setup({ models$: createModels(defaultApiPageSize) } as any);
     expect(getRows()).toHaveLength(defaultApiPageSize);
   });
 
   it("should only return the number of models specified by the row limit", () => {
     const expectedRowCount = defaultApiPageSize;
 
-    setup({ models$: createModels(expectedRowCount * 2) });
+    setup({ models$: createModels(expectedRowCount * 2) } as any);
     expect(getRows()).toHaveLength(expectedRowCount);
   });
 
   it("should have the correct number of total items", () => {
     const mockItemCount = defaultApiPageSize;
 
-    setup({ models$: createModels(mockItemCount * 2) });
+    setup({ models$: createModels(mockItemCount * 2) } as any);
     expect(getTotalItemsCount()).toEqual(mockItemCount * 2);
   });
 
@@ -137,12 +137,12 @@ describe("bawVirtualDatatablePagination", () => {
     const mockItemCount = defaultApiPageSize;
     const expectedPageCount = 4;
 
-    setup({ models$: createModels(mockItemCount * expectedPageCount) });
+    setup({ models$: createModels(mockItemCount * expectedPageCount) } as any);
     expect(getTotalPagesCount()).toEqual(expectedPageCount);
   });
 
   it("should page correctly", () => {
-    setup({ models$: createModels(defaultApiPageSize * 3) });
+    setup({ models$: createModels(defaultApiPageSize * 3) } as any);
 
     // assert that the first row on the first page is correct
     const firstPageModel = mockedModels[0];

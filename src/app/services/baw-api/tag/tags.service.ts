@@ -6,7 +6,7 @@ import { User } from "@models/User";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
-import { createSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
+import { createSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 import {
   emptyParam,
   filterParam,

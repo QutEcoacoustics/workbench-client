@@ -63,7 +63,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
       }
     </ng-template>
   `,
-  styleUrls: ["./site-card.component.scss"],
+  styleUrl: "./site-card.component.scss",
   imports: [
     UrlDirective,
     AuthenticatedImageDirective,

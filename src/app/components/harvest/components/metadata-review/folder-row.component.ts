@@ -129,7 +129,7 @@ import { WhitespaceComponent } from "./whitespace.component";
       }
     </div>
   `,
-  styleUrls: ["folder-row.component.scss"],
+  styleUrl: "folder-row.component.scss",
   imports: [
     WhitespaceComponent,
     FaLayersComponent,

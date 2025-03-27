@@ -12,7 +12,7 @@ import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
 import { MockComponent } from "ng-mocks";
-import { formlyConfig } from "./custom-inputs.module";
+import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
 
 const mockMapComponent = MockComponent(MapComponent);
@@ -23,8 +23,8 @@ describe("FormlyLocationInput", () => {
   let spectator: SpectatorHost<LocationInputComponent>;
 
   const createHost = createHostFactory({
-    declarations: [mockMapComponent],
     component: LocationInputComponent,
+    declarations: [mockMapComponent],
     imports: [
       FormsModule,
       ReactiveFormsModule,

@@ -6,14 +6,13 @@ import { ScanningComponent } from "@components/harvest/screens/scanning/scanning
 import { BatchUploadingComponent } from "@components/harvest/screens/uploading/batch-uploading.component";
 import { StreamUploadingComponent } from "@components/harvest/screens/uploading/stream-uploading.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
-import { Harvest, HarvestStatus } from "@models/Harvest";
+import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import {
   createRoutingFactory,
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -98,56 +97,56 @@ describe("DetailsComponent", () => {
   });
 
   // TODO: Re-implement tests
-  xdescribe("stages", () => {
-    function setStage(stage: HarvestStatus) {
-      setup();
-      spec.detectChanges();
-      spec.component.onStageChange(stage);
-      spec.detectChanges();
-    }
+  // xdescribe("stages", () => {
+  //   function setStage(stage: HarvestStatus) {
+  //     setup();
+  //     spec.detectChanges();
+  //     spec.component.onStageChange(stage);
+  //     spec.detectChanges();
+  //   }
 
-    function assertStage(stage: number, component: any) {
-      expect(spec.query(component)).toBeInstanceOf(component);
-      expect(spec.query(StepperComponent).activeStep).toBe(stage);
-    }
+  //   function assertStage(stage: number, component: any) {
+  //     expect(spec.query(component)).toBeInstanceOf(component);
+  //     expect(spec.query(StepperComponent).activeStep).toBe(stage);
+  //   }
 
-    it("should show stream uploading stage", () => {
-      setStage("uploading");
-      spec.component.isStreaming = true;
-      spec.detectChanges();
-      assertStage(1, StreamUploadingComponent);
-    });
+  //   it("should show stream uploading stage", () => {
+  //     setStage("uploading");
+  //     spec.component.isStreaming = true;
+  //     spec.detectChanges();
+  //     assertStage(1, StreamUploadingComponent);
+  //   });
 
-    it("should show batch uploading stage", () => {
-      setStage("uploading");
-      spec.component.isStreaming = false;
-      spec.detectChanges();
-      assertStage(1, BatchUploadingComponent);
-    });
+  //   it("should show batch uploading stage", () => {
+  //     setStage("uploading");
+  //     spec.component.isStreaming = false;
+  //     spec.detectChanges();
+  //     assertStage(1, BatchUploadingComponent);
+  //   });
 
-    it("should show scanning stage", () => {
-      setStage("scanning");
-      assertStage(2, ScanningComponent);
-    });
+  //   it("should show scanning stage", () => {
+  //     setStage("scanning");
+  //     assertStage(2, ScanningComponent);
+  //   });
 
-    it("should show metadata extraction stage", () => {
-      setStage("metadataExtraction");
-      assertStage(3, MetadataExtractionComponent);
-    });
+  //   it("should show metadata extraction stage", () => {
+  //     setStage("metadataExtraction");
+  //     assertStage(3, MetadataExtractionComponent);
+  //   });
 
-    it("should show metadata review stage", () => {
-      setStage("metadataReview");
-      assertStage(4, MetadataReviewComponent);
-    });
+  //   it("should show metadata review stage", () => {
+  //     setStage("metadataReview");
+  //     assertStage(4, MetadataReviewComponent);
+  //   });
 
-    it("should show processing stage", () => {
-      setStage("processing");
-      assertStage(4, ProcessingComponent);
-    });
+  //   it("should show processing stage", () => {
+  //     setStage("processing");
+  //     assertStage(4, ProcessingComponent);
+  //   });
 
-    it("should show complete stage", () => {
-      setStage("complete");
-      assertStage(5, CompleteComponent);
-    });
-  });
+  //   it("should show complete stage", () => {
+  //     setStage("complete");
+  //     assertStage(5, CompleteComponent);
+  //   });
+  // });
 });

@@ -1,12 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
-import { sanitizeMapMarkers } from "@shared/map/map.component";
+import { MapComponent, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MapComponent } from "../map/map.component";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Location Input

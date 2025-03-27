@@ -1,4 +1,9 @@
-import { createRoutingFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
@@ -65,7 +70,7 @@ describe("AnnotationSearchComponent", () => {
     imports: [IconsModule, MockComponent(AnnotationSearchFormComponent)],
     providers: [
       provideMockBawApi(),
-      mockProvider(AnnotationService,{
+      mockProvider(AnnotationService, {
         show: () => mockAnnotationResponse,
       }),
     ],
@@ -85,7 +90,9 @@ describe("AnnotationSearchComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
     mediaSpy = spec.inject(MEDIA.token);
-    spyOn(mediaSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
+    spyOn(mediaSpy, "createMediaUrl").and.returnValue(
+      testAsset("example.flac"),
+    );
 
     spec.component.searchParameters = mockSearchParameters;
 
@@ -106,21 +113,21 @@ describe("AnnotationSearchComponent", () => {
         model.addMetadata(metadata);
 
         return model;
-      }
+      },
     );
 
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({
         siteId: routeSite.id,
       }),
-      injector
+      injector,
     );
 
     mockAnnotationResponse = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
       }),
-      injector
+      injector,
     );
 
     audioEventsSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -143,7 +150,7 @@ describe("AnnotationSearchComponent", () => {
     routeSite = new Site(generateSite());
 
     mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters()
+      generateAnnotationSearchUrlParameters(),
     );
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeRegionModel = routeRegion;

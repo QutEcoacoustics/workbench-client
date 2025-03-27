@@ -109,6 +109,10 @@ class VerificationComponent
   protected verificationGridFocused = true;
   private doneInitialScroll = false;
 
+  public project?: Project;
+  public region?: Region;
+  public site?: Site;
+
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters ??= models[

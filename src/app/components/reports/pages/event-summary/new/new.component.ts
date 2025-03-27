@@ -108,7 +108,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     api: StandardApi<T>,
     key: string = "name",
     includeDefaultFilters: boolean = true
-  ): TypeaheadSearchCallback {
+  ): TypeaheadSearchCallback<T> {
     return (text: string, activeItems: T[]): Observable<T[]> =>
       api.filter({
         filter: filterAnd(

@@ -20,7 +20,7 @@ export interface Step {
 
 @Component({
   selector: "baw-stepper",
-  styleUrls: ["./stepper.component.scss"],
+  styleUrl: "stepper.component.scss",
   template: `
     <div #stepper class="stepper mb-3">
       <div class="lines">
