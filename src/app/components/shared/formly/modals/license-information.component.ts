@@ -25,8 +25,8 @@ interface LicenseInformation {
       </pre>
 
       <div>
-        <a [href]="license.url" target="_blank" rel="noopener noreferrer">
-          {{ license.url }}
+        <a [href]="license?.url" target="_blank" rel="noopener noreferrer">
+          {{ license?.url }}
         </a>
       </div>
     </div>
