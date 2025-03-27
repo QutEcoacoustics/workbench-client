@@ -29,6 +29,22 @@
       }
     },
     {
+      "key": "license",
+      "type": "select",
+      "props": {
+        "label": "License",
+        "required": false,
+        "options": [
+          { "label": "MIT", "value": "MIT" },
+          { "label": "MIT", "value": "MIT" },
+          { "label": "MIT", "value": "MIT" },
+          { "label": "MIT", "value": "MIT" },
+          { "label": "MIT", "value": "MIT" },
+          { "label": "MIT", "value": "MIT" }
+        ]
+      }
+    },
+    {
       "key": "allowOriginalDownload",
       "type": "select",
       "props": {

@@ -27,6 +27,7 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import {
   allowsOriginalDownloadWidgetMenuItem,
+  licenseWidgetMenuItem,
   permissionsWidgetMenuItem,
 } from "@menu/widget.menus";
 import { Project } from "@models/Project";
@@ -234,6 +235,7 @@ DetailsComponent.linkToRoute({
     actionWidgets: List([
       permissionsWidgetMenuItem,
       allowsOriginalDownloadWidgetMenuItem,
+      licenseWidgetMenuItem,
     ]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

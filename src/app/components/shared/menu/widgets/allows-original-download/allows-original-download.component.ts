@@ -28,9 +28,9 @@ import { map, Observable } from "rxjs";
 export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent
 {
-  public project$: Observable<Project>;
-
   public constructor(private sharedRoute: SharedActivatedRouteService) {}
+
+  public project$: Observable<Project>;
 
   public ngOnInit(): void {
     this.project$ = this.sharedRoute.pageInfo.pipe(
