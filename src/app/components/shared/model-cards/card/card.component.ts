@@ -67,7 +67,7 @@ import { map, Observable } from "rxjs";
     </ng-template>
 
     <ng-template #projectLicenseTemplate>
-      <div *ngIf="isOwner" id="owner" class="badge text-bg-secondary">
+      <div id="license" class="badge text-bg-secondary">
         License: {{ model.license ?? "Unknown" }}
       </div>
     </ng-template>
