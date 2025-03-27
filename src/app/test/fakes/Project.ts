@@ -33,6 +33,7 @@ export function generateProject(data?: Partial<IProject>): Required<IProject> {
     regionIds: modelData.ids(),
     notes: modelData.notes(),
     allowOriginalDownload: modelData.permissionLevel(),
+    license: modelData.lorem.slug(),
     ...modelData.model.generateDescription(),
     ...modelData.model.generateAllUsers(),
     ...data,
