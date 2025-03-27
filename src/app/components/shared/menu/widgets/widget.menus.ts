@@ -3,10 +3,15 @@ import { isLoggedInPredicate } from "src/app/app.menus";
 import { AllowsOriginalDownloadComponent } from "./allows-original-download/allows-original-download.component";
 import { WidgetMenuItem } from "./widgetItem";
 import { WebsiteStatusWarningComponent } from "./website-status-warning/website-status-warning.component";
+import { LicenseWidgetComponent } from "./license-widget/license-widget.component";
 
 export const permissionsWidgetMenuItem = new WidgetMenuItem(
   PermissionsShieldComponent,
   isLoggedInPredicate
+);
+
+export const licenseWidgetMenuItem = new WidgetMenuItem(
+  LicenseWidgetComponent
 );
 
 export const allowsOriginalDownloadWidgetMenuItem = new WidgetMenuItem(
