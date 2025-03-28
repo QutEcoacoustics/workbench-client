@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
@@ -11,7 +11,7 @@ interface LicenseInformation {
   selector: "baw-license-information-modal",
   template: `
     <div class="modal-header">
-      <h4 class="modal-title fw-bold">{{ license?.name }}</h4>
+      <h4 class="modal-title fw-bold">{{ license()?.name }}</h4>
     </div>
 
     <div class="modal-body modal-large">
@@ -25,8 +25,8 @@ interface LicenseInformation {
       </pre>
 
       <div>
-        <a [href]="license?.url" target="_blank" rel="noopener noreferrer">
-          {{ license?.url }}
+        <a [href]="license()?.url" target="_blank" rel="noopener noreferrer">
+          {{ license()?.url }}
         </a>
       </div>
     </div>
@@ -38,12 +38,13 @@ interface LicenseInformation {
     </div>
   `,
   styleUrl: "license-information.component.scss",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LicenseInformationModalComponent implements ModalComponent {
-  @Input() public modal: NgbActiveModal;
-  @Input() public license: LicenseInformation;
+  public modal = input<NgbActiveModal>();
+  public license = input<LicenseInformation | undefined>();
 
   public closeModal(): void {
-    this.modal.close();
+    this.modal().close();
   }
 }

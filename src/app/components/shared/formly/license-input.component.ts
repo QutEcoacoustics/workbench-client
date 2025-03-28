@@ -3,11 +3,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnInit,
   ViewChild,
 } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import spdxLicenseList from "spdx-license-list/full";
+import {
+  LicensesService,
+  SpdxLicense,
+} from "@services/licenses/licenses.service";
 import { asFormControl } from "./helper";
 
 @Component({
@@ -26,7 +30,7 @@ import { asFormControl } from "./helper";
           [formlyAttributes]="field"
           (ngModelChange)="updateSelectedLicense($event)"
         >
-          @for (license of licenseOptions; track license) {
+          @for (license of licenseOptions(); track license) {
           <option [value]="license[0]">
             {{ license[1].name }}
           </option>
@@ -41,7 +45,6 @@ import { asFormControl } from "./helper";
         >
           Show
         </button>
-
         }
       </div>
     </div>
@@ -57,13 +60,15 @@ import { asFormControl } from "./helper";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LicenseInputComponent extends FieldType implements AfterViewInit {
-  public constructor(private modals: NgbModal) {
+export class LicenseInputComponent
+  extends FieldType
+  implements OnInit, AfterViewInit
+{
+  public constructor(
+    private modals: NgbModal,
+    private licenses: LicensesService
+  ) {
     super();
-  }
-
-  public ngAfterViewInit(): void {
-    this.selectedLicense = this.formControl.value;
   }
 
   @ViewChild("licenseInformationModal")
@@ -74,18 +79,30 @@ export class LicenseInputComponent extends FieldType implements AfterViewInit {
 
   public asFormControl = asFormControl;
   protected selectedLicense: string;
+  protected availableLicenses: Record<string, SpdxLicense> = {};
 
-  protected licenseOptions = Object.entries(spdxLicenseList);
+  public async ngOnInit() {
+    const licenseMap = await this.licenses.availableLicenses();
+    this.availableLicenses = licenseMap;
+  }
+
+  public ngAfterViewInit() {
+    this.selectedLicense = this.formControl.value;
+  }
 
   protected updateSelectedLicense(value: string): void {
     this.selectedLicense = value;
+  }
+
+  protected licenseOptions() {
+    return Object.entries(this.availableLicenses);
   }
 
   protected openLicenseInformation(): void {
     this.modals.open(this.licenseInformationModal, { size: "xl" });
   }
 
-  protected currentLicense(license: string): (typeof spdxLicenseList)[0] {
-    return license ? spdxLicenseList[license] : null;
+  protected currentLicense(license: string): SpdxLicense {
+    return license ? this.availableLicenses[license] : null;
   }
 }

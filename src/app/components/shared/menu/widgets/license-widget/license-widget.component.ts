@@ -9,7 +9,6 @@ import { WidgetComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { firstValueFrom, map } from "rxjs";
-import spdxLicenseList from "spdx-license-list";
 
 @Component({
   selector: "baw-license-widget",
@@ -18,9 +17,7 @@ import spdxLicenseList from "spdx-license-list";
     <section class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small class="m-0">
-        <a [href]="license().url" target="_blank" rel="noopener noreferrer">
-          {{ license().name }}
-        </a>
+        {{ license()}}
       </small>
     </section>
     }
@@ -30,7 +27,7 @@ import spdxLicenseList from "spdx-license-list";
 export class LicenseWidgetComponent implements OnInit, WidgetComponent {
   public constructor(private sharedRoute: SharedActivatedRouteService) {}
 
-  public license = signal<(typeof spdxLicenseList)[0] | null>(undefined);
+  public license = signal<string>("Unknown");
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
@@ -41,12 +38,9 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         }
 
         const license = project.license;
-        const licenseInformation = spdxLicenseList[license];
-        if (!licenseInformation) {
-          return;
+        if (license) {
+          this.license.set(license);
         }
-
-        this.license.set(licenseInformation);
       })
     );
 
