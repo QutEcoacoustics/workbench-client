@@ -29,6 +29,14 @@
       }
     },
     {
+      "key": "license",
+      "type": "license",
+      "props": {
+        "label": "License",
+        "required": false
+      }
+    },
+    {
       "key": "allowOriginalDownload",
       "type": "select",
       "props": {

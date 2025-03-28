@@ -20,15 +20,25 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { modelData } from "@test/helpers/faker";
-import { nStepObservable } from "@test/helpers/general";
+import {
+  interceptShowApiRequest,
+  nStepObservable,
+} from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
+import { AUDIO_RECORDING, PROJECT } from "@baw-api/ServiceTokens";
+import { INJECTOR } from "@angular/core";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ProjectsService } from "@baw-api/project/projects.service";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
-  let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<CardComponent>;
+
+  let recordingApi: SpyObject<AudioRecordingsService>;
+  let projectsApi: SpyObject<ProjectsService>;
+
   const createComponent = createComponentFactory({
     component: CardComponent,
     imports: [
@@ -46,13 +56,27 @@ describe("CardComponent", () => {
   ) {
     spec = createComponent({ detectChanges: false, props: { model } });
 
+    const injector = spec.inject(INJECTOR) as SpyObject<AssociationInjector>;
+    model["injector"] = injector;
+
     const subject = new Subject<AudioRecording[]>();
-    recordingApi = spec.inject(AudioRecordingsService);
-    if (model instanceof Project) {
+    recordingApi = spec.inject(AUDIO_RECORDING.token);
+
+    const isModelProject = model instanceof Project;
+    if (isModelProject) {
       recordingApi.filterByProject.and.callFake(() => subject);
     } else {
       recordingApi.filterByRegion.and.callFake(() => subject);
     }
+
+    projectsApi = spec.inject(PROJECT.token);
+    interceptShowApiRequest(
+      projectsApi,
+      injector,
+      isModelProject ? model : new Project(generateProject()),
+      Project
+    );
+
     return nStepObservable(
       subject,
       () => recordings,
