@@ -54,7 +54,6 @@
     "@ngx-loading-bar/http-client": "^6.0.2",
     "@popperjs/core": "^2.11.8",
     "@swimlane/ngx-datatable": "^20.1.0",
-    "@ui5/webcomponents": "^1.5.0",
     "@vvo/tzdb": "^6.124.0",
     "angular-date-value-accessor": "^3.0.0",
     "bootstrap": "^5.1.3",
