@@ -124,7 +124,7 @@ export class AudioEvent
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
   }
 
-  public get license(): string | undefined {
+  public get license() {
     return this.audioRecording?.license
   }
 }

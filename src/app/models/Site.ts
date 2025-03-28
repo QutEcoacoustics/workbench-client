@@ -193,8 +193,12 @@ export class Site extends AbstractModel<ISite> implements ISite, HasLicense {
     return isInstantiated(this.regionId);
   }
 
-  public get license(): string | undefined {
-    return this.projects?.[0]?.license;
+  public get license() {
+    if (!this.projects) {
+      return [];
+    }
+
+    return this.projects.map((project: Project) => project.license);
   }
 
   /**

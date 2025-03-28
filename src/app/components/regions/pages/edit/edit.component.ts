@@ -13,7 +13,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
@@ -80,7 +80,10 @@ EditComponent.linkToRoute({
   pageRoute: editRegionMenuItem,
   menus: {
     actions: List(regionMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

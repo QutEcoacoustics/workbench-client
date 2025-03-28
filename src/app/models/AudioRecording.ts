@@ -130,8 +130,12 @@ export class AudioRecording
     }
   }
 
-  public get license(): string | undefined {
-    return this.site?.projects[0]?.license;
+  public get license() {
+    if (!this.site) {
+      return [];
+    }
+
+    return this.site.projects.map((project: Project) => project.license);
   }
 
   /** Routes to the download link for the api */

@@ -13,11 +13,13 @@ import { firstValueFrom, map } from "rxjs";
 @Component({
   selector: "baw-license-widget",
   template: `
-    @if(license()) {
+    @if (licenses()) {
     <section class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small class="m-0">
-        {{ license()}}
+        @for (license of licenses(); track license) {
+        {{ license }}
+        }
       </small>
     </section>
     }
@@ -27,7 +29,7 @@ import { firstValueFrom, map } from "rxjs";
 export class LicenseWidgetComponent implements OnInit, WidgetComponent {
   public constructor(private sharedRoute: SharedActivatedRouteService) {}
 
-  public license = signal<string>("Unknown");
+  public licenses = signal<string[]>(["Unknown"]);
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
@@ -39,7 +41,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
 
         const license = project.license;
         if (license) {
-          this.license.set(license);
+          this.licenses.set([license]);
         }
       })
     );

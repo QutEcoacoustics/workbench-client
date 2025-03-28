@@ -214,7 +214,7 @@ export interface HasDescription {
 }
 
 export interface HasLicense {
-  license: string | undefined;
+  license: string[] | undefined;
 }
 
 /**

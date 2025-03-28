@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
-interface LicenseInformation {
+export interface LicenseInformation {
   name: string;
   url: string;
 }
@@ -25,7 +25,7 @@ interface LicenseInformation {
       </pre>
 
       <div>
-        <a [href]="license()?.url" target="_blank" rel="noopener noreferrer">
+        <a class="license-url" [href]="license()?.url" target="_blank" rel="noopener noreferrer">
           {{ license()?.url }}
         </a>
       </div>

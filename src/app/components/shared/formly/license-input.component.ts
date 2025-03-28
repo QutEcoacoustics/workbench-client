@@ -40,6 +40,14 @@ import { asFormControl } from "./helper";
         @if (selectedLicense) {
         <button
           type="button"
+          class="btn btn-outline-danger"
+          (click)="removeLicense()"
+        >
+          Remove
+        </button>
+        
+        <button
+          type="button"
           class="btn btn-secondary"
           (click)="openLicenseInformation()"
         >
@@ -92,6 +100,11 @@ export class LicenseInputComponent
 
   protected updateSelectedLicense(value: string): void {
     this.selectedLicense = value;
+  }
+
+  protected removeLicense(): void {
+    this.selectedLicense = null;
+    this.formControl.setValue(null);
   }
 
   protected licenseOptions() {

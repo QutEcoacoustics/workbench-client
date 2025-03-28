@@ -9,7 +9,7 @@ import {
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { List } from "immutable";
@@ -161,7 +161,10 @@ AssignComponent.linkToRoute({
   pageRoute: assignSiteMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

@@ -104,8 +104,8 @@ export class Region
     return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
   }
 
-  public get license(): string | undefined {
-    return this.project?.license;
+  public get license() {
+    return [this.project?.license];
   }
 
   public getAudioRecordingsUrl(): string {
