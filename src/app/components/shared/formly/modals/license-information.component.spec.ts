@@ -1,8 +1,4 @@
-import {
-  createComponentFactory,
-  createHostFactory,
-  Spectator,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { modelData } from "@test/helpers/faker";
 import { input } from "@angular/core";

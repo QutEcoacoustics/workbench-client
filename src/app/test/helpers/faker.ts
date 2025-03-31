@@ -12,6 +12,12 @@ import { DateTime, Duration } from "luxon";
 import { PbsResources } from "@interfaces/pbsInterfaces";
 import { Meta } from "@baw-api/baw-api.service";
 
+// This is a 5MB import that should ONLY be present in the test environment
+// If this file is imported to the production environment, it will cause the
+// production bundle to increase significantly because both the spdx license
+// list and faker.js would be included in the bundle.
+import spdxLicenseList from "spdx-license-list";
+
 const specialCharRegex = /[^\w\s]/gi;
 
 export const modelData = {
@@ -44,7 +50,9 @@ export const modelData = {
   ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
-  license: () => faker.lorem.sentence(),
+  license: () => modelData.helpers.arrayElement(
+    Object.keys(spdxLicenseList),
+  ),
   icon: (): IconProp => [
     "fas",
     faker.helpers.arrayElement<IconName>([

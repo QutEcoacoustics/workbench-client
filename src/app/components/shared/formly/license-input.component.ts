@@ -81,8 +81,11 @@ export class LicenseInputComponent extends FieldType implements OnInit {
   protected availableLicenses = signal<Record<string, SpdxLicense>>({});
 
   public async ngOnInit() {
-    this.availableLicenses.set(await this.licenses.availableLicenses());
-    
+    const licenses = await this.licenses.availableLicenses();
+    this.availableLicenses.set(licenses);
+
+    console.log(licenses);
+
     const initialValue = this.formControl.value;
     if (initialValue in this.availableLicenses()) {
       this.selectedLicense = this.availableLicenses()[initialValue];
