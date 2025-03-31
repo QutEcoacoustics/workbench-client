@@ -11,12 +11,14 @@ describe("LicenseWidgetComponent", () => {
     component: LicenseWidgetComponent,
   });
 
-  function setup(): void {
+  const licenseWidget = () => spec.query<HTMLDivElement>("#license-widget");
+
+  function setup(model?: any): void {
     spec = createComponent({
       detectChanges: false,
       providers: [
         mockProvider(SharedActivatedRouteService, {
-          pageInfo: new Subject<PageInfo>(),
+          pageInfo: new Subject<PageInfo>().next(model),
         }),
       ],
     });
@@ -24,21 +26,26 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
   }
 
-  beforeEach(() => {
-    setup();
-  });
-
   it("should create", () => {
+    setup();
     expect(spec.component).toBeInstanceOf(LicenseWidgetComponent);
   });
 
-  it("should handle no license", () => {});
+  it("should handle no license", () => {
+    expect(licenseWidget()).not.toExist();
+  });
 
   it("should handle a license with an empty name", () => {});
 
   it("should handle a single license", () => {});
 
-  it("should handle multiple licenses", () => {});
+  it("should handle a site with multiple licenses", () => {});
+
+  // Testing an audio event with multiple licenses is a hard task because
+  // events may have multiple licenses with extensive degrees of separation.
+  // E.g. An audio event must fetch the licenses through the associations
+  // Audio Event > Audio Recording > Site > Projects (multiple) > License
+  it("should handle a audio event with multiple licenses", () => {});
 
   // Because project license information is free-form text, we don't want users
   // to enter a license that would expand the height of the viewport by a large

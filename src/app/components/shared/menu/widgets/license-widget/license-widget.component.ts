@@ -14,7 +14,7 @@ import { firstValueFrom, map } from "rxjs";
   selector: "baw-license-widget",
   template: `
     @if (licenses()) {
-    <section class="pb-3">
+    <section id="license-widget" class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small class="m-0">
         @for (license of licenses(); track license) {
