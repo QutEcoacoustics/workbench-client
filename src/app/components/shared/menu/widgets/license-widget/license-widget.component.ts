@@ -4,9 +4,8 @@ import {
   OnInit,
   signal,
 } from "@angular/core";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedStructure } from "@baw-api/resolver-common";
 import { WidgetComponent } from "@menu/widget.component";
-import { Project } from "@models/Project";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { firstValueFrom, map } from "rxjs";
 
@@ -34,7 +33,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
       map((page) => {
-        const project = retrieveResolvedModel(page, Project);
+        const project = retrieveResolvedStructure(page, "license");
         if (!project) {
           return;
         }

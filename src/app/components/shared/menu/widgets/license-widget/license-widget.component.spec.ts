@@ -27,6 +27,7 @@ describe("LicenseWidgetComponent", () => {
   }
 
   fit("should create", () => {
+    setup();
     expect(spec.component).toBeInstanceOf(LicenseWidgetComponent);
   });
 

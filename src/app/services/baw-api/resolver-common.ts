@@ -351,7 +351,7 @@ export class ShowOptionalResolver<
 export interface BawProvider {
   provide: string;
   useClass: Type<{
-    resolve: ResolveFn<any>
+    resolve: ResolveFn<any>;
   }>;
   deps: Type<any>[];
 }
@@ -443,6 +443,21 @@ export function retrieveResolvedModel<T extends AbstractModel>(
       return value as T;
     }
   }
+  return undefined;
+}
+
+export function retrieveResolvedStructure<T>(
+  data: IPageInfo,
+  key: keyof T
+): T | undefined {
+  const resolvedModels = retrieveResolvers(data);
+
+  for (const model of Object.values(resolvedModels)) {
+    if (key in model) {
+      return model as T;
+    }
+  }
+
   return undefined;
 }
 
