@@ -84,8 +84,6 @@ export class LicenseInputComponent extends FieldType implements OnInit {
     const licenses = await this.licenses.availableLicenses();
     this.availableLicenses.set(licenses);
 
-    console.log(licenses);
-
     const initialValue = this.formControl.value;
     if (initialValue in this.availableLicenses()) {
       this.selectedLicense = this.availableLicenses()[initialValue];
