@@ -1,11 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-
-export interface LicenseInformation {
-  name: string;
-  url: string;
-}
+import { SpdxLicense } from "@services/licenses/licenses.service";
 
 @Component({
   selector: "baw-license-information-modal",
@@ -21,7 +17,7 @@ export interface LicenseInformation {
       </p>
 
       <pre class="license-content">
-        <ng-content></ng-content>
+        {{ license()?.licenseText }}
       </pre>
 
       <div>
@@ -42,7 +38,7 @@ export interface LicenseInformation {
 })
 export class LicenseInformationModalComponent implements ModalComponent {
   public modal = input<NgbActiveModal>();
-  public license = input<LicenseInformation | undefined>();
+  public license = input<SpdxLicense | undefined>();
 
   public closeModal(): void {
     this.modal().close();

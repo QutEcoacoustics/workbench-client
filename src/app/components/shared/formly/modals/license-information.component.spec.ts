@@ -1,19 +1,19 @@
-import { createHostFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  createHostFactory,
+  Spectator,
+} from "@ngneat/spectator";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { modelData } from "@test/helpers/faker";
 import { input } from "@angular/core";
-import {
-  LicenseInformation,
-  LicenseInformationModalComponent,
-} from "./license-information.component";
+import { SpdxLicense } from "@services/licenses/licenses.service";
+import { LicenseInformationModalComponent } from "./license-information.component";
 
 describe("LicenseInformationModalComponent", () => {
   let spec: Spectator<LicenseInformationModalComponent>;
+  let mockLicense: SpdxLicense;
 
-  let mockLicense: LicenseInformation;
-  let testSlotContent: string;
-
-  const createComponent = createHostFactory({
+  const createComponent = createComponentFactory({
     component: LicenseInformationModalComponent,
     mocks: [NgbModalRef],
   });
@@ -23,19 +23,12 @@ describe("LicenseInformationModalComponent", () => {
   const licenseContent = () => spec.query<HTMLPreElement>(".license-content");
 
   function setup(): void {
-    spec = createComponent(
-      `
-        <baw-license-information-modal>
-          ${testSlotContent}
-        </baw-license-information-modal>
-      `,
-      {
-        detectChanges: false,
-        props: {
-          license: (input as any)(mockLicense),
-        },
-      }
-    );
+    spec = createComponent({
+      detectChanges: false,
+      props: {
+        license: (input as any)(mockLicense),
+      },
+    });
 
     // we use the TestBed fixture because ngNeat spectator does not support
     // signal based inputs
@@ -44,17 +37,17 @@ describe("LicenseInformationModalComponent", () => {
     spec.detectChanges();
   }
 
-  function generateLicenseInformation(): LicenseInformation {
+  function generateLicenseInformation(): SpdxLicense {
     return {
       name: modelData.license(),
       url: modelData.internet.url(),
+      osiApproved: modelData.datatype.boolean(),
+      licenseText: modelData.lorem.paragraph(),
     };
   }
 
   beforeEach(() => {
     mockLicense = generateLicenseInformation();
-    testSlotContent = modelData.lorem.paragraph();
-
     setup();
   });
 
@@ -71,6 +64,6 @@ describe("LicenseInformationModalComponent", () => {
   });
 
   it("should show the slotted license content", () => {
-    expect(licenseContent()).toHaveExactTrimmedText(testSlotContent);
+    expect(licenseContent()).toHaveExactTrimmedText(mockLicense.licenseText);
   });
 });

@@ -1,9 +1,9 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnInit,
+  signal,
   ViewChild,
 } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
@@ -24,15 +24,14 @@ import { asFormControl } from "./helper";
 
       <div class="form-control input-group p-0">
         <select
-          #licenseInput
           class="form-select"
           [formControl]="asFormControl(formControl)"
           [formlyAttributes]="field"
           (ngModelChange)="updateSelectedLicense($event)"
         >
-          @for (license of licenseOptions(); track license) {
-          <option [value]="license[0]">
-            {{ license[1].name }}
+          @for (license of availableLicenses() | keyvalue; track license) {
+          <option [value]="license.key">
+            {{ license.value.name }}
           </option>
           }
         </select>
@@ -45,7 +44,7 @@ import { asFormControl } from "./helper";
         >
           Remove
         </button>
-        
+
         <button
           type="button"
           class="btn btn-secondary"
@@ -60,18 +59,13 @@ import { asFormControl } from "./helper";
     <ng-template #licenseInformationModal let-licenseModal>
       <baw-license-information-modal
         [modal]="licenseModal"
-        [license]="currentLicense(selectedLicense)"
-      >
-        {{ currentLicense(selectedLicense)?.licenseText }}
-      </baw-license-information-modal>
+        [license]="selectedLicense"
+      ></baw-license-information-modal>
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LicenseInputComponent
-  extends FieldType
-  implements OnInit, AfterViewInit
-{
+export class LicenseInputComponent extends FieldType implements OnInit {
   public constructor(
     private modals: NgbModal,
     private licenses: LicensesService
@@ -82,40 +76,32 @@ export class LicenseInputComponent
   @ViewChild("licenseInformationModal")
   private licenseInformationModal: ElementRef<HTMLElement>;
 
-  @ViewChild("licenseInput")
-  public licenseInput: ElementRef<HTMLSelectElement>;
-
   public asFormControl = asFormControl;
-  protected selectedLicense: string;
-  protected availableLicenses: Record<string, SpdxLicense> = {};
+  protected selectedLicense: SpdxLicense | null;
+  protected availableLicenses = signal<Record<string, SpdxLicense>>({});
 
   public async ngOnInit() {
-    const licenseMap = await this.licenses.availableLicenses();
-    this.availableLicenses = licenseMap;
-  }
-
-  public ngAfterViewInit() {
-    this.selectedLicense = this.formControl.value;
+    this.availableLicenses.set(await this.licenses.availableLicenses());
+    
+    const initialValue = this.formControl.value;
+    if (initialValue in this.availableLicenses()) {
+      this.selectedLicense = this.availableLicenses()[initialValue];
+    }
   }
 
   protected updateSelectedLicense(value: string): void {
-    this.selectedLicense = value;
+    if (value in this.availableLicenses()) {
+      this.selectedLicense = this.availableLicenses()[value];
+    } else {
+      this.selectedLicense = null;
+    }
   }
 
   protected removeLicense(): void {
-    this.selectedLicense = null;
     this.formControl.setValue(null);
-  }
-
-  protected licenseOptions() {
-    return Object.entries(this.availableLicenses);
   }
 
   protected openLicenseInformation(): void {
     this.modals.open(this.licenseInformationModal, { size: "xl" });
-  }
-
-  protected currentLicense(license: string): SpdxLicense {
-    return license ? this.availableLicenses[license] : null;
   }
 }

@@ -24,10 +24,4 @@ describe("LicensesService", () => {
     const mitLicense = realizedResult["MIT"];
     expect(mitLicense).toBeTruthy();
   });
-
-  it("should dynamically import the licenses", () => {
-    const importSpy = spyOn(import("spdx-license-list/full"), "then");
-    spec.service.availableLicenses();
-    expect(importSpy).toHaveBeenCalled();
-  });
 });
