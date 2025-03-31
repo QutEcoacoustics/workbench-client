@@ -26,8 +26,7 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
   }
 
-  it("should create", () => {
-    setup();
+  fit("should create", () => {
     expect(spec.component).toBeInstanceOf(LicenseWidgetComponent);
   });
 
@@ -35,7 +34,8 @@ describe("LicenseWidgetComponent", () => {
     expect(licenseWidget()).not.toExist();
   });
 
-  it("should handle a license with an empty name", () => {});
+  it("should handle a license with an empty name", () => {
+  });
 
   it("should handle a single license", () => {});
 
