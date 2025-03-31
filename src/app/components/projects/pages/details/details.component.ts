@@ -126,7 +126,7 @@ const projectKey = "project";
 
     <div class="mb-3"></div>
   `,
-  styleUrls: ["./details.component.scss"],
+  styleUrl: "./details.component.scss",
 })
 class DetailsComponent
   extends PaginationTemplate<Site | Region>

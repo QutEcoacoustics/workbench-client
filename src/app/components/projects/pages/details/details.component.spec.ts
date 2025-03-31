@@ -385,6 +385,19 @@ describe("ProjectDetailsComponent", () => {
     });
   });
 
+  describe("licenses", () => {
+    it("should show one license correctly", () => {});
+
+    it("should handle no licenses correctly", () => {});
+
+    it("should handle multiple licenses correctly", () => {});
+
+    // This behavior exists so that users cannot ruin the project list page by
+    // creating one public project with a huge license pill that would expand
+    // the viewport and make the page unusable.
+    it("should limit a license pill size if it is too big", () => {});
+  });
+
   describe("api", () => {
     function causeApiRequest(page: number, filterText = "") {
       component["apiRequest$"].next({ page, filterText });

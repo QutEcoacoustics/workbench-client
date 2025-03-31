@@ -24,17 +24,17 @@ describe("LicenseInformationModalComponent", () => {
 
   function setup(): void {
     spec = createComponent(
-    `
-      <baw-license-information-modal>
-        ${testSlotContent}
-      </baw-license-information-modal>
-    `,
-    {
-      detectChanges: false,
-      props: {
-        license: (input as any)(mockLicense),
-      },
-    },
+      `
+        <baw-license-information-modal>
+          ${testSlotContent}
+        </baw-license-information-modal>
+      `,
+      {
+        detectChanges: false,
+        props: {
+          license: (input as any)(mockLicense),
+        },
+      }
     );
 
     // we use the TestBed fixture because ngNeat spectator does not support
@@ -46,7 +46,7 @@ describe("LicenseInformationModalComponent", () => {
 
   function generateLicenseInformation(): LicenseInformation {
     return {
-      name: modelData.lorem.sentence(),
+      name: modelData.license(),
       url: modelData.internet.url(),
     };
   }

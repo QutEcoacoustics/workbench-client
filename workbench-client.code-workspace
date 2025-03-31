@@ -38,6 +38,7 @@
       "flac",
       "autohide",
       "spdx",
+      "errorable",
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",

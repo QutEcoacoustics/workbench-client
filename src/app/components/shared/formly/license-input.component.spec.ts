@@ -75,7 +75,7 @@ describe("LicenseInputComponent", () => {
   });
 
   describe("adding licenses", () => {
-    it("should show the existing license value", () => {
+    fit("should show the existing license value", () => {
       const initialLicense = "MIT";
       setup("license", initialLicense);
 

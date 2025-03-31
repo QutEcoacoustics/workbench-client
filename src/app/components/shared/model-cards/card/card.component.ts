@@ -12,7 +12,7 @@ import { map, Observable } from "rxjs";
  */
 @Component({
   selector: "baw-card",
-  styleUrls: ["./card.component.scss"],
+  styleUrl: "./card.component.scss",
   template: `
     <div class="card h-100">
       <!-- Image -->
@@ -67,8 +67,8 @@ import { map, Observable } from "rxjs";
     </ng-template>
 
     <ng-template #projectLicenseTemplate>
-      <div id="license" class="badge text-bg-secondary">
-        License: {{ model.license ?? "Unknown" }}
+      <div class="license badge text-bg-secondary">
+        License: {{ model.license ? model.license : "Unknown" }}
       </div>
     </ng-template>
   `,

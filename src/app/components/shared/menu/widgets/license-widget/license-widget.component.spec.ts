@@ -31,4 +31,22 @@ describe("LicenseWidgetComponent", () => {
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(LicenseWidgetComponent);
   });
+
+  it("should handle no license", () => {});
+
+  it("should handle a license with an empty name", () => {});
+
+  it("should handle a single license", () => {});
+
+  it("should handle multiple licenses", () => {});
+
+  // Because project license information is free-form text, we don't want users
+  // to enter a license that would expand the height of the viewport by a large
+  // amount.
+  // Expanding the height of the viewport would cause a degraded user
+  // experience, especially on mobile devices.
+  //
+  // This problem might arise if a user uses the API to add a license, and
+  // inputs the entire license content instead of the license name.
+  it("should have a limit on the license widget size", () => {});
 });

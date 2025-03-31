@@ -44,6 +44,7 @@ export const modelData = {
   ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
+  license: () => faker.lorem.sentence(),
   icon: (): IconProp => [
     "fas",
     faker.helpers.arrayElement<IconName>([
@@ -99,11 +100,12 @@ export const modelData = {
     mem: modelData.datatype.number(),
     walltime: modelData.datatype.number(),
   }),
-  concent: () => faker.helpers.arrayElement([
-    UserConcent.yes,
-    UserConcent.no,
-    UserConcent.unasked,
-  ]),
+  concent: () =>
+    faker.helpers.arrayElement([
+      UserConcent.yes,
+      UserConcent.no,
+      UserConcent.unasked,
+    ]),
   hexaDecimal,
   randomArray,
   randomObject,

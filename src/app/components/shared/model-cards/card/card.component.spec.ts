@@ -31,6 +31,10 @@ import { AUDIO_RECORDING, PROJECT } from "@baw-api/ServiceTokens";
 import { INJECTOR } from "@angular/core";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { IUser, User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -38,9 +42,11 @@ describe("CardComponent", () => {
 
   let recordingApi: SpyObject<AudioRecordingsService>;
   let projectsApi: SpyObject<ProjectsService>;
+  let sessionApi: SpyObject<BawSessionService>;
 
   const createComponent = createComponentFactory({
     component: CardComponent,
+    declarations: [LoadingComponent],
     imports: [
       HttpClientTestingModule,
       RouterTestingModule,
@@ -50,9 +56,14 @@ describe("CardComponent", () => {
     ],
   });
 
+  const getNoAudioBadge = () => spec.query<HTMLDivElement>("#no-audio");
+  const getOwnerBadge = () => spec.query<HTMLDivElement>("#owner");
+  const getLicenseBadges = () => spec.queryAll<HTMLDivElement>(".license");
+
   function setup(
     model: Project | Region,
-    recordings: Errorable<AudioRecording[]> = []
+    recordings: Errorable<AudioRecording[]> = [],
+    userModel?: Partial<IUser>
   ) {
     spec = createComponent({ detectChanges: false, props: { model } });
 
@@ -67,6 +78,14 @@ describe("CardComponent", () => {
       recordingApi.filterByProject.and.callFake(() => subject);
     } else {
       recordingApi.filterByRegion.and.callFake(() => subject);
+    }
+
+    sessionApi = spec.inject(BawSessionService);
+    if (userModel) {
+      const mockUser = new User(generateUser(userModel), injector);
+      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(mockUser);
+    } else {
+      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(undefined);
     }
 
     projectsApi = spec.inject(PROJECT.token);
@@ -142,7 +161,7 @@ describe("CardComponent", () => {
       expect(description.innerHTML).toContain(model.descriptionHtmlTagline);
     });
 
-    // TODO Assert truncation styling applies
+    // TODO: Assert truncation styling applies
     xit("should shorten description when description is long", () => {
       const model = createModel({
         descriptionHtmlTagline: modelData.descriptionLong(),
@@ -175,45 +194,140 @@ describe("CardComponent", () => {
       expect(link).toHaveUrl(model.viewUrl);
     });
 
-    function getNoAudioBadge() {
-      return spec.query("#no-audio");
-    }
+    describe("owner badge", () => {
+      it("should not show the owner badge when the user is logged out", () => {
+        setup(createModel());
+        spec.detectChanges();
+        expect(getOwnerBadge()).not.toExist();
+      });
 
-    it("should show loading badge while determining if model has recordings", () => {
-      const model = createModel();
-      setup(model);
-      spec.detectChanges();
-      assertSpinner(getNoAudioBadge(), true);
+      it("should not show the owner badge when the user is not the owner", () => {
+        const model = createModel({
+          creatorId: modelData.datatype.number(),
+        });
+        const userModel = generateUser({
+          id: model.creatorId + 1,
+        });
+
+        setup(model, [], userModel);
+        spec.detectChanges();
+
+        expect(getOwnerBadge()).not.toExist();
+      });
+
+      it("should show owner badge when the user is the owner", () => {
+        const model = createModel({
+          creatorId: modelData.datatype.number(),
+        });
+        const userModel = generateUser({
+          id: model.creatorId,
+        });
+
+        setup(model, [], userModel);
+        spec.detectChanges();
+
+        const badge = getOwnerBadge();
+        expect(badge).toExist();
+        expect(badge).toHaveExactTrimmedText("Owner");
+      });
     });
 
-    it("should show no audio badge if model has no recordings", async () => {
-      const model = createModel();
-      const promise = setup(model, []);
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
+    describe("audio recording badge", () => {
+      it("should show loading badge while determining if model has recordings", () => {
+        const model = createModel();
+        setup(model);
+        spec.detectChanges();
+        assertSpinner(getNoAudioBadge(), true);
+      });
 
-      const badge = getNoAudioBadge();
-      assertSpinner(badge, false);
-      expect(badge).toContainText("No audio");
+      it("should show no audio badge if model has no recordings", async () => {
+        const model = createModel();
+        const promise = setup(model, []);
+        spec.detectChanges();
+        await promise;
+        spec.detectChanges();
+
+        const badge = getNoAudioBadge();
+        assertSpinner(badge, false);
+        expect(badge).toContainText("No audio");
+      });
+
+      it("should not show no audio badge if model has recordings", async () => {
+        const model = createModel();
+        const promise = setup(model, [
+          new AudioRecording(generateAudioRecording()),
+        ]);
+        spec.detectChanges();
+        await promise;
+        spec.detectChanges();
+
+        const badge = getNoAudioBadge();
+        expect(badge).toBeFalsy();
+      });
     });
 
-    it("should not show no audio badge if model has recordings", async () => {
-      const model = createModel();
-      const promise = setup(model, [
-        new AudioRecording(generateAudioRecording()),
-      ]);
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
+    describe("license badge", () => {
+      it("should not have an 'Unknown' license badge if the model has no license", () => {
+        setup(createModel({ license: undefined }));
+        spec.detectChanges();
 
-      const badge = getNoAudioBadge();
-      expect(badge).toBeFalsy();
+        const realizedBadges = getLicenseBadges();
+
+        expect(realizedBadges).toHaveLength(1);
+        expect(realizedBadges[0]).toHaveExactTrimmedText("License: Unknown");
+      });
+
+      it("should not have a license badge if the model has an empty string license", () => {
+        setup(createModel({ license: "" }));
+        spec.detectChanges();
+
+        const realizedBadges = getLicenseBadges();
+
+        expect(realizedBadges).toHaveLength(1);
+        expect(realizedBadges[0]).toHaveExactTrimmedText("License: Unknown");
+      });
+
+      it("should display a valid license correctly", () => {
+        const mockLicense = modelData.license();
+        const model = createModel({ license: mockLicense });
+
+        setup(model);
+        spec.detectChanges();
+
+        const realizedBadges = getLicenseBadges();
+
+        expect(realizedBadges).toHaveLength(1);
+        expect(realizedBadges[0]).toHaveExactTrimmedText(
+          `License: ${mockLicense}`
+        );
+      });
+
+      // Because the project license field is a free form text field, it is
+      // possible for users to input a really long license string that would
+      // appear to large in the UI.
+      // TODO: Assert truncation styling applies
+      xit("should shorten license when license is long", () => {
+        const model = createModel({
+          license: modelData.descriptionLong(),
+        });
+        setup(model);
+        spec.detectChanges();
+      });
     });
   }
 
   describe("Region", () => {
-    validateCard((data) => new Region(generateRegion(data ?? {})));
+    validateCard((data) => {
+      const dataLicense = data?.license;
+      if (data && "license" in data) {
+        delete data.license;
+      }
+
+      const model = new Region(generateRegion(data ?? {}));
+      spyOnProperty(model, "license", "get").and.returnValue(dataLicense);
+
+      return model;
+    });
   });
 
   describe("Project", () => {
