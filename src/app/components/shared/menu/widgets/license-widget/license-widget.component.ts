@@ -49,28 +49,43 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
           return;
         }
 
+        const supportedTypes = [
+          AudioRecording,
+          Site,
+          Region,
+          Project,
+        ] as const;
+
         // find the first model with a license key
         const modelValues = Object.values(models);
-        const availableModels = modelValues.filter(
-          (model: any) => "license" in model
-        );
 
-        const licenseModel = availableModels.at(-1);
-        if (!licenseModel) {
+        let targetModel: unknown | undefined;
+        for (const constructorType of supportedTypes) {
+          const foundTarget = modelValues.find((model) =>
+            model instanceof constructorType,
+          );
+
+          if (foundTarget) {
+            targetModel = foundTarget;
+            break;
+          }
+        }
+
+        if (!targetModel) {
           return;
         }
 
         let siteIds: number[] | undefined;
 
-        if (licenseModel instanceof Project) {
-          this.licenses.set([licenseModel.license]);
+        if (targetModel instanceof Project) {
+          this.licenses.set([targetModel.license]);
           return;
-        } else if (licenseModel instanceof AudioRecording) {
-          siteIds = [licenseModel.siteId];
-        } else if (licenseModel instanceof Region) {
-          siteIds = Array.from(licenseModel.siteIds);
-        } else if (licenseModel instanceof Site) {
-          siteIds = [licenseModel.id];
+        } else if (targetModel instanceof AudioRecording) {
+          siteIds = [targetModel.siteId];
+        } else if (targetModel instanceof Region) {
+          siteIds = Array.from(targetModel.siteIds);
+        } else if (targetModel instanceof Site) {
+          siteIds = [targetModel.id];
         }
 
         if (!siteIds) {

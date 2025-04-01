@@ -8,7 +8,6 @@ import {
   HasAllUsers,
   HasDescription,
   Hash,
-  HasLicense,
   Id,
   Ids,
   ImageUrl,
@@ -51,7 +50,7 @@ export interface IRegion extends HasAllUsers, HasDescription {
  */
 export class Region
   extends AbstractModel<IRegion>
-  implements IRegion, HasLicense
+  implements IRegion
 {
   public readonly kind = "Region";
   public readonly id?: Id;

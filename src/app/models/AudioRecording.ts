@@ -14,7 +14,6 @@ import { Duration } from "luxon";
 import {
   DateTimeTimezone,
   HasAllUsers,
-  HasLicense,
   Id,
   Uuid,
 } from "../interfaces/apiInterfaces";
@@ -63,7 +62,7 @@ export interface IAudioRecording extends HasAllUsers {
  */
 export class AudioRecording
   extends AbstractModel<IAudioRecording>
-  implements IAudioRecording, HasLicense
+  implements IAudioRecording
 {
   public readonly kind = "Audio Recording";
   public readonly id?: Id;
@@ -128,14 +127,6 @@ export class AudioRecording
     if (this.recordedDateTimezone) {
       this.recordedDate = this.recordedDate.setZone(this.recordedDateTimezone);
     }
-  }
-
-  public get license() {
-    if (!this.site) {
-      return [];
-    }
-
-    return [];
   }
 
   /** Routes to the download link for the api */

@@ -20,7 +20,6 @@ import {
   ImageUrl,
   Param,
   TimezoneInformation,
-  HasLicense,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { creator, hasMany, updater } from "./AssociationDecorators";
@@ -57,7 +56,7 @@ export interface ISite extends HasAllUsers, HasDescription {
 /**
  * A site model.
  */
-export class Site extends AbstractModel<ISite> implements ISite, HasLicense {
+export class Site extends AbstractModel<ISite> implements ISite {
   public readonly kind = "Site";
   public readonly id?: Id;
   @bawPersistAttr()
