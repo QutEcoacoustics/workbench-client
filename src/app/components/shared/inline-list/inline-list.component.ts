@@ -7,10 +7,12 @@ import { AbstractModel } from "@models/AbstractModel";
   selector: "baw-inline-list",
   template: `
     <ng-container *ngIf="!!items && items.length > 0; else emptyTemplate">
-      <span *ngFor="let item of items; last as isLast">
+      @for (item of items; let isLast = $last; track item) {
+      <span>
         <a [href]="item.viewUrl">{{ itemText(item) }}</a>
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
+      }
     </ng-container>
   `
 })

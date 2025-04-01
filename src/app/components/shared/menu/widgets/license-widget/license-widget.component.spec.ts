@@ -1,4 +1,4 @@
-import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { PageInfo } from "@helpers/page/pageInfo";
 import { Subject } from "rxjs";
@@ -7,7 +7,7 @@ import { LicenseWidgetComponent } from "./license-widget.component";
 describe("LicenseWidgetComponent", () => {
   let spec: Spectator<LicenseWidgetComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: LicenseWidgetComponent,
   });
 
@@ -18,7 +18,7 @@ describe("LicenseWidgetComponent", () => {
       detectChanges: false,
       providers: [
         mockProvider(SharedActivatedRouteService, {
-          pageInfo: new Subject<PageInfo>().next(model),
+          pageInfo: new Subject<PageInfo>(),
         }),
       ],
     });
@@ -57,4 +57,9 @@ describe("LicenseWidgetComponent", () => {
   // This problem might arise if a user uses the API to add a license, and
   // inputs the entire license content instead of the license name.
   it("should have a limit on the license widget size", () => {});
+
+  // We should not be fetching project models from the activated route because
+  // sometimes the project is not in the route.
+  // E.g. the shallow audio_recording route
+  it("should handle a license when there is no project in the route", () => {});
 });

@@ -3,7 +3,7 @@ import {
   audioRecordingOriginalEndpoint,
   audioRecordingMediaEndpoint,
 } from "@baw-api/audio-recording/audio-recordings.service";
-import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { ACCOUNT, AUDIO_RECORDING, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
@@ -135,7 +135,12 @@ export class AudioRecording
       return [];
     }
 
-    return this.site.projects.map((project: Project) => project.license);
+    const audioRecordingService = this.injector.get(AUDIO_RECORDING.token) as any;
+    if (!audioRecordingService) {
+      return [];
+    }
+
+    return [];
   }
 
   /** Routes to the download link for the api */

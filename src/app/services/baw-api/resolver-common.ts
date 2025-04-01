@@ -446,21 +446,6 @@ export function retrieveResolvedModel<T extends AbstractModel>(
   return undefined;
 }
 
-export function retrieveResolvedStructure<T>(
-  data: IPageInfo,
-  key: keyof T
-): T | undefined {
-  const resolvedModels = retrieveResolvers(data);
-
-  for (const model of Object.values(resolvedModels)) {
-    if (key in model) {
-      return model as T;
-    }
-  }
-
-  return undefined;
-}
-
 export interface ResolvedModelList {
   [key: string]:
     | AbstractModel
