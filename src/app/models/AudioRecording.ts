@@ -3,7 +3,7 @@ import {
   audioRecordingOriginalEndpoint,
   audioRecordingMediaEndpoint,
 } from "@baw-api/audio-recording/audio-recordings.service";
-import { ACCOUNT, AUDIO_RECORDING, SHALLOW_SITE } from "@baw-api/ServiceTokens";
+import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
   audioRecordingBatchRoutes,
   audioRecordingRoutes,
@@ -132,11 +132,6 @@ export class AudioRecording
 
   public get license() {
     if (!this.site) {
-      return [];
-    }
-
-    const audioRecordingService = this.injector.get(AUDIO_RECORDING.token) as any;
-    if (!audioRecordingService) {
       return [];
     }
 

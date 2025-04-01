@@ -28,6 +28,7 @@ describe("BreadcrumbComponent", () => {
     menuUpdate: Subject<MenuServiceData>;
   };
   let spec: Spectator<BreadcrumbComponent>;
+
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
     imports: [MockDirectivesModule, IconsModule, RouterTestingModule],

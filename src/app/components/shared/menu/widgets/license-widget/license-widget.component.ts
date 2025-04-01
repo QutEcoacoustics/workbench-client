@@ -23,9 +23,9 @@ import { firstValueFrom, map } from "rxjs";
     @if (licenses()) {
     <section id="license-widget" class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
-      <small class="m-0">
+      <small id="content" class="m-0">
         @for (license of licenses(); let isLast = $last; track license) {
-        {{ license }}{{ isLast ? "" : "," }}
+        {{ license ? license : "Unknown" }}{{ isLast ? "" : "," }}
         }
       </small>
     </section>
@@ -52,7 +52,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         // find the first model with a license key
         const modelValues = Object.values(models);
         const availableModels = modelValues.filter(
-          (model: any) => !!model?.license
+          (model: any) => "license" in model
         );
 
         const licenseModel = availableModels.at(-1);
@@ -96,9 +96,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
                 return;
               }
 
-              const licenses: string[] = projects.map((project) =>
-                project.license ? project.license : "Unknown"
-              );
+              const licenses = projects.map((project) => project.license);
               this.licenses.set(licenses);
             })
           );
