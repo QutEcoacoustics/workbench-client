@@ -49,6 +49,12 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
           return;
         }
 
+        // The order of the constructors is important. The lower the index, the
+        // more specific the model. Meaning that it is favored over the
+        // constructors that come after it.
+        // For example, if an audio recording is found, we want to use the
+        // license for the projects associated with the audio recording, not the
+        // license for the route project.
         const supportedTypes = [
           AudioRecording,
           Site,
