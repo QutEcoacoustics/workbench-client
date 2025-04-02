@@ -39,6 +39,7 @@
       "autohide",
       "spdx",
       "errorable",
+      "artefacts",
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",

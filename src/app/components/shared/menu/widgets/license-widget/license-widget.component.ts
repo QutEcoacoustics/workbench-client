@@ -24,8 +24,18 @@ import { firstValueFrom, map } from "rxjs";
     <section id="license-widget" class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small id="content" class="m-0">
-        @for (license of licenses(); let isLast = $last; track license) {
-        {{ license ? license : "Unknown" }}{{ isLast ? "" : "," }}
+        @for (license of licenses(); let isLast = $last; track license) { @if
+        (license) {
+        {{ license }}
+        } @else {
+        <a
+          class="license-link text-muted italics"
+          href="https://choosealicense.com/no-permission/"
+        >
+          No License
+        </a>
+        }
+        {{ isLast ? "" : "," }}
         }
       </small>
     </section>
@@ -39,7 +49,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
     private projectsApi: ProjectsService
   ) {}
 
-  public licenses = signal<string[]>(["Unknown"]);
+  public licenses = signal<string[]>([null]);
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
@@ -55,20 +65,15 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         // For example, if an audio recording is found, we want to use the
         // license for the projects associated with the audio recording, not the
         // license for the route project.
-        const supportedTypes = [
-          AudioRecording,
-          Site,
-          Region,
-          Project,
-        ] as const;
+        const supportedTypes = [AudioRecording, Site, Region, Project] as const;
 
         // find the first model with a license key
         const modelValues = Object.values(models);
 
         let targetModel: unknown | undefined;
         for (const constructorType of supportedTypes) {
-          const foundTarget = modelValues.find((model) =>
-            model instanceof constructorType,
+          const foundTarget = modelValues.find(
+            (model) => model instanceof constructorType
           );
 
           if (foundTarget) {

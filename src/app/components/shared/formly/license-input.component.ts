@@ -54,6 +54,27 @@ import { asFormControl } from "./helper";
         </button>
         }
       </div>
+
+      <div class="alert alert-info mt-2">
+        <p>
+          Picking a license applies to all data, metadata, and analysis
+          artefacts in this project. It does not change your ownership.
+        </p>
+
+        <p>
+          Not choosing a license is equivalent to not saying anything. Your
+          copyright is still in effect. See
+          <a href="https://choosealicense.com/no-permission/"
+            >https://choosealicense.com/no-permission/</a
+          >
+        </p>
+
+        <p>
+          If you intend to make your project public, it is *strongly*
+          recommended you choose a license. You can see
+          <a href="https://choosealicense.com/">https://choosealicense.com/</a> for guidance on choosing.
+        </p>
+      </div>
     </div>
 
     <ng-template #licenseInformationModal let-licenseModal>

@@ -267,24 +267,18 @@ describe("CardComponent", () => {
     });
 
     describe("license badge", () => {
-      it("should not have an 'Unknown' license badge if the model has no license", () => {
+      it("should not have a license badge if the model has no license", () => {
         setup(createModel({ license: undefined }));
         spec.detectChanges();
-
         const realizedBadges = getLicenseBadges();
-
-        expect(realizedBadges).toHaveLength(1);
-        expect(realizedBadges[0]).toHaveExactTrimmedText("License: Unknown");
+        expect(realizedBadges).toHaveLength(0);
       });
 
       it("should not have a license badge if the model has an empty string license", () => {
         setup(createModel({ license: "" }));
         spec.detectChanges();
-
         const realizedBadges = getLicenseBadges();
-
-        expect(realizedBadges).toHaveLength(1);
-        expect(realizedBadges[0]).toHaveExactTrimmedText("License: Unknown");
+        expect(realizedBadges).toHaveLength(0);
       });
 
       it("should display a valid license correctly", () => {
@@ -297,8 +291,18 @@ describe("CardComponent", () => {
         const realizedBadges = getLicenseBadges();
 
         expect(realizedBadges).toHaveLength(1);
-        expect(realizedBadges[0]).toHaveExactTrimmedText(
-          `License: ${mockLicense}`
+        expect(realizedBadges[0]).toHaveExactTrimmedText(mockLicense);
+      });
+
+      it("should have the correct tooltip for license badges", () => {
+        const model = createModel({ license: modelData.license() });
+
+        setup(model);
+        spec.detectChanges();
+
+        const realizedBadges = getLicenseBadges();
+        expect(realizedBadges[0].getAttribute("ngbTooltip")).toBe(
+          "This license has been applied to all data, metadata, and analysis results"
         );
       });
 

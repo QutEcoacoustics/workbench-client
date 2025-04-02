@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { SpdxLicense } from "@services/licenses/licenses.service";
@@ -11,17 +16,19 @@ import { SpdxLicense } from "@services/licenses/licenses.service";
     </div>
 
     <div class="modal-body modal-large">
-      <p class="alert alert-warning">
-        <strong>Warning:</strong> This is not legal advice. Please consult a
-        legal professional for advice on licensing.
-      </p>
-
-      <pre class="license-content">
-        {{ license()?.licenseText }}
-      </pre>
+      <div class="license-content bg-light rounded p-4" [innerText]="license()?.licenseText">
+        @for (line of licenseContent(); track line) {
+        <p>{{ line }}</p>
+        }
+      </div>
 
       <div>
-        <a class="license-url" [href]="license()?.url" target="_blank" rel="noopener noreferrer">
+        <a
+          class="license-url"
+          [href]="license()?.url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ license()?.url }}
         </a>
       </div>
@@ -39,6 +46,16 @@ import { SpdxLicense } from "@services/licenses/licenses.service";
 export class LicenseInformationModalComponent implements ModalComponent {
   public modal = input<NgbActiveModal>();
   public license = input<SpdxLicense | undefined>();
+
+  protected licenseContent = computed(() => {
+    if (!this.license()) {
+      return [];
+    }
+
+    return this.license()
+      .licenseText.split("\n")
+      .map((line) => line.trim());
+  });
 
   public closeModal(): void {
     this.modal().close();

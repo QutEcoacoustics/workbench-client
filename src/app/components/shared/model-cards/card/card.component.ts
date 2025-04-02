@@ -40,10 +40,17 @@ import { map, Observable } from "rxjs";
         </div>
 
         <div class="card-badges">
-          <div *ngIf="isOwner" id="owner" class="badge text-bg-highlight">
-            Owner
+          @if (isOwner) {
+          <div id="owner" class="badge text-bg-highlight">Owner</div>
+          } @if (model.license) {
+          <div
+            class="license badge text-bg-secondary"
+            ngbTooltip="This license has been applied to all data, metadata, and analysis results"
+          >
+            {{ model.license }}
           </div>
-          <ng-container [ngTemplateOutlet]="projectLicenseTemplate"></ng-container>
+          }
+
           <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </div>
       </div>
@@ -64,12 +71,6 @@ import { map, Observable } from "rxjs";
           <span *ngIf="hasNoAudio.value">No audio yet</span>
         </div>
       </ng-container>
-    </ng-template>
-
-    <ng-template #projectLicenseTemplate>
-      <div class="license badge text-bg-secondary">
-        License: {{ model.license ? model.license : "Unknown" }}
-      </div>
     </ng-template>
   `,
 })

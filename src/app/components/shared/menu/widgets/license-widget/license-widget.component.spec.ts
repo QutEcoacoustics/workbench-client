@@ -29,6 +29,7 @@ describe("LicenseWidgetComponent", () => {
   });
 
   const licenseText = () => spec.query("#content");
+  const licenseLink = () => spec.query(".license-link");
 
   function setup(models: ResolvedModel[]): void {
     spec = createComponent({ detectChanges: false });
@@ -70,22 +71,24 @@ describe("LicenseWidgetComponent", () => {
     expect(spec.component).toBeInstanceOf(LicenseWidgetComponent);
   });
 
-  it("should display 'Unknown' if the model does not have a license", () => {
+  it("should display 'No License' if the model does not have a license", () => {
     setup([
       {
         model: new Project(generateProject({ license: undefined })),
       },
     ]);
-    expect(licenseText()).toHaveExactTrimmedText("Unknown");
+    expect(licenseText()).toHaveExactTrimmedText("No License");
+    expect(licenseLink()).toHaveHref("https://choosealicense.com/no-permission/");
   });
 
-  it("should show 'Unknown' for a license with an empty name", () => {
+  it("should show 'No License' for a license with an empty name", () => {
     setup([
       {
         model: new Project(generateProject({ license: "" })),
       },
     ]);
-    expect(licenseText()).toHaveExactTrimmedText("Unknown");
+    expect(licenseText()).toHaveExactTrimmedText("No License");
+    expect(licenseLink()).toHaveHref("https://choosealicense.com/no-permission/");
   });
 
   it("should handle a single license", () => {
@@ -120,7 +123,7 @@ describe("LicenseWidgetComponent", () => {
     ];
     const projectIds = mockProjects.map((project) => project.id);
 
-    const expectedLicenses = [mockProjects[0].license, "Unknown"];
+    const expectedLicenses = [mockProjects[0].license, "No License"];
 
     const site = new Site(generateSite({ projectIds }));
 
