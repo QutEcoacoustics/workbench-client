@@ -16,7 +16,7 @@ import {
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export type TypeaheadSearchCallback<T = object> = (
+export type TypeaheadSearchCallback<T> = (
   text: string,
   activeItems: T[]
 ) => Observable<T[]>;
@@ -26,19 +26,25 @@ export type TypeaheadSearchCallback<T = object> = (
   templateUrl: "typeahead-input.component.html",
   styleUrl: "typeahead-input.component.scss",
 })
-export class TypeaheadInputComponent {
+export class TypeaheadInputComponent<T = unknown> {
   /**
-   * The options callback is typically linked to a service as it should return a list observable of options that the user could select
-   * Active items are included in the callback as the api request should have a filter condition to filter these results out
+   * The options callback is typically linked to a service as it should return
+   * a list observable of options that the user could select Active items are
+   * included in the callback as the api request should have a filter condition
+   * to filter these results out.
    */
-  @Input() public searchCallback: TypeaheadSearchCallback;
-  /** Describes how to convert an object model into a human readable form for use in the pills and typeahead dropdown */
+  @Input() public searchCallback: TypeaheadSearchCallback<T>;
+  /**
+   * Describes how to convert an object model into a human readable form for
+   * use in the pills and typeahead dropdown.
+   */
   @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
   /** Whether the typeahead input should allow multiple inputs in pill form */
-  @Input() public multipleInputs = true;
+  @Input() public multipleInputs = false;
   /** Text to show above the input field. Usually a one 1-2 word description. */
   @Input() public label = "";
-  /** Placeholder text that is shown when the input field is empty.
+  /**
+   * Placeholder text that is shown when the input field is empty.
    * Note: This value is not emitted at any point
    */
   @Input() public inputPlaceholder = "";
@@ -47,13 +53,13 @@ export class TypeaheadInputComponent {
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
   // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
-  @Input() public value: object[] = [];
+  @Input() public value: T[] = [];
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
-  @Output() public modelChange = new EventEmitter<object[]>();
+  @Output() public modelChange = new EventEmitter<T[]>();
 
   protected inputModel: string | null;
 
-  public findOptions = (text$: Observable<string>): Observable<object[]> => {
+  public findOptions = (text$: Observable<string>): Observable<T[]> => {
     const maximumResults = 10;
 
     return text$.pipe(
@@ -62,15 +68,15 @@ export class TypeaheadInputComponent {
       switchMap((term: string) =>
         this.searchCallback ? this.searchCallback(term, this.value) : []
       ),
-      map((items: object[]) => items.slice(0, maximumResults))
+      map((items: T[]) => items.slice(0, maximumResults))
     );
   };
 
-  public templateFormatter = (item: object): string => item.toString();
+  public templateFormatter = (item: T): string => item.toString();
 
-  public onItemSelected($event: NgbTypeaheadSelectItemEvent<object>): void {
+  public onItemSelected($event: NgbTypeaheadSelectItemEvent<T>): void {
     $event.preventDefault();
-    const selectedItem: object = $event.item;
+    const selectedItem = $event.item;
 
     if (this.multipleInputs) {
       this.value.push(selectedItem);
@@ -78,6 +84,7 @@ export class TypeaheadInputComponent {
 
       this.inputModel = null;
     } else {
+      this.inputModel = selectedItem.toString();
       this.modelChange.emit([selectedItem]);
     }
   }

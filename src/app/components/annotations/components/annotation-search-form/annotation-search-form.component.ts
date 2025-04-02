@@ -49,7 +49,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     new EventEmitter<AnnotationSearchParameters>();
 
   @ViewChild("recordingsTypeahead")
-  private recordingsTypeahead: TypeaheadInputComponent;
+  private recordingsTypeahead: TypeaheadInputComponent<AudioRecording>;
 
   protected recordingDateTimeFilters: DateTimeFilterModel = {};
   protected createSearchCallback = createSearchCallback;

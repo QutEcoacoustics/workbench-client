@@ -11,7 +11,7 @@ import {
   NgbProgressbarModule,
   NgbToast,
   NgbTooltipModule,
-  NgbTypeaheadModule,
+  // NgbTypeaheadModule,
 } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -49,7 +49,7 @@ import { StepperModule } from "./stepper/stepper.module";
 import { UserLinkModule } from "./user-link/user-link.module";
 import { WIPComponent } from "./wip/wip.component";
 import { DateTimeFilterComponent } from "./date-time-filter/date-time-filter.component";
-import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
+// import { TypeaheadInputComponent } from "./typeahead-input/typeahead-input.component";
 import { ChartComponent } from "./chart/chart.component";
 import { InlineListComponent } from "./inline-list/inline-list.component";
 import { TimeSinceComponent } from "./datetime-formats/time-since/time-since.component";
@@ -73,7 +73,7 @@ export const sharedComponents = [
   ModelSelectorComponent,
   DeleteModalComponent,
   DateTimeFilterComponent,
-  TypeaheadInputComponent,
+  // TypeaheadInputComponent,
   ChartComponent,
   InlineListComponent,
   WebsiteStatusWarningComponent,
@@ -101,7 +101,7 @@ export const sharedModules = [
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbTooltipModule,
-  NgbTypeaheadModule,
+  // NgbTypeaheadModule,
   NgxDatatableModule,
   ReactiveFormsModule,
   RouterModule,

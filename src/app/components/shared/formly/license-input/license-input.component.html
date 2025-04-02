@@ -1,0 +1,81 @@
+<div class="form-group mb-3">
+  <label *ngIf="props.label" [for]="field.id">
+    {{ props.label + (props.required ? " *" : "") }}
+  </label>
+
+  <div class="input-controls form-control input-group p-0">
+    <!-- <select
+        class="form-select"
+        [formControl]="asFormControl(formControl)"
+        [formlyAttributes]="field"
+        (ngModelChange)="updateSelectedLicense($event)"
+      >
+        @for (license of availableLicenses() | keyvalue; track license) {
+        <option [value]="license.key">
+          {{ license.value.name }}
+        </option>
+        }
+      </select> -->
+    <baw-typeahead-input
+      class="license-input"
+      [inputPlaceholder]="'No License'"
+      [searchCallback]="searchCallback()"
+      [formControl]="asFormControl(formControl)"
+      [formlyAttributes]="field"
+      [multipleInputs]="false"
+      [resultTemplate]="licenseSearchTemplate"
+      (modelChange)="updateSelectedLicense($event)"
+    ></baw-typeahead-input>
+
+    @if (selectedLicense) {
+    <button
+      type="button"
+      class="btn btn-outline-danger"
+      (click)="removeLicense()"
+    >
+      Remove
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="openLicenseInformation()"
+    >
+      Show
+    </button>
+    }
+  </div>
+
+  <div class="alert alert-info mt-2">
+    <p>
+      Picking a license applies to all data, metadata, and analysis artefacts in
+      this project. It does not change your ownership.
+    </p>
+
+    <p>
+      Not choosing a license is equivalent to not saying anything. Your
+      copyright is still in effect. See
+      <a href="https://choosealicense.com/no-permission/">
+        https://choosealicense.com/no-permission
+      </a>
+    </p>
+
+    <p>
+      If you intend to make your project public, it is *strongly* recommended
+      you choose a license. You can see
+      <a href="https://choosealicense.com/">https://choosealicense.com</a> for
+      guidance on choosing.
+    </p>
+  </div>
+</div>
+
+<ng-template #licenseInformationModal let-licenseModal>
+  <baw-license-information-modal
+    [modal]="licenseModal"
+    [license]="selectedLicense"
+  ></baw-license-information-modal>
+</ng-template>
+
+<ng-template #licenseSearchTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+</ng-template>

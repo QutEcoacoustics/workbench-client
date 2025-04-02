@@ -7,7 +7,7 @@ import {
 } from "@angular/forms";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { clickButton, getElementByInnerText } from "@test/helpers/html";
+import { clickButton, getElementByInnerText, selectFromTypeahead } from "@test/helpers/html";
 import { modelData } from "@test/helpers/faker";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
@@ -15,9 +15,10 @@ import {
   SpdxLicense,
 } from "@services/licenses/licenses.service";
 import { fakeAsync, tick } from "@angular/core/testing";
-import { formlyConfig } from "./custom-inputs.module";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { formlyConfig } from "../custom-inputs.module";
+import { LicenseInformationModalComponent } from "../modals/license-information.component";
 import { LicenseInputComponent } from "./license-input.component";
-import { LicenseInformationModalComponent } from "./modals/license-information.component";
 
 describe("LicenseInputComponent", () => {
   let spec: SpectatorHost<LicenseInputComponent>;
@@ -31,7 +32,7 @@ describe("LicenseInputComponent", () => {
 
   const createHost = createHostFactory({
     component: LicenseInputComponent,
-    declarations: [LicenseInformationModalComponent],
+    declarations: [LicenseInformationModalComponent, TypeaheadInputComponent],
     imports: [
       FormsModule,
       ReactiveFormsModule,
@@ -138,7 +139,7 @@ describe("LicenseInputComponent", () => {
       expect(initialLicenseTarget).toHaveValue(null);
 
       const licenseKey = "mit-license";
-      spec.selectOption(licenseInput(), licenseKey);
+      selectFromTypeahead(spec, licenseInput(), licenseKey);
       spec.detectChanges();
 
       const licenseTarget = licenseInput();
@@ -150,7 +151,7 @@ describe("LicenseInputComponent", () => {
 
       const firstLicense = licenseInput().value;
 
-      spec.selectOption(licenseInput(), "mock-license");
+      selectFromTypeahead(spec, licenseInput(), "mock-license");
       spec.detectChanges();
 
       const finalLicense = licenseInput().value;
@@ -175,7 +176,7 @@ describe("LicenseInputComponent", () => {
       setup();
 
       // add a license through the input after creation
-      spec.selectOption(licenseInput(), "mock-license");
+      selectFromTypeahead(spec, licenseInput(), "mock-license");
       spec.detectChanges();
 
       // Assert that the license was successfully added so that this test
@@ -206,7 +207,7 @@ describe("LicenseInputComponent", () => {
     it("should add the 'show' button if a license is added after creation", fakeAsync(() => {
       setup();
 
-      spec.selectOption(licenseInput(), "mock-license");
+      selectFromTypeahead(spec, licenseInput(), "mock-license");
 
       clickButton(spec, showButton());
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);

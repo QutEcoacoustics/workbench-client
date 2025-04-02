@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
+import { License } from "@models/data/License";
 
 // If you do not do a type import here, the bundle size will increase by 5MB
 // I have also decided to import the typings for spdx-license-list instead of
 // creating a side-car interface so that if the license shape changes in a
 // dependency bump, TypeScript will raise an error.
-import type spdxLicenses from "spdx-license-list/full";
+import spdxLicenses from "spdx-license-list/full";
 
 export type SpdxLicense = (typeof spdxLicenses)[0];
 
@@ -20,10 +21,19 @@ export class LicensesService {
     return licenses.default;
   }
 
-  public async suggestedLicenses(): Promise<SpdxLicense[]> {
-    const licenses = this.availableLicenses();
-    const topLicenses: (keyof typeof spdxLicenses)[] = ["mit-license"];
+  // public async suggestedLicenses(): Promise<SpdxLicense[]> {
+  public async suggestedLicenses(): Promise<License[]> {
+    const licenses = await this.availableLicenses();
+    const topLicenses: (keyof typeof spdxLicenses)[] = [
+      "AGPL-3.0",
+      "GPL-3.0",
+      "MIT",
+      "Apache-2.0",
+      "BSD-3-Clause",
+    ];
 
-    return topLicenses.map((license) => licenses[license]);
+    return topLicenses
+      .map((license) => licenses[license])
+      .map((license) => new License(license));
   }
 }

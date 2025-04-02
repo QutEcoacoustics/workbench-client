@@ -174,7 +174,7 @@ describe("TypeaheadInputComponent", () => {
     discardPeriodicTasks();
   }));
 
-  it("should not clear the input if the user selects an item and the input only emits a singular value", fakeAsync(() => {
+  it("should complete in the input box if the typeahead emits a singular value", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
     spectator.component.multipleInputs = false;
 
@@ -183,7 +183,7 @@ describe("TypeaheadInputComponent", () => {
 
     selectedDropdownOption().click();
 
-    expect(inputBox().value).not.toEqual("");
+    expect(inputBox().value).toEqual(testInput);
 
     flush();
     discardPeriodicTasks();
@@ -275,6 +275,17 @@ describe("TypeaheadInputComponent", () => {
 
   it("should return no items if the search callback is not set", fakeAsync(() => {
     spectator.component.searchCallback = undefined;
+    spectator.detectChanges();
+
+    typeInInput(modelData.param());
+    tick(defaultDebounceTime);
+
+    const dropdownItems: HTMLButtonElement[] = dropdownOptions();
+    expect(dropdownItems).toHaveLength(0);
+  }));
+
+  it("should not show a dropdown if the search callback returns no items", fakeAsync(() => {
+    spectator.component.searchCallback = () => of([]);
     spectator.detectChanges();
 
     typeInInput(modelData.param());

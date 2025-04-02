@@ -6,6 +6,7 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { ConfigOption, FormlyModule } from "@ngx-formly/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { MapModule } from "@shared/map/map.module";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { CheckboxInputComponent } from "./checkbox-input.component";
 import { FileValueAccessorDirective } from "./file-input.directive";
 import { HorizontalWrapperComponent } from "./horizontal-wrapper.component";
@@ -13,7 +14,7 @@ import { ImageInputComponent } from "./image-input.component";
 import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
-import { LicenseInputComponent } from "./license-input.component";
+import { LicenseInputComponent } from "./license-input/license-input.component";
 import { LicenseInformationModalComponent } from "./modals/license-information.component";
 
 export const formlyConfig: ConfigOption = {
@@ -66,6 +67,8 @@ const components = [
   TimezoneInputComponent,
   LicenseInputComponent,
   LicenseInformationModalComponent,
+
+  TypeaheadInputComponent,
 ];
 
 @NgModule({
@@ -79,6 +82,8 @@ const components = [
     FormlyBootstrapModule,
     MapModule,
     IconsModule,
+
+    NgbTypeaheadModule,
   ],
   exports: components,
 })
