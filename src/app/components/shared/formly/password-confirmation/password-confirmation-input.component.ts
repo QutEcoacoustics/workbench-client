@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Location Input

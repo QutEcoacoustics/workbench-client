@@ -8,8 +8,8 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { inputFile } from "@test/helpers/html";
+import { formlyConfig } from "../custom-inputs.module";
 import { ImageInputComponent } from "./image-input.component";
-import { formlyConfig } from "./custom-inputs.module";
 
 describe("FormlyImageInput", () => {
   let spectator: SpectatorHost<ImageInputComponent>;

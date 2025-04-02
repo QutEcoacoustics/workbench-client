@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Image Input

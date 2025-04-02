@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Checkbox input using bootstrap to style the component

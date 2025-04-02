@@ -8,7 +8,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule, FormlyFieldProps } from "@ngx-formly/core";
-import { formlyConfig } from "./custom-inputs.module";
+import { formlyConfig } from "../custom-inputs.module";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
 // TODO Implement
