@@ -3,7 +3,7 @@
 
 <form #form="ngForm">
   <baw-date-time-filter
-    (modelChange)="updateViewModelFromDateTimeModel($event)"
+    (valueChange)="updateViewModelFromDateTimeModel($event)"
   ></baw-date-time-filter>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
@@ -14,7 +14,7 @@
     [searchCallback]="createSearchCallback(regionsApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+    (valueChange)="model.sites = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
@@ -23,7 +23,7 @@
     [searchCallback]="createSearchCallback(sitesApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+    (valueChange)="model.points = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
@@ -31,7 +31,7 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="createSearchCallback(provenanceApi)"
     [resultTemplate]="nameTypeaheadTemplate"
-    (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
+    (valueChange)="model.provenances = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
   <label for="provenancesCutOffInput" class="form-label">
@@ -82,7 +82,7 @@
     [inputPlaceholder]="'All'"
     [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
-    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
+    (valueChange)="model.tags = getIdsFromAbstractModelArray($event)"
   ></baw-typeahead-input>
 
   <a

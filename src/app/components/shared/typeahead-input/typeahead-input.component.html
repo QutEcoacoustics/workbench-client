@@ -1,7 +1,9 @@
 <div>
-  <label *ngIf="label" for="typeahead-input" class="form-label">
+  @if (label) {
+  <label for="typeahead-input" class="form-label">
     {{ label }}
   </label>
+  }
   <div class="typeahead-input-container form-control">
     @if (multipleInputs) {
     <span
@@ -21,7 +23,7 @@
         <ng-container
           [ngTemplateOutletContext]="{
             result: item,
-            term: inputModel,
+            term: formControl.value,
             formatter: templateFormatter
           }"
           [ngTemplateOutlet]="resultTemplate"
@@ -40,12 +42,16 @@
       type="text"
       class="form-control"
       [placeholder]="value.length < 1 ? inputPlaceholder : ''"
+
       [ngbTypeahead]="findOptions"
       [resultTemplate]="resultTemplate"
-      [(ngModel)]="inputModel"
+
+      [formControl]="formControl"
+      [disabled]="inputDisabled"
+      [(ngModel)]="value"
+
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"
-      [disabled]="inputDisabled"
     />
   </div>
 </div>

@@ -175,7 +175,8 @@ describe("TypeaheadInputComponent", () => {
   }));
 
   it("should complete in the input box if the typeahead emits a singular value", fakeAsync(() => {
-    const testInput = defaultFakeSites[0].name;
+    const targetSite = defaultFakeSites[0];
+    const testInput = targetSite.name;
     spectator.component.multipleInputs = false;
 
     typeInInput(testInput);
@@ -183,7 +184,7 @@ describe("TypeaheadInputComponent", () => {
 
     selectedDropdownOption().click();
 
-    expect(inputBox().value).toEqual(testInput);
+    expect(inputBox().value).toEqual(targetSite.toString());
 
     flush();
     discardPeriodicTasks();
@@ -193,7 +194,7 @@ describe("TypeaheadInputComponent", () => {
     spectator.component.multipleInputs = false;
     const siteToSelect = defaultFakeSites[0];
 
-    spectator.component.modelChange.emit = jasmine.createSpy("modelChange");
+    spectator.component.valueChange.emit = jasmine.createSpy("modelChange");
 
     // since we are not using multiple inputs, the second call should remove the first item typed into the typeahead input
     typeInInput(siteToSelect.name);
@@ -202,7 +203,7 @@ describe("TypeaheadInputComponent", () => {
 
     // assert that the component only emitted the second site, and that the first site was removed
     expect(spectator.component.value).toHaveLength(0);
-    expect(spectator.component.modelChange.emit).toHaveBeenCalledWith([
+    expect(spectator.component.valueChange.emit).toHaveBeenCalledWith([
       siteToSelect,
     ]);
 
@@ -293,5 +294,8 @@ describe("TypeaheadInputComponent", () => {
 
     const dropdownItems: HTMLButtonElement[] = dropdownOptions();
     expect(dropdownItems).toHaveLength(0);
+
+    flush();
+    discardPeriodicTasks();
   }));
 });

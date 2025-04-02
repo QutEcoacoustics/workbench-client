@@ -60,7 +60,7 @@
                   [searchCallback]="tagsApi.typeaheadCallback()"
                   [resultTemplate]="tagsTypeaheadTemplate"
                   [inputDisabled]="uploading"
-                  (modelChange)="
+                  (valueChange)="
                     updateFileAdditionalTagIds(
                       fileModel,
                       getIdsFromAbstractModelArray($event)
@@ -86,7 +86,7 @@
           [searchCallback]="tagsApi.typeaheadCallback()"
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="(hasFiles() | async) === false"
-          (modelChange)="
+          (valueChange)="
             updateExtraTags($event, extraTagsInput)
           "
         ></baw-typeahead-input>

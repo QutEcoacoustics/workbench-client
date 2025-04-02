@@ -57,12 +57,8 @@ describe("AddAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
-    declarations: [
-      InlineListComponent,
-      TypeaheadInputComponent,
-      LoadingComponent,
-    ],
-    imports: [SharedModule, MockBawApiModule],
+    declarations: [InlineListComponent, LoadingComponent],
+    imports: [SharedModule, MockBawApiModule, TypeaheadInputComponent],
     mocks: [ToastService],
     data: {
       resolvers: {
@@ -428,7 +424,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
           jasmine.objectContaining({
-             additionalTagIds: [testedTag.id],
+            additionalTagIds: [testedTag.id],
           }),
           audioEventImport
         );

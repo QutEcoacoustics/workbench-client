@@ -59,6 +59,7 @@ export const formlyConfig: ConfigOption = {
 
 const components = [
   FileValueAccessorDirective,
+
   CheckboxInputComponent,
   HorizontalWrapperComponent,
   ImageInputComponent,
@@ -67,8 +68,6 @@ const components = [
   TimezoneInputComponent,
   LicenseInputComponent,
   LicenseInformationModalComponent,
-
-  TypeaheadInputComponent,
 ];
 
 @NgModule({
@@ -83,7 +82,7 @@ const components = [
     MapModule,
     IconsModule,
 
-    NgbTypeaheadModule,
+    TypeaheadInputComponent,
   ],
   exports: components,
 })

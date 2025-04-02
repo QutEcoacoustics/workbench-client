@@ -32,12 +32,13 @@ describe("LicenseInputComponent", () => {
 
   const createHost = createHostFactory({
     component: LicenseInputComponent,
-    declarations: [LicenseInformationModalComponent, TypeaheadInputComponent],
+    declarations: [LicenseInformationModalComponent],
     imports: [
       FormsModule,
       ReactiveFormsModule,
       FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
+      TypeaheadInputComponent,
     ],
   });
 

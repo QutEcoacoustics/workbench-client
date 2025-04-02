@@ -10,10 +10,11 @@
       [searchCallback]="searchCallback()"
       [multipleInputs]="false"
       [resultTemplate]="licenseSearchTemplate"
-      (modelChange)="updateSelectedLicense($event)"
 
       [formControl]="asFormControl(formControl)"
       [formlyAttributes]="field"
+
+      (valueChange)="updateSelectedLicense($event)"
     ></baw-typeahead-input>
 
     @if (selectedLicense) {
@@ -50,8 +51,8 @@
     </p>
 
     <p>
-      If you intend to make your project public, it is *strongly* recommended
-      you choose a license. You can see
+      If you intend to make your project public, it is
+      <strong>strongly</strong> recommended you choose a license. You can see
       <a href="https://choosealicense.com/">https://choosealicense.com</a> for
       guidance on choosing.
     </p>

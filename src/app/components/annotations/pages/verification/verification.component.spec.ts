@@ -102,12 +102,11 @@ describe("VerificationComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [MockBawApiModule, SharedModule, RouterTestingModule, TypeaheadInputComponent],
     declarations: [
       SearchFiltersModalComponent,
       ProgressWarningComponent,
       AnnotationSearchFormComponent,
-      TypeaheadInputComponent,
       DateTimeFilterComponent,
       WIPComponent,
     ],

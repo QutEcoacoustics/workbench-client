@@ -24,13 +24,15 @@ import { firstValueFrom, map } from "rxjs";
     <section id="license-widget" class="pb-3">
       <p id="label" class="m-0 fs-5">License</p>
       <small id="content" class="m-0">
-        @for (license of licenses(); let isLast = $last; track license) { @if
-        (license) {
+        @for (license of licenses(); let isLast = $last; track license) {
+        @if (license) {
         {{ license }}
         } @else {
         <a
           class="license-link text-muted italics"
           href="https://choosealicense.com/no-permission/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           No License
         </a>

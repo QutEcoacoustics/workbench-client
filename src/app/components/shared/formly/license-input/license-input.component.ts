@@ -63,6 +63,7 @@ export class LicenseInputComponent extends FieldType implements OnInit {
     }
 
     this.selectedLicense = value[0];
+    this.formControl.setValue(this.selectedLicense.name);
   }
 
   protected removeLicense(): void {

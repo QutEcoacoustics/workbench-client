@@ -1,7 +1,7 @@
 <form #form="ngForm">
   <baw-date-time-filter
     [(model)]="recordingDateTimeFilters"
-    (modelChange)="updateRecordingDateTime($event)"
+    (valueChange)="updateRecordingDateTime($event)"
     [disableStartDate]="true"
     [disableStartTime]="true"
     [disableEndTime]="true"
@@ -14,7 +14,7 @@
     [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     [value]="searchParameters.tagModels"
-    (modelChange)="updateSubModel('tags', $event)"
+    (valueChange)="updateSubModel('tags', $event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
@@ -26,7 +26,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project"
-    (modelChange)="updateSubModel('projects', $event)"
+    (valueChange)="updateSubModel('projects', $event)"
   ></baw-typeahead-input>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
@@ -40,7 +40,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!region"
-    (modelChange)="updateSubModel('regions', $event)"
+    (valueChange)="updateSubModel('regions', $event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
@@ -52,7 +52,7 @@
     "
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    (modelChange)="updateSubModel('sites', $event)"
+    (valueChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
   <baw-wip>
@@ -97,7 +97,7 @@
         [searchCallback]="createIdSearchCallback(recordingsApi, 'id')"
         [resultTemplate]="idTypeaheadTemplate"
         [value]="searchParameters.audioRecordingModels"
-        (modelChange)="updateSubModel('audioRecordings', $event)"
+        (valueChange)="updateSubModel('audioRecordings', $event)"
       ></baw-typeahead-input>
     </div>
   </div>

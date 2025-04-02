@@ -29,8 +29,8 @@ describe("NewEventReportComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: NewEventReportComponent,
-    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
-    imports: [SharedModule, MockBawApiModule],
+    declarations: [DateTimeFilterComponent],
+    imports: [SharedModule, MockBawApiModule, TypeaheadInputComponent],
   });
 
   function setup(): void {
