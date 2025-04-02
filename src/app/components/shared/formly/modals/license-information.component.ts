@@ -13,16 +13,22 @@ import { SpdxLicense } from "@services/licenses/licenses.service";
   template: `
     <div class="modal-header">
       <h4 class="modal-title fw-bold">{{ license()?.name }}</h4>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeModal()"
+      ></button>
     </div>
 
     <div class="modal-body modal-large">
-      <div class="license-content bg-light rounded p-4" [innerText]="license()?.licenseText">
+      <div class="license-content bg-light rounded p-4">
         @for (line of licenseContent(); track line) {
         <p>{{ line }}</p>
         }
       </div>
 
-      <div>
+      <div class="mt-2">
         <a
           class="license-url"
           [href]="license()?.url"
@@ -52,9 +58,7 @@ export class LicenseInformationModalComponent implements ModalComponent {
       return [];
     }
 
-    return this.license()
-      .licenseText.split("\n")
-      .map((line) => line.trim());
+    return this.license().licenseText.split("\n");
   });
 
   public closeModal(): void {
