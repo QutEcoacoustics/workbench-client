@@ -4,27 +4,16 @@
   </label>
 
   <div class="input-controls form-control input-group p-0">
-    <!-- <select
-        class="form-select"
-        [formControl]="asFormControl(formControl)"
-        [formlyAttributes]="field"
-        (ngModelChange)="updateSelectedLicense($event)"
-      >
-        @for (license of availableLicenses() | keyvalue; track license) {
-        <option [value]="license.key">
-          {{ license.value.name }}
-        </option>
-        }
-      </select> -->
     <baw-typeahead-input
       class="license-input"
       [inputPlaceholder]="'No License'"
       [searchCallback]="searchCallback()"
-      [formControl]="asFormControl(formControl)"
-      [formlyAttributes]="field"
       [multipleInputs]="false"
       [resultTemplate]="licenseSearchTemplate"
       (modelChange)="updateSelectedLicense($event)"
+
+      [formControl]="asFormControl(formControl)"
+      [formlyAttributes]="field"
     ></baw-typeahead-input>
 
     @if (selectedLicense) {

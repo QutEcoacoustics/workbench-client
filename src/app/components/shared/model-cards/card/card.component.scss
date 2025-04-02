@@ -15,6 +15,12 @@
     background-color: var(--image-bg-color);
     border-bottom: var(--card-border);
 
+    a {
+      display: inline-block;
+      width: auto;
+      height: auto;
+    }
+
     img {
       width: 100%;
       height: auto;
