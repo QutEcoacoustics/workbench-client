@@ -33,7 +33,11 @@ export class LicensesService {
     ];
 
     return topLicenses
-      .map((license) => licenses[license])
-      .map((license) => new License(license));
+      .map((licenseIdentifier) => {
+        return new License({
+          identifier: licenseIdentifier,
+          ...licenses[licenseIdentifier]
+        });
+      });
   }
 }

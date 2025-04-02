@@ -5,15 +5,13 @@
 
   <div class="input-controls form-control input-group p-0">
     <baw-typeahead-input
+      #licenseTypeahead
       class="license-input"
       [inputPlaceholder]="'No License'"
       [searchCallback]="searchCallback()"
       [multipleInputs]="false"
       [resultTemplate]="licenseSearchTemplate"
       (modelChange)="updateSelectedLicense($event)"
-
-      [formControl]="asFormControl(formControl)"
-      [formlyAttributes]="field"
     ></baw-typeahead-input>
 
     @if (selectedLicense) {

@@ -57,7 +57,7 @@ export class TypeaheadInputComponent<T = unknown> {
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
   @Output() public modelChange = new EventEmitter<T[]>();
 
-  protected inputModel: string | null;
+  public inputModel: string | null;
 
   public findOptions = (text$: Observable<string>): Observable<T[]> => {
     const maximumResults = 10;
