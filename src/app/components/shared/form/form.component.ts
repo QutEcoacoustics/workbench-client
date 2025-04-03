@@ -20,7 +20,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 @Component({
   selector: "baw-form",
   templateUrl: "./form.component.html",
-  styleUrls: ["./form.component.scss"],
+  styleUrl: "./form.component.scss",
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
 })

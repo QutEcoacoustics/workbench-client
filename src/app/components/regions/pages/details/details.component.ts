@@ -51,7 +51,7 @@ const regionKey = "region";
  */
 @Component({
   selector: "baw-region",
-  styleUrls: ["./details.component.scss"],
+  styleUrl: "./details.component.scss",
   template: `
     <ng-container *ngIf="region">
       <!-- Region Details -->

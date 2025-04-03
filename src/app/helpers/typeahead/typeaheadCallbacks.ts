@@ -3,7 +3,7 @@ import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { Observable, of } from "rxjs";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { TypeaheadSearchCallback } from "./typeahead-input.component";
+import { TypeaheadSearchCallback } from "../../components/shared/typeahead-input/typeahead-input.component";
 
 // create a callback that can be used to filter for items in a typeahead
 // TODO: Places that use this helper should be replaced with a service method
@@ -51,5 +51,13 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
 export function createItemSearchCallback<T>(
   items: T[]
 ): TypeaheadSearchCallback<T> {
-  return () => of(items);
+  const maxResults = 10;
+  return (searchTerm: string) => {
+    const filteredItems = items.filter((item) => {
+      const itemText = item.toString().toLowerCase();
+      return itemText.includes(searchTerm.toLowerCase());
+    });
+
+    return of(filteredItems.slice(0, maxResults));
+  };
 }

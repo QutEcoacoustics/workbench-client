@@ -7,12 +7,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { DeviceDetectorService } from "ngx-device-detector";
 
-export type UploadingInstructionTab="Windows"|"Mac"|"Linux"|"RClone"
+export type UploadingInstructionTab = "Windows" | "Mac" | "Linux" | "RClone"
 
 @Component({
   selector: "baw-harvest-batch-uploading",
   templateUrl: "batch-uploading.component.html",
-  styleUrls: ["batch-uploading.component.scss"],
+  styleUrl: "batch-uploading.component.scss",
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;

@@ -38,7 +38,7 @@ export interface HeaderDropdown {
 @Component({
   selector: "baw-primary-menu",
   templateUrl: "primary-menu.component.html",
-  styleUrls: ["primary-menu.component.scss"],
+  styleUrl: "primary-menu.component.scss",
 })
 export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

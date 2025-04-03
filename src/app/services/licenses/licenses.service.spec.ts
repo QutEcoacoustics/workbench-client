@@ -24,4 +24,8 @@ describe("LicensesService", () => {
     const mitLicense = realizedResult["MIT"];
     expect(mitLicense).toBeTruthy();
   });
+
+  it("should have the correct suggested licenses", () => {});
+
+  it("should return the correct typeahead callback", () => {});
 });

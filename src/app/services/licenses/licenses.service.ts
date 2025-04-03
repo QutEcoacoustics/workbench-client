@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { License } from "@models/data/License";
+import { createItemSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
+import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 
 // If you do not do a type import here, the bundle size will increase by 5MB
 // I have also decided to import the typings for spdx-license-list instead of
@@ -25,19 +27,34 @@ export class LicensesService {
   public async suggestedLicenses(): Promise<License[]> {
     const licenses = await this.availableLicenses();
     const topLicenses: (keyof typeof spdxLicenses)[] = [
-      "AGPL-3.0",
-      "GPL-3.0",
-      "MIT",
-      "Apache-2.0",
-      "BSD-3-Clause",
+      "CC-BY-4.0",
+      "CC-BY-NC-4.0",
+      "CC-BY-ND-4.0",
+      "CC-BY-NC-SA-4.0",
+      "CC-BY-NC-ND-4.0",
     ];
 
-    return topLicenses
-      .map((licenseIdentifier) => {
+    return topLicenses.map((licenseIdentifier) => {
         return new License({
           identifier: licenseIdentifier,
           ...licenses[licenseIdentifier]
         });
       });
+  }
+
+  public async typeaheadCallback(): Promise<TypeaheadSearchCallback<License>> {
+    const suggestedLicenses = await this.suggestedLicenses();
+
+    const availableLicense = await this.availableLicenses();
+    const allLicenses = Object.entries(availableLicense).map(
+      ([selector, value]) => new License({
+        identifier: selector,
+        ...value,
+      }),
+    );
+
+    const combinedLicenses = [...suggestedLicenses, ...allLicenses];
+
+    return createItemSearchCallback(combinedLicenses);
   }
 }

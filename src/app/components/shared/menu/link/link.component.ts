@@ -63,7 +63,7 @@ import { Observable } from "rxjs";
       {{ tooltip }}
     </ng-template>
   `,
-  styleUrls: ["./link.component.scss"],
+  styleUrl: "./link.component.scss",
 })
 export class MenuLinkComponent
   extends withUnsubscribe()

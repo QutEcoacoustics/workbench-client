@@ -18,8 +18,8 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
   selector: "baw-home",
-  styleUrls: ["./home.component.scss"],
   templateUrl: "./home.component.html",
+  styleUrl: "./home.component.scss",
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;

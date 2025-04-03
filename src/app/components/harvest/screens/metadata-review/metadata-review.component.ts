@@ -89,7 +89,7 @@ const rootMappingPath = "";
 @Component({
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",
-  styleUrls: ["metadata-review.component.scss"],
+  styleUrl: "metadata-review.component.scss",
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()

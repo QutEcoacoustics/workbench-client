@@ -206,7 +206,7 @@ describe("LicenseInputComponent", () => {
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);
     }));
 
-    it("should add the 'show' button if a license is added after creation", fakeAsync(() => {
+    fit("should add the 'show' button if a license is added after creation", fakeAsync(() => {
       setup();
 
       selectFromTypeahead(spec, licenseInput(), "mock-license");

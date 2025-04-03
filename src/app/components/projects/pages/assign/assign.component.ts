@@ -27,7 +27,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-assign",
   templateUrl: "./assign.component.html",
-  styleUrls: ["./assign.component.scss"],
+  styleUrl: "./assign.component.scss",
 })
 class AssignComponent
   extends PagedTableTemplate<TableRow, Site>

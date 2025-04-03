@@ -2,7 +2,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { titleCase } from "@helpers/case-converter/case-converter";
+import { titleCase } from "@helpers/case-converter/caseConverter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";

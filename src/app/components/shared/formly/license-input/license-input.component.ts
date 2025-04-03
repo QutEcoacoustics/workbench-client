@@ -13,7 +13,6 @@ import {
   LicensesService,
   SpdxLicense,
 } from "@services/licenses/licenses.service";
-import { createItemSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
 import { of } from "rxjs";
 import { TypeaheadInputComponent, TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { License } from "@models/data/License";
@@ -60,8 +59,8 @@ export class LicenseInputComponent extends FieldType implements OnInit, AfterVie
       });
     }
 
-    const suggestedLicenses = await this.licenses.suggestedLicenses();
-    this.searchCallback.set(createItemSearchCallback(suggestedLicenses));
+    const searchCallback = await this.licenses.typeaheadCallback();
+    this.searchCallback.set(searchCallback);
   }
 
   public ngAfterViewInit(): void {

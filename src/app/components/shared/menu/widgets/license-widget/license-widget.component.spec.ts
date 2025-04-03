@@ -54,8 +54,8 @@ describe("LicenseWidgetComponent", () => {
     projectApiSpy = spec.inject(ProjectsService);
     // interceptFilterApiRequest(projectApiSpy, injector, mockProjects, Project);
 
-    projectApiSpy.filter = jasmine
-      .createSpy("filter")
+    projectApiSpy.getProjectFor = jasmine
+      .createSpy("getProjectFor")
       .and.callFake(() => of(mockProjects)) as any;
 
     spec.detectChanges();
