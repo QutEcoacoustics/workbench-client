@@ -160,6 +160,11 @@ describe("LicenseInputComponent", () => {
 
       expect(firstLicense).not.toEqual(finalLicense);
     }));
+
+    // When the user clicks on the typeahead, it shows search results that
+    // are not filtered by any search term. Because there is no search term, we
+    // should see that the recommended CC licenses are at the top of the list.
+    it("should show recommended licenses at the top of the typeahead", fakeAsync(() => {}));
   });
 
   describe("removing licenses", () => {
@@ -206,7 +211,7 @@ describe("LicenseInputComponent", () => {
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);
     }));
 
-    fit("should add the 'show' button if a license is added after creation", fakeAsync(() => {
+    it("should add the 'show' button if a license is added after creation", fakeAsync(() => {
       setup();
 
       selectFromTypeahead(spec, licenseInput(), "mock-license");

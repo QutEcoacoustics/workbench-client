@@ -59,6 +59,10 @@
       "clearfix",
       "Millis",
     ],
+    "cSpell.flagWords": [
+      "yuo",
+      "nto",
+    ],
     "cSpell.ignorePaths": [
       "workbench-client.code-workspace",
       "**/.git/objects/**",
