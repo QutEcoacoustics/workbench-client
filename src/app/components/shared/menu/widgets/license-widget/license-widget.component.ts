@@ -70,7 +70,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         // find the first model with a license key
         const modelValues = Object.values(models);
 
-        let targetModel: unknown | undefined;
+        let targetModel: any;
         for (const constructorType of supportedTypes) {
           const foundTarget = modelValues.find(
             (model) => model instanceof constructorType
@@ -83,39 +83,18 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         }
 
         if (!targetModel) {
+          console.warn("Could not find a supported model");
           return;
         }
-
-        let siteIds: number[] | undefined;
 
         if (targetModel instanceof Project) {
+          // If the model is a project, we can just use the license directly
           this.licenses.set([targetModel.license]);
-          return;
-        } else if (targetModel instanceof AudioRecording) {
-          siteIds = [targetModel.siteId];
-        } else if (targetModel instanceof Region) {
-          siteIds = Array.from(targetModel.siteIds);
-        } else if (targetModel instanceof Site) {
-          siteIds = [targetModel.id];
-        }
-
-        if (!siteIds) {
           return;
         }
 
         const associatedProjectsRequest = this.projectsApi
-          .filter({
-            // we have to type cast here because the inner filter is not
-            // typed to allow association type checking
-            //
-            // TODO: remove this type cast once the types are updated
-            // see: https://github.com/QutEcoacoustics/workbench-client/issues/1777
-            filter: {
-              "sites.id": {
-                in: siteIds,
-              },
-            } as any,
-          })
+          .getProjectFor(targetModel)
           .pipe(
             map((projects: Project[]) => {
               if (projects.length === 0) {

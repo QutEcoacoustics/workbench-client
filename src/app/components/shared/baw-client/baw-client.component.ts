@@ -51,6 +51,10 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
    */
   @Input() public page: string;
 
+  // TODO: this loading property has never actually been implemented used and
+  // is always set to false.
+  // However, it is a hint that we should probably implement a loading state.
+  public loading = false;
   public error: boolean;
   public url: SafeResourceUrl;
 

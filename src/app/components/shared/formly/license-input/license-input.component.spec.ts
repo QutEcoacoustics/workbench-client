@@ -16,6 +16,7 @@ import {
 } from "@services/licenses/licenses.service";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { formlyConfig } from "../custom-inputs.module";
 import { LicenseInformationModalComponent } from "../modals/license-information.component";
 import { LicenseInputComponent } from "./license-input.component";
@@ -38,6 +39,7 @@ describe("LicenseInputComponent", () => {
       ReactiveFormsModule,
       FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
+      MockBawApiModule,
     ],
   });
 

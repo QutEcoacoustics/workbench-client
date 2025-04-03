@@ -3,6 +3,10 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
+import { AudioRecording } from "@models/AudioRecording";
+import { Site } from "@models/Site";
+import { Region } from "@models/Region";
+import { Id } from "@interfaces/apiInterfaces";
 import {
   emptyParam,
   filterParam,
@@ -82,6 +86,36 @@ export class ProjectsService implements StandardApi<Project> {
     );
     url.searchParams.set("selected_timezone_name", selectedTimezone);
     return url.toString();
+  }
+
+  public getProjectFor(
+    model: AudioRecording | Site | Region
+  ): Observable<Project[]> {
+    let siteIds: Id[] | undefined;
+
+    if (model instanceof Region) {
+      siteIds = Array.from(model.siteIds);
+    } else if (model instanceof Site) {
+      siteIds = [model.id];
+    } else if (model instanceof AudioRecording) {
+      siteIds = [model.siteId];
+    }
+
+    if (!siteIds) {
+      console.warn("No siteIds found for model", model);
+      return;
+    }
+
+    // We have to use "as any" here because inner filters do not support typing
+    // for associated models.
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/1777
+    const filter = {
+      "sites.id": { in: siteIds },
+    } as any;
+
+    return this.filter({
+      filter,
+    });
   }
 }
 
