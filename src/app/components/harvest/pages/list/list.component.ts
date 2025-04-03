@@ -19,6 +19,7 @@ import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { ToastService } from "@services/toasts/toasts.service";
 
 export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
@@ -35,7 +36,8 @@ class ListComponent extends PageComponent implements OnInit {
   public constructor(
     public modals: NgbModal,
     private harvestsApi: ShallowHarvestsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifications: ToastService,
   ) {
     super();
   }

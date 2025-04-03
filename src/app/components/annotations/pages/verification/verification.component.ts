@@ -99,6 +99,8 @@ class VerificationComponent
   public hasUnsavedChanges = false;
   protected verificationGridFocused = true;
   private doneInitialScroll = false;
+  private site?: Site;
+  private region?: Region;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

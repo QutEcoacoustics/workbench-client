@@ -36,6 +36,8 @@ class AdminThemeTemplateComponent
   public selectedColorIndex: number;
   public themeColors: readonly ThemeColor[];
   public themeVariants: readonly ThemeVariant[];
+  protected darkBackground = false;
+  protected disableButtons = false;
 
   public constructor(
     @Inject(IS_SERVER_PLATFORM) public isServer: boolean,

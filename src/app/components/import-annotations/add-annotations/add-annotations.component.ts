@@ -162,6 +162,10 @@ class AddAnnotationsComponent
     return this.importState === ImportState.SUCCESS;
   }
 
+  public get isUploading(): boolean {
+    return this.importState === ImportState.UPLOADING;
+  }
+
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
   // tooltip
@@ -187,7 +191,7 @@ class AddAnnotationsComponent
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
-      this.failure = true;
+      this.importState = ImportState.FAILURE;
       return;
     }
 

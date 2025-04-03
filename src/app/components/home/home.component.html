@@ -127,7 +127,7 @@
     </p>
 
     <ng-container *ngIf="models$ | withLoading | async as models">
-      <baw-loading *ngIf="models.loading" [size]="lg"></baw-loading>
+      <baw-loading *ngIf="models.loading" size="lg"></baw-loading>
 
       <p *ngIf="models.error" id="error">
         Unable to load {{ viewMoreLink.label | titlecase }}

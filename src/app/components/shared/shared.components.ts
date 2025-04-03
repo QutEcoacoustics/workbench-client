@@ -11,7 +11,7 @@ import {
   NgbProgressbarModule,
   NgbToast,
   NgbTooltipModule,
-  // NgbTypeaheadModule,
+  NgbTypeaheadModule,
 } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -101,7 +101,7 @@ export const sharedModules = [
   NgbPaginationModule,
   NgbProgressbarModule,
   NgbTooltipModule,
-  // NgbTypeaheadModule,
+  NgbTypeaheadModule,
   NgxDatatableModule,
   ReactiveFormsModule,
   RouterModule,
