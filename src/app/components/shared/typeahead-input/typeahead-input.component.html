@@ -43,9 +43,10 @@
       [ngbTypeahead]="findOptions"
       [resultTemplate]="resultTemplate"
       [(ngModel)]="inputModel"
+      [disabled]="inputDisabled"
+
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"
-      [disabled]="inputDisabled"
     />
   </div>
 </div>

@@ -104,7 +104,7 @@ export class Region
   }
 
   public get license() {
-    return [this.project?.license];
+    return this.project?.license;
   }
 
   public getAudioRecordingsUrl(): string {

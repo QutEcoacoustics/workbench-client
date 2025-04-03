@@ -6,7 +6,7 @@ import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { titleCase } from "@helpers/case-converter/caseConverter";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Id, PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";

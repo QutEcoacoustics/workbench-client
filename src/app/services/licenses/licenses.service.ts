@@ -57,4 +57,14 @@ export class LicensesService {
 
     return createItemSearchCallback(combinedLicenses);
   }
+
+  public async isSpdxLicense(identifier: string): Promise<boolean> {
+    const licenses = await this.licenseIdentifiers();
+    return licenses.has(identifier);
+  }
+
+  private async licenseIdentifiers(): Promise<Readonly<Set<string>>> {
+    const licenses = await import("node_modules/spdx-license-list/simple");
+    return licenses.default;
+  }
 }

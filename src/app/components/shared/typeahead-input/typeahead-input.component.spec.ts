@@ -50,13 +50,11 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
   }
 
-  const inputBox = (): HTMLInputElement =>
-    spectator.query<HTMLInputElement>("input");
-  const itemPills = (): HTMLSpanElement[] =>
-    spectator.queryAll<HTMLSpanElement>("span");
-  const dropdownOptions = (): HTMLButtonElement[] =>
+  const inputBox = () => spectator.query<HTMLInputElement>("input");
+  const itemPills = () => spectator.queryAll<HTMLSpanElement>("span");
+  const dropdownOptions = () =>
     spectator.queryAll<HTMLButtonElement>(".dropdown-item");
-  const selectedDropdownOption = (): HTMLButtonElement =>
+  const selectedDropdownOption = () =>
     spectator.query<HTMLButtonElement>("button.dropdown-item.active");
 
   function typeInInput(text: string): void {
@@ -294,4 +292,13 @@ describe("TypeaheadInputComponent", () => {
     const dropdownItems: HTMLButtonElement[] = dropdownOptions();
     expect(dropdownItems).toHaveLength(0);
   }));
+
+  describe("default query", () => {
+    it("should show a list of default options when focused and the defaultQuery is true", fakeAsync(() => {
+      // assert that options are not shown until the input is focused
+    }));
+
+    it("should nto show a list of default options if defaultQuery is not set", fakeAsync(() => {
+    }));
+  });
 });

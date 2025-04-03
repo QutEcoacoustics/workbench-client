@@ -159,6 +159,13 @@ describe("LicenseWidgetComponent", () => {
     expect(licenseText()).toHaveExactTrimmedText(testedLicense);
   });
 
+  it("should display the correct text for a non spdx license", () => {
+    const testedLicense = "this is a non-spdx license test";
+    const project = new Project(generateProject({ license: testedLicense }));
+    setup([{ model: project }]);
+    expect(licenseText()).toHaveExactTrimmedText("Custom License");
+  });
+
   // Because project license information is free-form text, we don't want users
   // to enter a license that would expand the height of the viewport by a large
   // amount.

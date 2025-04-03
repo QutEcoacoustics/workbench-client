@@ -49,6 +49,7 @@ export class TypeaheadInputComponent<T = unknown> {
    */
   @Input() public inputPlaceholder = "";
   @Input() public inputDisabled = false;
+  @Input() public defaultQuery = false;
 
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
@@ -65,9 +66,17 @@ export class TypeaheadInputComponent<T = unknown> {
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
-      switchMap((term: string) =>
-        this.searchCallback ? this.searchCallback(term, this.value) : []
-      ),
+      switchMap((term: string) => {
+        if (term === "" || term === null) {
+          if (this.defaultQuery) {
+            return this.searchCallback("", this.value);
+          }
+
+          return [];
+        }
+
+        return this.searchCallback(term, this.value);
+      }),
       map((items: T[]) => items.slice(0, maximumResults))
     );
   };

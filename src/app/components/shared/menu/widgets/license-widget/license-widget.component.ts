@@ -14,6 +14,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { LicensesService } from "@services/licenses/licenses.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { firstValueFrom, map } from "rxjs";
 
@@ -46,10 +47,11 @@ import { firstValueFrom, map } from "rxjs";
 export class LicenseWidgetComponent implements OnInit, WidgetComponent {
   public constructor(
     private sharedRoute: SharedActivatedRouteService,
-    private projectsApi: ProjectsService
+    private projectsApi: ProjectsService,
+    private licenseService: LicensesService
   ) {}
 
-  public licenses = signal<string[]>([null]);
+  protected licenses = signal<(string | null)[]>([null]);
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(
@@ -89,7 +91,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
 
         if (targetModel instanceof Project) {
           // If the model is a project, we can just use the license directly
-          this.licenses.set([targetModel.license]);
+          this.setLicenses([targetModel.license]);
           return;
         }
 
@@ -102,7 +104,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
               }
 
               const licenses = projects.map((project) => project.license);
-              this.licenses.set(licenses);
+              this.setLicenses(licenses);
             })
           );
 
@@ -111,5 +113,20 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
     );
 
     firstValueFrom(routeInformation);
+  }
+
+  private async setLicenses(licenses: string[]) {
+    const refinedLicenses = await Promise.all(
+      licenses.map(async (license) => {
+        const isSpdx = await this.licenseService.isSpdxLicense(license);
+        if (isSpdx) {
+          return license;
+        }
+
+        return "Custom License";
+      })
+    );
+
+    this.licenses.set(refinedLicenses);
   }
 }

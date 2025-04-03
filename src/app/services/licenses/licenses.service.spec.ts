@@ -28,4 +28,8 @@ describe("LicensesService", () => {
   it("should have the correct suggested licenses", () => {});
 
   it("should return the correct typeahead callback", () => {});
+
+  it("should correctly recognize a spdx license", () => {});
+
+  it("should correctly recognize a non-spdx license", () => {});
 });

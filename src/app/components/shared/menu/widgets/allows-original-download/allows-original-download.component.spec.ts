@@ -1,5 +1,5 @@
 import { Errorable } from "@helpers/advancedTypes";
-import { titleCase } from "@helpers/case-converter/caseConverter";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import {

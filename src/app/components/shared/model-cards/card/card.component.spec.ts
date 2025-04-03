@@ -58,7 +58,8 @@ describe("CardComponent", () => {
 
   const getNoAudioBadge = () => spec.query<HTMLDivElement>("#no-audio");
   const getOwnerBadge = () => spec.query<HTMLDivElement>("#owner");
-  const getLicenseBadges = () => spec.queryAll<HTMLDivElement>(".license");
+  const getLicenseBadges = () =>
+    spec.queryAll<HTMLDivElement>(".license-badge");
 
   function setup(
     model: Project | Region,
@@ -83,9 +84,13 @@ describe("CardComponent", () => {
     sessionApi = spec.inject(BawSessionService);
     if (userModel) {
       const mockUser = new User(generateUser(userModel), injector);
-      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(mockUser);
+      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(
+        mockUser
+      );
     } else {
-      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(undefined);
+      spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(
+        undefined
+      );
     }
 
     projectsApi = spec.inject(PROJECT.token);

@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { RouterStateSnapshot } from "@angular/router";
-import { titleCase } from "@helpers/case-converter/caseConverter";
+import { titleCase } from "@helpers/case-converter/case-converter";
 import { getPageInfos, IPageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
 import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
