@@ -35,6 +35,7 @@
     }
 
     <input
+      #instance="ngbTypeahead"
       id="typeahead-input"
       name="typeahead-input"
       type="text"
@@ -45,6 +46,7 @@
       [(ngModel)]="inputModel"
       [disabled]="inputDisabled"
 
+      (focus)="focus$.next($any($event).target.value)"
       (selectItem)="onItemSelected($event)"
       (keydown.backspace)="removeLastItem()"
     />

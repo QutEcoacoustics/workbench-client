@@ -59,8 +59,7 @@ describe("TypeaheadInputComponent", () => {
     spec.query<HTMLButtonElement>("button.dropdown-item.active");
 
   function typeInInput(text: string): void {
-    const inputElement: HTMLInputElement = inputBox();
-    spec.typeInElement(text, inputElement);
+    spec.typeInElement(text, inputBox());
     spec.detectChanges();
   }
 
@@ -296,14 +295,16 @@ describe("TypeaheadInputComponent", () => {
 
   describe("default query", () => {
     it("should show a list of default options when focused and the defaultQuery is true", fakeAsync(() => {
-      spec.setInput("defaultQuery", true);
+      spec.setInput("queryOnFocus", true);
       spec.detectChanges();
 
       // assert that options are not shown until the input is focused
       const initialDropdownItems = dropdownOptions();
       expect(initialDropdownItems).toHaveLength(0);
 
-      spec.focus();
+      spec.focus(inputBox());
+      tick(defaultDebounceTime);
+      flush();
       spec.detectChanges();
 
       const dropdownItems = dropdownOptions();
@@ -315,13 +316,17 @@ describe("TypeaheadInputComponent", () => {
     }));
 
     it("should not show a list of default options if defaultQuery is not set", fakeAsync(() => {
-      spec.setInput("defaultQuery", false);
+      spec.setInput("queryOnFocus", false);
       spec.detectChanges();
 
       const initialDropdownItems = dropdownOptions();
       expect(initialDropdownItems).toHaveLength(0);
 
-      spec.focus();
+      spec.focus(inputBox());
+
+      spec.detectChanges();
+      tick(defaultDebounceTime);
+      flush();
       spec.detectChanges();
 
       const dropdownItems = dropdownOptions();

@@ -11,7 +11,9 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
+  merge,
   Observable,
+  Subject,
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
@@ -49,7 +51,7 @@ export class TypeaheadInputComponent<T = unknown> {
    */
   @Input() public inputPlaceholder = "";
   @Input() public inputDisabled = false;
-  @Input() public defaultQuery = true;
+  @Input() public queryOnFocus = true;
 
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
@@ -59,11 +61,12 @@ export class TypeaheadInputComponent<T = unknown> {
   @Output() public modelChange = new EventEmitter<T[]>();
 
   public inputModel: string | null;
+  protected focus$ = new Subject<T[]>();
 
   public findOptions = (text$: Observable<string>): Observable<T[]> => {
     const maximumResults = 10;
 
-    return text$.pipe(
+    return merge(this.focus$, text$).pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
       switchMap((term: string) => {
@@ -71,8 +74,8 @@ export class TypeaheadInputComponent<T = unknown> {
           return [];
         }
 
-        if ((term === "" || term === null)) {
-          if (this.defaultQuery) {
+        if (term === "" || term === null) {
+          if (this.queryOnFocus) {
             return this.searchCallback("", this.value);
           }
 
