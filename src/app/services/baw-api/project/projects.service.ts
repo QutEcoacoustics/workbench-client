@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
-import { Observable } from "rxjs";
+import { iif, Observable, of } from "rxjs";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { Region } from "@models/Region";
@@ -101,11 +101,6 @@ export class ProjectsService implements StandardApi<Project> {
       siteIds = [model.siteId];
     }
 
-    if (!siteIds) {
-      console.warn("No siteIds found for model", model);
-      return;
-    }
-
     // We have to use "as any" here because inner filters do not support typing
     // for associated models.
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/1777
@@ -113,9 +108,11 @@ export class ProjectsService implements StandardApi<Project> {
       "sites.id": { in: siteIds },
     } as any;
 
-    return this.filter({
-      filter,
-    });
+    return iif(
+      () => siteIds.length > 0,
+      this.filter(filter),
+      []
+    );
   }
 }
 

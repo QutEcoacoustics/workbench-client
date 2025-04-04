@@ -19,6 +19,10 @@ export class LicensesService {
     // bundle size for something that is only needed on one page.
     // To minimize the bundle size, I dynamically import the spdx license
     // list so that the 5MB is only loaded when the user needs.
+    //
+    // TODO: When we have an API endpoint to fetch available licenses, this
+    // dependency can be removed and the API can be used instead.
+    // see: https://github.com/QutEcoacoustics/baw-server/issues/750
     const licenses = await import("node_modules/spdx-license-list/full");
     return licenses.default;
   }

@@ -72,17 +72,9 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
         // find the first model with a license key
         const modelValues = Object.values(models);
 
-        let targetModel: any;
-        for (const constructorType of supportedTypes) {
-          const foundTarget = modelValues.find(
-            (model) => model instanceof constructorType
-          );
-
-          if (foundTarget) {
-            targetModel = foundTarget;
-            break;
-          }
-        }
+        const targetModel: any = modelValues.find(
+          (model) => supportedTypes.includes(model.constructor as any)
+        );
 
         if (!targetModel) {
           console.warn("Could not find a supported model");
