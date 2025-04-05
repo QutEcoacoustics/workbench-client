@@ -61,25 +61,9 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
           return;
         }
 
-        // The order of the constructors is important. The lower the index, the
-        // more specific the model. Meaning that it is favored over the
-        // constructors that come after it.
-        // For example, if an audio recording is found, we want to use the
-        // license for the projects associated with the audio recording, not the
-        // license for the route project.
-        const supportedTypes = [AudioRecording, Site, Region, Project] as const;
-
         // find the first model with a license key
         const modelValues = Object.values(models);
-
-        const targetModel: any = modelValues.find(
-          (model) => supportedTypes.includes(model.constructor as any)
-        );
-
-        if (!targetModel) {
-          console.warn("Could not find a supported model");
-          return;
-        }
+        const targetModel = this.pickModel(modelValues);
 
         if (targetModel instanceof Project) {
           // If the model is a project, we can just use the license directly
@@ -107,16 +91,34 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
     firstValueFrom(routeInformation);
   }
 
-  private async setLicenses(licenses: string[]) {
-    const refinedLicenses = await Promise.all(
-      licenses.map(async (license) => {
-        const isSpdx = await this.licenseService.isSpdxLicense(license);
-        if (isSpdx) {
-          return license;
-        }
+  private pickModel(
+    models: any[]
+  ): AudioRecording | Site | Region | Project | undefined {
+    // The order of the constructors is important. The lower the index, the
+    // more specific the model. Meaning that it is favored over the
+    // constructors that come after it.
+    // For example, if an audio recording is found, we want to use the
+    // license for the projects associated with the audio recording, not the
+    // license for the route project.
+    const supportedTypes = [AudioRecording, Site, Region, Project] as const;
 
-        return "Custom License";
-      })
+    const targetModel: any = models.find((model) =>
+      supportedTypes.includes(model.constructor as any)
+    );
+
+    if (!targetModel) {
+      console.warn("Could not find a supported model");
+      return;
+    }
+
+    return targetModel;
+  }
+
+  private async setLicenses(licenseIdentifiers: string[]) {
+    const refinedLicenses = await Promise.all(
+      licenseIdentifiers.map(
+        async (identifier) => await this.licenseService.licenseText(identifier)
+      )
     );
 
     this.licenses.set(refinedLicenses);

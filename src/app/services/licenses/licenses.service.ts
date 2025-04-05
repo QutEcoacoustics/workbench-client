@@ -39,11 +39,11 @@ export class LicensesService {
     ];
 
     return topLicenses.map((licenseIdentifier) => {
-        return new License({
-          identifier: licenseIdentifier,
-          ...licenses[licenseIdentifier]
-        });
+      return new License({
+        identifier: licenseIdentifier,
+        ...licenses[licenseIdentifier],
       });
+    });
   }
 
   public async typeaheadCallback(): Promise<TypeaheadSearchCallback<License>> {
@@ -51,10 +51,11 @@ export class LicensesService {
 
     const availableLicense = await this.availableLicenses();
     const allLicenses = Object.entries(availableLicense).map(
-      ([selector, value]) => new License({
-        identifier: selector,
-        ...value,
-      }),
+      ([selector, value]) =>
+        new License({
+          identifier: selector,
+          ...value,
+        })
     );
 
     const combinedLicenses = [...suggestedLicenses, ...allLicenses];
@@ -65,6 +66,11 @@ export class LicensesService {
   public async isSpdxLicense(identifier: string): Promise<boolean> {
     const licenses = await this.licenseIdentifiers();
     return licenses.has(identifier);
+  }
+
+  public async licenseText(identifier: string): Promise<string> {
+    const isSpdxLicense = await this.isSpdxLicense(identifier);
+    return isSpdxLicense ? identifier : "Custom License";
   }
 
   private async licenseIdentifiers(): Promise<Readonly<Set<string>>> {

@@ -16,6 +16,16 @@ describe("LicensesService", () => {
     expect(spec.service).toBeInstanceOf(LicensesService);
   });
 
+  describe("licenseText", () => {
+    it("should return the correct license text for a spdx license", async () => {});
+
+    it("should return 'Custom License' for a non-spdx license", async () => {});
+
+    it("should return 'No License' for a null license", async () => {});
+
+    it("should return 'No License' for an empty string license", async () => {});
+  });
+
   it("should have a method to return available licenses", async () => {
     const realizedResult = await spec.service.availableLicenses();
     expect(realizedResult).toBeTruthy();

@@ -43,9 +43,7 @@ import { map, Observable } from "rxjs";
         <div class="card-badges">
           @if (isOwner) {
           <div id="owner" class="badge text-bg-highlight">Owner</div>
-          }
-
-          @if (licenseText != null) {
+          } @if (licenseText != null) {
           <div
             class="license-badge badge text-bg-secondary"
             ngbTooltip="This license has been applied to all data, metadata, and analysis results"
@@ -82,7 +80,7 @@ export class CardComponent implements OnInit {
   public constructor(
     private recordingApi: AudioRecordingsService,
     private session: BawSessionService,
-    private licenseService: LicensesService,
+    private licenseService: LicensesService
   ) {}
 
   @Input() public model: Project | Region;
@@ -114,11 +112,8 @@ export class CardComponent implements OnInit {
       return;
     }
 
-    const isSpdxLicense = await this.licenseService.isSpdxLicense(this.model.license);
-    if (isSpdxLicense) {
-      this.licenseText = this.model.license;
-    } else {
-      this.licenseText = "Custom License";
-    }
+    this.licenseText = await this.licenseService.licenseText(
+      this.model.license
+    );
   }
 }
