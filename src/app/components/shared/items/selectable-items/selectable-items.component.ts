@@ -7,17 +7,16 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 @Component({
   selector: "baw-selectable-items",
   templateUrl: "./selectable-items.component.html",
-  styles: [
-    `
-      button {
-        height: 100%;
-      }
+  styles: [`
+    button {
+      height: 100%;
+    }
 
-      button[disabled] {
-        cursor: not-allowed;
-      }
-    `,
-  ],
+    button[disabled] {
+      cursor: not-allowed;
+    }
+  `],
+  standalone: false
 })
 export class SelectableItemsComponent {
   @Input() public title: string;

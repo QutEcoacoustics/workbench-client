@@ -7,6 +7,7 @@ import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
  */
 @Pipe({
   name: "isUnresolved",
+  standalone: false
 })
 export class IsUnresolvedPipe implements PipeTransform {
   public transform(

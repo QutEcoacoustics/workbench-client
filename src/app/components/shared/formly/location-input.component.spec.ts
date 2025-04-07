@@ -41,12 +41,12 @@ describe("FormlyLocationInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <baw-location-input></baw-location-input>
+        <baw-location-input [field]="field"></baw-location-input>
       </form>
-      `,
+    `,
       {
-        hostProps: { formGroup },
-        props: {
+        hostProps: {
+          formGroup,
           field: {
             model,
             key,
@@ -63,8 +63,7 @@ describe("FormlyLocationInput", () => {
 
   beforeEach(() => setup());
 
-  const getLatitudeInput = () =>
-    spectator.query<HTMLInputElement>("#latitude");
+  const getLatitudeInput = () => spectator.query<HTMLInputElement>("#latitude");
   const getLongitudeInput = () =>
     spectator.query<HTMLInputElement>("#longitude");
   const getErrorElements = () =>
@@ -196,7 +195,8 @@ describe("FormlyLocationInput", () => {
   });
 
   it("should display an error if there is a latitude but no longitude", () => {
-    const expectedError = "Both latitude and longitude must be set or left empty";
+    const expectedError =
+      "Both latitude and longitude must be set or left empty";
     const latitude = modelData.latitude();
 
     updateMarkerThroughInput("", latitude);

@@ -24,6 +24,7 @@ import schema from "./unlock-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   public fields = schema.fields;

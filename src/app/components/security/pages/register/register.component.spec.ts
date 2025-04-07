@@ -11,7 +11,7 @@ import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
@@ -32,6 +32,7 @@ describe("RegisterComponent", () => {
   const createComponent = createComponentFactory({
     component: RegisterComponent,
     imports: [...testFormImports, MockBawApiModule],
+    providers: testFormProviders,
     declarations: [FormComponent],
   });
 

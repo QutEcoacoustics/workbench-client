@@ -22,14 +22,13 @@ import {
 export const gridTileContentSelector = "baw-grid-tile-content";
 
 @Component({
-  standalone: true,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  encapsulation: ViewEncapsulation.ShadowDom,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-
   selector: "baw-ng-grid-tile-content",
   templateUrl: "grid-tile-content.component.html",
   styleUrl: "grid-tile-content.component.scss",
+  encapsulation: ViewEncapsulation.ShadowDom,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  standalone: true,
 })
 export class GridTileContentComponent implements WithContext {
   public constructor(

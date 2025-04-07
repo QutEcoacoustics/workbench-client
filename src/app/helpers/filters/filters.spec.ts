@@ -12,7 +12,7 @@ describe("ModelFilters", () => {
         ["projects.id"]: {
           eq: 1,
         },
-      };
+      } as InnerFilter;
 
       const observedResult = filterAnd(currentFilters, additionalFilters);
       expect(observedResult).toEqual(additionalFilters);
@@ -146,7 +146,7 @@ describe("ModelFilters", () => {
       ["projects.id"]: {
         in: mockProjectIds,
       },
-    };
+    } as InnerFilter<Project>;
 
     const observedResult = filterModelIds<Project>("projects", mockProjectIds, initialFilters);
     expect(observedResult).toEqual(expectedResult);

@@ -16,6 +16,7 @@ import {
  */
 @Directive({
   selector: "[bawDatatableDefaults]",
+  standalone: false
 })
 export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalPaging = true;

@@ -71,14 +71,15 @@ describe("WithFormCheck", () => {
   @Component({
     selector: "baw-testing",
     template: `
-      <div>
-        <baw-form
-          *ngFor="let schema of schemas"
-          [model]="schema.model"
-          [fields]="schema.fields"
-        ></baw-form>
-      </div>
+        <div>
+          <baw-form
+            *ngFor="let schema of schemas"
+            [model]="schema.model"
+            [fields]="schema.fields"
+          ></baw-form>
+        </div>
     `,
+    standalone: false
   })
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];

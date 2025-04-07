@@ -1,4 +1,4 @@
-@import "media-mixin";
+@use "media-mixin";
 
 /*
  * Ensure styling is extremely restricted to a specific element
@@ -41,7 +41,7 @@
 
   > .menu-layout {
     // Compact/inline menus on displays smaller than large
-    @include media("<xl-grid") {
+    @include media-mixin.media("<xl-grid") {
       flex-direction: column;
     }
 
@@ -54,7 +54,7 @@
       margin-top: 1rem;
 
       // Change order to swap with action menu when compacted
-      @include media("<xl-grid") {
+      @include media-mixin.media("<xl-grid") {
         order: 3;
         margin-left: 1rem;
         margin-right: 1rem;
@@ -73,7 +73,7 @@
       /*
         * Move menu to sit below secondary menu
         */
-      @include media("<xl-grid") {
+      @include media-mixin.media("<xl-grid") {
         order: 2;
       }
     }

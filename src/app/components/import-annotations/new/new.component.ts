@@ -33,6 +33,7 @@ export const newAnnotationMenuItemActions = [
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   public constructor(

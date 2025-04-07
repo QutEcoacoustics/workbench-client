@@ -39,6 +39,7 @@ import {
   selector: "baw-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
+  standalone: false
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;

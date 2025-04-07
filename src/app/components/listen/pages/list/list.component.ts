@@ -9,6 +9,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 @Component({
   selector: "baw-listen",
   template: "<baw-client></baw-client>",
+  standalone: false
 })
 class ListenComponent extends PageComponent {}
 

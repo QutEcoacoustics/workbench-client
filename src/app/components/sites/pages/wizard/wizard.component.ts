@@ -17,13 +17,11 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-wizard",
-  styles: [
-    `
-      button {
-        width: 100px;
-      }
-    `,
-  ],
+  styles: [`
+    button {
+      width: 100px;
+    }
+  `],
   template: `
     <ng-container *ngIf="!error">
       <h2 class="text-center">New Site</h2>
@@ -56,6 +54,7 @@ const projectKey = "project";
       ></baw-regions-new>
     </ng-container>
   `,
+  standalone: false
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;

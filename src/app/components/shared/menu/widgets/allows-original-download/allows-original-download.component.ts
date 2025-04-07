@@ -24,6 +24,7 @@ import { map, Observable } from "rxjs";
       </section>
     </ng-container>
   `,
+  standalone: false
 })
 export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent

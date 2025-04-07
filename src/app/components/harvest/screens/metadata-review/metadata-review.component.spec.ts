@@ -1,4 +1,4 @@
-import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
+import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FolderRowComponent } from "@components/harvest/components/metadata-review/folder-row.component";
 import { WhitespaceComponent } from "@components/harvest/components/metadata-review/whitespace.component";
@@ -167,8 +167,6 @@ describe("MetadataReviewComponent", () => {
     tick();
 
     expect(stages.transition).not.toHaveBeenCalled();
-    discardPeriodicTasks();
-    flush();
   }));
 
   it("should transition the Harvest to 'complete' when the 'Abort Harvest' button is clicked in abort warning modal", fakeAsync(() => {
@@ -181,8 +179,6 @@ describe("MetadataReviewComponent", () => {
     tick();
 
     expect(stages.transition).toHaveBeenCalledWith("complete");
-    discardPeriodicTasks();
-    flush();
   }));
 
   it("should have persistent mappings when folders close", fakeAsync(() => {
@@ -267,9 +263,6 @@ describe("MetadataReviewComponent", () => {
     clickEditMappingButton(4);
     toggleHarvestMappingRecursive(0);
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(2);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should retain mappings assigned in previous stages after change in mapping through interface", fakeAsync(() => {
@@ -352,8 +345,5 @@ describe("MetadataReviewComponent", () => {
 
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(1);
     expect(JSON.stringify(spec.component.harvest.mappings)).toEqual(JSON.stringify(expectedMappings));
-
-    flush();
-    discardPeriodicTasks();
   }));
 });

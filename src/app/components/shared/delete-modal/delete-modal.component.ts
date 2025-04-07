@@ -26,6 +26,7 @@ import { ModalComponent } from "@menu/widget.component";
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
+  standalone: false
 })
 export class DeleteModalComponent extends withUnsubscribe() implements ModalComponent {
   @Input() public successCallback?: () => void;

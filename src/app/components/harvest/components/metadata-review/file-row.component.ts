@@ -88,6 +88,7 @@ interface ValidationMessage {
   styleUrls: ["file-row.component.scss"],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FileRowComponent implements OnInit {
   @Input() public row: MetaReviewFile;

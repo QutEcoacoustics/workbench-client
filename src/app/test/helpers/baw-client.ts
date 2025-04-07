@@ -19,6 +19,7 @@ export function validateBawClientPage<Component extends Type<any>>(
   let spec: SpectatorRouting<Component>;
   let config: ConfigService;
   const compiledRoutes = routes.compileRoutes(getRouteConfigForPage);
+
   const createComponent = createRoutingFactory({
     component,
     imports: [SharedModule, MockBawApiModule, ...modules],

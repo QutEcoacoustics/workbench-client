@@ -8,6 +8,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 @Component({
   selector: "baw-citsci-listen",
   template: "<baw-client></baw-client>",
+  standalone: false
 })
 class CitSciListenComponent extends PageComponent {}
 

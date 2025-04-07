@@ -54,6 +54,7 @@ import { DateTime } from "luxon";
     </div>
   `,
   styleUrls: ["./user-badge.component.scss"],
+  standalone: false
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

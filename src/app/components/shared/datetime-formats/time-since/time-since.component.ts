@@ -19,7 +19,6 @@ type InputType = Duration | DateTime | Date;
   selector: "baw-time-since",
   templateUrl: "../abstract-template.component.html",
   styleUrl: "time-since.component.scss",
-  standalone: true,
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

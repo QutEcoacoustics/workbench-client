@@ -19,6 +19,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-analysis",
   templateUrl: "details.component.html",
+  standalone: false
 })
 class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)

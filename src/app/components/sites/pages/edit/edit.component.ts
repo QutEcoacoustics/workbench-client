@@ -33,6 +33,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-sites-edit",
   templateUrl: "./edit.component.html",
+  standalone: false
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;

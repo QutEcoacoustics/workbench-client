@@ -12,6 +12,7 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
       and report the issue so it can be resolved.
     </p>
   `,
+  standalone: false
 })
 export class ErrorComponent {
   public reportProblem = reportProblemMenuItem;

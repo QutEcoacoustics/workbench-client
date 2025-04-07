@@ -34,6 +34,7 @@ import schema from "./register.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class RegisterComponent
   extends FormTemplate<RegisterDetails>

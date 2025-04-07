@@ -21,6 +21,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
+  standalone: false
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
   public constructor(api: BookmarksService, route: ActivatedRoute) {

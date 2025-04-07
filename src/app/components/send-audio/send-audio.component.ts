@@ -7,6 +7,7 @@ import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
   selector: "baw-send-audio",
   template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 class SendAudioComponent extends PageComponent {
   public page = CMS.dataUpload;

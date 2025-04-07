@@ -66,6 +66,7 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "verification.component.html",
   styleUrl: "verification.component.scss",
+  standalone: false
 })
 class VerificationComponent
   extends PageComponent

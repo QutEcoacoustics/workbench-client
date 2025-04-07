@@ -29,20 +29,19 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       </option>
     </select>
   `,
-  styles: [
-    `
-      .utc-label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+  styles: [`
+    .utc-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      .utc-label,
-      select {
-        width: 100%;
-      }
-    `,
-  ],
+    .utc-label,
+    select {
+      width: 100%;
+    }
+  `],
+  standalone: false
 })
 export class UTCOffsetSelectorComponent {
   @Input() public offset: string;

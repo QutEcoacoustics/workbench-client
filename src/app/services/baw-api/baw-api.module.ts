@@ -1,4 +1,8 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { CacheModule } from "@services/cache/cache.module";
 import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
@@ -12,7 +16,7 @@ import { SecurityService } from "./security/security.service";
 import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
 
 @NgModule({
-  imports: [HttpClientModule, ConfigModule, CacheModule],
+  imports: [ConfigModule, CacheModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -28,6 +32,7 @@ import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
     ...services,
     ...serviceTokens,
     ...serviceResolvers,
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class BawApiModule {}

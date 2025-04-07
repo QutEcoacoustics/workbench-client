@@ -1,3 +1,5 @@
+@use "../../panels";
+
 /*
  * Baw button mixin. Changes the text, border, and background colours of the
  * bootstrap buttons to use css variables defined in _root.scss. You can view
@@ -37,7 +39,7 @@
   color: var(--baw-#{$property});
 }
 
-@each $theme, $default in $theme-colors {
+@each $theme, $default in panels.$theme-colors {
   .btn-#{$theme} {
     @include baw-button($theme);
   }

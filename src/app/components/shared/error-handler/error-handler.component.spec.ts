@@ -17,6 +17,7 @@ import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
+  standalone: false
 })
 class MockComponent implements OnInit {
   public error: BawApiError;

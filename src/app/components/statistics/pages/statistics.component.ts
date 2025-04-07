@@ -38,6 +38,7 @@ function item(data: IItem): Map<keyof IItem, any> {
       [audioRecordings]="recent?.audioRecordings"
     ></baw-recent-audio-recordings>
   `,
+  standalone: false
 })
 class StatisticsComponent
   extends withUnsubscribe(PageComponent)

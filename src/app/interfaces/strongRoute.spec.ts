@@ -10,13 +10,17 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 @Component({
   selector: "baw-dummy",
   template: '<a [routerLink]="link" [queryParams]="params"></a>',
+  standalone: false
 })
 class DummyComponent {
   @Input() public link: string | string[];
   @Input() public params?: Params | null;
 }
 
-@Component({ selector: "baw-other", template: "" })
+@Component({
+  selector: "baw-other", template: "",
+  standalone: false
+})
 class OtherComponent {}
 
 describe("StrongRoute", () => {

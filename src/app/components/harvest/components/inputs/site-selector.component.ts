@@ -64,20 +64,19 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
-  styles: [
-    `
-      .site-label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+  styles: [`
+    .site-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      .site-label,
-      .input-group {
-        width: 100%;
-      }
-    `,
-  ],
+    .site-label,
+    .input-group {
+      width: 100%;
+    }
+  `],
+  standalone: false
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;

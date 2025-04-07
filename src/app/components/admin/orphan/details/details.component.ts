@@ -25,6 +25,7 @@ const siteKey = "site";
       <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
     </div>
   `,
+  standalone: false
 })
 class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)

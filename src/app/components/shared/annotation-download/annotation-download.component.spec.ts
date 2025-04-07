@@ -18,7 +18,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { BehaviorSubject } from "rxjs";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { PROJECT, SITE } from "@baw-api/ServiceTokens";
@@ -35,9 +35,11 @@ describe("AnnotationDownloadComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let siteApi: SpyObject<SitesService>;
   let spec: Spectator<AnnotationDownloadComponent>;
+
   const createComponent = createComponentFactory({
     component: AnnotationDownloadComponent,
     imports: [...testFormImports, MockBawApiModule, SharedModule],
+    providers: testFormProviders,
   });
 
   function getHeader(): HTMLDivElement {

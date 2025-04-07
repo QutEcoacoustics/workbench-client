@@ -13,6 +13,7 @@ export type UploadingInstructionTab="Windows"|"Mac"|"Linux"|"RClone"
   selector: "baw-harvest-batch-uploading",
   templateUrl: "batch-uploading.component.html",
   styleUrls: ["batch-uploading.component.scss"],
+  standalone: false
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;

@@ -37,6 +37,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
+  standalone: false
 })
 class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>

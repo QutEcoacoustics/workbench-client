@@ -19,6 +19,7 @@ const userKey = "user";
 @Component({
   selector: "baw-my-sites",
   templateUrl: "./sites.component.html",
+  standalone: false
 })
 class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [

@@ -17,6 +17,7 @@ const userKey = "user";
 @Component({
   selector: "baw-my-bookmarks",
   templateUrl: "./bookmarks.component.html",
+  standalone: false
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public api: BookmarksService;

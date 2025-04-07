@@ -38,6 +38,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
+  standalone: false
 })
 class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;

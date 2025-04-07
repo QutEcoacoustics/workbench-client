@@ -60,6 +60,7 @@ import { asFormControl } from "./helper";
       [formControl]="asFormControl(formControl)"
     />
   `,
+  standalone: false
 })
 export class PasswordConfirmationInputComponent
   extends FieldType

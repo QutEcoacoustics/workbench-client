@@ -15,6 +15,7 @@ import { Project } from "@models/Project";
   selector: "baw-harvest-complete",
   templateUrl: "complete.component.html",
   styleUrls: ["complete.component.scss"],
+  standalone: false
 })
 export class CompleteComponent implements OnInit {
   public projectMenuItem = projectMenuItem;

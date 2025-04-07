@@ -17,13 +17,12 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       ></baw-render-field>
     </div>
   `,
-  styles: [
-    `
-      dt {
-        margin-bottom: 1rem;
-      }
-    `,
-  ],
+  styles: [`
+    dt {
+      margin-bottom: 1rem;
+    }
+  `],
+  standalone: false
 })
 export class DetailViewComponent {
   @Input() public fields: FormlyFieldConfig[];

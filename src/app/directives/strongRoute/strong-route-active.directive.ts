@@ -20,6 +20,7 @@ export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRouteActive]",
+  standalone: false
 })
 export class StrongRouteActiveDirective extends RouterLinkActive {
   @ContentChildren(StrongRouteDirective, { descendants: true })
@@ -32,7 +33,7 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
 
   @Input()
   public set strongRouteActiveOptions(data: RouterLinkActiveOptions) {
-    super.routerLinkActiveOptions = data ?? { exact: false };
+    super["routerLinkActiveOptions"] = data ?? { exact: false };
   }
 
   public constructor(

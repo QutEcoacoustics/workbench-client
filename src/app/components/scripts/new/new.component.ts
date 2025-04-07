@@ -31,6 +31,7 @@ import {
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(

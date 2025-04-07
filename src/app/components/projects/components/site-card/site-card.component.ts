@@ -56,6 +56,7 @@ import { map } from "rxjs/operators";
     </ng-template>
   `,
   styleUrls: ["./site-card.component.scss"],
+  standalone: false
 })
 export class SiteCardComponent implements OnInit {
   @Input() public project: Project;

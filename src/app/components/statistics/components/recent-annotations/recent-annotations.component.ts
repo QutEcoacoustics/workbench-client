@@ -135,6 +135,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
     </ngx-datatable>
   `,
+  standalone: false
 })
 export class RecentAnnotationsComponent implements OnChanges {
   @Input() public annotations!: AudioEvent[] | undefined;

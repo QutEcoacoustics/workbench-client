@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { noop } from "rxjs";
 import { FormComponent } from "./form.component";
@@ -30,9 +30,11 @@ describe("FormComponent", () => {
   let defaultFields: FormlyFieldConfig[];
   let toastr: ToastService;
   let spec: Spectator<FormComponent>;
+
   const createComponent = createComponentFactory({
     component: FormComponent,
     imports: testFormImports,
+    providers: testFormProviders,
   });
 
   function getSubmitButton(): HTMLButtonElement {

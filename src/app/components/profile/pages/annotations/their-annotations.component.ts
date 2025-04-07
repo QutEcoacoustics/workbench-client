@@ -16,6 +16,7 @@ const accountKey = "user";
 @Component({
   selector: "baw-their-annotations",
   templateUrl: "./annotations.component.html",
+  standalone: false
 })
 class TheirAnnotationsComponent extends MyAnnotationsComponent {
   public get account(): User {

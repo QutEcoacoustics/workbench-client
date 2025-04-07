@@ -11,17 +11,16 @@ import { HarvestStagesService } from "../services/harvest-stages.service";
 @Component({
   selector: "baw-harvest-issue-widget",
   templateUrl: "validations.component.html",
-  styles: [
-    `
-      hr {
-        margin: 1rem -1rem;
-      }
+  styles: [`
+    hr {
+      margin: 1rem -1rem;
+    }
 
-      p {
-        font-size: 0.85em;
-      }
-    `,
-  ],
+    p {
+      font-size: 0.85em;
+    }
+  `],
+  standalone: false
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;
