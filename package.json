@@ -9,6 +9,8 @@
   "scripts": {
     "ci": "npm ci --force",
     "build": "ng build --configuration production",
+    "e2e": "ng e2e",
+    "e2e:debug": "node --max_old_space_size=4096 --inspect-brk ./node_modules/protractor/bin/protractor e2e/protractor.conf.js",
     "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host 0.0.0.0 --disable-host-check",
@@ -21,7 +23,9 @@
     "test:pipeline": "ng test --watch=false --code-coverage",
     "dev:ssr": "ng run workbench-client:serve-ssr",
     "serve:ssr": "node dist/workbench-client/server/main.js",
-    "build:ssr": "npm run build && ng run workbench-client:server:production"
+    "build:ssr": "npm run build && ng run workbench-client:server:production",
+    "prerender": "ng run workbench-client:prerender",
+    "webdriver": "node ./node_modules/protractor/node_modules/webdriver-manager/bin/webdriver-manager"
   },
   "private": true,
   "dependencies": {
@@ -118,6 +122,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-viewport": "^1.0.9",
     "ng-mocks": "^14.12.1",
+    "protractor": "^7.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "webpack-bundle-analyzer": "^4.10.1"
