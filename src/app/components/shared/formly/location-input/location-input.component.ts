@@ -4,7 +4,7 @@ import { FieldType } from "@ngx-formly/core";
 import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { MapMarkerOptions } from "@services/maps/maps.service";
-import { asFormControl } from "./helper";
+import { asFormControl } from "../helper";
 
 /**
  * Location Input

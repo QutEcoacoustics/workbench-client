@@ -11,7 +11,7 @@ import { takeUntil, throwError } from "rxjs";
 @Component({
   selector: "baw-harvest-title",
   templateUrl: "./title.component.html",
-  styleUrls: ["./title.component.scss"],
+  styleUrl: "./title.component.scss",
 })
 export class TitleComponent extends withUnsubscribe()  {
   @Input() public project: Project;

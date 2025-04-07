@@ -15,7 +15,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionLevel } from "@interfaces/apiInterfaces";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Permission } from "@models/Permission";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
@@ -41,7 +41,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-project-permissions",
   templateUrl: "permissions.component.html",
-  styleUrls: ["permissions.component.scss"],
+  styleUrl: "permissions.component.scss",
 })
 class PermissionsComponent
   extends withUnsubscribe(PageComponent)
@@ -399,7 +399,10 @@ PermissionsComponent.linkToRoute({
   pageRoute: editProjectPermissionsMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

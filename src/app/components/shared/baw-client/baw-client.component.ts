@@ -51,6 +51,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
    */
   @Input() public page: string;
 
+  public loading = false;
   public error: boolean;
   public url: SafeResourceUrl;
 

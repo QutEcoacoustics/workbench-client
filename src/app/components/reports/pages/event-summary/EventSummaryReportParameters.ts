@@ -21,7 +21,7 @@ import {
   luxonDateArray,
   luxonDurationArray,
   jsStringArray,
-} from "@helpers/query-string-parameters/query-string-parameters";
+} from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";

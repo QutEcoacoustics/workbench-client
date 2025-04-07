@@ -351,7 +351,7 @@ export class ShowOptionalResolver<
 export interface BawProvider {
   provide: string;
   useClass: Type<{
-    resolve: ResolveFn<any>
+    resolve: ResolveFn<any>;
   }>;
   deps: Type<any>[];
 }

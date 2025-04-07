@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "lib": [
-      "ES2020",
+      "ES2022",
       "dom",
       "dom.iterable"
     ],

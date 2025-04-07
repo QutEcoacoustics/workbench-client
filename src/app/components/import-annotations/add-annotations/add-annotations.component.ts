@@ -46,6 +46,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { Tag } from "@models/Tag";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
@@ -125,7 +126,7 @@ class AddAnnotationsComponent
   private fileInput!: ElementRef<HTMLInputElement>;
 
   @ViewChildren("additionalFileTagInput")
-  private additionalFileTagInputs!: TypeaheadInputComponent[];
+  private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -161,6 +162,10 @@ class AddAnnotationsComponent
     return this.importState === ImportState.SUCCESS;
   }
 
+  public get isUploading(): boolean {
+    return this.importState === ImportState.UPLOADING;
+  }
+
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
   // tooltip
@@ -186,7 +191,7 @@ class AddAnnotationsComponent
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
 
     if (!hasResolvedSuccessfully(models)) {
-      this.failure = true;
+      this.importState = ImportState.FAILURE;
       return;
     }
 
@@ -278,8 +283,8 @@ class AddAnnotationsComponent
   // uses a reference to the ImportGroup object and update the additional tag
   // ids property
   protected updateExtraTags(
-    extraTags: object[],
-    host: TypeaheadInputComponent
+    extraTags: Tag[],
+    host: TypeaheadInputComponent<Tag>
   ): void {
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra

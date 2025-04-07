@@ -124,7 +124,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
       </div>
     </div>
   `,
-  styleUrls: ["folder-row.component.scss"],
+  styleUrl: "folder-row.component.scss",
 })
 export class FolderRowComponent {
   @Input() public harvest: Harvest;

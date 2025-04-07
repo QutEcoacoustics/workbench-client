@@ -23,7 +23,7 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 @Component({
   selector: "baw-admin-theme-template",
   templateUrl: "theme-template.component.html",
-  styleUrls: ["theme-template.component.scss"],
+  styleUrl: "theme-template.component.scss",
 })
 class AdminThemeTemplateComponent
   extends PageComponent
@@ -36,6 +36,8 @@ class AdminThemeTemplateComponent
   public selectedColorIndex: number;
   public themeColors: readonly ThemeColor[];
   public themeVariants: readonly ThemeVariant[];
+  protected darkBackground = false;
+  protected disableButtons = false;
 
   public constructor(
     @Inject(IS_SERVER_PLATFORM) public isServer: boolean,

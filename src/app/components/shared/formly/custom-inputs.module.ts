@@ -6,18 +6,22 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { ConfigOption, FormlyModule } from "@ngx-formly/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { MapModule } from "@shared/map/map.module";
-import { CheckboxInputComponent } from "./checkbox-input.component";
-import { FileValueAccessorDirective } from "./file-input.directive";
-import { HorizontalWrapperComponent } from "./horizontal-wrapper.component";
-import { ImageInputComponent } from "./image-input.component";
-import { LocationInputComponent } from "./location-input.component";
-import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
-import { TimezoneInputComponent } from "./timezone-input.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { CheckboxInputComponent } from "./checkbox-input/checkbox-input.component";
+import { FileValueAccessorDirective } from "./file-input/file-input.directive";
+import { HorizontalWrapperComponent } from "./horizontal-wrapper/horizontal-wrapper.component";
+import { ImageInputComponent } from "./image-input/image-input.component";
+import { LocationInputComponent } from "./location-input/location-input.component";
+import { PasswordConfirmationInputComponent } from "./password-confirmation/password-confirmation-input.component";
+import { TimezoneInputComponent } from "./timezone-input/timezone-input.component";
+import { LicenseInputComponent } from "./license-input/license-input.component";
+import { LicenseInformationModalComponent } from "./modals/license-information.component";
 
 export const formlyConfig: ConfigOption = {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
+    { name: "license", component: LicenseInputComponent },
     { name: "timezone", component: TimezoneInputComponent },
     { name: "location", component: LocationInputComponent },
     {
@@ -61,6 +65,10 @@ const components = [
   LocationInputComponent,
   PasswordConfirmationInputComponent,
   TimezoneInputComponent,
+  LicenseInputComponent,
+  LicenseInformationModalComponent,
+
+  TypeaheadInputComponent,
 ];
 
 @NgModule({
@@ -74,6 +82,8 @@ const components = [
     FormlyBootstrapModule,
     MapModule,
     IconsModule,
+
+    NgbTypeaheadModule,
   ],
   exports: components,
 })

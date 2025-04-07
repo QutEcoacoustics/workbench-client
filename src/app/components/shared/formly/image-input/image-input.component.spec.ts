@@ -2,19 +2,20 @@ import {
   FormControl,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { inputFile } from "@test/helpers/html";
+import { formlyConfig } from "../custom-inputs.module";
 import { ImageInputComponent } from "./image-input.component";
-import { formlyConfig } from "./custom-inputs.module";
 
 describe("FormlyImageInput", () => {
+  let spectator: SpectatorHost<ImageInputComponent>;
+
   let model: any;
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<ImageInputComponent>;
 
   const createHost = createHostFactory({
     component: ImageInputComponent,
@@ -34,31 +35,32 @@ describe("FormlyImageInput", () => {
     return spectator.query<HTMLButtonElement>("button");
   }
 
-  function setup(key: string = "file", options: FormlyFieldProps = {}) {
+  function setup(options: FormlyFieldProps = {}) {
+    const key = "file";
+
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
       image: "",
-      imageUrls: []
+      imageUrls: [],
     };
 
-    spectator = createHost(
-      `
+    const hostTemplate = `
       <form [formGroup]="formGroup">
         <baw-image-input></baw-image-input>
       </form>
-      `,
-      {
-        hostProps: { formGroup },
-        props: {
-          field: {
-            model,
-            key,
-            formControl: formGroup.get("asFormControl"),
-            props: options,
-          },
+    `;
+
+    spectator = createHost(hostTemplate, {
+      hostProps: { formGroup },
+      props: {
+        field: {
+          model,
+          key,
+          formControl: formGroup.get("asFormControl"),
+          props: options,
         },
-      }
-    );
+      },
+    });
     spectator.detectChanges();
   }
 
@@ -81,7 +83,7 @@ describe("FormlyImageInput", () => {
       expect(getButton()).toBeTruthy();
     });
 
-    it("should not display remove image button if the model does not have an image" , () => {
+    it("should not display remove image button if the model does not have an image", () => {
       setup();
       model.image = null;
       spectator.detectChanges();

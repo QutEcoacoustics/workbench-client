@@ -29,6 +29,7 @@ describe("AudioRecordingsService", () => {
   const baseUrl = "/audio_recordings/";
   let session: SpyObject<BawSessionService>;
   let spec: SpectatorService<AudioRecordingsService>;
+
   const createService = createServiceFactory({
     service: AudioRecordingsService,
     imports: mockServiceImports,

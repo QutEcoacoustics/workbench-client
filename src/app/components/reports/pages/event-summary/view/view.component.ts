@@ -33,6 +33,7 @@ import { Map } from "immutable";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
+import { ChartComponent } from "@shared/chart/chart.component";
 import {
   Chart,
   EventSummaryReportParameters,
@@ -85,6 +86,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   });
 
   @ViewChild("printingModal") public printingModal: ElementRef;
+  @ViewChild("compositionChart") public compositionChart: ChartComponent;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -150,7 +152,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   protected filteredSites(): Site[] {
     // the most common case is when the user has selected sites using the site selector
     if (this.report.sites.length > 0) {
-      return this.sites;
+      return this.report.sites;
     }
 
     // if the user didn't select any sites, the report will default to all sites

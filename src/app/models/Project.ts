@@ -43,6 +43,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   regionIds?: Ids | Id[];
   notes?: Hash;
   allowOriginalDownload?: PermissionLevel;
+  license?: string;
 }
 
 /**
@@ -83,6 +84,8 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly allowOriginalDownload?: PermissionLevel;
   @bawPersistAttr()
   public readonly allowAudioUpload?: boolean;
+  @bawPersistAttr()
+  public readonly license?: string;
 
   // Associations
   @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")

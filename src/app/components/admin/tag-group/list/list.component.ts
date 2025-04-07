@@ -57,7 +57,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
       this.tagGroupsApi.destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
-          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.groupIdentifier)),
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.groupIdentifier)),
         });
     }
   }

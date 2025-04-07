@@ -122,6 +122,9 @@ describe("InlineListComponent", () => {
   it("should dynamically the list if an items value changes", () => {
     // since we track each object by the "itemKey", we should assert that if the value of an item key changes, the list updates
     // this test would not work if you tracked each item by object reference
+    //
+    // TODO: remove this type cast by instantiating this object with the
+    // AbstractModel constructor
     const initialItems = [
       { name: "test1" },
       { name: "test2" },

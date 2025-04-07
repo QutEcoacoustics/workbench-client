@@ -13,7 +13,7 @@
         accept=".csv, .tsv, .selections.txt, .json"
         class="form-control border"
         [ngClass]="{ 'is-invalid': !ngForm.valid }"
-        [disabled]="uploading"
+        [disabled]="isUploading"
         (change)="handleFileChange($event)"
         multiple
       />
@@ -21,7 +21,7 @@
       <section class="file-list mt-2">
         @if(hasFiles) {
         <ol>
-          @for (fileModel of importFiles$ | async; track file) {
+          @for (fileModel of importFiles$ | async; track fileModel) {
           <li class="file-list-item">
             <div class="file-list-item-content">
               <span>
@@ -59,7 +59,7 @@
                   inputPlaceholder="Add tags"
                   [searchCallback]="tagsApi.typeaheadCallback()"
                   [resultTemplate]="tagsTypeaheadTemplate"
-                  [inputDisabled]="uploading"
+                  [inputDisabled]="isUploading"
                   (modelChange)="
                     updateFileAdditionalTagIds(
                       fileModel,

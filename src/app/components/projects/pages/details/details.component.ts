@@ -27,6 +27,7 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import {
   allowsOriginalDownloadWidgetMenuItem,
+  licenseWidgetMenuItem,
   permissionsWidgetMenuItem,
 } from "@menu/widget.menus";
 import { Project } from "@models/Project";
@@ -61,7 +62,7 @@ const projectKey = "project";
   selector: "baw-project",
   template: `
     <ng-container *ngIf="project">
-      <h1>{{ project.name }}</h1>
+      <h1 class="project-name">{{ project.name }}</h1>
       <div class="row mb-3">
         <div class="col-sm-4">
           <img
@@ -125,7 +126,7 @@ const projectKey = "project";
 
     <div class="mb-3"></div>
   `,
-  styleUrls: ["./details.component.scss"],
+  styleUrl: "details.component.scss",
 })
 class DetailsComponent
   extends PaginationTemplate<Site | Region>
@@ -234,6 +235,7 @@ DetailsComponent.linkToRoute({
     actionWidgets: List([
       permissionsWidgetMenuItem,
       allowsOriginalDownloadWidgetMenuItem,
+      licenseWidgetMenuItem,
     ]),
   },
   resolvers: { [projectKey]: projectResolvers.show },

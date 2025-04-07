@@ -19,7 +19,7 @@ import {
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
-} from "@helpers/query-string-parameters/query-string-parameters";
+} from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
 import { hasMany } from "@models/AssociationDecorators";

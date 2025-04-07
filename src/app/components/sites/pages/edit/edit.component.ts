@@ -12,7 +12,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -78,7 +78,10 @@ SiteEditComponent.linkToRoute({
   pageRoute: editSiteMenuItem,
   menus: {
     actions: List(siteMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,
@@ -89,7 +92,10 @@ SiteEditComponent.linkToRoute({
   pageRoute: editPointMenuItem,
   menus: {
     actions: List(pointMenuItemActions),
-    actionWidgets: List([permissionsWidgetMenuItem]),
+    actionWidgets: List([
+      permissionsWidgetMenuItem,
+      licenseWidgetMenuItem,
+    ]),
   },
   resolvers: {
     [projectKey]: projectResolvers.show,

@@ -41,7 +41,7 @@ import { ConfigService } from "@services/config/config.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["wip.component.scss"],
+  styleUrl: "wip.component.scss",
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
