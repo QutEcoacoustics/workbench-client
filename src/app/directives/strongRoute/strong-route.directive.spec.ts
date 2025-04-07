@@ -21,8 +21,6 @@ import { generatePageInfoResolvers } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { StrongRouteDirective } from "./strong-route.directive";
 
-// TODO Should simulate a full page with link inside and outside of the main page. Although this is better for a e2e test.
-
 describe("StrongRouteDirective", () => {
   let activatedRoute$: BehaviorSubject<ActivatedRoute>;
   let router: Router;
