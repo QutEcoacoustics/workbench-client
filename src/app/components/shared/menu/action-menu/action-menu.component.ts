@@ -22,6 +22,7 @@ import { takeUntil } from "rxjs";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
+  standalone: false
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

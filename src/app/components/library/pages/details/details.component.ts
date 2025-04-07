@@ -11,6 +11,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 @Component({
   selector: "baw-annotation",
   template: "<baw-client></baw-client>",
+  standalone: false
 })
 class AnnotationComponent extends PageComponent {}
 

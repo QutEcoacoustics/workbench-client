@@ -35,12 +35,12 @@ describe("FormlyCheckboxInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <baw-checkbox-input></baw-checkbox-input>
+        <baw-checkbox-input [field]="field"></baw-checkbox-input>
       </form>
-      `,
+    `,
       {
-        hostProps: { formGroup },
-        props: {
+        hostProps: {
+          formGroup,
           field: {
             model,
             key,

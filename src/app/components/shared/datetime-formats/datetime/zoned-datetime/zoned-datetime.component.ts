@@ -11,7 +11,6 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
   selector: "baw-zoned-datetime",
   templateUrl: "../../abstract-template.component.html",
   styleUrl: "zoned-datetime.component.scss",
-  standalone: true,
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

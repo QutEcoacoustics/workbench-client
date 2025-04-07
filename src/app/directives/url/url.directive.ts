@@ -10,7 +10,10 @@ import {
 } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
-@Directive({ selector: "a[bawUrl]" })
+@Directive({
+  selector: "a[bawUrl]",
+  standalone: false
+})
 export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;
   @Input() public queryParams: Params;

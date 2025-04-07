@@ -74,6 +74,7 @@ import { asFormControl } from "./helper";
       />
     </div>
   `,
+  standalone: false
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;

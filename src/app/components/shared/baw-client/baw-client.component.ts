@@ -33,15 +33,14 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       </p>
     </iframe>
   `,
-  styles: [
-    `
-      iframe {
-        border: 0px;
-        min-height: 100%;
-        width: 100%;
-      }
-    `,
-  ],
+  styles: [`
+    iframe {
+      border: 0px;
+      min-height: 100%;
+      width: 100%;
+    }
+  `],
+  standalone: false
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;

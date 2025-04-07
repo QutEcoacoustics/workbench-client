@@ -31,9 +31,8 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
         ></fa-icon>
         <fa-layers-counter
           *ngIf="!row.isRoot"
-          class="text-light"
+          class="text-light fa-custom-counter"
           [content]="report.itemsTotal ?? 0 | number"
-          [classes]="['fa-custom-counter']"
         ></fa-layers-counter>
       </fa-layers>
       <span>
@@ -125,6 +124,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
     </div>
   `,
   styleUrls: ["folder-row.component.scss"],
+  standalone: false
 })
 export class FolderRowComponent {
   @Input() public harvest: Harvest;

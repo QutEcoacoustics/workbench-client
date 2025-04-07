@@ -11,7 +11,6 @@ type InputTypes = DateTime | Date | Duration | string;
 
 @Component({
   templateUrl: "./abstract-template.component.html",
-  standalone: true,
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

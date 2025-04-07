@@ -8,6 +8,7 @@ import { TableTemplate } from "./tableTemplate";
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
+  standalone: false
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];

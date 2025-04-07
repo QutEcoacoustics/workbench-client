@@ -26,6 +26,7 @@ const regionKey = "region";
 @Component({
   selector: "baw-sites-new",
   templateUrl: "./new.component.html",
+  standalone: false
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public title = "";

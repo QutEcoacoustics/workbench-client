@@ -15,6 +15,7 @@ export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 @Component({
   selector: "baw-import-list-annotation-imports",
   templateUrl: "list.component.html",
+  standalone: false
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(
@@ -41,7 +42,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
     this.api.filter(filters);
 
   protected async deleteEventImport(
-    template: any,
+  template: any,
     model: AudioEventImport
   ): Promise<void> {
     const modelId: Id = model.id;

@@ -21,6 +21,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-projects",
   templateUrl: "./projects.component.html",
+  standalone: false
 })
 class TheirProjectsComponent extends MyProjectsComponent {
   public constructor(api: ProjectsService, route: ActivatedRoute) {

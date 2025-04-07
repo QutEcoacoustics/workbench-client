@@ -38,6 +38,7 @@ import { asFormControl } from "./helper";
       </div>
     </div>
   `,
+  standalone: false
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")

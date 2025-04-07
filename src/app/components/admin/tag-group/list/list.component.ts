@@ -27,6 +27,7 @@ export const adminTagGroupMenuItemActions = [
 @Component({
   selector: "baw-admin-tag-groups-list",
   templateUrl: "./list.component.html",
+  standalone: false
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];

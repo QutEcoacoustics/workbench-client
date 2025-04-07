@@ -24,6 +24,7 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
   selector: "baw-admin-theme-template",
   templateUrl: "theme-template.component.html",
   styleUrls: ["theme-template.component.scss"],
+  standalone: false
 })
 class AdminThemeTemplateComponent
   extends PageComponent

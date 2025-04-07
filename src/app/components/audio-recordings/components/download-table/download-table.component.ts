@@ -8,6 +8,7 @@ import { BehaviorSubject } from "rxjs";
 @Component({
   selector: "baw-download-table",
   templateUrl: "./download-table.component.html",
+  standalone: false
 })
 export class DownloadTableComponent {
   @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;

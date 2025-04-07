@@ -20,6 +20,7 @@ describe("TaggingsService", (): void => {
   const baseUrl = "/audio_recordings/5/audio_events/10/taggings/";
   const updateUrl = baseUrl + "15";
   let spec: SpectatorService<TaggingsService>;
+
   const createService = createServiceFactory({
     service: TaggingsService,
     imports: mockServiceImports,

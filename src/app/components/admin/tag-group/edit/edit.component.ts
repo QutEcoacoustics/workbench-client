@@ -36,6 +36,7 @@ const tagGroupKey = "tagGroup";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>

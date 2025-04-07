@@ -1,8 +1,5 @@
 import { NgModule } from "@angular/core";
-import {
-  ServerModule,
-  ServerTransferStateModule,
-} from "@angular/platform-server";
+import { ServerModule } from "@angular/platform-server";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import { DeviceDetectorService } from "ngx-device-detector";
@@ -23,7 +20,6 @@ export const serverCacheConfig = {
   imports: [
     AppModule,
     ServerModule,
-    ServerTransferStateModule,
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.ssrTimeout }),
     // we explicitly provide NgHttpCachingModule with a disabled cache strategy

@@ -34,6 +34,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card

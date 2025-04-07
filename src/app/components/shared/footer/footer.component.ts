@@ -43,6 +43,7 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
     </footer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FooterComponent implements OnInit {
   public version: string;

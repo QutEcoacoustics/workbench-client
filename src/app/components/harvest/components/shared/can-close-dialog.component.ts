@@ -8,5 +8,6 @@ import { Component } from "@angular/core";
       interrupted.
     </p>
   `,
+  standalone: false
 })
 export class CanCloseDialogComponent {}

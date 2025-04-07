@@ -18,6 +18,7 @@ import { DatatablePaginationDirective } from "./pagination.directive";
 describe("DatatablePaginationDirective", () => {
   let defaultModels: MockModel[];
   let spec: SpectatorDirective<DatatablePaginationDirective<MockModel>>;
+
   const createDirective = createDirectiveFactory<
     DatatablePaginationDirective<MockModel>
   >({

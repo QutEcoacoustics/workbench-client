@@ -53,6 +53,7 @@ interface ImportGroup {
 @Component({
   selector: "baw-annotation-import",
   templateUrl: "details.component.html",
+  standalone: false
 })
 class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   public constructor(

@@ -31,6 +31,7 @@ import { DateTime } from "luxon";
   selector: "baw-annotation-search-form",
   templateUrl: "annotation-search-form.component.html",
   styleUrl: "annotation-search-form.component.scss",
+  standalone: false
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(

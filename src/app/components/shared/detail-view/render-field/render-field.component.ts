@@ -73,21 +73,20 @@ import { takeUntil } from "rxjs/operators";
       ></baw-render-field>
     </ng-container>
   `,
-  styles: [
-    `
-      p {
-        word-wrap: break-word;
-      }
+  styles: [`
+    p {
+      word-wrap: break-word;
+    }
 
-      img {
-        display: block;
-        max-width: 400px;
-        max-height: 400px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-    `,
-  ],
+    img {
+      display: block;
+      max-width: 400px;
+      max-height: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  `],
+  standalone: false
 })
 export class RenderFieldComponent
   extends withUnsubscribe()

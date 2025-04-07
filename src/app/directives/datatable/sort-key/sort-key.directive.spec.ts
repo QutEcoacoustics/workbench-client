@@ -5,15 +5,20 @@ import {
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
 import { getCallArgs } from "@test/helpers/general";
+import { MockComponent } from "ng-mocks";
 import { DatatableSortEvent } from "../pagination/pagination.directive";
 import { DatatableSortKeyDirective } from "./sort-key.directive";
 
 describe("DatatableSortKeyDirective", () => {
   let spec: SpectatorDirective<DatatableComponent>;
+
   const createHost = createDirectiveFactory({
     directive: DatatableComponent,
     declarations: [DatatableSortKeyDirective],
-    imports: [NgxDatatableModule],
+    imports: [
+      NgxDatatableModule,
+      MockComponent(DatatableComponent),
+    ],
   });
 
   function assertSortKey(sortKey: string) {

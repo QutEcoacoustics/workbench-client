@@ -29,6 +29,7 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
       </section>
     </ng-container>
   `,
+  standalone: false
 })
 export class WebsiteStatusWarningComponent {
   public constructor(protected api: WebsiteStatusService) {}

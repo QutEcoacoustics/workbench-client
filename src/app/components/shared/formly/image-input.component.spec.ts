@@ -2,7 +2,7 @@ import {
   FormControl,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -38,18 +38,18 @@ describe("FormlyImageInput", () => {
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
       image: "",
-      imageUrls: []
+      imageUrls: [],
     };
 
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <baw-image-input></baw-image-input>
+        <baw-image-input [field]="field"></baw-image-input>
       </form>
-      `,
+    `,
       {
-        hostProps: { formGroup },
-        props: {
+        hostProps: {
+          formGroup,
           field: {
             model,
             key,
@@ -81,7 +81,7 @@ describe("FormlyImageInput", () => {
       expect(getButton()).toBeTruthy();
     });
 
-    it("should not display remove image button if the model does not have an image" , () => {
+    it("should not display remove image button if the model does not have an image", () => {
       setup();
       model.image = null;
       spectator.detectChanges();

@@ -28,6 +28,7 @@ import schema from "../tag-group.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = schema.fields;

@@ -51,6 +51,7 @@ const reportKey = "report";
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrl: "./view.component.scss",
+  standalone: false
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

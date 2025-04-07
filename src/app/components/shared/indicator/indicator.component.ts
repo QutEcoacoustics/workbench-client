@@ -24,6 +24,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class IndicatorComponent {
   @Input() public status: Status = Status.success;

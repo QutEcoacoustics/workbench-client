@@ -8,7 +8,10 @@ export interface LoadingResult<T> {
   value?: T;
 }
 
-@Pipe({ name: "withLoading" })
+@Pipe({
+  name: "withLoading",
+  standalone: false
+})
 export class WithLoadingPipe implements PipeTransform {
   public transform<T>(obj: Observable<T>): Observable<LoadingResult<T>> {
     return obj.pipe(

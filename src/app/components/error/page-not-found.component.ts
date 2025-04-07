@@ -14,6 +14,7 @@ import { pageNotFoundMenuItem } from "./error.menus";
       report the issue.
     </div>
   `,
+  standalone: false
 })
 class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;

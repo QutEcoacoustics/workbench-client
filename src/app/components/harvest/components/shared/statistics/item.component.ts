@@ -22,28 +22,27 @@ import { Statistic } from "./statistics.component";
       </div>
     </div>
   `,
-  styles: [
-    `
-      .card-body {
-        text-align: center;
-        min-width: 7.5rem;
-      }
+  styles: [`
+    .card-body {
+      text-align: center;
+      min-width: 7.5rem;
+    }
 
-      .icon {
-        margin: 0 auto 0.5rem auto;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 50px;
-        height: 50px;
-      }
+    .icon {
+      margin: 0 auto 0.5rem auto;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      height: 50px;
+    }
 
-      .title {
-        font-weight: bold;
-      }
-    `,
-  ],
+    .title {
+      font-weight: bold;
+    }
+  `],
+  standalone: false
 })
 export class StatisticItemComponent {
   @Input() public statistic: Statistic;

@@ -75,6 +75,7 @@ const siteKey = "site";
       [site]="site"
     ></baw-site>
   `,
+  standalone: false
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;

@@ -28,6 +28,7 @@ import schema from "../../project.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class NewComponent extends FormTemplate<Project> {
   public fields = schema.fields;

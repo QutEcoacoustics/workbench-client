@@ -1,4 +1,4 @@
-@import "media-mixin";
+@use "media-mixin";
 
 .menu-container {
   --border: 1px solid rgba(0, 0, 0, 0.2);
@@ -22,7 +22,7 @@
   overflow-y: auto;
 
   /* On small devices, make side nav expand all the way across */
-  @include media("<sm-grid") {
+  @include media-mixin.media("<sm-grid") {
     width: 100%;
     border-right: 0;
   }

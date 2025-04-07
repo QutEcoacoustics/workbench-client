@@ -23,14 +23,13 @@ import {
       </div>
     </div>
   `,
-  styles: [
-    `
-      .checkbox-wrapper {
-        width: min-content;
-      }
-    `,
-  ],
+  styles: [`
+    .checkbox-wrapper {
+      width: min-content;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CheckboxComponent {
   @Input() public id: string;

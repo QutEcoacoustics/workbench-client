@@ -42,6 +42,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
+  standalone: false
 })
 export class FiltersWarningModalComponent implements ModalComponent {
   @Input({ required: true }) public modal: NgbActiveModal;

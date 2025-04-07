@@ -32,6 +32,7 @@ const userKey = "user";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class MyPasswordComponent extends FormTemplate<User> {
   public fields = schema.fields;

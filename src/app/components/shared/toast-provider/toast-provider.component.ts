@@ -8,7 +8,6 @@ import { ToastService } from "@services/toasts/toasts.service";
   selector: "baw-toast-provider",
   templateUrl: "toast-provider.component.html",
   styleUrl: "toast-provider.component.scss",
-  standalone: true,
   imports: [NgbToast, FontAwesomeModule, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

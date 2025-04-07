@@ -23,6 +23,7 @@ import { ToastService } from "@services/toasts/toasts.service";
   styleUrls: ["./form.component.scss"],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";

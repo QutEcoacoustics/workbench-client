@@ -33,6 +33,7 @@ import schema from "./contact-us.schema.json";
       </span>
     </baw-form>
   `,
+  standalone: false
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = schema.fields;

@@ -20,6 +20,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   selector: "baw-home",
   styleUrls: ["./home.component.scss"],
   templateUrl: "./home.component.html",
+  standalone: false
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;

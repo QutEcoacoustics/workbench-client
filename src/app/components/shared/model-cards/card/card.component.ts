@@ -65,6 +65,7 @@ import { map, Observable } from "rxjs";
       </ng-container>
     </ng-template>
   `,
+  standalone: false
 })
 export class CardComponent implements OnInit {
   @Input() public model: Project | Region;

@@ -15,8 +15,9 @@ import { SharedActivatedRouteService } from "@services/shared-activated-route/sh
 import { map, takeUntil, tap } from "rxjs/operators";
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
+    // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRoute]",
+  standalone: false
 })
 export class StrongRouteDirective
   extends withUnsubscribe(RouterLink)
@@ -32,7 +33,7 @@ export class StrongRouteDirective
    * Additional query parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public declare queryParams: Params;
+  @Input() public queryParams: Params;
 
   private routeState = {
     resolvedModels: {} as ResolvedModelList,
@@ -88,7 +89,7 @@ export class StrongRouteDirective
           // Call change detection manually because the above observable does not
           // trigger the change detection. This is calling this function:
           // https://github.com/angular/angular/blob/16.0.x/packages/router/src/directives/router_link.ts#L328-L348
-          (this as RouterLink)["updateHref"]();
+          this["updateHref"]();
         },
       });
 
@@ -97,7 +98,7 @@ export class StrongRouteDirective
   }
 
   public get urlTree(): UrlTree {
-    if (!this["commands"]) {
+    if (!this["routerLinkInput"]) {
       return super.urlTree;
     }
 
@@ -123,7 +124,7 @@ export class StrongRouteDirective
       }
     }
 
-    return this._router.createUrlTree(this["commands"], {
+    return this._router.createUrlTree(this["routerLinkInput"], {
       relativeTo: this.routeState.activatedRoute,
       queryParams: queryParams ?? undefined,
       fragment: this.fragment,

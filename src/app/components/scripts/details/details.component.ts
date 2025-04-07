@@ -30,6 +30,7 @@ const scriptKey = "script";
       <baw-detail-view [fields]="fields" [model]="script"></baw-detail-view>
     </div>
   `,
+  standalone: false
 })
 class AdminScriptComponent
   extends withUnsubscribe(PageComponent)

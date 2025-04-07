@@ -39,6 +39,7 @@ import { User } from "@models/User";
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ModelLinkComponent implements OnChanges {
   @Input() public model: AbstractModel;

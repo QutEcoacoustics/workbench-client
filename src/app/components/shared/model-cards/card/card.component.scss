@@ -1,4 +1,4 @@
-@import "line-truncation";
+@use "line-truncation";
 
 .card {
   --line-height: 1.4rem;
@@ -43,7 +43,7 @@
 }
 
 .truncate {
-  @include line-truncation(
+  @include line-truncation.line-truncation(
     var(--line-height),
     var(--max-lines),
     var(--card-bg-color)

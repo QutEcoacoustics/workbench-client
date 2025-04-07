@@ -28,19 +28,18 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
       </button>
     </div>
   `,
-  styles: [
-    `
-      .load-more {
-        grid-column: 1 / 6;
-      }
+  styles: [`
+    .load-more {
+      grid-column: 1 / 6;
+    }
 
-      baw-meta-review-whitespace {
-        display: contents;
-      }
-    `,
-  ],
+    baw-meta-review-whitespace {
+      display: contents;
+    }
+  `],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LoadMoreComponent {
   @Input() public row: MetaReviewLoadMore;

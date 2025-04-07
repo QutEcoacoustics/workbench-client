@@ -104,7 +104,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Download Artifacts
@@ -118,8 +118,13 @@ jobs:
       - name: Install project dependencies
         run: npm ci --force
 
+      # powershell (windows) has some weird syntax issues with npm
+      # for example, you need to use three dashes to delimit the start of
+      # arguments instead of the normal two
+      # see: https://github.com/npm/cli/issues/4903
+      # see: https://github.com/vitejs/vite/issues/13535#issuecomment-1594080964
       - name: Run test suite on ${{ matrix.browsers }}
-        run: npm run test:pipeline -- --browsers ${{ matrix.browsers }}
+        run: npm run test:pipeline --- --browsers ${{ matrix.browsers }}
 
       - name: Upload Unit Test Results
         if: always()
@@ -168,7 +173,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install project dependencies

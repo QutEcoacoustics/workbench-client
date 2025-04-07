@@ -70,14 +70,13 @@ interface TimezoneModel {
       </a>
     </div>
   `,
-  styles: [
-    `
-      /* Otherwise timezone selector cannot be seen on firefox */
-      .modal-body {
-        overflow-y: unset;
-      }
-    `,
-  ],
+  styles: [`
+    /* Otherwise timezone selector cannot be seen on firefox */
+    .modal-body {
+      overflow-y: unset;
+    }
+  `],
+  standalone: false
 })
 export class AnnotationDownloadComponent
   extends withUnsubscribe()

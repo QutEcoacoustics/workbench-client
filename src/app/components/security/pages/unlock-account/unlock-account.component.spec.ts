@@ -3,7 +3,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnlockAccountComponent } from "./unlock-account.component";
 import schema from "./unlock-account.schema.json";
@@ -32,6 +32,7 @@ describe("UnlockAccountComponent", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [...testFormImports, MockBawApiModule],
+        providers: testFormProviders,
         declarations: [UnlockAccountComponent, FormComponent],
       }).compileComponents();
 

@@ -21,6 +21,7 @@ import { asFormControl } from "./helper";
     </div>
   `,
   styleUrl: "checkbox-input.component.scss",
+  standalone: false
 })
 export class CheckboxInputComponent extends FieldType {
   public asFormControl = asFormControl;

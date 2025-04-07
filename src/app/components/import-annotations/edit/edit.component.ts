@@ -30,6 +30,7 @@ const audioEventImportKey = "audioEventImport";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class EditAnnotationsComponent
   extends FormTemplate<AudioEventImport>

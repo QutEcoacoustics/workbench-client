@@ -43,6 +43,7 @@ import { WidgetComponent } from "../widget.component";
       </ng-container>
     </section>
   `,
+  standalone: false
 })
 export class PermissionsShieldComponent
   extends withUnsubscribe()
