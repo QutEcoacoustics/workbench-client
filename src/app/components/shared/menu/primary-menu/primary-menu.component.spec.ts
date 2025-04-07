@@ -365,7 +365,6 @@ describe("PrimaryMenuComponent", () => {
       return loggedInTrigger;
     }
 
-    // TODO Move to E2E Tests
     it("should display register after logout", () => {
       setup({ user: undefined });
       const loggedInTrigger = getLoggedInTrigger();
@@ -382,7 +381,6 @@ describe("PrimaryMenuComponent", () => {
       expect(link).toContainText(registerMenuItem.label);
     });
 
-    // TODO Move to E2E Tests
     it("should display login after logout", fakeAsync(() => {
       setup({ user: undefined });
       const loggedInTrigger = getLoggedInTrigger();

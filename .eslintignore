@@ -3,4 +3,3 @@ coverage/
 dist/
 src/assets/
 baw-client/
-e2e/protractor.conf.js

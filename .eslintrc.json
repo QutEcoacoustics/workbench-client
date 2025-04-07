@@ -18,10 +18,7 @@
       ],
       "parserOptions": {
         "createDefaultProgram": true,
-        "project": [
-          "tsconfig.json",
-          "tsconfig.e2e.json"
-        ]
+        "project": ["tsconfig.json"]
       },
       "plugins": [
         "eslint-plugin-rxjs",
