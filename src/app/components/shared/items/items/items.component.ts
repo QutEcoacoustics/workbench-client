@@ -44,8 +44,9 @@ import { IItem } from "../item/item.component";
       </div>
     </div>
   `,
-  // Pure Component
+    // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ItemsComponent implements OnInit, OnChanges {
   @Input() public items: List<IItem>;

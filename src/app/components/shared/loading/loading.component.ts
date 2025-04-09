@@ -16,6 +16,7 @@ import {
       </div>
     </div>
   `,
+  standalone: false
 })
 export class LoadingComponent implements OnInit {
   @Input() public color: BootstrapColorTypes = "info";

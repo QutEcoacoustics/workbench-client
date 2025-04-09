@@ -46,6 +46,7 @@ import schema from "./data-request.schema.json";
       </span>
     </baw-form>
   `,
+  standalone: false
 })
 class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
   public fields = schema.fields;

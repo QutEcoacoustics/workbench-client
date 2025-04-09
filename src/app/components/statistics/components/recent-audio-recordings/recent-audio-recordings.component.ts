@@ -77,6 +77,7 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
     </ngx-datatable>
   `,
+  standalone: false
 })
 export class RecentAudioRecordingsComponent implements OnChanges {
   @Input() public audioRecordings!: AudioRecording[] | undefined;

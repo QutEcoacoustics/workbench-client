@@ -1,5 +1,9 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
@@ -101,7 +105,7 @@ export const mockProviders: Provider[] = [
 ];
 
 @NgModule({
-  imports: [HttpClientTestingModule, MockConfigModule, CacheModule],
+  imports: [MockConfigModule, CacheModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -114,6 +118,8 @@ export const mockProviders: Provider[] = [
     ...serviceTokens,
     ...serviceResolvers,
     ...mockProviders,
+    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClientTesting(),
   ],
 })
 export class MockBawApiModule {}

@@ -29,6 +29,7 @@ import schema from "./request.schema.json";
       <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
     </baw-wip>
   `,
+  standalone: false
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: BawApiError;

@@ -1,9 +1,4 @@
-import {
-  ActivatedRoute,
-  Params,
-  Router,
-  RouterLink,
-} from "@angular/router";
+import { ActivatedRoute, Params, Router, RouterLink } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -26,6 +21,7 @@ describe("StrongRouteDirective", () => {
   let router: Router;
   let currentRoute: ActivatedRoute;
   let spec: SpectatorDirective<StrongRouteDirective>;
+
   const createDirective = createDirectiveFactory({
     directive: StrongRouteDirective,
     imports: [RouterTestingModule],
@@ -51,15 +47,15 @@ describe("StrongRouteDirective", () => {
   }
 
   function assertUrlTree(url: string, queryParams: Params) {
-    expect(spec.directive.urlTree).toEqual(
-      router.createUrlTree([url], {
-        queryParams,
-        relativeTo: currentRoute,
-        fragment: spec.directive.fragment,
-        queryParamsHandling: spec.directive.queryParamsHandling,
-        preserveFragment: spec.directive.preserveFragment,
-      })
-    );
+    const expectedUrlTree = router.createUrlTree([url], {
+      queryParams,
+      relativeTo: currentRoute,
+      fragment: spec.directive.fragment,
+      queryParamsHandling: spec.directive.queryParamsHandling,
+      preserveFragment: spec.directive.preserveFragment,
+    });
+
+    expect(spec.directive.urlTree).toEqual(expectedUrlTree);
   }
 
   function assertRoute(link: string) {
@@ -80,7 +76,7 @@ describe("StrongRouteDirective", () => {
           [routeParams]="routeParams"
           [queryParams]="queryParams"
         >Strong Route Link</a>
-      `,
+    `,
       {
         hostProps: { strongRoute, routeParams, queryParams },
         providers: [
@@ -88,9 +84,13 @@ describe("StrongRouteDirective", () => {
             activatedRoute: activatedRoute$,
           }),
         ],
+        detectChanges: false,
       }
     );
+
     router = spec.inject(Router);
+
+    spec.detectChanges();
   }
 
   beforeEach(() => {

@@ -14,7 +14,6 @@ type InputType = Duration | string;
 @Component({
   selector: "baw-duration",
   templateUrl: "../abstract-template.component.html",
-  standalone: true,
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

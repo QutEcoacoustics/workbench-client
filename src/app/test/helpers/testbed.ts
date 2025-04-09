@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { HttpHeaders } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -25,10 +25,13 @@ export const testFormImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
-  HttpClientTestingModule,
   LoadingModule,
   NgxCaptchaModule,
   RouterTestingModule,
+];
+
+export const testFormProviders = [
+  provideHttpClientTesting(),
 ];
 
 export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
@@ -36,6 +39,7 @@ export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
 
   // https://github.com/help-me-mom/ng-mocks/issues/197#issuecomment-705431358
   module.imports = [...module.imports, ...testFormImports];
+  module.providers = [...module.providers, ...testFormProviders];
 
   return TestBed.configureTestingModule(module).compileComponents();
 }

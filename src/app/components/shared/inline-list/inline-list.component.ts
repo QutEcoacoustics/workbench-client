@@ -12,7 +12,8 @@ import { AbstractModel } from "@models/AbstractModel";
         <ng-container *ngIf="!isLast">, </ng-container>
       </span>
     </ng-container>
-  `
+  `,
+  standalone: false
 })
 export class InlineListComponent {
   @Input() public items: AbstractModel[];

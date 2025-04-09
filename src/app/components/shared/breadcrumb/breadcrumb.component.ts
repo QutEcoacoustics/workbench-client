@@ -42,6 +42,7 @@ import { map, Observable } from "rxjs";
     </ng-container>
   `,
   styleUrls: ["breadcrumb.component.scss"],
+  standalone: false
 })
 export class BreadcrumbComponent implements OnInit {
   public queryParams$: Observable<Params>;

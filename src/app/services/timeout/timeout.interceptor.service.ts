@@ -1,10 +1,4 @@
-import {
-  HttpEvent,
-  HttpEventType,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from "@angular/common/http";
+import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { REQUEST_TIMEOUT } from "http-status";

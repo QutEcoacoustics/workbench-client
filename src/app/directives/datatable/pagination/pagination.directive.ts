@@ -97,6 +97,7 @@ import {
  */
 @Directive({
   selector: "[bawDatatablePagination]",
+  standalone: false
 })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()

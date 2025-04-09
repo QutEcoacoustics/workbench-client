@@ -51,6 +51,7 @@ export const regionsMenuItemActions = [
     </ng-container>
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
+  standalone: false
 })
 class ListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);

@@ -38,6 +38,7 @@ const projectKey = "project";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;

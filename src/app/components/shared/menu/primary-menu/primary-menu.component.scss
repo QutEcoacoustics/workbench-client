@@ -1,4 +1,4 @@
-@import "media-mixin";
+@use "media-mixin";
 
 // TODO: Write out each state the primary menu can be in, and explain how it should be displayed
 
@@ -15,7 +15,7 @@ nav {
   }
 
   /* On mobile layouts */
-  @include media("<lg-grid") {
+  @include media-mixin.media("<lg-grid") {
     /* Display primary menu as only menu in side nav */
     &.side-nav {
       height: 100%;

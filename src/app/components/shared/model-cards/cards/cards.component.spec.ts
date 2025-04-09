@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockDirectivesModule } from "@directives/directives.mock.module";
@@ -27,11 +27,11 @@ describe("CardsComponent", () => {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
     imports: [
-      HttpClientTestingModule,
       RouterTestingModule,
       MockDirectivesModule,
       MockBawApiModule,
     ],
+    providers: [provideHttpClientTesting()],
   };
 
   const createComponent = createComponentFactory(factoryOptions);

@@ -25,6 +25,7 @@ import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HeaderDropdownComponent {
   @Input() public label: string;

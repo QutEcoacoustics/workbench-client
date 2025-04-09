@@ -16,6 +16,7 @@ describe("FormlyTimezoneInput", () => {
   let model: { timezone?: string };
   let formGroup: FormGroup;
   let spec: SpectatorHost<TimezoneInputComponent>;
+
   const createHost = createHostFactory({
     component: TimezoneInputComponent,
     imports: [
@@ -34,12 +35,12 @@ describe("FormlyTimezoneInput", () => {
     spec = createHost(
       `
       <form [formGroup]="formGroup">
-        <baw-timezone-input></baw-timezone-input>
+        <baw-timezone-input [field]="field"></baw-timezone-input>
       </form>
-      `,
+    `,
       {
-        hostProps: { formGroup },
-        props: {
+        hostProps: {
+          formGroup,
           field: {
             model,
             key: "timezone",

@@ -43,6 +43,7 @@ import { Site } from "@models/Site";
       </div>
     </ng-container>
   `,
+  standalone: false
 })
 export class SitesWithoutTimezonesComponent {
   @Input() public site?: Site;

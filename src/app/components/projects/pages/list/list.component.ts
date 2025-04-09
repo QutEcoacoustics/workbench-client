@@ -53,6 +53,7 @@ export const projectsMenuItemActions = [
     </ng-container>
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
+  standalone: false
 })
 class ListComponent extends PaginationTemplate<Project> {
   public models: List<Project> = List([]);

@@ -59,6 +59,7 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     </ng-container>
   `,
+  standalone: false
 })
 class MockComponent {
   @Input() public model: MockModel;

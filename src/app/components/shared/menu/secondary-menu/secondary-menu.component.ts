@@ -21,6 +21,7 @@ import { takeUntil } from "rxjs";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
+  standalone: false
 })
 export class SecondaryMenuComponent
   extends withUnsubscribe()

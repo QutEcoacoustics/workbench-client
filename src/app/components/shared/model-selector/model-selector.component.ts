@@ -51,6 +51,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
+  standalone: false
 })
 export class ModelSelectorComponent<Model extends AbstractModel>
   implements OnInit

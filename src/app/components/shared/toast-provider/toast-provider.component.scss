@@ -1,4 +1,4 @@
-@import "bootstrap";
+@use "bootstrap" as *;
 
 :host {
   position: fixed;

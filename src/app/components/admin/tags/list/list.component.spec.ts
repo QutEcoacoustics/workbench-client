@@ -1,4 +1,4 @@
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -89,9 +89,6 @@ describe("AdminTagsComponent", () => {
       tick();
 
       expect(tagsApiSpy.destroy).toHaveBeenCalledWith(mockTag);
-
-      flush();
-      discardPeriodicTasks();
     }));
   });
 

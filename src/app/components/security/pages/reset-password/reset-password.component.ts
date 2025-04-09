@@ -24,6 +24,7 @@ import schema from "./reset-password.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   public fields = schema.fields;

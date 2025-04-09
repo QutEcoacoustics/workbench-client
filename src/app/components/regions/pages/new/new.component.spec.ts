@@ -30,6 +30,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import {
   addStandardFormImportsToMockBuilder,
   testFormImports,
+  testFormProviders,
 } from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -42,9 +43,11 @@ import { NewComponent } from "./new.component";
 describe("RegionsNewComponent", () => {
   let spectator: SpectatorRouting<NewComponent>;
   const { fields } = schema;
+
   const createComponent = createRoutingFactory({
     component: NewComponent,
     imports: [...testFormImports, MockBawApiModule],
+    providers: testFormProviders,
     declarations: [FormComponent],
     mocks: [ToastService],
     stubsEnabled: true,

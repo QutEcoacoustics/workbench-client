@@ -46,6 +46,7 @@ export interface Step {
       </div>
     </div>
   `,
+  standalone: false
 })
 export class StepperComponent
   implements OnChanges, AfterViewChecked, OnDestroy

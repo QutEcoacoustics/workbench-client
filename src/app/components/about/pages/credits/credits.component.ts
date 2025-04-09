@@ -7,6 +7,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   selector: "baw-about-credits",
   template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 class CreditsComponent extends PageComponent {
   public page = CMS.credits;

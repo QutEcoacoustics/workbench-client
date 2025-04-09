@@ -44,13 +44,12 @@ import { MenuService } from "@services/menu/menu.service";
     <!-- Displace header section of webpage -->
     <div style="height: 3.5rem"></div>
   `,
-  styles: [
-    `
-      #navbar {
-        background-color: var(--baw-header);
-      }
-    `,
-  ],
+  styles: [`
+    #navbar {
+      background-color: var(--baw-header);
+    }
+  `],
+  standalone: false
 })
 export class HeaderComponent {
   public homeMenuItem = homeMenuItem;

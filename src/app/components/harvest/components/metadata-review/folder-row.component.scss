@@ -1,4 +1,11 @@
-:host ::ng-deep .fa-custom-counter {
+// we purposefully style the inner elements of the fontawesome counter icon
+// so that it aligns with our theme
+//
+// The layers counter is not a normal svg font awesome icon, so we need to
+// slightly modify the font awesome styling icon internals recommendations
+// to correctly target the counter icon.
+// see: https://github.com/FortAwesome/angular-fontawesome/blob/main/docs/guide/styling-icon-internals.md
+.fa-custom-counter ::ng-deep .fa-layers-counter {
   background-color: #737373;
   color: white;
   font-weight: bold;

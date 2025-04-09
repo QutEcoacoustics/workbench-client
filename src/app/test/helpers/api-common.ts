@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { CmsService } from "@baw-api/cms/cms.service";
@@ -12,8 +12,9 @@ import { MockConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { Provider } from "@angular/core";
+import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {
   ApiCreate,
   ApiDestroy,
@@ -33,16 +34,17 @@ import { getCallArgs } from "./general";
 
 export const mockServiceImports = [
   MockConfigModule,
-  HttpClientTestingModule,
   CacheModule,
 ];
 
-export const mockServiceProviders: Provider[] = [
+export const mockServiceProviders: (Provider | EnvironmentProviders)[] = [
   BawApiService,
   BawFormApiService,
   BawSessionService,
   mockAssociationInjector,
   mockProvider(ToastService),
+  provideHttpClient(withInterceptorsFromDi()),
+  provideHttpClientTesting(),
 ];
 
 type CustomList<Model extends AbstractModel, Params extends any[]> = (

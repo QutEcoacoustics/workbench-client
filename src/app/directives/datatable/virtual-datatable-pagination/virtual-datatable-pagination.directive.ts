@@ -25,6 +25,7 @@ export type VirtualDatabaseModelInput<T extends AbstractModel> =
  */
 @Directive({
   selector: "[bawVirtualDatatablePagination]",
+  standalone: false
 })
 export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
   extends DatatablePaginationDirective<Model>

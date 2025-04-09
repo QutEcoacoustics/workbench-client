@@ -9,6 +9,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 @Component({
   selector: "baw-visualize",
   template: "<baw-client></baw-client>",
+  standalone: false
 })
 class VisualizeComponent extends PageComponent {}
 

@@ -40,6 +40,7 @@ const regionKey = "region";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;

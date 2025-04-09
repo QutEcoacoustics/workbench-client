@@ -20,6 +20,7 @@ const userKey = "user";
 @Component({
   selector: "baw-my-annotations",
   templateUrl: "./annotations.component.html",
+  standalone: false
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];

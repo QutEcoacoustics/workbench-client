@@ -14,6 +14,7 @@ describe("FormlyPasswordConfirmationInput", () => {
   let model: { password?: string };
   let formGroup: FormGroup;
   let spectator: SpectatorHost<PasswordConfirmationInputComponent>;
+
   const createHost = createHostFactory({
     component: PasswordConfirmationInputComponent,
     imports: [
@@ -51,12 +52,12 @@ describe("FormlyPasswordConfirmationInput", () => {
     spectator = createHost(
       `
       <form [formGroup]="formGroup">
-        <baw-password-confirmation-input></baw-password-confirmation-input>
+        <baw-password-confirmation-input [field]="field"></baw-password-confirmation-input>
       </form>
-      `,
+    `,
       {
-        hostProps: { formGroup },
-        props: {
+        hostProps: {
+          formGroup,
           field: {
             model,
             key: "confirmation",

@@ -26,6 +26,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
     </ng-container>
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
+  standalone: false
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;

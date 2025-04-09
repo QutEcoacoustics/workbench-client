@@ -45,6 +45,7 @@ export interface DateTimeFilterModel {
   selector: "baw-date-time-filter",
   templateUrl: "date-time-filter.component.html",
   styleUrls: ["date-time-filter.component.scss"],
+  standalone: false
 })
 export class DateTimeFilterComponent
   extends withUnsubscribe()

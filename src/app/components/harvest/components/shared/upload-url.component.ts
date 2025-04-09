@@ -13,6 +13,7 @@ import { Harvest } from "@models/Harvest";
     <p><b>Username:</b> {{ harvest.uploadUser }}</p>
     <p><b>Password:</b> {{ harvest.uploadPassword }}</p>
   `,
+  standalone: false
 })
 export class UploadUrlComponent {
   @Input() public harvest: Harvest;

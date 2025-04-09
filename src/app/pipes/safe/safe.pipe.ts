@@ -12,6 +12,7 @@ type BypassType = "html" | "style" | "script" | "url" | "resourceUrl";
 
 @Pipe({
   name: "safe",
+  standalone: false
 })
 export class SafePipe implements PipeTransform {
   public constructor(protected sanitizer: DomSanitizer) {}

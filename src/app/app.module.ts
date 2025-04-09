@@ -1,6 +1,6 @@
 import {
+  APP_ID,
   ApplicationRef,
-  CUSTOM_ELEMENTS_SCHEMA,
   DoBootstrap,
   NgModule,
 } from "@angular/core";
@@ -97,7 +97,6 @@ export const appImports = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule.withServerTransition({ appId: "workbench-client" }),
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
     AppRoutingModule,
@@ -114,9 +113,9 @@ export const appImports = [
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    { provide: APP_ID, useValue: "workbench-client" },
   ],
   exports: [],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule implements DoBootstrap {
   public ngDoBootstrap(app: ApplicationRef): void {

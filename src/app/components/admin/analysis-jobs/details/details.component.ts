@@ -13,6 +13,7 @@ const analysisJobKey = "analysisJob";
 @Component({
   selector: "baw-admin-analysis-job",
   templateUrl: "../../../audio-analysis/pages/details/details.component.html",
+  standalone: false
 })
 class AdminAnalysisJobComponent extends AnalysisJobComponent {}
 

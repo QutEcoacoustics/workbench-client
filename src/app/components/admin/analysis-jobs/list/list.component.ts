@@ -8,6 +8,7 @@ import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
 @Component({
   selector: "baw-admin-analysis-jobs",
   templateUrl: "../../../audio-analysis/pages/list/list.component.html",
+  standalone: false
 })
 class AdminAnalysisJobsComponent extends AnalysesComponent {
   public override get project() {

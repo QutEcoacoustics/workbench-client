@@ -10,45 +10,44 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
     <span *ngIf="isFolder" class="vertical-half-line"></span>
   `,
-  styles: [
-    `
-      .vertical-half-line {
-        position: relative;
-      }
+  styles: [`
+    .vertical-half-line {
+      position: relative;
+    }
 
-      .vertical-half-line::before {
-        border-left: 1px solid grey;
-        display: inline-block;
-        position: absolute;
-        height: 30%;
-        bottom: calc(-1 * var(--table-padding));
-        width: 1px;
-        margin: 0;
-        content: "";
-      }
+    .vertical-half-line::before {
+      border-left: 1px solid grey;
+      display: inline-block;
+      position: absolute;
+      height: 30%;
+      bottom: calc(-1 * var(--table-padding));
+      width: 1px;
+      margin: 0;
+      content: "";
+    }
 
-      .vertical-line {
-        position: relative;
-      }
+    .vertical-line {
+      position: relative;
+    }
 
-      .vertical-line::before {
-        border-left: 1px solid grey;
-        display: inline-block;
-        position: absolute;
-        top: calc(-1 * var(--table-padding));
-        bottom: calc(-1 * var(--table-padding));
-        width: 1px;
-        margin: 0;
-        content: "";
-      }
+    .vertical-line::before {
+      border-left: 1px solid grey;
+      display: inline-block;
+      position: absolute;
+      top: calc(-1 * var(--table-padding));
+      bottom: calc(-1 * var(--table-padding));
+      width: 1px;
+      margin: 0;
+      content: "";
+    }
 
-      .whitespace-block {
-        display: inline-block;
-        width: 1rem;
-      }
-    `,
-  ],
+    .whitespace-block {
+      display: inline-block;
+      width: 1rem;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class WhitespaceComponent {
   @Input() public indentation: void[];

@@ -31,6 +31,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   `,
   // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ItemComponent {
   @Input() public icon: IconProp;

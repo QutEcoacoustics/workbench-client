@@ -8,20 +8,19 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
       <ng-content *ngIf="!showZero"></ng-content>
     </div>
   `,
-  styles: [
-    `
-      .progress > baw-progress-bar {
-        display: contents;
-      }
+  styles: [`
+    .progress > baw-progress-bar {
+      display: contents;
+    }
 
-      .zero {
-        background-color: unset;
-        color: black;
-      }
-    `,
-  ],
+    .zero {
+      background-color: unset;
+      color: black;
+    }
+  `],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class ProgressComponent {
   @Input() public showZero: boolean;

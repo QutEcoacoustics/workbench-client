@@ -24,22 +24,21 @@ export enum MenuState {
       <fa-icon size="2x" [icon]="getIcon()"></fa-icon>
     </button>
   `,
-  styles: [
-    `
-      button {
-        align-content: center;
-        all: unset;
-        cursor: pointer;
-        display: flex;
-        height: 32px;
-        width: 32px;
-      }
+  styles: [`
+    button {
+      align-content: center;
+      all: unset;
+      cursor: pointer;
+      display: flex;
+      height: 32px;
+      width: 32px;
+    }
 
-      .right {
-        justify-content: end;
-      }
-    `,
-  ],
+    .right {
+      justify-content: end;
+    }
+  `],
+  standalone: false
 })
 export class MenuToggleComponent implements OnInit {
   @Input() public menuType: MenuType;

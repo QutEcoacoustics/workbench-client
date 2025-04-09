@@ -1,10 +1,5 @@
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpContext,
-  HttpParams,
-} from "@angular/common/http";
-import { TestRequest } from "@angular/common/http/testing";
+import { HttpClient, HttpContext, HttpParams, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClientTesting, TestRequest } from "@angular/common/http/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import {
@@ -35,7 +30,11 @@ describe("BawApiInterceptor", () => {
 
   const createService = createHttpFactory({
     service: BawSessionService,
-    imports: [HttpClientModule, MockBawApiModule],
+    imports: [MockBawApiModule],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   function getPath(path: string) {

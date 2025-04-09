@@ -20,8 +20,16 @@ describe("HiddenCopyComponent", () => {
     props.content ??= "content";
     props.tooltip ??= "tooltip";
 
-    spec = createHost("<baw-hidden-copy></baw-hidden-copy>", {
-      props,
+    spec = createHost(`
+      <baw-hidden-copy
+        [value]="value"
+        [content]="content"
+        [tooltip]="tooltip"
+        [color]="color"
+        [disabled]="disabled"
+      ></baw-hidden-copy>
+  `, {
+      hostProps: props,
     });
 
     clipboardService = spec.inject(ClipboardService);
@@ -141,7 +149,7 @@ describe("HiddenCopyComponent", () => {
       const content = modelData.random.words();
       spec = createHost(
         `<baw-hidden-copy><span>${content}</span></baw-hidden-copy>`,
-        { props: { value: "value" } }
+        { hostProps: { value: "value" } }
       );
       getVisibilityButton().click();
       spec.detectChanges();

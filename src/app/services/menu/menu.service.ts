@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector } from "@angular/core";
+import { Inject, Injectable, INJECTOR, Injector } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
@@ -71,7 +71,7 @@ export class MenuService extends withUnsubscribe() {
     private session: BawSessionService,
     private sharedRoute: SharedActivatedRouteService,
     @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu,
-    private injector: Injector,
+    @Inject(INJECTOR) private injector: Injector,
     private config: ConfigService
   ) {
     super();

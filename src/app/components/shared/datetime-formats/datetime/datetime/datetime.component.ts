@@ -13,7 +13,6 @@ import { AbstractDatetimeComponent } from "../abstract-datetime.component";
 @Component({
   selector: "baw-datetime",
   templateUrl: "../../abstract-template.component.html",
-  standalone: true,
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -7,6 +7,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   selector: "baw-about-data-sharing-policy",
   template: "<baw-cms [page]='page'></baw-cms>",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 class DataSharingPolicyComponent extends PageComponent {
   public page = CMS.dataSharingPolicy;

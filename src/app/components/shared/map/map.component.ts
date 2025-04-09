@@ -23,6 +23,7 @@ import { List } from "immutable";
   selector: "baw-map",
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
+  standalone: false
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   public constructor(private mapService: MapsService) {

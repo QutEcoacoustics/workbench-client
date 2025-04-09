@@ -9,6 +9,7 @@ import { MenuService } from "@services/menu/menu.service";
     </div>
   `,
   styleUrl: "side-nav.component.scss",
+  standalone: false
 })
 export class SideNavComponent {
   public constructor(public menu: MenuService) {}

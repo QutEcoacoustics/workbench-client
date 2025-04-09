@@ -42,6 +42,7 @@ const projectKey = "project";
   selector: "baw-project-permissions",
   templateUrl: "permissions.component.html",
   styleUrls: ["permissions.component.scss"],
+  standalone: false
 })
 class PermissionsComponent
   extends withUnsubscribe(PageComponent)

@@ -105,6 +105,7 @@ const audioEventImportKey = "audioEventImport";
   selector: "baw-add-annotations",
   templateUrl: "add-annotations.component.html",
   styleUrl: "add-annotations.component.scss",
+  standalone: false
 })
 class AddAnnotationsComponent
   extends PageComponent

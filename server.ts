@@ -11,7 +11,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { APP_BASE_HREF } from "@angular/common";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { CommonEngine } from "@angular/ssr";
+import { CommonEngine } from "@angular/ssr/node";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";

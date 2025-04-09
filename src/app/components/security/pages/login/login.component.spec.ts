@@ -11,7 +11,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
@@ -39,6 +39,7 @@ import schema from "./login.schema.json";
     <baw-toast-provider></baw-toast-provider>
     <baw-authentication-login></baw-authentication-login>
   `,
+  standalone: false
 })
 class TestHostComponent {}
 
@@ -61,6 +62,7 @@ describe("LoginComponent", () => {
       ToastComponent,
       ToastProviderComponent,
     ],
+    providers: testFormProviders,
     declarations: [FormComponent],
   });
 

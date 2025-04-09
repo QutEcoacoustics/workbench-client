@@ -103,7 +103,7 @@ describe("AudioRecordingFilters", () => {
               value: startTimeInput,
             },
           },
-        };
+        } as InnerFilter<AudioRecording>;
 
         const observedResult = filterTime(
           emptyFilter,

@@ -18,6 +18,7 @@ export const adminScriptsMenuItemActions = [newScriptMenuItem];
 @Component({
   selector: "baw-scripts",
   templateUrl: "./list.component.html",
+  standalone: false
 })
 class AdminScriptsComponent
   extends PagedTableTemplate<TableRow, Script>

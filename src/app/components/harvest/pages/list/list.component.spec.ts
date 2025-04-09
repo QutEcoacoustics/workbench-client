@@ -1,9 +1,4 @@
-import {
-  discardPeriodicTasks,
-  fakeAsync,
-  flush,
-  tick,
-} from "@angular/core/testing";
+import { fakeAsync, tick } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
@@ -166,8 +161,6 @@ describe("ListComponent", () => {
     tick();
 
     expect(harvestApi.transitionStatus).not.toHaveBeenCalled();
-    discardPeriodicTasks();
-    flush();
   }));
 
   it("should abort Harvest by changing status to 'complete' if the 'Abort Harvest' button is clicked in the abort modal", fakeAsync(() => {
@@ -183,8 +176,6 @@ describe("ListComponent", () => {
       defaultHarvest,
       "complete"
     );
-    discardPeriodicTasks();
-    flush();
   }));
 
   withDefaultZone("Australia/Perth", () => {

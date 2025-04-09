@@ -9,6 +9,7 @@ import { ConfigService } from "@services/config/config.service";
 @Component({
   selector: "baw-harvest-stream-uploading",
   templateUrl: "stream-uploading.component.html",
+  standalone: false
 })
 export class StreamUploadingComponent implements OnInit {
   public active = 1;

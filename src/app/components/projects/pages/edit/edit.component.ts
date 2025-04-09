@@ -34,6 +34,7 @@ const projectKey = "project";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = schema.fields;

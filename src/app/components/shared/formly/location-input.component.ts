@@ -72,6 +72,7 @@ import { asFormControl } from "./helper";
       ></baw-map>
     </div>
   `,
+  standalone: false
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;

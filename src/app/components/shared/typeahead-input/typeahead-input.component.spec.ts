@@ -7,12 +7,7 @@ import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
-import {
-  discardPeriodicTasks,
-  fakeAsync,
-  flush,
-  tick,
-} from "@angular/core/testing";
+import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
@@ -85,9 +80,6 @@ describe("TypeaheadInputComponent", () => {
     tick(defaultDebounceTime);
 
     expect(mockSitesService.filter).toHaveBeenCalled();
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should include a label above the input if a input label has been specified", () => {
@@ -153,9 +145,6 @@ describe("TypeaheadInputComponent", () => {
 
     expect(pillElements).toHaveLength(1);
     expect(pillElements[0].innerText).toEqual(testInput);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should clear the input if the user selects an item and multiple inputs are enabled", fakeAsync(() => {
@@ -169,9 +158,6 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
     flush();
     expect(inputBox().value).toEqual("");
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should not clear the input if the user selects an item and the input only emits a singular value", fakeAsync(() => {
@@ -184,9 +170,6 @@ describe("TypeaheadInputComponent", () => {
     selectedDropdownOption().click();
 
     expect(inputBox().value).not.toEqual("");
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should not emit multiple items if the user selects items in the options dropdown when multiple inputs are disabled", fakeAsync(() => {
@@ -205,9 +188,6 @@ describe("TypeaheadInputComponent", () => {
     expect(spectator.component.modelChange.emit).toHaveBeenCalledWith([
       siteToSelect,
     ]);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should remove an item if a user clicks backspace on a pill", fakeAsync(() => {
@@ -229,9 +209,6 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
 
     expect(spectator.component.value).toEqual(expectedSites);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   // if the following test is broken, it may be because the search callback is not being called, or the test mock api is faulty
@@ -242,9 +219,6 @@ describe("TypeaheadInputComponent", () => {
 
     const dropdownItems: HTMLButtonElement[] = dropdownOptions();
     expect(dropdownItems).not.toHaveLength(0);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should use the formatter template for the dropdown items", fakeAsync(() => {
@@ -253,9 +227,6 @@ describe("TypeaheadInputComponent", () => {
     tick(defaultDebounceTime);
 
     expect(selectedDropdownOption().innerText).toEqual(testInput);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should use the formatter template for the active pill items", fakeAsync(() => {
@@ -268,9 +239,6 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
 
     expect(itemPills()[0].innerText).toEqual(expectedPillText);
-
-    flush();
-    discardPeriodicTasks();
   }));
 
   it("should return no items if the search callback is not set", fakeAsync(() => {

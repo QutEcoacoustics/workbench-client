@@ -25,6 +25,7 @@ import {
       investigate.
     </p>
   `,
+  standalone: false
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(

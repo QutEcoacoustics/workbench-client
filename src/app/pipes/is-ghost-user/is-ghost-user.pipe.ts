@@ -7,6 +7,7 @@ import { User } from "@models/User";
  */
 @Pipe({
   name: "isGhostUser",
+  standalone: false
 })
 export class IsGhostUserPipe implements PipeTransform {
   /**

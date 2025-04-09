@@ -15,6 +15,7 @@ import { UrlDirective } from "./url.directive";
       Link
     </a>
   `,
+  standalone: false
 })
 class MockComponent {
   @Input() public url: string;

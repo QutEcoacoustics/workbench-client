@@ -50,6 +50,7 @@ import camelCase from "just-camel-case";
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class HeaderItemComponent implements OnInit {
   @Input() public link: NavigableMenuItem | HeaderItem;

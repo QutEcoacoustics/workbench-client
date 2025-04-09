@@ -29,6 +29,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-analyses",
   templateUrl: "list.component.html",
+  standalone: false
 })
 class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(

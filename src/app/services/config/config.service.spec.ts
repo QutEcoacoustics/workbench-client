@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
 import {
   createHttpFactory,
@@ -8,6 +8,7 @@ import {
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
 import { testApiConfig } from "./configMock.service";
@@ -18,8 +19,11 @@ describe("ConfigService", () => {
   let toastr: ToastService;
   const createService = createHttpFactory({
     service: ConfigService,
-    imports: [HttpClientTestingModule],
-    providers: [mockProvider(ToastService)],
+    providers: [
+      mockProvider(ToastService),
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   async function setup(

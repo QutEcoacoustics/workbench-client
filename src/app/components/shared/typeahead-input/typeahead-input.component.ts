@@ -25,6 +25,7 @@ export type TypeaheadSearchCallback<T = object> = (
   selector: "baw-typeahead-input",
   templateUrl: "typeahead-input.component.html",
   styleUrl: "typeahead-input.component.scss",
+  standalone: false
 })
 export class TypeaheadInputComponent {
   /**

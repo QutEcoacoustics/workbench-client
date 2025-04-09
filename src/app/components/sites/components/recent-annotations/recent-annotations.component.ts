@@ -13,6 +13,7 @@ import { takeUntil } from "rxjs";
 @Component({
   selector: "baw-site-recent-annotations",
   templateUrl: "./recent-annotations.component.html",
+  standalone: false
 })
 export class RecentAnnotationsComponent
   extends withUnsubscribe()

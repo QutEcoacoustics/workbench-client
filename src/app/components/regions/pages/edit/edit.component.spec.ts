@@ -19,7 +19,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import schema from "../../region.base.json";
@@ -28,9 +28,11 @@ import { EditComponent } from "./edit.component";
 describe("RegionsEditComponent", () => {
   let spectator: SpectatorRouting<EditComponent>;
   const { fields } = schema;
+
   const createComponent = createRoutingFactory({
     component: EditComponent,
     imports: [...testFormImports, MockBawApiModule],
+    providers: testFormProviders,
     declarations: [FormComponent],
     mocks: [ToastService],
     stubsEnabled: true,

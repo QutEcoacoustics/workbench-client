@@ -1,5 +1,5 @@
 import { ComponentFixture, flush, tick } from "@angular/core/testing";
-import { Spectator } from "@ngneat/spectator";
+import { Spectator, SpectatorHost } from "@ngneat/spectator";
 
 /**
  * TODO Replace with spectator method
@@ -47,7 +47,7 @@ export function clickButton<T>(
 }
 
 export function inputFile<T>(
-  spectator: Spectator<T>,
+  spectator: Spectator<T> | SpectatorHost<T>,
   selector: string | HTMLInputElement,
   files: File[]
 ): void {

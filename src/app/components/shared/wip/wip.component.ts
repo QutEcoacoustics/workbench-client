@@ -45,6 +45,7 @@ import { ConfigService } from "@services/config/config.service";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class WIPComponent implements OnInit {
   public production: boolean;

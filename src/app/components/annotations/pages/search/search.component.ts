@@ -41,6 +41,7 @@ const annotationsKey = "annotations";
   selector: "baw-annotations-search",
   templateUrl: "search.component.html",
   styleUrl: "search.component.scss",
+  standalone: false
 })
 class AnnotationSearchComponent
   extends PaginationTemplate<AudioEvent>

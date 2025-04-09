@@ -36,6 +36,7 @@ const accountKey = "account";
   selector: "baw-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
+  standalone: false
 })
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;

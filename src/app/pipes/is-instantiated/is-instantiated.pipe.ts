@@ -9,6 +9,7 @@ import { AbstractModel } from "@models/AbstractModel";
  */
 @Pipe({
   name: "isInstantiated",
+  standalone: false
 })
 export class isInstantiatedPipe implements PipeTransform {
   public transform(

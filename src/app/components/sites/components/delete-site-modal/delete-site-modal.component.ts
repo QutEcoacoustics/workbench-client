@@ -38,6 +38,7 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
+  standalone: false
 })
 export class DeleteSiteModalComponent extends DeleteModalComponent {
   public constructor() {

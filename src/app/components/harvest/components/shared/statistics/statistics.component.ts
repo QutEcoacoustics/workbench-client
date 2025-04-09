@@ -23,18 +23,17 @@ export interface Statistic {
       <ng-content></ng-content>
     </div>
   `,
-  styles: [
-    `
-      .statistics {
-        margin-bottom: 2rem;
-        display: flex;
-        flex-wrap: wrap;
-        column-gap: 1rem;
-        align-items: center;
-        justify-content: center;
-      }
-    `,
-  ],
+  styles: [`
+    .statistics {
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+  `],
+  standalone: false
 })
 export class StatisticsComponent {
   @Input() public statistics: Statistic[][];

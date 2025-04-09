@@ -26,6 +26,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-harvests",
   templateUrl: "list.component.html",
+  standalone: false
 })
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;

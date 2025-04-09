@@ -6,6 +6,7 @@ import { Annotation } from "@models/data/Annotation";
   selector: "baw-annotation-event-card",
   templateUrl: "annotation-event-card.component.html",
   styleUrl: "annotation-event-card.component.scss",
+  standalone: false
 })
 export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
   @Input({ required: true })

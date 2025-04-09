@@ -18,13 +18,12 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       {{ progress + "%" }}
     </div>
   `,
-  styles: [
-    `
-      div {
-        cursor: help;
-      }
-    `,
-  ],
+  styles: [`
+    div {
+      cursor: help;
+    }
+  `],
+  standalone: false
 })
 export class ProgressBarComponent {
   @Input() public progress: number;

@@ -105,6 +105,7 @@ const regionKey = "region";
       ></ngb-pagination>
     </ng-container>
   `,
+  standalone: false
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public defaultDescription = "<i>No description found</i>";

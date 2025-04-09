@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -24,6 +24,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -32,11 +33,14 @@ describe("CardComponent", () => {
   const createComponent = createComponentFactory({
     component: CardComponent,
     imports: [
-      HttpClientTestingModule,
       RouterTestingModule,
       MockBawApiModule,
       MockDirectivesModule,
       PipesModule,
+    ],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
     ],
   });
 

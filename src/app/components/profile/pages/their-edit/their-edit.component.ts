@@ -42,6 +42,7 @@ const accountKey = "account";
       ></baw-detail-view>
     </ng-container>
   `,
+  standalone: false
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = schema.fields;

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -7,6 +7,7 @@ import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { modelData } from "@test/helpers/faker";
 import { websiteHttpUrl } from "@test/helpers/url";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AuthenticatedImageDirective, notFoundImage } from "./image.directive";
 
 declare const ng: any;
@@ -16,7 +17,11 @@ describe("ImageDirective", () => {
   const image404Src = `${websiteHttpUrl}${notFoundImage.url}`;
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
-    imports: [HttpClientTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   function getImage() {
@@ -237,7 +242,8 @@ describe("ImageDirective", () => {
   describe("change detection", () => {
     function updateDirective(imageUrls: ImageUrl[]) {
       const change = new SimpleChange(undefined, imageUrls, false);
-      spectator.setInput("src", imageUrls);
+      (spectator.hostComponent as any).src = imageUrls;
+      spectator.detectChanges();
       spectator.directive.ngOnChanges({ src: change });
     }
 

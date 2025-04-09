@@ -51,29 +51,28 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       </span>
     </div>
   `,
-  styles: [
-    `
-      #auth-token pre {
-        margin: 0;
-        white-space: pre-wrap;
-      }
+  styles: [`
+    #auth-token pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
 
-      /*
-        In bootstrap, any element that is inside the same form-control has
-        its edge border radius set to 0 so that all inner form-control
-        elements are flush.
-        However, because we have wrapped the copy-btn inside a tooltip <span>,
-        bootstrap attempts to flatten the span's border radius (which is not
-        visible) instead of the copy buttons.
-        to keep consistent with the bootstrap styling, I manually flatten the
-        left edges of the copy button.
-      */
-      #copy-btn {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-    `,
-  ],
+    /*
+      In bootstrap, any element that is inside the same form-control has
+      its edge border radius set to 0 so that all inner form-control
+      elements are flush.
+      However, because we have wrapped the copy-btn inside a tooltip <span>,
+      bootstrap attempts to flatten the span's border radius (which is not
+      visible) instead of the copy buttons.
+      to keep consistent with the bootstrap styling, I manually flatten the
+      left edges of the copy button.
+    */
+    #copy-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  `],
+  standalone: false
 })
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";

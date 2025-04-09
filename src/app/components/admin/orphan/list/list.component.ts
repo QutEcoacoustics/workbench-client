@@ -12,6 +12,7 @@ import { adminOrphansCategory, adminOrphansMenuItem } from "../orphans.menus";
 @Component({
   selector: "baw-admin-orphans",
   templateUrl: "./list.component.html",
+  standalone: false
 })
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>

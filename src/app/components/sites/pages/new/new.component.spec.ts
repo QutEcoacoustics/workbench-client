@@ -15,7 +15,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { testFormImports } from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { MockComponent } from "ng-mocks";
@@ -29,6 +29,7 @@ describe("SiteNewComponent", () => {
   const createComponent = createRoutingFactory({
     component: SiteNewComponent,
     imports: [...testFormImports, MockBawApiModule],
+    providers: testFormProviders,
     declarations: [FormComponent, MockComponent(MapComponent)],
     mocks: [ToastService],
   });

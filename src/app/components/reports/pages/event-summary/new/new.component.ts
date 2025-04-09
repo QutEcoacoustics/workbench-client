@@ -47,7 +47,8 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-new-summary-report",
-  templateUrl: "./new.component.html",
+    templateUrl: "./new.component.html",
+    standalone: false
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

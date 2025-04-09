@@ -1,29 +1,29 @@
-@import "media-mixin";
+@use "media-mixin";
 
 .row {
   --card-padding: 0.5rem;
 
-  @include media("<sm-grid") {
+  @include media-mixin.media("<sm-grid") {
     --card-width: max(16rem, 50%);
   }
 
-  @include media("<md-grid", ">=sm-grid") {
+  @include media-mixin.media("<md-grid", ">=sm-grid") {
     --card-width: 50%;
   }
 
-  @include media("<lg-grid", ">=md-grid") {
+  @include media-mixin.media("<lg-grid", ">=md-grid") {
     --card-width: 33%;
   }
 
-  @include media("<xl-grid", ">=lg-grid") {
+  @include media-mixin.media("<xl-grid", ">=lg-grid") {
     --card-width: 25%;
   }
 
-  @include media("<xxl-grid", ">=xl-grid") {
+  @include media-mixin.media("<xxl-grid", ">=xl-grid") {
     --card-width: 33%;
   }
 
-  @include media(">=xxl-grid") {
+  @include media-mixin.media(">=xxl-grid") {
     --card-width: 25%;
   }
 

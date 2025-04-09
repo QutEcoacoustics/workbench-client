@@ -14,6 +14,7 @@ export interface DateTimePipeOptions {
 // using this pipe also allows us to standardise the date format throughout the client
 @Pipe({
   name: "dateTime",
+  standalone: false
 })
 export class DateTimePipe implements PipeTransform {
   public constructor() {}

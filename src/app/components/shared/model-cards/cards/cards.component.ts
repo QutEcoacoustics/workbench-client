@@ -20,6 +20,7 @@ import { List } from "immutable";
     </div>
   `,
   styleUrls: ["./cards.component.scss"],
+  standalone: false
 })
 export class CardsComponent {
   @Input() public models: List<Project | Region>;

@@ -2,10 +2,9 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { By } from "@angular/platform-browser";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { TimeSinceComponent } from "./time-since.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -35,29 +34,35 @@ function test(
 }
 
 describe("TimeSince", () => {
-  let fixture: ComponentFixture<TimeSinceComponent>;
-  let component: TimeSinceComponent;
+  let spec: Spectator<TimeSinceComponent>;
   let updateSpy: jasmine.Spy;
 
+  const createComponent = createComponentFactory({
+    component: TimeSinceComponent,
+    imports: [SharedModule, MockBawApiModule],
+  });
+
+  const timeElement = () => spec.query<HTMLTimeElement>("time");
+
   withDefaultZone("Australia/Darwin", () => {
-    function setup(): void {
+    function setup(defaultValue: DateTime | Duration | Date): void {
       // because the tickValue is a singleton, if we don't set it to undefined
       // the tickValue from the previous test will leak into the next test
       TimeSinceComponent["tickValue"] = undefined;
 
-      TestBed.configureTestingModule({
-        imports: [SharedModule, MockBawApiModule],
-      });
-
-      fixture = TestBed.createComponent(TimeSinceComponent);
-      component = fixture.componentInstance;
-
-      updateSpy = spyOn(component, "update").and.callThrough();
-
       jasmine.clock().install();
       jasmine.clock().mockDate(new Date("2020-01-01T00:00:00.000+09:30"));
 
-      fixture.detectChanges();
+      spec = createComponent({
+        detectChanges: false,
+        props: {
+          value: defaultValue as any,
+        },
+      });
+
+      updateSpy = spyOn(spec.component, "update").and.callThrough();
+
+      spec.detectChanges();
     }
 
     // prettier-ignore
@@ -86,14 +91,6 @@ describe("TimeSince", () => {
     ];
     /* eslint-enable max-len */
 
-    function timeElement(): HTMLTimeElement {
-      return fixture.debugElement.query(By.css("time")).nativeElement;
-    }
-
-    beforeEach(() => {
-      setup();
-    });
-
     afterEach(() => {
       jasmine.clock().uninstall();
 
@@ -103,26 +100,26 @@ describe("TimeSince", () => {
     });
 
     it("should create", () => {
-      fixture.componentRef.setInput("value", modelData.time());
-      expect(component).toBeInstanceOf(TimeSinceComponent);
+      setup(modelData.dateTime());
+      expect(spec.component).toBeInstanceOf(TimeSinceComponent);
     });
 
     it("should update every second if the time since is under 1 minute", () => {
       const secondInMilliseconds = 1000;
 
       const fakeDuration = Duration.fromObject({ seconds: -30 });
-      fixture.componentRef.setInput("value", fakeDuration);
+      setup(fakeDuration);
 
-      fixture.detectChanges();
+      spec.detectChanges();
       updateSpy.calls.reset();
 
-      expect(timeElement().textContent.trim()).toBe("30 seconds ago");
+      expect(timeElement()).toHaveExactTrimmedText("30 seconds ago");
 
       jasmine.clock().tick(secondInMilliseconds);
-      fixture.detectChanges();
+      spec.detectChanges();
 
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement().textContent.trim()).toBe("31 seconds ago");
+      expect(timeElement()).toHaveExactTrimmedText("31 seconds ago");
     });
 
     it("should update every minute if the time since is over 1 minute", () => {
@@ -130,44 +127,44 @@ describe("TimeSince", () => {
       const minuteInMilliseconds = secondInMilliseconds * 60;
 
       const fakeDuration = Duration.fromObject({ seconds: -59 });
-      fixture.componentRef.setInput("value", fakeDuration);
+      setup(fakeDuration);
 
-      fixture.detectChanges();
-      expect(timeElement().textContent.trim()).toBe("59 seconds ago");
+      spec.detectChanges();
+      expect(timeElement()).toHaveExactTrimmedText("59 seconds ago");
 
       updateSpy.calls.reset();
       jasmine.clock().tick(secondInMilliseconds);
-      fixture.detectChanges();
+      spec.detectChanges();
 
       // we should observe the update method be called when updating to the 1 minute mark
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement().textContent.trim()).toBe("1 minute ago");
+      expect(timeElement()).toHaveExactTrimmedText("1 minute ago");
 
       // every second after the one minute mark should not cause an update unless exactly 1 minute has passed
       updateSpy.calls.reset();
       jasmine.clock().tick(secondInMilliseconds);
-      fixture.detectChanges();
+      spec.detectChanges();
 
       expect(updateSpy).not.toHaveBeenCalled();
-      expect(timeElement().textContent.trim()).toBe("1 minute ago");
+      expect(timeElement()).toHaveExactTrimmedText("1 minute ago");
 
       // because we have already ticked 1 second, we need to tick 59 more seconds to reach the 2 minute mark
       jasmine.clock().tick(minuteInMilliseconds - secondInMilliseconds);
-      fixture.detectChanges();
+      spec.detectChanges();
 
       expect(updateSpy).toHaveBeenCalledTimes(1);
-      expect(timeElement().textContent.trim()).toBe("2 minutes ago");
+      expect(timeElement()).toHaveExactTrimmedText("2 minutes ago");
     });
 
     testCases.forEach((testCase) => {
       describe(testCase.name, () => {
         beforeEach(() => {
-          fixture.componentRef.setInput("value", testCase.value);
-          fixture.detectChanges();
+          setup(testCase.value);
+          spec.detectChanges();
         });
 
         it("should have the correct text", () => {
-          expect(timeElement().textContent.trim()).toBe(testCase.expectedText);
+          expect(timeElement()).toHaveExactTrimmedText(testCase.expectedText);
         });
 
         it("should have the correct tooltip", () => {

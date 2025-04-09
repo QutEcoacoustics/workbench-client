@@ -3,6 +3,7 @@ import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 
 @Pipe({
   name: "timezone",
+  standalone: false
 })
 export class TimezonePipe implements PipeTransform {
   public transform(

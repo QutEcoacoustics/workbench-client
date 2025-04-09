@@ -45,6 +45,7 @@ import { adminSettingsMenuItem } from "./settings.menus";
       </label>
     </div>
   `,
+  standalone: false
 })
 class AdminSettingsComponent extends PageComponent {
   public constructor(

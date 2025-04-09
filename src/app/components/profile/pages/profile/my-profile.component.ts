@@ -57,6 +57,7 @@ const userKey = "user";
   selector: "baw-my-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
+  standalone: false
 })
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)

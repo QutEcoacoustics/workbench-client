@@ -27,6 +27,7 @@ import schema from "./confirm-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   public fields = schema.fields;

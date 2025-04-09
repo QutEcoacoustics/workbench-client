@@ -35,6 +35,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-download",
   templateUrl: "download.component.html",
+  standalone: false
 })
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   @ViewChild(NgForm) public form: NgForm;

@@ -1,10 +1,5 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import {
-  discardPeriodicTasks,
-  fakeAsync,
-  flush,
-  TestBed,
-} from "@angular/core/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { fakeAsync, TestBed } from "@angular/core/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
@@ -19,6 +14,7 @@ import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
 import { Errorable } from "@helpers/advancedTypes";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -51,12 +47,14 @@ describe("Association Decorators", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MockBawApiModule],
+      imports: [MockBawApiModule],
       providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
         mockProvider(ToastService),
-      ],
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ]
     });
 
     api = TestBed.inject(MockStandardApiService);
@@ -131,9 +129,6 @@ describe("Association Decorators", () => {
       interceptApiRequest(undefined, generateBawApiError(UNAUTHORIZED));
       createModel({ id: 1 }, injector);
       expect(toastSpy.error).not.toHaveBeenCalled();
-
-      flush();
-      discardPeriodicTasks();
     }));
 
     [
@@ -369,9 +364,6 @@ describe("Association Decorators", () => {
       interceptApiRequest(undefined, generateBawApiError(UNAUTHORIZED));
       createModel({ id: 1 }, injector, [], false);
       expect(toastSpy.error).not.toHaveBeenCalled();
-
-      flush();
-      discardPeriodicTasks();
     }));
   });
 });

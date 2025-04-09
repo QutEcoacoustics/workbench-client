@@ -2,9 +2,9 @@ import {
   Component,
   Inject,
   Injectable,
+  INJECTOR,
   Injector,
   OnInit,
-  ViewEncapsulation,
 } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import {
@@ -43,13 +43,14 @@ declare const gtag: Gtag.Gtag;
   selector: "baw-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
-  /*
-   * Need this so that router-outlet components can be styled. If removed,
-   * validate that pages which rely on full height pages such as IFrames are
-   * unaffected
-   */
-  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None,
+  standalone: false
+    /*
+     * Need this so that router-outlet components can be styled. If removed,
+     * validate that pages which rely on full height pages such as IFrames are
+     * unaffected
+     */
+    // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
+    // encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;
@@ -58,9 +59,9 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     public menu: MenuService,
-    protected injector: Injector,
     private sharedRoute: SharedActivatedRouteService,
     private router: Router,
+    @Inject(INJECTOR) protected injector: Injector,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
     globals: GlobalsService
   ) {

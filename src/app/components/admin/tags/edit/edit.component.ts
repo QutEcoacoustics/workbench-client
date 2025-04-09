@@ -35,6 +35,7 @@ const tagTypesKey = "tagTypes";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

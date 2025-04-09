@@ -33,6 +33,7 @@ const scriptKey = "script";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
+  standalone: false
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public constructor(

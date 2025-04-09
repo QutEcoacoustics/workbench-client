@@ -30,6 +30,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       </p>
     </ng-container>
   `,
+  standalone: false
 })
 export class ErrorHandlerComponent implements OnInit {
   @Input() public error: ApiErrorDetails | BawApiError;

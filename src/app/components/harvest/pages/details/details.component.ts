@@ -27,6 +27,7 @@ const harvestKey = "harvest";
 @Component({
   selector: "baw-harvest",
   templateUrl: "./details.component.html",
+  standalone: false
 })
 class DetailsComponent
   extends withUnsubscribe(PageComponent)

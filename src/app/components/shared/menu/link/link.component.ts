@@ -64,6 +64,7 @@ import { Observable } from "rxjs";
     </ng-template>
   `,
   styleUrls: ["./link.component.scss"],
+  standalone: false
 })
 export class MenuLinkComponent
   extends withUnsubscribe()

@@ -38,6 +38,7 @@ interface CanPredicate {
       <ng-content></ng-content>
     </span>
   `,
+  standalone: false
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
   public constructor(

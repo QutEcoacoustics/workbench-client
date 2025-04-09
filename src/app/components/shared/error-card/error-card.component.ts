@@ -42,6 +42,7 @@ interface ErrorTemplate {
     }
  `,
   styleUrl: "error-card.component.scss",
+  standalone: false
 })
 export class ErrorCardComponent {
   public errors = input.required<ReadonlyArray<BawErrorData>>();

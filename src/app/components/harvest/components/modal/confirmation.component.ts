@@ -32,6 +32,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
+  standalone: false
 })
 export class ConfirmationComponent {
   @Input() public nextLabel: string;

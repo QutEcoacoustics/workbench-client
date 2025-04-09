@@ -45,6 +45,7 @@ export const adminMenuItemActions = [
     <p>Welcome to the super-secret-site-settings!</p>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 class AdminDashboardComponent extends PageComponent {}
 

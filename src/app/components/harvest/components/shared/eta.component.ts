@@ -29,6 +29,7 @@ import { Duration } from "luxon";
       </small>
     </div>
   `,
+  standalone: false
 })
 export class EtaComponent implements OnChanges {
   @Input() public harvest: Harvest;

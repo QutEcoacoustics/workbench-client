@@ -164,14 +164,16 @@ export class BawApiInterceptor implements HttpInterceptor {
         NOT_FOUND,
         "The following action does not exist, " +
           "if you believe this is an error please report a problem.",
-          responseData,
+        responseData
       );
       return throwError(() => error);
     }
 
     // Unknown error occurred, throw generic error
     console.error("Unknown error occurred: ", response);
-    return throwError(() => new BawApiError(response.status, response.message, responseData));
+    return throwError(
+      () => new BawApiError(response.status, response.message, responseData)
+    );
   };
 }
 

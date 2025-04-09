@@ -1,11 +1,4 @@
-import {
-  HttpContext,
-  HttpContextToken,
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from "@angular/common/http";
+import { HttpContext, HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { CacheSettings, CACHE_SETTINGS } from "./cache-settings";

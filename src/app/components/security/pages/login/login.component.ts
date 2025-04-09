@@ -66,6 +66,7 @@ export const loginMenuItemActions = [
       </ng-template>
     </baw-toast>
   `,
+  standalone: false
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = schema.fields;

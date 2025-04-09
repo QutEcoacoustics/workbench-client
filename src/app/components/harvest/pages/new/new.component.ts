@@ -20,6 +20,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-harvest-new",
   templateUrl: "new.component.html",
+  standalone: false
 })
 class NewComponent extends PageComponent implements OnInit {
   public loading: boolean;

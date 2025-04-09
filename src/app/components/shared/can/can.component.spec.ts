@@ -1,19 +1,24 @@
-import { createHostFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SharedModule } from "@shared/shared.module";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { IfLoggedInComponent } from "./can.component";
 
 describe("IsLoggedInComponent", () => {
-  let spectator: Spectator<IfLoggedInComponent>;
+  let spectator: SpectatorHost<IfLoggedInComponent>;
   let sessionSpy: SpyObject<BawSessionService>;
 
   let isLoggedIn: boolean;
 
   const createHost = createHostFactory({
     component: IfLoggedInComponent,
-    imports: [SharedModule, HttpClientTestingModule, MockBawApiModule],
+    imports: [SharedModule, MockBawApiModule],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   function setup(setupState: boolean) {

@@ -11,6 +11,7 @@ import { takeUntil } from "rxjs/operators";
   template: `
     <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
   `,
+  standalone: false
 })
 export class ResolverHandlerComponent
   extends withUnsubscribe()

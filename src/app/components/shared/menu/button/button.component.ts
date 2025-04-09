@@ -39,6 +39,7 @@ import { MenuModal } from "@menu/widgetItem";
   styleUrls: ["./button.component.scss"],
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;

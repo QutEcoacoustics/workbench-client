@@ -31,6 +31,7 @@ import schema from "./report-problem.schema.json";
       </span>
     </baw-form>
   `,
+  standalone: false
 })
 class ReportProblemComponent
   extends FormTemplate<ReportProblem>

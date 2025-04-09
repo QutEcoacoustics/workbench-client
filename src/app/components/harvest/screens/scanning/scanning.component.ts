@@ -32,6 +32,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
       ></baw-progress-bar>
     </baw-progress>
   `,
+  standalone: false
 })
 export class ScanningComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}

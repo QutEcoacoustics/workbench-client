@@ -17,6 +17,7 @@ const userKey = "user";
 @Component({
   selector: "baw-my-projects",
   templateUrl: "./projects.component.html",
+  standalone: false
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   protected api: ProjectsService;

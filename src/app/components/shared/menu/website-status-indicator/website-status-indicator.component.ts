@@ -26,6 +26,7 @@ import { takeUntil } from "rxjs";
       ></fa-icon>
     </a>
   `,
+  standalone: false
 })
 export class WebsiteStatusIndicatorComponent
   extends withUnsubscribe()

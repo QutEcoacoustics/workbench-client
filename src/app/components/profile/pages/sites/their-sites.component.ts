@@ -18,6 +18,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-sites",
   templateUrl: "./sites.component.html",
+  standalone: false
 })
 class TheirSitesComponent extends MySitesComponent {
   public get account(): User {

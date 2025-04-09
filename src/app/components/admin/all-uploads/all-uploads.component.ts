@@ -7,6 +7,7 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 @Component({
   selector: "baw-all-uploads",
   templateUrl: "../../harvest/pages/list/list.component.html",
+  standalone: false
 })
 class AllUploadsComponent extends ListComponent {
   public override get project() {
