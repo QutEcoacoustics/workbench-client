@@ -29,7 +29,7 @@
       "key": "contactable",
       "type": "checkbox",
       "props": {
-        "label": "Can we email you with update to our platform?"
+        "label": "Can we send you email updates about our platform?"
       }
     }
   ]
