@@ -1,9 +1,10 @@
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { Category, menuRoute } from "@interfaces/menusInterfaces";
+import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Region } from "@models/Region";
 import {
+  defaultAnnotationDownloadIcon,
   defaultEditIcon,
   defaultNewIcon,
   isProjectEditorPredicate,
@@ -70,4 +71,11 @@ export const editRegionMenuItem = menuRoute({
   route: regionMenuItem.route.add("edit"),
   tooltip: () => "Change the details for this site",
   title: () => CommonRouteTitles.routeEditTitle,
+});
+
+export const regionAnnotationsMenuItem = menuItem({
+  icon: defaultAnnotationDownloadIcon,
+  label: "Download Annotations",
+  parent: regionMenuItem,
+  tooltip: () => "Download annotations for this site",
 });

@@ -96,6 +96,7 @@ export class AnnotationDownloadComponent
 
   public constructor(
     private siteApi: SitesService,
+    private regionApi: RegionsService,
     private projectApi: ProjectsService,
     private sharedRoute: SharedActivatedRouteService
   ) {
@@ -129,7 +130,13 @@ export class AnnotationDownloadComponent
     const timezone =
       this.model.timezone === "Etc/UTC" ? "UTC" : this.model.timezone;
 
-    if (this.site) {
+    if (this.region) {
+      return this.regionApi.downloadAnnotations(
+        this.region,
+        this.region?.projectId ?? this.project,
+        timezone
+      );
+    } else if (this.site) {
       return this.siteApi.downloadAnnotations(
         this.site,
         this.region?.projectId ?? this.project,
