@@ -25,15 +25,16 @@ import {
   pointMenuItemActions,
   siteMenuItemActions,
 } from "../details/details.component";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "baw-sites-edit",
-  templateUrl: "./edit.component.html",
-  standalone: false
+    selector: "baw-sites-edit",
+    templateUrl: "./edit.component.html",
+    imports: [FormComponent]
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;

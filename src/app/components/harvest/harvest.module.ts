@@ -73,8 +73,7 @@ const components = [
 const routes = harvestsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: [...internalComponents, ...components],
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...internalComponents, ...components],
+    exports: [RouterModule, ...components],
 })
 export class HarvestModule {}

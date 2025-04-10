@@ -5,10 +5,12 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
+import { NgClass } from "@angular/common";
 
 @Component({
-  selector: "baw-search-filters-modal",
-  template: `
+    selector: "baw-search-filters-modal",
+    template: `
     <div class="modal-header">
       <h4 class="modal-title">Change Search Filters</h4>
     </div>
@@ -57,7 +59,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
-  standalone: false
+    imports: [AnnotationSearchFormComponent, NgClass]
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;

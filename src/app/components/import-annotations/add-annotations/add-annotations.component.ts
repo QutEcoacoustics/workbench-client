@@ -51,6 +51,21 @@ import {
   annotationsImportCategory,
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
+import { FormsModule } from "@angular/forms";
+import { FileValueAccessorDirective } from "../../shared/formly/file-input.directive";
+import { NgClass, NgTemplateOutlet, AsyncPipe, DecimalPipe } from "@angular/common";
+import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { ErrorCardComponent } from "../../shared/error-card/error-card.component";
+import { TypeaheadInputComponent as TypeaheadInputComponent_1 } from "../../shared/typeahead-input/typeahead-input.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
+import { VirtualDatatablePaginationDirective } from "../../../directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
+import { LoadingComponent } from "../../shared/loading/loading.component";
+import { UrlDirective } from "../../../directives/url/url.directive";
+import { InlineListComponent } from "../../shared/inline-list/inline-list.component";
+import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+import { isInstantiatedPipe } from "../../../pipes/is-instantiated/is-instantiated.pipe";
 
 interface QueuedFile {
   file: Readonly<File>;
@@ -102,10 +117,10 @@ enum ImportState {
 const audioEventImportKey = "audioEventImport";
 
 @Component({
-  selector: "baw-add-annotations",
-  templateUrl: "add-annotations.component.html",
-  styleUrl: "add-annotations.component.scss",
-  standalone: false
+    selector: "baw-add-annotations",
+    templateUrl: "add-annotations.component.html",
+    styleUrl: "add-annotations.component.scss",
+    imports: [FormsModule, FileValueAccessorDirective, NgClass, NgbTooltip, FaIconComponent, ErrorCardComponent, TypeaheadInputComponent_1, NgTemplateOutlet, NgxDatatableModule, DatatableDefaultsDirective, VirtualDatatablePaginationDirective, LoadingComponent, UrlDirective, InlineListComponent, NgbHighlight, AsyncPipe, DecimalPipe, IsUnresolvedPipe, isInstantiatedPipe]
 })
 class AddAnnotationsComponent
   extends PageComponent

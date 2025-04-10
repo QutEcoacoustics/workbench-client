@@ -9,13 +9,19 @@ import { Id } from "@interfaces/apiInterfaces";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { annotationsImportCategory, annotationsImportMenuItem, newAnnotationImportMenuItem } from "../import-annotations.menu";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
+import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
+import { UserLinkComponent } from "../../shared/user-link/user-link/user-link.component";
+import { UrlDirective } from "../../../directives/url/url.directive";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 
 @Component({
-  selector: "baw-import-list-annotation-imports",
-  templateUrl: "list.component.html",
-  standalone: false
+    selector: "baw-import-list-annotation-imports",
+    templateUrl: "list.component.html",
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, UrlDirective]
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(

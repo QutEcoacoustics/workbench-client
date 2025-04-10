@@ -10,6 +10,9 @@ import { List, Map } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
+import { ItemsComponent } from "../../shared/items/items/items.component";
+import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
+import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 
 function item(data: IItem): Map<keyof IItem, any> {
   return Map<keyof IItem, any>(data);
@@ -21,8 +24,8 @@ function item(data: IItem): Map<keyof IItem, any> {
  * TODO Change statistics based on if config hideProjects property is set
  */
 @Component({
-  selector: "baw-statistics",
-  template: `
+    selector: "baw-statistics",
+    template: `
     <h1>Statistics</h1>
 
     <baw-items [items]="getGroupOne()"></baw-items>
@@ -38,7 +41,7 @@ function item(data: IItem): Map<keyof IItem, any> {
       [audioRecordings]="recent?.audioRecordings"
     ></baw-recent-audio-recordings>
   `,
-  standalone: false
+    imports: [ItemsComponent, RecentAnnotationsComponent, RecentAudioRecordingsComponent]
 })
 class StatisticsComponent
   extends withUnsubscribe(PageComponent)

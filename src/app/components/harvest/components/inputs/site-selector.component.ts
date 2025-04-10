@@ -11,10 +11,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import {
-  NgbTypeahead,
-  NgbTypeaheadSelectItemEvent,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbTypeahead, NgbTypeaheadSelectItemEvent, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import {
   debounceTime,
@@ -27,10 +24,13 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: "baw-harvest-site-selector",
-  template: `
+    selector: "baw-harvest-site-selector",
+    template: `
     <!-- Show site name and link if exists -->
     @if (site) {
       <div class="site-label">
@@ -65,7 +65,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
-  styles: [`
+    styles: [`
     .site-label {
       display: flex;
       justify-content: space-between;
@@ -77,7 +77,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       width: 100%;
     }
   `],
-  standalone: false
+    imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;

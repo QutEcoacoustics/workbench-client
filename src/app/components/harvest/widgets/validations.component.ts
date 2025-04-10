@@ -7,11 +7,15 @@ import { ConfigService } from "@services/config/config.service";
 import { map, Observable, startWith } from "rxjs";
 import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
+import { AsyncPipe } from "@angular/common";
+import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
-  selector: "baw-harvest-issue-widget",
-  templateUrl: "validations.component.html",
-  styles: [`
+    selector: "baw-harvest-issue-widget",
+    templateUrl: "validations.component.html",
+    styles: [`
     hr {
       margin: 1rem -1rem;
     }
@@ -20,7 +24,7 @@ import { HarvestStagesService } from "../services/harvest-stages.service";
       font-size: 0.85em;
     }
   `],
-  standalone: false
+    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe]
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;

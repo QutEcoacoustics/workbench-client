@@ -6,10 +6,13 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { SsrContext } from "@models/WebsiteStatus";
 import { ConfigService } from "@services/config/config.service";
 import { takeUntil } from "rxjs";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
-  selector: "baw-website-status-indicator",
-  template: `
+    selector: "baw-website-status-indicator",
+    template: `
     @if (shouldShowIcon) {
       <a
         class="block nav-link text-danger text-nowrap"
@@ -27,7 +30,7 @@ import { takeUntil } from "rxjs";
       </a>
     }
   `,
-  standalone: false
+    imports: [StrongRouteDirective, NgbTooltip, FaIconComponent]
 })
 export class WebsiteStatusIndicatorComponent
   extends withUnsubscribe()

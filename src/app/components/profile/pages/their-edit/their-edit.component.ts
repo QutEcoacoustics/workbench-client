@@ -17,12 +17,14 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { theirProfileActions } from "../profile/their-profile.component";
 import schema from "../../profile.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
+import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const accountKey = "account";
 
 @Component({
-  selector: "baw-their-edit",
-  template: `
+    selector: "baw-their-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -42,7 +44,7 @@ const accountKey = "account";
       ></baw-detail-view>
     }
   `,
-  standalone: false
+    imports: [FormComponent, DetailViewComponent]
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = schema.fields;

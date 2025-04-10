@@ -7,8 +7,7 @@ import { TimeComponent } from "./time/time.component";
 const components = [TimeComponent];
 
 @NgModule({
-  declarations: components,
-  imports: [CommonModule, IconsModule, FormsModule, ReactiveFormsModule],
-  exports: components,
+    imports: [CommonModule, IconsModule, FormsModule, ReactiveFormsModule, ...components],
+    exports: components,
 })
 export class InputModule {}

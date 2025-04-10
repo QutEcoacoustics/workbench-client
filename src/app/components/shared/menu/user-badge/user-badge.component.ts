@@ -1,14 +1,22 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
+import { LoadingComponent } from "../../loading/loading.component";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { NgTemplateOutlet } from "@angular/common";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { UserLinkComponent } from "../../user-link/user-link/user-link.component";
+import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";
+import { IsGhostUserPipe } from "../../../../pipes/is-ghost-user/is-ghost-user.pipe";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 /**
  * App User Badge Component.
  * A single menu widget displaying a user account and its relationship to the model
  */
 @Component({
-  selector: "baw-user-badge",
-  template: `
+    selector: "baw-user-badge",
+    template: `
     @for (user of models; track user) {
       <div>
         <!-- Spinner -->
@@ -66,8 +74,8 @@ import { DateTime } from "luxon";
       </div>
     }
   `,
-  styleUrls: ["./user-badge.component.scss"],
-  standalone: false
+    styleUrls: ["./user-badge.component.scss"],
+    imports: [LoadingComponent, UrlDirective, NgTemplateOutlet, AuthenticatedImageDirective, UserLinkComponent, TimeSinceComponent, IsGhostUserPipe, IsUnresolvedPipe]
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

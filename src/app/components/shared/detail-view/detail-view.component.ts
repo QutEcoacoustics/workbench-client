@@ -1,10 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { RenderFieldComponent } from "./render-field/render-field.component";
 
 @Component({
-  selector: "baw-detail-view",
-  template: `
+    selector: "baw-detail-view",
+    template: `
     @for (field of fields; track field) {
       <div class="row">
         <dt
@@ -18,12 +19,12 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
       </div>
     }
     `,
-  styles: [`
+    styles: [`
     dt {
       margin-bottom: 1rem;
     }
   `],
-  standalone: false
+    imports: [RenderFieldComponent]
 })
 export class DetailViewComponent {
   @Input() public fields: FormlyFieldConfig[];

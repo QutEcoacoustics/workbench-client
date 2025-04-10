@@ -6,8 +6,7 @@ import { LoadingModule } from "@shared/loading/loading.module";
 import { MapComponent } from "./map.component";
 
 @NgModule({
-  declarations: [MapComponent],
-  imports: [CommonModule, RouterModule, GoogleMapsModule, LoadingModule],
-  exports: [MapComponent],
+    imports: [CommonModule, RouterModule, GoogleMapsModule, LoadingModule, MapComponent],
+    exports: [MapComponent],
 })
 export class MapModule {}

@@ -32,23 +32,20 @@ describe("ScriptComponent", () => {
 
   function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
-      ],
-      declarations: [AdminScriptComponent],
-      providers: [
+        AdminScriptComponent,
+    ],
+    providers: [
         {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { script: scriptResolvers.show },
-            { script: { model, error } }
-          ),
+            provide: ActivatedRoute,
+            useValue: mockActivatedRoute({ script: scriptResolvers.show }, { script: { model, error } }),
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);

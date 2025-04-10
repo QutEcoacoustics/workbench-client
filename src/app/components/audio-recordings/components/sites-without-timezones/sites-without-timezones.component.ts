@@ -4,10 +4,11 @@ import { isUnresolvedModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { UrlDirective } from "../../../../directives/url/url.directive";
 
 @Component({
-  selector: "baw-sites-without-timezones",
-  template: `
+    selector: "baw-sites-without-timezones",
+    template: `
     <!-- Warn users about limitations of time of day filter -->
     @if (
         sitesWithoutTimezones(
@@ -39,7 +40,7 @@ import { Site } from "@models/Site";
       }
     }
   `,
-  standalone: false
+    imports: [UrlDirective]
 })
 export class SitesWithoutTimezonesComponent {
   @Input() public site?: Site;

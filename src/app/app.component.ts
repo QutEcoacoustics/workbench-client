@@ -7,12 +7,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import {
-  NavigationEnd,
-  Router,
-  RouterStateSnapshot,
-  TitleStrategy,
-} from "@angular/router";
+import { NavigationEnd, Router, RouterStateSnapshot, TitleStrategy, RouterOutlet } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -33,6 +28,15 @@ import {
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
+import { HeaderComponent } from "./components/shared/menu/header/header.component";
+import { LoadingBarModule } from "@ngx-loading-bar/core";
+import { ToastProviderComponent } from "./components/shared/toast-provider/toast-provider.component";
+import { SideNavComponent } from "./components/shared/menu/side-nav/side-nav.component";
+import { PrimaryMenuComponent } from "./components/shared/menu/primary-menu/primary-menu.component";
+import { SecondaryMenuComponent } from "./components/shared/menu/secondary-menu/secondary-menu.component";
+import { ActionMenuComponent } from "./components/shared/menu/action-menu/action-menu.component";
+import { BreadcrumbComponent } from "./components/shared/breadcrumb/breadcrumb.component";
+import { FooterComponent } from "./components/shared/footer/footer.component";
 
 declare const gtag: Gtag.Gtag;
 
@@ -40,17 +44,10 @@ declare const gtag: Gtag.Gtag;
  * App Root Component
  */
 @Component({
-  selector: "baw-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
-  standalone: false
-    /*
-     * Need this so that router-outlet components can be styled. If removed,
-     * validate that pages which rely on full height pages such as IFrames are
-     * unaffected
-     */
-    // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-    // encapsulation: ViewEncapsulation.None,
+    selector: "baw-root",
+    templateUrl: "./app.component.html",
+    styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
+    imports: [HeaderComponent, LoadingBarModule, ToastProviderComponent, SideNavComponent, PrimaryMenuComponent, SecondaryMenuComponent, ActionMenuComponent, BreadcrumbComponent, RouterOutlet, FooterComponent]
 })
 export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;

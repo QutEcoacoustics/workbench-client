@@ -19,10 +19,11 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./register.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-  selector: "baw-authentication-register",
-  template: `
+    selector: "baw-authentication-register",
+    template: `
     <baw-form
       title="Register"
       size="small"
@@ -34,7 +35,7 @@ import schema from "./register.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class RegisterComponent
   extends FormTemplate<RegisterDetails>

@@ -27,9 +27,8 @@ const routes = Object.values(verificationRoute)
   .flat();
 
 @NgModule({
-  declarations: [...internalComponents, ...components],
-  imports: [SharedModule, RouterModule.forChild(routes), ...internalModules],
-  exports: [RouterModule, ...components],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [SharedModule, RouterModule.forChild(routes), ...internalModules, ...internalComponents, ...components],
+    exports: [RouterModule, ...components],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationModule {}

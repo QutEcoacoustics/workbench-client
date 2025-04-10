@@ -18,13 +18,14 @@ import {
   adminTagsMenuItem,
 } from "../tags.menus";
 import { adminDeleteTagModal } from "../tags.modals";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const tagKey = "tag";
 const tagTypesKey = "tagTypes";
 
 @Component({
-  selector: "baw-admin-tags-edit",
-  template: `
+    selector: "baw-admin-tags-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -36,7 +37,7 @@ const tagTypesKey = "tagTypes";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

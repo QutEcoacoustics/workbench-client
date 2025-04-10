@@ -2,13 +2,18 @@ import { Component } from "@angular/core";
 import { homeMenuItem } from "@components/home/home.menus";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
+import { MenuToggleComponent } from "../menu-toggle/menu-toggle.component";
+import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { PrimaryMenuComponent } from "../primary-menu/primary-menu.component";
+import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/website-status-indicator.component";
 
 /**
  * Header Component
  */
 @Component({
-  selector: "baw-header",
-  template: `
+    selector: "baw-header",
+    template: `
     <nav id="navbar" class="fixed-top navbar navbar-expand navbar-dark">
       <!--
         Toggle button for secondary/action menus on large displays. Hide if menu
@@ -44,12 +49,12 @@ import { MenuService } from "@services/menu/menu.service";
     <!-- Displace header section of webpage -->
     <div style="height: 3.5rem"></div>
   `,
-  styles: [`
+    styles: [`
     #navbar {
       background-color: var(--baw-header);
     }
   `],
-  standalone: false
+    imports: [MenuToggleComponent, StrongRouteActiveDirective, StrongRouteDirective, PrimaryMenuComponent, WebsiteStatusIndicatorComponent]
 })
 export class HeaderComponent {
   public homeMenuItem = homeMenuItem;

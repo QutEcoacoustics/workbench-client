@@ -28,9 +28,9 @@ import {
 } from "@baw-api/reports/event-report/event-summary-report.service";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
-import { Location } from "@angular/common";
+import { Location, DecimalPipe, PercentPipe, TitleCasePipe } from "@angular/common";
 import { Map } from "immutable";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import {
@@ -41,6 +41,15 @@ import coveragePlotSchema from "./coveragePlot.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatetimeComponent } from "../../../../shared/datetime-formats/datetime/datetime/datetime.component";
+import { InlineListComponent } from "../../../../shared/inline-list/inline-list.component";
+import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
+import { ChartComponent } from "../../../../shared/chart/chart.component";
+import { DurationComponent } from "../../../../shared/datetime-formats/duration/duration.component";
+import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { TimePipe } from "../../../../../pipes/time/time.pipe";
+import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -48,10 +57,10 @@ const siteKey = "site";
 const reportKey = "report";
 
 @Component({
-  selector: "baw-summary-report",
-  templateUrl: "./view.component.html",
-  styleUrl: "./view.component.scss",
-  standalone: false
+    selector: "baw-summary-report",
+    templateUrl: "./view.component.html",
+    styleUrl: "./view.component.scss",
+    imports: [NgbTooltip, FaIconComponent, DatetimeComponent, InlineListComponent, SiteMapComponent, ChartComponent, DurationComponent, NgbCollapse, DecimalPipe, PercentPipe, TitleCasePipe, IsUnresolvedPipe, TimePipe, DateTimePipe]
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

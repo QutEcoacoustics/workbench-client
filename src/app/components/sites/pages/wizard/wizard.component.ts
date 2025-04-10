@@ -12,17 +12,20 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { newSiteMenuItem } from "../../sites.menus";
+import { NgClass } from "@angular/common";
+import { SiteNewComponent } from "../new/new.component";
+import { NewComponent } from "../../../regions/pages/new/new.component";
 
 const projectKey = "project";
 
 @Component({
-  selector: "baw-wizard",
-  styles: [`
+    selector: "baw-wizard",
+    styles: [`
     button {
       width: 100px;
     }
   `],
-  template: `
+    template: `
     @if (!error) {
       <h2 class="text-center">New Site</h2>
 
@@ -56,7 +59,7 @@ const projectKey = "project";
       }
     }
   `,
-  standalone: false
+    imports: [NgClass, SiteNewComponent, NewComponent]
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;

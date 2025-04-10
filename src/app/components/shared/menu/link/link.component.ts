@@ -9,13 +9,18 @@ import {
 import { API_ROOT } from "@services/config/config.tokens";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { Observable } from "rxjs";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Menu Link Component
  */
 @Component({
-  selector: "baw-menu-link",
-  template: `
+    selector: "baw-menu-link",
+    template: `
     <div
       placement="auto"
       [ngbTooltip]="tooltipContent"
@@ -62,8 +67,8 @@ import { Observable } from "rxjs";
       {{ tooltip }}
     </ng-template>
   `,
-  styleUrls: ["./link.component.scss"],
-  standalone: false
+    styleUrls: ["./link.component.scss"],
+    imports: [NgbTooltip, StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet, FaIconComponent, AsyncPipe]
 })
 export class MenuLinkComponent
   extends withUnsubscribe()

@@ -8,8 +8,7 @@ import { BawClientComponent } from "./baw-client.component";
  * Header Module
  */
 @NgModule({
-  declarations: [BawClientComponent],
-  imports: [CommonModule, RouterModule, LoadingModule],
-  exports: [BawClientComponent],
+    imports: [CommonModule, RouterModule, LoadingModule, BawClientComponent],
+    exports: [BawClientComponent],
 })
 export class BawClientModule {}

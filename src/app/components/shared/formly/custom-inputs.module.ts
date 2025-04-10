@@ -64,17 +64,17 @@ const components = [
 ];
 
 @NgModule({
-  declarations: components,
-  imports: [
-    CommonModule,
-    NgbTypeaheadModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FormlyModule,
-    FormlyBootstrapModule,
-    MapModule,
-    IconsModule,
-  ],
-  exports: components,
+    imports: [
+        CommonModule,
+        NgbTypeaheadModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FormlyModule,
+        FormlyBootstrapModule,
+        MapModule,
+        IconsModule,
+        ...components,
+    ],
+    exports: components,
 })
 export class CustomInputsModule {}

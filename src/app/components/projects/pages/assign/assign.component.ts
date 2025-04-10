@@ -17,6 +17,11 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { forkJoin } from "rxjs";
 import { mergeMap, takeUntil } from "rxjs/operators";
 import { projectMenuItemActions } from "../details/details.component";
+import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
+import { FormComponent } from "../../../shared/form/form.component";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 const projectKey = "project";
 
@@ -25,10 +30,10 @@ const projectKey = "project";
  * of how this page works
  */
 @Component({
-  selector: "baw-assign",
-  templateUrl: "./assign.component.html",
-  styleUrls: ["./assign.component.scss"],
-  standalone: false
+    selector: "baw-assign",
+    templateUrl: "./assign.component.html",
+    styleUrls: ["./assign.component.scss"],
+    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, FormComponent, ErrorHandlerComponent]
 })
 class AssignComponent
   extends PagedTableTemplate<TableRow, Site>

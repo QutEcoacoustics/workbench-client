@@ -6,8 +6,7 @@ import { ClipboardModule } from "ngx-clipboard";
 import { HiddenCopyComponent } from "./hidden-copy.component";
 
 @NgModule({
-  declarations: [HiddenCopyComponent],
-  imports: [CommonModule, ClipboardModule, NgbTooltipModule, IconsModule],
-  exports: [HiddenCopyComponent],
+    imports: [CommonModule, ClipboardModule, NgbTooltipModule, IconsModule, HiddenCopyComponent],
+    exports: [HiddenCopyComponent],
 })
 export class HiddenCopyModule {}

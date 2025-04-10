@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { User } from "@models/User";
-import { Placement } from "@ng-bootstrap/ng-bootstrap";
+import { Placement, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { LoadingComponent } from "../../loading/loading.component";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-  selector: "baw-user-link",
-  template: `
+    selector: "baw-user-link",
+    template: `
     <!-- Loading text -->
     @if (user | isUnresolved) {
       <baw-loading size="sm"></baw-loading>
@@ -27,8 +31,8 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       <!-- Show ghost user -->
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [LoadingComponent, UrlDirective, FaIconComponent, NgbTooltip, IsUnresolvedPipe]
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card

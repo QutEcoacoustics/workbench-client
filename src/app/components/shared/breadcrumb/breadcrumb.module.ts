@@ -6,8 +6,7 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { BreadcrumbComponent } from "./breadcrumb.component";
 
 @NgModule({
-  declarations: [BreadcrumbComponent],
-  exports: [BreadcrumbComponent],
-  imports: [CommonModule, RouterModule, IconsModule, DirectivesModule],
+    exports: [BreadcrumbComponent],
+    imports: [CommonModule, RouterModule, IconsModule, DirectivesModule, BreadcrumbComponent],
 })
 export class BreadcrumbModule {}

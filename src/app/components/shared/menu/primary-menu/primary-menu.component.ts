@@ -24,6 +24,15 @@ import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
+import { HeaderItemComponent } from "../header-item/header-item.component";
+import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
+import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/website-status-indicator.component";
+import { NgTemplateOutlet } from "@angular/common";
+import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UrlActiveDirective } from "../../../../directives/url/url-active.directive";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
 
 export type HeaderItem = PartialWith<MenuLink, "label" | "uri">;
 
@@ -36,10 +45,10 @@ export interface HeaderDropdown {
  * Primary Menu Component.
  */
 @Component({
-  selector: "baw-primary-menu",
-  templateUrl: "primary-menu.component.html",
-  styleUrls: ["primary-menu.component.scss"],
-  standalone: false
+    selector: "baw-primary-menu",
+    templateUrl: "primary-menu.component.html",
+    styleUrls: ["primary-menu.component.scss"],
+    imports: [HeaderItemComponent, HeaderDropdownComponent, WebsiteStatusIndicatorComponent, NgTemplateOutlet, StrongRouteActiveDirective, StrongRouteDirective, FaIconComponent, UrlActiveDirective, AuthenticatedImageDirective]
 })
 export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

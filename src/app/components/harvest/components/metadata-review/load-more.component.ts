@@ -6,10 +6,12 @@ import {
   Output,
 } from "@angular/core";
 import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { WhitespaceComponent } from "./whitespace.component";
+import { LoadingComponent } from "../../../shared/loading/loading.component";
 
 @Component({
-  selector: "baw-meta-review-load-more-row",
-  template: `
+    selector: "baw-meta-review-load-more-row",
+    template: `
     <div class="grid-table-item load-more">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
@@ -31,7 +33,7 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
       }
     </div>
   `,
-  styles: [`
+    styles: [`
     .load-more {
       grid-column: 1 / 6;
     }
@@ -40,9 +42,9 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
       display: contents;
     }
   `],
-  // Nothing in this component can change without a change in the row
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    // Nothing in this component can change without a change in the row
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [WhitespaceComponent, LoadingComponent]
 })
 export class LoadMoreComponent {
   @Input() public row: MetaReviewLoadMore;

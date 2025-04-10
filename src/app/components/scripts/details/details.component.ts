@@ -18,13 +18,14 @@ import {
   scriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
+import { DetailViewComponent } from "../../shared/detail-view/detail-view.component";
 
 export const adminScriptActions = [adminEditScriptMenuItem];
 const scriptKey = "script";
 
 @Component({
-  selector: "baw-admin-script",
-  template: `
+    selector: "baw-admin-script",
+    template: `
     @if (!failure) {
       <div>
         <h1>Script Details</h1>
@@ -32,7 +33,7 @@ const scriptKey = "script";
       </div>
     }
   `,
-  standalone: false
+    imports: [DetailViewComponent]
 })
 class AdminScriptComponent
   extends withUnsubscribe(PageComponent)

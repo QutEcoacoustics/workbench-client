@@ -12,6 +12,10 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
 import { MyBookmarksComponent } from "./my-bookmarks.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 const accountKey = "account";
 
@@ -19,9 +23,9 @@ const accountKey = "account";
  * TODO List of bookmarks is filtered incorrectly
  */
 @Component({
-  selector: "baw-their-bookmarks",
-  templateUrl: "./bookmarks.component.html",
-  standalone: false
+    selector: "baw-their-bookmarks",
+    templateUrl: "./bookmarks.component.html",
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent]
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
   public constructor(api: BookmarksService, route: ActivatedRoute) {

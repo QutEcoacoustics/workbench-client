@@ -3,10 +3,11 @@ import { homeCategory } from "@components/home/home.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { pageNotFoundMenuItem } from "./error.menus";
+import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.directive";
 
 @Component({
-  selector: "baw-page-not-found",
-  template: `
+    selector: "baw-page-not-found",
+    template: `
     <h1>Not Found</h1>
     <div>
       This page doesn't seem to exist, if you believe this is an error please go
@@ -14,7 +15,7 @@ import { pageNotFoundMenuItem } from "./error.menus";
       report the issue.
     </div>
   `,
-  standalone: false
+    imports: [StrongRouteDirective]
 })
 class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;

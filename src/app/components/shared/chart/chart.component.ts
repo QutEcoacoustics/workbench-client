@@ -23,12 +23,11 @@ const customFormatterName = "customFormatter";
 // and use the same schema to render multiple charts with different data
 // and provide a unified error message format. All of the above cannot be done with vega-lite alone
 @Component({
-  selector: "baw-chart",
-  template: `
+    selector: "baw-chart",
+    template: `
     <div #chartContainer class="chartContainer marks">Chart loading</div>
   `,
-  styleUrls: ["chart.component.scss"],
-  standalone: false
+    styleUrls: ["chart.component.scss"]
 })
 export class ChartComponent implements AfterViewInit, OnDestroy {
   public constructor() {}

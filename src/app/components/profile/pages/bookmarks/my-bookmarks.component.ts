@@ -11,13 +11,17 @@ import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { myAccountActions } from "../profile/my-profile.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-bookmarks",
-  templateUrl: "./bookmarks.component.html",
-  standalone: false
+    selector: "baw-my-bookmarks",
+    templateUrl: "./bookmarks.component.html",
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent]
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public api: BookmarksService;

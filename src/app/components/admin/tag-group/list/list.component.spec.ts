@@ -26,14 +26,14 @@ describe("AdminTagGroupsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      declarations: [AdminTagGroupsComponent],
-      imports: [
+    imports: [
         SharedModule,
         RouterTestingModule,
         ...appLibraryImports,
         MockBawApiModule,
-      ],
-    }).compileComponents();
+        AdminTagGroupsComponent,
+    ],
+}).compileComponents();
 
     TestBed.inject(ToastService);
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
