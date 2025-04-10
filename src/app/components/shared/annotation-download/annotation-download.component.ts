@@ -130,15 +130,17 @@ export class AnnotationDownloadComponent
     const timezone =
       this.model.timezone === "Etc/UTC" ? "UTC" : this.model.timezone;
 
-    if (this.region) {
-      return this.regionApi.downloadAnnotations(
-        this.region,
+    // we pick the most specific model available in the route, meaning that
+    // the order of these if conditions is important
+    if (this.site) {
+      return this.siteApi.downloadAnnotations(
+        this.site,
         this.region?.projectId ?? this.project,
         timezone
       );
-    } else if (this.site) {
-      return this.siteApi.downloadAnnotations(
-        this.site,
+    } else if (this.region) {
+      return this.regionApi.downloadAnnotations(
+        this.region,
         this.region?.projectId ?? this.project,
         timezone
       );
