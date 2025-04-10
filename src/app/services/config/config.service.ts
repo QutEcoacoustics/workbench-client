@@ -14,6 +14,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
+import environmentConfig from "../../../assets/environment.json";
 
 export const assetRoot = "/assets";
 
@@ -53,6 +54,15 @@ export class ConfigService {
       return;
     }
 
+    // if we are in ssr, we can read the file directly from the file system
+    // instead of using the http client
+    if (this.isServer) {
+      const config = await import("../../../assets/environment.json");
+      this.setConfig(new Configuration(config));
+      await embedGoogleServicesIfValid();
+      return;
+    }
+
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
         retry({ count: 5, delay: 250 }),
@@ -63,8 +73,8 @@ export class ConfigService {
         // API Interceptor is not transforming this error
         catchError((err: any) => {
           console.error("API_CONFIG Failed to load configuration file: ", err);
-          this.setConfig(new Configuration(undefined));
-          return of();
+          this.setConfig(new Configuration(environmentConfig));
+          return of(undefined);
         })
       )
     );

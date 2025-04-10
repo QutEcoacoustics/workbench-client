@@ -107,6 +107,10 @@
           "configurations": {
             "production": {
               "buildTarget": "workbench-client:build:production"
+            },
+            "development": {
+              "host": "development.ecosounds.org",
+              "port": 4200
             }
           }
         },
