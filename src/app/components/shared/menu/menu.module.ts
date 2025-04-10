@@ -17,7 +17,7 @@ import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { UserLinkModule } from "@shared/user-link/user-link.module";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
-import { LoadingModule } from "../loading/loading.module";
+
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { MenuButtonComponent } from "./button/button.component";
 import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
@@ -59,19 +59,18 @@ const publicComponents = [
  */
 @NgModule({
     imports: [
-        CommonModule,
-        RouterModule,
-        NgbModalModule,
-        NgbTooltipModule,
-        NgbDropdownModule,
-        IconsModule,
-        LoadingModule,
-        PipesModule,
-        DirectivesModule,
-        UserLinkModule,
-        TimeSinceComponent,
-        ...privateComponents, ...publicComponents,
-    ],
+    CommonModule,
+    RouterModule,
+    NgbModalModule,
+    NgbTooltipModule,
+    NgbDropdownModule,
+    IconsModule,
+    PipesModule,
+    DirectivesModule,
+    UserLinkModule,
+    TimeSinceComponent,
+    ...privateComponents, ...publicComponents,
+],
     providers: [
         {
             provide: DEFAULT_MENU,

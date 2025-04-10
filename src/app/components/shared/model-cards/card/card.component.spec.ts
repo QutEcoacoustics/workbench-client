@@ -2,7 +2,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -33,11 +33,10 @@ describe("CardComponent", () => {
   const createComponent = createComponentFactory({
     component: CardComponent,
     imports: [
-      RouterTestingModule,
-      MockBawApiModule,
-      MockDirectivesModule,
-      PipesModule,
-    ],
+    RouterTestingModule,
+    MockBawApiModule,
+    PipesModule,
+],
     providers: [
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),

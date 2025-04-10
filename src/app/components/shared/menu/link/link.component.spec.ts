@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -29,12 +29,11 @@ describe("MenuLinkComponent", () => {
   const createHost = createHostFactory({
     component: MenuLinkComponent,
     imports: [
-      MockConfigModule,
-      RouterTestingModule,
-      MockDirectivesModule,
-      NgbTooltipModule,
-      IconsModule,
-    ],
+    MockConfigModule,
+    RouterTestingModule,
+    NgbTooltipModule,
+    IconsModule,
+],
   });
 
   function getWrapper(): HTMLSpanElement {

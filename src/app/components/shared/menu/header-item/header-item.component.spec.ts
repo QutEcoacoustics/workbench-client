@@ -1,5 +1,5 @@
 import { RouterTestingModule } from "@angular/router/testing";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import {
   MenuLink,
   menuLink,
@@ -18,7 +18,7 @@ describe("HeaderItemComponent", () => {
   let spec: Spectator<HeaderItemComponent>;
   const createComponent = createComponentFactory({
     component: HeaderItemComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
+    imports: [RouterTestingModule, MockConfigModule],
   });
 
   function getLink() {

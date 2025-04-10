@@ -1,6 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -27,17 +27,16 @@ describe("RenderFieldComponent", () => {
     component: RenderFieldComponent,
     declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-      CheckboxModule,
-      MockDirectivesModule,
-      LoadingModule,
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
-      DatetimeComponent,
-      ZonedDateTimeComponent,
-      DurationComponent,
-      TimeSinceComponent,
-    ],
+    CheckboxModule,
+    LoadingModule,
+    MockBawApiModule,
+    RouterTestingModule,
+    PipesModule,
+    DatetimeComponent,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    TimeSinceComponent,
+],
   });
 
   const getElement = {

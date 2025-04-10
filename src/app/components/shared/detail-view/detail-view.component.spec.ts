@@ -2,7 +2,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
@@ -26,14 +26,13 @@ describe("DetailViewComponent", () => {
     component: DetailViewComponent,
     declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
-      CheckboxModule,
-      MockDirectivesModule,
-      LoadingModule,
-      MockBawApiModule,
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
-    ],
+    CheckboxModule,
+    LoadingModule,
+    MockBawApiModule,
+    MockBawApiModule,
+    RouterTestingModule,
+    PipesModule,
+],
     providers: [
       MockStandardApiService,
       { provide: MOCK.token, useExisting: MockStandardApiService },

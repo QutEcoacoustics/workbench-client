@@ -1,6 +1,6 @@
 import { Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   createComponentFactory,
@@ -30,7 +30,7 @@ describe("BreadcrumbComponent", () => {
   let spec: Spectator<BreadcrumbComponent>;
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
-    imports: [MockDirectivesModule, IconsModule, RouterTestingModule],
+    imports: [IconsModule, RouterTestingModule],
   });
 
   function triggerQueryParams(params: Params) {

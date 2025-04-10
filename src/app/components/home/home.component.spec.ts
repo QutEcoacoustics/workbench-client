@@ -5,7 +5,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
@@ -42,14 +42,13 @@ describe("HomeComponent", () => {
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
-      MockBawApiModule,
-      MockConfigModule,
-      IconsModule,
-      MockDirectivesModule,
-      RouterTestingModule,
-      LoadingModule,
-      PipesModule,
-    ],
+    MockBawApiModule,
+    MockConfigModule,
+    IconsModule,
+    RouterTestingModule,
+    LoadingModule,
+    PipesModule,
+],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

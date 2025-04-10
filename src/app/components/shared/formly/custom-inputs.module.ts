@@ -5,7 +5,7 @@ import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { ConfigOption, FormlyModule } from "@ngx-formly/core";
 import { IconsModule } from "@shared/icons/icons.module";
-import { MapModule } from "@shared/map/map.module";
+
 import { CheckboxInputComponent } from "./checkbox-input.component";
 import { FileValueAccessorDirective } from "./file-input.directive";
 import { HorizontalWrapperComponent } from "./horizontal-wrapper.component";
@@ -65,16 +65,15 @@ const components = [
 
 @NgModule({
     imports: [
-        CommonModule,
-        NgbTypeaheadModule,
-        FormsModule,
-        ReactiveFormsModule,
-        FormlyModule,
-        FormlyBootstrapModule,
-        MapModule,
-        IconsModule,
-        ...components,
-    ],
+    CommonModule,
+    NgbTypeaheadModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule,
+    FormlyBootstrapModule,
+    IconsModule,
+    ...components,
+],
     exports: components,
 })
 export class CustomInputsModule {}
