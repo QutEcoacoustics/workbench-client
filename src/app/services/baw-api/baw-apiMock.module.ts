@@ -1,6 +1,7 @@
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
@@ -118,7 +119,7 @@ export const mockProviders: Provider[] = [
     ...serviceTokens,
     ...serviceResolvers,
     ...mockProviders,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideHttpClientTesting(),
   ],
 })
