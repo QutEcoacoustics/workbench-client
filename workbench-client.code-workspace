@@ -37,6 +37,7 @@
       "testid",
       "flac",
       "autohide",
+      "prerender",
     ],
     "cSpell.ignorePaths": [
       "**/.git/objects/**",
