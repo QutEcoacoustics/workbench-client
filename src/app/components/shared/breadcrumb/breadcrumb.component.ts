@@ -4,13 +4,16 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { BreadcrumbsData, MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, Observable } from "rxjs";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
+import { AsyncPipe } from "@angular/common";
 
 /**
  * Menu Link Component
  */
 @Component({
-  selector: "baw-breadcrumbs",
-  template: `
+    selector: "baw-breadcrumbs",
+    template: `
     @if ({
       breadcrumbs: breadcrumbs$ | async,
       queryParams: queryParams$ | async,
@@ -39,8 +42,8 @@ import { map, Observable } from "rxjs";
       }
     }
   `,
-  styleUrls: ["breadcrumb.component.scss"],
-  standalone: false
+    styleUrls: ["breadcrumb.component.scss"],
+    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe]
 })
 export class BreadcrumbComponent implements OnInit {
   public queryParams$: Observable<Params>;

@@ -11,10 +11,11 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./unlock-account.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-  selector: "baw-confirm-account",
-  template: `
+    selector: "baw-confirm-account",
+    template: `
     <baw-form
       title="Resend unlock instructions"
       [model]="model"
@@ -24,7 +25,7 @@ import schema from "./unlock-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   public fields = schema.fields;

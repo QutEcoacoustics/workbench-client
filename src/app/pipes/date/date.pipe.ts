@@ -12,10 +12,7 @@ export interface DateTimePipeOptions {
 // this retains all the functionality and options of the Angular date pipe while allowing us to use Luxon dates without
 // having to cast to a JavaScript Date object in each component
 // using this pipe also allows us to standardise the date format throughout the client
-@Pipe({
-  name: "dateTime",
-  standalone: false
-})
+@Pipe({ name: "dateTime" })
 export class DateTimePipe implements PipeTransform {
   public constructor() {}
 

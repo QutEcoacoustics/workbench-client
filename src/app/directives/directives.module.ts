@@ -20,8 +20,7 @@ const directives = [
  * Use MockDirectivesModule for unit tests instead of this
  */
 @NgModule({
-  declarations: directives,
-  imports: [RouterModule.forChild([])],
-  exports: [...directives, BawDatatableModule],
+    imports: [RouterModule.forChild([]), ...directives],
+    exports: [...directives, BawDatatableModule],
 })
 export class DirectivesModule {}

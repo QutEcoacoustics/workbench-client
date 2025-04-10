@@ -4,11 +4,16 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { DateTime, Duration } from "luxon";
 import { adminCategory, adminDateTimeTemplateMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
+import { FormsModule } from "@angular/forms";
+import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
+import { ZonedDateTimeComponent } from "../../shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DurationComponent } from "../../shared/datetime-formats/duration/duration.component";
+import { TimeSinceComponent } from "../../shared/datetime-formats/time-since/time-since.component";
 
 @Component({
-  selector: "baw-admin-datetime-templates",
-  templateUrl: "datetime-example.component.html",
-  standalone: false
+    selector: "baw-admin-datetime-templates",
+    templateUrl: "datetime-example.component.html",
+    imports: [FormsModule, DatetimeComponent, ZonedDateTimeComponent, DurationComponent, TimeSinceComponent]
 })
 class DateTimeExampleComponent extends PageComponent {
   public constructor() {

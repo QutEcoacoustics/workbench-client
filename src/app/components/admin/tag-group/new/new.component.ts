@@ -14,10 +14,11 @@ import {
   adminTagGroupsCategory,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-  selector: "baw-admin-tag-groups-new",
-  template: `
+    selector: "baw-admin-tag-groups-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Tag Group"
@@ -29,7 +30,7 @@ import schema from "../tag-group.schema.json";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = schema.fields;

@@ -1,13 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { asFormControl } from "./helper";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 /**
  * Location Input
  */
 @Component({
-  selector: "baw-password-confirmation-input",
-  template: `
+    selector: "baw-password-confirmation-input",
+    template: `
     <div class="form-group mb-3">
       <label for="password">Password {{ props.required ? " *" : "" }}</label>
       <input
@@ -59,7 +60,7 @@ import { asFormControl } from "./helper";
       [formControl]="asFormControl(formControl)"
     />
   `,
-  standalone: false
+    imports: [FormsModule, FormlyModule, ReactiveFormsModule]
 })
 export class PasswordConfirmationInputComponent
   extends FieldType

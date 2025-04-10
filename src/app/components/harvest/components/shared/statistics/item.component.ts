@@ -1,9 +1,12 @@
 import { Component, Input } from "@angular/core";
 import { Statistic } from "./statistics.component";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgClass } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
-  selector: "baw-harvest-statistic-item",
-  template: `
+    selector: "baw-harvest-statistic-item",
+    template: `
     <div class="card-body" [ngbTooltip]="statistic.tooltip">
       <div class="icon" [ngClass]="'text-bg-' + statistic.bgColor">
         <fa-icon
@@ -22,7 +25,7 @@ import { Statistic } from "./statistics.component";
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .card-body {
       text-align: center;
       min-width: 7.5rem;
@@ -42,7 +45,7 @@ import { Statistic } from "./statistics.component";
       font-weight: bold;
     }
   `],
-  standalone: false
+    imports: [NgbTooltip, NgClass, FaIconComponent]
 })
 export class StatisticItemComponent {
   @Input() public statistic: Statistic;

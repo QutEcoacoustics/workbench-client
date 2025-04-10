@@ -20,6 +20,7 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { regionMenuItemActions } from "../details/details.component";
 import schema from "../../region.base.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -28,8 +29,8 @@ const regionKey = "region";
  * Edit Region Component
  */
 @Component({
-  selector: "baw-regions-edit",
-  template: `
+    selector: "baw-regions-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -41,7 +42,7 @@ const regionKey = "region";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;

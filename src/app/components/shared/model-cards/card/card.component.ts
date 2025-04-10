@@ -6,14 +6,19 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { map, Observable } from "rxjs";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
+import { LoadingComponent } from "../../loading/loading.component";
+import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
 /**
  * Card Image Component
  */
 @Component({
-  selector: "baw-card",
-  styleUrls: ["./card.component.scss"],
-  template: `
+    selector: "baw-card",
+    styleUrls: ["./card.component.scss"],
+    template: `
     <div class="card h-100">
       <!-- Image -->
       <div class="card-image position-relative">
@@ -71,7 +76,7 @@ import { map, Observable } from "rxjs";
       }
     </ng-template>
     `,
-  standalone: false
+    imports: [UrlDirective, AuthenticatedImageDirective, NgTemplateOutlet, LoadingComponent, AsyncPipe, WithLoadingPipe]
 })
 export class CardComponent implements OnInit {
   @Input() public model: Project | Region;

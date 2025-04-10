@@ -13,13 +13,15 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { takeUntil } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { LoadingComponent } from "../loading/loading.component";
+import { ErrorHandlerComponent } from "../error-handler/error-handler.component";
 
 /**
  * CMS Wrapper
  */
 @Component({
-  selector: "baw-cms",
-  template: `
+    selector: "baw-cms",
+    template: `
     @if (loading) {
       <h4 class="text-center">Loading</h4>
       <baw-loading></baw-loading>
@@ -29,7 +31,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-  standalone: false
+    imports: [LoadingComponent, ErrorHandlerComponent]
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;

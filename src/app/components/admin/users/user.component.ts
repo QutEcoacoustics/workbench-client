@@ -12,11 +12,17 @@ import {
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
+import { DebounceInputComponent } from "../../shared/debounce-input/debounce-input.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "../../../directives/url/url.directive";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
+import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.component";
 
 @Component({
-  selector: "baw-admin-users",
-  templateUrl: "./user.component.html",
-  standalone: false
+    selector: "baw-admin-users",
+    templateUrl: "./user.component.html",
+    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, StrongRouteDirective, ErrorHandlerComponent]
 })
 class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;

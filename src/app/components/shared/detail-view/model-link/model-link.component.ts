@@ -7,11 +7,14 @@ import {
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { NgTemplateOutlet } from "@angular/common";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 // TODO Pass model to content through context
 @Component({
-  selector: "baw-model-link",
-  template: `
+    selector: "baw-model-link",
+    template: `
     <!-- Loading text -->
     @if (model | isUnresolved) {
       <ng-content select="#unresolved"></ng-content>
@@ -38,8 +41,8 @@ import { User } from "@models/User";
       <ng-content select="#model"></ng-content>
     </ng-template>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [UrlDirective, NgTemplateOutlet, IsUnresolvedPipe]
 })
 export class ModelLinkComponent implements OnChanges {
   @Input() public model: AbstractModel;

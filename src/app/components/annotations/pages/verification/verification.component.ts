@@ -23,7 +23,7 @@ import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -45,6 +45,9 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { ProgressWarningComponent as ProgressWarningComponent_1 } from "../../components/modals/progress-warning/progress-warning.component";
+import { SearchFiltersModalComponent as SearchFiltersModalComponent_1 } from "../../components/modals/search-filters/search-filters.component";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -63,10 +66,10 @@ const confirmedMapping = {
 } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
 @Component({
-  selector: "baw-verification",
-  templateUrl: "verification.component.html",
-  styleUrl: "verification.component.scss",
-  standalone: false
+    selector: "baw-verification",
+    templateUrl: "verification.component.html",
+    styleUrl: "verification.component.scss",
+    imports: [FaIconComponent, NgbTooltip, ProgressWarningComponent_1, SearchFiltersModalComponent_1]
 })
 class VerificationComponent
   extends PageComponent

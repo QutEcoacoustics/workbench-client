@@ -4,8 +4,7 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { StepperComponent } from "./stepper.component";
 
 @NgModule({
-  declarations: [StepperComponent],
-  imports: [CommonModule, IconsModule],
-  exports: [StepperComponent],
+    imports: [CommonModule, IconsModule, StepperComponent],
+    exports: [StepperComponent],
 })
 export class StepperModule {}

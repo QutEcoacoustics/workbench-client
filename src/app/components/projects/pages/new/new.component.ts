@@ -14,10 +14,11 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { projectsMenuItemActions } from "../list/list.component";
 import schema from "../../project.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-  selector: "baw-projects-new",
-  template: `
+    selector: "baw-projects-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Project"
@@ -29,7 +30,7 @@ import schema from "../../project.schema.json";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class NewComponent extends FormTemplate<Project> {
   public fields = schema.fields;

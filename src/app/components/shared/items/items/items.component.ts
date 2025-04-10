@@ -6,15 +6,15 @@ import {
   OnInit,
 } from "@angular/core";
 import { List } from "immutable";
-import { IItem } from "../item/item.component";
+import { IItem, ItemComponent } from "../item/item.component";
 
 /**
  * Items Component.
  * This creates a list of items split into two columns.
  */
 @Component({
-  selector: "baw-items",
-  template: `
+    selector: "baw-items",
+    template: `
     <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group">
@@ -49,8 +49,8 @@ import { IItem } from "../item/item.component";
     </div>
     `,
     // Pure Component
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ItemComponent]
 })
 export class ItemsComponent implements OnInit, OnChanges {
   @Input() public items: List<IItem>;

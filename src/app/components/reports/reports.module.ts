@@ -15,8 +15,7 @@ const routes = Object.values(reportsRoute)
   .flat();
 
 @NgModule({
-  declarations: components,
-  exports: [RouterModule, ...components],
-  imports: [SharedModule, RouterModule.forChild(routes), ProjectsModule],
+    exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ProjectsModule, ...components],
 })
 export class ReportsModule {}

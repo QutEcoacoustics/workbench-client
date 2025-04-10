@@ -12,13 +12,19 @@ import {
   adminScriptsCategory,
   scriptsMenuItem,
 } from "../scripts.menus";
+import { DebounceInputComponent } from "../../shared/debounce-input/debounce-input.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
+import { IfLoggedInComponent } from "../../shared/can/can.component";
+import { UrlDirective } from "../../../directives/url/url.directive";
+import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.component";
 
 export const adminScriptsMenuItemActions = [newScriptMenuItem];
 
 @Component({
-  selector: "baw-scripts",
-  templateUrl: "./list.component.html",
-  standalone: false
+    selector: "baw-scripts",
+    templateUrl: "./list.component.html",
+    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, IfLoggedInComponent, UrlDirective, ErrorHandlerComponent]
 })
 class AdminScriptsComponent
   extends PagedTableTemplate<TableRow, Script>

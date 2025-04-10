@@ -25,8 +25,8 @@ const providers = [
 ];
 
 @NgModule({
-  declarations: pipes,
-  exports: pipes,
-  providers,
+    imports: [...pipes],
+    exports: pipes,
+    providers,
 })
 export class PipesModule {}

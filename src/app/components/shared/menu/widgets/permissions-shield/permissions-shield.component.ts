@@ -16,6 +16,8 @@ import { SharedActivatedRouteService } from "@services/shared-activated-route/sh
 import { map, takeUntil } from "rxjs";
 import { Harvest } from "@models/Harvest";
 import { WidgetComponent } from "../widget.component";
+import { UserBadgeComponent } from "../../user-badge/user-badge.component";
+import { TitleCasePipe } from "@angular/common";
 
 /**
  * Permissions Shield Component.
@@ -23,8 +25,8 @@ import { WidgetComponent } from "../widget.component";
  * TODO Let page decide which model to display permissions for
  */
 @Component({
-  selector: "baw-permissions-shield-widget",
-  template: `
+    selector: "baw-permissions-shield-widget",
+    template: `
     @if (model) {
       <section class="pb-3">
         @for (badge of badges; track badge) {
@@ -45,7 +47,7 @@ import { WidgetComponent } from "../widget.component";
       </section>
     }
   `,
-  standalone: false
+    imports: [UserBadgeComponent, TitleCasePipe]
 })
 export class PermissionsShieldComponent
   extends withUnsubscribe()

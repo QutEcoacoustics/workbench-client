@@ -5,12 +5,13 @@ import {
   listenRecordingMenuItem,
 } from "@components/listen/listen.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { BawClientComponent } from "../../../shared/baw-client/baw-client.component";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
-  selector: "baw-listen-recording",
-  template: "<baw-client></baw-client>",
-  standalone: false
+    selector: "baw-listen-recording",
+    template: "<baw-client></baw-client>",
+    imports: [BawClientComponent]
 })
 class ListenRecordingComponent extends PageComponent {}
 

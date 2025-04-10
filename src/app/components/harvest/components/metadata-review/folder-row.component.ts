@@ -14,10 +14,18 @@ import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { WhitespaceComponent } from "./whitespace.component";
+import { FaLayersComponent, FaIconComponent, FaLayersCounterComponent } from "@fortawesome/angular-fontawesome";
+import { LoadingComponent } from "../../../shared/loading/loading.component";
+import { SiteSelectorComponent } from "../inputs/site-selector.component";
+import { UTCOffsetSelectorComponent } from "../inputs/utc-offset-selector.component";
+import { CheckboxComponent } from "../../../shared/checkbox/checkbox.component";
+import { DecimalPipe } from "@angular/common";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-  selector: "baw-meta-review-folder-row",
-  template: `
+    selector: "baw-meta-review-folder-row",
+    template: `
     <!-- Icon and Path -->
     <div class="grid-table-item pointer" (click)="toggleFolder.emit()">
       <!-- Whitespace -->
@@ -131,8 +139,8 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
       }
     </div>
   `,
-  styleUrls: ["folder-row.component.scss"],
-  standalone: false
+    styleUrls: ["folder-row.component.scss"],
+    imports: [WhitespaceComponent, FaLayersComponent, FaIconComponent, FaLayersCounterComponent, LoadingComponent, SiteSelectorComponent, UTCOffsetSelectorComponent, CheckboxComponent, DecimalPipe, IsUnresolvedPipe]
 })
 export class FolderRowComponent {
   @Input() public harvest: Harvest;

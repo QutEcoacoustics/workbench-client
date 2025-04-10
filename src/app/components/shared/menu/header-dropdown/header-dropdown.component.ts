@@ -2,14 +2,15 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { getRoute, MenuLink } from "@interfaces/menusInterfaces";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
+import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Header Dropdown Item.
  * Displays a dropdown list of items for the user to choose from.
  */
 @Component({
-  selector: "baw-header-dropdown",
-  template: `
+    selector: "baw-header-dropdown",
+    template: `
     <li class="nav-item dropdown" ngbDropdown>
       <button
         ngbDropdownToggle
@@ -26,8 +27,8 @@ import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
       </div>
     </li>
     `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
 })
 export class HeaderDropdownComponent {
   @Input() public label: string;

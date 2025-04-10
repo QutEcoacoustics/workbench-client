@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
-import { FieldWrapper } from "@ngx-formly/core";
+import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
 
 /**
  * Horizontal wrapper for formly components so they can be center aligned
  * ! Warning, test manually after changes
  */
 @Component({
-  selector: "baw-horizontal-wrapper",
-  template: `
+    selector: "baw-horizontal-wrapper",
+    template: `
     <div class="form-group row">
       @if (props.label) {
         <label
@@ -29,6 +29,6 @@ import { FieldWrapper } from "@ngx-formly/core";
       }
     </div>
   `,
-  standalone: false
+    imports: [FormlyModule]
 })
 export class HorizontalWrapperComponent extends FieldWrapper {}

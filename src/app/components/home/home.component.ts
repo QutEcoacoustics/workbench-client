@@ -15,12 +15,19 @@ import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 import { homeCategory, homeMenuItem } from "./home.menus";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { LoadingComponent } from "../shared/loading/loading.component";
+import { CardsComponent } from "../shared/model-cards/cards/cards.component";
+import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.directive";
+import { AuthenticatedImageDirective } from "../../directives/image/image.directive";
+import { AsyncPipe, UpperCasePipe, TitleCasePipe } from "@angular/common";
+import { WithLoadingPipe } from "../../pipes/with-loading/with-loading.pipe";
 
 @Component({
-  selector: "baw-home",
-  styleUrls: ["./home.component.scss"],
-  templateUrl: "./home.component.html",
-  standalone: false
+    selector: "baw-home",
+    styleUrls: ["./home.component.scss"],
+    templateUrl: "./home.component.html",
+    imports: [FaIconComponent, LoadingComponent, CardsComponent, StrongRouteDirective, AuthenticatedImageDirective, AsyncPipe, UpperCasePipe, TitleCasePipe, WithLoadingPipe]
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;

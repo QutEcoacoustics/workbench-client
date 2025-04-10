@@ -16,18 +16,18 @@ xdescribe("DataRequestComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DataRequestComponent],
-      imports: [
+    imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockConfigModule,
-      ],
-      providers: [
+        DataRequestComponent,
+    ],
+    providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(DataRequestComponent);
     component = fixture.componentInstance;

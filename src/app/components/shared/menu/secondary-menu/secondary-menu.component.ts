@@ -5,6 +5,7 @@ import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
 import { takeUntil } from "rxjs";
+import { MenuComponent } from "../menu/menu.component";
 
 /**
  * Secondary Menu Component.
@@ -12,8 +13,8 @@ import { takeUntil } from "rxjs";
  * links. It also acts as a breadcrumb showing the user their current location.
  */
 @Component({
-  selector: "baw-secondary-menu",
-  template: `
+    selector: "baw-secondary-menu",
+    template: `
     <baw-menu
       menuType="secondary"
       [links]="links"
@@ -21,7 +22,7 @@ import { takeUntil } from "rxjs";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
-  standalone: false
+    imports: [MenuComponent]
 })
 export class SecondaryMenuComponent
   extends withUnsubscribe()

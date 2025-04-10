@@ -14,12 +14,13 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
 import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
+import { FormComponent } from "../../shared/form/form.component";
 
 const audioEventImportKey = "audioEventImport";
 
 @Component({
-  selector: "baw-edit-annotation-import",
-  template: `
+    selector: "baw-edit-annotation-import",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -31,7 +32,7 @@ const audioEventImportKey = "audioEventImport";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class EditAnnotationsComponent
   extends FormTemplate<AudioEventImport>

@@ -1,15 +1,17 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
 import { asFormControl } from "./helper";
+import { FileValueAccessorDirective } from "./file-input.directive";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 /**
  * Image Input
  * ! Warning, test manually after changes
  */
 @Component({
-  selector: "baw-image-input",
-  template: `
+    selector: "baw-image-input",
+    template: `
     <div class="form-group mb-3">
       @if (props.label) {
         <label [for]="field.id">
@@ -41,7 +43,7 @@ import { asFormControl } from "./helper";
       </div>
     </div>
   `,
-  standalone: false
+    imports: [FileValueAccessorDirective, FormsModule, ReactiveFormsModule, FormlyModule]
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")

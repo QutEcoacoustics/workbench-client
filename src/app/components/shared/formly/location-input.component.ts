@@ -1,10 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { asFormControl } from "./helper";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MapComponent } from "../map/map.component";
 
 /**
  * Location Input
@@ -12,8 +14,8 @@ import { asFormControl } from "./helper";
  * Modifying the location through map clicks and drag are not fully tested through the unit tests and should be tested manually
  */
 @Component({
-  selector: "baw-location-input",
-  template: `
+    selector: "baw-location-input",
+    template: `
     <div class="form-group">
       <label for="latitude"> Latitude {{ props.required ? " *" : "" }} </label>
       <input
@@ -68,7 +70,7 @@ import { asFormControl } from "./helper";
       ></baw-map>
     </div>
   `,
-  standalone: false
+    imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;

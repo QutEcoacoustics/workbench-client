@@ -6,10 +6,15 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { UrlDirective } from "../../../../directives/url/url.directive";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
+import { LoadingComponent } from "../../../shared/loading/loading.component";
+import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
 @Component({
-  selector: "baw-site-card",
-  template: `
+    selector: "baw-site-card",
+    template: `
     <li class="list-group-item p-2">
       <div class="body">
         <div class="heading m-0 mb-1">
@@ -58,8 +63,8 @@ import { map } from "rxjs/operators";
       }
     </ng-template>
   `,
-  styleUrls: ["./site-card.component.scss"],
-  standalone: false
+    styleUrls: ["./site-card.component.scss"],
+    imports: [UrlDirective, AuthenticatedImageDirective, NgTemplateOutlet, LoadingComponent, AsyncPipe, WithLoadingPipe]
 })
 export class SiteCardComponent implements OnInit {
   @Input() public project: Project;

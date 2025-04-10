@@ -40,6 +40,14 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { HiddenCopyComponent } from "../../../shared/hidden-copy/hidden-copy.component";
+import { ItemsComponent } from "../../../shared/items/items/items.component";
+import { LoadingComponent } from "../../../shared/loading/loading.component";
+import { UrlDirective } from "../../../../directives/url/url.directive";
 
 export const myAccountActions = [
   myEditMenuItem,
@@ -54,10 +62,10 @@ export const myAccountActions = [
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-profile",
-  templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.scss"],
-  standalone: false
+    selector: "baw-my-profile",
+    templateUrl: "./profile.component.html",
+    styleUrls: ["./profile.component.scss"],
+    imports: [AuthenticatedImageDirective, FaIconComponent, NgbTooltip, StrongRouteDirective, HiddenCopyComponent, ItemsComponent, LoadingComponent, UrlDirective]
 })
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)

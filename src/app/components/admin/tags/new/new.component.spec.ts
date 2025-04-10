@@ -26,23 +26,20 @@ describe("AdminTagsNewComponent", () => {
 
   function configureTestingModule(model: TagType[], error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
-      ],
-      declarations: [AdminTagsNewComponent],
-      providers: [
+        AdminTagsNewComponent,
+    ],
+    providers: [
         {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { typeOfTags: tagResolvers.tagTypes },
-            { tagTypes: { model, error } }
-          ),
+            provide: ActivatedRoute,
+            useValue: mockActivatedRoute({ typeOfTags: tagResolvers.tagTypes }, { tagTypes: { model, error } }),
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsNewComponent);
     api = TestBed.inject(TagsService) as SpyObject<TagsService>;

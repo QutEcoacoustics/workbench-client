@@ -7,8 +7,8 @@ describe("SelectableItemsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SelectableItemsComponent],
-    }).compileComponents();
+    imports: [SelectableItemsComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(SelectableItemsComponent);
     component = fixture.componentInstance;

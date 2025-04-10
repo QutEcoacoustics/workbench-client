@@ -5,8 +5,8 @@ import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-debounce-input",
-  template: `
+    selector: "baw-debounce-input",
+    template: `
     <div class="input-group mb-3">
       @if (label) {
         <div class="input-group-prepend input-group-text">
@@ -21,8 +21,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
         (keyup)="onFilter($event)"
       />
     </div>
-  `,
-  standalone: false
+  `
 })
 export class DebounceInputComponent
   extends withUnsubscribe()

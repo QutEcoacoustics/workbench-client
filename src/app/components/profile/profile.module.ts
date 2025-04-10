@@ -39,15 +39,13 @@ const myAccountRoutes = myAccountRoute.compileRoutes(getRouteConfigForPage);
 const profileRoutes = theirProfileRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: myAccountComponents,
-  imports: [SharedModule, RouterModule.forChild(myAccountRoutes)],
-  exports: [RouterModule, ...myAccountComponents],
+    imports: [SharedModule, RouterModule.forChild(myAccountRoutes), ...myAccountComponents],
+    exports: [RouterModule, ...myAccountComponents],
 })
 export class MyAccountModule {}
 
 @NgModule({
-  declarations: theirProfileComponents,
-  imports: [SharedModule, RouterModule.forChild(profileRoutes)],
-  exports: [RouterModule, ...theirProfileComponents],
+    imports: [SharedModule, RouterModule.forChild(profileRoutes), ...theirProfileComponents],
+    exports: [RouterModule, ...theirProfileComponents],
 })
 export class ProfileModule {}

@@ -58,29 +58,28 @@ const publicComponents = [
  * Menus Module
  */
 @NgModule({
-  declarations: [...privateComponents, ...publicComponents],
-  imports: [
-    CommonModule,
-    RouterModule,
-    NgbModalModule,
-    NgbTooltipModule,
-    NgbDropdownModule,
-    IconsModule,
-    LoadingModule,
-    PipesModule,
-    DirectivesModule,
-    UserLinkModule,
-
-    TimeSinceComponent,
-  ],
-  providers: [
-    {
-      provide: DEFAULT_MENU,
-      useFactory: DefaultMenu.getMenu,
-      deps: [ConfigService],
-    },
-    MenuService,
-  ],
-  exports: publicComponents,
+    imports: [
+        CommonModule,
+        RouterModule,
+        NgbModalModule,
+        NgbTooltipModule,
+        NgbDropdownModule,
+        IconsModule,
+        LoadingModule,
+        PipesModule,
+        DirectivesModule,
+        UserLinkModule,
+        TimeSinceComponent,
+        ...privateComponents, ...publicComponents,
+    ],
+    providers: [
+        {
+            provide: DEFAULT_MENU,
+            useFactory: DefaultMenu.getMenu,
+            deps: [ConfigService],
+        },
+        MenuService,
+    ],
+    exports: publicComponents,
 })
 export class MenuModule {}

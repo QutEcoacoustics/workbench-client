@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
-import { FieldType } from "@ngx-formly/core";
+import { NgbTypeahead, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { merge, Observable, Subject } from "rxjs";
 import {
@@ -13,13 +13,15 @@ import {
   map,
 } from "rxjs/operators";
 import { asFormControl } from "./helper";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Timezone Input
  */
 @Component({
-  selector: "baw-timezone-input",
-  template: `
+    selector: "baw-timezone-input",
+    template: `
     <div class="form-group">
       @if (props.label) {
         <label [for]="field.id">
@@ -75,7 +77,7 @@ import { asFormControl } from "./helper";
       />
     </div>
   `,
-  standalone: false
+    imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;

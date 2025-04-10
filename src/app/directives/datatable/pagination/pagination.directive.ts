@@ -95,10 +95,7 @@ import {
  * </ngx-datatable>
  * ```
  */
-@Directive({
-  selector: "[bawDatatablePagination]",
-  standalone: false
-})
+@Directive({ selector: "[bawDatatablePagination]" })
 export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
   implements AfterContentInit

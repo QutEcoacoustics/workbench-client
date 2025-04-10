@@ -30,16 +30,20 @@ import {
   MenuModalWithoutAction,
   WidgetMenuItem,
 } from "../widgets/widgetItem";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { MenuButtonComponent } from "../button/button.component";
+import { MenuLinkComponent } from "../link/link.component";
+import { UpperCasePipe } from "@angular/common";
 
 /**
  * Menu Component.
  * Used to display menu links, routes, and actions.
  */
 @Component({
-  selector: "baw-menu",
-  templateUrl: "./menu.component.html",
-  styleUrls: ["./menu.component.scss"],
-  standalone: false
+    selector: "baw-menu",
+    templateUrl: "./menu.component.html",
+    styleUrls: ["./menu.component.scss"],
+    imports: [FaIconComponent, MenuButtonComponent, MenuLinkComponent, WidgetDirective, UpperCasePipe]
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;

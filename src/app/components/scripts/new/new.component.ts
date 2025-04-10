@@ -14,13 +14,14 @@ import {
   newScriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
+import { FormComponent } from "../../shared/form/form.component";
 
 /**
  * New Scripts Component
  */
 @Component({
-  selector: "baw-admin-scripts-new",
-  template: `
+    selector: "baw-admin-scripts-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Script"
@@ -32,7 +33,7 @@ import {
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(

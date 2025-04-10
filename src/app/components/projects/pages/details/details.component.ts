@@ -32,12 +32,16 @@ import {
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { merge, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { analysesMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { SiteMapComponent } from "../../components/site-map/site-map.component";
+import { SiteCardComponent } from "../../components/site-card/site-card.component";
 
 export const projectMenuItemActions = [
   visualizeMenuItem,
@@ -58,8 +62,8 @@ export const projectMenuItemActions = [
 const projectKey = "project";
 
 @Component({
-  selector: "baw-project",
-  template: `
+    selector: "baw-project",
+    template: `
     @if (project) {
       <h1>{{ project.name }}</h1>
       <div class="row mb-3">
@@ -134,8 +138,8 @@ const projectKey = "project";
 
     <div class="mb-3"></div>
   `,
-  styleUrls: ["./details.component.scss"],
-  standalone: false
+    styleUrls: ["./details.component.scss"],
+    imports: [AuthenticatedImageDirective, DebounceInputComponent, SiteMapComponent, SiteCardComponent, NgbPagination]
 })
 class DetailsComponent
   extends PaginationTemplate<Site | Region>

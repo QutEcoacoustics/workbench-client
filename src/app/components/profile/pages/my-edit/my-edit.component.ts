@@ -15,12 +15,13 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { myAccountActions } from "../profile/my-profile.component";
 import schema from "./my-edit.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-edit",
-  template: `
+    selector: "baw-my-edit",
+    template: `
     @if (!failure) {
       <baw-form
         title="Profile Settings"
@@ -33,7 +34,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class MyEditComponent extends FormTemplate<User> {
   public fields = schema.fields;

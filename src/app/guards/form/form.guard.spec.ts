@@ -80,8 +80,8 @@ describe("WithFormCheck", () => {
           }
         </div>
         `,
-    standalone: false
-  })
+    imports: [...appLibraryImports, SharedModule]
+})
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];
     public numForms = 0;
@@ -117,9 +117,8 @@ describe("WithFormCheck", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule],
-      declarations: [MockComponent],
-    }).compileComponents();
+    imports: [...appLibraryImports, SharedModule, MockComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     mockComponent = fixture.componentInstance;

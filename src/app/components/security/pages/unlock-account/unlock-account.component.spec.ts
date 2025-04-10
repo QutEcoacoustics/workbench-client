@@ -31,10 +31,9 @@ describe("UnlockAccountComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [...testFormImports, MockBawApiModule],
-        providers: testFormProviders,
-        declarations: [UnlockAccountComponent, FormComponent],
-      }).compileComponents();
+    imports: [...testFormImports, MockBawApiModule, UnlockAccountComponent, FormComponent],
+    providers: testFormProviders,
+}).compileComponents();
 
       fixture = TestBed.createComponent(UnlockAccountComponent);
       component = fixture.componentInstance;

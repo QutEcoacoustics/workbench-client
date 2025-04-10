@@ -11,8 +11,7 @@ const components = [
 const routes = websiteStatusRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: components,
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [RouterModule, ...components],
 })
 export class WebsiteStatusModule {}

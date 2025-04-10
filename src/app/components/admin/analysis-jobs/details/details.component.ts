@@ -7,13 +7,14 @@ import {
   adminAnalysisJobMenuItem,
   adminAnalysisJobsCategory,
 } from "../analysis-jobs.menus";
+import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const analysisJobKey = "analysisJob";
 
 @Component({
-  selector: "baw-admin-analysis-job",
-  templateUrl: "../../../audio-analysis/pages/details/details.component.html",
-  standalone: false
+    selector: "baw-admin-analysis-job",
+    templateUrl: "../../../audio-analysis/pages/details/details.component.html",
+    imports: [DetailViewComponent]
 })
 class AdminAnalysisJobComponent extends AnalysisJobComponent {}
 

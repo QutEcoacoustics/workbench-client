@@ -20,14 +20,25 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
 import { harvestsMenuItemActions } from "../list/list.component";
+import { TitleComponent } from "../../components/shared/title.component";
+import { StepperComponent } from "../../../shared/stepper/stepper.component";
+import { ErrorComponent } from "../../screens/error/error.component";
+import { LoadingComponent } from "../../../shared/loading/loading.component";
+import { StreamUploadingComponent } from "../../screens/uploading/stream-uploading.component";
+import { BatchUploadingComponent } from "../../screens/uploading/batch-uploading.component";
+import { ScanningComponent } from "../../screens/scanning/scanning.component";
+import { MetadataExtractionComponent } from "../../screens/metadata-extraction/metadata-extraction.component";
+import { MetadataReviewComponent } from "../../screens/metadata-review/metadata-review.component";
+import { ProcessingComponent } from "../../screens/processing/processing.component";
+import { CompleteComponent } from "../../screens/complete/complete.component";
 
 const projectKey = "project";
 const harvestKey = "harvest";
 
 @Component({
-  selector: "baw-harvest",
-  templateUrl: "./details.component.html",
-  standalone: false
+    selector: "baw-harvest",
+    templateUrl: "./details.component.html",
+    imports: [TitleComponent, StepperComponent, ErrorComponent, LoadingComponent, StreamUploadingComponent, BatchUploadingComponent, ScanningComponent, MetadataExtractionComponent, MetadataReviewComponent, ProcessingComponent, CompleteComponent]
 })
 class DetailsComponent
   extends withUnsubscribe(PageComponent)

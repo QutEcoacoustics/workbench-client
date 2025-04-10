@@ -4,6 +4,8 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { MenuType } from "@helpers/generalTypes";
 import { MenuService } from "@services/menu/menu.service";
 import { BehaviorSubject, Observable } from "rxjs";
+import { NgClass } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 export type LeftOrRight = "left" | "right";
 
@@ -13,8 +15,8 @@ export enum MenuState {
 }
 
 @Component({
-  selector: "baw-menu-toggle",
-  template: `
+    selector: "baw-menu-toggle",
+    template: `
     <button
       type="button"
       [ngClass]="[alignment, 'text-' + color]"
@@ -24,7 +26,7 @@ export enum MenuState {
       <fa-icon size="2x" [icon]="getIcon()"></fa-icon>
     </button>
   `,
-  styles: [`
+    styles: [`
     button {
       align-content: center;
       all: unset;
@@ -38,7 +40,7 @@ export enum MenuState {
       justify-content: end;
     }
   `],
-  standalone: false
+    imports: [NgClass, FaIconComponent]
 })
 export class MenuToggleComponent implements OnInit {
   @Input() public menuType: MenuType;

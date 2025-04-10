@@ -13,7 +13,6 @@ import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 @NgModule({
-    declarations: [RenderFieldComponent, DetailViewComponent, ModelLinkComponent],
     exports: [RenderFieldComponent, DetailViewComponent],
     imports: [
         CheckboxModule,
@@ -24,7 +23,8 @@ import { RenderFieldComponent } from "./render-field/render-field.component";
         DurationComponent,
         TimeSinceComponent,
         ZonedDateTimeComponent,
-        DatetimeComponent
+        DatetimeComponent,
+        RenderFieldComponent, DetailViewComponent, ModelLinkComponent
     ]
 })
 export class DetailViewModule {}

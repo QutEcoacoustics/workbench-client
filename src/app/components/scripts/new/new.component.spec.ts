@@ -22,14 +22,14 @@ describe("AdminScriptsNewComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
-      ],
-      declarations: [AdminScriptsNewComponent],
-    }).compileComponents();
+        AdminScriptsNewComponent,
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsNewComponent);
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;

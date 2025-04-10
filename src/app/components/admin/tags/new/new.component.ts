@@ -11,12 +11,13 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import { adminNewTagMenuItem, adminTagsCategory } from "../tags.menus";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const typeOfTagsKey = "typeOfTags";
 
 @Component({
-  selector: "baw-admin-tags-new",
-  template: `
+    selector: "baw-admin-tags-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Tag"
@@ -28,7 +29,7 @@ const typeOfTagsKey = "typeOfTags";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

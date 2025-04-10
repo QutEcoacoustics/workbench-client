@@ -39,13 +39,12 @@ export const adminMenuItemActions = [
 ];
 
 @Component({
-  selector: "baw-dashboard",
-  template: `
+    selector: "baw-dashboard",
+    template: `
     <h1>Admin Dashboard</h1>
     <p>Welcome to the super-secret-site-settings!</p>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 class AdminDashboardComponent extends PageComponent {}
 

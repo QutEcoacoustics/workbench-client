@@ -8,7 +8,7 @@ import {
   EventEmitter,
   Output,
 } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterModel } from "@helpers/filters/filters";
@@ -17,7 +17,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbCollapse, NgbInputDatepicker } from "@ng-bootstrap/ng-bootstrap";
 import { FromJS, fromJS } from "immutable";
 import { DateTime, Duration } from "luxon";
 import {
@@ -27,6 +27,8 @@ import {
   takeUntil,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { TimeComponent } from "../input/time/time.component";
 
 export interface DateTimeFilterModel {
   projects?: Project[];
@@ -42,10 +44,10 @@ export interface DateTimeFilterModel {
 }
 
 @Component({
-  selector: "baw-date-time-filter",
-  templateUrl: "date-time-filter.component.html",
-  styleUrls: ["date-time-filter.component.scss"],
-  standalone: false
+    selector: "baw-date-time-filter",
+    templateUrl: "date-time-filter.component.html",
+    styleUrls: ["date-time-filter.component.scss"],
+    imports: [FormsModule, NgbCollapse, NgbInputDatepicker, FaIconComponent, TimeComponent]
 })
 export class DateTimeFilterComponent
   extends withUnsubscribe()

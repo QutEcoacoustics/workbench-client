@@ -1,9 +1,13 @@
 import { Component, Input } from "@angular/core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
+import { NgClass } from "@angular/common";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { ClipboardModule } from "ngx-clipboard";
 
 @Component({
-  selector: "baw-hidden-copy",
-  template: `
+    selector: "baw-hidden-copy",
+    template: `
     <div id="auth-token" class="input-group">
       <button
         id="visibility-btn"
@@ -51,7 +55,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       </span>
     </div>
   `,
-  styles: [`
+    styles: [`
     #auth-token pre {
       margin: 0;
       white-space: pre-wrap;
@@ -72,7 +76,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       border-bottom-left-radius: 0;
     }
   `],
-  standalone: false
+    imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule]
 })
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";

@@ -19,14 +19,15 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 const regionKey = "region";
 
 @Component({
-  selector: "baw-sites-new",
-  templateUrl: "./new.component.html",
-  standalone: false
+    selector: "baw-sites-new",
+    templateUrl: "./new.component.html",
+    imports: [FormComponent]
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public title = "";

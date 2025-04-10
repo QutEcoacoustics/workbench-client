@@ -14,12 +14,13 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";
+import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const siteKey = "site";
 
 @Component({
-  selector: "baw-admin-orphan",
-  template: `
+    selector: "baw-admin-orphan",
+    template: `
     @if (!failure) {
       <div>
         <h1>Orphan Site Details</h1>
@@ -27,7 +28,7 @@ const siteKey = "site";
       </div>
     }
   `,
-  standalone: false
+    imports: [DetailViewComponent]
 })
 class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)

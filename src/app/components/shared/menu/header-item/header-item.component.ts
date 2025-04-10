@@ -14,14 +14,17 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import camelCase from "just-camel-case";
+import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { NgTemplateOutlet } from "@angular/common";
 
 /**
  * Header Item Component.
  * Displays a header link.
  */
 @Component({
-  selector: "baw-header-item",
-  template: `
+    selector: "baw-header-item",
+    template: `
     <!-- Internal link template -->
     <ng-template #internalRoute>
       <a
@@ -49,8 +52,8 @@ import camelCase from "just-camel-case";
       }
     </li>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet]
 })
 export class HeaderItemComponent implements OnInit {
   @Input() public link: NavigableMenuItem | HeaderItem;

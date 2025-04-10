@@ -9,8 +9,11 @@ import {
 } from "@components/regions/regions.menus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Region } from "@models/Region";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
+import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { CardsComponent } from "../../../shared/model-cards/cards/cards.component";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 export const regionsMenuItemActions = [
   shallowNewRegionMenuItem,
@@ -19,8 +22,8 @@ export const regionsMenuItemActions = [
 ];
 
 @Component({
-  selector: "baw-regions",
-  template: `
+    selector: "baw-regions",
+    template: `
     @if (!error) {
       <baw-debounce-input
         label="Filter"
@@ -50,7 +53,7 @@ export const regionsMenuItemActions = [
     }
     <baw-error-handler [error]="error"></baw-error-handler>
     `,
-  standalone: false
+    imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
 })
 class ListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);

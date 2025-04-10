@@ -10,13 +10,15 @@ import {
   ethicsMenuItem,
 } from "../../about/about.menus";
 import { statisticsMenuItem } from "../../statistics/statistics.menus";
+import { StrongRouteActiveDirective } from "../../../directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
 
 /**
  * Footer Component
  */
 @Component({
-  selector: "baw-footer",
-  template: `
+    selector: "baw-footer",
+    template: `
     <footer class="container-fluid text-bg-light">
       <nav class="container navbar navbar-expand-lg navbar-light text-bg-light">
         <ul class="nav me-auto align-items-center m-auto">
@@ -44,8 +46,8 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
       </nav>
     </footer>
     `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [StrongRouteActiveDirective, StrongRouteDirective]
 })
 export class FooterComponent implements OnInit {
   public version: string;

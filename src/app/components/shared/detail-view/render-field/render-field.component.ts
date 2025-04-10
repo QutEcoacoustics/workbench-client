@@ -11,10 +11,18 @@ import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { CheckboxComponent } from "../../checkbox/checkbox.component";
+import { ModelLinkComponent } from "../model-link/model-link.component";
+import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { DurationComponent } from "../../datetime-formats/duration/duration.component";
+import { ZonedDateTimeComponent } from "../../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";
+import { DatetimeComponent } from "../../datetime-formats/datetime/datetime/datetime.component";
+import { DetailViewModule } from "../detail-view.module";
 
 @Component({
-  selector: "baw-render-field",
-  template: `
+    selector: "baw-render-field",
+    template: `
     <!-- Display plain text -->
     @if (styling === fieldStyling.plain) {
       <dl>
@@ -87,7 +95,7 @@ import { takeUntil } from "rxjs/operators";
       }
     }
   `,
-  styles: [`
+    styles: [`
     p {
       word-wrap: break-word;
     }
@@ -100,7 +108,7 @@ import { takeUntil } from "rxjs/operators";
       margin-right: auto;
     }
   `],
-  standalone: false
+    imports: [CheckboxComponent, ModelLinkComponent, AuthenticatedImageDirective, DurationComponent, ZonedDateTimeComponent, TimeSinceComponent, DatetimeComponent, DetailViewModule]
 })
 export class RenderFieldComponent
   extends withUnsubscribe()

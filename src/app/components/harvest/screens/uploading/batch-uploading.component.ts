@@ -3,17 +3,22 @@ import { HarvestStagesService } from "@components/harvest/services/harvest-stage
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { DeviceDetectorService } from "ngx-device-detector";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UploadUrlComponent } from "../../components/shared/upload-url.component";
+import { ConfirmationComponent } from "../../components/modal/confirmation.component";
+import { DecimalPipe } from "@angular/common";
+import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 export type UploadingInstructionTab="Windows"|"Mac"|"Linux"|"RClone"
 
 @Component({
-  selector: "baw-harvest-batch-uploading",
-  templateUrl: "batch-uploading.component.html",
-  styleUrls: ["batch-uploading.component.scss"],
-  standalone: false
+    selector: "baw-harvest-batch-uploading",
+    templateUrl: "batch-uploading.component.html",
+    styleUrls: ["batch-uploading.component.scss"],
+    imports: [NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLink, NgbNavLinkBase, NgbNavContent, NgbNavOutlet, FaIconComponent, UploadUrlComponent, ConfirmationComponent, DecimalPipe, SafePipe]
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;
