@@ -1,6 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -24,13 +24,12 @@ describe("UserBadgeComponent", () => {
     component: UserBadgeComponent,
     declarations: [UserLinkComponent],
     imports: [
-      RouterTestingModule,
-      MockDirectivesModule,
-      MockBawApiModule,
-      LoadingModule,
-      PipesModule,
-      TimeSinceComponent,
-    ],
+    RouterTestingModule,
+    MockBawApiModule,
+    LoadingModule,
+    PipesModule,
+    TimeSinceComponent,
+],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>

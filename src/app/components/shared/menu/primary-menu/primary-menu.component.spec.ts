@@ -21,7 +21,7 @@ import {
   loginMenuItem,
   registerMenuItem,
 } from "@components/security/security.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import {
   CustomMenuItem,
   Settings,
@@ -59,11 +59,10 @@ describe("PrimaryMenuComponent", () => {
       HeaderDropdownComponent,
     ],
     imports: [
-      RouterTestingModule,
-      MockBawApiModule,
-      IconsModule,
-      MockDirectivesModule,
-    ],
+    RouterTestingModule,
+    MockBawApiModule,
+    IconsModule,
+],
   });
   const registerLinkSelector = "#register-header-link";
   const adminLinkSelector = "#admin-header-link";
