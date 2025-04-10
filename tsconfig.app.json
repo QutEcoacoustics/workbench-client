@@ -3,8 +3,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["@types/gtag.js"]
+    "types": [
+      "@types/gtag.js",
+      "node"
+    ]
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "src/main.server.ts",
+    "src/server.ts"
+  ],
   "include": ["src/**/*.d.ts"]
 }
