@@ -1,6 +1,7 @@
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from "@angular/common/http";
 import { NgModule } from "@angular/core";
@@ -32,7 +33,7 @@ import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
     ...services,
     ...serviceTokens,
     ...serviceResolvers,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
   ],
 })
 export class BawApiModule {}
