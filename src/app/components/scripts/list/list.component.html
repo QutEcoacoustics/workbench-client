@@ -1,4 +1,4 @@
-<ng-container *ngIf="rows && !error">
+@if (rows && !error) {
   <h1>Scripts</h1>
 
   <p>
@@ -29,26 +29,28 @@
     </ngx-datatable-column>
     <ngx-datatable-column name="Command" [sortable]="false">
     </ngx-datatable-column>
-    <ngx-datatable-column
-      *ngIf="session.isLoggedIn"
-      name="Model"
-      [width]="155"
-      [maxWidth]="155"
-      [sortable]="false"
-    >
-      <ng-template let-column="column" ngx-datatable-header-template>
-        Actions
-      </ng-template>
-
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <baw-can [ifLoggedIn]="true">
-          <a class="btn btn-sm btn-primary me-1" [bawUrl]="value.viewUrl">
-            View
-          </a>
-        </baw-can>
-      </ng-template>
-    </ngx-datatable-column>
+    @if (session.isLoggedIn) {
+      <ngx-datatable-column
+        name="Model"
+        [width]="155"
+        [maxWidth]="155"
+        [sortable]="false"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Actions
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-can [ifLoggedIn]="true">
+            <a class="btn btn-sm btn-primary me-1" [bawUrl]="value.viewUrl">
+              View
+            </a>
+          </baw-can>
+        </ng-template>
+      </ngx-datatable-column>
+    }
   </ngx-datatable>
-</ng-container>
+}
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
+}

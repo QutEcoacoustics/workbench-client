@@ -8,9 +8,11 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-debounce-input",
   template: `
     <div class="input-group mb-3">
-      <div *ngIf="label" class="input-group-prepend input-group-text">
-        {{ label }}
-      </div>
+      @if (label) {
+        <div class="input-group-prepend input-group-text">
+          {{ label }}
+        </div>
+      }
       <input
         type="text"
         class="form-control"

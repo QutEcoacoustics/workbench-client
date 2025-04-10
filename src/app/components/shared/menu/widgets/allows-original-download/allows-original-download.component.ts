@@ -11,18 +11,20 @@ import { map, Observable } from "rxjs";
   selector: "baw-allows-original-download",
   template: `
     <!-- ng-container needed because otherwise ExpressionChangedAfterItHasBeenCheckedError is thrown -->
-    <ng-container *ngIf="project$">
-      <section *ngIf="project$ | async as project" class="pb-3">
-        <p id="label" class="m-0 fs-5">Recording Downloads</p>
-        <small
-          id="has-access"
-          class="m-0"
-          [ngbTooltip]="getTooltip(project)"
-          [innerText]="getUserAccess(project)"
-        >
-        </small>
-      </section>
-    </ng-container>
+    @if (project$) {
+      @if (project$ | async; as project) {
+        <section class="pb-3">
+          <p id="label" class="m-0 fs-5">Recording Downloads</p>
+          <small
+            id="has-access"
+            class="m-0"
+            [ngbTooltip]="getTooltip(project)"
+            [innerText]="getUserAccess(project)"
+            >
+          </small>
+        </section>
+      }
+    }
   `,
   standalone: false
 })

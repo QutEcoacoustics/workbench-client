@@ -25,23 +25,25 @@ import { WidgetComponent } from "../widget.component";
 @Component({
   selector: "baw-permissions-shield-widget",
   template: `
-    <section *ngIf="model" class="pb-3">
-      <div *ngFor="let badge of badges">
-        <h5 id="label">{{ badge.label }}</h5>
-
-        <baw-user-badge
-          [users]="model[badge.userKey]"
-          [timestamp]="badge.timestamp"
-        ></baw-user-badge>
-      </div>
-
-      <ng-container *ngIf="accessLevel">
-        <h5 id="access-level-label">Your access level</h5>
-        <span id="access-level" style="font-size: 0.9rem">
-          {{ accessLevel | titlecase }}
-        </span>
-      </ng-container>
-    </section>
+    @if (model) {
+      <section class="pb-3">
+        @for (badge of badges; track badge) {
+          <div>
+            <h5 id="label">{{ badge.label }}</h5>
+            <baw-user-badge
+              [users]="model[badge.userKey]"
+              [timestamp]="badge.timestamp"
+            ></baw-user-badge>
+          </div>
+        }
+        @if (accessLevel) {
+          <h5 id="access-level-label">Your access level</h5>
+          <span id="access-level" style="font-size: 0.9rem">
+            {{ accessLevel | titlecase }}
+          </span>
+        }
+      </section>
+    }
   `,
   standalone: false
 })

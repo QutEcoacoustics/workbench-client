@@ -7,17 +7,15 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
 @Component({
   selector: "baw-website-status-warning",
   template: `
-    <ng-container *ngIf="!(api.status$ | async)?.[feature]">
+    @if (!(api.status$ | async)?.[feature]) {
       <section>
         <div class="alert alert-danger">
           <div>
-            <ng-container *ngIf="message; else contentOutlet">
+            @if (message) {
               <p>{{ message }}</p>
-            </ng-container>
-
-            <ng-template #contentOutlet>
+            } @else {
               <ng-content></ng-content>
-            </ng-template>
+            }
           </div>
 
           <div>
@@ -27,7 +25,7 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
           </div>
         </div>
       </section>
-    </ng-container>
+    }
   `,
   standalone: false
 })

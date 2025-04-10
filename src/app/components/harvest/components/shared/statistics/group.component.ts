@@ -5,14 +5,15 @@ import { Statistic } from "./statistics.component";
   selector: "baw-harvest-statistic-group",
   template: `
     <div class="card shadow">
-      <baw-harvest-statistic-item
-        *ngFor="let stat of statisticGroup"
-        [statistic]="stat"
-      >
-      </baw-harvest-statistic-item>
+      @for (stat of statisticGroup; track stat) {
+        <baw-harvest-statistic-item
+          [statistic]="stat"
+          >
+        </baw-harvest-statistic-item>
+      }
       <ng-content></ng-content>
     </div>
-  `,
+    `,
   styles: [`
     .card {
       display: flex;

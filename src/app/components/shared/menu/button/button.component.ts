@@ -30,9 +30,9 @@ import { MenuModal } from "@menu/widgetItem";
     </div>
 
     <ng-template #tooltipContent>
-      <ng-container *ngIf="disabledReason">
+      @if (disabledReason) {
         {{ disabledReason }}<br />
-      </ng-container>
+      }
       {{ tooltip }}
     </ng-template>
   `,

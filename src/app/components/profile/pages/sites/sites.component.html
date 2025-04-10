@@ -1,5 +1,5 @@
-<ng-container *ngIf="!failure">
-  <ng-container *ngIf="!error">
+@if (!failure) {
+  @if (!error) {
     <h1>
       Sites
       <small class="text-muted">accessible by {{ account.userName }}</small>
@@ -22,12 +22,11 @@
     >
       <ngx-datatable-column name="Site">
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="hasViewUrl(value); else siteName">
+          @if (hasViewUrl(value)) {
             <a [bawUrl]="value.viewUrl">{{ value.name }}</a>
-          </ng-container>
-          <ng-template #siteName>
+          } @else {
             {{ value.name }}
-          </ng-template>
+          }
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column name="Last Modified" [width]="150" [maxWidth]="150">
@@ -42,14 +41,11 @@
         [sortable]="false"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-loading
-            *ngIf="value.accessLevel | isUnresolved; else loaded"
-            size="sm"
-          ></baw-loading>
-
-          <ng-template #loaded>
+          @if (value.accessLevel | isUnresolved) {
+            <baw-loading size="sm"></baw-loading>
+          } @else {
             {{ value.accessLevel | titlecase }}
-          </ng-template>
+          }
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column
@@ -69,7 +65,9 @@
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-  </ng-container>
+  }
 
-  <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
-</ng-container>
+  @if (error) {
+    <baw-error-handler [error]="error"></baw-error-handler>
+  }
+}

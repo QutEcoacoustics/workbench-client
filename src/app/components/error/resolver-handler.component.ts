@@ -9,7 +9,9 @@ import { takeUntil } from "rxjs/operators";
 @Component({
   selector: "baw-resolver-handler",
   template: `
-    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+    @if (error) {
+      <baw-error-handler [error]="error"></baw-error-handler>
+    }
   `,
   standalone: false
 })

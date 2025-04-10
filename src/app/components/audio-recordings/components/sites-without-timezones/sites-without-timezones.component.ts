@@ -9,39 +9,35 @@ import { Site } from "@models/Site";
   selector: "baw-sites-without-timezones",
   template: `
     <!-- Warn users about limitations of time of day filter -->
-    <ng-container
-      *ngIf="
+    @if (
         sitesWithoutTimezones(
           site,
           region?.sites,
           project?.sites
-        ) as sitesWithoutTimezone
-      "
-    >
-      <div *ngIf="sitesWithoutTimezone.length > 0" class="alert alert-danger">
-        Warning, this batch download includes site/s which do not have their
-        timezones set. Any time of day filtering will not work on these sites
-        until the site owner or editors update them. The list of sites can be
-        seen below:
-
-        <ul
-          *ngFor="let siteWithoutTimezone of sitesWithoutTimezone"
-          class="mb-0"
-        >
-          <li>
-            <a
-              [bawUrl]="
-                project
-                  ? siteWithoutTimezone.getViewUrl(project)
-                  : siteWithoutTimezone.viewUrl
-              "
-            >
-              {{ siteWithoutTimezone.name }}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </ng-container>
+        ); as sitesWithoutTimezone
+      ) {
+      @if (sitesWithoutTimezone.length > 0) {
+        <div class="alert alert-danger">
+          Warning, this batch download includes site/s which do not have their
+          timezones set. Any time of day filtering will not work on these sites
+          until the site owner or editors update them. The list of sites can be
+          seen below:
+          @for (siteWithoutTimezone of sitesWithoutTimezone; track siteWithoutTimezone) {
+            <ul class="mb-0">
+              <li>
+                <a [bawUrl]="project
+                    ? siteWithoutTimezone.getViewUrl(project)
+                    : siteWithoutTimezone.viewUrl
+                  "
+                >
+                  {{ siteWithoutTimezone.name }}
+                </a>
+              </li>
+            </ul>
+          }
+        </div>
+      }
+    }
   `,
   standalone: false
 })

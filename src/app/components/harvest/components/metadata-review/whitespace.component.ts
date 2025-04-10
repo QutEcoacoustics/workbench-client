@@ -3,12 +3,14 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 @Component({
   selector: "baw-meta-review-whitespace",
   template: `
-    <ng-container *ngFor="let indent of indentation">
+    @for (indent of indentation; track indent) {
       <span class="vertical-line"></span>
       <div class="whitespace-block"></div>
-    </ng-container>
+    }
 
-    <span *ngIf="isFolder" class="vertical-half-line"></span>
+    @if (isFolder) {
+      <span class="vertical-half-line"></span>
+    }
   `,
   styles: [`
     .vertical-half-line {

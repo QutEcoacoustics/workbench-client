@@ -5,41 +5,43 @@
   [activeStep]="stages.currentStage"
 ></baw-stepper>
 
-<baw-harvest-error
-  *ngIf="stages.isCurrentStage('newHarvest')"
-></baw-harvest-error>
+@if (stages.isCurrentStage('newHarvest')) {
+  <baw-harvest-error></baw-harvest-error>
+}
 
-<div *ngIf="stages.isCurrentStage('uploading')">
-  <baw-loading *ngIf="!stages.harvest"></baw-loading>
+@if (stages.isCurrentStage('uploading')) {
+  <div>
+    @if (!stages.harvest) {
+      <baw-loading></baw-loading>
+    }
+    @if (stages.harvest?.streaming) {
+      <baw-harvest-stream-uploading></baw-harvest-stream-uploading>
+    }
+    @if (!stages.harvest?.streaming) {
+      <baw-harvest-batch-uploading></baw-harvest-batch-uploading>
+    }
+  </div>
+}
 
-  <baw-harvest-stream-uploading
-    *ngIf="stages.harvest?.streaming"
-  ></baw-harvest-stream-uploading>
+@if (stages.isCurrentStage('scanning')) {
+  <baw-harvest-scanning></baw-harvest-scanning>
+}
 
-  <baw-harvest-batch-uploading
-    *ngIf="!stages.harvest?.streaming"
-  ></baw-harvest-batch-uploading>
-</div>
+@if (stages.isCurrentStage('metadataExtraction')) {
+  <baw-harvest-metadata-extraction></baw-harvest-metadata-extraction>
+}
 
-<baw-harvest-scanning
-  *ngIf="stages.isCurrentStage('scanning')"
-></baw-harvest-scanning>
+@if (stages.isCurrentStage('metadataReview')) {
+  <baw-harvest-metadata-review></baw-harvest-metadata-review>
+}
 
-<baw-harvest-metadata-extraction
-  *ngIf="stages.isCurrentStage('metadataExtraction')"
-></baw-harvest-metadata-extraction>
+@if (stages.isCurrentStage('processing')) {
+  <baw-harvest-processing></baw-harvest-processing>
+}
 
-<baw-harvest-metadata-review
-  *ngIf="stages.isCurrentStage('metadataReview')"
-></baw-harvest-metadata-review>
-
-<baw-harvest-processing
-  *ngIf="stages.isCurrentStage('processing')"
-></baw-harvest-processing>
-
-<baw-harvest-complete
-  *ngIf="stages.isCurrentStage('complete')"
-></baw-harvest-complete>
+@if (stages.isCurrentStage('complete')) {
+  <baw-harvest-complete></baw-harvest-complete>
+}
 
 <!-- Bottom padding -->
 <div class="mb-3"></div>

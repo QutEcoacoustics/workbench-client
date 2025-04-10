@@ -37,16 +37,13 @@
       Site/Point
     </ng-template>
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <baw-loading
-        *ngIf="row.site | isUnresolved; else showSite"
-        size="sm"
-      ></baw-loading>
-
-      <ng-template #showSite>
+      @if (row.site | isUnresolved) {
+        <baw-loading size="sm"></baw-loading>
+      } @else {
         <a [bawUrl]="row.site.getViewUrl(project)">
           {{ row.site.name }}
         </a>
-      </ng-template>
+      }
     </ng-template>
   </ngx-datatable-column>
 

@@ -16,62 +16,76 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-render-field",
   template: `
     <!-- Display plain text -->
-    <dl *ngIf="styling === fieldStyling.plain">
-      <p id="plain" class="m-0" [innerText]="display"></p>
-    </dl>
+    @if (styling === fieldStyling.plain) {
+      <dl>
+        <p id="plain" class="m-0" [innerText]="display"></p>
+      </dl>
+    }
 
     <!-- Display code/objects -->
-    <dl *ngIf="styling === fieldStyling.code">
-      <pre id="code" class="m-0" [innerText]="display"></pre>
-    </dl>
+    @if (styling === fieldStyling.code) {
+      <dl>
+        <pre id="code" class="m-0" [innerText]="display"></pre>
+      </dl>
+    }
 
     <!-- Display checkbox -->
-    <dl *ngIf="styling === fieldStyling.checkbox">
-      <baw-checkbox
-        id="checkbox"
-        class="m-0"
-        [checked]="isChecked()"
-        [disabled]="true"
-        [isCentered]="false"
-      ></baw-checkbox>
-    </dl>
+    @if (styling === fieldStyling.checkbox) {
+      <dl>
+        <baw-checkbox
+          id="checkbox"
+          class="m-0"
+          [checked]="isChecked()"
+          [disabled]="true"
+          [isCentered]="false"
+        ></baw-checkbox>
+      </dl>
+    }
 
     <!-- Display AbstractModel -->
-    <dl *ngIf="styling === fieldStyling.model">
-      <baw-model-link [model]="model">
-        <span id="model" [innerText]="model.toString()"></span>
-        <span id="ghost" [innerText]="model.toString()"></span>
-      </baw-model-link>
-    </dl>
+    @if (styling === fieldStyling.model) {
+      <dl>
+        <baw-model-link [model]="model">
+          <span id="model" [innerText]="model.toString()"></span>
+          <span id="ghost" [innerText]="model.toString()"></span>
+        </baw-model-link>
+      </dl>
+    }
 
     <!-- Display Image -->
-    <dl *ngIf="styling === fieldStyling.image">
-      <img id="image" alt="model image alt" [src]="getSource()" />
-    </dl>
+    @if (styling === fieldStyling.image) {
+      <dl>
+        <img id="image" alt="model image alt" [src]="getSource()" />
+      </dl>
+    }
 
     <!-- Display Duration -->
-    <dl *ngIf="styling === fieldStyling.duration && isDuration(display)">
-      <baw-duration [value]="display" iso8601 /> (<baw-duration [value]="display" humanized />)
-    </dl>
+    @if (styling === fieldStyling.duration && isDuration(display)) {
+      <dl>
+        <baw-duration [value]="display" iso8601 /> (<baw-duration [value]="display" humanized />)
+      </dl>
+    }
 
     <!-- Display Date/Time that has an implicit timezone -->
-    <dl *ngIf="styling === fieldStyling.zonedDateTime && isDateTime(display)">
-      <baw-zoned-datetime [value]="display" /> (<baw-time-since [value]="display" />)
-    </dl>
+    @if (styling === fieldStyling.zonedDateTime && isDateTime(display)) {
+      <dl>
+        <baw-zoned-datetime [value]="display" /> (<baw-time-since [value]="display" />)
+      </dl>
+    }
 
     <!-- Display Date/Time that should be localized to the users timezone -->
-    <dl *ngIf="styling === fieldStyling.dateTime && isDateTime(display)">
-      <baw-datetime [value]="display" /> (<baw-time-since [value]="display" />)
-    </dl>
+    @if (styling === fieldStyling.dateTime && isDateTime(display)) {
+      <dl>
+        <baw-datetime [value]="display" /> (<baw-time-since [value]="display" />)
+      </dl>
+    }
 
     <!-- Display nested fields -->
-    <ng-container *ngIf="styling === fieldStyling.children">
-      <baw-render-field
-        *ngFor="let child of children"
-        id="children"
-        [value]="child"
-      ></baw-render-field>
-    </ng-container>
+    @if (styling === fieldStyling.children) {
+      @for (child of children; track child) {
+        <baw-render-field id="children" [value]="child"></baw-render-field>
+      }
+    }
   `,
   styles: [`
     p {

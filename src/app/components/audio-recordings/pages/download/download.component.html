@@ -8,42 +8,48 @@
 ></baw-sites-without-timezones>
 
 <!-- Project -->
-<div *ngIf="project" class="mb-3">
-  <label id="project-label" for="project" class="form-label">Project</label>
-  <input
-    readonly
-    id="project"
-    name="project"
-    class="form-control-plaintext"
-    [ngModel]="project.name"
-  />
-</div>
+@if (project) {
+  <div class="mb-3">
+    <label id="project-label" for="project" class="form-label">Project</label>
+    <input
+      readonly
+      id="project"
+      name="project"
+      class="form-control-plaintext"
+      [ngModel]="project.name"
+    />
+  </div>
+}
 
 <!-- Region -->
-<div *ngIf="region" class="mb-3">
-  <label id="region-label" for="region" class="form-label">Site</label>
-  <input
-    readonly
-    id="region"
-    name="region"
-    class="form-control-plaintext"
-    [ngModel]="region.name"
-  />
-</div>
+@if (region) {
+  <div class="mb-3">
+    <label id="region-label" for="region" class="form-label">Site</label>
+    <input
+      readonly
+      id="region"
+      name="region"
+      class="form-control-plaintext"
+      [ngModel]="region.name"
+    />
+  </div>
+}
 
 <!-- Site -->
-<div *ngIf="site" class="mb-3">
-  <label id="site-label" for="site" class="form-label">{{
-    region ? "Point" : "Site"
-  }}</label>
-  <input
-    readonly
-    id="site"
-    name="site"
-    class="form-control-plaintext"
-    [ngModel]="site.name"
-  />
-</div>
+@if (site) {
+  <div class="mb-3">
+    <label id="site-label" for="site" class="form-label">{{
+      region ? "Point" : "Site"
+    }}</label>
+    <input
+      readonly
+      id="site"
+      name="site"
+      class="form-control-plaintext"
+      [ngModel]="site.name"
+    />
+  </div>
+}
 
 <baw-date-time-filter
   [project]="project"
@@ -161,13 +167,14 @@
     <i><a [strongRoute]="loginStrongRoute">Log in</a> to see this command.</i>
   </div>
 
-  <baw-hidden-copy
-    *ngIf="session.authToken"
-    tooltip="Show/Hide command"
-    [value]="runScriptCommand"
-  >
-    <code>{{ runScriptCommand }}</code>
-  </baw-hidden-copy>
+  @if (session.authToken) {
+    <baw-hidden-copy
+      tooltip="Show/Hide command"
+      [value]="runScriptCommand"
+      >
+      <code>{{ runScriptCommand }}</code>
+    </baw-hidden-copy>
+  }
 
   <p class="mt-3">Press <kbd>enter</kbd> to run the script.</p>
 </section>

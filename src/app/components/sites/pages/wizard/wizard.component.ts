@@ -23,7 +23,7 @@ const projectKey = "project";
     }
   `],
   template: `
-    <ng-container *ngIf="!error">
+    @if (!error) {
       <h2 class="text-center">New Site</h2>
 
       <p class="lead">Do you have more than one sensor at this site?</p>
@@ -47,12 +47,14 @@ const projectKey = "project";
         </button>
       </div>
 
-      <baw-sites-new *ngIf="isCreating.site"></baw-sites-new>
-      <baw-regions-new
-        *ngIf="isCreating.region"
-        [hideTitle]="true"
-      ></baw-regions-new>
-    </ng-container>
+      @if (isCreating.site) {
+        <baw-sites-new></baw-sites-new>
+      }
+
+      @if (isCreating.region) {
+        <baw-regions-new [hideTitle]="true"></baw-regions-new>
+      }
+    }
   `,
   standalone: false
 })

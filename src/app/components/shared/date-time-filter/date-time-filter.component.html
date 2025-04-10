@@ -1,14 +1,15 @@
 <form #form class="mb-3">
   <!-- Toggle filtering by date -->
   <div class="form-check">
-    <input
-      *ngIf="!disableStartDate || !disableEndDate"
-      id="date-filtering"
-      name="dateFiltering"
-      type="checkbox"
-      class="form-check-input"
-      [(ngModel)]="model.dateFiltering"
-    />
+    @if (!disableStartDate || !disableEndDate) {
+      <input
+        id="date-filtering"
+        name="dateFiltering"
+        type="checkbox"
+        class="form-check-input"
+        [(ngModel)]="model.dateFiltering"
+      />
+    }
 
     <label class="form-check-label" for="date-filtering">Filter by date</label>
 
@@ -16,120 +17,122 @@
   </div>
 
   <!-- Date filters -->
-  <div
-    *ngIf="!disableStartDate || !disableEndDate"
-    id="date-filters-wrapper"
-    #collapse="ngbCollapse"
-    [ngbCollapse]="!model.dateFiltering"
-  >
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <!-- Start date input -->
-          <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-              <span class="input-group-text">Start Date</span>
-              <input
-                #dateStartedAfter="ngbDatepicker"
-                #dateStartedAfterForm="ngModel"
-                ngbDatepicker
-                id="date-started-after"
-                name="dateStartedAfter"
-                class="form-control"
-                placeholder="yyyy-mm-dd"
-                [maxDate]="model.dateFinishedBefore"
-                [class.is-invalid]="
-                  dateStartedAfterForm.errors?.ngbDate?.invalid
-                "
-                [(ngModel)]="model.dateStartedAfter"
-                [disabled]="disableStartDate"
-              />
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="dateStartedAfter.toggle()"
-                [disabled]="disableStartDate"
-              >
-                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
-              </button>
-              <div class="invalid-feedback">
-                The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
+  @if (!disableStartDate || !disableEndDate) {
+    <div
+      id="date-filters-wrapper"
+      #collapse="ngbCollapse"
+      [ngbCollapse]="!model.dateFiltering"
+    >
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <!-- Start date input -->
+            <div class="col-md-6 mb-3 mb-md-0">
+              <div class="input-group">
+                <span class="input-group-text">Start Date</span>
+                <input
+                  #dateStartedAfter="ngbDatepicker"
+                  #dateStartedAfterForm="ngModel"
+                  ngbDatepicker
+                  id="date-started-after"
+                  name="dateStartedAfter"
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  [maxDate]="model.dateFinishedBefore"
+                  [class.is-invalid]="
+                    dateStartedAfterForm.errors?.ngbDate?.invalid
+                  "
+                  [(ngModel)]="model.dateStartedAfter"
+                  [disabled]="disableStartDate"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="dateStartedAfter.toggle()"
+                  [disabled]="disableStartDate"
+                  >
+                  <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+                </button>
+                <div class="invalid-feedback">
+                  The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
+                </div>
+              </div>
+            </div>
+
+            <!-- End date input -->
+            <div class="col-md-6 mb-3 mb-md-0">
+              <div class="input-group">
+                <span class="input-group-text">End Date</span>
+                <input
+                  #dateFinishedBefore="ngbDatepicker"
+                  #dateFinishedBeforeForm="ngModel"
+                  ngbDatepicker
+                  id="date-finished-before"
+                  name="dateFinishedBefore"
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  [class.is-invalid]="
+                    dateFinishedBeforeForm.errors?.ngbDate?.invalid
+                  "
+                  [minDate]="model.dateStartedAfter"
+                  [(ngModel)]="model.dateFinishedBefore"
+                  [disabled]="disableEndDate"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="dateFinishedBefore.toggle()"
+                  [disabled]="disableEndDate"
+                  >
+                  <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+                </button>
+                <div class="invalid-feedback">
+                  The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- End date input -->
-          <div class="col-md-6 mb-3 mb-md-0">
-            <div class="input-group">
-              <span class="input-group-text">End Date</span>
-              <input
-                #dateFinishedBefore="ngbDatepicker"
-                #dateFinishedBeforeForm="ngModel"
-                ngbDatepicker
-                id="date-finished-before"
-                name="dateFinishedBefore"
-                class="form-control"
-                placeholder="yyyy-mm-dd"
-                [class.is-invalid]="
-                  dateFinishedBeforeForm.errors?.ngbDate?.invalid
-                "
-                [minDate]="model.dateStartedAfter"
-                [(ngModel)]="model.dateFinishedBefore"
-                [disabled]="disableEndDate"
-              />
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="dateFinishedBefore.toggle()"
-                [disabled]="disableEndDate"
-              >
-                <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
-              </button>
-              <div class="invalid-feedback">
-                The date should follow the format yyyy-mm-dd, e.g. 2022-12-01
-              </div>
+          @if (dateFinishedBeforeForm.errors?.ngbDate?.minDate) {
+            <div class="text-danger">
+              The filter dates are outside the date boundary. Ensure that the start
+              date occurs before the end date.
             </div>
+          }
+
+          <div class="form-text">
+            <strong>
+              The UTC (+00:00) time zone is used for all date filtering.
+            </strong>
+            If you're unsure if your data will be included in a filter, expand
+            your date range by one-day in either direction.
           </div>
-        </div>
-
-        <div
-          *ngIf="dateFinishedBeforeForm.errors?.ngbDate?.minDate"
-          class="text-danger"
-        >
-          The filter dates are outside the date boundary. Ensure that the start
-          date occurs before the end date.
-        </div>
-
-        <div class="form-text">
-          <strong>
-            The UTC (+00:00) time zone is used for all date filtering.
-          </strong>
-          If you're unsure if your data will be included in a filter, expand
-          your date range by one-day in either direction.
         </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- Toggle filtering by time of day -->
-  <div *ngIf="!disableStartTime || !disableEndTime" class="form-check mt-3">
-    <input
-      id="time-filtering"
-      name="timeFiltering"
-      type="checkbox"
-      class="form-check-input"
-      [(ngModel)]="model.timeFiltering"
-    />
+  @if (!disableStartTime || !disableEndTime) {
+    <div class="form-check mt-3">
+      <input
+        id="time-filtering"
+        name="timeFiltering"
+        type="checkbox"
+        class="form-check-input"
+        [(ngModel)]="model.timeFiltering"
+      />
 
-    <label class="form-check-label" for="time-filtering">
-      Filter by time of day
-    </label>
+      <label class="form-check-label" for="time-filtering">
+        Filter by time of day
+      </label>
 
-    <div class="form-text">
-      Filter recordings by the time of day they were recorded. If any part of a
-      recording overlaps these limits, then it will be included.
+      <div class="form-text">
+        Filter recordings by the time of day they were recorded. If any part of a
+        recording overlaps these limits, then it will be included.
+      </div>
     </div>
-  </div>
+  }
 
   <!-- Time of day filters -->
   <div
