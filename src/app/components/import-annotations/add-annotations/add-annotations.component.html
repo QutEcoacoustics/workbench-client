@@ -188,7 +188,7 @@
           @if (value.startTimeSeconds | isInstantiated) {
             {{ value.startTimeSeconds | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -202,7 +202,7 @@
           @if (value.endTimeSeconds | isInstantiated) {
             {{ value.endTimeSeconds | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -216,7 +216,7 @@
           @if (value.lowFrequencyHertz | isInstantiated) {
             {{ value.lowFrequencyHertz | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -230,7 +230,7 @@
           @if (value.highFrequencyHertz | isInstantiated) {
             {{ value.highFrequencyHertz | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -244,7 +244,7 @@
           @if (value.channel | isInstantiated) {
             {{ value.channel | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -258,7 +258,7 @@
           @if (value.isReference | isInstantiated) {
             {{ value.isReference ? 'Yes' : 'No' }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -272,7 +272,7 @@
           @if (value.score | isInstantiated) {
             {{ value.score | number }}
           } @else {
-            <span class="text-muted">Empty</span>
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
         </ng-template>
       </ngx-datatable-column>
@@ -311,6 +311,10 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #emptyTemplate>
+  <span class="text-muted">Empty</span>
 </ng-template>
 
 <ng-template #defaultDescription>
