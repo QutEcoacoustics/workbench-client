@@ -21,13 +21,14 @@ import { asFormControl } from "./helper";
         (ngModelChange)="updateModel()"
       />
 
-      <div
-        *ngIf="passwordError"
-        class="invalid-feedback"
-        style="display: block;"
-      >
-        {{ getError() }}
-      </div>
+      @if (passwordError) {
+        <div
+          class="invalid-feedback"
+          style="display: block;"
+        >
+          {{ getError() }}
+        </div>
+      }
     </div>
 
     <div class="form-group mb-3">
@@ -45,13 +46,11 @@ import { asFormControl } from "./helper";
         (ngModelChange)="updateModel()"
       />
 
-      <div
-        *ngIf="confirmationError"
-        class="invalid-feedback"
-        style="display: block;"
-      >
-        {{ getError() }}
-      </div>
+      @if (confirmationError) {
+        <div class="invalid-feedback" style="display: block;">
+          {{ getError() }}
+        </div>
+      }
     </div>
 
     <input

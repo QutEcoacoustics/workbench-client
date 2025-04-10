@@ -11,35 +11,33 @@ import { map, Observable } from "rxjs";
 @Component({
   selector: "baw-breadcrumbs",
   template: `
-    <ng-container
-      *ngIf="{
-        breadcrumbs: breadcrumbs$ | async,
-        queryParams: queryParams$ | async,
-        routeParams: routeParams$ | async
-      } as data"
-    >
-      <nav
-        *ngIf="shouldShowBreadcrumbs(data)"
-        aria-label="breadcrumb"
-        class="text-bg-light"
-      >
-        <ol class="breadcrumb p-1">
-          <li
-            *ngFor="let breadcrumb of data.breadcrumbs"
-            class="breadcrumb-item"
-          >
-            <fa-icon class="pe-1" [icon]="breadcrumb.icon"></fa-icon>
-            <a
-              [strongRoute]="breadcrumb.route"
-              [routeParams]="data.routeParams"
-              [queryParams]="data.queryParams"
-            >
-              {{ breadcrumb.label }}
-            </a>
-          </li>
-        </ol>
-      </nav>
-    </ng-container>
+    @if ({
+      breadcrumbs: breadcrumbs$ | async,
+      queryParams: queryParams$ | async,
+      routeParams: routeParams$ | async
+    }; as data) {
+      @if (shouldShowBreadcrumbs(data)) {
+        <nav
+          aria-label="breadcrumb"
+          class="text-bg-light"
+        >
+          <ol class="breadcrumb p-1">
+            @for (breadcrumb of data.breadcrumbs; track breadcrumb) {
+              <li class="breadcrumb-item">
+                <fa-icon class="pe-1" [icon]="breadcrumb.icon"></fa-icon>
+                <a
+                  [strongRoute]="breadcrumb.route"
+                  [routeParams]="data.routeParams"
+                  [queryParams]="data.queryParams"
+                >
+                  {{ breadcrumb.label }}
+                </a>
+              </li>
+            }
+          </ol>
+        </nav>
+      }
+    }
   `,
   styleUrls: ["breadcrumb.component.scss"],
   standalone: false

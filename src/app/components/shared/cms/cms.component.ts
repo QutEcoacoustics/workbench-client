@@ -20,11 +20,14 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 @Component({
   selector: "baw-cms",
   template: `
-    <ng-container *ngIf="loading">
+    @if (loading) {
       <h4 class="text-center">Loading</h4>
       <baw-loading></baw-loading>
-    </ng-container>
-    <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+    }
+
+    @if (error) {
+      <baw-error-handler [error]="error"></baw-error-handler>
+    }
   `,
   standalone: false
 })

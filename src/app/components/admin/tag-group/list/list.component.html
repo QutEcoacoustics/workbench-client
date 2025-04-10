@@ -1,4 +1,4 @@
-<ng-container *ngIf="rows && !error">
+@if (rows && !error) {
   <h1>Tag Groups</h1>
 
   <p>
@@ -49,7 +49,7 @@
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
-</ng-container>
+}
 
 <ng-template #deleteModalTemplate let-modal>
   <baw-delete-modal
@@ -58,4 +58,6 @@
   ></baw-delete-modal>
 </ng-template>
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
+}

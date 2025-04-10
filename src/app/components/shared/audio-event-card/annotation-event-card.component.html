@@ -26,22 +26,23 @@
   <div class="card-body">
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
-      <span *ngFor="let text of annotation.tags; last as isLast">
-        <a [href]="text.viewUrl">{{ text.text }}</a>
-        <ng-container *ngIf="!isLast">, </ng-container>
-      </span>
+      @for (text of annotation.tags; track text; let isLast = $last) {
+        <span>
+          <a [href]="text.viewUrl">{{ text.text }}</a>
+          @if (!isLast) {, }
+        </span>
+      }
     </span>
 
     <span class="info-line">
-      <baw-loading
-        *ngIf="annotation.audioRecording.site | isUnresolved; else site"
-        size="sm"
-      ></baw-loading>
-
-      <ng-template #site>
+      @if (annotation.audioRecording.site | isUnresolved) {
+        <baw-loading
+          size="sm"
+        ></baw-loading>
+      } @else {
         <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
         <a [href]="annotation.audioRecording.site.viewUrl">{{ annotation.audioRecording.site.name }}</a>
-      </ng-template>
+      }
     </span>
 
     <span class="info-line">

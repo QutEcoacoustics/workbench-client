@@ -20,60 +20,60 @@
 
       <section class="file-list mt-2">
         @if(hasFiles) {
-        <ol>
-          @for (fileModel of importFiles$ | async; track file) {
-          <li class="file-list-item">
-            <div class="file-list-item-content">
-              <span>
-                <button
-                  class="remove-file-btn btn btn-link text-dark me-1"
-                  [ngbTooltip]="'Remove file'"
-                  (click)="removeBufferedFile(fileModel)"
-                >
-                  <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
-                </button>
+          <ol>
+            @for (fileModel of importFiles$ | async; track file) {
+              <li class="file-list-item">
+                <div class="file-list-item-content">
+                  <span>
+                    <button
+                      class="remove-file-btn btn btn-link text-dark me-1"
+                      [ngbTooltip]="'Remove file'"
+                      (click)="removeBufferedFile(fileModel)"
+                    >
+                      <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+                    </button>
 
-                <span>{{ fileModel.file.name }}</span>
-              </span>
+                    <span>{{ fileModel.file.name }}</span>
+                  </span>
 
-              <baw-error-card
-                [errors]="fileModel.errors"
-                [errorStyle]="errorCardStyles.Inline"
-                [showSuccessState]="true"
-                class="file-error"
-              >
-                <!--
-                  Because we are inside the file list, there is no need to
-                  specify the error keys as all of the errors will be referring
-                  to the file in the list item.
-                -->
-                <ng-template let-value="value">
-                  {{ value }}
-                </ng-template>
-              </baw-error-card>
+                  <baw-error-card
+                    [errors]="fileModel.errors"
+                    [errorStyle]="errorCardStyles.Inline"
+                    [showSuccessState]="true"
+                    class="file-error"
+                  >
+                    <!--
+                      Because we are inside the file list, there is no need to
+                      specify the error keys as all of the errors will be referring
+                      to the file in the list item.
+                    -->
+                    <ng-template let-value="value">
+                      {{ value }}
+                    </ng-template>
+                  </baw-error-card>
 
-              <div>
-                <baw-typeahead-input
-                  #additionalFileTagInput
-                  class="additional-file-tags"
-                  inputPlaceholder="Add tags"
-                  [searchCallback]="tagsApi.typeaheadCallback()"
-                  [resultTemplate]="tagsTypeaheadTemplate"
-                  [inputDisabled]="uploading"
-                  (modelChange)="
-                    updateFileAdditionalTagIds(
-                      fileModel,
-                      getIdsFromAbstractModelArray($event)
-                    )
-                  "
-                ></baw-typeahead-input>
-              </div>
-            </div>
-          </li>
-          }
-        </ol>
+                  <div>
+                    <baw-typeahead-input
+                      #additionalFileTagInput
+                      class="additional-file-tags"
+                      inputPlaceholder="Add tags"
+                      [searchCallback]="tagsApi.typeaheadCallback()"
+                      [resultTemplate]="tagsTypeaheadTemplate"
+                      [inputDisabled]="uploading"
+                      (modelChange)="
+                        updateFileAdditionalTagIds(
+                          fileModel,
+                          getIdsFromAbstractModelArray($event)
+                        )
+                      "
+                    ></baw-typeahead-input>
+                  </div>
+                </div>
+              </li>
+            }
+          </ol>
         } @else {
-        <ng-container [ngTemplateOutlet]="noFilesTemplate"></ng-container>
+          <ng-container [ngTemplateOutlet]="noFilesTemplate"></ng-container>
         }
       </section>
 
@@ -160,26 +160,20 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (!hasRecordingErrors(value)) {
-          <baw-loading
-            *ngIf="
-              value.audioRecording | isUnresolved;
-              else audioRecordingTemplate
-            "
-            size="sm"
-          ></baw-loading>
-
-          <ng-template #audioRecordingTemplate>
-            <a [bawUrl]="value.audioRecording.viewUrl">
-              {{ value.audioRecording.id }}
-            </a>
-          </ng-template>
+            @if ( value.audioRecording | isUnresolved) {
+              <baw-loading size="sm"></baw-loading>
+            } @else {
+              <a [bawUrl]="value.audioRecording.viewUrl">
+                {{ value.audioRecording.id }}
+              </a>
+            }
           } @else {
             <!--
               If there are errors about the associated recording column, we
               can't have a link to the recording.
               We therefore show the recording id as plain text so that the user
               can see what the error is referring to.
-             -->
+            -->
             {{ value.audioRecordingId }}
           }
         </ng-template>
@@ -191,9 +185,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.startTimeSeconds | isInstantiated; else emptyTemplate">
+          @if (value.startTimeSeconds | isInstantiated) {
             {{ value.startTimeSeconds | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -203,9 +199,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.endTimeSeconds | isInstantiated; else emptyTemplate">
+          @if (value.endTimeSeconds | isInstantiated) {
             {{ value.endTimeSeconds | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -215,9 +213,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.lowFrequencyHertz | isInstantiated; else emptyTemplate">
+          @if (value.lowFrequencyHertz | isInstantiated) {
             {{ value.lowFrequencyHertz | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -227,9 +227,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.highFrequencyHertz | isInstantiated; else emptyTemplate">
+          @if (value.highFrequencyHertz | isInstantiated) {
             {{ value.highFrequencyHertz | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -239,9 +241,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.channel | isInstantiated; else emptyTemplate">
+          @if (value.channel | isInstantiated) {
             {{ value.channel | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -251,9 +255,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.isReference | isInstantiated; else emptyTemplate">
+          @if (value.isReference | isInstantiated) {
             {{ value.isReference ? 'Yes' : 'No' }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -263,9 +269,11 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <ng-container *ngIf="value.score | isInstantiated; else emptyTemplate">
+          @if (value.score | isInstantiated) {
             {{ value.score | number }}
-          </ng-container>
+          } @else {
+            <span class="text-muted">Empty</span>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -303,10 +311,6 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
-</ng-template>
-
-<ng-template #emptyTemplate>
-  <span class="text-muted">Empty</span>
 </ng-template>
 
 <ng-template #defaultDescription>

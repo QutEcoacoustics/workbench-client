@@ -17,56 +17,45 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       [columns]="columns"
     >
       <!-- Site name (logged in only) -->
-      <ngx-datatable-column
-        *ngIf="session.isLoggedIn"
-        name="Site"
-        [sortable]="false"
-      >
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']"></fa-icon>
-          Site
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-loading
-            *ngIf="
-              (value.audioRecording | isUnresolved) ||
-                (value.audioRecording?.site | isUnresolved);
-              else showSite
-            "
-            size="sm"
-          ></baw-loading>
-          <ng-template #showSite>
-            <span>
-              {{ value.audioRecording?.site?.name ?? "Unknown Site" }}
-            </span>
+      @if (session.isLoggedIn) {
+        <ngx-datatable-column name="Site" [sortable]="false">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']"></fa-icon>
+            Site
           </ng-template>
-        </ng-template>
-      </ngx-datatable-column>
+
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            @if (
+              (value.audioRecording | isUnresolved) ||
+              (value.audioRecording?.site | isUnresolved)) {
+              <baw-loading size="sm"></baw-loading>
+            } @else {
+              <span>
+                {{ value.audioRecording?.site?.name ?? "Unknown Site" }}
+              </span>
+            }
+          </ng-template>
+        </ngx-datatable-column>
+      }
 
       <!-- User name (logged in only) -->
-      <ngx-datatable-column
-        *ngIf="session.isLoggedIn"
-        name="User"
-        [sortable]="false"
-      >
-        <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>User
-        </ng-template>
-
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-loading
-            *ngIf="value.creator | isUnresolved; else showUser"
-            size="sm"
-          ></baw-loading>
-
-          <ng-template #showUser>
-            <a [bawUrl]="value.creator.viewUrl">
-              {{ value.creator.userName }}
-            </a>
+      @if (session.isLoggedIn) {
+        <ngx-datatable-column name="User" [sortable]="false">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>User
           </ng-template>
-        </ng-template>
-      </ngx-datatable-column>
+
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            @if (value.creator | isUnresolved) {
+              <baw-loading size="sm"></baw-loading>
+            } @else {
+              <a [bawUrl]="value.creator.viewUrl">
+                {{ value.creator.userName }}
+              </a>
+            }
+          </ng-template>
+        </ngx-datatable-column>
+      }
 
       <!-- Tags -->
       <ngx-datatable-column name="Tags" [sortable]="false">
@@ -75,23 +64,19 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <span
-            *ngFor="let tag of value.tags"
-            class="badge text-bg-highlight me-1"
-          >
-            {{ tag.text }}
-          </span>
+          @for (tag of value.tags; track tag) {
+            <span class="badge text-bg-highlight me-1">
+              {{ tag.text }}
+            </span>
+          }
 
-          <baw-loading
-            *ngIf="value.tags | isUnresolved; else noTags"
-            size="sm"
-          ></baw-loading>
-
-          <ng-template #noTags>
-            <ng-container *ngIf="value.tags.length === 0">
+          @if (value.tags | isUnresolved) {
+            <baw-loading size="sm"></baw-loading>
+          } @else {
+            @if (value.tags.length === 0) {
               (none)
-            </ng-container>
-          </ng-template>
+            }
+          }
         </ng-template>
       </ngx-datatable-column>
 

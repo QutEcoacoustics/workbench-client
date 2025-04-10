@@ -24,14 +24,16 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 @Component({
   selector: "baw-client",
   template: `
-    <iframe #content *ngIf="url" [src]="url">
-      <!-- This warning only shows on browsers which don't support iframes -->
-      <p>
-        Unfortunately your browser does not support iframes. Please ensure you
-        are utilising a common browser which is running the most up to date
-        version.
-      </p>
-    </iframe>
+    @if (url) {
+      <iframe #content [src]="url">
+        <!-- This warning only shows on browsers which don't support iframes -->
+        <p>
+          Unfortunately your browser does not support iframes. Please ensure you
+          are utilising a common browser which is running the most up to date
+          version.
+        </p>
+      </iframe>
+    }
   `,
   styles: [`
     iframe {

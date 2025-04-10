@@ -23,7 +23,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-edit",
   template: `
-    <ng-container *ngIf="!failure">
+    @if (!failure) {
       <baw-form
         [title]="title"
         btnColor="warning"
@@ -40,7 +40,7 @@ const accountKey = "account";
         [model]="originalModel"
         [fields]="fields"
       ></baw-detail-view>
-    </ng-container>
+    }
   `,
   standalone: false
 })

@@ -1,4 +1,4 @@
-<ng-container *ngIf="rows && !error">
+@if (rows && !error) {
   <h1>Audio Recordings</h1>
 
   <p>
@@ -47,33 +47,27 @@
       </ng-template>
       <ng-template let-value="value" ngx-datatable-cell-template>
         <!-- Show loading animation while site is unresolved -->
-        <baw-loading
-          *ngIf="site ?? value.site | isUnresolved; else showSite"
-          size="sm"
-        ></baw-loading>
-
-        <!-- Create site link when site is loaded-->
-        <ng-template #showSite>
+        @if (site ?? value.site | isUnresolved) {
+          <baw-loading size="sm"></baw-loading>
+        } @else {
           <ng-container
             *ngTemplateOutlet="siteLink; context: { model: site ?? value.site }"
           ></ng-container>
-        </ng-template>
-
+        }
+        <!-- Create site link when site is loaded-->
         <!-- Template for showing site link -->
         <ng-template #siteLink let-model="model">
           <!-- Use project in link if exists -->
-          <ng-container *ngIf="projectId; else modelWithoutProject">
+          @if (projectId) {
             <a [bawUrl]="model.getViewUrl(projectId)">
               {{ model.name }}
             </a>
-          </ng-container>
-
-          <!-- Let site handle link if no definitive project-->
-          <ng-template #modelWithoutProject>
+          } @else {
             <a [bawUrl]="model.viewUrl">
               {{ model.name }}
             </a>
-          </ng-template>
+          }
+          <!-- Let site handle link if no definitive project-->
         </ng-template>
       </ng-template>
     </ngx-datatable-column>
@@ -125,6 +119,8 @@
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
-</ng-container>
+}
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
+}

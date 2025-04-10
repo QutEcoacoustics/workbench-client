@@ -11,9 +11,11 @@ import { asFormControl } from "./helper";
   selector: "baw-image-input",
   template: `
     <div class="form-group mb-3">
-      <label *ngIf="props.label" [for]="field.id">
-        {{ props.label + (props.required ? " *" : "") }}
-      </label>
+      @if (props.label) {
+        <label [for]="field.id">
+          {{ props.label + (props.required ? " *" : "") }}
+        </label>
+      }
 
       <div class="form-control input-group p-0">
         <!-- Ensure only one file can be selected in input -->
@@ -27,14 +29,15 @@ import { asFormControl } from "./helper";
           (ngModelChange)="readFile()"
         />
 
-        <button
-          *ngIf="!usesDefaultImage"
-          type="button"
-          (click)="removeImage()"
-          class="btn btn-outline-danger pb-1"
-        >
-          Remove
-        </button>
+        @if (!usesDefaultImage) {
+          <button
+            type="button"
+            (click)="removeImage()"
+            class="btn btn-outline-danger pb-1"
+          >
+            Remove
+          </button>
+        }
       </div>
     </div>
   `,

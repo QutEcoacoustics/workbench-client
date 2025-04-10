@@ -43,45 +43,46 @@
   <div class="search-parameter">
     <b>Times: </b>
 
-    <span
-      *ngIf="
-        parameterDataModel.timeStartedAfter ||
-          parameterDataModel.timeFinishedBefore;
-        else defaultConditionTemplate
-      "
-    >
-      {{ parameterDataModel.timeStartedAfter | time }} –
-      {{ parameterDataModel.timeFinishedBefore | time }}
-    </span>
+    @if (
+      parameterDataModel.timeStartedAfter ||
+      parameterDataModel.timeFinishedBefore
+    ) {
+      <span>
+        {{ parameterDataModel.timeStartedAfter | time }} –
+        {{ parameterDataModel.timeFinishedBefore | time }}
+      </span>
+    } @else {
+      (not specified)
+    }
   </div>
 
   <div class="search-parameter">
     <b>Daylight Savings: </b>
 
-    <span
-      *ngIf="
-        parameterDataModel.timeStartedAfter ||
-          parameterDataModel.timeFinishedBefore;
-        else defaultConditionTemplate
-      "
-    >
-      {{ parameterDataModel.daylightSavings ? "Yes" : "No" }}
-    </span>
+    @if (
+      parameterDataModel.timeStartedAfter ||
+      parameterDataModel.timeFinishedBefore
+    ) {
+      <span>{{ parameterDataModel.daylightSavings ? "Yes" : "No" }}</span>
+    } @else {
+      (not specified)
+    }
   </div>
 
   <div class="search-parameter">
     <b>Date Range: </b>
 
-    <span
-      *ngIf="
-        parameterDataModel.dateStartedAfter ||
-          parameterDataModel.dateFinishedBefore;
-        else defaultConditionTemplate
-      "
-    >
-      {{ parameterDataModel.dateStartedAfter | dateTime }} –
-      {{ parameterDataModel.dateFinishedBefore | dateTime }}
-    </span>
+    @if (
+      parameterDataModel.dateStartedAfter ||
+      parameterDataModel.dateFinishedBefore
+    ) {
+      <span>
+        {{ parameterDataModel.dateStartedAfter | dateTime }} –
+        {{ parameterDataModel.dateFinishedBefore | dateTime }}
+      </span>
+    } @else {
+      (not specified)
+    }
   </div>
 
   <div class="search-parameter">
@@ -97,12 +98,12 @@
   <div class="search-parameter">
     <b>Recognisers: </b>
 
-    <baw-inline-list
-      *ngIf="!!parameterDataModel.provenanceModels"
-      [items]="parameterDataModel.provenanceModels"
-      [emptyTemplate]="defaultConditionTemplate"
-    >
-    </baw-inline-list>
+    @if (!!parameterDataModel.provenanceModels) {
+      <baw-inline-list
+        [items]="parameterDataModel.provenanceModels"
+        [emptyTemplate]="defaultConditionTemplate"
+      ></baw-inline-list>
+    }
   </div>
 
   <div class="search-parameter">
@@ -271,21 +272,24 @@
     </thead>
 
     <tbody>
-      <ng-container *ngFor="let item of report.eventGroups">
+      @for (item of report.eventGroups; track item) {
         <tr>
           <td scope="row">
-            <a *ngIf="!(item.tag | isUnresolved)" [href]="item.tag?.viewUrl">
-              {{ item.tag?.text }}
-            </a>
+            @if (!(item.tag | isUnresolved)) {
+              <a [href]="item.tag?.viewUrl">
+                {{ item.tag?.text }}
+              </a>
+            }
           </td>
 
           <td>
-            <a
-              *ngIf="!(item.tag | isUnresolved)"
-              [href]="item.provenance?.viewUrl"
-            >
-              {{ item.provenance?.name }}
-            </a>
+            @if (!(item.tag | isUnresolved)) {
+              <a
+                [href]="item.provenance?.viewUrl"
+                >
+                {{ item.provenance?.name }}
+              </a>
+            }
           </td>
 
           <td>{{ item.detections | number }}</td>
@@ -310,7 +314,7 @@
             </small>
           </td>
         </tr>
-      </ng-container>
+      }
     </tbody>
   </table>
 </section>
@@ -433,7 +437,7 @@
       </span>
     </div>
 
-    <ng-container *ngIf="parameterDataModel.tagModels.length">
+    @if (parameterDataModel.tagModels.length) {
       <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
         <baw-chart
           #compositionChart
@@ -443,59 +447,59 @@
           [formatter]="vegaTagTextFormatter"
         ></baw-chart>
       </div>
-    </ng-container>
+    }
   </div>
 
   <!-- TODO: Enable this chart once false colour spectrograms are functional -->
-  <div
-    *ngIf="false"
-    class="chart-container"
-    [class.hide-in-print]="!shouldShowChart(chartTypes.falseColorSpectrograms)"
-  >
-    <div class="chart-heading">
-      <h4 class="chart-title">False colour spectrogram(s)</h4>
+  @if (false) {
+    <div
+      class="chart-container"
+      [class.hide-in-print]="!shouldShowChart(chartTypes.falseColorSpectrograms)"
+    >
+      <div class="chart-heading">
+        <h4 class="chart-title">False colour spectrogram(s)</h4>
+        <span class="chart-action-menu">
+          <a
+            class="download-button"
+            (click)="compositionChart.downloadChartAsCsv()"
+          >
+            <fa-icon
+              [icon]="['fas', 'file-arrow-down']"
+              [ngbTooltip]="'Download false colour spectrogram(s)'"
+            ></fa-icon>
+          </a>
 
-      <span class="chart-action-menu">
-        <a
-          class="download-button"
-          (click)="compositionChart.downloadChartAsCsv()"
-        >
-          <fa-icon
-            [icon]="['fas', 'file-arrow-down']"
-            [ngbTooltip]="'Download false colour spectrogram(s)'"
-          ></fa-icon>
-        </a>
-
-        <button
-          class="toggle-graph-button btn btn-secondary btn-sm"
-          [ngbTooltip]="
+          <button
+            class="toggle-graph-button btn btn-secondary btn-sm"
+            [ngbTooltip]="
             shouldShowChart(chartTypes.falseColorSpectrograms)
               ? 'Minimize'
               : 'Maximize'
-          "
-          (click)="
-            toggleChart(
-              chartTypes.falseColorSpectrograms,
-              !shouldShowChart(chartTypes.falseColorSpectrograms)
-            )
-          "
-        >
-          <fa-icon
+            "
+            (click)="
+              toggleChart(
+                chartTypes.falseColorSpectrograms,
+                !shouldShowChart(chartTypes.falseColorSpectrograms)
+              )
+            "
+          >
+            <fa-icon
             [icon]="[
               'fas',
               shouldShowChart(chartTypes.falseColorSpectrograms)
                 ? 'minimize'
                 : 'maximize'
             ]"
-          ></fa-icon>
-        </button>
-      </span>
-    </div>
+            ></fa-icon>
+          </button>
+        </span>
+      </div>
 
-    <div [ngbCollapse]="!shouldShowChart(chartTypes.falseColorSpectrograms)">
-      <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
+      <div [ngbCollapse]="!shouldShowChart(chartTypes.falseColorSpectrograms)">
+        <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
+      </div>
     </div>
-  </div>
+  }
 </section>
 
 <ng-template #defaultConditionTemplate> (not specified) </ng-template>
@@ -523,9 +527,10 @@
     </div>
 
     <div class="form-check">
-      <label for="dont-show-again" class="form-check-label"
-        >Don't show again</label
-      >
+      <label for="dont-show-again" class="form-check-label">
+        Don't show again
+      </label>
+
       <input
         #doNotShowAgainCheckbox
         id="dont-show-again"
@@ -544,6 +549,7 @@
     >
       Close
     </button>
+
     <button
       type="button"
       class="btn btn-primary float-end"

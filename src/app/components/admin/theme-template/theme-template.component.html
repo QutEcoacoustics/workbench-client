@@ -6,13 +6,14 @@
         <label class="input-group-text">Color</label>
       </div>
       <select class="form-control" (change)="onColorChange($event)">
-        <option
-          *ngFor="let color of themeColors; let i = index"
-          [selected]="i === selectedColorIndex"
-          [value]="i"
-        >
-          {{ color | titlecase }}
-        </option>
+        @for (color of themeColors; track color; let i = $index) {
+          <option
+            [selected]="i === selectedColorIndex"
+            [value]="i"
+            >
+            {{ color | titlecase }}
+          </option>
+        }
       </select>
     </div>
     <div class="col input-group">
@@ -25,7 +26,7 @@
         class="form-control"
         [value]="getBoxColor(selectedColorIndex)"
         (change)="onColorValueChange($event)"
-      />
+        />
     </div>
     <div class="col-auto">
       <input
@@ -35,13 +36,13 @@
         autocomplete="off"
         [(ngModel)]="darkBackground"
         [ngModelOptions]="{ standalone: true }"
-      />
+        />
       <label
         class="btn"
         [class.btn-light]="!darkBackground"
         [class.btn-dark]="darkBackground"
         for="btn-check-outlined"
-      >
+        >
         {{ darkBackground ? "Dark" : "Light" }}
       </label>
     </div>
@@ -57,17 +58,15 @@
 <h2>Colours</h2>
 
 <div class="color-row">
-  <ng-container *ngFor="let color of themeColors; let colorIndex = index">
-    <ng-container
-      *ngFor="let variant of themeVariants; let variantIndex = index"
-    >
+  @for (color of themeColors; track color; let colorIndex = $index) {
+    @for (variant of themeVariants; track variant; let variantIndex = $index) {
       <div #colorBox class="color-box" [ngClass]="'panel-' + color + variant">
         <p class="mt-3">{{ color + variant }}</p>
         <p>Sample Text</p>
         <p class="color">{{ getBoxColor(colorIndex, variantIndex) }}</p>
       </div>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </div>
 
 <h2>Buttons</h2>
@@ -79,45 +78,48 @@
     class="form-check-input"
     type="checkbox"
     [(ngModel)]="disableButtons"
-  />
+    />
   <label class="form-check-label" for="disable-buttons">Disabled</label>
 </div>
 
 <div class="p-3 rounded-3" [class.bg-dark]="darkBackground">
-  <ng-container *ngFor="let color of themeColors">
+  @for (color of themeColors; track color) {
     <button
       class="btn me-2 mb-2"
       [disabled]="disableButtons"
       [ngClass]="'btn-' + color"
-    >
+      >
       {{ "btn-" + color }}
     </button>
     <button
       class="btn me-2 mb-2"
       [disabled]="disableButtons"
       [ngClass]="'btn-outline-' + color"
-    >
+      >
       {{ "btn-outline-" + color }}
     </button>
-  </ng-container>
+  }
 </div>
 
 <h2>Text</h2>
 
 <div class="p-3 rounded-3" [class.bg-dark]="darkBackground">
-  <p *ngFor="let color of themeColors" [ngClass]="'text-' + color">
-    {{ "text-" + color }}
-  </p>
+  @for (color of themeColors; track color) {
+    <p [ngClass]="'text-' + color">
+      {{ "text-" + color }}
+    </p>
+  }
 </div>
 
 <h2>Spinners</h2>
 
 <div class="p-3 rounded-3" [class.bg-dark]="darkBackground">
-  <div
-    *ngFor="let color of themeColors"
-    class="spinner-border me-2 mb-2"
-    [ngClass]="'text-' + color"
-  >
-    <span class="visually-hidden">Loading...</span>
-  </div>
+  @for (color of themeColors; track color) {
+    <div
+      class="spinner-border me-2 mb-2"
+      [ngClass]="'text-' + color"
+      >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  }
 </div>

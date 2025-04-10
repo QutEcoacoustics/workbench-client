@@ -21,15 +21,16 @@ import {
 @Component({
   selector: "baw-admin-scripts-new",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Script"
-      submitLabel="New Script"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="New Script"
+        submitLabel="New Script"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

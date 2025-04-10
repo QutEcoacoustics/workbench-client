@@ -40,31 +40,37 @@ import { map, Observable } from "rxjs";
         </div>
 
         <div class="card-badges">
-          <div *ngIf="isOwner" id="owner" class="badge text-bg-highlight">
-            Owner
-          </div>
+          @if (isOwner) {
+            <div id="owner" class="badge text-bg-highlight">
+              Owner
+            </div>
+          }
           <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </div>
       </div>
     </div>
 
     <ng-template #noAudioTemplate>
-      <ng-container *ngIf="hasNoAudio$ | withLoading | async as hasNoAudio">
-        <div
-          *ngIf="hasNoAudio.value !== false"
-          id="no-audio"
-          class="badge text-bg-secondary"
-        >
-          <baw-loading
-            *ngIf="hasNoAudio.loading"
-            size="sm"
-            color="light"
-          ></baw-loading>
-          <span *ngIf="hasNoAudio.value">No audio yet</span>
-        </div>
-      </ng-container>
+      @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
+        @if (hasNoAudio.value !== false) {
+          <div
+            id="no-audio"
+            class="badge text-bg-secondary"
+          >
+            @if (hasNoAudio.loading) {
+              <baw-loading
+                size="sm"
+                color="light"
+              ></baw-loading>
+            }
+            @if (hasNoAudio.value) {
+              <span>No audio yet</span>
+            }
+          </div>
+        }
+      }
     </ng-template>
-  `,
+    `,
   standalone: false
 })
 export class CardComponent implements OnInit {
