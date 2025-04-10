@@ -26,7 +26,7 @@
         class="form-control"
         [value]="getBoxColor(selectedColorIndex)"
         (change)="onColorValueChange($event)"
-        />
+      />
     </div>
     <div class="col-auto">
       <input
@@ -36,13 +36,13 @@
         autocomplete="off"
         [(ngModel)]="darkBackground"
         [ngModelOptions]="{ standalone: true }"
-        />
+      />
       <label
         class="btn"
         [class.btn-light]="!darkBackground"
         [class.btn-dark]="darkBackground"
         for="btn-check-outlined"
-        >
+      >
         {{ darkBackground ? "Dark" : "Light" }}
       </label>
     </div>
@@ -78,7 +78,7 @@
     class="form-check-input"
     type="checkbox"
     [(ngModel)]="disableButtons"
-    />
+  />
   <label class="form-check-label" for="disable-buttons">Disabled</label>
 </div>
 
@@ -88,14 +88,14 @@
       class="btn me-2 mb-2"
       [disabled]="disableButtons"
       [ngClass]="'btn-' + color"
-      >
+    >
       {{ "btn-" + color }}
     </button>
     <button
       class="btn me-2 mb-2"
       [disabled]="disableButtons"
       [ngClass]="'btn-outline-' + color"
-      >
+    >
       {{ "btn-outline-" + color }}
     </button>
   }
