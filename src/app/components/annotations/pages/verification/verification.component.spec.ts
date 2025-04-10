@@ -54,7 +54,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { nodeModule, testAsset } from "@test/helpers/karma";
+import { nodeModule, testAsset } from "@test/helpers/testServer";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AssociationInjector } from "@models/ImplementsInjector";

@@ -33,7 +33,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
-import { testAsset } from "@test/helpers/karma";
+import { testAsset } from "@test/helpers/testServer";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";

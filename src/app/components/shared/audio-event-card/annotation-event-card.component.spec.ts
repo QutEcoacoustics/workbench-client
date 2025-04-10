@@ -26,7 +26,7 @@ import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
-import { testAsset } from "@test/helpers/karma";
+import { testAsset } from "@test/helpers/testServer";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";

@@ -67,7 +67,6 @@
       "statusBarItem.remoteBackground": "#2b7489",
       "statusBarItem.remoteForeground": "#e7e7e7"
     },
-    "angularKarmaTestExplorer.debugMode": true,
     "explorer.compactFolders": false,
     "files.eol": "\n",
     "prettier.trailingComma": "all"

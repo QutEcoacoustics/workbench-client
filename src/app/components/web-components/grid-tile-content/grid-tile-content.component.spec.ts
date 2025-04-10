@@ -14,7 +14,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { detectChanges } from "@test/helpers/changes";
-import { testAsset } from "@test/helpers/karma";
+import { testAsset } from "@test/helpers/testServer";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { GridTileContentComponent } from "./grid-tile-content.component";
