@@ -23,7 +23,7 @@ Generally we try to stick to the Latest Stable Release (LSR) for all requirement
 To install project dependencies run:
 
 ```bash
-npm install
+$ npm install
 ```
 
 ## To develop
@@ -31,7 +31,7 @@ npm install
 Normal development
 
 ```bash
-npm start
+$ npm start
 ```
 
 Then open a web browser to `https://development.ecosounds.org:4200`.
@@ -39,7 +39,7 @@ Then open a web browser to `https://development.ecosounds.org:4200`.
 Server side rendering
 
 ```bash
-npm run serve:ssr
+$ npm run serve:ssr
 ```
 
 Then open a web browser to `http://localhost:4000`.
@@ -73,31 +73,31 @@ This project has a number of options when it comes to testing. For development w
 Development Testing:
 
 ```bash
-npm test
+$ npm test
 ```
 
 Chrome Browser Testing:
 
 ```bash
-npm run test:chrome
+$ npm run test:chrome
 ```
 
 Firefox Browser Testing:
 
 ```bash
-npm run test:firefox
+$ npm run test:firefox
 ```
 
 Edge (Chromium Based) Browser Testing:
 
 ```bash
-npm run test:edge
+$ npm run test:edge
 ```
 
 All Supported Browsers Testing:
 
 ```bash
-npm run test:all
+$ npm run test:all
 ```
 
 #### Code Coverage
@@ -109,7 +109,7 @@ On the completion of the unit tests, the system will automatically generate a co
 To build the application:
 
 ```bash
-npm run build
+$ npm run build
 ```
 
 Move the generated files from the `/dist` directory to the required location.
@@ -119,7 +119,7 @@ Move the generated files from the `/dist` directory to the required location.
 When adding a library to the repository, you may wish to view its cost on the system. You can view the build size using the following command:
 
 ```bash
-npm run stats
+$ npm run stats
 ```
 
 This will allow you to compare the bundle size impacts before and after the update by switching between checked out commits/branches.
@@ -159,14 +159,14 @@ Server side rendering allows a server to render the first page and send it to th
 To build the container locally for testing:
 
 ```bash
-docker build -t qutecoacoustics/workbench-client .
-docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client
+$ docker build -t qutecoacoustics/workbench-client .
+$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client
 ```
 
 #### Debugging the container
 
 ```bash
-docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" -e DEBUG=express:* qutecoacoustics/workbench-client
+$ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" -e DEBUG=express:* qutecoacoustics/workbench-client
 ```
 
 ## Licence
