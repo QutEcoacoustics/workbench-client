@@ -14,7 +14,6 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import environmentConfig from "../../../assets/environment.json";
 
 export const assetRoot = "/assets";
 
@@ -73,7 +72,7 @@ export class ConfigService {
         // API Interceptor is not transforming this error
         catchError((err: any) => {
           console.error("API_CONFIG Failed to load configuration file: ", err);
-          this.setConfig(new Configuration(environmentConfig));
+          this.setConfig(new Configuration(undefined));
           return of(undefined);
         })
       )

@@ -24,7 +24,7 @@ COPY --chown=node ./ ./
 # change environment version
 RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment*.ts
 
-RUN npm run build:ssr
+RUN npm run build
 
 FROM node:20-alpine
 
