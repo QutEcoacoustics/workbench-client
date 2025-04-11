@@ -21,9 +21,17 @@ import { MyAnnotationsComponent } from "./my-annotations.component";
 const accountKey = "user";
 
 @Component({
-    selector: "baw-their-annotations",
-    templateUrl: "./annotations.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, LoadingComponent, TimeSinceComponent, UrlDirective, ErrorHandlerComponent, IsUnresolvedPipe]
+  selector: "baw-their-annotations",
+  templateUrl: "./annotations.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    LoadingComponent,
+    TimeSinceComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class TheirAnnotationsComponent extends MyAnnotationsComponent {
   public get account(): User {
