@@ -26,7 +26,10 @@ describe("CardsComponent", () => {
   const factoryOptions: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [
+    RouterTestingModule,
+    MockBawApiModule,
+],
     providers: [provideHttpClientTesting()],
   };
 
@@ -102,7 +105,9 @@ describe("CardsComponent", () => {
     const createHost = createHostFactory(factoryOptions);
 
     it("should handle content", () => {
-      hostSpectator = createHost("<baw-model-cards><h1>Internal Content</h1></baw-model-cards>");
+      hostSpectator = createHost(
+        "<baw-model-cards><h1>Internal Content</h1></baw-model-cards>"
+      );
       const content = hostSpectator.query<HTMLDivElement>("#content");
       const header = hostSpectator.query<HTMLHeadingElement>("h1");
       expect(content).not.toHaveComputedStyle({ display: "none" });

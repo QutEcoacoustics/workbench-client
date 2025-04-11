@@ -3,7 +3,11 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
@@ -23,7 +27,7 @@ describe("CmsComponent", () => {
   async function interceptApiRequest(
     response: string,
     error?: BawApiError,
-    expectation: (page: string) => void = () => {},
+    expectation: (page: string) => void = () => {}
   ) {
     const subject = new Subject<SafeHtml>();
     cmsService.get.andCallFake((page: string) => {

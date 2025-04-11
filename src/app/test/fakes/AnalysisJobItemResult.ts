@@ -1,7 +1,12 @@
-import { IAnalysisJobItemResult, ResultsItemType } from "@models/AnalysisJobItemResult";
+import {
+  IAnalysisJobItemResult,
+  ResultsItemType,
+} from "@models/AnalysisJobItemResult";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJobResults(data?: Partial<IAnalysisJobItemResult>): Required<IAnalysisJobItemResult> {
+export function generateAnalysisJobResults(
+  data?: Partial<IAnalysisJobItemResult>
+): Required<IAnalysisJobItemResult> {
   const resultItemTypes: ResultsItemType[] = ["directory", "file"];
 
   return {

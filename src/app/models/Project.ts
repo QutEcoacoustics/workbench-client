@@ -17,7 +17,12 @@ import {
 import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasMany, updater } from "./AssociationDecorators";
-import { bawCollection, bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import type { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -101,7 +106,10 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * Returns true if user has the permissions to edit this model
    */
   public get canEdit(): boolean {
-    return hasRequiredAccessLevelOrHigher(PermissionLevel.owner, this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(
+      PermissionLevel.owner,
+      this.accessLevel
+    );
   }
 
   /**
@@ -109,7 +117,10 @@ export class Project extends AbstractModel<IProject> implements IProject {
    * annotations/tags
    */
   public get canContribute(): boolean {
-    return hasRequiredAccessLevelOrHigher(PermissionLevel.writer, this.accessLevel);
+    return hasRequiredAccessLevelOrHigher(
+      PermissionLevel.writer,
+      this.accessLevel
+    );
   }
 
   public get viewUrl(): string {

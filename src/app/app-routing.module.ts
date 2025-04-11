@@ -20,7 +20,8 @@ const routes: Routes = [
       },
       {
         path: "publications",
-        redirectTo: "https://research.ecosounds.org/publications/publications.html",
+        redirectTo:
+          "https://research.ecosounds.org/publications/publications.html",
       },
     ],
   },

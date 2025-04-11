@@ -2,7 +2,15 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ProgressEvent } from "@models/ProgressEvent";
 import { Observable } from "rxjs";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, ReadAndCreateApi } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  ReadAndCreateApi,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -18,7 +26,11 @@ export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
   }
 
   public filter(filters: Filters<ProgressEvent>): Observable<ProgressEvent[]> {
-    return this.api.filter(ProgressEvent, endpoint(emptyParam, filterParam), filters);
+    return this.api.filter(
+      ProgressEvent,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
 
   public show(model: IdOr<ProgressEvent>): Observable<ProgressEvent> {
@@ -30,12 +42,12 @@ export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
       ProgressEvent,
       endpoint(emptyParam, emptyParam),
       (progressEvent) => endpoint(progressEvent, emptyParam),
-      model,
+      model
     );
   }
 }
 
 export const progressEventResolvers = new Resolvers<ProgressEvent, []>(
   [ProgressEventsService],
-  "progressEventId",
+  "progressEventId"
 ).create("ProgressEvent");

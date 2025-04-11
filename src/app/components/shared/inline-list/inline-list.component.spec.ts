@@ -40,10 +40,13 @@ describe("InlineListComponent", () => {
     setup(defaultTestItems);
   });
 
-  const inlineListElements = (): HTMLSpanElement[] => spectator.queryAll<HTMLSpanElement>("span");
+  const inlineListElements = (): HTMLSpanElement[] =>
+    spectator.queryAll<HTMLSpanElement>("span");
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query((el) => el.nativeElement.innerText === text).nativeElement;
+    return spectator.debugElement.query(
+      (el) => el.nativeElement.innerText === text
+    ).nativeElement;
   }
 
   it("should create", () => {
@@ -56,7 +59,10 @@ describe("InlineListComponent", () => {
     itemElements.forEach((itemElement: HTMLSpanElement, index: number) => {
       // because we are testing that the last element does not have a comma
       // this test will fail if there is a trailing comma after the last item
-      const expectedText = index === itemElements.length - 1 ? defaultTestItems[index] : `${defaultTestItems[index]}, `;
+      const expectedText =
+        index === itemElements.length - 1
+          ? defaultTestItems[index]
+          : `${defaultTestItems[index]}, `;
 
       expect(itemElement).toHaveExactText(expectedText);
     });
@@ -73,7 +79,8 @@ describe("InlineListComponent", () => {
 
     spectator.detectChanges();
 
-    const itemElement: HTMLSpanElement = getElementByInnerText<HTMLSpanElement>("test");
+    const itemElement: HTMLSpanElement =
+      getElementByInnerText<HTMLSpanElement>("test");
     const itemLink: HTMLAnchorElement = itemElement.querySelector("a");
 
     expect(itemLink.href).toEqual(itemViewUrl);
@@ -107,16 +114,25 @@ describe("InlineListComponent", () => {
     spectator.component.items = [];
     spectator.detectChanges();
 
-    const emptyTemplateItem: HTMLSpanElement = spectator.query("#template-span");
+    const emptyTemplateItem: HTMLSpanElement =
+      spectator.query("#template-span");
     expect(emptyTemplateItem).toExist();
   });
 
   it("should dynamically the list if an items value changes", () => {
     // since we track each object by the "itemKey", we should assert that if the value of an item key changes, the list updates
     // this test would not work if you tracked each item by object reference
-    const initialItems = [{ name: "test1" }, { name: "test2" }, { name: "test3" }] as any;
+    const initialItems = [
+      { name: "test1" },
+      { name: "test2" },
+      { name: "test3" },
+    ] as any;
 
-    const updatedItems = [{ name: "test1" }, { name: "changed item key" }, { name: "test3" }] as any;
+    const updatedItems = [
+      { name: "test1" },
+      { name: "changed item key" },
+      { name: "test3" },
+    ] as any;
 
     spectator.component.items = initialItems;
     spectator.component.itemKey = "name";

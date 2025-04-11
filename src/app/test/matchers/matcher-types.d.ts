@@ -14,21 +14,36 @@ declare global {
     interface Matchers<T> {
       toHaveComputedStyle(expected: Partial<CSSStyleDeclaration>): boolean;
       toHaveHref(href: string): boolean;
-      toHaveIcon(icon: IconProp, props?: Partial<Exclude<FaIconComponent, "icon">>): boolean;
+      toHaveIcon(
+        icon: IconProp,
+        props?: Partial<Exclude<FaIconComponent, "icon">>
+      ): boolean;
       toHaveImage(
         src: string,
         imageProps?: Partial<HTMLImageElement>,
-        directiveProps?: Partial<AuthenticatedImageDirective>,
+        directiveProps?: Partial<AuthenticatedImageDirective>
       ): boolean;
       toHaveTooltip(tooltip: string, props?: Partial<NgbTooltip>): boolean;
-      toHaveRoute(routerLink: string, props?: Partial<Exclude<RouterLinkWithHref, "routerLink">>): boolean;
+      toHaveRoute(
+        routerLink: string,
+        props?: Partial<Exclude<RouterLinkWithHref, "routerLink">>
+      ): boolean;
       toHaveStrongRoute(
         strongRoute: StrongRoute,
-        props?: Partial<Exclude<StrongRouteDirective, "strongRoute">>,
+        props?: Partial<Exclude<StrongRouteDirective, "strongRoute">>
       ): boolean;
-      toHaveStrongRouteActive(klass: string, options?: RouterLinkActiveOptions): boolean;
-      toHaveUrl(bawUrl: string, props?: Partial<Exclude<UrlDirective, "bawUrl">>): boolean;
-      toHaveUrlActive(klass: string, options?: RouterLinkActiveOptions): boolean;
+      toHaveStrongRouteActive(
+        klass: string,
+        options?: RouterLinkActiveOptions
+      ): boolean;
+      toHaveUrl(
+        bawUrl: string,
+        props?: Partial<Exclude<UrlDirective, "bawUrl">>
+      ): boolean;
+      toHaveUrlActive(
+        klass: string,
+        options?: RouterLinkActiveOptions
+      ): boolean;
       toBeProvidedBy(injector: Injector): boolean;
     }
   }

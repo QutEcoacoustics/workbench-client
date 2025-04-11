@@ -1,6 +1,10 @@
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserService } from "@baw-api/user/user.service";
-import { createHttpFactory, HttpMethod, SpectatorHttp } from "@ngneat/spectator";
+import {
+  createHttpFactory,
+  HttpMethod,
+  SpectatorHttp,
+} from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { assertOk } from "@test/helpers/general";

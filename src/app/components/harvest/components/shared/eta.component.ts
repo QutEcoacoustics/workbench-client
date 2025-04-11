@@ -7,8 +7,8 @@ import { DurationComponent } from "../../../shared/datetime-formats/duration/dur
 
 // TODO Use https://github.com/QutEcoacoustics/baw-server/issues/604
 @Component({
-  selector: "baw-harvest-eta",
-  template: `
+    selector: "baw-harvest-eta",
+    template: `
     <div class="clearfix">
       <small class="text-muted font-monospace">
         <!-- eg. Started uploading 15 seconds ago -->
@@ -16,21 +16,26 @@ import { DurationComponent } from "../../../shared/datetime-formats/duration/dur
         <baw-time-since [value]="harvest.updatedAt" />
       </small>
       @if (!hasProgress()) {
-        <small class="float-end text-muted font-monospace"> waiting in queue </small>
+        <small class="float-end text-muted font-monospace">
+          waiting in queue
+        </small>
       }
       @if (hasProgress()) {
         <small class="float-end text-muted font-monospace">
           @if (expectedRemainingTime && hasProgress()) {
-            ≈<baw-duration [value]="expectedRemainingTime" humanized />
-            remaining
-          } @else {
-            unknown time remaining
-          }
-        </small>
-      }
+            ≈<baw-duration
+            [value]="expectedRemainingTime"
+            humanized
+            />
+          remaining
+        } @else {
+          unknown time remaining
+        }
+      </small>
+    }
     </div>
   `,
-  imports: [TimeSinceComponent, DurationComponent],
+    imports: [TimeSinceComponent, DurationComponent]
 })
 export class EtaComponent implements OnChanges {
   @Input() public harvest: Harvest;
@@ -64,8 +69,11 @@ export class EtaComponent implements OnChanges {
      * resources)
      */
     const timeTakenSeconds = this.harvest.updatedAt.diffNow("seconds").seconds;
-    const expectedRemainingTimeSeconds = timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;
-    this.expectedRemainingTime = Duration.fromMillis(expectedRemainingTimeSeconds * 1000);
+    const expectedRemainingTimeSeconds =
+      timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;
+    this.expectedRemainingTime = Duration.fromMillis(
+      expectedRemainingTimeSeconds * 1000
+    );
   }
 
   public hasProgress(): boolean {

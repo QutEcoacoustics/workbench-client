@@ -1,5 +1,12 @@
 import { IconName, IconProp } from "@fortawesome/fontawesome-svg-core";
-import { PermissionLevel, Id, ImageSizes, ImageUrl, TimezoneInformation, UserConcent } from "@interfaces/apiInterfaces";
+import {
+  PermissionLevel,
+  Id,
+  ImageSizes,
+  ImageUrl,
+  TimezoneInformation,
+  UserConcent,
+} from "@interfaces/apiInterfaces";
 import { faker } from "@faker-js/faker";
 import { DateTime, Duration } from "luxon";
 import { PbsResources } from "@interfaces/pbsInterfaces";
@@ -22,10 +29,14 @@ export const modelData = {
       .map(() => faker.lorem.sentences())
       .join(" ")
       .replace(specialCharRegex, ""),
-  descriptionHtml: () => `<b>${modelData.param()}</b><br><p>${modelData.description()}</p>`,
+  descriptionHtml: () =>
+    `<b>${modelData.param()}</b><br><p>${modelData.description()}</p>`,
   defaults: {
     sampleRateHertz: [8000, 22050, 44100, 48000],
-    bitRateBps: [64000, 82000, 123000, 124000, 125000, 128000, 256000, 352800, 353000, 512000, 705600, 768000, 1411200],
+    bitRateBps: [
+      64000, 82000, 123000, 124000, 125000, 128000, 256000, 352800, 353000,
+      512000, 705600, 768000, 1411200,
+    ],
   },
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substring(2),
   html: () => "hello <b>world</b>",
@@ -35,14 +46,25 @@ export const modelData = {
   imageUrls,
   icon: (): IconProp => [
     "fas",
-    faker.helpers.arrayElement<IconName>(["anchor", "apple-whole", "atom", "bacon", "ban", "bed"]),
+    faker.helpers.arrayElement<IconName>([
+      "anchor",
+      "apple-whole",
+      "atom",
+      "bacon",
+      "ban",
+      "bed",
+    ]),
   ],
   latitude: () => parseFloat(faker.address.latitude()),
   longitude: () => parseFloat(faker.address.longitude()),
-  percentage: (): number => faker.datatype.float({ min: 0, max: 1, precision: 0.0001 }),
+  percentage: (): number =>
+    faker.datatype.float({ min: 0, max: 1, precision: 0.0001 }),
   notes: () => randomObject(1, 5),
   offset: () =>
-    faker.helpers.arrayElement(["+", "-"]) + faker.datatype.number(11) + ":" + faker.helpers.arrayElement(["00", "30"]),
+    faker.helpers.arrayElement(["+", "-"]) +
+    faker.datatype.number(11) +
+    ":" +
+    faker.helpers.arrayElement(["00", "30"]),
   param: () => faker.name.jobTitle().replace(specialCharRegex, ""),
   seconds: () => faker.datatype.number(86400 - 30) + 30,
   startEndSeconds: () => {
@@ -56,7 +78,12 @@ export const modelData = {
     return [arr[min], arr[min + inc]];
   },
   timestamp: () => faker.date.past().toISOString(),
-  tzInfoTz: () => faker.helpers.arrayElement(["America/Costa_Rica", "Australia/Brisbane", "Asia/Makassar"]),
+  tzInfoTz: () =>
+    faker.helpers.arrayElement([
+      "America/Costa_Rica",
+      "Australia/Brisbane",
+      "Asia/Makassar",
+    ]),
   time: (): Duration =>
     Duration.fromObject({
       hours: faker.datatype.number(23),
@@ -72,7 +99,11 @@ export const modelData = {
     mem: modelData.datatype.number(),
     walltime: modelData.datatype.number(),
   }),
-  concent: () => faker.helpers.arrayElement([UserConcent.yes, UserConcent.no, UserConcent.unasked]),
+  concent: () => faker.helpers.arrayElement([
+    UserConcent.yes,
+    UserConcent.no,
+    UserConcent.unasked,
+  ]),
   hexaDecimal,
   randomArray,
   randomObject,
@@ -234,7 +265,11 @@ function hexaDecimal(count: number = 1): string {
  * @param max Maximum number of elements
  * @param callback Callback function to generate element
  */
-function randomArray<T>(min: number, max: number, callback: (index: number) => T): T[] {
+function randomArray<T>(
+  min: number,
+  max: number,
+  callback: (index: number) => T
+): T[] {
   const len = faker.datatype.number({ min, max });
   const array = [];
 
@@ -256,7 +291,9 @@ function randomObject(min: number, max: number): Record<string, string> {
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
-    obj[faker.random.word().replace(specialCharRegex, "")] = faker.random.words().replace(specialCharRegex, "");
+    obj[faker.random.word().replace(specialCharRegex, "")] = faker.random
+      .words()
+      .replace(specialCharRegex, "");
   }
 
   return obj;
@@ -267,7 +304,7 @@ function randomFile(
     type: string;
     name: string;
     contents: BlobPart[];
-  }> = {},
+  }> = {}
 ) {
   return new File(data.contents ?? [], data?.name ?? faker.system.fileName(), {
     type: data.type ?? "text/plain",

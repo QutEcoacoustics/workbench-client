@@ -32,7 +32,9 @@ describe("hasRequiredAccessLevelOrHigher", () => {
     describe(`when ${required} access level is required`, () => {
       describe(`and ${current} access level is given`, () => {
         it(`should return ${expected}`, () => {
-          expect(hasRequiredAccessLevelOrHigher(required, current)).toBe(expected);
+          expect(hasRequiredAccessLevelOrHigher(required, current)).toBe(
+            expected
+          );
         });
       });
     });
@@ -42,7 +44,9 @@ describe("hasRequiredAccessLevelOrHigher", () => {
     describe(`${required} access level`, () => {
       [owner, writer, reader, null, undefined].forEach((current) => {
         it(`should return false when ${current} access level is given`, () => {
-          expect(hasRequiredAccessLevelOrHigher(unresolved, current)).toBe(false);
+          expect(hasRequiredAccessLevelOrHigher(unresolved, current)).toBe(
+            false
+          );
         });
       });
     });

@@ -15,8 +15,19 @@ import {
 } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
-import { creator, deleter, hasMany, hasOne, updater } from "./AssociationDecorators";
-import { bawCollection, bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
+import {
+  creator,
+  deleter,
+  hasMany,
+  hasOne,
+  updater,
+} from "./AssociationDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import { Project } from "./Project";
 import { Site } from "./Site";
 import { User } from "./User";

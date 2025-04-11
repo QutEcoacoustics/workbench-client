@@ -1,7 +1,11 @@
 import { ProgressEvent } from "@models/ProgressEvent";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
-import { mockServiceImports, mockServiceProviders, validateReadAndCreateApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateReadAndCreateApi,
+} from "@test/helpers/api-common";
 import { ProgressEventsService } from "./progress-events.service";
 
 describe("ProgressEventsService", (): void => {
@@ -19,5 +23,13 @@ describe("ProgressEventsService", (): void => {
     spec = createService();
   });
 
-  validateReadAndCreateApi(() => spec, ProgressEvent, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateReadAndCreateApi(
+    () => spec,
+    ProgressEvent,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

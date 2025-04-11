@@ -6,13 +6,24 @@ import { ConfirmationComponent } from "@components/harvest/components/modal/conf
 import { StatisticItemComponent } from "@components/harvest/components/shared/statistics/item.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StatisticsComponent } from "@components/harvest/components/shared/statistics/statistics.component";
-import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
+import {
+  Harvest,
+  HarvestMapping,
+  HarvestStatus
+} from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
-import { generateProject, generateProjectMeta } from "@test/fakes/Project";
+import {
+  generateProject,
+  generateProjectMeta
+} from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
@@ -45,14 +56,14 @@ describe("MetadataReviewComponent", () => {
       WhitespaceComponent,
       SiteSelectorComponent,
       UTCOffsetSelectorComponent,
-      FolderRowComponent,
+      FolderRowComponent
     ],
     component: MetadataReviewComponent,
     providers: [
       MockProvider(HarvestStagesService, {
         project: defaultProject,
         harvest: defaultHarvest,
-        transition: (_stage: HarvestStatus) => {},
+        transition: (_stage: HarvestStatus) => {}
       }),
     ],
     imports: [MockBawApiModule, SharedModule],
@@ -92,7 +103,9 @@ describe("MetadataReviewComponent", () => {
     spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
 
   function getAbortButton(): HTMLButtonElement {
-    return spec.debugElement.query((el) => el.nativeElement.innerText === "Abort").nativeElement as HTMLButtonElement;
+    return spec.debugElement.query(
+      (el) => el.nativeElement.innerText === "Abort"
+    ).nativeElement as HTMLButtonElement;
   }
 
   function updateComponent() {
@@ -102,11 +115,14 @@ describe("MetadataReviewComponent", () => {
   }
 
   const folderStructureFactory = (folders: string[] = []): HarvestItem[] =>
-    folders.map((folder) => new HarvestItem(generateHarvestItem({ id: null, path: folder })));
+    folders.map((folder) =>
+      new HarvestItem(generateHarvestItem({ id: null, path: folder }))
+    );
 
   function clickFolder(folderName: string): void {
-    const folderItem = spec.debugElement.query((el) => el.nativeElement.innerText === folderName)
-      .nativeElement as HTMLButtonElement;
+    const folderItem = spec.debugElement.query(
+      (el) => el.nativeElement.innerText === folderName
+    ).nativeElement as HTMLButtonElement;
 
     folderItem.click();
     updateComponent();
@@ -170,7 +186,7 @@ describe("MetadataReviewComponent", () => {
 
     defaultHarvest = new Harvest({
       ...defaultHarvest,
-      mappings: [],
+      mappings: []
     });
 
     // when a folder item is clicked, the getHarvestItems() method returns the sub folders & items included in the folder
@@ -195,8 +211,8 @@ describe("MetadataReviewComponent", () => {
           path: "A/aa",
           recursive: false,
           siteId: null,
-          utcOffset: null,
-        }),
+          utcOffset: null
+        })
       ];
 
       expect(model).toEqual(spec.component.harvest);
@@ -230,14 +246,14 @@ describe("MetadataReviewComponent", () => {
           path: "A/aa",
           recursive: false,
           siteId: null,
-          utcOffset: null,
+          utcOffset: null
         }),
         new HarvestMapping({
           path: "B/bb",
           recursive: false,
           siteId: null,
-          utcOffset: null,
-        }),
+          utcOffset: null
+        })
       ];
 
       expect(model).toEqual(spec.component.harvest);
@@ -257,34 +273,31 @@ describe("MetadataReviewComponent", () => {
         path: "A",
         recursive: true,
         siteId: 543,
-        utcOffset: "+11:00",
+        utcOffset: "+11:00"
       }),
-      new HarvestMapping(
-        {
-          path: "B",
-          recursive: true,
-          siteId: null,
-          utcOffset: null,
-        },
-        Inject(FolderRowComponent),
-      ),
+      new HarvestMapping({
+        path: "B",
+        recursive: true,
+        siteId: null,
+        utcOffset: null
+      }, Inject(FolderRowComponent)),
       new HarvestMapping({
         path: "C",
         recursive: true,
         siteId: 1234,
-        utcOffset: "+10:00",
+        utcOffset: "+10:00"
       }),
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
         siteId: null,
-        utcOffset: "-08:00",
-      }),
+        utcOffset: "-08:00"
+      })
     ];
 
     defaultHarvest = new Harvest({
       ...defaultHarvest,
-      mappings: mapping,
+      mappings: mapping
     });
 
     const rootFolderStructure: HarvestItem[] = folderStructureFactory(["B"]);
@@ -298,31 +311,31 @@ describe("MetadataReviewComponent", () => {
     utcInputDropdown.dispatchEvent(new Event("change"));
     updateComponent();
 
-    const expectedMappings: HarvestMapping[] = [
+    const expectedMappings: HarvestMapping[]  = [
       new HarvestMapping({
         path: "A",
         recursive: true,
         siteId: 543,
-        utcOffset: "+11:00",
+        utcOffset: "+11:00"
       }),
       new HarvestMapping({
         path: "B",
         recursive: true,
         siteId: null,
-        utcOffset: "-11:00",
+        utcOffset: "-11:00"
       }),
       new HarvestMapping({
         path: "C",
         recursive: true,
         siteId: 1234,
-        utcOffset: "+10:00",
+        utcOffset: "+10:00"
       }),
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
         siteId: null,
-        utcOffset: "-08:00",
-      }),
+        utcOffset: "-08:00"
+      })
     ];
 
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {

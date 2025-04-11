@@ -1,9 +1,18 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
-import { editRegionMenuItem, regionsCategory } from "@components/regions/regions.menus";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  regionResolvers,
+  RegionsService,
+} from "@baw-api/region/regions.service";
+import {
+  editRegionMenuItem,
+  regionsCategory,
+} from "@components/regions/regions.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -20,8 +29,8 @@ const regionKey = "region";
  * Edit Region Component
  */
 @Component({
-  selector: "baw-regions-edit",
-  template: `
+    selector: "baw-regions-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -33,7 +42,7 @@ const regionKey = "region";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;
@@ -43,7 +52,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
     private api: RegionsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[regionKey] as Region,

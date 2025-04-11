@@ -1,5 +1,9 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { DataTableColumnDirective, DataTablePagerComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
+import {
+  DataTableColumnDirective,
+  DataTablePagerComponent,
+  NgxDatatableModule,
+} from "@swimlane/ngx-datatable";
 import { MockModel } from "@models/AbstractModel.spec";
 import { Observable } from "rxjs";
 import { modelData } from "@test/helpers/faker";
@@ -19,7 +23,9 @@ describe("bawVirtualDatatablePagination", () => {
   let spec: SpectatorDirective<VirtualDatatablePaginationDirective<MockModel>>;
   let mockedModels: any[];
 
-  const createDirective = createDirectiveFactory<VirtualDatatablePaginationDirective<MockModel>>({
+  const createDirective = createDirectiveFactory<
+    VirtualDatatablePaginationDirective<MockModel>
+  >({
     directive: VirtualDatatablePaginationDirective,
     declarations: [
       DatatablePaginationDirective,
@@ -30,7 +36,9 @@ describe("bawVirtualDatatablePagination", () => {
     imports: [NgxDatatableModule],
   });
 
-  function createModels(itemCount: number): VirtualDatabaseModelInput<MockModel> {
+  function createModels(
+    itemCount: number
+  ): VirtualDatabaseModelInput<MockModel> {
     mockedModels = modelData.randomArray(itemCount, itemCount, () => {
       return new MockModel({
         id: modelData.id(),
@@ -65,7 +73,9 @@ describe("bawVirtualDatatablePagination", () => {
   }
 
   function getRowValues(row: number): HTMLElement[] {
-    return spec.queryAll(`datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`);
+    return spec.queryAll(
+      `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
+    );
   }
 
   function setPage(page: number) {
@@ -84,7 +94,9 @@ describe("bawVirtualDatatablePagination", () => {
     }
   }
 
-  function setup(props: Partial<VirtualDatatablePaginationDirective<MockModel>> = {}) {
+  function setup(
+    props: Partial<VirtualDatatablePaginationDirective<MockModel>> = {}
+  ) {
     spec = createDirective(
       `
       <ngx-datatable
@@ -95,7 +107,7 @@ describe("bawVirtualDatatablePagination", () => {
         <ngx-datatable-column prop="name"></ngx-datatable-column>
       </ngx-datatable>
     `,
-      { hostProps: props },
+      { hostProps: props }
     );
   }
 

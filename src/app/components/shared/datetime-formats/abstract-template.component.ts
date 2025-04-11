@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnChanges, input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  input,
+} from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { DateTime, Duration } from "luxon";
 
@@ -9,7 +14,11 @@ type InputTypes = DateTime | Date | Duration | string;
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export abstract class AbstractTemplateComponent<InputType extends InputTypes, NormalizedType> implements OnChanges {
+export abstract class AbstractTemplateComponent<
+  InputType extends InputTypes,
+  NormalizedType
+> implements OnChanges
+{
   public constructor() {}
 
   // we use a transform function on the [input] prop so that we can change the shape of the input

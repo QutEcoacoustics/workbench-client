@@ -1,7 +1,13 @@
-import { IStatistics, IStatisticsRecent, IStatisticsSummary } from "@models/Statistics";
+import {
+  IStatistics,
+  IStatisticsRecent,
+  IStatisticsSummary,
+} from "@models/Statistics";
 import { modelData } from "@test/helpers/faker";
 
-export function generateStatisticsRecent(data?: Partial<IStatisticsRecent>): Required<IStatisticsRecent> {
+export function generateStatisticsRecent(
+  data?: Partial<IStatisticsRecent>
+): Required<IStatisticsRecent> {
   return {
     audioEventIds: modelData.ids(),
     audioRecordingIds: modelData.ids(),
@@ -9,7 +15,9 @@ export function generateStatisticsRecent(data?: Partial<IStatisticsRecent>): Req
   };
 }
 
-export function generateStatisticsSummary(data?: Partial<IStatisticsSummary>): Required<IStatisticsSummary> {
+export function generateStatisticsSummary(
+  data?: Partial<IStatisticsSummary>
+): Required<IStatisticsSummary> {
   return {
     annotationsRecent: modelData.datatype.number(),
     annotationsTotal: modelData.datatype.number(),
@@ -33,7 +41,7 @@ export function generateStatisticsSummary(data?: Partial<IStatisticsSummary>): R
 
 export function generateStatistics(
   recent?: Partial<IStatisticsRecent>,
-  summary?: Partial<IStatisticsSummary>,
+  summary?: Partial<IStatisticsSummary>
 ): Required<IStatistics> {
   return {
     recent: generateStatisticsRecent(recent),

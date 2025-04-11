@@ -8,7 +8,7 @@ import { API_ROOT } from "@services/config/config.tokens";
 export class MediaService {
   public constructor(
     private session: BawSessionService,
-    @Inject(API_ROOT) private apiRoot: string,
+    @Inject(API_ROOT) private apiRoot: string
   ) {}
 
   /**
@@ -26,7 +26,7 @@ export class MediaService {
     start: number,
     end: number,
     padding: number = 0,
-    params: Params = {},
+    params: Params = {}
   ): string {
     // check the start and end times are valid
     if (start < 0) {
@@ -39,9 +39,13 @@ export class MediaService {
 
     // check the start and end times fit inside the audio recording
     if (start > audioRecording.durationSeconds) {
-      throw new Error("Start time is greater than the duration of the audio recording");
+      throw new Error(
+        "Start time is greater than the duration of the audio recording"
+      );
     } else if (end > audioRecording.durationSeconds) {
-      throw new Error("End time is greater than the duration of the audio recording");
+      throw new Error(
+        "End time is greater than the duration of the audio recording"
+      );
     }
 
     // this is here to get around a rounding bug with range requests in the api
@@ -61,9 +65,17 @@ export class MediaService {
     const proposedDifference = proposedDuration - minimumDuration;
     const requiredPaddingAmount = Math.max(proposedDifference, padding);
 
-    const [paddedStart, paddedEnd] = this.padAudioUrl(safeStartTime, safeEndTime, requiredPaddingAmount);
+    const [paddedStart, paddedEnd] = this.padAudioUrl(
+      safeStartTime,
+      safeEndTime,
+      requiredPaddingAmount
+    );
 
-    let [fitStart, fitEnd] = this.fitAudioUrl(paddedStart, paddedEnd, audioRecording);
+    let [fitStart, fitEnd] = this.fitAudioUrl(
+      paddedStart,
+      paddedEnd,
+      audioRecording
+    );
 
     // we round here again so that we get a nice round number
     // we don't have to worry about checks to see if the recording is a minimum
@@ -90,7 +102,10 @@ export class MediaService {
       fitEnd = roundedEnd;
     }
 
-    let path = audioRecording.getMediaUrl(this.apiRoot) + `?start_offset=${fitStart}` + `&end_offset=${fitEnd}`;
+    let path =
+      audioRecording.getMediaUrl(this.apiRoot) +
+      `?start_offset=${fitStart}` +
+      `&end_offset=${fitEnd}`;
 
     // if the user is logged in, we want to add their auth token to the
     // query string parameters
@@ -108,7 +123,11 @@ export class MediaService {
     return path;
   }
 
-  private padAudioUrl(start: number, end: number, padAmount: number = 0): [start: number, end: number] {
+  private padAudioUrl(
+    start: number,
+    end: number,
+    padAmount: number = 0
+  ): [start: number, end: number] {
     const sidePadding = padAmount / 2;
 
     start -= sidePadding;
@@ -117,7 +136,11 @@ export class MediaService {
     return [start, end];
   }
 
-  private fitAudioUrl(start: number, end: number, audioRecording: AudioRecording): [start: number, end: number] {
+  private fitAudioUrl(
+    start: number,
+    end: number,
+    audioRecording: AudioRecording
+  ): [start: number, end: number] {
     if (start < 0) {
       // because we don't want to create fractional start/end times, we need to
       // round up the difference to the nearest whole number

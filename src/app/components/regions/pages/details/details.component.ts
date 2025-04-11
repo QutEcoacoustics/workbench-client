@@ -1,11 +1,21 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
-import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  regionResolvers,
+  RegionsService,
+} from "@baw-api/region/regions.service";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import { editRegionMenuItem, regionMenuItem, regionsCategory } from "@components/regions/regions.menus";
+import {
+  editRegionMenuItem,
+  regionMenuItem,
+  regionsCategory,
+} from "@components/regions/regions.menus";
 import { deleteRegionModal } from "@components/regions/regions.modals";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { newPointMenuItem } from "@components/sites/points.menus";
@@ -47,19 +57,26 @@ const regionKey = "region";
  * Region Details Component
  */
 @Component({
-  selector: "baw-region",
-  styleUrls: ["./details.component.scss"],
-  template: `
+    selector: "baw-region",
+    styleUrls: ["./details.component.scss"],
+    template: `
     @if (region) {
       <!-- Region Details -->
       <h1>{{ region.name }}</h1>
 
       <div class="row mb-3">
         <div class="col-sm-4">
-          <img class="img-thumbnail mx-auto d-block " [src]="region.imageUrls" [alt]="region.name + ' image'" />
+          <img
+            class="img-thumbnail mx-auto d-block "
+            [src]="region.imageUrls"
+            [alt]="region.name + ' image'"
+          />
         </div>
         <div class="col-sm-8">
-          <p id="region_description" [innerHtml]="region.descriptionHtml || defaultDescription"></p>
+          <p
+            id="region_description"
+            [innerHtml]="region.descriptionHtml || defaultDescription"
+          ></p>
         </div>
       </div>
 
@@ -71,7 +88,9 @@ const regionKey = "region";
       ></baw-debounce-input>
 
       @if (!hasSites() && !loading) {
-        <p class="lead">No additional data to display here, try adding points to the site</p>
+        <p class="lead">
+          No additional data to display here, try adding points to the site
+        </p>
       }
 
       <ul id="model-grid" class="list-group">
@@ -99,7 +118,13 @@ const regionKey = "region";
       }
     }
   `,
-  imports: [AuthenticatedImageDirective, DebounceInputComponent, SiteMapComponent, SiteCardComponent, NgbPagination],
+    imports: [
+        AuthenticatedImageDirective,
+        DebounceInputComponent,
+        SiteMapComponent,
+        SiteCardComponent,
+        NgbPagination,
+    ],
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public defaultDescription = "<i>No description found</i>";
@@ -114,7 +139,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
     sitesApi: SitesService,
     private regionsApi: RegionsService,
     private notifications: ToastService,
-    private clientConfig: ConfigService,
+    private clientConfig: ConfigService
   ) {
     super(
       router,
@@ -124,7 +149,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       "name",
       () => [this.project.id],
       (sites) => (this.sites = List(sites)),
-      () => ({ regionId: { eq: this.region.id } }),
+      () => ({ regionId: { eq: this.region.id } })
     );
   }
 
@@ -150,8 +175,12 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.region.name));
-          const newRouteLocation = hideProjects ? shallowRegionsRoute.toRouterLink() : this.project.viewUrl;
+          this.notifications.success(
+            defaultSuccessMsg("destroyed", this.region.name)
+          );
+          const newRouteLocation = hideProjects
+            ? shallowRegionsRoute.toRouterLink()
+            : this.project.viewUrl;
           this.router.navigateByUrl(newRouteLocation);
         },
       });

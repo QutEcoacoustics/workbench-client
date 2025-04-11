@@ -37,7 +37,8 @@ export const annotationImportMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: annotationImportRoute,
   tooltip: () => "(BETA) View bulk imports for this project",
-  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
+  breadcrumbResolve: (pageInfo) =>
+    retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel?.audioEventImport.model.name;

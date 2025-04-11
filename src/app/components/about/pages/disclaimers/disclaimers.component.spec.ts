@@ -12,7 +12,10 @@ describe("AboutDisclaimersComponent", () => {
   const createComponent = createComponentFactory({
     component: DisclaimersComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

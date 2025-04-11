@@ -28,7 +28,7 @@ export const siteMenuItem = menuRoute({
   title: (routeData: RouterStateSnapshot) => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel.site.model.name;
-  },
+  }
 });
 
 export const newSiteMenuItem = menuRoute({

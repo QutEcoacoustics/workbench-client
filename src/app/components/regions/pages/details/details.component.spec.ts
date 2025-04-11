@@ -9,7 +9,11 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -49,11 +53,16 @@ describe("RegionDetailsComponent", () => {
 
   assertPageInfo(DetailsComponent, "test name", {
     region: {
-      model: new Region(generateRegion({ name: "test name" })),
+      model: new Region(generateRegion({ name: "test name" }))
     },
   });
 
-  function setup(project: Project, region: Region, projectError?: BawApiError, regionError?: BawApiError) {
+  function setup(
+    project: Project,
+    region: Region,
+    projectError?: BawApiError,
+    regionError?: BawApiError
+  ) {
     spectator = createComponent({
       detectChanges: false,
       data: {
@@ -72,16 +81,16 @@ describe("RegionDetailsComponent", () => {
   }
 
   function interceptApiRequest(responses: Site[] | BawApiError) {
-    return interceptRepeatApiRequests<ISite, Site[]>(sitesApi.filter, [responses])[0];
+    return interceptRepeatApiRequests<ISite, Site[]>(sitesApi.filter, [
+      responses,
+    ])[0];
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultRegion = new Region(
-      generateRegion({
-        projectId: defaultProject.id,
-      }),
-    );
+    defaultRegion = new Region(generateRegion({
+      projectId: defaultProject.id,
+    }));
   });
 
   it("should create", () => {
@@ -99,16 +108,24 @@ describe("RegionDetailsComponent", () => {
     setup(defaultProject, region);
     interceptApiRequest([]);
     spectator.detectChanges();
-    const description = spectator.query<HTMLParagraphElement>("#region_description");
-    expect(description.innerHTML.trim()).toContain("<i>No description found</i>");
+    const description = spectator.query<HTMLParagraphElement>(
+      "#region_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      "<i>No description found</i>"
+    );
   });
 
   it("should display region description", () => {
     setup(defaultProject, defaultRegion);
     interceptApiRequest([]);
     spectator.detectChanges();
-    const description = spectator.query<HTMLParagraphElement>("#region_description");
-    expect(description.innerHTML.trim()).toContain(defaultRegion.descriptionHtml);
+    const description = spectator.query<HTMLParagraphElement>(
+      "#region_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      defaultRegion.descriptionHtml
+    );
   });
 
   describe("error handling", () => {
@@ -142,7 +159,7 @@ describe("RegionDetailsComponent", () => {
         configService ||= spectator.inject(ConfigService);
         configService.settings.hideProjects = projectsHidden;
       });
-      afterEach(() => (configService.settings.hideProjects = false));
+      afterEach(() => configService.settings.hideProjects = false);
 
       it("should invoke the correct api calls when the deleteModel() method is called", () => {
         interceptApiRequest([]);
@@ -218,7 +235,11 @@ describe("RegionDetailsComponent", () => {
       return spectator.queryAll(SiteCardComponent);
     }
 
-    function assertSiteCard(card: SiteCardComponent, project: Project, site: Site) {
+    function assertSiteCard(
+      card: SiteCardComponent,
+      project: Project,
+      site: Site
+    ) {
       expect(card).toBeTruthy();
       expect(card.project).toEqual(project);
       expect(card.site).toEqual(site);
@@ -256,7 +277,11 @@ describe("RegionDetailsComponent", () => {
     });
 
     it("should display multiple site cards", async () => {
-      const sites = [new Site(generateSite()), new Site(generateSite()), new Site(generateSite())];
+      const sites = [
+        new Site(generateSite()),
+        new Site(generateSite()),
+        new Site(generateSite()),
+      ];
       setup(defaultProject, defaultRegion);
       const promise = interceptApiRequest(sites);
       spectator.detectChanges();

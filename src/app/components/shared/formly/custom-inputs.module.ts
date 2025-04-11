@@ -14,7 +14,7 @@ import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
-export const formlyConfig = {
+export const formlyConfig= {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
@@ -25,24 +25,30 @@ export const formlyConfig = {
       component: PasswordConfirmationInputComponent,
     },
   ],
-  wrappers: [{ name: "form-field-horizontal", component: HorizontalWrapperComponent }],
+  wrappers: [
+    { name: "form-field-horizontal", component: HorizontalWrapperComponent },
+  ],
   validationMessages: [
     { name: "required", message: "This field is required" },
     {
       name: "minLength",
-      message: (_, field) => `Input should have at least ${field.props.minLength} characters`,
+      message: (_, field) =>
+        `Input should have at least ${field.props.minLength} characters`,
     },
     {
       name: "maxLength",
-      message: (_, field) => `This value should be less than ${field.props.maxLength} characters`,
+      message: (_, field) =>
+        `This value should be less than ${field.props.maxLength} characters`,
     },
     {
       name: "min",
-      message: (_, field) => `This value should be more than ${field.props.min}`,
+      message: (_, field) =>
+        `This value should be more than ${field.props.min}`,
     },
     {
       name: "max",
-      message: (_, field) => `This value should be less than ${field.props.max}`,
+      message: (_, field) =>
+        `This value should be less than ${field.props.max}`,
     },
   ],
 } as const satisfies ConfigOption;
@@ -58,7 +64,7 @@ const components = [
 ];
 
 @NgModule({
-  imports: [
+    imports: [
     CommonModule,
     NgbTypeaheadModule,
     FormsModule,
@@ -67,7 +73,7 @@ const components = [
     FormlyBootstrapModule,
     IconsModule,
     ...components,
-  ],
-  exports: components,
+],
+    exports: components,
 })
 export class CustomInputsModule {}

@@ -11,8 +11,10 @@ export class ContactUsService {
   public constructor(private api: BawFormApiService<ContactUs>) {}
 
   public contactUs(details: ContactUs): Observable<void> {
-    return this.api.makeFormRequestWithoutOutput(contactUsEndpoint(), contactUsEndpoint(), (token) =>
-      details.getBody(token),
+    return this.api.makeFormRequestWithoutOutput(
+      contactUsEndpoint(),
+      contactUsEndpoint(),
+      (token) => details.getBody(token)
     );
   }
 

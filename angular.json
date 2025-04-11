@@ -35,12 +35,21 @@
                 "output": "assets/"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles", "node_modules"]
+              "includePaths": [
+                "src/app/styles",
+                "node_modules"
+              ]
             },
             "sourceMap": true,
-            "allowedCommonJsDependencies": ["zone.js/dist/zone-error", "humanize-duration", "buffer"]
+            "allowedCommonJsDependencies": [
+              "zone.js/dist/zone-error",
+              "humanize-duration",
+              "buffer"
+            ]
           },
           "configurations": {
             "production": {
@@ -104,10 +113,18 @@
             "customWebpackConfig": {
               "path": "./webpack.config.js"
             },
-            "assets": ["src/assets", "src/manifest.json"],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              "src/assets",
+              "src/manifest.json"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles", "node_modules"]
+              "includePaths": [
+                "src/app/styles",
+                "node_modules"
+              ]
             },
             "scripts": []
           }
@@ -115,7 +132,10 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         },
         "server": {
@@ -125,7 +145,10 @@
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/styles", "node_modules"]
+              "includePaths": [
+                "src/app/styles",
+                "node_modules"
+              ]
             },
             "sourceMap": true,
             "optimization": false,
@@ -159,7 +182,9 @@
           "options": {
             "browserTarget": "workbench-client:build:production",
             "serverTarget": "workbench-client:server:production",
-            "routes": ["/"]
+            "routes": [
+              "/"
+            ]
           },
           "configurations": {
             "production": {}

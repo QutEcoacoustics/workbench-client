@@ -2,9 +2,13 @@ import { IAudioEvent } from "@models/AudioEvent";
 import { generateTagging } from "@test/fakes/Tagging";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioEvent(data?: Partial<IAudioEvent>): Required<IAudioEvent> {
+export function generateAudioEvent(
+  data?: Partial<IAudioEvent>
+): Required<IAudioEvent> {
   const [startTimeSeconds, endTimeSeconds] = modelData.startEndSeconds();
-  const [lowFrequencyHertz, highFrequencyHertz] = modelData.startEndArray(modelData.defaults.sampleRateHertz);
+  const [lowFrequencyHertz, highFrequencyHertz] = modelData.startEndArray(
+    modelData.defaults.sampleRateHertz
+  );
 
   return {
     id: modelData.id(),

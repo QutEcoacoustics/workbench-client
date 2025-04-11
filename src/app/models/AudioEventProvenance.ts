@@ -10,7 +10,10 @@ export interface IAudioEventProvenance {
   score: number;
 }
 
-export class AudioEventProvenance extends AbstractModel<IAudioEventProvenance> implements IAudioEventProvenance {
+export class AudioEventProvenance
+  extends AbstractModel<IAudioEventProvenance>
+  implements IAudioEventProvenance
+{
   @bawPersistAttr()
   public readonly id: Id;
   @bawPersistAttr()

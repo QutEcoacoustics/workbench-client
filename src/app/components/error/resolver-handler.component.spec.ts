@@ -52,8 +52,8 @@ describe("ResolverHandlerComponent", () => {
         generatePageInfoResolvers(
           { model: new MockModel({}) },
           { model: new MockModel({}) },
-          { model: new MockModel({}) },
-        ),
+          { model: new MockModel({}) }
+        )
       );
       spec.detectChanges();
       assertErrorHandler();
@@ -76,14 +76,26 @@ describe("ResolverHandlerComponent", () => {
     it("should prioritize unauthorized error if multiple failing resolvers", () => {
       const unauthorized = generateBawApiError(UNAUTHORIZED);
       const notFound = generateBawApiError(NOT_FOUND);
-      setup(generatePageInfoResolvers({ error: notFound }, { error: unauthorized }, { error: notFound }));
+      setup(
+        generatePageInfoResolvers(
+          { error: notFound },
+          { error: unauthorized },
+          { error: notFound }
+        )
+      );
       spec.detectChanges();
       assertErrorHandler(unauthorized);
     });
 
     it("should display error if mixed passing and failing resolvers", () => {
       const error = generateBawApiError();
-      setup(generatePageInfoResolvers({ model: new MockModel({}) }, { error }, { model: new MockModel({}) }));
+      setup(
+        generatePageInfoResolvers(
+          { model: new MockModel({}) },
+          { error },
+          { model: new MockModel({}) }
+        )
+      );
       spec.detectChanges();
       assertErrorHandler(error);
     });

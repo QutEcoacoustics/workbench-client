@@ -43,5 +43,9 @@
 }
 
 .truncate {
-  @include line-truncation.line-truncation(var(--line-height), var(--max-lines), var(--card-bg-color));
+  @include line-truncation.line-truncation(
+    var(--line-height),
+    var(--max-lines),
+    var(--card-bg-color)
+  );
 }

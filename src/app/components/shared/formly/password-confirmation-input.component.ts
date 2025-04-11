@@ -7,8 +7,8 @@ import { asFormControl } from "./helper";
  * Location Input
  */
 @Component({
-  selector: "baw-password-confirmation-input",
-  template: `
+    selector: "baw-password-confirmation-input",
+    template: `
     <div class="form-group mb-3">
       <label for="password">Password {{ props.required ? " *" : "" }}</label>
       <input
@@ -23,14 +23,19 @@ import { asFormControl } from "./helper";
       />
 
       @if (passwordError) {
-        <div class="invalid-feedback" style="display: block;">
+        <div
+          class="invalid-feedback"
+          style="display: block;"
+        >
           {{ getError() }}
         </div>
       }
     </div>
 
     <div class="form-group mb-3">
-      <label for="confirmation"> Password Confirmation {{ props.required ? " *" : "" }} </label>
+      <label for="confirmation">
+        Password Confirmation {{ props.required ? " *" : "" }}
+      </label>
       <input
         id="confirmation"
         type="password"
@@ -49,11 +54,18 @@ import { asFormControl } from "./helper";
       }
     </div>
 
-    <input type="hidden" [id]="field.id" [formControl]="asFormControl(formControl)" />
+    <input
+      type="hidden"
+      [id]="field.id"
+      [formControl]="asFormControl(formControl)"
+    />
   `,
-  imports: [FormsModule, FormlyModule, ReactiveFormsModule],
+    imports: [FormsModule, FormlyModule, ReactiveFormsModule]
 })
-export class PasswordConfirmationInputComponent extends FieldType implements OnInit {
+export class PasswordConfirmationInputComponent
+  extends FieldType
+  implements OnInit
+{
   public asFormControl = asFormControl;
   public password = "";
   public passwordError: boolean;

@@ -11,9 +11,10 @@ import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.co
  * of a table.
  * e.g. The project list page
  */
-export function assertPaginationTemplate<M extends AbstractModel, T extends PaginationTemplate<M>>(
-  setup: () => Spectator<T>,
-) {
+export function assertPaginationTemplate<
+  M extends AbstractModel,
+  T extends PaginationTemplate<M>
+>(setup: () => Spectator<T>) {
   describe("pagination template", () => {
     let spectator: Spectator<T>;
     beforeEach(() => (spectator = setup()));

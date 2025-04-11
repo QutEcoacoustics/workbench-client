@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, WritableSignal, effect, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  WritableSignal,
+  effect,
+  signal,
+} from "@angular/core";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { DateTime, Duration } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
@@ -15,7 +22,10 @@ type InputType = Duration | DateTime | Date;
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeSinceComponent extends AbstractTemplateComponent<InputType, DateTime> {
+export class TimeSinceComponent extends AbstractTemplateComponent<
+  InputType,
+  DateTime
+> {
   public constructor(private changeDetector: ChangeDetectorRef) {
     super();
 
@@ -24,7 +34,10 @@ export class TimeSinceComponent extends AbstractTemplateComponent<InputType, Dat
       const valueDelta = now.diff(this.value());
       const lastChangeDelta = now.diff(this.lastChange);
 
-      if (Math.abs(valueDelta.as("seconds")) <= 60 || Math.abs(lastChangeDelta.as("seconds")) >= 60) {
+      if (
+        Math.abs(valueDelta.as("seconds")) <= 60 ||
+        Math.abs(lastChangeDelta.as("seconds")) >= 60
+      ) {
         this.update();
 
         // normal input signal fields mark a component for changes
@@ -41,8 +54,13 @@ export class TimeSinceComponent extends AbstractTemplateComponent<InputType, Dat
   public update(): void {
     const value = this.value();
 
-    const tooltipDate = value.toFormat(AbstractTemplateComponent.TOOLTIP_DATETIME);
-    const tooltipZone = AbstractDatetimeComponent.formatTimezone(value.zone, value);
+    const tooltipDate = value.toFormat(
+      AbstractTemplateComponent.TOOLTIP_DATETIME
+    );
+    const tooltipZone = AbstractDatetimeComponent.formatTimezone(
+      value.zone,
+      value
+    );
 
     const durationSince = value.diffNow().rescale();
 

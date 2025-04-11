@@ -15,7 +15,9 @@ const toHaveHref = (): CustomMatcher => ({
     const expectedUri = new URL(href);
 
     if (targetUri.toString() !== expectedUri.toString()) {
-      return matcherFailure(`Expected href to be ${encodeURI(href)}, got ${target.href} instead`);
+      return matcherFailure(
+        `Expected href to be ${encodeURI(href)}, got ${target.href} instead`
+      );
     }
     return matcherSuccess();
   },

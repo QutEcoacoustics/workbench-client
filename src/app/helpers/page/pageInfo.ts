@@ -1,6 +1,11 @@
 import { Type } from "@angular/core";
 import { Data } from "@angular/router";
-import { Category, MenuRoute, Menus, ResolverList } from "@interfaces/menusInterfaces";
+import {
+  Category,
+  MenuRoute,
+  Menus,
+  ResolverList,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { PageComponent } from "./pageComponent";
 

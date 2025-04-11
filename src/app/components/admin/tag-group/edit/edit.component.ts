@@ -1,22 +1,32 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { tagGroupResolvers, TagGroupsService } from "@baw-api/tag/tag-group.service";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  tagGroupResolvers,
+  TagGroupsService,
+} from "@baw-api/tag/tag-group.service";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
-import { adminEditTagGroupMenuItem, adminTagGroupsCategory, adminTagGroupsRoute } from "../tag-group.menus";
+import {
+  adminEditTagGroupMenuItem,
+  adminTagGroupsCategory,
+  adminTagGroupsRoute,
+} from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
 
 const tagGroupKey = "tagGroup";
 
 @Component({
-  selector: "baw-admin-tag-groups-edit",
-  template: `
+    selector: "baw-admin-tag-groups-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -28,9 +38,12 @@ const tagGroupKey = "tagGroup";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
-class AdminTagGroupsEditComponent extends FormTemplate<TagGroup> implements OnInit {
+class AdminTagGroupsEditComponent
+  extends FormTemplate<TagGroup>
+  implements OnInit
+{
   public fields = schema.fields;
   public title: string;
 
@@ -38,11 +51,12 @@ class AdminTagGroupsEditComponent extends FormTemplate<TagGroup> implements OnIn
     private api: TagGroupsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router,
+    router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[tagGroupKey] as TagGroup,
-      successMsg: (model) => defaultSuccessMsg("updated", model.groupIdentifier),
+      successMsg: (model) =>
+        defaultSuccessMsg("updated", model.groupIdentifier),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -56,8 +70,7 @@ class AdminTagGroupsEditComponent extends FormTemplate<TagGroup> implements OnIn
   }
 
   public deleteModel(): void {
-    this.api
-      .destroy(new TagGroup(this.model))
+    this.api.destroy(new TagGroup(this.model))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {

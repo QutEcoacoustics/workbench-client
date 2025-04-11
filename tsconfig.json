@@ -11,7 +11,11 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "lib": ["ES2020", "dom", "dom.iterable"],
+    "lib": [
+      "ES2020",
+      "dom",
+      "dom.iterable"
+    ],
     "module": "ES2020",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -35,19 +39,46 @@
       "jasmine"
     ],
     "paths": {
-      "@assets/*": ["./src/assets/*"],
-      "@menu/*": ["./src/app/components/shared/menu/widgets/*", "./src/app/components/shared/menu/*"],
-      "@shared/*": ["./src/app/components/shared/*"],
-      "@components/*": ["./src/app/components/*"],
-      "@directives/*": ["./src/app/directives/*"],
-      "@pipes/*": ["./src/app/pipes/*"],
-      "@guards/*": ["./src/app/guards/*"],
-      "@helpers/*": ["./src/app/helpers/*"],
-      "@interfaces/*": ["./src/app/interfaces/*"],
-      "@models/*": ["./src/app/models/*"],
-      "@baw-api/*": ["./src/app/services/baw-api/*"],
-      "@services/*": ["./src/app/services/*"],
-      "@test/*": ["./src/app/test/*"]
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+      "@menu/*": [
+        "./src/app/components/shared/menu/widgets/*",
+        "./src/app/components/shared/menu/*"
+      ],
+      "@shared/*": [
+        "./src/app/components/shared/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ],
+      "@directives/*": [
+        "./src/app/directives/*"
+      ],
+      "@pipes/*": [
+        "./src/app/pipes/*"
+      ],
+      "@guards/*": [
+        "./src/app/guards/*"
+      ],
+      "@helpers/*": [
+        "./src/app/helpers/*"
+      ],
+      "@interfaces/*": [
+        "./src/app/interfaces/*"
+      ],
+      "@models/*": [
+        "./src/app/models/*"
+      ],
+      "@baw-api/*": [
+        "./src/app/services/baw-api/*"
+      ],
+      "@services/*": [
+        "./src/app/services/*"
+      ],
+      "@test/*": [
+        "./src/app/test/*"
+      ]
     },
     "useDefineForClassFields": false
   },

@@ -14,7 +14,9 @@ import { ServiceToken } from "@baw-api/ServiceTokens";
 import { Observable } from "rxjs";
 import { MockModel } from "./baseApiMock.service";
 
-export const MOCK = new ServiceToken<MockStandardApiService>("STANDARD_API_SERVICE");
+export const MOCK = new ServiceToken<MockStandardApiService>(
+  "STANDARD_API_SERVICE"
+);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const multipleModels = (...args: any[]) => new Observable<MockModel[]>();
@@ -45,7 +47,9 @@ export class MockImmutableApiService implements ImmutableApi<MockModel> {
 }
 
 @Injectable()
-export class MockNonDestructibleApiService implements NonDestructibleApi<MockModel> {
+export class MockNonDestructibleApiService
+  implements NonDestructibleApi<MockModel>
+{
   public list = multipleModels;
   public filter = multipleModels;
   public show = singleModel;
@@ -54,7 +58,9 @@ export class MockNonDestructibleApiService implements NonDestructibleApi<MockMod
 }
 
 @Injectable()
-export class MockReadAndCreateApiService implements ReadAndCreateApi<MockModel> {
+export class MockReadAndCreateApiService
+  implements ReadAndCreateApi<MockModel>
+{
   public list = multipleModels;
   public filter = multipleModels;
   public show = singleModel;
@@ -62,7 +68,9 @@ export class MockReadAndCreateApiService implements ReadAndCreateApi<MockModel> 
 }
 
 @Injectable()
-export class MockReadAndUpdateApiService implements ReadAndUpdateApi<MockModel> {
+export class MockReadAndUpdateApiService
+  implements ReadAndUpdateApi<MockModel>
+{
   public list = multipleModels;
   public filter = multipleModels;
   public show = singleModel;
@@ -77,7 +85,9 @@ export class MockReadonlyApiService implements ReadonlyApi<MockModel> {
 }
 
 @Injectable()
-export class MockShowApiService implements ApiShow<MockModel, [], IdOr<MockModel>> {
+export class MockShowApiService
+  implements ApiShow<MockModel, [], IdOr<MockModel>>
+{
   public show = singleModel;
 }
 

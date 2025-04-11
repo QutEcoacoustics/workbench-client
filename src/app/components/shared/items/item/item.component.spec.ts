@@ -14,7 +14,12 @@ describe("ItemComponent", () => {
     imports: [RouterTestingModule, IconsModule, NgbTooltipModule],
   });
 
-  function setup(icon: IconProp, name: string, value: string | number, tooltip?: () => string) {
+  function setup(
+    icon: IconProp,
+    name: string,
+    value: string | number,
+    tooltip?: () => string
+  ) {
     spec = createComponent({
       detectChanges: false,
       props: { icon, name, value, tooltip },

@@ -2,9 +2,16 @@ import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
-import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { toBase64Url } from "@helpers/encoding/encoding";
-import { AbstractModel, AbstractModelConstructor, AbstractModelWithoutId } from "@models/AbstractModel";
+import {
+  AbstractModel,
+  AbstractModelConstructor,
+  AbstractModelWithoutId,
+} from "@models/AbstractModel";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -39,7 +46,10 @@ export interface BawServiceOptions {
    * Additional parameters to merged in with model payload to be sent with the
    * request
    */
-  params?: Record<PropertyKey, (string | number | boolean) | (string | number | boolean)[]>;
+  params?: Record<
+    PropertyKey,
+    (string | number | boolean) | (string | number | boolean)[]
+  >;
 
   /**
    * Allows you to modify the http cache options per request
@@ -84,7 +94,7 @@ export const defaultBawServiceOptions = Object.freeze({
 @Injectable()
 export class BawApiService<
   Model extends AbstractModelWithoutId,
-  ClassBuilder extends AbstractModelConstructor<Model> = AbstractModelConstructor<Model>,
+  ClassBuilder extends AbstractModelConstructor<Model> = AbstractModelConstructor<Model>
 > {
   /*
   Paths:
@@ -102,18 +112,26 @@ export class BawApiService<
    *
    * @param cb AbstractModel class
    */
-  public handleCollectionResponse: (cb: ClassBuilder) => (resp: ApiResponse<Model>) => Model[];
+  public handleCollectionResponse: (
+    cb: ClassBuilder
+  ) => (resp: ApiResponse<Model>) => Model[];
 
   /**
    * Handle API single model response
    *
    * @param cb AbstractModel class
    */
-  public handleSingleResponse: (cb: ClassBuilder) => (resp: ApiResponse<Model>) => Model;
+  public handleSingleResponse: (
+    cb: ClassBuilder
+  ) => (resp: ApiResponse<Model>) => Model;
 
-  public handleCollectionResponseError: (cb: ClassBuilder) => (resp: BawApiError<Model>) => BawApiError<Model>;
+  public handleCollectionResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
 
-  public handleSingleResponseError: (cb: ClassBuilder) => (resp: BawApiError<Model>) => BawApiError<Model>;
+  public handleSingleResponseError: (
+    cb: ClassBuilder
+  ) => (resp: BawApiError<Model>) => BawApiError<Model>;
 
   /**
    * Handle API empty response
@@ -127,14 +145,18 @@ export class BawApiService<
 
   // because users can create a partial options object, we need to merge the partial options with the default options
   // so that we don't have "undefined" values being passed as options
-  private buildServiceOptions(options: Partial<BawServiceOptions>): Required<BawServiceOptions> {
+  private buildServiceOptions(
+    options: Partial<BawServiceOptions>
+  ): Required<BawServiceOptions> {
     return {
       ...this.instanceOptions,
       ...options,
     };
   }
 
-  private buildCachingOptions(options: Partial<BawServiceOptions>): NgHttpCachingContext {
+  private buildCachingOptions(
+    options: Partial<BawServiceOptions>
+  ): NgHttpCachingContext {
     return {
       ...this.instanceOptions.cacheOptions,
       ...options.cacheOptions,
@@ -145,7 +167,7 @@ export class BawApiService<
   // the Authentication token and cookies should be sent in requests
   private withCredentialsHttpContext(
     options: Required<BawServiceOptions>,
-    baseContext: HttpContext = new HttpContext(),
+    baseContext: HttpContext = new HttpContext()
   ): HttpContext {
     return baseContext.set(CREDENTIALS_CONTEXT, options.withCredentials);
   }
@@ -170,7 +192,7 @@ export class BawApiService<
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
     @Inject(ASSOCIATION_INJECTOR)
     protected associationInjector: AssociationInjector,
-    @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions,
+    @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
   ) {
     // by merging the default options with the injected options, we can override
     // the default options by injecting a partial options object
@@ -179,7 +201,11 @@ export class BawApiService<
     //
     // the following order of precedence is used:
     // parameter options > injected options > default options
-    this.instanceOptions = Object.assign({}, defaultBawServiceOptions, this.options);
+    this.instanceOptions = Object.assign(
+      {},
+      defaultBawServiceOptions,
+      this.options
+    );
 
     const createModel = (cb: ClassBuilder, data: Model, meta: Meta): Model => {
       const model = new cb(data, this.associationInjector);
@@ -202,7 +228,9 @@ export class BawApiService<
         }
 
         if (resp.data instanceof Array) {
-          throw new Error("Received an array of API results when only a single result was expected");
+          throw new Error(
+            "Received an array of API results when only a single result was expected"
+          );
         }
         return createModel(cb, resp.data, resp.meta);
       };
@@ -211,7 +239,9 @@ export class BawApiService<
       (cb: ClassBuilder) =>
       (resp: BawApiError<Model>): BawApiError<Model> => {
         if (!(resp.data instanceof Array)) {
-          throw new Error("Received a single API result when an array of results was expected");
+          throw new Error(
+            "Received a single API result when an array of results was expected"
+          );
         }
 
         resp.data = resp.data.map((data) => createModel(cb, data, resp));
@@ -222,7 +252,9 @@ export class BawApiService<
       (cb: ClassBuilder) =>
       (resp: BawApiError<Model>): BawApiError<Model> => {
         if (resp.data instanceof Array) {
-          throw new Error("Received an array of API results when only a single result was expected");
+          throw new Error(
+            "Received an array of API results when only a single result was expected"
+          );
         }
 
         resp.data = createModel(cb, resp.data, resp);
@@ -240,9 +272,11 @@ export class BawApiService<
   public handleError = (
     err: BawApiError | Error,
     disableNotification?: boolean,
-    classBuilder?: ClassBuilder,
+    classBuilder?: ClassBuilder
   ): Observable<never> => {
-    const error = isBawApiError(err) ? err : new BawApiError(unknownErrorCode, err.message, {});
+    const error = isBawApiError(err)
+      ? err
+      : new BawApiError(unknownErrorCode, err.message, {});
     // Do not show error notifications during SSR, otherwise they cannot be
     // cleared
     if (!disableNotification && !this.isServer) {
@@ -268,11 +302,17 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public list(classBuilder: ClassBuilder, path: string, options: BawServiceOptions = {}): Observable<Model[]> {
+  public list(
+    classBuilder: ClassBuilder,
+    path: string,
+    options: BawServiceOptions = {}
+  ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -287,12 +327,14 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     filters: Filters<Model>,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -307,12 +349,14 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     filters: Filters<Model>,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -322,11 +366,17 @@ export class BawApiService<
    * @param classBuilder Model to create
    * @param path API path
    */
-  public show(classBuilder: ClassBuilder, path: string, options: BawServiceOptions = {}): Observable<Model> {
+  public show(
+    classBuilder: ClassBuilder,
+    path: string,
+    options: BawServiceOptions = {}
+  ): Observable<Model> {
     return this.session.authTrigger.pipe(
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -344,10 +394,12 @@ export class BawApiService<
     path: string,
     updatePath: (model: Model) => string,
     model: AbstractModel,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForCreate();
-    let body = model.kind ? { [model.kind]: jsonData ?? model } : (jsonData ?? model);
+    let body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
 
     let formData = model.getFormDataOnlyAttributesForUpdate();
     if (options.params) {
@@ -363,7 +415,9 @@ export class BawApiService<
       }
     }
 
-    const formDataMethod = model.hasJsonOnlyAttributesForCreate() ? "httpPut" : "httpPost";
+    const formDataMethod = model.hasJsonOnlyAttributesForCreate()
+      ? "httpPut"
+      : "httpPost";
 
     // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
     // if there is only a formData body, we want to return the output of the formData PUT request
@@ -373,7 +427,7 @@ export class BawApiService<
       concatMap(
         model.hasJsonOnlyAttributesForCreate()
           ? () => this.httpPost(path, body, undefined, options).pipe()
-          : (data) => of(data),
+          : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
       // using the updatePath callback. We do this before the concatMap below because the updatePath callback is dependent
@@ -385,11 +439,14 @@ export class BawApiService<
         // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
           () => model.hasFormDataOnlyAttributesForCreate(),
-          this[formDataMethod](updatePath(data), formData, multiPartApiHeaders, options).pipe(
-            map(this.handleSingleResponse(classBuilder)),
-          ),
-          of(data),
-        ),
+          this[formDataMethod](
+            updatePath(data),
+            formData,
+            multiPartApiHeaders,
+            options
+          ).pipe(map(this.handleSingleResponse(classBuilder))),
+          of(data)
+        )
       ),
       // TODO: this should be a more targeted cache invalidation
       // we have to clear the cache when creating new models because the new
@@ -397,7 +454,9 @@ export class BawApiService<
       tap(() => this.clearCache()),
       // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
       // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -413,10 +472,12 @@ export class BawApiService<
     classBuilder: ClassBuilder,
     path: string,
     model: AbstractModel,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<Model> {
     const jsonData = model.getJsonAttributesForUpdate();
-    let body = model.kind ? { [model.kind]: jsonData ?? model } : (jsonData ?? model);
+    let body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
 
     let formData = model.getFormDataOnlyAttributesForUpdate();
     if (options.params && formData) {
@@ -445,12 +506,12 @@ export class BawApiService<
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
         model.hasJsonOnlyAttributesForUpdate()
           ? () => this.httpPatch(path, body, undefined, options)
-          : (data) => of(data),
+          : (data) => of(data)
       ),
       concatMap(
         model.hasFormDataOnlyAttributesForUpdate()
           ? () => this.httpPut(path, formData, multiPartApiHeaders, options)
-          : (data) => of(data),
+          : (data) => of(data)
       ),
       map(this.handleSingleResponse(classBuilder)),
       // TODO: This should be a more targeted cache invalidation
@@ -462,7 +523,9 @@ export class BawApiService<
       // because other requests such as cached associations will still return a
       // stale model in their response
       tap(() => this.clearCache()),
-      catchError((err) => this.handleError(err, this.suppressErrors(options), classBuilder)),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
     );
   }
 
@@ -471,11 +534,14 @@ export class BawApiService<
    *
    * @param path API path
    */
-  public destroy(path: string, options: BawServiceOptions = {}): Observable<null> {
+  public destroy(
+    path: string,
+    options: BawServiceOptions = {}
+  ): Observable<null> {
     return this.httpDelete(path, undefined, options).pipe(
       map(this.handleEmptyResponse),
       tap(() => this.clearCache()),
-      catchError((err) => this.handleError(err, this.suppressErrors(options))),
+      catchError((err) => this.handleError(err, this.suppressErrors(options)))
     );
   }
 
@@ -493,12 +559,15 @@ export class BawApiService<
   public httpGet(
     path: string,
     headers: HttpHeaders = defaultApiHeaders,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
     const cachingOptions = this.buildCachingOptions(options);
-    const cacheContext = withNgHttpCachingContext(cachingOptions, withCacheLogging());
+    const cacheContext = withNgHttpCachingContext(
+      cachingOptions,
+      withCacheLogging()
+    );
 
     const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
 
@@ -523,7 +592,7 @@ export class BawApiService<
   public httpDelete(
     path: string,
     headers: HttpHeaders = defaultApiHeaders,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | void>> {
     const fullOptions = this.buildServiceOptions(options);
 
@@ -552,7 +621,7 @@ export class BawApiService<
     path: string,
     body?: any,
     headers: HttpHeaders = defaultApiHeaders,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model | Model[]>> {
     const fullOptions = this.buildServiceOptions(options);
 
@@ -563,11 +632,15 @@ export class BawApiService<
 
     const context = this.withCredentialsHttpContext(fullOptions);
 
-    return this.http.post<ApiResponse<Model | Model[]>>(this.getPath(path), body, {
-      responseType: "json",
-      headers,
-      context,
-    });
+    return this.http.post<ApiResponse<Model | Model[]>>(
+      this.getPath(path),
+      body,
+      {
+        responseType: "json",
+        headers,
+        context,
+      }
+    );
   }
 
   /**
@@ -586,7 +659,7 @@ export class BawApiService<
     path: string,
     body?: any,
     headers: HttpHeaders = defaultApiHeaders,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
@@ -615,7 +688,7 @@ export class BawApiService<
     path: string,
     body?: any,
     headers: HttpHeaders = defaultApiHeaders,
-    options: BawServiceOptions = {},
+    options: BawServiceOptions = {}
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
@@ -628,7 +701,11 @@ export class BawApiService<
     });
   }
 
-  public encodeFilter(filter: Filters<Model>, disablePaging?: boolean, withCredentials: boolean = true): string {
+  public encodeFilter(
+    filter: Filters<Model>,
+    disablePaging?: boolean,
+    withCredentials: boolean = true
+  ): string {
     const body: Record<string, string> = {
       // Base64 RFC 4648 §5 encoding
       filterEncoded: toBase64Url(JSON.stringify(toSnakeCase(filter))),
@@ -657,7 +734,7 @@ export class BawApiService<
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     model: AbstractModel | string | number,
-    comparison: keyof (Comparisons & Subsets) = "eq",
+    comparison: keyof (Comparisons & Subsets) = "eq"
   ): Filters<Model> {
     return this.associationFilter(filters, key, model, comparison);
   }
@@ -674,7 +751,7 @@ export class BawApiService<
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     models: string[] | number[],
-    comparison: keyof Subsets = "in",
+    comparison: keyof Subsets = "in"
   ): Filters<Model> {
     return this.associationFilter(filters, key, models, comparison);
   }
@@ -700,7 +777,7 @@ export class BawApiService<
     filters: Filters<Model>,
     key: AssociationKeys<Model>,
     models: AbstractModel | string | number | string[] | number[],
-    comparison: keyof (Comparisons & Subsets),
+    comparison: keyof (Comparisons & Subsets)
   ): Filters<Model> {
     const { filter, ...meta } = filters;
 
@@ -720,7 +797,10 @@ export class BawApiService<
     };
   }
 
-  private addUnscopedFormdataParams(data: FormData, params: BawServiceOptions["params"]): FormData {
+  private addUnscopedFormdataParams(
+    data: FormData,
+    params: BawServiceOptions["params"]
+  ): FormData {
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
         for (const dataValueItem of value) {
@@ -734,7 +814,10 @@ export class BawApiService<
     return data;
   }
 
-  private addUnscopedJsonParams<T = AbstractModel>(data: Partial<T>, params: BawServiceOptions["params"]): Partial<T> {
+  private addUnscopedJsonParams<T = AbstractModel>(
+    data: Partial<T>,
+    params: BawServiceOptions["params"]
+  ): Partial<T> {
     return {
       ...data,
       ...params,
@@ -745,7 +828,10 @@ export class BawApiService<
 /**
  * Model keys which may be a valid association to another model
  */
-type AssociationKeys<Model extends AbstractModel> = KeysOfType<Model, number | string | Set<string> | Set<number>>;
+type AssociationKeys<Model extends AbstractModel> = KeysOfType<
+  Model,
+  number | string | Set<string> | Set<number>
+>;
 
 export type Direction = "desc" | "asc";
 
@@ -852,7 +938,10 @@ export class RangeInterval {
   }
 }
 
-type Range = string[] | number[] | XOR<RangeInterval, { from: number; to: number }>;
+type Range =
+  | string[]
+  | number[]
+  | XOR<RangeInterval, { from: number; to: number }>;
 
 export interface Subsets {
   range?: Range;
@@ -890,7 +979,9 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   Comparisons &
   Partial<SerializableObject> &
   Subsets & {
-    [P in keyof Writeable<Model>]?: Combinations<Writeable<Model>> & Comparisons & Subsets;
+    [P in keyof Writeable<Model>]?: Combinations<Writeable<Model>> &
+      Comparisons &
+      Subsets;
   };
 
 /**
@@ -923,7 +1014,10 @@ export interface Capability {
 /**
  * Metadata from api response
  */
-export interface Meta<Model = unknown, Capabilities extends CapabilityKey = CapabilityKey> extends Filters<Model> {
+export interface Meta<
+  Model = unknown,
+  Capabilities extends CapabilityKey = CapabilityKey
+> extends Filters<Model> {
   /** Response status */
   status?: number;
   /** Human readable response status */

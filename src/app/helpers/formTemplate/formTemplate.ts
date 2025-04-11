@@ -1,6 +1,10 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  ResolvedModelList,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -55,7 +59,10 @@ const defaultOptions = {
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class FormTemplate<Model extends AbstractModel> extends withFormCheck(PageComponent) implements OnInit {
+export abstract class FormTemplate<Model extends AbstractModel>
+  extends withFormCheck(PageComponent)
+  implements OnInit
+{
   /** Form submission processing */
   public loading: boolean;
   /** Initial setup failed */
@@ -85,7 +92,7 @@ export abstract class FormTemplate<Model extends AbstractModel> extends withForm
     protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
-    opts: Partial<FormProps<Model>>,
+    opts: Partial<FormProps<Model>>
   ) {
     super();
     this.opts = { ...defaultOptions, ...opts };
@@ -181,6 +188,9 @@ export abstract class FormTemplate<Model extends AbstractModel> extends withForm
  *
  * @param name Model name
  */
-export function defaultSuccessMsg(action: "created" | "updated" | "destroyed", name: string) {
+export function defaultSuccessMsg(
+  action: "created" | "updated" | "destroyed",
+  name: string
+) {
   return `Successfully ${action} ${name}`;
 }

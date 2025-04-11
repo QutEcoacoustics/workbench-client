@@ -14,7 +14,7 @@ import { filterAnd } from "./filters";
 export function filterEventRecordingDate(
   filters: InnerFilter<AudioRecording>,
   startDate?: DateTime,
-  endDate?: DateTime,
+  endDate?: DateTime
 ): InnerFilter<AudioRecording> {
   if (startDate) {
     // to return the most data that matches the date range interval we want to return any audio recordings that have any audio that overlaps

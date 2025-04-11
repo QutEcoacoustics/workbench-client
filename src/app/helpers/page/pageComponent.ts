@@ -36,7 +36,9 @@ export class PageComponent extends withUnsubscribe() implements IPageComponent {
  *
  * @param component Angular component or null if not exists
  */
-export function getPageInfos(component: Option<Type<IPageComponent>>): Option<PageInfo[]> {
+export function getPageInfos(
+  component: Option<Type<IPageComponent>>
+): Option<PageInfo[]> {
   const pageComponent = component as IPageComponentStatic;
   return pageComponent?.pageInfos ?? null;
 }

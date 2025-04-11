@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -20,8 +28,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
 import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: "baw-model-selector",
-  template: `
+    selector: "baw-model-selector",
+    template: `
     <div class="input-group">
       @if (label) {
         <div class="input-group-prepend input-group-text">
@@ -46,9 +54,11 @@ import { FormsModule } from "@angular/forms";
       />
     </div>
   `,
-  imports: [NgbTypeahead, FormsModule],
+    imports: [NgbTypeahead, FormsModule]
 })
-export class ModelSelectorComponent<Model extends AbstractModel> implements OnInit {
+export class ModelSelectorComponent<Model extends AbstractModel>
+  implements OnInit
+{
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
 
   @Input() public label: string;
@@ -65,12 +75,17 @@ export class ModelSelectorComponent<Model extends AbstractModel> implements OnIn
 
   public ngOnInit(): void {
     this.search$ = (text$: Observable<string>): Observable<Model[]> => {
-      const debouncedText$ = text$.pipe(debounceTime(defaultDebounceTime), distinctUntilChanged());
-      const clicksWithClosedPopup$ = this.click$.pipe(filter((): boolean => !this.selector.isPopupOpen()));
+      const debouncedText$ = text$.pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged()
+      );
+      const clicksWithClosedPopup$ = this.click$.pipe(
+        filter((): boolean => !this.selector.isPopupOpen())
+      );
       const inputFocus$ = this.focus$;
 
       return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-        switchMap((model: Model | string) => this.getModels(model)),
+        switchMap((model: Model | string) => this.getModels(model))
       );
     };
   }

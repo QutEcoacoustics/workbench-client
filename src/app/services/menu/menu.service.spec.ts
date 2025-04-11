@@ -1,5 +1,11 @@
-import { shouldNotComplete, shouldNotFail } from "@baw-api/baw-api.service.spec";
-import { AuthTriggerData, BawSessionService } from "@baw-api/baw-session.service";
+import {
+  shouldNotComplete,
+  shouldNotFail,
+} from "@baw-api/baw-api.service.spec";
+import {
+  AuthTriggerData,
+  BawSessionService,
+} from "@baw-api/baw-session.service";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
@@ -19,7 +25,11 @@ import { MockWidgetComponent } from "@menu/menu/menu.component.spec";
 import { PermissionsShieldComponent } from "@menu/permissions-shield/permissions-shield.component";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { User } from "@models/User";
-import { createServiceFactory, mockProvider, SpectatorService } from "@ngneat/spectator";
+import {
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import {
@@ -82,7 +92,11 @@ describe("MenuService", () => {
     authTrigger.next({ user });
   }
 
-  function setPageInfo(fullscreen: boolean, menus: Partial<Menus> = {}, pageRoute: MenuRoute = homeMenuItem) {
+  function setPageInfo(
+    fullscreen: boolean,
+    menus: Partial<Menus> = {},
+    pageRoute: MenuRoute = homeMenuItem
+  ) {
     const _pageInfo: IPageInfo = {
       fullscreen,
       pageRoute,
@@ -98,7 +112,10 @@ describe("MenuService", () => {
     return _pageInfo;
   }
 
-  function validateState(actualState: MenuServiceData, expectedState: Partial<MenuServiceData>) {
+  function validateState(
+    actualState: MenuServiceData,
+    expectedState: Partial<MenuServiceData>
+  ) {
     expectedState = {
       hasActions: false,
       isFullscreen: false,
@@ -114,7 +131,10 @@ describe("MenuService", () => {
     });
   }
 
-  function validateStateForEachUpdate(done: DoneFn, ...states: Partial<MenuServiceData>[]) {
+  function validateStateForEachUpdate(
+    done: DoneFn,
+    ...states: Partial<MenuServiceData>[]
+  ) {
     let counter = 0;
     spec.service.menuUpdate.subscribe({
       next: (state) => {
@@ -167,7 +187,7 @@ describe("MenuService", () => {
       validateStateForEachUpdate(
         done,
         { isFullscreen: true, hasActions: false },
-        { isFullscreen: false, hasActions: true },
+        { isFullscreen: false, hasActions: true }
       );
       setPageInfo(false, { actions: List([homeMenuItem]) });
     });
@@ -178,7 +198,7 @@ describe("MenuService", () => {
         done,
         { isFullscreen: true, isMenuOpen: false },
         { isFullscreen: true, isMenuOpen: true },
-        { isFullscreen: false, isMenuOpen: false },
+        { isFullscreen: false, isMenuOpen: false }
       );
       spec.service.openMenu();
       setPageInfo(false);
@@ -197,7 +217,7 @@ describe("MenuService", () => {
         {
           isFullscreen: true,
           pageInfo: { ...initialPageInfo, fullscreen: true },
-        },
+        }
       );
       setPageInfo(false);
       setPageInfo(true);
@@ -265,7 +285,12 @@ describe("MenuService", () => {
 
     it("should trigger state change after toggleMenu called", (done) => {
       setup({ fullscreen: false });
-      validateStateForEachUpdate(done, { isMenuOpen: false }, { isMenuOpen: true }, { isMenuOpen: false });
+      validateStateForEachUpdate(
+        done,
+        { isMenuOpen: false },
+        { isMenuOpen: true },
+        { isMenuOpen: false }
+      );
       spec.service.toggleMenu();
       spec.service.toggleMenu();
     });
@@ -283,7 +308,12 @@ describe("MenuService", () => {
 
     it("should trigger state change after openMenu called", (done) => {
       setup({ fullscreen: false });
-      validateStateForEachUpdate(done, { isMenuOpen: false }, { isMenuOpen: true }, { isMenuOpen: true });
+      validateStateForEachUpdate(
+        done,
+        { isMenuOpen: false },
+        { isMenuOpen: true },
+        { isMenuOpen: true }
+      );
       spec.service.openMenu();
       spec.service.openMenu();
     });
@@ -307,7 +337,7 @@ describe("MenuService", () => {
         { isMenuOpen: false },
         { isMenuOpen: true },
         { isMenuOpen: false },
-        { isMenuOpen: false },
+        { isMenuOpen: false }
       );
       spec.service.openMenu();
       spec.service.closeMenu();
@@ -359,7 +389,7 @@ describe("MenuService", () => {
             route: menuItem.route,
             icon: menuItem.icon,
           },
-        ]),
+        ])
       );
     });
 
@@ -382,7 +412,7 @@ describe("MenuService", () => {
             route: childMenuItem.route,
             icon: childMenuItem.icon,
           },
-        ]),
+        ])
       );
     });
   });
@@ -409,28 +439,31 @@ describe("MenuService", () => {
 
     describe("links", () => {
       validateLinks(
-        (links, fullscreen) => setup({ fullscreen, menuData: { actions: links } }),
+        (links, fullscreen) =>
+          setup({ fullscreen, menuData: { actions: links } }),
         () => spec.service.actionMenu.links,
         [
           { type: "menu link", createLink: generateMenuLink },
           { type: "menu route", createLink: generateMenuRoute },
           { type: "menu action", createLink: generateMenuAction },
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
-        ],
+        ]
       );
     });
 
     describe("widgets", () => {
       validateWidgets(
         (widgets) => setup({ menuData: { actionWidgets: widgets } }),
-        () => spec.service.actionMenu.widgets,
+        () => spec.service.actionMenu.widgets
       );
 
       validatePredicate(
-        (links, fullscreen) => setup({ fullscreen, menuData: { actionWidgets: links } }),
+        (links, fullscreen) =>
+          setup({ fullscreen, menuData: { actionWidgets: links } }),
         () => spec.service.actionMenu.widgets,
         "widget",
-        (data) => new WidgetMenuItem(PermissionsShieldComponent, data?.predicate),
+        (data) =>
+          new WidgetMenuItem(PermissionsShieldComponent, data?.predicate)
       );
     });
 
@@ -525,21 +558,23 @@ describe("MenuService", () => {
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
         ],
         // Home Menu Item is the pageRoute
-        [homeMenuItem],
+        [homeMenuItem]
       );
     });
 
     describe("widgets", () => {
       validateWidgets(
         (widgets) => setup({ menuData: { linkWidgets: widgets } }),
-        () => spec.service.secondaryMenu.widgets,
+        () => spec.service.secondaryMenu.widgets
       );
 
       validatePredicate(
-        (links, fullscreen) => setup({ fullscreen, menuData: { linkWidgets: links } }),
+        (links, fullscreen) =>
+          setup({ fullscreen, menuData: { linkWidgets: links } }),
         () => spec.service.secondaryMenu.widgets,
         "widget",
-        (data) => new WidgetMenuItem(PermissionsShieldComponent, data?.predicate),
+        (data) =>
+          new WidgetMenuItem(PermissionsShieldComponent, data?.predicate)
       );
     });
 
@@ -579,7 +614,12 @@ describe("MenuService", () => {
           },
         });
         expect(spec.service.secondaryMenu.links).toEqual(
-          OrderedSet([homeMenuItem, grandParentMenuItem, parentMenuItem, childMenuItem]),
+          OrderedSet([
+            homeMenuItem,
+            grandParentMenuItem,
+            parentMenuItem,
+            childMenuItem,
+          ])
         );
       });
 
@@ -597,7 +637,12 @@ describe("MenuService", () => {
           },
         });
         expect(spec.service.secondaryMenu.links).toEqual(
-          OrderedSet([homeMenuItem, grandParentMenuItem, parentMenuItem, childMenuItem]),
+          OrderedSet([
+            homeMenuItem,
+            grandParentMenuItem,
+            parentMenuItem,
+            childMenuItem,
+          ])
         );
       });
     });
@@ -624,7 +669,9 @@ describe("MenuService", () => {
       }
 
       function assertLinks(links: (AnyMenuItem | MenuModalWithoutAction)[]) {
-        expect(spec.service.secondaryMenu.links).toEqual(OrderedSet([pageRoute, ...links]));
+        expect(spec.service.secondaryMenu.links).toEqual(
+          OrderedSet([pageRoute, ...links])
+        );
       }
 
       it("should order links", () => {
@@ -680,7 +727,7 @@ describe("MenuService", () => {
     linkSetup: (links: List<T>, fullscreen: boolean) => void,
     getLinks: () => OrderedSet<T>,
     linkTypes: { type: string; createLink: (data?: Partial<MenuItem>) => T }[],
-    defaultLinks: T[] = [],
+    defaultLinks: T[] = []
   ) {
     function assertLinks(links: T[]) {
       expect(getLinks()).toEqual(OrderedSet([...defaultLinks, ...links]));
@@ -716,7 +763,7 @@ describe("MenuService", () => {
     getLinks: () => OrderedSet<T>,
     type: string,
     createLink: (data?: Partial<MenuItem>) => T,
-    defaultLinks: T[] = [],
+    defaultLinks: T[] = []
   ) {
     function assertLinks(links: T[]) {
       expect(getLinks()).toEqual(OrderedSet([...defaultLinks, ...links]));
@@ -801,7 +848,7 @@ describe("MenuService", () => {
 
   function validateWidgets(
     widgetSetup: (widgets: List<WidgetMenuItem>) => void,
-    getWidgets: () => OrderedSet<WidgetMenuItem>,
+    getWidgets: () => OrderedSet<WidgetMenuItem>
   ) {
     it("should handle undefined widgets", () => {
       widgetSetup(undefined);

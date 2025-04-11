@@ -2,7 +2,15 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -26,7 +34,12 @@ export class StudiesService implements StandardApi<Study> {
   }
 
   public create(model: Study): Observable<Study> {
-    return this.api.create(Study, endpoint(emptyParam, emptyParam), (study) => endpoint(study, emptyParam), model);
+    return this.api.create(
+      Study,
+      endpoint(emptyParam, emptyParam),
+      (study) => endpoint(study, emptyParam),
+      model
+    );
   }
 
   public update(model: Study): Observable<Study> {
@@ -38,4 +51,7 @@ export class StudiesService implements StandardApi<Study> {
   }
 }
 
-export const studyResolvers = new Resolvers<Study, []>([StudiesService], "studyId").create("Study");
+export const studyResolvers = new Resolvers<Study, []>(
+  [StudiesService],
+  "studyId"
+).create("Study");

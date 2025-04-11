@@ -5,7 +5,11 @@ import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
@@ -117,7 +121,9 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
-      expect(getCells()[2].querySelector("span").innerHTML).toContain(defaultBookmark.descriptionHtmlTagline);
+      expect(getCells()[2].querySelector("span").innerHTML).toContain(
+        defaultBookmark.descriptionHtmlTagline
+      );
     });
   });
 });

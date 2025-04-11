@@ -3,7 +3,9 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { isAdminPredicate } from "src/app/app.menus";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 
-export const adminAnalysisJobsRoute = adminRoute.addFeatureModule("analysis_jobs");
+export const adminAnalysisJobsRoute = adminRoute.addFeatureModule(
+  "analysis_jobs"
+);
 
 export const adminAnalysisJobsCategory = {
   icon: ["fas", "server"],
@@ -30,5 +32,5 @@ export const adminAnalysisJobMenuItem = menuRoute({
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel.analysisJob.model.name;
-  },
+  }
 });

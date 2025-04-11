@@ -1,7 +1,10 @@
 import { Component } from "@angular/core";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { theirAnnotationsMenuItem, theirProfileCategory } from "@components/profile/profile.menus";
+import {
+  theirAnnotationsMenuItem,
+  theirProfileCategory,
+} from "@components/profile/profile.menus";
 import { IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";

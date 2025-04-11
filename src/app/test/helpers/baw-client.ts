@@ -14,7 +14,7 @@ export function validateBawClientPage<Component extends Type<any>>(
   modules: any[],
   route: string,
   validatePageLoaded: string | string[] | ((text: string) => boolean),
-  interceptApiRequests?: (spec: SpectatorRouting<Component>) => void,
+  interceptApiRequests?: (spec: SpectatorRouting<Component>) => void
 ) {
   let spec: SpectatorRouting<Component>;
   let config: ConfigService;
@@ -38,7 +38,9 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   function waitForLoad() {
     return new Promise<void>((resolve) =>
-      getBawClient()["iframeRef"].nativeElement.addEventListener("load", () => resolve()),
+      getBawClient()["iframeRef"].nativeElement.addEventListener("load", () =>
+        resolve()
+      )
     );
   }
 
@@ -66,6 +68,8 @@ export function validateBawClientPage<Component extends Type<any>>(
     spec.detectChanges();
 
     const bawClient = getBawClient();
-    expect(bawClient["iframeRef"].nativeElement.contentWindow.document.body).toContainText(validatePageLoaded);
+    expect(
+      bawClient["iframeRef"].nativeElement.contentWindow.document.body
+    ).toContainText(validatePageLoaded);
   });
 }

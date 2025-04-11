@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  input,
+} from "@angular/core";
 import { DateTime, IANAZone, Zone } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { AbstractTemplateComponent } from "../abstract-template.component";
@@ -10,7 +15,10 @@ export type InputTypes = DateTime | Date | string;
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export abstract class AbstractDatetimeComponent extends AbstractTemplateComponent<InputTypes, DateTime> {
+export abstract class AbstractDatetimeComponent extends AbstractTemplateComponent<
+  InputTypes,
+  DateTime
+> {
   public constructor() {
     super();
   }
@@ -42,7 +50,9 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
 
     const timezoneName = AbstractDatetimeComponent.formatTimezone(zone, value);
 
-    const tooltipDateTime = valueInZone.toFormat(AbstractTemplateComponent.TOOLTIP_DATETIME);
+    const tooltipDateTime = valueInZone.toFormat(
+      AbstractTemplateComponent.TOOLTIP_DATETIME
+    );
 
     // we do not place the timezoneName in brackets as the ngx-bootstrap tooltip
     // is an "absolute" width. This means that the brackets will be split over multiple lines

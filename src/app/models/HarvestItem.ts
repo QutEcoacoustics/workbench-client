@@ -1,7 +1,16 @@
-import { ACCOUNT, AUDIO_RECORDING, SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
+import {
+  ACCOUNT,
+  AUDIO_RECORDING,
+  SHALLOW_HARVEST,
+} from "@baw-api/ServiceTokens";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
-import { bawBytes, bawDateTime, bawDuration, bawReadonlyConvertCase } from "@models/AttributeDecorators";
+import {
+  bawBytes,
+  bawDateTime,
+  bawDuration,
+  bawReadonlyConvertCase,
+} from "@models/AttributeDecorators";
 import { AudioRecording } from "@models/AudioRecording";
 import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
@@ -19,9 +28,19 @@ import { AssociationInjector } from "./ImplementsInjector";
  * @param completed Successfully harvested the file
  * @param errored An error occurred while harvesting the file
  */
-export type HarvestItemState = "new" | "metadataGathered" | "failed" | "completed" | "errored";
+export type HarvestItemState =
+  | "new"
+  | "metadataGathered"
+  | "failed"
+  | "completed"
+  | "errored";
 
-export type ValidationFixable = "missingDate" | "ambiguousDateTime" | "futureDate" | "missingUploader" | "noSiteId";
+export type ValidationFixable =
+  | "missingDate"
+  | "ambiguousDateTime"
+  | "futureDate"
+  | "missingUploader"
+  | "noSiteId";
 
 export type ValidationNotFixable =
   | "doesNotExist"
@@ -50,7 +69,10 @@ export interface IHarvestItemValidation {
   message?: string;
 }
 
-export class HarvestItemValidation extends AbstractModelWithoutId implements IHarvestItemValidation {
+export class HarvestItemValidation
+  extends AbstractModelWithoutId
+  implements IHarvestItemValidation
+{
   @bawReadonlyConvertCase()
   public readonly name?: ValidationName;
   @bawReadonlyConvertCase()
@@ -112,7 +134,7 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
     this.report = new HarvestItemReport(data.report, injector);
     if (data.validations) {
       this.validations = (data.validations as IHarvestItemValidation[])?.map(
-        (validation) => new HarvestItemValidation(validation, injector),
+        (validation) => new HarvestItemValidation(validation, injector)
       );
     }
   }
@@ -134,7 +156,11 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   }
 
   public get hasItemsInvalid(): boolean {
-    return this.hasItemsInvalidFixable || this.hasItemsInvalidNotFixable || this.hasItemsErrored;
+    return (
+      this.hasItemsInvalidFixable ||
+      this.hasItemsInvalidNotFixable ||
+      this.hasItemsErrored
+    );
   }
 
   public get viewUrl(): string {
@@ -155,7 +181,10 @@ export interface IHarvestItemReport {
   itemsErrored?: number;
 }
 
-export class HarvestItemReport extends AbstractModelWithoutId implements IHarvestItemReport {
+export class HarvestItemReport
+  extends AbstractModelWithoutId
+  implements IHarvestItemReport
+{
   public readonly kind = "HarvestReport";
   public readonly itemsTotal?: number;
   public readonly itemsSizeBytes?: number;

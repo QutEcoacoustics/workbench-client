@@ -1,8 +1,22 @@
-import { AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
+} from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AnyMenuItem, isButton, isExternalLink, isInternalRoute, LabelAndIcon } from "@interfaces/menusInterfaces";
+import {
+  AnyMenuItem,
+  isButton,
+  isExternalLink,
+  isInternalRoute,
+  LabelAndIcon,
+} from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
@@ -11,7 +25,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { UpperCasePipe } from "@angular/common";
 import { ModalComponent } from "../widgets/widget.component";
 import { WidgetDirective } from "../widgets/widget.directive";
-import { isMenuModal, menuModal, MenuModal, MenuModalWithoutAction, WidgetMenuItem } from "../widgets/widgetItem";
+import {
+  isMenuModal,
+  menuModal,
+  MenuModal,
+  MenuModalWithoutAction,
+  WidgetMenuItem,
+} from "../widgets/widgetItem";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 
@@ -20,10 +40,10 @@ import { MenuLinkComponent } from "../link/link.component";
  * Used to display menu links, routes, and actions.
  */
 @Component({
-  selector: "baw-menu",
-  templateUrl: "./menu.component.html",
-  styleUrls: ["./menu.component.scss"],
-  imports: [FaIconComponent, MenuButtonComponent, MenuLinkComponent, WidgetDirective, UpperCasePipe],
+    selector: "baw-menu",
+    templateUrl: "./menu.component.html",
+    styleUrls: ["./menu.component.scss"],
+    imports: [FaIconComponent, MenuButtonComponent, MenuLinkComponent, WidgetDirective, UpperCasePipe]
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;
@@ -45,7 +65,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   public constructor(
     public menuService: MenuService,
     private session: BawSessionService,
-    private modalService: NgbModal,
+    private modalService: NgbModal
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -96,7 +116,9 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
       // Change modal menu item links into menu actions
-      this.links.map((link) => (isMenuModal(link) ? this.createModalAction(link) : link))
+      this.links.map((link) =>
+        isMenuModal(link) ? this.createModalAction(link) : link
+      )
     );
   }
 

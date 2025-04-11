@@ -7,7 +7,10 @@ export interface ILoginDetails {
   password?: Param;
 }
 
-export class LoginDetails extends AbstractForm<ILoginDetails> implements ILoginDetails {
+export class LoginDetails
+  extends AbstractForm<ILoginDetails>
+  implements ILoginDetails
+{
   public readonly kind = "Login Details";
   @bawPersistAttr()
   public readonly login: Param;

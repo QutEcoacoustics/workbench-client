@@ -15,14 +15,26 @@ import {
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasMany, hasOne, updater } from "./AssociationDecorators";
-import { bawBytes, bawCollection, bawDateTime, bawDuration, bawPersistAttr } from "./AttributeDecorators";
+import {
+  bawBytes,
+  bawCollection,
+  bawDateTime,
+  bawDuration,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import type { Script } from "./Script";
 import type { User } from "./User";
 import { AssociationInjector } from "./ImplementsInjector";
 import { AudioEventImport } from "./AudioEventImport";
 import { Project } from "./Project";
 
-export type AnalysisJobStatus = "beforeSave" | "new" | "preparing" | "processing" | "suspended" | "completed";
+export type AnalysisJobStatus =
+  | "beforeSave"
+  | "new"
+  | "preparing"
+  | "processing"
+  | "suspended"
+  | "completed";
 
 export interface OverallProgress {
   statusNewCount?: number;
