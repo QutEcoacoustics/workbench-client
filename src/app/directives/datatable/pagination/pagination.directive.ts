@@ -2,8 +2,21 @@ import { AfterContentInit, Directive, Host, Input } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
-import { DataTableColumnDirective, DatatableComponent, TableColumn } from "@swimlane/ngx-datatable";
-import { BehaviorSubject, combineLatest, map, Observable, of, switchMap, takeUntil, tap } from "rxjs";
+import {
+  DataTableColumnDirective,
+  DatatableComponent,
+  TableColumn,
+} from "@swimlane/ngx-datatable";
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+  takeUntil,
+  tap,
+} from "rxjs";
 
 /**
  * DatatablePaginationDirective
@@ -123,7 +136,9 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   public ngAfterContentInit(): void {
     // Convert basic filters to observable
     this.filters$ =
-      this.pagination.filters instanceof BehaviorSubject ? this.pagination.filters : of(this.pagination.filters ?? {});
+      this.pagination.filters instanceof BehaviorSubject
+        ? this.pagination.filters
+        : of(this.pagination.filters ?? {});
 
     // Reset page number on filter change, but keep current sort
     this.filters$.pipe(takeUntil(this.unsubscribe)).subscribe((filters) => {
@@ -136,7 +151,9 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
       }
 
       // Otherwise, use the sort from the filter observable as the default
-      this.datatable.sorts = [{ prop: filters.sorting.orderBy, dir: filters.sorting.direction }];
+      this.datatable.sorts = [
+        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+      ];
       this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });
 
@@ -152,10 +169,12 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
           sorting: pageAndSort.sort ?? undefined,
           // ngx-datatable uses page 0 as the first page, but the api uses page 1
           paging: { page: pageAndSort.page + 1 },
-        }),
+        })
       ),
-      switchMap((filters): Observable<Model[]> => this.pagination.getModels(filters)),
-      tap((): void => this.loading$.next(false)),
+      switchMap(
+        (filters): Observable<Model[]> => this.pagination.getModels(filters)
+      ),
+      tap((): void => this.loading$.next(false))
     );
 
     this.subscribeToTableOutputs();
@@ -211,14 +230,18 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     });
 
     // Set loading state on change
-    this.loading$.pipe(takeUntil(this.unsubscribe)).subscribe((isLoading): void => {
-      this.datatable.loadingIndicator = isLoading;
-    });
+    this.loading$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((isLoading): void => {
+        this.datatable.loadingIndicator = isLoading;
+      });
 
     // Set page number on change
-    this.pageAndSort$.pipe(takeUntil(this.unsubscribe)).subscribe(({ page }): void => {
-      this.datatable.offset = page;
-    });
+    this.pageAndSort$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ page }): void => {
+        this.datatable.offset = page;
+      });
   }
 }
 

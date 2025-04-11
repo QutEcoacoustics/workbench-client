@@ -1,4 +1,8 @@
-import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
+import {
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -106,37 +110,43 @@ describe("AnnotationsDetailsComponent", () => {
 
     mockTagModel = new Tag(generateTag(), injector);
 
-    mockAudioEvents = modelData.randomArray(1, 10, () => new AudioEvent(generateAudioEvent(), injector));
+    mockAudioEvents = modelData.randomArray(
+      1,
+      10,
+      () => new AudioEvent(generateAudioEvent(), injector)
+    );
     mockAudioEvents.forEach((event) =>
-      event.addMetadata(
-        modelData.model.generatePagingMetadata({
-          items: mockAudioEvents.length,
-        }),
-      ),
+      event.addMetadata(modelData.model.generatePagingMetadata({
+        items: mockAudioEvents.length,
+      }))
     );
 
     mockAudioEventImportFiles = modelData.randomArray(
       1,
       10,
-      () => new AudioEventImportFile(generateAudioEventImportFile(), injector),
+      () => new AudioEventImportFile(generateAudioEventImportFile(), injector)
     );
     mockAudioEventImportFiles.forEach((file) =>
-      file.addMetadata(
-        modelData.model.generatePagingMetadata({
-          items: mockAudioEventImportFiles.length,
-        }),
-      ),
+      file.addMetadata(modelData.model.generatePagingMetadata({
+        items: mockAudioEventImportFiles.length,
+      }))
     );
 
     mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
     mockRecordingsService.show.and.callFake(() => of(mockAudioRecording));
 
     mockAudioEventFileService = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
-    mockAudioEventFileService.list.and.callFake(() => of(mockAudioEventImportFiles));
-    mockAudioEventFileService.filter.and.callFake(() => of(mockAudioEventImportFiles));
+    mockAudioEventFileService.list.and.callFake(() =>
+      of(mockAudioEventImportFiles)
+    );
+    mockAudioEventFileService.filter.and.callFake(() =>
+      of(mockAudioEventImportFiles)
+    );
 
     mockAudioEventImportService = spec.inject(AUDIO_EVENT_IMPORT.token);
-    mockAudioEventImportService.show.and.callFake(() => of(mockAudioEventImport));
+    mockAudioEventImportService.show.and.callFake(() =>
+      of(mockAudioEventImport)
+    );
 
     const audioEventSubject = new Subject<AudioEventImport>();
     const tagsSubject = new Subject<Tag[]>();
@@ -174,11 +184,17 @@ describe("AnnotationsDetailsComponent", () => {
     await setup();
   });
 
-  assertPageInfo<AudioEventImport>(AnnotationImportDetailsComponent, "test name", {
-    audioEventImport: {
-      model: new AudioEventImport(generateAudioEventImport({ name: "test name" })),
-    },
-  });
+  assertPageInfo<AudioEventImport>(
+    AnnotationImportDetailsComponent,
+    "test name",
+    {
+      audioEventImport: {
+        model: new AudioEventImport(
+          generateAudioEventImport({ name: "test name" })
+        ),
+      },
+    }
+  );
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(AnnotationImportDetailsComponent);
@@ -195,7 +211,7 @@ describe("AnnotationsDetailsComponent", () => {
       expect(mockEventsService.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({
           paging: { page: 1 },
-        }),
+        })
       );
     });
   });
@@ -210,7 +226,7 @@ describe("AnnotationsDetailsComponent", () => {
         jasmine.objectContaining({
           paging: { page: 1 },
         }),
-        mockAudioEventImport,
+        mockAudioEventImport
       );
     });
 

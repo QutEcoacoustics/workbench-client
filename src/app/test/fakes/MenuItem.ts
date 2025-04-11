@@ -56,7 +56,9 @@ export function generateMenuAction(data?: Partial<MenuAction>): MenuAction {
   });
 }
 
-export function generateMenuModalWithoutAction(data?: Partial<MenuModalWithoutAction>): MenuModalWithoutAction {
+export function generateMenuModalWithoutAction(
+  data?: Partial<MenuModalWithoutAction>
+): MenuModalWithoutAction {
   const tooltip = modelData.random.words();
   return menuModal({
     icon: modelData.icon(),

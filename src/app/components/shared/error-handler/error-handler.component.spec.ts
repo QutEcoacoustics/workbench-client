@@ -6,13 +6,18 @@ import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { FORBIDDEN, NOT_FOUND, REQUEST_TIMEOUT, UNAUTHORIZED } from "http-status";
+import {
+  FORBIDDEN,
+  NOT_FOUND,
+  REQUEST_TIMEOUT,
+  UNAUTHORIZED,
+} from "http-status";
 import { SharedModule } from "../shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
-  template: "<baw-error-handler [error]='error'></baw-error-handler>",
-  imports: [SharedModule, RouterTestingModule, MockConfigModule],
+    template: "<baw-error-handler [error]='error'></baw-error-handler>",
+    imports: [SharedModule, RouterTestingModule, MockConfigModule]
 })
 class MockComponent implements OnInit {
   public error: BawApiError;
@@ -20,7 +25,11 @@ class MockComponent implements OnInit {
   public constructor(private ref: ChangeDetectorRef) {}
 
   public ngOnInit() {
-    this.error = new BawApiError(UNAUTHORIZED, "You need to log in or register before continuing.", null);
+    this.error = new BawApiError(
+      UNAUTHORIZED,
+      "You need to log in or register before continuing.",
+      null
+    );
     this.ref.detectChanges();
   }
 
@@ -36,7 +45,10 @@ describe("ErrorHandlerComponent", () => {
   let fixture: ComponentFixture<ErrorHandlerComponent>;
   let mockFixture: ComponentFixture<MockComponent>;
 
-  function assertTitle(title: string, nativeElement: any = fixture.nativeElement) {
+  function assertTitle(
+    title: string,
+    nativeElement: any = fixture.nativeElement
+  ) {
     const titleEl = nativeElement.querySelector("h1");
 
     if (!title) {
@@ -48,7 +60,10 @@ describe("ErrorHandlerComponent", () => {
     expect(titleEl.innerText.trim()).toBe(title);
   }
 
-  function assertDescription(description: string, nativeElement: any = fixture.nativeElement) {
+  function assertDescription(
+    description: string,
+    nativeElement: any = fixture.nativeElement
+  ) {
     const bodyEl = nativeElement.querySelector("p");
 
     if (!description) {
@@ -62,8 +77,8 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, MockConfigModule, ErrorHandlerComponent, MockComponent],
-    }).compileComponents();
+    imports: [SharedModule, RouterTestingModule, MockConfigModule, ErrorHandlerComponent, MockComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
     mockFixture = TestBed.createComponent(MockComponent);
@@ -80,27 +95,45 @@ describe("ErrorHandlerComponent", () => {
   [
     {
       title: "Unauthorized Access",
-      error: generateBawApiError(UNAUTHORIZED, "You need to log in or register before continuing."),
+      error: generateBawApiError(
+        UNAUTHORIZED,
+        "You need to log in or register before continuing."
+      ),
     },
     {
       title: "Access Forbidden",
-      error: generateBawApiError(FORBIDDEN, "You do not have access to this resource."),
+      error: generateBawApiError(
+        FORBIDDEN,
+        "You do not have access to this resource."
+      ),
     },
     {
       title: "Request Timed Out",
-      error: generateBawApiError(REQUEST_TIMEOUT, "Resource request took too long to complete."),
+      error: generateBawApiError(
+        REQUEST_TIMEOUT,
+        "Resource request took too long to complete."
+      ),
     },
     {
       title: "Not Found",
-      error: generateBawApiError(NOT_FOUND, "Could not find the requested item."),
+      error: generateBawApiError(
+        NOT_FOUND,
+        "Could not find the requested item."
+      ),
     },
     {
       title: "Connection Failure",
-      error: generateBawApiError(CLIENT_TIMEOUT, "A request took longer than expected to return"),
+      error: generateBawApiError(
+        CLIENT_TIMEOUT,
+        "A request took longer than expected to return"
+      ),
     },
     {
       title: "Unknown Error",
-      error: generateBawApiError(unknownErrorCode, "Unknown error has occurred."),
+      error: generateBawApiError(
+        unknownErrorCode,
+        "Unknown error has occurred."
+      ),
     },
   ].forEach(({ error, title }) => {
     it(`should handle ${error.status} status code`, () => {
@@ -128,9 +161,14 @@ describe("ErrorHandlerComponent", () => {
 
     const nativeElement = mockFixture.nativeElement;
     assertTitle("Unauthorized Access", nativeElement);
-    assertDescription("You need to log in or register before continuing.", nativeElement);
+    assertDescription(
+      "You need to log in or register before continuing.",
+      nativeElement
+    );
 
-    mockComponent.setError(generateBawApiError(NOT_FOUND, "Could not find the requested item."));
+    mockComponent.setError(
+      generateBawApiError(NOT_FOUND, "Could not find the requested item.")
+    );
     mockFixture.detectChanges();
 
     assertTitle("Not Found", nativeElement);

@@ -7,7 +7,13 @@ import { ResetPassword } from "@models/data/ResetPassword";
 import { UnlockAccount } from "@models/data/UnlockAccount";
 import { User } from "@models/User";
 import { Observable } from "rxjs";
-import { ApiShow, emptyParam, newParam, option, param } from "../api-common";
+import {
+  ApiShow,
+  emptyParam,
+  newParam,
+  option,
+  param,
+} from "../api-common";
 import { ShowResolver } from "../resolver-common";
 
 const confirmationParam = "confirmation/" as const;
@@ -24,7 +30,7 @@ const endpoint = stringTemplate`/my_account/${param}${option}`;
 export class UserService implements ApiShow<User> {
   public constructor(
     private api: BawApiService<User>,
-    private formApi: BawFormApiService<User>,
+    private formApi: BawFormApiService<User>
   ) {}
 
   public show(): Observable<User> {
@@ -41,7 +47,7 @@ export class UserService implements ApiShow<User> {
     return this.formApi.makeFormRequestWithoutOutput(
       endpoint(confirmationParam, newParam),
       endpoint(confirmationParam, emptyParam),
-      (token) => details.getBody(token),
+      (token) => details.getBody(token)
     );
   }
 
@@ -49,7 +55,7 @@ export class UserService implements ApiShow<User> {
     return this.formApi.makeFormRequestWithoutOutput(
       endpoint(passwordParam, newParam),
       endpoint(passwordParam, emptyParam),
-      (token) => details.getBody(token),
+      (token) => details.getBody(token)
     );
   }
 
@@ -57,9 +63,11 @@ export class UserService implements ApiShow<User> {
     return this.formApi.makeFormRequestWithoutOutput(
       endpoint(unlockParam, newParam),
       endpoint(unlockParam, emptyParam),
-      (token) => details.getBody(token),
+      (token) => details.getBody(token)
     );
   }
 }
 
-export const userResolvers = new ShowResolver<User, []>([UserService]).create("User");
+export const userResolvers = new ShowResolver<User, []>([UserService]).create(
+  "User"
+);

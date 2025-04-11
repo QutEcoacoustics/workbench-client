@@ -1,7 +1,11 @@
 import { Statistics } from "@models/Statistics";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateStatistics } from "@test/fakes/Statistics";
-import { mockServiceImports, mockServiceProviders, validateApiShow } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateApiShow,
+} from "@test/helpers/api-common";
 import { StatisticsService } from "./statistics.service";
 
 describe("StatisticsService", (): void => {

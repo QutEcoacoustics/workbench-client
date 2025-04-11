@@ -1,5 +1,15 @@
-import { AUDIO_EVENT_PROVENANCE, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
-import { CollectionIds, DateTimeTimezone, Id, Param } from "@interfaces/apiInterfaces";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
+import {
+  CollectionIds,
+  DateTimeTimezone,
+  Id,
+  Param,
+} from "@interfaces/apiInterfaces";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { AbstractModel } from "./AbstractModel";
@@ -27,7 +37,10 @@ export interface IEventSummaryReport {
 }
 
 //! the api endpoint associated with this model is not currently implemented. Therefore this model is a draft and subject to change
-export class EventSummaryReport extends AbstractModel<IEventSummaryReport> implements IEventSummaryReport {
+export class EventSummaryReport
+  extends AbstractModel<IEventSummaryReport>
+  implements IEventSummaryReport
+{
   public readonly kind = "AudioEventSummaryReport";
   public readonly id?: Id;
   public readonly name: Param;
@@ -53,18 +66,24 @@ export class EventSummaryReport extends AbstractModel<IEventSummaryReport> imple
   public sites?: Site[];
   @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
-  @hasMany<EventSummaryReport, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceIds")
+  @hasMany<EventSummaryReport, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenanceIds"
+  )
   public provenances?: AudioEventProvenance[];
 
   public get viewUrl(): string {
     const reportLevel = this.generationParameters.sites
       ? "site"
       : this.generationParameters.regions.length
-        ? "region"
-        : "project";
+      ? "region"
+      : "project";
 
-    const route: string = reportMenuItems.view[reportLevel].route.toRouterLink();
-    const routeParameters: string = this.generationParameters.toQueryParams().toString();
+    const route: string =
+      reportMenuItems.view[reportLevel].route.toRouterLink();
+    const routeParameters: string = this.generationParameters
+      .toQueryParams()
+      .toString();
 
     return route + routeParameters;
   }

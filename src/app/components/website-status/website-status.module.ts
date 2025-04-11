@@ -5,11 +5,13 @@ import { SharedModule } from "@shared/shared.module";
 import { websiteStatusRoute } from "./website-status.routes";
 import { WebsiteStatusComponent } from "./website-status.component";
 
-const components = [WebsiteStatusComponent];
+const components = [
+  WebsiteStatusComponent,
+];
 const routes = websiteStatusRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [RouterModule, ...components],
 })
 export class WebsiteStatusModule {}

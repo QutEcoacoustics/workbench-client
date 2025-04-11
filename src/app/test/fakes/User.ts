@@ -1,7 +1,10 @@
 import { ISession, IUser } from "@models/User";
 import { modelData } from "@test/helpers/faker";
 
-export function generateUser(data?: Partial<IUser>, isAdmin?: boolean): Required<IUser> {
+export function generateUser(
+  data?: Partial<IUser>,
+  isAdmin?: boolean
+): Required<IUser> {
   return {
     id: modelData.id(),
     email: modelData.internet.email(),
@@ -30,7 +33,10 @@ export function generateUser(data?: Partial<IUser>, isAdmin?: boolean): Required
   };
 }
 
-export function generateSession(data?: Partial<ISession>, userData?: Partial<IUser>): ISession {
+export function generateSession(
+  data?: Partial<ISession>,
+  userData?: Partial<IUser>
+): ISession {
   return {
     authToken: modelData.authToken(),
     userName: modelData.internet.userName(),

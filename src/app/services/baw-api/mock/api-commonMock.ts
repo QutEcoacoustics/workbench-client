@@ -6,7 +6,9 @@ import { defaultApiPageSize, Filters, Meta } from "../baw-api.service";
 
 const delayPeriod = 1000;
 
-export function listMock<M extends AbstractModel>(classBuilder: (index: number) => M): Observable<M[]> {
+export function listMock<M extends AbstractModel>(
+  classBuilder: (index: number) => M
+): Observable<M[]> {
   const models: M[] = [];
 
   for (let i = 0; i < defaultApiPageSize; i++) {
@@ -18,7 +20,7 @@ export function listMock<M extends AbstractModel>(classBuilder: (index: number) 
 
 export function filterMock<M extends AbstractModel>(
   filters: Filters<M>,
-  classBuilder: (index: number) => M,
+  classBuilder: (index: number) => M
 ): Observable<M[]> {
   const models: M[] = [];
   const meta: Meta<any> = {
@@ -33,7 +35,9 @@ export function filterMock<M extends AbstractModel>(
         },
     paging: {
       page: filters?.paging?.page ? filters.paging.page : 1,
-      items: filters?.paging?.items ? filters?.paging?.items : defaultApiPageSize,
+      items: filters?.paging?.items
+        ? filters?.paging?.items
+        : defaultApiPageSize,
       total: filters?.paging?.total ? filters?.paging?.total : 100,
       maxPage: 4,
     },
@@ -51,6 +55,9 @@ export function filterMock<M extends AbstractModel>(
   return of(models).pipe(delay(delayPeriod));
 }
 
-export function showMock<M extends AbstractModel>(model: IdOr<M>, classBuilder: (modelId: number) => M): Observable<M> {
+export function showMock<M extends AbstractModel>(
+  model: IdOr<M>,
+  classBuilder: (modelId: number) => M
+): Observable<M> {
   return of(classBuilder(parseInt(id<M>(model), 10))).pipe(delay(delayPeriod));
 }

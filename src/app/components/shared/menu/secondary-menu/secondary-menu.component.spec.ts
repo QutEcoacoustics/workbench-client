@@ -1,10 +1,20 @@
-import { menuLink, MenuLink, menuRoute, MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
+import {
+  menuLink,
+  MenuLink,
+  menuRoute,
+  MenuRoute,
+  NavigableMenuItem,
+} from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { MenuComponent } from "@menu/menu/menu.component";
 import { MockWidgetComponent } from "@menu/menu/menu.component.spec";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { MenuService, MenuServiceData, SecondaryMenuData } from "@services/menu/menu.service";
+import {
+  MenuService,
+  MenuServiceData,
+  SecondaryMenuData,
+} from "@services/menu/menu.service";
 import { OrderedSet } from "immutable";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
@@ -124,7 +134,10 @@ describe("SecondaryMenuComponent", () => {
     });
 
     it("should handle multiple widgets", () => {
-      const widgets = OrderedSet([new WidgetMenuItem(MockWidgetComponent), new WidgetMenuItem(MockWidgetComponent)]);
+      const widgets = OrderedSet([
+        new WidgetMenuItem(MockWidgetComponent),
+        new WidgetMenuItem(MockWidgetComponent),
+      ]);
       setup({ widgets });
       spec.detectChanges();
       assertWidgets(widgets);

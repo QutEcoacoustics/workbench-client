@@ -4,7 +4,12 @@ import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
 import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
 import { pointRoute, pointsRoute } from "./points.routes";
-import { editSiteMenuItem, newSiteMenuItem, siteMenuItem, sitesCategory } from "./sites.menus";
+import {
+  editSiteMenuItem,
+  newSiteMenuItem,
+  siteMenuItem,
+  sitesCategory,
+} from "./sites.menus";
 
 export const pointsCategory: Category = {
   ...sitesCategory,

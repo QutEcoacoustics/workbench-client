@@ -12,7 +12,11 @@ import { Id, PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -50,7 +54,7 @@ describe("MySitesComponent", () => {
     model: User = defaultUser,
     sites: Site[] = [defaultSite],
     projects: Project[] = [defaultProject],
-    error?: BawApiError,
+    error?: BawApiError
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -104,7 +108,7 @@ describe("MySitesComponent", () => {
     defaultSite = new Site(
       generateSite({
         projectIds: [defaultProject.id],
-      }),
+      })
     );
   });
 
@@ -119,7 +123,12 @@ describe("MySitesComponent", () => {
   });
 
   it("should handle user error", async () => {
-    await setup(undefined, [defaultSite], [defaultProject], generateBawApiError());
+    await setup(
+      undefined,
+      [defaultSite],
+      [defaultProject],
+      generateBawApiError()
+    );
     assertErrorHandler(spec.fixture);
   });
 
@@ -168,7 +177,9 @@ describe("MySitesComponent", () => {
         it(`should display ${accessLevel} permissions`, async () => {
           const projectId = modelData.id();
           const site = new Site(generateSite({ projectIds: [projectId] }));
-          const project = new Project(generateProject({ id: projectId, accessLevel }));
+          const project = new Project(
+            generateProject({ id: projectId, accessLevel })
+          );
 
           await setup(defaultUser, [site], [project, new Project(generateProject())]);
 

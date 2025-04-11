@@ -60,7 +60,12 @@ export interface Category extends LabelAndIcon {
  * Literal string choice type (like an enum) used for the `kind`
  * property in things derived from MenuItems.
  */
-export type MenuItemKinds = "MenuItem" | "MenuAction" | "MenuLink" | "MenuRoute" | "MenuModal";
+export type MenuItemKinds =
+  | "MenuItem"
+  | "MenuAction"
+  | "MenuLink"
+  | "MenuRoute"
+  | "MenuModal";
 
 /**
  * User callback function
@@ -168,7 +173,9 @@ export interface MenuRoute extends MenuItem {
   breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;
 }
 
-export function menuRoute<T extends Omit<MenuRoute, "kind">>(item: T): MenuRoute {
+export function menuRoute<T extends Omit<MenuRoute, "kind">>(
+  item: T
+): MenuRoute {
   return Object.assign(item, {
     kind: "MenuRoute" as const,
     active: false,
@@ -188,7 +195,9 @@ export interface MenuAction extends MenuItem {
   action: () => any | void;
 }
 
-export function menuAction<T extends Omit<MenuAction, "kind">>(item: T): MenuAction {
+export function menuAction<T extends Omit<MenuAction, "kind">>(
+  item: T
+): MenuAction {
   return Object.assign(item, {
     kind: "MenuAction" as const,
     active: false,

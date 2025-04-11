@@ -3,7 +3,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
-import { createRoutingFactory, SpectatorRouting, SpectatorRoutingOverrides } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpectatorRoutingOverrides,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -30,12 +34,13 @@ class MockModel extends AbstractModel {
 @Component({
   selector: "baw-test-component",
   template: "<div><baw-form></baw-form></div>",
+  
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
     protected notifications: ToastService,
     route: ActivatedRoute,
-    router: Router,
+    router: Router
   ) {
     super(notifications, route, router, formProps);
   }
@@ -62,7 +67,7 @@ describe("formTemplate", () => {
 
   function setup(
     componentOptions?: SpectatorRoutingOverrides<MockComponent>,
-    templateProps?: Partial<FormProps<MockModel>>,
+    templateProps?: Partial<FormProps<MockModel>>
   ) {
     // Set new formTemplateOptions without losing reference
     for (const key of Object.keys(formProps)) {
@@ -74,7 +79,10 @@ describe("formTemplate", () => {
     notifications = spec.inject(ToastService);
   }
 
-  function makeResolvedModel(model?: AbstractModel | AbstractModel[], error?: BawApiError): ResolvedModel {
+  function makeResolvedModel(
+    model?: AbstractModel | AbstractModel[],
+    error?: BawApiError
+  ): ResolvedModel {
     return model ? { model } : { error };
   }
 
@@ -102,7 +110,8 @@ describe("formTemplate", () => {
   beforeEach(() => {
     defaultError = generateBawApiError();
     defaultModel = new MockModel({ id: 1 });
-    successResponse = (model) => new BehaviorSubject<MockModel>(new MockModel(model));
+    successResponse = (model) =>
+      new BehaviorSubject<MockModel>(new MockModel(model));
     errorResponse = () => {
       const subject = new Subject<MockModel>();
       subject.error(defaultError);
@@ -133,15 +142,20 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModel", "mockModels"],
-          [makeResolvedModel(defaultModel), makeResolvedModel([defaultModel])],
-        ),
+          [makeResolvedModel(defaultModel), makeResolvedModel([defaultModel])]
+        )
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
     });
 
     it("should set failure flag if single resolver fails", () => {
-      setup(createResolvers(["mockModel"], [makeResolvedModel(undefined, defaultError)]));
+      setup(
+        createResolvers(
+          ["mockModel"],
+          [makeResolvedModel(undefined, defaultError)]
+        )
+      );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
     });
@@ -150,8 +164,11 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModel", "mockModels"],
-          [makeResolvedModel(defaultModel), makeResolvedModel(undefined, defaultError)],
-        ),
+          [
+            makeResolvedModel(defaultModel),
+            makeResolvedModel(undefined, defaultError),
+          ]
+        )
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
@@ -179,9 +196,9 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModels", "mockModel"],
-          [makeResolvedModel([defaultModel]), makeResolvedModel(defaultModel)],
+          [makeResolvedModel([defaultModel]), makeResolvedModel(defaultModel)]
         ),
-        { getModel: (models) => models["mockModel"] as MockModel },
+        { getModel: (models) => models["mockModel"] as MockModel }
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
@@ -189,9 +206,10 @@ describe("formTemplate", () => {
     });
 
     it("should set failure flag if failure to find model", () => {
-      setup(createResolvers(["mockModels"], [makeResolvedModel(defaultModel)]), {
-        getModel: (models) => models["unknownModel"] as MockModel,
-      });
+      setup(
+        createResolvers(["mockModels"], [makeResolvedModel(defaultModel)]),
+        { getModel: (models) => models["unknownModel"] as MockModel }
+      );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
     });
@@ -355,7 +373,8 @@ describe("formTemplate", () => {
 
     it("should display success notification on successful submission", () => {
       const modelData = { id: 1 };
-      const successMsg = (model: MockModel) => "custom success message with id: " + model.id;
+      const successMsg = (model: MockModel) =>
+        "custom success message with id: " + model.id;
       setup(undefined, { successMsg: successMsg });
       stubFormResets();
       spec.detectChanges();
@@ -364,7 +383,8 @@ describe("formTemplate", () => {
     });
 
     it("should display failure notification on failed submission", () => {
-      const failureMsg = (err: BawApiError) => "custom failure message with message: " + err.message;
+      const failureMsg = (err: BawApiError) =>
+        "custom failure message with message: " + err.message;
       setup(undefined, { failureMsg: failureMsg });
       stubFormResets();
       interceptApiAction(errorResponse);
@@ -416,18 +436,26 @@ describe("formTemplate", () => {
 
 describe("defaultSuccessMsg", () => {
   it("should handle model name", () => {
-    expect(defaultSuccessMsg("created", "custom name")).toBe("Successfully created custom name");
+    expect(defaultSuccessMsg("created", "custom name")).toBe(
+      "Successfully created custom name"
+    );
   });
 
   it("should handle created action", () => {
-    expect(defaultSuccessMsg("created", "name")).toBe("Successfully created name");
+    expect(defaultSuccessMsg("created", "name")).toBe(
+      "Successfully created name"
+    );
   });
 
   it("should handle updated action", () => {
-    expect(defaultSuccessMsg("updated", "name")).toBe("Successfully updated name");
+    expect(defaultSuccessMsg("updated", "name")).toBe(
+      "Successfully updated name"
+    );
   });
 
   it("should handle destroyed action", () => {
-    expect(defaultSuccessMsg("destroyed", "name")).toBe("Successfully destroyed name");
+    expect(defaultSuccessMsg("destroyed", "name")).toBe(
+      "Successfully destroyed name"
+    );
   });
 });

@@ -1,4 +1,8 @@
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { Project } from "@models/Project";
@@ -25,7 +29,11 @@ import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/c
 import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  tick,
+} from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
 import { RouterTestingModule } from "@angular/router/testing";
 import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
@@ -56,7 +64,11 @@ import { Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WIPComponent } from "@shared/wip/wip.component";
-import { interceptFilterApiRequest, interceptShowApiRequest, viewports } from "@test/helpers/general";
+import {
+  interceptFilterApiRequest,
+  interceptShowApiRequest,
+  viewports,
+} from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
@@ -128,7 +140,7 @@ describe("VerificationComponent", () => {
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
-      injector,
+      injector
     );
     mockSearchParameters.routeSiteModel = routeSite;
     mockSearchParameters.routeSiteId = routeSite.id;
@@ -139,13 +151,27 @@ describe("VerificationComponent", () => {
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeProjectId = routeProject.id;
 
-    defaultFakeTags = modelData.randomArray(3, 10, () => new Tag(generateTag(), injector));
+    defaultFakeTags = modelData.randomArray(
+      3,
+      10,
+      () => new Tag(generateTag(), injector)
+    );
 
-    mockAudioEventsResponse = modelData.randomArray(3, 3, () => new AudioEvent(generateAudioEvent(), injector));
+    mockAudioEventsResponse = modelData.randomArray(
+      3,
+      3,
+      () => new AudioEvent(generateAudioEvent(), injector)
+    );
 
-    mockAudioRecording = new AudioRecording(generateAudioRecording({ siteId: routeSite.id }), injector);
+    mockAudioRecording = new AudioRecording(
+      generateAudioRecording({ siteId: routeSite.id }),
+      injector
+    );
 
-    mockAnnotationResponse = new Annotation(generateAnnotation({ audioRecording: mockAudioRecording }), injector);
+    mockAnnotationResponse = new Annotation(
+      generateAnnotation({ audioRecording: mockAudioRecording }),
+      injector
+    );
 
     spec.component.searchParameters = mockSearchParameters;
     spec.component.project = routeProject;
@@ -176,16 +202,30 @@ describe("VerificationComponent", () => {
 
       interceptFilterApiRequest(regionApiSpy, injector, [routeRegion], Region),
       interceptFilterApiRequest(sitesApiSpy, injector, [routeSite], Site),
-      interceptFilterApiRequest(projectApiSpy, injector, [routeProject], Project),
+      interceptFilterApiRequest(
+        projectApiSpy,
+        injector,
+        [routeProject],
+        Project
+      ),
 
       interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
-      interceptFilterApiRequest(audioEventsApiSpy, injector, mockAudioEventsResponse, AudioEvent),
+      interceptFilterApiRequest(
+        audioEventsApiSpy,
+        injector,
+        mockAudioEventsResponse,
+        AudioEvent
+      ),
     ]);
 
     tagsApiSpy.typeaheadCallback = (() => () => of(defaultFakeTags)) as any;
 
-    verificationApiSpy.createOrUpdate = jasmine.createSpy("createOrUpdate") as any;
-    verificationApiSpy.createOrUpdate.and.callFake(() => of(verificationResponse));
+    verificationApiSpy.createOrUpdate = jasmine.createSpy(
+      "createOrUpdate"
+    ) as any;
+    verificationApiSpy.createOrUpdate.and.callFake(() =>
+      of(verificationResponse)
+    );
 
     verificationApiSpy.create = jasmine.createSpy("create") as any;
     verificationApiSpy.create.and.callFake(() => of(verificationResponse));
@@ -221,7 +261,11 @@ describe("VerificationComponent", () => {
     // to prevent re-declaring the same custom element, we conditionally
     // import the web components only if they are not already defined
     if (!customElements.get("oe-verification-grid")) {
-      await import(/* webpackIgnore: true */ nodeModule("@ecoacoustics/web-components/dist/components.js"));
+      await import(
+        /* webpackIgnore: true */ nodeModule(
+          "@ecoacoustics/web-components/dist/components.js"
+        )
+      );
     }
 
     routeProject = new Project(generateProject());
@@ -236,31 +280,48 @@ describe("VerificationComponent", () => {
     modalsSpy?.dismissAll();
   });
 
-  const dialogToggleButton = () => spec.query<HTMLButtonElement>(".filter-button");
+  const dialogToggleButton = () =>
+    spec.query<HTMLButtonElement>(".filter-button");
 
-  const tagsTypeahead = () => document.querySelector<HTMLElement>("#tags-input");
-  const updateFiltersButton = () => document.querySelector<HTMLButtonElement>("#update-filters-btn");
+  const tagsTypeahead = () =>
+    document.querySelector<HTMLElement>("#tags-input");
+  const updateFiltersButton = () =>
+    document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
-  const verificationGrid = () => spec.query<VerificationGridComponent>("oe-verification-grid");
+  const verificationGrid = () =>
+    spec.query<VerificationGridComponent>("oe-verification-grid");
   const verificationGridRoot = () => verificationGrid().shadowRoot;
 
   const gridTiles = () =>
-    verificationGridRoot().querySelectorAll<VerificationGridTileComponent>("oe-verification-grid-tile");
+    verificationGridRoot().querySelectorAll<VerificationGridTileComponent>(
+      "oe-verification-grid-tile"
+    );
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
   const bootstrapElement = () =>
-    verificationGridRoot().querySelector<VerificationBootstrapComponent>("oe-verification-bootstrap");
-  const helpCloseButton = () => bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(".close-button");
+    verificationGridRoot().querySelector<VerificationBootstrapComponent>(
+      "oe-verification-bootstrap"
+    );
+  const helpCloseButton = () =>
+    bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(
+      ".close-button"
+    );
 
-  const decisionComponents = () => document.querySelectorAll<HTMLButtonElement>("oe-verification");
+  const decisionComponents = () =>
+    document.querySelectorAll<HTMLButtonElement>("oe-verification");
   const decisionButton = (index: number) =>
-    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>("button");
+    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+      "button"
+    );
 
-  const dataSourceComponent = () => document.querySelector<HTMLElement>("oe-data-source");
+  const dataSourceComponent = () =>
+    document.querySelector<HTMLElement>("oe-data-source");
   const dataSourceRoot = () => dataSourceComponent().shadowRoot;
   const downloadResultsButton = () =>
-    dataSourceRoot().querySelector<HTMLButtonElement>("[data-testid='download-results-button']");
+    dataSourceRoot().querySelector<HTMLButtonElement>(
+      "[data-testid='download-results-button']"
+    );
 
   function toggleParameters(): void {
     spec.click(dialogToggleButton());
@@ -283,10 +344,14 @@ describe("VerificationComponent", () => {
     const targetGridTiles = gridTiles();
 
     const startTile = targetGridTiles[start];
-    const startTileClickTarget = startTile.shadowRoot.querySelector("[part='tile-container']");
+    const startTileClickTarget = startTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
 
     const endTile = targetGridTiles[end];
-    const endTileClickTarget = endTile.shadowRoot.querySelector("[part='tile-container']");
+    const endTileClickTarget = endTile.shadowRoot.querySelector(
+      "[part='tile-container']"
+    );
 
     startTileClickTarget.dispatchEvent(new MouseEvent("pointerdown"));
 
@@ -297,7 +362,9 @@ describe("VerificationComponent", () => {
     // to be able to select a single tile.
     // e.g. makeSelection(0, 0) should select the first tile
     if (startTile !== endTile) {
-      endTileClickTarget.dispatchEvent(new MouseEvent("pointerdown", { shiftKey: true }));
+      endTileClickTarget.dispatchEvent(
+        new MouseEvent("pointerdown", { shiftKey: true })
+      );
     }
 
     await detectChanges(spec);
@@ -404,7 +471,7 @@ describe("VerificationComponent", () => {
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
             tags: jasmine.arrayContaining(mockTagIds),
-          }),
+          })
         );
       });
 
@@ -415,7 +482,9 @@ describe("VerificationComponent", () => {
 
         it("should make the correct api calls when a decision is made about the entire grid", async () => {
           await makeDecision(0);
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(gridSize());
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            gridSize()
+          );
         });
 
         it("should make a verification api when a single decision is made", async () => {
@@ -427,7 +496,7 @@ describe("VerificationComponent", () => {
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
             jasmine.anything(),
             jasmine.anything(),
-            jasmine.anything(),
+            jasmine.anything()
           );
         });
 
@@ -436,15 +505,31 @@ describe("VerificationComponent", () => {
           await makeDecision(0);
 
           const expectedApiCalls = [
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
+            [
+              jasmine.anything(),
+              jasmine.anything(),
+              jasmine.anything()
+            ],
           ];
 
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(expectedApiCalls.length);
+          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+            expectedApiCalls.length
+          );
 
           for (const apiCall of expectedApiCalls) {
-            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(...apiCall);
+            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
+              ...apiCall
+            );
           }
         });
 
@@ -459,7 +544,7 @@ describe("VerificationComponent", () => {
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
             jasmine.anything(),
             jasmine.anything(),
-            jasmine.anything(),
+            jasmine.anything()
           );
         });
       });

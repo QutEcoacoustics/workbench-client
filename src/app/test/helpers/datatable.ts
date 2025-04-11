@@ -8,7 +8,9 @@ type SetupFunction = () => {
 
 export function assertDatatable(setup: SetupFunction): void {
   function tableHeadings(rootElement: Element): Element[] {
-    return Array.from(rootElement.querySelectorAll(".datatable-header-cell-template-wrap"));
+    return Array.from(
+      rootElement.querySelectorAll(".datatable-header-cell-template-wrap")
+    );
   }
 
   function tableRows(rootElement: Element): Element[] {
@@ -46,7 +48,9 @@ export function assertDatatable(setup: SetupFunction): void {
 }
 
 export function assertDatatableRow(row: HTMLDivElement, expectedValues: string[]) {
-  const cells = Array.from(row.querySelectorAll("datatable-body-cell"));
+  const cells = Array.from(
+    row.querySelectorAll("datatable-body-cell"),
+  );
 
   for (const i in expectedValues) {
     const expectedValue = expectedValues[i];

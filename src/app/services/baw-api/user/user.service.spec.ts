@@ -1,7 +1,11 @@
 import { User } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
-import { mockServiceImports, mockServiceProviders, validateApiShow } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateApiShow,
+} from "@test/helpers/api-common";
 import { UserService } from "./user.service";
 
 describe("UserService", (): void => {

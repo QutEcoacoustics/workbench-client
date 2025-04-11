@@ -1,10 +1,24 @@
 import { Type } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router, RouterEvent, UrlSegment } from "@angular/router";
-import { shouldNotComplete, shouldNotFail } from "@baw-api/baw-api.service.spec";
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterEvent,
+  UrlSegment,
+} from "@angular/router";
+import {
+  shouldNotComplete,
+  shouldNotFail,
+} from "@baw-api/baw-api.service.spec";
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { ActivatedRouteStub, createServiceFactory, mockProvider, SpectatorService } from "@ngneat/spectator";
+import {
+  ActivatedRouteStub,
+  createServiceFactory,
+  mockProvider,
+  SpectatorService,
+} from "@ngneat/spectator";
 import { RouteOptions } from "@ngneat/spectator/lib/spectator-routing/route-options";
 import { generatePageInfo } from "@test/fakes/PageInfo";
 import { Observable, Subject } from "rxjs";
@@ -18,16 +32,27 @@ describe("SharedActivatedRouteService", () => {
   function setup(route: ActivatedRouteStub = createActivatedRoute()) {
     routerEvents = new Subject<RouterEvent>();
     spec = createService({
-      providers: [mockProvider(Router, { events: routerEvents }), { provide: ActivatedRoute, useValue: route }],
+      providers: [
+        mockProvider(Router, { events: routerEvents }),
+        { provide: ActivatedRoute, useValue: route },
+      ],
     });
   }
 
-  function setRootChildren(route: ActivatedRouteStub, children: ActivatedRouteStub[]) {
-    spyOnProperty(route, "root").and.callFake(() => createActivatedRoute({}, { children }));
+  function setRootChildren(
+    route: ActivatedRouteStub,
+    children: ActivatedRouteStub[]
+  ) {
+    spyOnProperty(route, "root").and.callFake(() =>
+      createActivatedRoute({}, { children })
+    );
   }
 
   function createPageActivatedRoute(overrides?: RouteOptions) {
-    return createActivatedRoute({ component: createPageComponent() }, overrides);
+    return createActivatedRoute(
+      { component: createPageComponent() },
+      overrides
+    );
   }
 
   function createActivatedRoute(
@@ -35,7 +60,7 @@ describe("SharedActivatedRouteService", () => {
       outlet?: string;
       component?: Type<any>;
     } = {},
-    overrides: RouteOptions = {},
+    overrides: RouteOptions = {}
   ): ActivatedRouteStub {
     // Activated route stubs have infinite depth of children, so force them to 0 if none specified
     const route = new ActivatedRouteStub({
@@ -49,7 +74,9 @@ describe("SharedActivatedRouteService", () => {
     return route;
   }
 
-  function createPageComponent(...infos: Partial<IPageInfo>[]): typeof PageComponent {
+  function createPageComponent(
+    ...infos: Partial<IPageInfo>[]
+  ): typeof PageComponent {
     class MockPageComponent extends PageComponent {}
     infos.forEach((info) =>
       MockPageComponent.linkToRoute({
@@ -59,7 +86,7 @@ describe("SharedActivatedRouteService", () => {
         pageRoute: homeMenuItem,
         resolvers: {},
         ...info,
-      }),
+      })
     );
     return MockPageComponent;
   }
@@ -69,7 +96,10 @@ describe("SharedActivatedRouteService", () => {
   }
 
   describe("activatedRoute", () => {
-    function assertActivatedRoutes(done: DoneFn, ...routes: ActivatedRouteStub[]) {
+    function assertActivatedRoutes(
+      done: DoneFn,
+      ...routes: ActivatedRouteStub[]
+    ) {
       let count = 0;
       spec.service.activatedRoute.subscribe({
         next: (route) => {
@@ -103,7 +133,11 @@ describe("SharedActivatedRouteService", () => {
       const routeStub = createActivatedRoute();
       const pageRouteStub = createPageActivatedRoute();
       setup(routeStub);
-      setRootChildren(routeStub, [createActivatedRoute(), pageRouteStub, createActivatedRoute()]);
+      setRootChildren(routeStub, [
+        createActivatedRoute(),
+        pageRouteStub,
+        createActivatedRoute(),
+      ]);
       assertActivatedRoutes(done, routeStub, pageRouteStub);
       triggerRouterEvent();
     });
@@ -122,30 +156,48 @@ describe("SharedActivatedRouteService", () => {
   });
 
   describe("params", () => {
-    validateObservableProperty("params", () => spec.service.params, [{ projectId: 1 }, { regionId: 2 }]);
+    validateObservableProperty("params", () => spec.service.params, [
+      { projectId: 1 },
+      { regionId: 2 },
+    ]);
   });
 
   describe("queryParams", () => {
-    validateObservableProperty("queryParams", () => spec.service.queryParams, [{ projectId: 1 }, { regionId: 2 }]);
+    validateObservableProperty("queryParams", () => spec.service.queryParams, [
+      { projectId: 1 },
+      { regionId: 2 },
+    ]);
   });
 
   describe("fragment", () => {
-    validateObservableProperty("fragment", () => spec.service.fragment, ["/first", "/second"]);
+    validateObservableProperty("fragment", () => spec.service.fragment, [
+      "/first",
+      "/second",
+    ]);
   });
 
   describe("data", () => {
-    validateObservableProperty("data", () => spec.service.data, [{ ping: "pong" }, { whatIsLife: 42 }]);
+    validateObservableProperty("data", () => spec.service.data, [
+      { ping: "pong" },
+      { whatIsLife: 42 },
+    ]);
   });
 
   describe("pageInfo", () => {
-    validateObservableProperty("data", () => spec.service.pageInfo, [generatePageInfo(), generatePageInfo()]);
+    validateObservableProperty("data", () => spec.service.pageInfo, [
+      generatePageInfo(),
+      generatePageInfo(),
+    ]);
 
     it("should not output if data does not contain page info", (done) => {
       const initialComponent = class MockComponent {};
       const pageComponent = createPageComponent();
       const pageData = generatePageInfo();
       const routeStub = createActivatedRoute({ component: initialComponent });
-      const pageRouteStub = createActivatedRoute({ component: pageComponent }, { data: pageData });
+      const pageRouteStub = createActivatedRoute(
+        { component: pageComponent },
+        { data: pageData }
+      );
       setup(routeStub);
       setRootChildren(routeStub, [pageRouteStub]);
       // Should skip data from initial component as it is not page data
@@ -169,7 +221,12 @@ describe("SharedActivatedRouteService", () => {
       const pageRouteStub = createActivatedRoute({ component: pageComponent });
       setup(routeStub);
       setRootChildren(routeStub, [pageRouteStub]);
-      assertProperty(done, spec.service.component, initialComponent, pageComponent);
+      assertProperty(
+        done,
+        spec.service.component,
+        initialComponent,
+        pageComponent
+      );
       triggerRouterEvent();
     });
   });
@@ -186,12 +243,21 @@ describe("SharedActivatedRouteService", () => {
       const pageRouteStub = createPageActivatedRoute();
       setup(routeStub);
       setRootChildren(routeStub, [pageRouteStub]);
-      assertProperty(done, spec.service.snapshot, routeStub.snapshot, pageRouteStub.snapshot);
+      assertProperty(
+        done,
+        spec.service.snapshot,
+        routeStub.snapshot,
+        pageRouteStub.snapshot
+      );
       triggerRouterEvent();
     });
   });
 
-  function assertProperty<T>(done: DoneFn, property: Observable<T>, ...values: T[]) {
+  function assertProperty<T>(
+    done: DoneFn,
+    property: Observable<T>,
+    ...values: T[]
+  ) {
     let count = 0;
     property.subscribe({
       next: (value) => {
@@ -209,7 +275,7 @@ describe("SharedActivatedRouteService", () => {
   function validateObservableProperty<T>(
     routeOption: keyof RouteOptions,
     property: () => Observable<T>,
-    values: [T, T],
+    values: [T, T]
   ) {
     it("should have initial value", (done) => {
       const routeStub = createActivatedRoute({}, { [routeOption]: values[0] });

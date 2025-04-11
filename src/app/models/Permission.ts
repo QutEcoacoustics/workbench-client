@@ -1,6 +1,10 @@
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { editProjectPermissionsRoute } from "@components/projects/projects.routes";
-import { PermissionLevel, HasCreatorAndUpdater, Id } from "@interfaces/apiInterfaces";
+import {
+  PermissionLevel,
+  HasCreatorAndUpdater,
+  Id,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
 import { bawPersistAttr } from "./AttributeDecorators";
@@ -16,7 +20,10 @@ export interface IPermission extends HasCreatorAndUpdater {
   allowLoggedIn?: boolean;
 }
 
-export class Permission extends AbstractModel<IPermission> implements IPermission {
+export class Permission
+  extends AbstractModel<IPermission>
+  implements IPermission
+{
   public readonly kind = "Permission";
   public id?: Id;
   public projectId?: Id;

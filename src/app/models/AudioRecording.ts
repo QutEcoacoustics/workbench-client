@@ -11,10 +11,24 @@ import {
 } from "@components/audio-recordings/audio-recording.routes";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { Duration } from "luxon";
-import { DateTimeTimezone, HasAllUsers, Id, Uuid } from "../interfaces/apiInterfaces";
-import { AbstractModel, isUnresolvedModel, UnresolvedModel } from "./AbstractModel";
+import {
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Uuid,
+} from "../interfaces/apiInterfaces";
+import {
+  AbstractModel,
+  isUnresolvedModel,
+  UnresolvedModel,
+} from "./AbstractModel";
 import { creator, deleter, hasOne, updater } from "./AssociationDecorators";
-import { bawBytes, bawDateTime, bawDuration, bawReadonlyConvertCase } from "./AttributeDecorators";
+import {
+  bawBytes,
+  bawDateTime,
+  bawDuration,
+  bawReadonlyConvertCase,
+} from "./AttributeDecorators";
 import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
@@ -46,7 +60,10 @@ export interface IAudioRecording extends HasAllUsers {
 /**
  * An audio recording model
  */
-export class AudioRecording extends AbstractModel<IAudioRecording> implements IAudioRecording {
+export class AudioRecording
+  extends AbstractModel<IAudioRecording>
+  implements IAudioRecording
+{
   public readonly kind = "Audio Recording";
   public readonly id?: Id;
   public readonly uuid?: Uuid;
@@ -122,11 +139,17 @@ export class AudioRecording extends AbstractModel<IAudioRecording> implements IA
    * end_offset url parameters
    */
   public getMediaUrl(apiRoot: string): string {
-    return apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension);
+    return (
+      apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension)
+    );
   }
 
   /** Routes to the batch download page */
-  public getBatchDownloadUrl(project?: IdOr<Project>, region?: IdOr<Region>, site?: IdOr<Site>): string {
+  public getBatchDownloadUrl(
+    project?: IdOr<Project>,
+    region?: IdOr<Region>,
+    site?: IdOr<Site>
+  ): string {
     const routes = audioRecordingBatchRoutes;
     return this.selectRoute(routes, project, region, site);
   }
@@ -144,9 +167,11 @@ export class AudioRecording extends AbstractModel<IAudioRecording> implements IA
   public getDetailsUrl(
     project?: IdOr<Project | UnresolvedModel>,
     region?: IdOr<Region | UnresolvedModel>,
-    site?: IdOr<Site | UnresolvedModel>,
+    site?: IdOr<Site | UnresolvedModel>
   ): string {
-    function ensureResolvedId<T extends AbstractModel>(model: IdOr<T | UnresolvedModel>): IdOr<T> | null {
+    function ensureResolvedId<T extends AbstractModel>(
+      model: IdOr<T | UnresolvedModel>
+    ): IdOr<T> | null {
       if (typeof model === "number" || !isUnresolvedModel(model)) {
         return model;
       }
@@ -154,14 +179,19 @@ export class AudioRecording extends AbstractModel<IAudioRecording> implements IA
     }
 
     const routes = audioRecordingRoutes;
-    return this.selectRoute(routes, ensureResolvedId(project), ensureResolvedId(region), ensureResolvedId(site));
+    return this.selectRoute(
+      routes,
+      ensureResolvedId(project),
+      ensureResolvedId(region),
+      ensureResolvedId(site)
+    );
   }
 
   private selectRoute(
     routes: RecordingStrongRoutes,
     project: IdOr<Project>,
     region: IdOr<Region>,
-    site: IdOr<Site>,
+    site: IdOr<Site>
   ): string {
     const routeParams = {
       audioRecordingId: this.id,
@@ -186,4 +216,10 @@ export class AudioRecording extends AbstractModel<IAudioRecording> implements IA
   }
 }
 
-export type AudioRecordingStatus = "new" | "uploading" | "toCheck" | "ready" | "corrupt" | "aborted";
+export type AudioRecordingStatus =
+  | "new"
+  | "uploading"
+  | "toCheck"
+  | "ready"
+  | "corrupt"
+  | "aborted";

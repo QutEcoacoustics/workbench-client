@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -16,15 +19,13 @@ import { NewComponent } from "../../../regions/pages/new/new.component";
 const projectKey = "project";
 
 @Component({
-  selector: "baw-wizard",
-  styles: [
-    `
-      button {
-        width: 100px;
-      }
-    `,
-  ],
-  template: `
+    selector: "baw-wizard",
+    styles: [`
+    button {
+      width: 100px;
+    }
+  `],
+    template: `
     @if (!error) {
       <h2 class="text-center">New Site</h2>
 
@@ -58,7 +59,7 @@ const projectKey = "project";
       }
     }
   `,
-  imports: [NgClass, SiteNewComponent, NewComponent],
+    imports: [NgClass, SiteNewComponent, NewComponent]
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;

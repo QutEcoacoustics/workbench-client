@@ -1,7 +1,14 @@
-import { HarvestStatus, IHarvest, IHarvestMapping, IHarvestReport } from "@models/Harvest";
+import {
+  HarvestStatus,
+  IHarvest,
+  IHarvestMapping,
+  IHarvestReport,
+} from "@models/Harvest";
 import { modelData } from "@test/helpers/faker";
 
-export function generateHarvestMapping(data?: Partial<IHarvestMapping>): Required<IHarvestMapping> {
+export function generateHarvestMapping(
+  data?: Partial<IHarvestMapping>
+): Required<IHarvestMapping> {
   return {
     path: modelData.system.filePath(),
     siteId: modelData.id(),
@@ -11,7 +18,9 @@ export function generateHarvestMapping(data?: Partial<IHarvestMapping>): Require
   };
 }
 
-export function generateHarvestReport(data?: Partial<IHarvestReport>): Required<IHarvestReport> {
+export function generateHarvestReport(
+  data?: Partial<IHarvestReport>
+): Required<IHarvestReport> {
   return {
     itemsTotal: modelData.datatype.number(),
     itemsSizeBytes: modelData.datatype.number(),
@@ -45,7 +54,9 @@ export function generateHarvest(data?: Partial<IHarvest>): Required<IHarvest> {
     uploadPassword: modelData.internet.password(),
     uploadUser: modelData.internet.userName(),
     uploadUrl: `sftp://${modelData.random.word()}.${modelData.random.word()}.org:2020`,
-    mappings: Array(modelData.datatype.number({ min: 0, max: 3 })).map(() => generateHarvestMapping()),
+    mappings: Array(modelData.datatype.number({ min: 0, max: 3 })).map(() =>
+      generateHarvestMapping()
+    ),
     report: generateHarvestReport(),
     lastMetadataReviewAt: modelData.timestamp(),
     lastMappingsChangeAt: modelData.timestamp(),

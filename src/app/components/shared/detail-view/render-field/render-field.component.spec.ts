@@ -26,16 +26,16 @@ describe("RenderFieldComponent", () => {
     component: RenderFieldComponent,
     declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
-      DatetimeComponent,
-      ZonedDateTimeComponent,
-      DurationComponent,
-      TimeSinceComponent,
-      LoadingComponent,
-      CheckboxComponent,
-    ],
+    MockBawApiModule,
+    RouterTestingModule,
+    PipesModule,
+    DatetimeComponent,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    TimeSinceComponent,
+    LoadingComponent,
+    CheckboxComponent,
+],
   });
 
   const getElement = {
@@ -48,14 +48,15 @@ describe("RenderFieldComponent", () => {
     duration: () => spec.queryAll<HTMLElement>("baw-duration"),
     zonedDateTime: () => spec.queryAll<HTMLElement>("baw-zoned-datetime"),
     localizedDateTime: () => spec.queryAll<HTMLElement>("baw-datetime"),
-    values: () => spec.queryAll("dl").map((el) => el.firstElementChild as HTMLElement),
+    values: () =>
+      spec.queryAll("dl").map((el) => el.firstElementChild as HTMLElement),
   };
 
   function setup(value: ModelView) {
-    spec = createComponent('<baw-render-field [value]="value"></baw-render-field>', {
-      detectChanges: false,
-      hostProps: { value },
-    });
+    spec = createComponent(
+      '<baw-render-field [value]="value"></baw-render-field>',
+      { detectChanges: false, hostProps: { value } }
+    );
   }
 
   function assertNotLoading(value?: HTMLElement) {
@@ -101,7 +102,9 @@ describe("RenderFieldComponent", () => {
 
   describe("string input", () => {
     function spyOnIsImage() {
-      spec.component["isImage"] = jasmine.createSpy().and.callFake((_, __, onerror: () => void) => onerror());
+      spec.component["isImage"] = jasmine
+        .createSpy()
+        .and.callFake((_, __, onerror: () => void) => onerror());
     }
 
     it("should handle string value", () => {
@@ -203,7 +206,9 @@ describe("RenderFieldComponent", () => {
       setup({ value1: 42, value2: "test" });
       spec.detectChanges();
       const value = getElement.code()[0];
-      expect(value.innerText).toContain(objectToString({ value1: 42, value2: "test" }));
+      expect(value.innerText).toContain(
+        objectToString({ value1: 42, value2: "test" })
+      );
     });
 
     it("should display object error when JSON stringy fails", () => {
@@ -222,7 +227,9 @@ describe("RenderFieldComponent", () => {
       let dateTime: DateTime;
 
       beforeEach(() => {
-        dateTime = modelData.dateTime().setZone(modelData.timezone().identifier);
+        dateTime = modelData
+          .dateTime()
+          .setZone(modelData.timezone().identifier);
 
         spyOn(dateTime, "toISO").and.callFake(() => "toISO");
         setup(dateTime);
@@ -316,7 +323,9 @@ describe("RenderFieldComponent", () => {
       const values = getElement.values();
       expect(values[0]).toHaveExactText("test 1");
       expect(values[1]).toHaveExactText("2");
-      expect(values[2].innerText).toContain(objectToString({ testing: "value" }));
+      expect(values[2].innerText).toContain(
+        objectToString({ testing: "value" })
+      );
     });
   });
 
@@ -338,7 +347,7 @@ describe("RenderFieldComponent", () => {
             } else {
               _reject(error);
             }
-          }),
+          })
       );
 
       setup(blob);
@@ -382,7 +391,11 @@ describe("RenderFieldComponent", () => {
   });
 
   describe("AbstractModel input", () => {
-    function createModel(data: any, link: () => string = () => "", toString?: (model) => string) {
+    function createModel(
+      data: any,
+      link: () => string = () => "",
+      toString?: (model) => string
+    ) {
       class MockModel extends AbstractModel {
         public kind = "Mock Model";
         public get viewUrl() {
@@ -421,7 +434,11 @@ describe("RenderFieldComponent", () => {
   });
 
   describe("Observable input", () => {
-    function createObservable(shouldReturn: boolean, output?: any, error?: any) {
+    function createObservable(
+      shouldReturn: boolean,
+      output?: any,
+      error?: any
+    ) {
       if (!shouldReturn) {
         return new Subject();
       } else if (output) {
@@ -466,7 +483,9 @@ describe("RenderFieldComponent", () => {
       const values = getElement.values();
       expect(values[0]).toHaveExactText("test 1");
       expect(values[1]).toHaveExactText("2");
-      expect(values[2].innerText).toContain(objectToString({ testing: "value" }));
+      expect(values[2].innerText).toContain(
+        objectToString({ testing: "value" })
+      );
     });
 
     it("should display error output", () => {
@@ -496,7 +515,9 @@ describe("RenderFieldComponent", () => {
 
     it("should handle external image URL", () => {
       setup("https://staging.ecosounds.org/test.png");
-      setImageSpy((src) => expect(src).toBe("https://staging.ecosounds.org/test.png"));
+      setImageSpy((src) =>
+        expect(src).toBe("https://staging.ecosounds.org/test.png")
+      );
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
       expect(getElement.image().length).toBe(1);

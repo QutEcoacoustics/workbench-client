@@ -60,7 +60,10 @@ describe("retrieveResolvers", () => {
   it("should handle multiple resolvers", () => {
     const model0 = new MockModel({ id: 1 });
     const model1 = [new MockModel({ id: 2 })];
-    const data = generatePageInfoResolvers({ model: model0 }, { model: model1 });
+    const data = generatePageInfoResolvers(
+      { model: model0 },
+      { model: model1 }
+    );
     expect(retrieveResolvers(new PageInfo(data))).toEqual({ model0, model1 });
   });
 
@@ -68,7 +71,11 @@ describe("retrieveResolvers", () => {
     const model0 = new MockModel({ id: 1 });
     const model1 = generateBawApiError();
     const model2 = [new MockModel({ id: 2 })];
-    const data = generatePageInfoResolvers({ model: model0 }, { error: model1 }, { model: model2 });
+    const data = generatePageInfoResolvers(
+      { model: model0 },
+      { error: model1 },
+      { model: model2 }
+    );
     expect(retrieveResolvers(new PageInfo(data))).toEqual({
       model0,
       model1,
@@ -80,7 +87,11 @@ describe("retrieveResolvers", () => {
     const model0 = generateBawApiError();
     const model1 = generateBawApiError();
     const model2 = generateBawApiError();
-    const data = generatePageInfoResolvers({ error: model0 }, { error: model1 }, { error: model2 });
+    const data = generatePageInfoResolvers(
+      { error: model0 },
+      { error: model1 },
+      { error: model2 }
+    );
     expect(retrieveResolvers(new PageInfo(data))).toEqual({
       model0,
       model1,

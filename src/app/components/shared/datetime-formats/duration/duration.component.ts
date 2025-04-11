@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  input
+} from "@angular/core";
 import { toRelative } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";

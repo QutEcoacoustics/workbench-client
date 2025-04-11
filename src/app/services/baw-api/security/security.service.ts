@@ -1,7 +1,10 @@
 import { Injectable } from "@angular/core";
 import { emptyParam, param } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
-import { BawFormApiService, RecaptchaSettings } from "@baw-api/baw-form-api.service";
+import {
+  BawFormApiService,
+  RecaptchaSettings,
+} from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -13,7 +16,14 @@ import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
-import { catchError, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import {
+  catchError,
+  first,
+  map,
+  mergeMap,
+  switchMap,
+  tap,
+} from "rxjs/operators";
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
@@ -36,7 +46,7 @@ export class SecurityService {
     private userService: UserService,
     private cookies: CookieService,
     private session: BawSessionService,
-    private httpCache: NgHttpCachingService,
+    private httpCache: NgHttpCachingService
   ) {
     this.updateAuthToken();
   }
@@ -69,9 +79,14 @@ export class SecurityService {
     };
 
     /** Read page response for username constraints */
-    const validateUsernameConstraints = ([type, msg]: [string, string]): void => {
+    const validateUsernameConstraints = ([type, msg]: [
+      string,
+      string
+    ]): void => {
       if (type === "user_user_name" && msg.includes("Only letters, numbers")) {
-        throw Error("Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)");
+        throw Error(
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+        );
       }
     };
 
@@ -94,7 +109,7 @@ export class SecurityService {
         validateUniqueUsername(pageError);
         validateUniqueEmail(pageError);
         validateUsernameConstraints(pageError);
-      },
+      }
     );
   }
 
@@ -117,14 +132,14 @@ export class SecurityService {
       (token: string) => details.getBody(token),
       (page) => {
         validateLoggedIn(page);
-      },
+      }
     );
 
     // Logout first to ensure token and cookie are synchronized
     return this.signOut().pipe(
       mergeMap(() => handleAuth),
       // Ignore any sign out errors, and continue with authentication
-      catchError(() => handleAuth),
+      catchError(() => handleAuth)
     );
   }
 
@@ -142,7 +157,7 @@ export class SecurityService {
           catchError((err: BawApiError) => {
             this.clearData();
             return this.api.handleError(err, true);
-          }),
+          })
         )
     );
   }
@@ -167,7 +182,7 @@ export class SecurityService {
     formEndpoint: string,
     authEndpoint: string,
     getFormData: (authToken: string) => URLSearchParams,
-    pageValidation: (page: string) => void = () => {},
+    pageValidation: (page: string) => void = () => {}
   ): Observable<void> {
     let authToken: AuthToken;
 
@@ -177,33 +192,35 @@ export class SecurityService {
      * - https://github.com/QutEcoacoustics/baw-server/issues/509
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
-    return this.formApi.makeFormRequest(formEndpoint, authEndpoint, getFormData).pipe(
-      tap((page) => pageValidation(page)),
-      // Trade the cookie for an API auth token (mimicking old baw-client)
-      switchMap(() => this.sessionDetails()),
-      // Only accept the first result from the API (can return multiple times)
-      first(),
-      // Save to local storage
-      tap((user: Session) => (authToken = user.authToken)),
-      // Get user details
-      switchMap(() => this.userService.showWithoutNotification()),
-      // Only accept the first result from the API (can return multiple times)
-      first(),
-      // Update session user with user details and save to local storage
-      tap((user: User) => this.session.setLoggedInUser(user, authToken)),
-      // Void output
-      map(() => {}),
-      catchError((err) => {
-        this.clearData();
+    return this.formApi
+      .makeFormRequest(formEndpoint, authEndpoint, getFormData)
+      .pipe(
+        tap((page) => pageValidation(page)),
+        // Trade the cookie for an API auth token (mimicking old baw-client)
+        switchMap(() => this.sessionDetails()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
+        // Save to local storage
+        tap((user: Session) => (authToken = user.authToken)),
+        // Get user details
+        switchMap(() => this.userService.showWithoutNotification()),
+        // Only accept the first result from the API (can return multiple times)
+        first(),
+        // Update session user with user details and save to local storage
+        tap((user: User) => this.session.setLoggedInUser(user, authToken)),
+        // Void output
+        map(() => {}),
+        catchError((err) => {
+          this.clearData();
 
-        if (err.status === UNAUTHORIZED) {
-          const msg = `An unknown error has occurred, if this persists please use the ${reportProblemMenuItem.label} page`;
-          return this.formApi.handleError(Error(msg));
-        } else {
-          return this.formApi.handleError(err);
-        }
-      }),
-    );
+          if (err.status === UNAUTHORIZED) {
+            const msg = `An unknown error has occurred, if this persists please use the ${reportProblemMenuItem.label} page`;
+            return this.formApi.handleError(Error(msg));
+          } else {
+            return this.formApi.handleError(err);
+          }
+        })
+      );
   }
 
   private updateAuthToken(): void {
@@ -213,7 +230,7 @@ export class SecurityService {
       .pipe(
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
-        first(),
+        first()
       )
       .subscribe({
         next: (user) => {

@@ -1,7 +1,10 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormTemplate, defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
+import {
+  FormTemplate,
+  defaultSuccessMsg,
+} from "@helpers/formTemplate/formTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -13,11 +16,14 @@ import {
 } from "../import-annotations.menu";
 import { FormComponent } from "../../shared/form/form.component";
 
-export const newAnnotationMenuItemActions = [annotationsImportMenuItem, newAnnotationImportMenuItem];
+export const newAnnotationMenuItemActions = [
+  annotationsImportMenuItem,
+  newAnnotationImportMenuItem,
+];
 
 @Component({
-  selector: "baw-new-annotation-import",
-  template: `
+    selector: "baw-new-annotation-import",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Annotation Import"
@@ -29,14 +35,14 @@ export const newAnnotationMenuItemActions = [annotationsImportMenuItem, newAnnot
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   public constructor(
     protected notifications: ToastService,
     protected route: ActivatedRoute,
     protected router: Router,
-    private api: AudioEventImportService,
+    private api: AudioEventImportService
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

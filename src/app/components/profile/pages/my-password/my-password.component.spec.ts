@@ -9,7 +9,9 @@ describe("MyPasswordComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MyPasswordComponent,
-    providers: [mockProvider(AccountsService)],
+    providers: [
+      mockProvider(AccountsService),
+    ],
     mocks: [ToastService],
   });
 

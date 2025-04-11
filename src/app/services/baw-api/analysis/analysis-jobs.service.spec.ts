@@ -1,7 +1,11 @@
 import { AnalysisJob } from "@models/AnalysisJob";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
-import { mockServiceImports, mockServiceProviders, validateReadAndUpdateApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateReadAndUpdateApi,
+} from "@test/helpers/api-common";
 import { AnalysisJobsService } from "./analysis-jobs.service";
 
 describe("AnalysisJobsService", (): void => {
@@ -18,5 +22,13 @@ describe("AnalysisJobsService", (): void => {
     spec = createService();
   });
 
-  validateReadAndUpdateApi(() => spec, AnalysisJob, baseUrl, baseUrl + "filter", baseUrl + "5", createModel, 5);
+  validateReadAndUpdateApi(
+    () => spec,
+    AnalysisJob,
+    baseUrl,
+    baseUrl + "filter",
+    baseUrl + "5",
+    createModel,
+    5
+  );
 });

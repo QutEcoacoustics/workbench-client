@@ -7,18 +7,30 @@ import { Site } from "@models/Site";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 
 @Component({
-  selector: "baw-sites-without-timezones",
-  template: `
+    selector: "baw-sites-without-timezones",
+    template: `
     <!-- Warn users about limitations of time of day filter -->
-    @if (sitesWithoutTimezones(site, region?.sites, project?.sites); as sitesWithoutTimezone) {
+    @if (
+        sitesWithoutTimezones(
+          site,
+          region?.sites,
+          project?.sites
+        ); as sitesWithoutTimezone
+      ) {
       @if (sitesWithoutTimezone.length > 0) {
         <div class="alert alert-danger">
-          Warning, this batch download includes site/s which do not have their timezones set. Any time of day filtering
-          will not work on these sites until the site owner or editors update them. The list of sites can be seen below:
+          Warning, this batch download includes site/s which do not have their
+          timezones set. Any time of day filtering will not work on these sites
+          until the site owner or editors update them. The list of sites can be
+          seen below:
           @for (siteWithoutTimezone of sitesWithoutTimezone; track siteWithoutTimezone) {
             <ul class="mb-0">
               <li>
-                <a [bawUrl]="project ? siteWithoutTimezone.getViewUrl(project) : siteWithoutTimezone.viewUrl">
+                <a [bawUrl]="project
+                    ? siteWithoutTimezone.getViewUrl(project)
+                    : siteWithoutTimezone.viewUrl
+                  "
+                >
                   {{ siteWithoutTimezone.name }}
                 </a>
               </li>
@@ -28,14 +40,18 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
       }
     }
   `,
-  imports: [UrlDirective],
+    imports: [UrlDirective]
 })
 export class SitesWithoutTimezonesComponent {
   @Input() public site?: Site;
   @Input() public region?: Region;
   @Input() public project!: Project;
 
-  public sitesWithoutTimezones(site?: Site, regionSites?: Site[], projectSites?: Site[]): Site[] {
+  public sitesWithoutTimezones(
+    site?: Site,
+    regionSites?: Site[],
+    projectSites?: Site[]
+  ): Site[] {
     if (site) {
       return site.timezoneInformation ? [] : [site];
     }

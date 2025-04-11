@@ -1,7 +1,11 @@
 import { Study } from "@models/Study";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateStudy } from "@test/fakes/Study";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { StudiesService } from "./studies.service";
 
 describe("StudiesService", (): void => {
@@ -19,5 +23,13 @@ describe("StudiesService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(() => spec, Study, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateStandardApi(
+    () => spec,
+    Study,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

@@ -26,7 +26,15 @@ describe("BookmarksService", () => {
     spec = createService();
   });
 
-  validateStandardApi(() => spec, Bookmark, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateStandardApi(
+    () => spec,
+    Bookmark,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 
   validateCustomApiFilter<Bookmark, [IdOr<User>], BookmarksService>(
     () => spec,
@@ -35,6 +43,6 @@ describe("BookmarksService", () => {
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
     undefined,
-    5,
+    5
   );
 });

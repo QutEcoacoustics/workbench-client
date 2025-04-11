@@ -23,8 +23,12 @@ export function inputValue(wrapper: any, selector: string, value: string) {
  * A click button test helper that performs assertions that the element is a
  * button and is enabled.
  */
-export function clickButton<T>(spectator: Spectator<T>, selector: string | Element): void {
-  const element = typeof selector === "string" ? spectator.query(selector) : selector;
+export function clickButton<T>(
+  spectator: Spectator<T>,
+  selector: string | Element
+): void {
+  const element =
+    typeof selector === "string" ? spectator.query(selector) : selector;
 
   // if we directly emitted a click event or used the click() method on a
   // disabled button, the button would still act as if it was clicked
@@ -45,9 +49,12 @@ export function clickButton<T>(spectator: Spectator<T>, selector: string | Eleme
 export function inputFile<T>(
   spectator: Spectator<T> | SpectatorHost<T>,
   selector: string | HTMLInputElement,
-  files: File[],
+  files: File[]
 ): void {
-  const element = typeof selector === "string" ? spectator.query<HTMLInputElement>(selector) : selector;
+  const element =
+    typeof selector === "string"
+      ? spectator.query<HTMLInputElement>(selector)
+      : selector;
 
   if (!element) {
     fail("Could not perform file input: Input not found");
@@ -88,7 +95,7 @@ export function selectFromTypeahead<T>(
   spectator: Spectator<T>,
   target: Element | HTMLElement,
   text: string,
-  detectChanges = true,
+  detectChanges = true
 ): void {
   const inputElement = target.querySelector<HTMLInputElement>("input");
   spectator.typeInElement(text, inputElement);
@@ -99,7 +106,9 @@ export function selectFromTypeahead<T>(
 
   // we do a document level querySelector so that if the dropdown is not in the
   // spectator hosts template, we can still select it
-  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(".dropdown-item.active");
+  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
+    ".dropdown-item.active"
+  );
 
   // We do not use the spectator.click() helper here because ng-neat spectator
   // will call detectChanges() after the click event.
@@ -115,7 +124,10 @@ export function selectFromTypeahead<T>(
 }
 
 /** Toggles a component decorated with ngb-dropdown and waits for it to open */
-export function toggleDropdown<T>(spectator: Spectator<T>, target: Element | HTMLElement): void {
+export function toggleDropdown<T>(
+  spectator: Spectator<T>,
+  target: Element | HTMLElement
+): void {
   // bootstrap dropdowns take a full second to open
   spectator.click(target);
   waitForDropdown(spectator);
@@ -125,8 +137,13 @@ export function waitForDropdown<T>(spectator: Spectator<T>): void {
   spectator.tick(1_000);
 }
 
-export function getElementByInnerText<T extends HTMLElement>(spectator: Spectator<unknown>, text: string): T | null {
-  return spectator.debugElement.query((element) => element.nativeElement.innerText === text)?.nativeElement;
+export function getElementByInnerText<T extends HTMLElement>(
+  spectator: Spectator<unknown>,
+  text: string
+): T | null {
+  return spectator.debugElement.query(
+    (element) => element.nativeElement.innerText === text
+  )?.nativeElement;
 }
 
 /**
@@ -136,9 +153,14 @@ export function getElementByInnerText<T extends HTMLElement>(spectator: Spectato
  * @param fixture Component fixture
  * @param internal Is the baw-error-handler inside the component
  */
-export function assertErrorHandler(fixture: ComponentFixture<any>, internal?: boolean) {
+export function assertErrorHandler(
+  fixture: ComponentFixture<any>,
+  internal?: boolean
+) {
   if (internal) {
-    expect(fixture.nativeElement.querySelector("baw-error-handler h1")).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector("baw-error-handler h1")
+    ).toBeTruthy();
   } else {
     expect(fixture.nativeElement.childElementCount).toBe(0);
   }
@@ -151,8 +173,13 @@ export function assertErrorHandler(fixture: ComponentFixture<any>, internal?: bo
  * @param fixture Component fixture
  * @param visible Is spinner visible
  */
-export function assertSpinner(fixture: ComponentFixture<any> | Element, visible: boolean) {
-  const spinner = (fixture instanceof ComponentFixture ? fixture.nativeElement : fixture).querySelector("baw-loading");
+export function assertSpinner(
+  fixture: ComponentFixture<any> | Element,
+  visible: boolean
+) {
+  const spinner = (
+    fixture instanceof ComponentFixture ? fixture.nativeElement : fixture
+  ).querySelector("baw-loading");
 
   const expectation = expect(spinner);
 
@@ -182,7 +209,11 @@ export function assertTooltip(element: HTMLElement, content: string) {
   element.dispatchEvent(new MouseEvent("mouseleave"));
 }
 
-export async function waitUntil(condition: () => boolean, timeout = 5_000, interval = 100): Promise<void> {
+export async function waitUntil(
+  condition: () => boolean,
+  timeout = 5_000,
+  interval = 100
+): Promise<void> {
   const endTime = Date.now() + timeout;
 
   while (Date.now() < endTime) {

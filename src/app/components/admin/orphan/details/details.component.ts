@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import baseSchema from "@components/sites/site.base.json";
 import extendedSchema from "@components/sites/site.extended.json";
@@ -16,8 +19,8 @@ import { DetailViewComponent } from "../../../shared/detail-view/detail-view.com
 const siteKey = "site";
 
 @Component({
-  selector: "baw-admin-orphan",
-  template: `
+    selector: "baw-admin-orphan",
+    template: `
     @if (!failure) {
       <div>
         <h1>Orphan Site Details</h1>
@@ -25,9 +28,12 @@ const siteKey = "site";
       </div>
     }
   `,
-  imports: [DetailViewComponent],
+    imports: [DetailViewComponent]
 })
-class AdminOrphanComponent extends withUnsubscribe(PageComponent) implements OnInit {
+class AdminOrphanComponent
+  extends withUnsubscribe(PageComponent)
+  implements OnInit
+{
   public site: Site;
   public failure: boolean;
   public fields = [...baseSchema.fields, ...extendedSchema.fields];

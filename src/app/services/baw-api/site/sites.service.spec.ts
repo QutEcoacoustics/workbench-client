@@ -45,7 +45,7 @@ describe("SitesService", (): void => {
     showUrl,
     createModel,
     10, // site
-    5, // project
+    5 // project
   );
 
   validateCustomApiFilter<Model, [...Params, IdOr<Region>], Service>(
@@ -56,19 +56,23 @@ describe("SitesService", (): void => {
     { filter: { regionId: { eq: 10 } } },
     undefined,
     5, // project
-    10, // region
+    10 // region
   );
 
   describe("downloadAnnotations", () => {
     const defaultTimezone = "UTC";
 
     function getUrl(timezone: string = defaultTimezone) {
-      const url = new URL(`${apiRoot}${showUrl}/audio_events/download?selected_timezone_name=${timezone}`);
+      const url = new URL(
+        `${apiRoot}${showUrl}/audio_events/download?selected_timezone_name=${timezone}`
+      );
       return url.toString();
     }
 
     it("should return url using model ids", () => {
-      expect(service.downloadAnnotations(10, 5, defaultTimezone)).toBe(getUrl());
+      expect(service.downloadAnnotations(10, 5, defaultTimezone)).toBe(
+        getUrl()
+      );
     });
 
     it("should return url using model objects", () => {
@@ -76,13 +80,15 @@ describe("SitesService", (): void => {
         service.downloadAnnotations(
           new Site(generateSite({ id: 10 })),
           new Project(generateProject({ id: 5 })),
-          defaultTimezone,
-        ),
+          defaultTimezone
+        )
       ).toBe(getUrl());
     });
 
     it("should return url with timezone", () => {
-      expect(service.downloadAnnotations(10, 5, "Brisbane")).toBe(getUrl("Brisbane"));
+      expect(service.downloadAnnotations(10, 5, "Brisbane")).toBe(
+        getUrl("Brisbane")
+      );
     });
   });
 });

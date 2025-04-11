@@ -9,11 +9,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import {
-  annotationsImportCategory,
-  annotationsImportMenuItem,
-  newAnnotationImportMenuItem,
-} from "../import-annotations.menu";
+import { annotationsImportCategory, annotationsImportMenuItem, newAnnotationImportMenuItem } from "../import-annotations.menu";
 import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
 import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
@@ -23,22 +19,15 @@ import { UrlDirective } from "../../../directives/url/url.directive";
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 
 @Component({
-  selector: "baw-import-list-annotation-imports",
-  templateUrl: "list.component.html",
-  imports: [
-    NgxDatatableModule,
-    DatatableDefaultsDirective,
-    DatatablePaginationDirective,
-    DatetimeComponent,
-    UserLinkComponent,
-    UrlDirective,
-  ],
+    selector: "baw-import-list-annotation-imports",
+    templateUrl: "list.component.html",
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, UrlDirective]
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportService,
     private notifications: ToastService,
-    private modals: NgbModal,
+    private modals: NgbModal
   ) {
     super();
   }
@@ -55,9 +44,13 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
     this.filters$ = new BehaviorSubject(this.defaultFilters);
   }
 
-  protected getModels = (filters: Filters<AudioEventImport>) => this.api.filter(filters);
+  protected getModels = (filters: Filters<AudioEventImport>) =>
+    this.api.filter(filters);
 
-  protected async deleteEventImport(template: any, model: AudioEventImport): Promise<void> {
+  protected async deleteEventImport(
+  template: any,
+    model: AudioEventImport
+  ): Promise<void> {
     const modelId: Id = model.id;
     const modelName: string = model.name;
 

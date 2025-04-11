@@ -1,6 +1,11 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { defaultEditIcon, defaultNewIcon, isAdminPredicate, isLoggedInPredicate } from "src/app/app.menus";
+import {
+  defaultEditIcon,
+  defaultNewIcon,
+  isAdminPredicate,
+  isLoggedInPredicate,
+} from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { scriptRoute, scriptsRoute } from "./scripts.routes";
 
@@ -29,7 +34,7 @@ export const scriptMenuItem = menuRoute({
     const componentModel = routeData.root.firstChild.data;
     const scriptName = componentModel.script.model.name;
     return scriptName;
-  },
+  }
 });
 
 export const newScriptMenuItem = menuRoute({

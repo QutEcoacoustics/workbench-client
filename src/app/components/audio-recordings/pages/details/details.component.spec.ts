@@ -19,7 +19,7 @@ describe("AudioRecordingsDetailsComponent", () => {
 
   assertPageInfo<AudioRecording>(AudioRecordingsDetailsComponent, "11", {
     audioRecording: {
-      model: new AudioRecording(generateAudioRecording({ id: 11 })),
+      model: new AudioRecording(generateAudioRecording({ id: 11 }))
     },
   });
 

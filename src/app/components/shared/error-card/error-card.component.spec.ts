@@ -60,19 +60,27 @@ describe("ErrorCardComponent", () => {
     },
     {
       name: "should render multiple errors about one property correctly",
-      errors: [generateErrorMessage("property", ["1", "2"])],
+      errors: [
+        generateErrorMessage("property", ["1", "2"]),
+      ],
       expected: ["property: 1,2"],
     },
     {
       name: "should render multiple errors correctly",
-      errors: [generateErrorMessage("property", ["1"]), generateErrorMessage("second property", ["2"])],
+      errors: [
+        generateErrorMessage("property", ["1"]),
+        generateErrorMessage("second property", ["2"]),
+      ],
       expected: ["property: 1", "second property: 2"],
     },
     {
       name: "should render multiple errors with multiple properties correctly",
-      errors: [generateErrorMessage("property", ["1"]), generateErrorMessage("second property", ["2", "3"])],
+      errors: [
+        generateErrorMessage("property", ["1"]),
+        generateErrorMessage("second property", ["2", "3"]),
+      ],
       expected: ["property: 1", "second property: 2,3"],
-    },
+    }
   ] satisfies ErrorCardTest[];
 
   for (const test of tests) {

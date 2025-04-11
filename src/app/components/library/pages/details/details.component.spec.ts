@@ -23,10 +23,16 @@ describe("AnnotationComponent", () => {
       const eventsApi = spec.inject(AudioEventsService);
 
       recordingApi.show.andCallFake(
-        (id: number) => new BehaviorSubject(new AudioRecording(generateAudioRecording({ id }))),
+        (id: number) =>
+          new BehaviorSubject(
+            new AudioRecording(generateAudioRecording({ id }))
+          )
       );
-      eventsApi.show.andCallFake((id: number) => new BehaviorSubject(new AudioEvent(generateAudioEvent({ id }))));
-    },
+      eventsApi.show.andCallFake(
+        (id: number) =>
+          new BehaviorSubject(new AudioEvent(generateAudioEvent({ id })))
+      );
+    }
   );
 
   assertPageInfo(AnnotationComponent, "Annotation");

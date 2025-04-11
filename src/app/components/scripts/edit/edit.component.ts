@@ -1,20 +1,29 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { scriptResolvers, ScriptsService } from "@baw-api/script/scripts.service";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  scriptResolvers,
+  ScriptsService,
+} from "@baw-api/script/scripts.service";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { adminScriptActions } from "../details/details.component";
 import schema from "../script.base.schema.json";
-import { adminEditScriptMenuItem, adminScriptsCategory } from "../scripts.menus";
+import {
+  adminEditScriptMenuItem,
+  adminScriptsCategory,
+} from "../scripts.menus";
 import { FormComponent } from "../../shared/form/form.component";
 
 const scriptKey = "script";
 
 @Component({
-  selector: "baw-admin-scripts-edit",
-  template: `
+    selector: "baw-admin-scripts-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -26,14 +35,14 @@ const scriptKey = "script";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public constructor(
     private api: ScriptsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[scriptKey] as Script,

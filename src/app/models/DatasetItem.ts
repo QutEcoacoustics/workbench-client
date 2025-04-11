@@ -18,7 +18,10 @@ export interface IDatasetItem {
   order?: number;
 }
 
-export class DatasetItem extends AbstractModel<IDatasetItem> implements IDatasetItem {
+export class DatasetItem
+  extends AbstractModel<IDatasetItem>
+  implements IDatasetItem
+{
   public readonly kind = "Dataset Item";
   public readonly id?: Id;
   @bawPersistAttr()

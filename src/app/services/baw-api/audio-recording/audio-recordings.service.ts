@@ -6,7 +6,16 @@ import type { Project } from "@models/Project";
 import type { Region } from "@models/Region";
 import type { Site } from "@models/Site";
 import { Observable } from "rxjs";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, param, ReadonlyApi } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  param,
+  ReadonlyApi,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -37,8 +46,14 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     return this.api.list(AudioRecording, endpoint(emptyParam, emptyParam));
   }
 
-  public filter(filters: Filters<AudioRecording>): Observable<AudioRecording[]> {
-    return this.api.filter(AudioRecording, endpoint(emptyParam, filterParam), filters);
+  public filter(
+    filters: Filters<AudioRecording>
+  ): Observable<AudioRecording[]> {
+    return this.api.filter(
+      AudioRecording,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
 
   public show(model: IdOr<AudioRecording>): Observable<AudioRecording> {
@@ -51,8 +66,13 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param site Site to filter by
    */
-  public filterBySite(filters: Filters<AudioRecording>, site: IdOr<Site>): Observable<AudioRecording[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "siteId", site));
+  public filterBySite(
+    filters: Filters<AudioRecording>,
+    site: IdOr<Site>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "siteId", site)
+    );
   }
 
   /**
@@ -61,8 +81,13 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param region Region to filter by
    */
-  public filterByRegion(filters: Filters<AudioRecording>, region: IdOr<Region>): Observable<AudioRecording[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "regions.id" as any, region));
+  public filterByRegion(
+    filters: Filters<AudioRecording>,
+    region: IdOr<Region>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "regions.id" as any, region)
+    );
   }
 
   /**
@@ -71,8 +96,13 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param project Project to filter by
    */
-  public filterByProject(filters: Filters<AudioRecording>, project: IdOr<Project>): Observable<AudioRecording[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "projects.id" as any, project));
+  public filterByProject(
+    filters: Filters<AudioRecording>,
+    project: IdOr<Project>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "projects.id" as any, project)
+    );
   }
 
   /**
@@ -81,8 +111,13 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filters Audio recording filters
    * @param harvest Harvest to filter by
    */
-  public filterByHarvest(filters: Filters<AudioRecording>, harvest: IdOr<Harvest>): Observable<AudioRecording[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "harvests.id" as any, harvest));
+  public filterByHarvest(
+    filters: Filters<AudioRecording>,
+    harvest: IdOr<Harvest>
+  ): Observable<AudioRecording[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "harvests.id" as any, harvest)
+    );
   }
 
   public downloadUrl(audioRecording: IdOr<AudioRecording>): string {
@@ -93,13 +128,23 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     const filter = this.api.filterThroughAssociation(
       {
         projection: {
-          include: ["id", "siteId", "recordedDate", "durationSeconds", "mediaType", "originalFileName"],
+          include: [
+            "id",
+            "siteId",
+            "recordedDate",
+            "durationSeconds",
+            "mediaType",
+            "originalFileName",
+          ],
         },
       },
       "harvests.id" as any,
-      harvest,
+      harvest
     );
-    return this.api.getPath(endpoint(emptyParam, filterParam) + ".csv?") + this.api.encodeFilter(filter, true);
+    return (
+      this.api.getPath(endpoint(emptyParam, filterParam) + ".csv?") +
+      this.api.encodeFilter(filter, true)
+    );
   }
 
   /**
@@ -108,11 +153,14 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
    * @param filter Audio recording filters
    */
   public batchDownloadUrl(filter: Filters<AudioRecording>): string {
-    return this.api.getPath(downloadEndpoint() + "?") + this.api.encodeFilter(filter, false);
+    return (
+      this.api.getPath(downloadEndpoint() + "?") +
+      this.api.encodeFilter(filter, false)
+    );
   }
 }
 
 export const audioRecordingResolvers = new Resolvers<AudioRecording, []>(
   [AudioRecordingsService],
-  "audioRecordingId",
+  "audioRecordingId"
 ).create("AudioRecording");

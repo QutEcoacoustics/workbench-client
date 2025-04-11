@@ -3,7 +3,11 @@ import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { BawProvider, BawResolver, ResolvedModel } from "@baw-api/resolver-common";
+import {
+  BawProvider,
+  BawResolver,
+  ResolvedModel,
+} from "@baw-api/resolver-common";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
@@ -17,7 +21,7 @@ import { firstValueFrom, Observable, of } from "rxjs";
 export class AnnotationService {
   public constructor(
     private tagsApi: TagsService,
-    private audioRecordingsApi: AudioRecordingsService,
+    private audioRecordingsApi: AudioRecordingsService
   ) {}
 
   public async show(audioEvent: AudioEvent): Promise<Annotation> {
@@ -42,12 +46,16 @@ export class AnnotationService {
             in: tagIds,
           },
         } as any,
-      }),
+      })
     );
   }
 
-  private async showAudioRecording(audioEvent: AudioEvent): Promise<AudioRecording> {
-    return await firstValueFrom(this.audioRecordingsApi.show(audioEvent.audioRecordingId));
+  private async showAudioRecording(
+    audioEvent: AudioEvent
+  ): Promise<AudioRecording> {
+    return await firstValueFrom(
+      this.audioRecordingsApi.show(audioEvent.audioRecordingId)
+    )
   }
 }
 
@@ -58,7 +66,13 @@ interface ResolverNames {
 // we use a custom resolver here because the annotation service is a virtual
 // service that does not have an api backing
 // therefore, we cannot use the standard BawApiResolver here
-class AnnotationResolver extends BawResolver<AnnotationSearchParameters, undefined, [], any, ResolverNames> {
+class AnnotationResolver extends BawResolver<
+  AnnotationSearchParameters,
+  undefined,
+  [],
+  any,
+  ResolverNames
+> {
   public constructor() {
     super([ProjectsService, ShallowRegionsService, ShallowSitesService]);
   }
@@ -68,7 +82,7 @@ class AnnotationResolver extends BawResolver<AnnotationSearchParameters, undefin
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<AnnotationSearchParameters>>;
     }>,
-    deps: Type<ProjectsService | ShallowRegionsService | ShallowSitesService>[],
+    deps: Type<ProjectsService | ShallowRegionsService | ShallowSitesService>[]
   ): ResolverNames & { providers: BawProvider[] } {
     const showOptionalProvider = {
       showOptional: name + "ShowOptionalResolver",
@@ -84,7 +98,9 @@ class AnnotationResolver extends BawResolver<AnnotationSearchParameters, undefin
     return showOptionalProvider;
   }
 
-  public resolverFn(route: ActivatedRouteSnapshot): Observable<AnnotationSearchParameters> {
+  public resolverFn(
+    route: ActivatedRouteSnapshot
+  ): Observable<AnnotationSearchParameters> {
     const routeProjectId = route.params["projectId"];
     const routeRegionId = route.params["regionId"];
     const routeSiteId = route.params["siteId"];
@@ -101,4 +117,6 @@ class AnnotationResolver extends BawResolver<AnnotationSearchParameters, undefin
   }
 }
 
-export const annotationResolvers = new AnnotationResolver().create("Annotations");
+export const annotationResolvers = new AnnotationResolver().create(
+  "Annotations"
+);

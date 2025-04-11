@@ -13,19 +13,24 @@ export class ReportProblemService {
 
   public reportProblem(details: ReportProblem): Observable<void> {
     const validateEmail = (page: string): void => {
-      const errMsg = 'id="data_class_bug_report_email" /><span class="help-block">is invalid';
+      const errMsg =
+        'id="data_class_bug_report_email" /><span class="help-block">is invalid';
       if (page.includes(errMsg)) {
         throw Error("Email address is invalid");
       }
     };
 
     return this.api
-      .makeFormRequest(reportProblemEndpoint(), reportProblemEndpoint(), (token) => details.getBody(token))
+      .makeFormRequest(
+        reportProblemEndpoint(),
+        reportProblemEndpoint(),
+        (token) => details.getBody(token)
+      )
       .pipe(
         map((page) => validateEmail(page)),
         // Complete observable
         first(),
-        catchError(this.api.handleError),
+        catchError(this.api.handleError)
       );
   }
 

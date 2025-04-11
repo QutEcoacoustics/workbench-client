@@ -3,11 +3,10 @@ import { Harvest } from "@models/Harvest";
 import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 @Component({
-  selector: "baw-harvest-upload-url",
-  template: `
+    selector: "baw-harvest-upload-url",
+    template: `
     <p>
-      <b>Server URL: </b
-      ><a [href]="harvest.uploadUrlWithAuth | safe: 'url'">
+      <b>Server URL: </b><a [href]="harvest.uploadUrlWithAuth | safe: 'url'">
         {{ harvest.uploadUrl }}
       </a>
     </p>
@@ -15,7 +14,7 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
     <p><b>Username:</b> {{ harvest.uploadUser }}</p>
     <p><b>Password:</b> {{ harvest.uploadPassword }}</p>
   `,
-  imports: [SafePipe],
+    imports: [SafePipe]
 })
 export class UploadUrlComponent {
   @Input() public harvest: Harvest;

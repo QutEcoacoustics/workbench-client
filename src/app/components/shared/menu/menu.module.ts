@@ -6,7 +6,11 @@ import { DefaultMenu, DEFAULT_MENU } from "@helpers/page/defaultMenus";
 import { AllowsOriginalDownloadComponent } from "@menu/allows-original-download/allows-original-download.component";
 import { PermissionsShieldComponent } from "@menu/permissions-shield/permissions-shield.component";
 import { WidgetDirective } from "@menu/widget.directive";
-import { NgbDropdownModule, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbDropdownModule,
+  NgbModalModule,
+  NgbTooltipModule,
+} from "@ng-bootstrap/ng-bootstrap";
 import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
@@ -54,7 +58,7 @@ const publicComponents = [
  * Menus Module
  */
 @NgModule({
-  imports: [
+    imports: [
     CommonModule,
     RouterModule,
     NgbModalModule,
@@ -65,17 +69,16 @@ const publicComponents = [
     DirectivesModule,
     UserLinkModule,
     TimeSinceComponent,
-    ...privateComponents,
-    ...publicComponents,
-  ],
-  providers: [
-    {
-      provide: DEFAULT_MENU,
-      useFactory: DefaultMenu.getMenu,
-      deps: [ConfigService],
-    },
-    MenuService,
-  ],
-  exports: publicComponents,
+    ...privateComponents, ...publicComponents,
+],
+    providers: [
+        {
+            provide: DEFAULT_MENU,
+            useFactory: DefaultMenu.getMenu,
+            deps: [ConfigService],
+        },
+        MenuService,
+    ],
+    exports: publicComponents,
 })
 export class MenuModule {}

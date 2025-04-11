@@ -1,4 +1,8 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { AudioRecording } from "@models/AudioRecording";
@@ -7,7 +11,12 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { generateTag } from "@test/fakes/Tag";
-import { AUDIO_RECORDING, MEDIA, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_RECORDING,
+  MEDIA,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
@@ -51,7 +60,10 @@ describe("AudioEventCardComponent", () => {
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
-    mockAudioRecording = new AudioRecording(generateAudioRecording(), injectorSpy);
+    mockAudioRecording = new AudioRecording(
+      generateAudioRecording(),
+      injectorSpy
+    );
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
@@ -60,7 +72,7 @@ describe("AudioEventCardComponent", () => {
         endTimeSeconds: 5,
         tags: [mockTag],
       }),
-      injectorSpy,
+      injectorSpy
     );
 
     audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);
@@ -79,8 +91,10 @@ describe("AudioEventCardComponent", () => {
     spectator.setInput("annotation", mockAnnotation);
   }
 
-  const spectrogram = () => spectator.query<SpectrogramComponent>("oe-spectrogram");
-  const listenLink = () => spectator.query<HTMLAnchorElement>(".more-information-link");
+  const spectrogram = () =>
+    spectator.query<SpectrogramComponent>("oe-spectrogram");
+  const listenLink = () =>
+    spectator.query<HTMLAnchorElement>(".more-information-link");
   const tagInfoElement = () => spectator.query(".tag-information");
 
   beforeEach(() => {

@@ -13,7 +13,8 @@ import { HarvestItemsService } from "./harvest-items.service";
 describe("HarvestItemsService", () => {
   // File path without leading '/'
   const harvestItemPath = modelData.system.filePath().slice(1);
-  const createModel = () => new HarvestItem(generateHarvestItem({ path: harvestItemPath }));
+  const createModel = () =>
+    new HarvestItem(generateHarvestItem({ path: harvestItemPath }));
   const baseUrl = "/projects/5/harvests/10/items/";
   let spec: SpectatorService<HarvestItemsService>;
   const createService = createServiceFactory({
@@ -35,8 +36,15 @@ describe("HarvestItemsService", () => {
     createModel,
     undefined, // harvest item
     5, // project
-    10, // harvest
+    10 // harvest
   );
 
-  validateApiList(() => spec as any, HarvestItem, baseUrl + harvestItemPath, 5, 10, createModel());
+  validateApiList(
+    () => spec as any,
+    HarvestItem,
+    baseUrl + harvestItemPath,
+    5,
+    10,
+    createModel()
+  );
 });

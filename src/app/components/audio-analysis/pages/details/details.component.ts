@@ -18,11 +18,14 @@ const analysisJobKey = "analysisJob";
 const projectKey = "project";
 
 @Component({
-  selector: "baw-analysis",
-  templateUrl: "details.component.html",
-  imports: [DetailViewComponent],
+    selector: "baw-analysis",
+    templateUrl: "details.component.html",
+    imports: [DetailViewComponent]
 })
-class AnalysisJobComponent extends withUnsubscribe(PageComponent) implements OnInit {
+class AnalysisJobComponent
+  extends withUnsubscribe(PageComponent)
+  implements OnInit
+{
   public analysisJob: AnalysisJob;
   public failure: boolean;
   public fields = schema.fields;

@@ -13,11 +13,17 @@ import { MenuComponent } from "../menu/menu.component";
  * actions available
  */
 @Component({
-  selector: "baw-action-menu",
-  template: `
-    <baw-menu menuType="action" [title]="title" [links]="links" [widgets]="widgets" [isSideNav]="isSideNav"></baw-menu>
+    selector: "baw-action-menu",
+    template: `
+    <baw-menu
+      menuType="action"
+      [title]="title"
+      [links]="links"
+      [widgets]="widgets"
+      [isSideNav]="isSideNav"
+    ></baw-menu>
   `,
-  imports: [MenuComponent],
+    imports: [MenuComponent]
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;
@@ -31,10 +37,12 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.menu.menuUpdate.pipe(takeUntil(this.unsubscribe)).subscribe(({ actionMenu }): void => {
-      this.title = actionMenu.title;
-      this.links = actionMenu.links;
-      this.widgets = actionMenu.widgets;
-    });
+    this.menu.menuUpdate
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ actionMenu }): void => {
+        this.title = actionMenu.title;
+        this.links = actionMenu.links;
+        this.widgets = actionMenu.widgets;
+      });
   }
 }

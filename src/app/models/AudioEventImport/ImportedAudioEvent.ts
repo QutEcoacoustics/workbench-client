@@ -10,7 +10,7 @@ import { ITag, Tag } from "@models/Tag";
 
 export type EventImportError = {
   [K in keyof IImportedAudioEvent]?: string[];
-};
+}
 
 export interface IImportedAudioEvent extends IAudioEvent {
   errors?: EventImportError[];
@@ -18,7 +18,10 @@ export interface IImportedAudioEvent extends IAudioEvent {
 }
 
 // TODO: this should probably extend AudioEvent
-export class ImportedAudioEvent extends AbstractModel<IImportedAudioEvent> implements IImportedAudioEvent {
+export class ImportedAudioEvent
+  extends AbstractModel<IImportedAudioEvent>
+  implements IImportedAudioEvent
+{
   public readonly king = "Imported Audio Event";
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;

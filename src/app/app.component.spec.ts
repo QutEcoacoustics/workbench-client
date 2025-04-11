@@ -9,7 +9,11 @@ import { PrimaryMenuComponent } from "@menu/primary-menu/primary-menu.component"
 import { SecondaryMenuComponent } from "@menu/secondary-menu/secondary-menu.component";
 import { SideNavComponent } from "@menu/side-nav/side-nav.component";
 import { MockModel } from "@models/AbstractModel.spec";
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { LoadingBarComponent, LoadingBarService } from "@ngx-loading-bar/core";
 import { Title } from "@angular/platform-browser";
 import { MenuService } from "@services/menu/menu.service";
@@ -118,7 +122,9 @@ describe("AppComponent", () => {
           assertIsSideNav(secondaryMenu);
         });
 
-        it(`should ${isFullscreen ? "include" : "not include"} action menu`, () => {
+        it(`should ${
+          isFullscreen ? "include" : "not include"
+        } action menu`, () => {
           const actionMenu = spec.query("baw-side-nav baw-action-menu");
 
           if (isFullscreen) {
@@ -148,7 +154,9 @@ describe("AppComponent", () => {
 
     function assertLayout(isFullscreen: boolean) {
       const container = spec.query("#container");
-      expect(container).toHaveClass(isFullscreen ? "fullscreen" : "menu-layout");
+      expect(container).toHaveClass(
+        isFullscreen ? "fullscreen" : "menu-layout"
+      );
 
       const actionMenu = spec.query("#container baw-action-menu");
       if (isFullscreen) {
@@ -183,8 +191,8 @@ describe("AppComponent", () => {
         generatePageInfo(
           generatePageInfoResolvers({
             model: new MockModel({ id: 1 }),
-          }),
-        ),
+          })
+        )
       );
       assertPageComponent(true);
     });
@@ -195,7 +203,7 @@ describe("AppComponent", () => {
           resolvers: generatePageInfoResolvers({
             error: generateBawApiError(),
           }),
-        }),
+        })
       );
       assertPageComponent(false);
     });
@@ -228,7 +236,8 @@ describe("AppComponent", () => {
     }
 
     beforeEach(() => {
-      titleStrategyInjectable = spec.fixture.debugElement.injector.get(PageTitleStrategy);
+      titleStrategyInjectable =
+        spec.fixture.debugElement.injector.get(PageTitleStrategy);
       titleService = spec.fixture.debugElement.injector.get(Title);
       configService = spec.inject(ConfigService);
     });

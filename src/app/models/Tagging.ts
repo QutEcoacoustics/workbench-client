@@ -1,5 +1,9 @@
 import { TAG } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, HasCreatorAndUpdater, Id } from "@interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Id,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";

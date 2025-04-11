@@ -1,6 +1,13 @@
 import { LocationStrategy } from "@angular/common";
 import { Directive, ElementRef, Input, Renderer2 } from "@angular/core";
-import { ActivatedRoute, DefaultUrlSerializer, Params, Router, RouterLink, UrlTree } from "@angular/router";
+import {
+  ActivatedRoute,
+  DefaultUrlSerializer,
+  Params,
+  Router,
+  RouterLink,
+  UrlTree,
+} from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
 @Directive({ selector: "a[bawUrl]" })

@@ -6,7 +6,9 @@
       "props": {
         "label": "Select timezone",
         "required": true,
-        "validationMessages": [{ "name": "required", "message": "Invalid or no timezone selected" }]
+        "validationMessages": [
+          { "name": "required", "message": "Invalid or no timezone selected" }
+        ]
       }
     }
   ]

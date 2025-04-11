@@ -1,4 +1,10 @@
-import { Directive, Injectable, QueryList, Type, ViewChildren } from "@angular/core";
+import {
+  Directive,
+  Injectable,
+  QueryList,
+  Type,
+  ViewChildren,
+} from "@angular/core";
 import { FormComponent } from "@shared/form/form.component";
 import { CanDeactivate } from "@angular/router";
 
@@ -18,7 +24,10 @@ export interface FormCheckingComponent {
  */
 export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
   @Directive()
-  class FormCheckingPageDirective extends base implements FormCheckingComponent {
+  class FormCheckingPageDirective
+    extends base
+    implements FormCheckingComponent
+  {
     @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
     /**
@@ -45,7 +54,7 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
  * modified by the user in any way.
  */
 @Injectable()
-export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
+export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent>  {
   @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
   public canDeactivate(component: FormCheckingComponent): boolean {
@@ -59,6 +68,8 @@ export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
       return true;
     }
 
-    return component.isFormTouched() ? confirm("Form data will be lost! Are you sure you want to leave?") : true;
+    return component.isFormTouched()
+      ? confirm("Form data will be lost! Are you sure you want to leave?")
+      : true;
   }
 }
