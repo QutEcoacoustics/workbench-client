@@ -13,10 +13,7 @@ export interface IAudioEventImport extends HasAllUsers, HasDescription {
   analysisJobId?: Id;
 }
 
-export class AudioEventImport
-  extends AbstractModel<IAudioEventImport>
-  implements IAudioEventImport
-{
+export class AudioEventImport extends AbstractModel<IAudioEventImport> implements IAudioEventImport {
   public readonly kind = "audio_event_import";
   public readonly id?: Id;
   @bawPersistAttr()

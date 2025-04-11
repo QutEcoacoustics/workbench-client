@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
@@ -39,7 +34,7 @@ import { User } from "@models/User";
     </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class ModelLinkComponent implements OnChanges {
   @Input() public model: AbstractModel;

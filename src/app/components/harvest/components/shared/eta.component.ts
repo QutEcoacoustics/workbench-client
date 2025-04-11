@@ -14,26 +14,21 @@ import { Duration } from "luxon";
         <baw-time-since [value]="harvest.updatedAt" />
       </small>
       @if (!hasProgress()) {
-        <small class="float-end text-muted font-monospace">
-          waiting in queue
-        </small>
+        <small class="float-end text-muted font-monospace"> waiting in queue </small>
       }
       @if (hasProgress()) {
         <small class="float-end text-muted font-monospace">
           @if (expectedRemainingTime && hasProgress()) {
-            ≈<baw-duration
-            [value]="expectedRemainingTime"
-            humanized
-            />
-          remaining
-        } @else {
-          unknown time remaining
-        }
-      </small>
-    }
+            ≈<baw-duration [value]="expectedRemainingTime" humanized />
+            remaining
+          } @else {
+            unknown time remaining
+          }
+        </small>
+      }
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class EtaComponent implements OnChanges {
   @Input() public harvest: Harvest;
@@ -67,11 +62,8 @@ export class EtaComponent implements OnChanges {
      * resources)
      */
     const timeTakenSeconds = this.harvest.updatedAt.diffNow("seconds").seconds;
-    const expectedRemainingTimeSeconds =
-      timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;
-    this.expectedRemainingTime = Duration.fromMillis(
-      expectedRemainingTimeSeconds * 1000
-    );
+    const expectedRemainingTimeSeconds = timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;
+    this.expectedRemainingTime = Duration.fromMillis(expectedRemainingTimeSeconds * 1000);
   }
 
   public hasProgress(): boolean {

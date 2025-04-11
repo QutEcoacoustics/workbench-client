@@ -21,21 +21,15 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
       <nav class="container navbar navbar-expand-lg navbar-light text-bg-light">
         <ul class="nav me-auto align-items-center m-auto">
           <li class="nav-item">
-            <p id="copyright" class="nav-link disabled m-0">
-              &#169; QUT {{ year }}
-            </p>
+            <p id="copyright" class="nav-link disabled m-0">&#169; QUT {{ year }}</p>
           </li>
           <li class="nav-item">
             <p id="version" class="nav-link disabled m-0">{{ version }}</p>
           </li>
-    
+
           @for (link of links; track link) {
             <li class="nav-item">
-              <a
-                class="nav-link rounded-link-default"
-                strongRouteActive="active"
-                [strongRoute]="link.route"
-                >
+              <a class="nav-link rounded-link-default" strongRouteActive="active" [strongRoute]="link.route">
                 {{ link.label }}
               </a>
             </li>
@@ -43,9 +37,9 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
         </ul>
       </nav>
     </footer>
-    `,
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class FooterComponent implements OnInit {
   public version: string;

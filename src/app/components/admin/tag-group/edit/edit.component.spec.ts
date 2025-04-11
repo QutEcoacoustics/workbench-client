@@ -2,10 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  tagGroupResolvers,
-  TagGroupsService,
-} from "@baw-api/tag/tag-group.service";
+import { tagGroupResolvers, TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagGroup } from "@models/TagGroup";
 import { SpyObject } from "@ngneat/spectator";
@@ -30,20 +27,12 @@ describe("AdminTagGroupsEditComponent", () => {
 
   function configureTestingModule(model: TagGroup, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [AdminTagGroupsEditComponent],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { tagGroup: tagGroupResolvers.show },
-            { tagGroup: { model, error } }
-          ),
+          useValue: mockActivatedRoute({ tagGroup: tagGroupResolvers.show }, { tagGroup: { model, error } }),
         },
       ],
     }).compileComponents();
@@ -107,5 +96,6 @@ describe("AdminTagGroupsEditComponent", () => {
 
         expect(router.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
       });
-    });  });
+    });
+  });
 });

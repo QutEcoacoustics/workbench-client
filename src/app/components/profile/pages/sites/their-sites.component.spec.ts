@@ -12,20 +12,13 @@ import { Id, PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
-import {
-  interceptCustomApiRequest,
-  interceptMappedApiRequests,
-} from "@test/helpers/general";
+import { interceptCustomApiRequest, interceptMappedApiRequests } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { humanizedDuration } from "@test/helpers/dateTime";
@@ -89,13 +82,7 @@ describe("TheirSitesComponent", () => {
       });
     });
 
-    return interceptCustomApiRequest(
-      sitesApi,
-      "filterByCreator",
-      injector,
-      sites,
-      Site,
-    );
+    return interceptCustomApiRequest(sitesApi, "filterByCreator", injector, sites, Site);
   }
 
   function interceptProjectRequest(projects: Project[]) {
@@ -172,11 +159,7 @@ describe("TheirSitesComponent", () => {
     });
 
     describe("access level", () => {
-      [
-        PermissionLevel.reader,
-        PermissionLevel.writer,
-        PermissionLevel.owner,
-      ].forEach((accessLevel) => {
+      [PermissionLevel.reader, PermissionLevel.writer, PermissionLevel.owner].forEach((accessLevel) => {
         it(`should display ${accessLevel} permissions`, async () => {
           const site = new Site(generateSite({ projectIds: [1] }));
           const project = new Project(generateProject({ accessLevel }));
@@ -197,15 +180,9 @@ describe("TheirSitesComponent", () => {
       it("should prioritize owner level permission if multiple projects", async () => {
         const site = new Site(generateSite({ projectIds: [1, 2, 3] }));
         const projects = [
-          new Project(
-            generateProject({ id: 1, accessLevel: PermissionLevel.reader }),
-          ),
-          new Project(
-            generateProject({ id: 2, accessLevel: PermissionLevel.owner }),
-          ),
-          new Project(
-            generateProject({ id: 3, accessLevel: PermissionLevel.writer }),
-          ),
+          new Project(generateProject({ id: 1, accessLevel: PermissionLevel.reader })),
+          new Project(generateProject({ id: 2, accessLevel: PermissionLevel.owner })),
+          new Project(generateProject({ id: 3, accessLevel: PermissionLevel.writer })),
         ];
         await setup(defaultUser, [site], projects);
 
@@ -215,15 +192,9 @@ describe("TheirSitesComponent", () => {
       it("should prioritize writer level permission if multiple projects and no owner", async () => {
         const site = new Site(generateSite({ projectIds: [1] }));
         const projects = [
-          new Project(
-            generateProject({ id: 1, accessLevel: PermissionLevel.reader }),
-          ),
-          new Project(
-            generateProject({ id: 2, accessLevel: PermissionLevel.writer }),
-          ),
-          new Project(
-            generateProject({ id: 3, accessLevel: PermissionLevel.reader }),
-          ),
+          new Project(generateProject({ id: 1, accessLevel: PermissionLevel.reader })),
+          new Project(generateProject({ id: 2, accessLevel: PermissionLevel.writer })),
+          new Project(generateProject({ id: 3, accessLevel: PermissionLevel.reader })),
         ];
 
         await setup(defaultUser, [site], projects);

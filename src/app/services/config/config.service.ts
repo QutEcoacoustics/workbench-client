@@ -31,7 +31,7 @@ export class ConfigService {
     private notification: ToastService,
     private theme: ThemeService,
     handler: HttpBackend,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
   ) {
     // This is to bypass the interceptor and prevent circular dependencies
     // (interceptor requires API_ROOT)
@@ -65,8 +65,8 @@ export class ConfigService {
           console.error("API_CONFIG Failed to load configuration file: ", err);
           this.setConfig(new Configuration(undefined));
           return of();
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -109,7 +109,7 @@ export class ConfigService {
       this.notification.error(
         "The website is not configured correctly. Try coming back at another time.",
         "Unrecoverable Error",
-        { autoHide: false }
+        { autoHide: false },
       );
       return;
     }

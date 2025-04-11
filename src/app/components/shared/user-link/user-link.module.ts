@@ -11,14 +11,7 @@ const components = [UserLinkComponent];
 
 @NgModule({
   declarations: components,
-  imports: [
-    CommonModule,
-    IconsModule,
-    NgbTooltipModule,
-    PipesModule,
-    DirectivesModule,
-    LoadingModule,
-  ],
+  imports: [CommonModule, IconsModule, NgbTooltipModule, PipesModule, DirectivesModule, LoadingModule],
   exports: components,
 })
 export class UserLinkModule {}

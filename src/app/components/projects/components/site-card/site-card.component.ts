@@ -14,12 +14,7 @@ import { map } from "rxjs/operators";
       <div class="body">
         <div class="heading m-0 mb-1">
           <a id="nameLink" [bawUrl]="model.getViewUrl(project)">
-            <img
-              id="image"
-              class="me-2"
-              [src]="model.imageUrls"
-              [alt]="model.name + ' alt'"
-            />
+            <img id="image" class="me-2" [src]="model.imageUrls" [alt]="model.name + ' alt'" />
             <h5 id="name">{{ model.name }}</h5>
           </a>
         </div>
@@ -42,10 +37,7 @@ import { map } from "rxjs/operators";
       @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
         <li>
           @if (hasNoAudio.value !== false) {
-            <span
-              id="no-audio"
-              class="badge rounded-pill text-bg-secondary my-1"
-              >
+            <span id="no-audio" class="badge rounded-pill text-bg-secondary my-1">
               @if (hasNoAudio.loading) {
                 <baw-loading size="sm" color="light"></baw-loading>
               }
@@ -59,7 +51,7 @@ import { map } from "rxjs/operators";
     </ng-template>
   `,
   styleUrls: ["./site-card.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class SiteCardComponent implements OnInit {
   @Input() public project: Project;
@@ -72,9 +64,7 @@ export class SiteCardComponent implements OnInit {
 
   public ngOnInit(): void {
     this.model = this.region || this.site;
-    this.hasNoAudio$ = this.getRecording().pipe(
-      map((recordings): boolean => recordings.length === 0)
-    );
+    this.hasNoAudio$ = this.getRecording().pipe(map((recordings): boolean => recordings.length === 0));
   }
 
   public numPoints(): number {

@@ -1,11 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  AbstractModel,
-  isUnresolvedModel,
-  UnresolvedModel,
-} from "@models/AbstractModel";
+import { AbstractModel, isUnresolvedModel, UnresolvedModel } from "@models/AbstractModel";
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { takeUntil } from "rxjs";
@@ -13,12 +9,9 @@ import { takeUntil } from "rxjs";
 @Component({
   selector: "baw-site-recent-annotations",
   templateUrl: "./recent-annotations.component.html",
-  standalone: false
+  standalone: false,
 })
-export class RecentAnnotationsComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class RecentAnnotationsComponent extends withUnsubscribe() implements OnInit {
   @Input() public site: Site;
 
   public recentAudioEvents: AudioEvent[];
@@ -31,18 +24,13 @@ export class RecentAnnotationsComponent
     this.getAnnotations();
   }
 
-  public modelsUnresolved(
-    ...models: (AbstractModel | UnresolvedModel)[]
-  ): boolean {
+  public modelsUnresolved(...models: (AbstractModel | UnresolvedModel)[]): boolean {
     return models.some((model): boolean => isUnresolvedModel(model));
   }
 
   private getAnnotations(): void {
     this.audioEventsApi
-      .filterBySite(
-        { sorting: { orderBy: "updatedAt", direction: "desc" } },
-        this.site
-      )
+      .filterBySite({ sorting: { orderBy: "updatedAt", direction: "desc" } }, this.site)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((events) => {
         // Limit the selection of audio events by tagging count

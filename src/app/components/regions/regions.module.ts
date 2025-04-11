@@ -9,23 +9,14 @@ import { ListComponent } from "./pages/list/list.component";
 import { NewComponent } from "./pages/new/new.component";
 import { regionsRoute, shallowRegionsRoute } from "./regions.routes";
 
-const components = [
-  DetailsComponent,
-  EditComponent,
-  ListComponent,
-  NewComponent,
-];
+const components = [DetailsComponent, EditComponent, ListComponent, NewComponent];
 
 const routes = regionsRoute.compileRoutes(getRouteConfigForPage);
 const shallowRoutes = shallowRegionsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
   declarations: components,
-  imports: [
-    SharedModule,
-    ProjectsModule,
-    RouterModule.forChild([...routes, ...shallowRoutes]),
-  ],
+  imports: [SharedModule, ProjectsModule, RouterModule.forChild([...routes, ...shallowRoutes])],
   exports: [RouterModule, ...components],
 })
 export class RegionsModule {}

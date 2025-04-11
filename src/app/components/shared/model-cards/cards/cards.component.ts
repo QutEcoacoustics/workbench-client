@@ -20,9 +20,9 @@ import { List } from "immutable";
         <ng-content></ng-content>
       </div>
     </div>
-    `,
+  `,
   styleUrls: ["./cards.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class CardsComponent {
   @Input() public models: List<Project | Region>;

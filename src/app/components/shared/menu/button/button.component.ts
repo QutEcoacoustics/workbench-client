@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
 import { MenuModal } from "@menu/widgetItem";
 
@@ -13,11 +8,7 @@ import { MenuModal } from "@menu/widgetItem";
 @Component({
   selector: "baw-menu-button",
   template: `
-    <div
-      placement="auto"
-      [ngbTooltip]="tooltipContent"
-      [class.disabled]="link.disabled"
-    >
+    <div placement="auto" [ngbTooltip]="tooltipContent" [class.disabled]="link.disabled">
       <button
         class="btn ps-3 py-2 rounded text-start border-0"
         (click)="link.action()"
@@ -39,7 +30,7 @@ import { MenuModal } from "@menu/widgetItem";
   styleUrls: ["./button.component.scss"],
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;

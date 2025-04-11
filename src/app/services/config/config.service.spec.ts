@@ -1,11 +1,6 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
-import {
-  createHttpFactory,
-  HttpMethod,
-  mockProvider,
-  SpectatorHttp,
-} from "@ngneat/spectator";
+import { createHttpFactory, HttpMethod, mockProvider, SpectatorHttp } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
@@ -19,16 +14,12 @@ describe("ConfigService", () => {
   let toastr: ToastService;
   const createService = createHttpFactory({
     service: ConfigService,
-    providers: [
-      mockProvider(ToastService),
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [mockProvider(ToastService), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
   });
 
   async function setup(
     apiRoot: string = testApiConfig.endpoints.apiRoot,
-    apiConfig: Partial<IConfiguration> = testApiConfig
+    apiConfig: Partial<IConfiguration> = testApiConfig,
   ): Promise<void> {
     spec = createService({
       providers: [{ provide: API_ROOT, useValue: apiRoot }],
@@ -45,7 +36,7 @@ describe("ConfigService", () => {
 
   async function setupWithDefaultConfig(
     apiRoot: string = testApiConfig.endpoints.apiRoot,
-    apiConfig: Partial<IConfiguration> = testApiConfig
+    apiConfig: Partial<IConfiguration> = testApiConfig,
   ): Promise<void> {
     spec = createService({
       providers: [
@@ -69,18 +60,14 @@ describe("ConfigService", () => {
   [
     {
       description: "with default config",
-      before: async (
-        apiRoot?: string,
-        apiConfig?: Partial<IConfiguration>
-      ): Promise<void> => await setupWithDefaultConfig(apiRoot, apiConfig),
+      before: async (apiRoot?: string, apiConfig?: Partial<IConfiguration>): Promise<void> =>
+        await setupWithDefaultConfig(apiRoot, apiConfig),
       after: (): void => {},
     },
     {
       description: "without default config",
-      before: async (
-        apiRoot?: string,
-        apiConfig?: Partial<IConfiguration>
-      ): Promise<void> => await setup(apiRoot, apiConfig),
+      before: async (apiRoot?: string, apiConfig?: Partial<IConfiguration>): Promise<void> =>
+        await setup(apiRoot, apiConfig),
       after: (): void => {},
     },
   ].forEach(({ description, before, after }) => {
@@ -123,7 +110,7 @@ describe("ConfigService", () => {
         expect(toastr.error).toHaveBeenCalledWith(
           "The website is not configured correctly. Try coming back at another time.",
           "Unrecoverable Error",
-          { autoHide: false }
+          { autoHide: false },
         );
       });
     });

@@ -1,12 +1,6 @@
 import { Directive, ViewChild } from "@angular/core";
 import { Option } from "@helpers/advancedTypes";
-import {
-  ColumnMode,
-  DatatableComponent,
-  SelectionType,
-  SortType,
-  TableColumn,
-} from "@swimlane/ngx-datatable";
+import { ColumnMode, DatatableComponent, SelectionType, SortType, TableColumn } from "@swimlane/ngx-datatable";
 import { PageComponent } from "../page/pageComponent";
 
 /**
@@ -48,9 +42,7 @@ export abstract class TableTemplate<T> extends PageComponent {
     const val: string = $event.target.value;
 
     // filter our data
-    const temp = this.filterTempRows.filter(
-      (row) => !val || this.filterMatch(val, row)
-    );
+    const temp = this.filterTempRows.filter((row) => !val || this.filterMatch(val, row));
 
     // update the rows
     this.rows = temp;

@@ -19,12 +19,7 @@ describe("AdminScriptsComponent", () => {
   beforeEach(function () {
     TestBed.configureTestingModule({
       declarations: [AdminScriptsComponent],
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        ...appLibraryImports,
-        MockBawApiModule,
-      ],
+      imports: [SharedModule, RouterTestingModule, ...appLibraryImports, MockBawApiModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsComponent);

@@ -3,11 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import {
-  hasResolvedSuccessfully,
-  ResolvedModelList,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
@@ -38,7 +34,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
-  standalone: false
+  standalone: false,
 })
 class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;
@@ -75,9 +71,7 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   }
 }
 
-function getPageInfo(
-  subRoute: keyof typeof audioRecordingMenuItems.details
-): IPageInfo {
+function getPageInfo(subRoute: keyof typeof audioRecordingMenuItems.details): IPageInfo {
   return {
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,

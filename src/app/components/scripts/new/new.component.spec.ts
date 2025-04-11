@@ -22,12 +22,7 @@ describe("AdminScriptsNewComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [AdminScriptsNewComponent],
     }).compileComponents();
 

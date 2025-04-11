@@ -2,17 +2,8 @@ import { Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { StrongRoute } from "@interfaces/strongRoute";
-import {
-  createComponentFactory,
-  mockProvider,
-  Spectator,
-} from "@ngneat/spectator";
-import {
-  Breadcrumb,
-  BreadcrumbsData,
-  MenuService,
-  MenuServiceData,
-} from "@services/menu/menu.service";
+import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
+import { Breadcrumb, BreadcrumbsData, MenuService, MenuServiceData } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
@@ -47,8 +38,8 @@ describe("BreadcrumbComponent", () => {
       () =>
         ({
           breadcrumbs,
-        } as Partial<MenuServiceData> as MenuServiceData),
-      false
+        }) as Partial<MenuServiceData> as MenuServiceData,
+      false,
     );
   }
 
@@ -86,11 +77,7 @@ describe("BreadcrumbComponent", () => {
   });
 
   it("should not show breadcrumbs if no links exist", async () => {
-    await Promise.all([
-      triggerBreadcrumbs(OrderedSet()),
-      triggerQueryParams({}),
-      triggerRouteParams({}),
-    ]);
+    await Promise.all([triggerBreadcrumbs(OrderedSet()), triggerQueryParams({}), triggerRouteParams({})]);
     spec.detectChanges();
     expect(getBreadcrumbs()).toHaveLength(0);
   });
@@ -101,11 +88,7 @@ describe("BreadcrumbComponent", () => {
 
     beforeEach(async () => {
       crumb = generateBreadcrumb();
-      await Promise.all([
-        triggerBreadcrumbs(OrderedSet([crumb])),
-        triggerQueryParams({}),
-        triggerRouteParams({}),
-      ]);
+      await Promise.all([triggerBreadcrumbs(OrderedSet([crumb])), triggerQueryParams({}), triggerRouteParams({})]);
       spec.detectChanges();
       element = getBreadcrumbs()[0] as HTMLLIElement;
     });
@@ -126,11 +109,7 @@ describe("BreadcrumbComponent", () => {
   describe("link", () => {
     it("should have link", async () => {
       const crumb = generateBreadcrumb();
-      await Promise.all([
-        triggerBreadcrumbs(OrderedSet([crumb])),
-        triggerQueryParams({}),
-        triggerRouteParams({}),
-      ]);
+      await Promise.all([triggerBreadcrumbs(OrderedSet([crumb])), triggerQueryParams({}), triggerRouteParams({})]);
       spec.detectChanges();
       const element = getBreadcrumbs()[0].querySelector("a");
       expect(element).toHaveStrongRoute(crumb.route);
@@ -139,10 +118,9 @@ describe("BreadcrumbComponent", () => {
     it("should pass query parameters to route", async () => {
       const crumb = {
         ...generateBreadcrumb(),
-        route: StrongRoute.newRoot().addFeatureModule(
-          modelData.random.word(),
-          (params) => ({ projectId: params.projectId })
-        ),
+        route: StrongRoute.newRoot().addFeatureModule(modelData.random.word(), (params) => ({
+          projectId: params.projectId,
+        })),
       };
       await Promise.all([
         triggerBreadcrumbs(OrderedSet([crumb])),
@@ -178,13 +156,7 @@ describe("BreadcrumbComponent", () => {
 
   it("should show multiple breadcrumbs", async () => {
     await Promise.all([
-      triggerBreadcrumbs(
-        OrderedSet([
-          generateBreadcrumb(),
-          generateBreadcrumb(),
-          generateBreadcrumb(),
-        ])
-      ),
+      triggerBreadcrumbs(OrderedSet([generateBreadcrumb(), generateBreadcrumb(), generateBreadcrumb()])),
       triggerQueryParams({}),
       triggerRouteParams({}),
     ]);
@@ -200,13 +172,7 @@ describe("BreadcrumbComponent", () => {
     ]);
     spec.detectChanges();
     expect(getBreadcrumbs()).toHaveLength(1);
-    await triggerBreadcrumbs(
-      OrderedSet([
-        generateBreadcrumb(),
-        generateBreadcrumb(),
-        generateBreadcrumb(),
-      ])
-    );
+    await triggerBreadcrumbs(OrderedSet([generateBreadcrumb(), generateBreadcrumb(), generateBreadcrumb()]));
     spec.detectChanges();
     expect(getBreadcrumbs()).toHaveLength(3);
   });

@@ -16,9 +16,7 @@ describe("IsUnresolvedPipe", () => {
     expect(spec.element).toHaveText("true");
   }
 
-  function setup(
-    value: Readonly<AbstractModel> | Readonly<AbstractModel[]> | PermissionLevel
-  ) {
+  function setup(value: Readonly<AbstractModel> | Readonly<AbstractModel[]> | PermissionLevel) {
     spec = createPipe("<p>{{ value | isUnresolved }}</p>", {
       hostProps: { value },
     });
@@ -69,17 +67,14 @@ describe("IsUnresolvedPipe", () => {
   });
 
   describe("access level", () => {
-    [
-      PermissionLevel.reader,
-      PermissionLevel.writer,
-      PermissionLevel.owner,
-      PermissionLevel.unknown,
-    ].forEach((accessLevel) => {
-      it(`should return false for ${accessLevel} access level`, () => {
-        setup(accessLevel);
-        assertPipeIsFalse();
-      });
-    });
+    [PermissionLevel.reader, PermissionLevel.writer, PermissionLevel.owner, PermissionLevel.unknown].forEach(
+      (accessLevel) => {
+        it(`should return false for ${accessLevel} access level`, () => {
+          setup(accessLevel);
+          assertPipeIsFalse();
+        });
+      },
+    );
 
     it(`should return true for ${PermissionLevel.unresolved} access level`, () => {
       setup(PermissionLevel.unresolved);

@@ -20,30 +20,23 @@ import { takeUntil } from "rxjs";
           'Some parts of the website may not work.'
         "
       >
-        <fa-icon
-          class="website-status-warning"
-          [icon]="['fas', 'triangle-exclamation']"
-        ></fa-icon>
+        <fa-icon class="website-status-warning" [icon]="['fas', 'triangle-exclamation']"></fa-icon>
       </a>
     }
   `,
-  standalone: false
+  standalone: false,
 })
-export class WebsiteStatusIndicatorComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class WebsiteStatusIndicatorComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     protected config: ConfigService,
-    protected api: WebsiteStatusService
+    protected api: WebsiteStatusService,
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.api.status$.pipe(takeUntil(this.unsubscribe)).subscribe((model) => {
-      this.shouldShowIcon =
-        model instanceof SsrContext ? false : !model.isStatusHealthy;
+      this.shouldShowIcon = model instanceof SsrContext ? false : !model.isStatusHealthy;
     });
   }
 

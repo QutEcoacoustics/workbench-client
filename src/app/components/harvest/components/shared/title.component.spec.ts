@@ -4,11 +4,7 @@ import { By } from "@angular/platform-browser";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
-import {
-  SpyObject,
-  createComponentFactory,
-  Spectator,
-} from "@ngneat/spectator";
+import { SpyObject, createComponentFactory, Spectator } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
@@ -35,9 +31,7 @@ describe("titleComponent", () => {
       providers: [MockProvider(ShallowHarvestsService, {})],
     });
 
-    const mockHarvestApi = spectator.inject<SpyObject<ShallowHarvestsService>>(
-      ShallowHarvestsService as any
-    );
+    const mockHarvestApi = spectator.inject<SpyObject<ShallowHarvestsService>>(ShallowHarvestsService as any);
     mockHarvestApi.updateName = jasmine.createSpy("updateName") as any;
 
     spectator.detectChanges();
@@ -45,11 +39,9 @@ describe("titleComponent", () => {
     return mockHarvestApi;
   }
 
-  const getHarvestTitle = (): HTMLElement =>
-    spectator.query("form");
+  const getHarvestTitle = (): HTMLElement => spectator.query("form");
 
-  const getNameEditButton = (): HTMLElement =>
-    spectator.query("sub");
+  const getNameEditButton = (): HTMLElement => spectator.query("sub");
 
   const getNameEditInput = (): HTMLInputElement =>
     spectator.debugElement.query(By.css("input[name='harvestNameInput']")).nativeElement;

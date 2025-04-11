@@ -15,30 +15,28 @@ export enum MenuState {
 @Component({
   selector: "baw-menu-toggle",
   template: `
-    <button
-      type="button"
-      [ngClass]="[alignment, 'text-' + color]"
-      (click)="toggleMenu()"
-    >
+    <button type="button" [ngClass]="[alignment, 'text-' + color]" (click)="toggleMenu()">
       <span class="visually-hidden">Toggle {{ menuType }} Menu</span>
       <fa-icon size="2x" [icon]="getIcon()"></fa-icon>
     </button>
   `,
-  styles: [`
-    button {
-      align-content: center;
-      all: unset;
-      cursor: pointer;
-      display: flex;
-      height: 32px;
-      width: 32px;
-    }
+  styles: [
+    `
+      button {
+        align-content: center;
+        all: unset;
+        cursor: pointer;
+        display: flex;
+        height: 32px;
+        width: 32px;
+      }
 
-    .right {
-      justify-content: end;
-    }
-  `],
-  standalone: false
+      .right {
+        justify-content: end;
+      }
+    `,
+  ],
+  standalone: false,
 })
 export class MenuToggleComponent implements OnInit {
   @Input() public menuType: MenuType;

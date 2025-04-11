@@ -1,30 +1,17 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BawApiInterceptor } from "@baw-api/api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
-import {
-  BawFormApiService,
-  RecaptchaSettings,
-} from "@baw-api/baw-form-api.service";
-import {
-  AuthTriggerData,
-  BawSessionService,
-} from "@baw-api/baw-session.service";
+import { BawFormApiService, RecaptchaSettings } from "@baw-api/baw-form-api.service";
+import { AuthTriggerData, BawSessionService } from "@baw-api/baw-session.service";
 import { Errorable } from "@helpers/advancedTypes";
-import {
-  BawApiError,
-  isBawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
-import {
-  createHttpFactory,
-  mockProvider,
-  SpectatorHttp,
-} from "@ngneat/spectator";
+import { createHttpFactory, mockProvider, SpectatorHttp } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -86,27 +73,15 @@ describe("SecurityService", () => {
   }
 
   function triggerApiDestroy(error?: BawApiError) {
-    return nStepObservable(
-      subjects.apiDestroy,
-      () => error ?? null,
-      isInstantiated(error)
-    );
+    return nStepObservable(subjects.apiDestroy, () => error ?? null, isInstantiated(error));
   }
 
   function triggerMakeFormRequest(page: Errorable<string>) {
-    return nStepObservable(
-      subjects.makeFormRequest,
-      () => page,
-      isBawApiError(page)
-    );
+    return nStepObservable(subjects.makeFormRequest, () => page, isBawApiError(page));
   }
 
   function triggerUserShowWithoutNotification(model: Errorable<User>) {
-    return nStepObservable(
-      subjects.userShowWithoutNotification,
-      () => model,
-      isBawApiError(model)
-    );
+    return nStepObservable(subjects.userShowWithoutNotification, () => model, isBawApiError(model));
   }
 
   async function handleAuthTokenRetrievalDuringInitialization() {
@@ -125,9 +100,7 @@ describe("SecurityService", () => {
     };
 
     const handleError = (err) => {
-      const error = isBawApiError(err)
-        ? err
-        : new BawApiError(unknownErrorCode, err.message, null);
+      const error = isBawApiError(err) ? err : new BawApiError(unknownErrorCode, err.message, null);
       return throwError(() => error);
     };
 
@@ -135,25 +108,15 @@ describe("SecurityService", () => {
       providers: [
         mockProvider(BawApiService, {
           show: jasmine.createSpy("show").and.callFake(() => subjects.apiShow),
-          destroy: jasmine
-            .createSpy("destroy")
-            .and.callFake(() => subjects.apiDestroy),
+          destroy: jasmine.createSpy("destroy").and.callFake(() => subjects.apiDestroy),
           // TODO Would prefer this to actually use the real service
-          handleError: jasmine
-            .createSpy("handleError")
-            .and.callFake(handleError),
+          handleError: jasmine.createSpy("handleError").and.callFake(handleError),
         }),
         mockProvider(BawFormApiService, {
-          getRecaptchaSeed: jasmine
-            .createSpy("getRecaptchaSeed")
-            .and.callFake(() => subjects.getRecaptchaSeed),
-          makeFormRequest: jasmine
-            .createSpy("makeFormRequest")
-            .and.callFake(() => subjects.makeFormRequest),
+          getRecaptchaSeed: jasmine.createSpy("getRecaptchaSeed").and.callFake(() => subjects.getRecaptchaSeed),
+          makeFormRequest: jasmine.createSpy("makeFormRequest").and.callFake(() => subjects.makeFormRequest),
           // TODO Would prefer this to actually use the real service
-          handleError: jasmine
-            .createSpy("handleError")
-            .and.callFake(handleError),
+          handleError: jasmine.createSpy("handleError").and.callFake(handleError),
         }),
         mockProvider(UserService, {
           showWithoutNotification: jasmine
@@ -183,9 +146,7 @@ describe("SecurityService", () => {
     it("should call getRecaptchaSeed", async () => {
       await handleAuthTokenRetrievalDuringInitialization();
       spec.service.signUpSeed().subscribe({ next: noop, error: noop });
-      expect(formApi.getRecaptchaSeed).toHaveBeenCalledWith(
-        "/my_account/sign_up"
-      );
+      expect(formApi.getRecaptchaSeed).toHaveBeenCalledWith("/my_account/sign_up");
     });
   });
 
@@ -206,11 +167,7 @@ describe("SecurityService", () => {
       function interceptSignOut(success?: boolean) {
         const subject = new Subject();
         spec.service.signOut = jasmine.createSpy().and.callFake(() => subject);
-        return nStepObservable(
-          subject,
-          () => (success ? null : generateApiErrorDetails()),
-          !success
-        );
+        return nStepObservable(subject, () => (success ? null : generateApiErrorDetails()), !success);
       }
 
       it("should call signOut", async () => {
@@ -307,9 +264,7 @@ describe("SecurityService", () => {
       });
 
       it("should throw error if username is not unique", () => {
-        const response =
-          '<input id="user_user_name" />' +
-          '<span class="help-block">has already been taken</span>';
+        const response = '<input id="user_user_name" />' + '<span class="help-block">has already been taken</span>';
 
         spec.service.signUp(defaults.registerDetails);
         expect(function () {
@@ -325,15 +280,11 @@ describe("SecurityService", () => {
         spec.service.signUp(defaults.registerDetails);
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
-        }).toThrowError(
-          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
-        );
+        }).toThrowError("Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)");
       });
 
       it("should throw error if email is not unique", () => {
-        const response =
-          '<input id="user_email" />' +
-          '<span class="help-block">has already been taken</span>';
+        const response = '<input id="user_email" />' + '<span class="help-block">has already been taken</span>';
 
         spec.service.signUp(defaults.registerDetails);
         expect(function () {
@@ -342,9 +293,7 @@ describe("SecurityService", () => {
       });
 
       it("should throw error if no recaptcha token", () => {
-        const registerDetails = new RegisterDetails(
-          generateRegisterDetails({ recaptchaToken: null })
-        );
+        const registerDetails = new RegisterDetails(generateRegisterDetails({ recaptchaToken: null }));
         const page = `<input name="authenticity_token" value="${defaults.authToken}"></input>`;
 
         spec.service.signUp(registerDetails);
@@ -366,7 +315,7 @@ describe("SecurityService", () => {
         inputs?.formEndpoint ?? "/broken_link",
         inputs?.authEndpoint ?? "/broken_link",
         inputs?.getFormData ?? (() => new URLSearchParams()),
-        inputs?.pageValidation ?? (() => {})
+        inputs?.pageValidation ?? (() => {}),
       );
     }
 
@@ -378,9 +327,7 @@ describe("SecurityService", () => {
       return triggerUserShowWithoutNotification(model);
     }
 
-    function interceptMakeFormRequest(
-      page: Errorable<string> = "<html></html>"
-    ) {
+    function interceptMakeFormRequest(page: Errorable<string> = "<html></html>") {
       return triggerMakeFormRequest(page);
     }
 
@@ -436,9 +383,7 @@ describe("SecurityService", () => {
         }).subscribe({
           next: shouldNotSucceed,
           error: (err) => {
-            expect(err).toEqual(
-              new BawApiError(unknownErrorCode, "custom error", null)
-            );
+            expect(err).toEqual(new BawApiError(unknownErrorCode, "custom error", null));
             done();
           },
         });
@@ -502,10 +447,7 @@ describe("SecurityService", () => {
       let initialSteps: Promise<any>;
 
       beforeEach(() => {
-        initialSteps = Promise.all([
-          interceptMakeFormRequest(),
-          interceptSession(defaults.session),
-        ]);
+        initialSteps = Promise.all([interceptMakeFormRequest(), interceptSession(defaults.session)]);
       });
 
       it("should request user details", async () => {
@@ -591,8 +533,8 @@ describe("SecurityService", () => {
               new BawApiError(
                 unknownErrorCode,
                 "An unknown error has occurred, if this persists please use the Report Problem page",
-                null
-              )
+                null,
+              ),
             );
             done();
           },

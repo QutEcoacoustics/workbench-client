@@ -1,8 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import {
-  BootstrapColorTypes,
-  BootstrapScreenSizes,
-} from "@helpers/bootstrapTypes";
+import { BootstrapColorTypes, BootstrapScreenSizes } from "@helpers/bootstrapTypes";
 
 /**
  * Loading Animation
@@ -16,7 +13,7 @@ import {
       </div>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class LoadingComponent implements OnInit {
   @Input() public color: BootstrapColorTypes = "info";

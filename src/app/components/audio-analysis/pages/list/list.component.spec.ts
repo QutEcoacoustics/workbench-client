@@ -71,7 +71,7 @@ describe("AnalysesComponent", () => {
 
   assertPagination<AnalysisJob, AnalysisJobsService>();
 
-  assertPageInfo(AnalysesComponent, "Analysis Jobs")
+  assertPageInfo(AnalysesComponent, "Analysis Jobs");
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(AnalysesComponent);
@@ -81,4 +81,3 @@ describe("AnalysesComponent", () => {
   // xdescribe("rows", () => {});
   // xdescribe("actions", () => {});
 });
-

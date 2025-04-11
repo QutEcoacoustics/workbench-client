@@ -1,12 +1,6 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockDirectivesModule } from "@directives/directives.mock.module";
-import {
-  MenuLink,
-  menuLink,
-  MenuRoute,
-  menuRoute,
-  NavigableMenuItem,
-} from "@interfaces/menusInterfaces";
+import { MenuLink, menuLink, MenuRoute, menuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";

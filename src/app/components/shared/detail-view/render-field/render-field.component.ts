@@ -2,11 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl, isImageUrl } from "@interfaces/apiInterfaces";
-import {
-  AbstractModel,
-  unknownViewUrl,
-  UnresolvedModel,
-} from "@models/AbstractModel";
+import { AbstractModel, unknownViewUrl, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 import { Observable } from "rxjs";
@@ -61,23 +57,17 @@ import { takeUntil } from "rxjs/operators";
 
     <!-- Display Duration -->
     @if (styling === fieldStyling.duration && isDuration(display)) {
-      <dl>
-        <baw-duration [value]="display" iso8601 /> (<baw-duration [value]="display" humanized />)
-      </dl>
+      <dl><baw-duration [value]="display" iso8601 /> (<baw-duration [value]="display" humanized />)</dl>
     }
 
     <!-- Display Date/Time that has an implicit timezone -->
     @if (styling === fieldStyling.zonedDateTime && isDateTime(display)) {
-      <dl>
-        <baw-zoned-datetime [value]="display" /> (<baw-time-since [value]="display" />)
-      </dl>
+      <dl><baw-zoned-datetime [value]="display" /> (<baw-time-since [value]="display" />)</dl>
     }
 
     <!-- Display Date/Time that should be localized to the users timezone -->
     @if (styling === fieldStyling.dateTime && isDateTime(display)) {
-      <dl>
-        <baw-datetime [value]="display" /> (<baw-time-since [value]="display" />)
-      </dl>
+      <dl><baw-datetime [value]="display" /> (<baw-time-since [value]="display" />)</dl>
     }
 
     <!-- Display nested fields -->
@@ -87,25 +77,24 @@ import { takeUntil } from "rxjs/operators";
       }
     }
   `,
-  styles: [`
-    p {
-      word-wrap: break-word;
-    }
+  styles: [
+    `
+      p {
+        word-wrap: break-word;
+      }
 
-    img {
-      display: block;
-      max-width: 400px;
-      max-height: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  `],
-  standalone: false
+      img {
+        display: block;
+        max-width: 400px;
+        max-height: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    `,
+  ],
+  standalone: false,
 })
-export class RenderFieldComponent
-  extends withUnsubscribe()
-  implements OnChanges
-{
+export class RenderFieldComponent extends withUnsubscribe() implements OnChanges {
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: Display;
@@ -142,10 +131,7 @@ export class RenderFieldComponent
 
   public hasViewUrl() {
     try {
-      return (
-        isInstantiated(this.model.viewUrl) &&
-        this.model.viewUrl !== unknownViewUrl
-      );
+      return isInstantiated(this.model.viewUrl) && this.model.viewUrl !== unknownViewUrl;
     } catch (err) {
       return false;
     }
@@ -229,7 +215,7 @@ export class RenderFieldComponent
       },
       () => {
         this.display = value;
-      }
+      },
     );
   }
 
@@ -270,9 +256,7 @@ export class RenderFieldComponent
    *
    * @param value Display input
    */
-  private humanizeObservable(
-    value: Observable<AbstractModel | AbstractModel[]>
-  ) {
+  private humanizeObservable(value: Observable<AbstractModel | AbstractModel[]>) {
     this.setLoading();
 
     value.pipe(takeUntil(this.unsubscribe)).subscribe({
@@ -333,11 +317,7 @@ export class RenderFieldComponent
    * @param validCallback Valid image callback
    * @param invalidCallback Invalid image callback
    */
-  private isImage(
-    src: string,
-    validCallback: () => void,
-    invalidCallback: () => void
-  ) {
+  private isImage(src: string, validCallback: () => void, invalidCallback: () => void) {
     // Url from https://urlregex.com/
     const urlRegex =
       // eslint-disable-next-line max-len, no-useless-escape

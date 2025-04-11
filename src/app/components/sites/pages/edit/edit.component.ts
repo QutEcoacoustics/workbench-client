@@ -3,15 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
-import {
-  editPointMenuItem,
-  pointsCategory,
-} from "@components/sites/points.menus";
+import { editPointMenuItem, pointsCategory } from "@components/sites/points.menus";
 import { Option } from "@helpers/advancedTypes";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -21,10 +15,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
-import {
-  pointMenuItemActions,
-  siteMenuItemActions,
-} from "../details/details.component";
+import { pointMenuItemActions, siteMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -33,7 +24,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-sites-edit",
   templateUrl: "./edit.component.html",
-  standalone: false
+  standalone: false,
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;
@@ -42,13 +33,12 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
     private api: SitesService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
-      redirectUser: (model) =>
-        this.router.navigateByUrl(model.getViewUrl(this.project)),
+      redirectUser: (model) => this.router.navigateByUrl(model.getViewUrl(this.project)),
     });
   }
 

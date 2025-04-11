@@ -3,11 +3,7 @@ import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
-import {
-  MEDIA,
-  SHALLOW_AUDIO_EVENT,
-  SHALLOW_SITE,
-} from "@baw-api/ServiceTokens";
+import { MEDIA, SHALLOW_AUDIO_EVENT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -88,38 +84,34 @@ describe("AnnotationSearchComponent", () => {
 
     spectator.component.searchParameters = mockSearchParameters;
 
-    mockAudioEventsResponse = modelData.randomArray(
-      responsePageSize,
-      responsePageSize,
-      () => {
-        const model = new AudioEvent(generateAudioEvent(), injector);
-        const metadata: Meta = {
-          paging: {
-            items: responsePageSize,
-            page: 1,
-            total: responsePageSize,
-            maxPage: modelData.datatype.number({ min: 1, max: 5 }),
-          },
-        };
+    mockAudioEventsResponse = modelData.randomArray(responsePageSize, responsePageSize, () => {
+      const model = new AudioEvent(generateAudioEvent(), injector);
+      const metadata: Meta = {
+        paging: {
+          items: responsePageSize,
+          page: 1,
+          total: responsePageSize,
+          maxPage: modelData.datatype.number({ min: 1, max: 5 }),
+        },
+      };
 
-        model.addMetadata(metadata);
+      model.addMetadata(metadata);
 
-        return model;
-      }
-    );
+      return model;
+    });
 
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({
         siteId: routeSite.id,
       }),
-      injector
+      injector,
     );
 
     mockAnnotationResponse = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
       }),
-      injector
+      injector,
     );
 
     audioEventsApiSpy = spectator.inject(SHALLOW_AUDIO_EVENT.token);
@@ -131,8 +123,7 @@ describe("AnnotationSearchComponent", () => {
     spectator.detectChanges();
   }
 
-  const spectrogramElements = () =>
-    spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
+  const spectrogramElements = () => spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(fakeAsync(() => {
     patchSharedArrayBuffer();
@@ -141,9 +132,7 @@ describe("AnnotationSearchComponent", () => {
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());
 
-    mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters()
-    );
+    mockSearchParameters = new AnnotationSearchParameters(generateAnnotationSearchUrlParameters());
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeRegionModel = routeRegion;
     mockSearchParameters.routeSiteModel = routeSite;

@@ -2,12 +2,7 @@ import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateUser } from "@test/fakes/User";
 import { UNAUTHORIZED } from "http-status";
-import {
-  isAdminPredicate,
-  isGuestPredicate,
-  isLoggedInPredicate,
-  isProjectEditorPredicate,
-} from "./app.menus";
+import { isAdminPredicate, isGuestPredicate, isLoggedInPredicate, isProjectEditorPredicate } from "./app.menus";
 import { Project } from "./models/Project";
 import { User } from "./models/User";
 
@@ -67,9 +62,7 @@ describe("Predicates", () => {
       { accessLevel: PermissionLevel.unresolved, hasPermission: false },
     ].forEach(({ accessLevel, hasPermission }) => {
       it(`should return ${hasPermission} when access level is ${accessLevel}`, () => {
-        expect(
-          isProjectEditorPredicate(defaultUser, createData(accessLevel))
-        ).toBe(hasPermission);
+        expect(isProjectEditorPredicate(defaultUser, createData(accessLevel))).toBe(hasPermission);
       });
     });
 
@@ -85,7 +78,7 @@ describe("Predicates", () => {
       expect(
         isProjectEditorPredicate(defaultUser, {
           project: generateBawApiError(UNAUTHORIZED),
-        })
+        }),
       ).toBeFalse();
     });
   });

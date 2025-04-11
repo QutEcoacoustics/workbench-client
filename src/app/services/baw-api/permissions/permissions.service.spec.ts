@@ -3,11 +3,7 @@ import { Permission } from "@models/Permission";
 import { Project } from "@models/Project";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generatePermission } from "@test/fakes/Permission";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { PermissionsService } from "./permissions.service";
 
 describe("PermissionsService", (): void => {
@@ -33,6 +29,6 @@ describe("PermissionsService", (): void => {
     showUrl,
     createModel,
     10, // permission
-    5 // project
+    5, // project
   );
 });

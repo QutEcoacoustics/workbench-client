@@ -6,7 +6,7 @@ import { Duration } from "luxon";
 /** Converts a Luxon Duration to a standardized string format */
 @Pipe({
   name: "time",
-  standalone: false
+  standalone: false,
 })
 export class TimePipe implements PipeTransform {
   public transform(value?: Duration): string {

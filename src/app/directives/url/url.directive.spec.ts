@@ -1,9 +1,4 @@
-import {
-  ActivatedRoute,
-  Params,
-  Router,
-  RouterLink,
-} from "@angular/router";
+import { ActivatedRoute, Params, Router, RouterLink } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -49,10 +44,9 @@ describe("UrlDirective", () => {
   }
 
   it("should not interfere with routerLink if no [bawUrl]", () => {
-    const spectator = createRouterLink(
-      '<a [routerLink]="link" [queryParams]="params"></a>',
-      { hostProps: { link: "/home", params: { test: "value" } } }
-    );
+    const spectator = createRouterLink('<a [routerLink]="link" [queryParams]="params"></a>', {
+      hostProps: { link: "/home", params: { test: "value" } },
+    });
     spectator.detectChanges();
 
     const routerLink = spectator.query(RouterLink);
@@ -137,15 +131,8 @@ describe("UrlDirective", () => {
     });
 
     it("should handle path with route and query parameters", () => {
-      const childRoute = root
-        .add(":siteId")
-        .add(":siteName", ({ id, name }) => ({ id, name }));
-      setup(
-        childRoute.format(
-          { siteId: 5, siteName: "example" },
-          { id: 10, name: "example encoding" }
-        )
-      );
+      const childRoute = root.add(":siteId").add(":siteName", ({ id, name }) => ({ id, name }));
+      setup(childRoute.format({ siteId: 5, siteName: "example" }, { id: 10, name: "example encoding" }));
       spec.detectChanges();
       assertRoute("/5/example?id=10&name=example%20encoding");
     });
@@ -173,10 +160,7 @@ describe("UrlDirective", () => {
     });
 
     it("should create url tree with query parameters", () => {
-      const childRoute = StrongRoute.newRoot().add(
-        "home",
-        ({ test, name }) => ({ test, name })
-      );
+      const childRoute = StrongRoute.newRoot().add("home", ({ test, name }) => ({ test, name }));
       setup(childRoute.format(undefined, { name: "example" }));
       spec.detectChanges();
       spec.directive["queryParams"] = { test: "5" };

@@ -1,13 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
-import {
-  MetaReviewFile,
-  metaReviewIcons,
-} from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
+import { MetaReviewFile, metaReviewIcons } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 
@@ -22,15 +14,10 @@ interface ValidationMessage {
     <!-- Icon and Path -->
     <div class="grid-table-item">
       <!-- Whitespace -->
-      <baw-meta-review-whitespace
-        [indentation]="row.indentation"
-      ></baw-meta-review-whitespace>
+      <baw-meta-review-whitespace [indentation]="row.indentation"></baw-meta-review-whitespace>
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
       <small>{{ row.path }}</small>
-      <span
-        class="badge text-bg-secondary ms-3"
-        [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
-      >
+      <span class="badge text-bg-secondary ms-3" [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'">
         {{ report.itemsSize }}
       </span>
     </div>
@@ -50,10 +37,7 @@ interface ValidationMessage {
         <div class="expander" [class.expand]="row.showValidations">
           <div class="content">
             @for (validation of validationMessages; track validation) {
-              <small
-                class="callout"
-                [ngClass]="[getCalloutClass(validation)]"
-              >
+              <small class="callout" [ngClass]="[getCalloutClass(validation)]">
                 {{ validation.message }}
               </small>
             }
@@ -83,7 +67,7 @@ interface ValidationMessage {
   styleUrls: ["file-row.component.scss"],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class FileRowComponent implements OnInit {
   @Input() public row: MetaReviewFile;
@@ -132,9 +116,7 @@ export class FileRowComponent implements OnInit {
   }
 
   public getCalloutClass(validation: ValidationMessage): string {
-    return validation.type === "error"
-      ? "callout-black"
-      : `callout-${validation.type}`;
+    return validation.type === "error" ? "callout-black" : `callout-${validation.type}`;
   }
 
   public toggleValidationMessages(row: MetaReviewFile): void {

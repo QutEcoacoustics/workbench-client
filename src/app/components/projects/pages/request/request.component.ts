@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import {
-  projectsCategory,
-  requestProjectMenuItem,
-} from "@components/projects/projects.menus";
+import { projectsCategory, requestProjectMenuItem } from "@components/projects/projects.menus";
 import { withFormCheck } from "@guards/form/form.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -33,7 +30,7 @@ import schema from "./request.schema.json";
       }
     </baw-wip>
   `,
-  standalone: false
+  standalone: false,
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: BawApiError;

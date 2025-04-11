@@ -97,7 +97,7 @@ export class StrongRoute {
     public readonly pathFragment: string = StrongRoute.rootPath,
     public readonly queryParams: QSPCallback = () => ({}),
     public readonly angularRouteConfig: Partial<Route> = {},
-    isRoot?: boolean
+    isRoot?: boolean,
   ) {
     this.#parent = parent;
 
@@ -143,11 +143,7 @@ export class StrongRoute {
    * @param angularRouteConfig Additional configuration options to apply to the
    * compiled Route
    */
-  public add(
-    pathFragment: string,
-    queryParams?: QSPCallback,
-    angularRouteConfig?: Partial<Route>
-  ) {
+  public add(pathFragment: string, queryParams?: QSPCallback, angularRouteConfig?: Partial<Route>) {
     return new StrongRoute(this, pathFragment, queryParams, angularRouteConfig);
   }
 
@@ -162,18 +158,8 @@ export class StrongRoute {
    * @param angularRouteConfig Additional configuration options to apply to the
    * compiled Route
    */
-  public addFeatureModule(
-    pathFragment: string,
-    queryParams?: QSPCallback,
-    angularRouteConfig?: Partial<Route>
-  ) {
-    return new StrongRoute(
-      this,
-      pathFragment,
-      queryParams,
-      angularRouteConfig,
-      true
-    );
+  public addFeatureModule(pathFragment: string, queryParams?: QSPCallback, angularRouteConfig?: Partial<Route>) {
+    return new StrongRoute(this, pathFragment, queryParams, angularRouteConfig, true);
   }
 
   /**
@@ -232,9 +218,7 @@ export class StrongRoute {
     const [full, parameters] = this.rootToHere();
     const numArgs = Object.keys(params).length;
     if (numArgs < parameters.length) {
-      const msg = `${this.toString()}: Got ${numArgs} route arguments but expected ${
-        parameters.length
-      }`;
+      const msg = `${this.toString()}: Got ${numArgs} route arguments but expected ${parameters.length}`;
       console.error(msg);
       throw new Error(msg);
     }
@@ -258,9 +242,7 @@ export class StrongRoute {
     };
 
     const route = full.map(prepareParam).join("/");
-    return route.startsWith(StrongRoute.rootRoute)
-      ? route
-      : StrongRoute.rootRoute + route;
+    return route.startsWith(StrongRoute.rootRoute) ? route : StrongRoute.rootRoute + route;
   }
 
   /**
@@ -285,7 +267,7 @@ export class StrongRoute {
   public format(
     routeParams: RouteParams = {},
     queryParams: Params = {},
-    resolvedModels: ResolvedModelList = {}
+    resolvedModels: ResolvedModelList = {},
   ): string {
     const qsp = this.queryParams(queryParams, resolvedModels);
     const keys = Object.keys(qsp);
@@ -353,13 +335,7 @@ export class StrongRoute {
       current.children.forEach(recursiveAdd);
 
       // Ignore root route with no component
-      if (
-        route &&
-        !(
-          route.path === StrongRoute.rootPath &&
-          route.children[0].component === undefined
-        )
-      ) {
+      if (route && !(route.path === StrongRoute.rootPath && route.children[0].component === undefined)) {
         output.push(route);
       }
     };

@@ -15,29 +15,22 @@ import { map, Observable } from "rxjs";
       @if (project$ | async; as project) {
         <section class="pb-3">
           <p id="label" class="m-0 fs-5">Recording Downloads</p>
-          <small
-            id="has-access"
-            class="m-0"
-            [ngbTooltip]="getTooltip(project)"
-            [innerText]="getUserAccess(project)"
-            >
+          <small id="has-access" class="m-0" [ngbTooltip]="getTooltip(project)" [innerText]="getUserAccess(project)">
           </small>
         </section>
       }
     }
   `,
-  standalone: false
+  standalone: false,
 })
-export class AllowsOriginalDownloadComponent
-  implements OnInit, WidgetComponent
-{
+export class AllowsOriginalDownloadComponent implements OnInit, WidgetComponent {
   public project$: Observable<Project>;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {}
 
   public ngOnInit(): void {
     this.project$ = this.sharedRoute.pageInfo.pipe(
-      map((page): Project | undefined => retrieveResolvedModel(page, Project))
+      map((page): Project | undefined => retrieveResolvedModel(page, Project)),
     );
   }
 
@@ -45,17 +38,14 @@ export class AllowsOriginalDownloadComponent
     const { name, allowOriginalDownload } = project;
 
     return allowOriginalDownload
-      ? `Owner of ${name} has allowed downloads of the audio recordings for ${titleCase(
-          allowOriginalDownload
-        )}s`
+      ? `Owner of ${name} has allowed downloads of the audio recordings for ${titleCase(allowOriginalDownload)}s`
       : `Owner of ${name} has not set any permissions for allowing the downloads of the audio recordings yet`;
   }
 
   public getUserAccess(project: Project): string {
     const { allowOriginalDownload, accessLevel } = project;
 
-    return allowOriginalDownload &&
-      hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel)
+    return allowOriginalDownload && hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel)
       ? "Allowed"
       : "Not Allowed";
   }

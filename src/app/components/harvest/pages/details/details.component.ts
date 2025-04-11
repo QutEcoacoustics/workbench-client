@@ -2,10 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { harvestResolvers } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  harvestMenuItem,
-  harvestsCategory,
-} from "@components/harvest/harvest.menus";
+import { harvestMenuItem, harvestsCategory } from "@components/harvest/harvest.menus";
 import { harvestValidationsWidgetMenuItem } from "@components/harvest/widgets/validations.component";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -13,9 +10,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import {
-  permissionsWidgetMenuItem,
-} from "@menu/widget.menus";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
@@ -27,18 +22,15 @@ const harvestKey = "harvest";
 @Component({
   selector: "baw-harvest",
   templateUrl: "./details.component.html",
-  standalone: false
+  standalone: false,
 })
-class DetailsComponent
-  extends withUnsubscribe(PageComponent)
-  implements OnInit, OnDestroy
-{
+class DetailsComponent extends withUnsubscribe(PageComponent) implements OnInit, OnDestroy {
   public project: Project;
   public harvest: Harvest;
 
   public constructor(
     public stages: HarvestStagesService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     super();
   }

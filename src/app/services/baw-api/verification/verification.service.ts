@@ -24,54 +24,35 @@ const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParam<AudioEvent> = id;
 const endpointShallow = stringTemplate`/verifications/${verificationId}${option}`;
-const endpoint =
-  stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}/verifications/${verificationId}${option}`;
+const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}/verifications/${verificationId}${option}`;
 
 @Injectable()
-export class VerificationService
-  implements
-    ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
-{
+export class VerificationService implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]> {
   public constructor(private api: BawApiService<Verification>) {}
 
-  public list(
-    audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
-  ): Observable<Verification[]> {
-    return this.api.list(
-      Verification,
-      endpoint(audioRecording, audioEvent, emptyParam, emptyParam)
-    );
+  public list(audioRecording: IdOr<AudioRecording>, audioEvent: IdOr<AudioEvent>): Observable<Verification[]> {
+    return this.api.list(Verification, endpoint(audioRecording, audioEvent, emptyParam, emptyParam));
   }
 
   public filter(
     filters: Filters<Verification>,
     audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
+    audioEvent: IdOr<AudioEvent>,
   ): Observable<Verification[]> {
-    return this.api.filter(
-      Verification,
-      endpoint(audioRecording, audioEvent, emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Verification, endpoint(audioRecording, audioEvent, emptyParam, filterParam), filters);
   }
 
   public show(
     model: IdOr<Verification>,
     audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
+    audioEvent: IdOr<AudioEvent>,
   ): Observable<Verification> {
-    return this.api.show(
-      Verification,
-      endpoint(audioRecording, audioEvent, model, emptyParam)
-    );
+    return this.api.show(Verification, endpoint(audioRecording, audioEvent, model, emptyParam));
   }
 }
 
 @Injectable()
-export class ShallowVerificationService
-  implements StandardApi<Verification, []>
-{
+export class ShallowVerificationService implements StandardApi<Verification, []> {
   public constructor(private api: BawApiService<Verification>) {}
 
   public list(): Observable<Verification[]> {
@@ -79,11 +60,7 @@ export class ShallowVerificationService
   }
 
   public filter(filters: Filters<Verification>): Observable<Verification[]> {
-    return this.api.filter(
-      Verification,
-      endpointShallow(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Verification, endpointShallow(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Verification>): Observable<Verification> {
@@ -95,16 +72,12 @@ export class ShallowVerificationService
       Verification,
       endpointShallow(emptyParam, emptyParam),
       (verification) => endpointShallow(verification, emptyParam),
-      model
+      model,
     );
   }
 
   public update(model: Verification): Observable<Verification> {
-    return this.api.update(
-      Verification,
-      endpointShallow(model, emptyParam),
-      model
-    );
+    return this.api.update(Verification, endpointShallow(model, emptyParam), model);
   }
 
   public destroy(model: IdOr<Verification>): Observable<void | Verification> {
@@ -117,28 +90,21 @@ export class ShallowVerificationService
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
    */
-  public createOrUpdate(
-    model: Verification,
-    audioEvent: AudioEvent,
-    user: User
-  ): Observable<Verification> {
+  public createOrUpdate(model: Verification, audioEvent: AudioEvent, user: User): Observable<Verification> {
     return this.api
       .create(
         Verification,
         endpointShallow(emptyParam, emptyParam),
         (verification) => endpointShallow(verification, emptyParam),
         model,
-        { disableNotification: true }
+        { disableNotification: true },
       )
       .pipe(
         // fetching the verification model here is the only way to be certain
         // that there are no race conditions
         catchError((err) => {
           if (err.status === CONFLICT) {
-            const verificationModel = this.audioEventUserVerification(
-              audioEvent,
-              user
-            );
+            const verificationModel = this.audioEventUserVerification(audioEvent, user);
             return verificationModel.pipe(
               mergeMap((verification) => {
                 if (!verification) {
@@ -151,12 +117,12 @@ export class ShallowVerificationService
                 });
 
                 return this.update(newModel);
-              })
+              }),
             );
           }
 
           throw err;
-        })
+        }),
       );
   }
 
@@ -167,16 +133,10 @@ export class ShallowVerificationService
    * A verification model if the user has verified the audio event.
    * If the user has not verified the audio event, null is returned.
    */
-  public audioEventUserVerification(
-    event: AudioEvent,
-    user: User
-  ): Observable<Verification | null> {
+  public audioEventUserVerification(event: AudioEvent, user: User): Observable<Verification | null> {
     const filter = {
       filter: {
-        and: [
-          { audioEventId: { eq: event.id } },
-          { creatorId: { eq: user.id } },
-        ],
+        and: [{ audioEventId: { eq: event.id } }, { creatorId: { eq: user.id } }],
       },
       paging: {
         items: 1,
@@ -186,21 +146,17 @@ export class ShallowVerificationService
     // the api enforces having one verification per user per audio event
     // therefore, it is safe to assume that there will only be one result
     // and return the first element of the array
-    return this.filter(filter).pipe(
-      map((results) => (results.length > 0 ? results[0] : null))
-    );
+    return this.filter(filter).pipe(map((results) => (results.length > 0 ? results[0] : null)));
   }
 }
 
-export const verificationResolvers = new Resolvers<
-  Verification,
-  [IdOr<AudioRecording>, IdOr<AudioEvent>]
->([VerificationService], "verificationId", [
-  "audioRecordingId",
-  "audioEventId",
-]).create("Verification");
+export const verificationResolvers = new Resolvers<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>(
+  [VerificationService],
+  "verificationId",
+  ["audioRecordingId", "audioEventId"],
+).create("Verification");
 
 export const shallowVerificationResolvers = new Resolvers<Verification, []>(
   [ShallowVerificationService],
-  "verificationId"
+  "verificationId",
 ).create("ShallowVerification");

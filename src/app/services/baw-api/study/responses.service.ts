@@ -3,16 +3,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Response } from "@models/Response";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParam,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -29,15 +20,8 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
     return this.api.list(Response, endpoint(study, emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<Response>,
-    study: IdOr<Study>
-  ): Observable<Response[]> {
-    return this.api.filter(
-      Response,
-      endpoint(study, emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<Response>, study: IdOr<Study>): Observable<Response[]> {
+    return this.api.filter(Response, endpoint(study, emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Response>, study: IdOr<Study>): Observable<Response> {
@@ -49,7 +33,7 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
       Response,
       endpoint(study, emptyParam, emptyParam),
       (response) => endpoint(study, response, emptyParam),
-      model
+      model,
     );
   }
 
@@ -57,10 +41,7 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
     return this.api.update(Response, endpoint(study, model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Response>,
-    study: IdOr<Study>
-  ): Observable<Response | void> {
+  public destroy(model: IdOr<Response>, study: IdOr<Study>): Observable<Response | void> {
     return this.api.destroy(endpoint(study, model, emptyParam));
   }
 }
@@ -74,11 +55,7 @@ export class ShallowResponsesService implements StandardApi<Response> {
   }
 
   public filter(filters: Filters<Response>): Observable<Response[]> {
-    return this.api.filter(
-      Response,
-      endpointShallow(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Response, endpointShallow(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Response>): Observable<Response> {
@@ -90,7 +67,7 @@ export class ShallowResponsesService implements StandardApi<Response> {
       Response,
       endpointShallow(emptyParam, emptyParam),
       (response) => endpointShallow(response, emptyParam),
-      model
+      model,
     );
   }
 
@@ -103,13 +80,10 @@ export class ShallowResponsesService implements StandardApi<Response> {
   }
 }
 
-export const responseResolvers = new Resolvers<Response, [IdOr<Study>]>(
-  [ResponsesService],
-  "responseId",
-  ["studyId"]
-).create("Response");
+export const responseResolvers = new Resolvers<Response, [IdOr<Study>]>([ResponsesService], "responseId", [
+  "studyId",
+]).create("Response");
 
-export const shallowResponseResolvers = new Resolvers<Response, []>(
-  [ShallowResponsesService],
-  "responseId"
-).create("ShallowResponse");
+export const shallowResponseResolvers = new Resolvers<Response, []>([ShallowResponsesService], "responseId").create(
+  "ShallowResponse",
+);

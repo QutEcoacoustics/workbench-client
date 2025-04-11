@@ -1,17 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  accountResolvers,
-  AccountsService,
-} from "@baw-api/account/accounts.service";
-import {
-  theirEditMenuItem,
-  theirProfileCategory,
-} from "@components/profile/profile.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { accountResolvers, AccountsService } from "@baw-api/account/accounts.service";
+import { theirEditMenuItem, theirProfileCategory } from "@components/profile/profile.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -36,13 +27,10 @@ const accountKey = "account";
 
       <hr />
 
-      <baw-detail-view
-        [model]="originalModel"
-        [fields]="fields"
-      ></baw-detail-view>
+      <baw-detail-view [model]="originalModel" [fields]="fields"></baw-detail-view>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = schema.fields;
@@ -53,7 +41,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
     private api: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[accountKey] as User,

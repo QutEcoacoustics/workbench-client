@@ -13,12 +13,9 @@ import { takeUntil } from "rxjs/operators";
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-  standalone: false
+  standalone: false,
 })
-export class ResolverHandlerComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class ResolverHandlerComponent extends withUnsubscribe() implements OnInit {
   public error: BawApiError;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {
@@ -27,9 +24,7 @@ export class ResolverHandlerComponent
 
   public ngOnInit() {
     // Detect any page errors
-    this.sharedRoute.data
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((data: IPageInfo) => this.handleResolvers(data));
+    this.sharedRoute.data.pipe(takeUntil(this.unsubscribe)).subscribe((data: IPageInfo) => this.handleResolvers(data));
   }
 
   private handleResolvers(data: IPageInfo) {

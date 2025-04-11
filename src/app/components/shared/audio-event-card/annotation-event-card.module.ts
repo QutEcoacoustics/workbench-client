@@ -7,13 +7,7 @@ import { AnnotationEventCardComponent } from "./annotation-event-card.component"
 
 @NgModule({
   declarations: [AnnotationEventCardComponent],
-  imports: [
-    CommonModule,
-    FontAwesomeModule,
-    PipesModule,
-
-    ZonedDateTimeComponent,
-  ],
+  imports: [CommonModule, FontAwesomeModule, PipesModule, ZonedDateTimeComponent],
   exports: [AnnotationEventCardComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

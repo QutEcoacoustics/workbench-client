@@ -5,3 +5,13 @@
 # the service tokens
 # this makes it much more readable as each service token has its ownn line
 src/app/services/baw-api/ServiceTokens.ts
+
+node_modules/
+package-lock.json
+
+# We do not format html files because they do not play well with the angular
+# compiler based control flow (e.g. @if, @for, etc.)
+#
+# TODO: Find a better solution to this problem so that we can format html files
+# that have control flow syntax
+*.html

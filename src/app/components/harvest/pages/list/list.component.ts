@@ -4,11 +4,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
-import {
-  harvestsCategory,
-  harvestsMenuItem,
-  newHarvestMenuItem,
-} from "@components/harvest/harvest.menus";
+import { harvestsCategory, harvestsMenuItem, newHarvestMenuItem } from "@components/harvest/harvest.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
@@ -26,7 +22,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-harvests",
   templateUrl: "list.component.html",
-  standalone: false
+  standalone: false,
 })
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;
@@ -36,7 +32,7 @@ class ListComponent extends PageComponent implements OnInit {
   public constructor(
     public modals: NgbModal,
     private harvestsApi: ShallowHarvestsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     super();
   }
@@ -65,15 +61,7 @@ class ListComponent extends PageComponent implements OnInit {
       // projection allows us only to emit the fields that we want
       // this improves performance and reduces the amount of data sent
       projection: {
-        include: [
-          "id",
-          "projectId",
-          "name",
-          "createdAt",
-          "creatorId",
-          "streaming",
-          "status",
-        ],
+        include: ["id", "projectId", "name", "createdAt", "creatorId", "streaming", "status"],
       },
       ...projectScopeFilter,
     });
@@ -91,7 +79,7 @@ class ListComponent extends PageComponent implements OnInit {
             if (err.status !== CLIENT_TIMEOUT) {
               return throwError(() => err);
             }
-          })
+          }),
         )
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
@@ -105,8 +93,7 @@ class ListComponent extends PageComponent implements OnInit {
     }
   }
 
-  public getModels = (filters: Filters<Harvest>) =>
-    this.harvestsApi.filter(filters);
+  public getModels = (filters: Filters<Harvest>) => this.harvestsApi.filter(filters);
 
   public asHarvest(model: any): Harvest {
     return model;

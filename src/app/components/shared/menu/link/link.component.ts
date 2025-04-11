@@ -1,11 +1,7 @@
 import { Component, Inject, Input, OnChanges, OnInit } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  isInternalRoute,
-  MenuLink,
-  MenuRoute,
-} from "@interfaces/menusInterfaces";
+import { isInternalRoute, MenuLink, MenuRoute } from "@interfaces/menusInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { Observable } from "rxjs";
@@ -16,11 +12,7 @@ import { Observable } from "rxjs";
 @Component({
   selector: "baw-menu-link",
   template: `
-    <div
-      placement="auto"
-      [ngbTooltip]="tooltipContent"
-      [class.disabled]="link.disabled"
-    >
+    <div placement="auto" [ngbTooltip]="tooltipContent" [class.disabled]="link.disabled">
       @if (isInternalLink) {
         <!-- Internal Link -->
         <a
@@ -63,12 +55,9 @@ import { Observable } from "rxjs";
     </ng-template>
   `,
   styleUrls: ["./link.component.scss"],
-  standalone: false
+  standalone: false,
 })
-export class MenuLinkComponent
-  extends withUnsubscribe()
-  implements OnInit, OnChanges
-{
+export class MenuLinkComponent extends withUnsubscribe() implements OnInit, OnChanges {
   @Input() public link: MenuRoute | MenuLink;
   @Input() public tooltip: string;
 
@@ -85,7 +74,7 @@ export class MenuLinkComponent
 
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public sharedRoute: SharedActivatedRouteService
+    public sharedRoute: SharedActivatedRouteService,
   ) {
     super();
   }

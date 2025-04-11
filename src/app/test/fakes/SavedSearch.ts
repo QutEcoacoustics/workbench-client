@@ -1,9 +1,7 @@
 import { ISavedSearch } from "@models/SavedSearch";
 import { modelData } from "@test/helpers/faker";
 
-export function generateSavedSearch(
-  data?: Partial<ISavedSearch>
-): Required<ISavedSearch> {
+export function generateSavedSearch(data?: Partial<ISavedSearch>): Required<ISavedSearch> {
   return {
     id: modelData.id(),
     name: modelData.param(),

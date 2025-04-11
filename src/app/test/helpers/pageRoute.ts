@@ -15,17 +15,12 @@ import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 export function assertPageInfo<T>(
   componentType: Type<IPageComponent>,
   expectedPageTitles: string[] | string,
-  modelState?: IRouteModel<T>
+  modelState?: IRouteModel<T>,
 ) {
   describe("pageRoute", () => {
     const componentPageInfo: PageInfo[] = getPageInfos(componentType);
-    const componentPageRoutes: MenuRoute[] = componentPageInfo.map(
-      (pageInfo: IPageInfo) => pageInfo.pageRoute
-    );
-    const testedTitleOptions: TitleOptionsHash[] = [
-      { hideProjects: false },
-      { hideProjects: true },
-    ];
+    const componentPageRoutes: MenuRoute[] = componentPageInfo.map((pageInfo: IPageInfo) => pageInfo.pageRoute);
+    const testedTitleOptions: TitleOptionsHash[] = [{ hideProjects: false }, { hideProjects: true }];
 
     const mockRouteState: RouterStateSnapshot = Object({
       root: {
@@ -70,10 +65,7 @@ export function assertPageInfo<T>(
         testedTitleOptions.forEach((testingTitleOption: TitleOptionsHash, j: number) => {
           it(`should use the correct page title for the route "/${pageRoutePath}" with projects ${testingTitleOption.hideProjects}`, () => {
             const expectedTitle = expectedPageTitles[i + j];
-            const observedTitle = pageRoute.title(
-              mockRouteState,
-              testingTitleOption
-            );
+            const observedTitle = pageRoute.title(mockRouteState, testingTitleOption);
             expect(observedTitle).toEqual(expectedTitle);
           });
         });

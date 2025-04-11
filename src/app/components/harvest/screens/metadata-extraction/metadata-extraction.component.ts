@@ -9,19 +9,13 @@ import { Harvest, HarvestReport } from "@models/Harvest";
 
     <p>We are checking the files you uploaded!</p>
 
-    <p>
-      We will make sure files have no errors and find any extra information
-      about them.
-    </p>
+    <p>We will make sure files have no errors and find any extra information about them.</p>
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
     <h4>Progress</h4>
 
-    <baw-harvest-eta
-      [harvest]="harvest"
-      [progress]="progress"
-    ></baw-harvest-eta>
+    <baw-harvest-eta [harvest]="harvest" [progress]="progress"></baw-harvest-eta>
 
     <baw-progress [showZero]="progress === 0">
       <baw-progress-bar
@@ -56,7 +50,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
       ></baw-progress-bar>
     </baw-progress>
   `,
-  standalone: false
+  standalone: false,
 })
 export class MetadataExtractionComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}
@@ -78,17 +72,12 @@ export class MetadataExtractionComponent implements OnInit {
   }
 
   public hasFileStatuses(): boolean {
-    return (
-      this.successProgress + this.invalidFixableProgress + this.errorProgress >
-      0
-    );
+    return this.successProgress + this.invalidFixableProgress + this.errorProgress > 0;
   }
 
   public get successProgress(): number {
     return this.stages.calculateProgress(
-      this.report.itemsTotal -
-        this.report.itemsInvalidFixable -
-        this.report.itemsInvalidNotFixable
+      this.report.itemsTotal - this.report.itemsInvalidFixable - this.report.itemsInvalidNotFixable,
     );
   }
 
@@ -98,9 +87,7 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
-      this.report.itemsInvalidNotFixable +
-        this.report.itemsErrored +
-        this.report.itemsFailed
+      this.report.itemsInvalidNotFixable + this.report.itemsErrored + this.report.itemsFailed,
     );
   }
 }

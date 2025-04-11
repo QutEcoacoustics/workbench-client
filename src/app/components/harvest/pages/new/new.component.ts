@@ -2,10 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  harvestsCategory,
-  newHarvestMenuItem,
-} from "@components/harvest/harvest.menus";
+import { harvestsCategory, newHarvestMenuItem } from "@components/harvest/harvest.menus";
 import { harvestRoute } from "@components/harvest/harvest.routes";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -20,7 +17,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-harvest-new",
   templateUrl: "new.component.html",
-  standalone: false
+  standalone: false,
 })
 class NewComponent extends PageComponent implements OnInit {
   public loading: boolean;
@@ -30,7 +27,7 @@ class NewComponent extends PageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastService,
-    private harvestApi: HarvestsService
+    private harvestApi: HarvestsService,
   ) {
     super();
   }
@@ -59,7 +56,7 @@ class NewComponent extends PageComponent implements OnInit {
           harvestRoute.toRouterLink({
             projectId: this.project.id,
             harvestId: harvest.id,
-          })
+          }),
         );
       },
       error: (err: BawApiError): void => {

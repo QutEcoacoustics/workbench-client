@@ -20,7 +20,7 @@ import { takeUntil } from "rxjs/operators";
   selector: "baw-site",
   templateUrl: "./site.component.html",
   styleUrl: "./site.component.scss",
-  standalone: false
+  standalone: false,
 })
 class SiteComponent extends PageComponent implements OnInit {
   @Input() public project: Project;
@@ -64,16 +64,12 @@ class SiteComponent extends PageComponent implements OnInit {
     this.filterByDates("asc", { paging: { items: 1 } })
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: (recordings) =>
-          (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
+        next: (recordings) => (this.oldestRecording = recordings.length > 0 ? recordings[0] : null),
         error: () => (this.oldestRecording = null),
       });
   }
 
-  private filterByDates(
-    direction: Direction,
-    filters: Filters<AudioRecording> = {},
-  ): Observable<AudioRecording[]> {
+  private filterByDates(direction: Direction, filters: Filters<AudioRecording> = {}): Observable<AudioRecording[]> {
     return this.audioRecordingsApi.filterBySite(
       { sorting: { orderBy: "recordedDate", direction }, ...filters },
       this.site,

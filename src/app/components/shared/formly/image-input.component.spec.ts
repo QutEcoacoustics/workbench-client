@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
@@ -18,12 +13,7 @@ describe("FormlyImageInput", () => {
 
   const createHost = createHostFactory({
     component: ImageInputComponent,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      FormlyModule.forRoot(formlyConfig),
-      FormlyBootstrapModule,
-    ],
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule.forRoot(formlyConfig), FormlyBootstrapModule],
   });
 
   function getInput() {
@@ -57,7 +47,7 @@ describe("FormlyImageInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
     spectator.detectChanges();
   }

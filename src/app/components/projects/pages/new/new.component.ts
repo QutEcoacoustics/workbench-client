@@ -1,14 +1,8 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import {
-  newProjectMenuItem,
-  projectsCategory,
-} from "@components/projects/projects.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { newProjectMenuItem, projectsCategory } from "@components/projects/projects.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -29,7 +23,7 @@ import schema from "../../project.schema.json";
       ></baw-form>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 class NewComponent extends FormTemplate<Project> {
   public fields = schema.fields;
@@ -38,7 +32,7 @@ class NewComponent extends FormTemplate<Project> {
     private api: ProjectsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router
+    router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
@@ -47,9 +41,7 @@ class NewComponent extends FormTemplate<Project> {
 
     // Filter out allowAudioUpload field on new form. We can do this
     // intelligently with https://github.com/QutEcoacoustics/baw-server/issues/561
-    this.fields = this.fields.filter(
-      (field) => field.key !== "allowAudioUpload"
-    );
+    this.fields = this.fields.filter((field) => field.key !== "allowAudioUpload");
   }
 
   protected apiAction(model: Partial<Project>) {

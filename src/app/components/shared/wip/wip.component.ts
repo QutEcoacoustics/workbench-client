@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewEncapsulation,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ConfigService } from "@services/config/config.service";
 
@@ -22,14 +17,9 @@ import { ConfigService } from "@services/config/config.service";
         </div>
       </div>
     } @else {
-      <div
-        class="wip-placeholder"
-        ngbTooltip="This feature is a work in progress"
-      >
+      <div class="wip-placeholder" ngbTooltip="This feature is a work in progress">
         <ng-container *ngTemplateOutlet="icon"></ng-container>
-        <p class="wip-text">
-          This section is a work in progress. Expect new things here soon!
-        </p>
+        <p class="wip-text">This section is a work in progress. Expect new things here soon!</p>
       </div>
     }
 
@@ -43,14 +33,14 @@ import { ConfigService } from "@services/config/config.service";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class WIPComponent implements OnInit {
   public production: boolean;
 
   public constructor(
     private session: BawSessionService,
-    private config: ConfigService
+    private config: ConfigService,
   ) {}
 
   public ngOnInit(): void {

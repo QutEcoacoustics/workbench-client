@@ -1,18 +1,12 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
-import {
-  adminNewTagGroupMenuItem,
-  adminTagGroupsCategory,
-} from "../tag-group.menus";
+import { adminNewTagGroupMenuItem, adminTagGroupsCategory } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 
 @Component({
@@ -29,7 +23,7 @@ import schema from "../tag-group.schema.json";
       ></baw-form>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = schema.fields;
@@ -38,11 +32,10 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     private api: TagGroupsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router
+    router: Router,
   ) {
     super(notifications, route, router, {
-      successMsg: (model) =>
-        defaultSuccessMsg("created", model.groupIdentifier),
+      successMsg: (model) => defaultSuccessMsg("created", model.groupIdentifier),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }

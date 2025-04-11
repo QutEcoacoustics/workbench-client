@@ -20,17 +20,14 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
         <!-- Warning/Default Status -->
         @default {
           <div class="mx-auto" style="width: 19px;">
-            <fa-icon
-              style="color: orange;"
-              [icon]="['fas', 'exclamation-triangle']"
-            ></fa-icon>
+            <fa-icon style="color: orange;" [icon]="['fas', 'exclamation-triangle']"></fa-icon>
           </div>
         }
       }
     </div>
-    `,
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class IndicatorComponent {
   @Input() public status: Status = Status.success;

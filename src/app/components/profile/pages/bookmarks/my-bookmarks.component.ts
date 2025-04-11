@@ -2,10 +2,7 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
-import {
-  myAccountCategory,
-  myBookmarksMenuItem,
-} from "@components/profile/profile.menus";
+import { myAccountCategory, myBookmarksMenuItem } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
@@ -17,15 +14,11 @@ const userKey = "user";
 @Component({
   selector: "baw-my-bookmarks",
   templateUrl: "./bookmarks.component.html",
-  standalone: false
+  standalone: false,
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public api: BookmarksService;
-  public columns = [
-    { name: "Bookmark" },
-    { name: "Category" },
-    { name: "Description" },
-  ];
+  public columns = [{ name: "Bookmark" }, { name: "Category" }, { name: "Description" }];
 
   public constructor(api: BookmarksService, route: ActivatedRoute) {
     super(
@@ -36,7 +29,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
           category: bookmark.category,
           description: bookmark.descriptionHtmlTagline,
         })),
-      route
+      route,
     );
   }
 

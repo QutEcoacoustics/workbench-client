@@ -1,9 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  hasResolvedSuccessfully,
-  ResolvedModelList,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -30,10 +26,7 @@ import { WidgetComponent } from "../widget.component";
         @for (badge of badges; track badge) {
           <div>
             <h5 id="label">{{ badge.label }}</h5>
-            <baw-user-badge
-              [users]="model[badge.userKey]"
-              [timestamp]="badge.timestamp"
-            ></baw-user-badge>
+            <baw-user-badge [users]="model[badge.userKey]" [timestamp]="badge.timestamp"></baw-user-badge>
           </div>
         }
         @if (accessLevel) {
@@ -45,12 +38,9 @@ import { WidgetComponent } from "../widget.component";
       </section>
     }
   `,
-  standalone: false
+  standalone: false,
 })
-export class PermissionsShieldComponent
-  extends withUnsubscribe()
-  implements OnInit, WidgetComponent
-{
+export class PermissionsShieldComponent extends withUnsubscribe() implements OnInit, WidgetComponent {
   public accessLevel: string;
   public badges = [];
   public model: AbstractModel;
@@ -65,7 +55,7 @@ export class PermissionsShieldComponent
     this.sharedRoute.pageInfo
       .pipe(
         map((page): ResolvedModelList => retrieveResolvers(page)),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe((models): void => {
         this.model = this.retrieveModel(models);
@@ -99,10 +89,7 @@ export class PermissionsShieldComponent
     for (const modelKey of modelKeys) {
       const model = models[modelKey];
 
-      const assignModel = <Model extends AbstractModel>(
-        _model: Model,
-        level: number
-      ): void => {
+      const assignModel = <Model extends AbstractModel>(_model: Model, level: number): void => {
         outputModel = _model;
         priority = level;
       };
@@ -112,15 +99,12 @@ export class PermissionsShieldComponent
       }
 
       if (model instanceof Harvest) {
-        assignModel(model , priorityLevels.harvest);
+        assignModel(model, priorityLevels.harvest);
       } else if (model instanceof Site) {
         assignModel(model, priorityLevels.site);
       } else if (priority > priorityLevels.region && model instanceof Region) {
         assignModel(model, priorityLevels.region);
-      } else if (
-        priority > priorityLevels.project &&
-        model instanceof Project
-      ) {
+      } else if (priority > priorityLevels.project && model instanceof Project) {
         assignModel(model, priorityLevels.project);
       } else if (!outputModel && model instanceof AbstractModel) {
         assignModel(model, priorityLevels.anyModel);

@@ -94,9 +94,7 @@ describe("RegisterComponent", () => {
       spyOn(notifications, "success").and.stub();
       spyOn(notifications, "error").and.stub();
 
-      accounts.updateContactableConcent = jasmine
-        .createSpy("updateContactableConcent")
-        .and.returnValue(of());
+      accounts.updateContactableConcent = jasmine.createSpy("updateContactableConcent").and.returnValue(of());
     }
 
     beforeEach(() => {
@@ -117,9 +115,7 @@ describe("RegisterComponent", () => {
       const registerDetails = generateRegisterDetails();
       spec.component.submit(registerDetails);
 
-      expect(api.signUp).toHaveBeenCalledOnceWith(
-        new RegisterDetails(registerDetails)
-      );
+      expect(api.signUp).toHaveBeenCalledOnceWith(new RegisterDetails(registerDetails));
     });
 
     describe("recaptcha", () => {
@@ -150,19 +146,13 @@ describe("RegisterComponent", () => {
 
       it("should show error if failed to capture recaptcha seed", async () => {
         const subject = new Subject<RecaptchaSettings>();
-        const promise = nStepObservable(
-          subject,
-          () => generateBawApiError(),
-          true
-        );
+        const promise = nStepObservable(subject, () => generateBawApiError(), true);
 
         spyOn(api, "signUpSeed").and.callFake(() => subject);
         spec.detectChanges();
         await promise;
 
-        expect(notifications.error).toHaveBeenCalledOnceWith(
-          "Failed to load form"
-        );
+        expect(notifications.error).toHaveBeenCalledOnceWith("Failed to load form");
       });
     });
 
@@ -170,9 +160,7 @@ describe("RegisterComponent", () => {
       it("should show error for authenticated user", () => {
         isSignedIn(true);
         spec.detectChanges();
-        expect(notifications.error).toHaveBeenCalledOnceWith(
-          "You are already logged in."
-        );
+        expect(notifications.error).toHaveBeenCalledOnceWith("You are already logged in.");
       });
 
       it("should disable submit button for authenticated user", () => {
@@ -198,13 +186,10 @@ describe("RegisterComponent", () => {
         expect(api.signUp).toHaveBeenCalledWith(
           jasmine.objectContaining<RegisterDetails>({
             contactable: true,
-          })
+          }),
         );
 
-        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
-          jasmine.any(Number),
-          UserConcent.yes
-        );
+        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(jasmine.any(Number), UserConcent.yes);
       });
 
       it("should emit 'no' concent if the user unchecks the checkbox", async () => {
@@ -217,13 +202,10 @@ describe("RegisterComponent", () => {
         expect(api.signUp).toHaveBeenCalledOnceWith(
           jasmine.objectContaining<RegisterDetails>({
             contactable: false,
-          })
+          }),
         );
 
-        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
-          jasmine.any(Number),
-          UserConcent.no
-        );
+        expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(jasmine.any(Number), UserConcent.no);
       });
 
       it("should not attempt to update the users concent if registration fails", async () => {

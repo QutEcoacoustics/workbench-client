@@ -29,7 +29,7 @@ function test(
   expectedDateTimeAttribute: string,
   iso8601?: boolean,
   humanized?: boolean,
-  sexagesimal?: boolean
+  sexagesimal?: boolean,
 ): TestCase {
   return {
     name,
@@ -117,9 +117,7 @@ describe("DurationComponent", () => {
         });
 
         it("should have the correct dateTime attribute", () => {
-          expect(timeElement().dateTime).toBe(
-            testCase.expectedDateTimeAttribute
-          );
+          expect(timeElement().dateTime).toBe(testCase.expectedDateTimeAttribute);
         });
       });
     });

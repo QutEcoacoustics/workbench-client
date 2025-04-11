@@ -22,12 +22,9 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
-export class DebounceInputComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class DebounceInputComponent extends withUnsubscribe() implements OnInit {
   @Input() public label: string;
   @Input() public placeholder = "";
   @Input() public default = "";
@@ -37,11 +34,7 @@ export class DebounceInputComponent
 
   public ngOnInit() {
     this.input$
-      .pipe(
-        debounceTime(defaultDebounceTime),
-        distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
-      )
+      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged(), takeUntil(this.unsubscribe))
       .subscribe((input) => this.filter.next(input));
   }
 

@@ -12,12 +12,9 @@ import { adminOrphansCategory, adminOrphansMenuItem } from "../orphans.menus";
 @Component({
   selector: "baw-admin-orphans",
   templateUrl: "./list.component.html",
-  standalone: false
+  standalone: false,
 })
-class AdminOrphansComponent
-  extends PagedTableTemplate<TableRow, Site>
-  implements OnInit
-{
+class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site> implements OnInit {
   public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor(api: ShallowSitesService) {
@@ -26,7 +23,7 @@ class AdminOrphansComponent
         id: site.id,
         site: site.name,
         model: site,
-      }))
+      })),
     );
 
     this.filterKey = "name";

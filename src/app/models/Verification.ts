@@ -1,8 +1,4 @@
-import {
-  DateTimeTimezone,
-  HasCreatorAndUpdater,
-  Id,
-} from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, HasCreatorAndUpdater, Id } from "@interfaces/apiInterfaces";
 import { AUDIO_EVENT, TAG } from "@baw-api/ServiceTokens";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
@@ -29,10 +25,7 @@ export interface IVerification extends HasCreatorAndUpdater {
   audioEventId?: Id;
 }
 
-export class Verification
-  extends AbstractModel<IVerification>
-  implements IVerification
-{
+export class Verification extends AbstractModel<IVerification> implements IVerification {
   public readonly kind = "Verification";
   public readonly id?: Id;
   @bawPersistAttr()

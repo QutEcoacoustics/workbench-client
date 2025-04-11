@@ -25,16 +25,11 @@ describe("AdminTagsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [AdminTagsComponent],
     }).compileComponents();
 
-    TestBed.inject(ToastService)
+    TestBed.inject(ToastService);
     fixture = TestBed.createComponent(AdminTagsComponent);
     api = TestBed.inject(TagsService);
 
@@ -82,7 +77,7 @@ describe("AdminTagsComponent", () => {
 
       // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
       spyOn(modalService, "open").and.returnValue({
-        result: new Promise((resolve) => resolve(true))
+        result: new Promise((resolve) => resolve(true)),
       });
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 

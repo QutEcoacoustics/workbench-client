@@ -10,7 +10,7 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 @Component({
   selector: "baw-dummy",
   template: '<a [routerLink]="link" [queryParams]="params"></a>',
-  standalone: false
+  standalone: false,
 })
 class DummyComponent {
   @Input() public link: string | string[];
@@ -18,8 +18,9 @@ class DummyComponent {
 }
 
 @Component({
-  selector: "baw-other", template: "",
-  standalone: false
+  selector: "baw-other",
+  template: "",
+  standalone: false,
 })
 class OtherComponent {}
 
@@ -56,15 +57,11 @@ describe("StrongRoute", () => {
   }
 
   function urlTree(commands: string | string[]) {
-    return spec.router.createUrlTree(
-      Array.isArray(commands) ? commands : [commands]
-    );
+    return spec.router.createUrlTree(Array.isArray(commands) ? commands : [commands]);
   }
 
   async function navigate(route: string | string[]) {
-    await ngZone.run(
-      async () => await spec.router.navigateByUrl(urlTree(route))
-    );
+    await ngZone.run(async () => await spec.router.navigateByUrl(urlTree(route)));
   }
 
   function setup(link?: string | string[], params?: Params | null) {
@@ -91,35 +88,29 @@ describe("StrongRoute", () => {
 
   describe("angularRouteConfig", () => {
     it("should set pathMatch to full", () => {
-      expect(
-        StrongRoute.newRoot().add("home").angularRouteConfig
-      ).toHaveAttribute("pathMatch", "full");
+      expect(StrongRoute.newRoot().add("home").angularRouteConfig).toHaveAttribute("pathMatch", "full");
     });
 
     it("should set path", () => {
-      expect(
-        StrongRoute.newRoot().add("home").angularRouteConfig
-      ).toHaveAttribute("path", "home");
+      expect(StrongRoute.newRoot().add("home").angularRouteConfig).toHaveAttribute("path", "home");
     });
 
     it("should not set path with query parameters", () => {
-      expect(
-        StrongRoute.newRoot().add("home", () => ({ test: "value" }))
-          .angularRouteConfig
-      ).toHaveAttribute("path", "home");
+      expect(StrongRoute.newRoot().add("home", () => ({ test: "value" })).angularRouteConfig).toHaveAttribute(
+        "path",
+        "home",
+      );
     });
 
     it("should not set path with route parameters set", () => {
-      expect(
-        StrongRoute.newRoot().add(":id").angularRouteConfig
-      ).toHaveAttribute("path", ":id");
+      expect(StrongRoute.newRoot().add(":id").angularRouteConfig).toHaveAttribute("path", ":id");
     });
 
     it("should allow custom config values", () => {
-      expect(
-        StrongRoute.newRoot().add("home", undefined, { outlet: "custom" })
-          .angularRouteConfig
-      ).toHaveAttribute("outlet", "custom");
+      expect(StrongRoute.newRoot().add("home", undefined, { outlet: "custom" }).angularRouteConfig).toHaveAttribute(
+        "outlet",
+        "custom",
+      );
     });
   });
 
@@ -156,12 +147,7 @@ describe("StrongRoute", () => {
     describe(method, () => {
       let output: { id: any; test: any; example: any; property: any };
 
-      function assertMethod(
-        route: StrongRoute,
-        _routeParams: RouteParams,
-        _queryParams: Params,
-        expectation: string
-      ) {
+      function assertMethod(route: StrongRoute, _routeParams: RouteParams, _queryParams: Params, expectation: string) {
         expect(route[method](_routeParams, _queryParams)).toBe(expectation);
       }
 
@@ -202,18 +188,12 @@ describe("StrongRoute", () => {
 
       it("should handle mixed routes", () => {
         const route = baseRoute.add("home").add(":id").add("house");
-        assertMethod(
-          route,
-          routeParams,
-          undefined,
-          leadingChar + "home/" + output.id + "/house"
-        );
+        assertMethod(route, routeParams, undefined, leadingChar + "home/" + output.id + "/house");
       });
 
       it("should handle query parameter", () => {
         const route = baseRoute.add("home", () => ({ test: output.test }));
-        const expectation =
-          leadingChar + (outputQsp ? "home?test=" + output.test : "home");
+        const expectation = leadingChar + (outputQsp ? "home?test=" + output.test : "home");
         assertMethod(route, undefined, queryParams, expectation);
       });
 
@@ -226,12 +206,7 @@ describe("StrongRoute", () => {
         const expectation =
           leadingChar +
           (outputQsp
-            ? "home?test=" +
-              output.test +
-              "&example=" +
-              output.example +
-              "&property=" +
-              output.property
+            ? "home?test=" + output.test + "&example=" + output.example + "&property=" + output.property
             : "home");
         assertMethod(route, undefined, queryParams, expectation);
       });
@@ -378,10 +353,7 @@ describe("StrongRoute", () => {
           siteId,
           projectId,
         }));
-        setup(
-          childRoute.toRouterLink(),
-          childRoute.queryParams({ siteId: 5, projectId: 10 })
-        );
+        setup(childRoute.toRouterLink(), childRoute.queryParams({ siteId: 5, projectId: 10 }));
         expect(location.path()).toBe("");
 
         spec.click("a");
@@ -402,8 +374,7 @@ describe("StrongRoute", () => {
     },
     {
       title: "Feature Module Route",
-      parent: () =>
-        StrongRoute.newRoot().add("test").addFeatureModule("testing"),
+      parent: () => StrongRoute.newRoot().add("test").addFeatureModule("testing"),
     },
   ].forEach((parent) => {
     let parentRoute: StrongRoute;
@@ -441,11 +412,7 @@ describe("StrongRoute", () => {
   });
 
   describe("Compile Routes", () => {
-    function createRoute(
-      path: string,
-      component?: any,
-      config: Partial<Route> = {}
-    ): Route {
+    function createRoute(path: string, component?: any, config: Partial<Route> = {}): Route {
       return {
         path,
         pathMatch: "full",
@@ -490,8 +457,7 @@ describe("StrongRoute", () => {
       {
         title: "Feature Module Route",
         baseRef: "test/testing/",
-        parent: () =>
-          StrongRoute.newRoot().add("test").addFeatureModule("testing"),
+        parent: () => StrongRoute.newRoot().add("test").addFeatureModule("testing"),
       },
     ];
 
@@ -512,10 +478,7 @@ describe("StrongRoute", () => {
         beforeEach(() => {
           strongRoute = parent.parent();
 
-          const path =
-            parent.baseRef.length > 0
-              ? parent.baseRef.substring(0, parent.baseRef.length - 1)
-              : "";
+          const path = parent.baseRef.length > 0 ? parent.baseRef.substring(0, parent.baseRef.length - 1) : "";
           rootRoute = createRoute(path);
         });
 
@@ -529,10 +492,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with route", () => {
-          const routes = [
-            rootRoute,
-            createRoute(parent.baseRef + "home", MockComponent),
-          ];
+          const routes = [rootRoute, createRoute(parent.baseRef + "home", MockComponent)];
           const homeRoute = strongRoute.add("home");
           homeRoute.pageComponent = MockComponent;
 
@@ -541,10 +501,7 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with parameter route", () => {
-          const routes = [
-            rootRoute,
-            createRoute(parent.baseRef + ":id", MockComponent),
-          ];
+          const routes = [rootRoute, createRoute(parent.baseRef + ":id", MockComponent)];
           const paramRoute = strongRoute.add(":id");
           paramRoute.pageComponent = MockComponent;
 

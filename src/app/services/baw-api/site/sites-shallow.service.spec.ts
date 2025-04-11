@@ -31,24 +31,11 @@ describe("ShallowSitesService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    Site,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    5
-  );
+  validateStandardApi(() => spec, Site, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
 
   validateCustomApiList(() => spec, Site, baseUrl + "orphans/", "orphanList");
 
-  validateCustomApiFilter(
-    () => spec,
-    Site,
-    baseUrl + "orphans/filter",
-    "orphanFilter"
-  );
+  validateCustomApiFilter(() => spec, Site, baseUrl + "orphans/filter", "orphanFilter");
 
   validateCustomApiFilter<Model, [IdOr<User>], Service>(
     () => spec,
@@ -57,7 +44,7 @@ describe("ShallowSitesService", (): void => {
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
     undefined,
-    5
+    5,
   );
 
   validateCustomApiFilter<Model, [IdOr<Region>], Service>(
@@ -67,6 +54,6 @@ describe("ShallowSitesService", (): void => {
     "filterByRegion",
     { filter: { regionId: { eq: 5 } } },
     undefined,
-    5
+    5,
   );
 });

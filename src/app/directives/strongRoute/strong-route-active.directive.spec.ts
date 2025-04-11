@@ -9,15 +9,9 @@ import { StrongRouteDirective } from "./strong-route.directive";
 
 @Component({
   template: `
-    <a
-      [strongRoute]="route"
-      [strongRouteActive]="klass"
-      [strongRouteActiveOptions]="activeOptions"
-    >
-      Link
-    </a>
+    <a [strongRoute]="route" [strongRouteActive]="klass" [strongRouteActiveOptions]="activeOptions"> Link </a>
   `,
-  standalone: false
+  standalone: false,
 })
 class MockComponent {
   @Input() public route: StrongRoute;
@@ -49,11 +43,7 @@ describe("StrongRouteActiveDirective", () => {
     ],
   });
 
-  function setup(
-    route: StrongRoute,
-    klass: string,
-    activeOptions?: { exact: boolean }
-  ) {
+  function setup(route: StrongRoute, klass: string, activeOptions?: { exact: boolean }) {
     spec = createDirective({ props: { route, klass, activeOptions } });
     router = spec.inject(Router);
     router.initialNavigation();

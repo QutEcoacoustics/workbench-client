@@ -13,12 +13,7 @@ xdescribe("ContactUsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        MockBawApiModule,
-        RouterTestingModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, MockBawApiModule, RouterTestingModule],
       declarations: [ContactUsComponent],
     }).compileComponents();
 

@@ -15,7 +15,7 @@ import { Project } from "@models/Project";
   selector: "baw-harvest-complete",
   templateUrl: "complete.component.html",
   styleUrls: ["complete.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class CompleteComponent implements OnInit {
   public projectMenuItem = projectMenuItem;
@@ -24,7 +24,7 @@ export class CompleteComponent implements OnInit {
   public constructor(
     public stages: HarvestStagesService,
     private harvestItemsApi: ShallowHarvestItemsService,
-    private recordingsApi: AudioRecordingsService
+    private recordingsApi: AudioRecordingsService,
   ) {}
 
   public ngOnInit(): void {

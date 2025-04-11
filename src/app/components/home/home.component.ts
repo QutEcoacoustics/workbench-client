@@ -20,7 +20,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
   selector: "baw-home",
   styleUrls: ["./home.component.scss"],
   templateUrl: "./home.component.html",
-  standalone: false
+  standalone: false,
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;
@@ -39,7 +39,7 @@ class HomeComponent extends PageComponent implements OnInit {
   public constructor(
     private regionApi: ShallowRegionsService,
     private projectApi: ProjectsService,
-    public config: ConfigService
+    public config: ConfigService,
   ) {
     super();
   }
@@ -50,9 +50,7 @@ class HomeComponent extends PageComponent implements OnInit {
     this.sourceRepo = settings.links.sourceRepository;
     this.viewMoreLink = {
       label: settings.hideProjects ? "site" : "project",
-      link: settings.hideProjects
-        ? shallowRegionsMenuItem.route
-        : projectsMenuItem.route,
+      link: settings.hideProjects ? shallowRegionsMenuItem.route : projectsMenuItem.route,
     };
     this.svg = {
       width: "80%",
@@ -80,7 +78,7 @@ class HomeComponent extends PageComponent implements OnInit {
 
     this.models$ = models$.pipe(
       map((models) => List<Project | Region>(models)),
-      takeUntil(this.unsubscribe)
+      takeUntil(this.unsubscribe),
     );
   }
 
@@ -111,10 +109,7 @@ class HomeComponent extends PageComponent implements OnInit {
     // Handle words which exceed 14 characters
     const charToWidthRatio = 12;
     const minWidth = 150;
-    const width = Math.max(
-      minWidth,
-      Math.floor(longestWord * charToWidthRatio)
-    );
+    const width = Math.max(minWidth, Math.floor(longestWord * charToWidthRatio));
 
     return `${xPos} ${yPos} ${width} ${height}`;
   }

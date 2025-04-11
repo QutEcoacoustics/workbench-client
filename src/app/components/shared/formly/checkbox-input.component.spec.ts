@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
@@ -16,12 +11,7 @@ describe("FormlyCheckboxInput", () => {
   let spectator: SpectatorHost<CheckboxInputComponent>;
   const createHost = createHostFactory({
     component: CheckboxInputComponent,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      FormlyModule.forRoot(formlyConfig),
-      FormlyBootstrapModule,
-    ],
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule.forRoot(formlyConfig), FormlyBootstrapModule],
   });
 
   function getCheckbox() {
@@ -48,7 +38,7 @@ describe("FormlyCheckboxInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
     spectator.detectChanges();
   }

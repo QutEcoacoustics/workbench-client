@@ -10,12 +10,7 @@ import { UrlDirective } from "./url/url.directive";
 
 const directives = [
   AuthenticatedImageDirective,
-  ...MockDirectives(
-    StrongRouteDirective,
-    StrongRouteActiveDirective,
-    UrlDirective,
-    UrlActiveDirective
-  ),
+  ...MockDirectives(StrongRouteDirective, StrongRouteActiveDirective, UrlDirective, UrlActiveDirective),
 ];
 
 /**

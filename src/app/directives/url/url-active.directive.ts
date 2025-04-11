@@ -15,7 +15,7 @@ import { UrlDirective } from "./url.directive";
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[bawUrlActive]",
-  standalone: false
+  standalone: false,
 })
 export class UrlActiveDirective extends RouterLinkActive {
   @ContentChildren(UrlDirective, { descendants: true })
@@ -36,7 +36,7 @@ export class UrlActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: UrlDirective
+    @Optional() _link?: UrlDirective,
   ) {
     super(_router, _element, _renderer, _cdr, _link);
   }

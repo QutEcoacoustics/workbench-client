@@ -26,15 +26,7 @@ describe("TagsService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    Tag,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    5
-  );
+  validateStandardApi(() => spec, Tag, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
 
   validateCustomApiFilter<Tag, [IdOr<User>], TagsService>(
     () => spec,
@@ -43,7 +35,7 @@ describe("TagsService", (): void => {
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
     undefined,
-    5
+    5,
   );
 
   // TODO Add tests for tag types

@@ -10,14 +10,16 @@ import { AbstractModel } from "@models/AbstractModel";
       @for (item of items; track item; let isLast = $last) {
         <span>
           <a [href]="item.viewUrl">{{ itemText(item) }}</a>
-          @if (!isLast) {, }
+          @if (!isLast) {
+            ,
+          }
         </span>
       }
     } @else {
       <ng-template [ngTemplateOutlet]="emptyTemplate"></ng-template>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 export class InlineListComponent {
   @Input() public items: AbstractModel[];

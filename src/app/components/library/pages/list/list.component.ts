@@ -1,15 +1,12 @@
 import { Component } from "@angular/core";
-import {
-  libraryCategory,
-  libraryMenuItem,
-} from "@components/library/library.menus";
+import { libraryCategory, libraryMenuItem } from "@components/library/library.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
   selector: "baw-library",
   template: "<baw-client></baw-client>",
-  standalone: false
+  standalone: false,
 })
 class LibraryComponent extends PageComponent {}
 

@@ -1,17 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  ContentChild,
-  input,
-  TemplateRef,
-} from "@angular/core";
-import {
-  ToastInfo,
-  ToastOptions,
-  ToastService,
-  ToastVariant,
-} from "@services/toasts/toasts.service";
+import { ChangeDetectionStrategy, Component, computed, ContentChild, input, TemplateRef } from "@angular/core";
+import { ToastInfo, ToastOptions, ToastService, ToastVariant } from "@services/toasts/toasts.service";
 
 /**
  * @description

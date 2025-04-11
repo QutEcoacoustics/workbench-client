@@ -8,10 +8,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import {
-  websiteStatusCategory,
-  websiteStatusMenuItem,
-} from "./website-status.menu";
+import { websiteStatusCategory, websiteStatusMenuItem } from "./website-status.menu";
 
 @Component({
   selector: "baw-website-status",
@@ -21,16 +18,15 @@ import {
 
     <p>
       If you are experiencing issues with the website, please
-      <a [strongRoute]="reportProblemRoute">Report a Problem</a> so we can
-      investigate.
+      <a [strongRoute]="reportProblemRoute">Report a Problem</a> so we can investigate.
     </p>
   `,
-  standalone: false
+  standalone: false,
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(
     private api: WebsiteStatusService,
-    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean
+    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean,
   ) {
     super();
   }
@@ -38,9 +34,7 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
   protected reportProblemRoute = reportProblemMenuItem.route;
 
   public ngOnInit(): void {
-    this.api.status$
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((model) => (this.model = model));
+    this.api.status$.pipe(takeUntil(this.unsubscribe)).subscribe((model) => (this.model = model));
   }
 
   protected model: WebsiteStatus;

@@ -11,15 +11,11 @@ describe("AdminSettingsComponent", () => {
   const createComponent = createComponentFactory({
     component: AdminSettingsComponent,
     imports: [MockBawApiModule, SharedModule],
-    providers: [
-      { provide: CACHE_SETTINGS, useValue: new CacheSettings(true, false) },
-    ],
+    providers: [{ provide: CACHE_SETTINGS, useValue: new CacheSettings(true, false) }],
   });
 
-  const cacheEnabledInput = () =>
-    spectator.query<HTMLInputElement>("#enable-cache");
-  const cacheLoggingInput = () =>
-    spectator.query<HTMLInputElement>("#enable-cache-logging");
+  const cacheEnabledInput = () => spectator.query<HTMLInputElement>("#enable-cache");
+  const cacheLoggingInput = () => spectator.query<HTMLInputElement>("#enable-cache-logging");
 
   function cacheSettings(): CacheSettings {
     return spectator.component.cacheSettings;

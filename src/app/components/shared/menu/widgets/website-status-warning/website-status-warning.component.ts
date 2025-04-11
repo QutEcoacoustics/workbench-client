@@ -27,7 +27,7 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
       </section>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 export class WebsiteStatusWarningComponent {
   public constructor(protected api: WebsiteStatusService) {}

@@ -1,10 +1,5 @@
 import { NgModule } from "@angular/core";
-import {
-  internalComponents,
-  internalModules,
-  sharedComponents,
-  sharedModules,
-} from "./shared.components";
+import { internalComponents, internalModules, sharedComponents, sharedModules } from "./shared.components";
 
 /**
  * Shared Components Module
