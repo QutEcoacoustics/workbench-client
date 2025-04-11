@@ -2,8 +2,7 @@
 <p>
   @if (audioEventImport.descriptionHtml) {
     {{ audioEventImport.description }}
-  }
-  @else {
+  } @else {
     <i>No description found</i>
   }
 </p>
@@ -23,19 +22,13 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <baw-loading
-                *ngIf="
-                  value.audioRecording | isUnresolved;
-                  else audioRecordingTemplate
-                "
-                size="sm"
-              ></baw-loading>
-
-              <ng-template #audioRecordingTemplate>
+              @if (value.audioRecording | isUnresolved) {
+                <baw-loading size="sm"></baw-loading>
+              } @else {
                 <a [bawUrl]="value.audioRecording.viewUrl">
                   {{ value.audioRecording.id }}
                 </a>
-              </ng-template>
+              }
             </ng-template>
           </ngx-datatable-column>
 
@@ -55,19 +48,15 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <baw-loading
-                *ngIf="value.tags | isUnresolved; else tagsTemplate"
-                size="sm"
-              ></baw-loading>
-
-              <ng-template #tagsTemplate>
+              @if (value.tags | isUnresolved) {
+                <baw-loading size="sm"></baw-loading>
+              } @else {
                 <baw-inline-list
                   [items]="value.tags"
                   [itemKey]="'text'"
                   [emptyTemplate]="noAssociatedTagsTemplate"
-                >
-                </baw-inline-list>
-              </ng-template>
+                ></baw-inline-list>
+              }
             </ng-template>
           </ngx-datatable-column>
 

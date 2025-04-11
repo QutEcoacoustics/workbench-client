@@ -68,12 +68,13 @@ const siteKey = "site";
 @Component({
   selector: "baw-site-details",
   template: `
-    <baw-site
-      *ngIf="!failure"
-      [project]="project"
-      [region]="region"
-      [site]="site"
-    ></baw-site>
+    @if (!failure) {
+      <baw-site
+        [project]="project"
+        [region]="region"
+        [site]="site"
+      ></baw-site>
+    }
   `,
   standalone: false
 })

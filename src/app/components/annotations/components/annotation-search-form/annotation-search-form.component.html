@@ -30,18 +30,19 @@
   ></baw-typeahead-input>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
-  <baw-typeahead-input
-    id="region-input"
-    *ngIf="!site || site?.isPoint"
-    label="Site(s)"
-    [inputPlaceholder]="region ? region.name : 'All'"
-    [searchCallback]="
-      createSearchCallback(regionsApi, 'name', searchParameters.modelFilters())
-    "
-    [resultTemplate]="nameTypeaheadTemplate"
-    [inputDisabled]="!!region"
-    (modelChange)="updateSubModel('regions', $event)"
-  ></baw-typeahead-input>
+  @if (!site || site?.isPoint) {
+    <baw-typeahead-input
+      id="region-input"
+      label="Site(s)"
+      [inputPlaceholder]="region ? region.name : 'All'"
+      [searchCallback]="
+        createSearchCallback(regionsApi, 'name', searchParameters.modelFilters())
+      "
+      [resultTemplate]="nameTypeaheadTemplate"
+      [inputDisabled]="!!region"
+      (modelChange)="updateSubModel('regions', $event)"
+    ></baw-typeahead-input>
+  }
 
   <baw-typeahead-input
     id="sites-input"

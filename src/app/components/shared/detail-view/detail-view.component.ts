@@ -5,18 +5,19 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 @Component({
   selector: "baw-detail-view",
   template: `
-    <div *ngFor="let field of fields" class="row">
-      <dt
-        class="col-sm-3 text-start text-sm-end fw-bold"
-        [innerText]="field.props.label"
-      ></dt>
-
-      <baw-render-field
-        class="col-sm-9"
-        [value]="getValue(field)"
-      ></baw-render-field>
-    </div>
-  `,
+    @for (field of fields; track field) {
+      <div class="row">
+        <dt
+          class="col-sm-3 text-start text-sm-end fw-bold"
+          [innerText]="field.props.label"
+        ></dt>
+        <baw-render-field
+          class="col-sm-9"
+          [value]="getValue(field)"
+        ></baw-render-field>
+      </div>
+    }
+    `,
   styles: [`
     dt {
       margin-bottom: 1rem;

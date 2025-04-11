@@ -17,16 +17,20 @@ import schema from "./request.schema.json";
   selector: "baw-projects-request",
   template: `
     <baw-wip>
-      <baw-form
-        *ngIf="projects"
-        title="Request project access"
-        [model]="model"
-        [fields]="fields"
-        submitLabel="Submit request"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-      <baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+      @if (projects) {
+        <baw-form
+          title="Request project access"
+          [model]="model"
+          [fields]="fields"
+          submitLabel="Submit request"
+          [submitLoading]="loading"
+          (onSubmit)="submit($event)"
+        ></baw-form>
+      }
+
+      @if (error) {
+        <baw-error-handler [error]="error"></baw-error-handler>
+      }
     </baw-wip>
   `,
   standalone: false

@@ -27,25 +27,25 @@ export interface Step {
         <div class="main"></div>
         <div #rightDots class="dots"></div>
       </div>
-
+    
       <div #steps class="steps">
-        <div
-          #step
-          *ngFor="let step of stepList; let i = index"
-          class="step"
-          [class.active]="isActive(i)"
-        >
-          <div class="step-body">
-            <div class="icon" [class.active]="isActive(i)">
-              <fa-icon size="xs" [icon]="step.icon"></fa-icon>
+        @for (step of stepList; track step; let i = $index) {
+          <div
+            #step
+            class="step"
+            [class.active]="isActive(i)"
+            >
+            <div class="step-body">
+              <div class="icon" [class.active]="isActive(i)">
+                <fa-icon size="xs" [icon]="step.icon"></fa-icon>
+              </div>
+              <div class="title fs-6 text-muted">{{ step.label }}</div>
             </div>
-
-            <div class="title fs-6 text-muted">{{ step.label }}</div>
           </div>
-        </div>
+        }
       </div>
     </div>
-  `,
+    `,
   standalone: false
 })
 export class StepperComponent

@@ -17,15 +17,16 @@ const typeOfTagsKey = "typeOfTags";
 @Component({
   selector: "baw-admin-tags-new",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Tag"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="New Tag"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

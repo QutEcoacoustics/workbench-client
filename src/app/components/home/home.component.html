@@ -10,15 +10,16 @@
       [attr.viewBox]="svg.viewBox"
     >
       <title>{{ svg.alt | uppercase }}</title>
-      <text
-        *ngFor="let word of svg.title; let i = index"
-        dominant-baseline="middle"
-        text-anchor="middle"
-        x="50%"
-        [attr.y]="calculateSvgTextYPos(i)"
-      >
-        {{ word | uppercase }}
-      </text>
+      @for (word of svg.title; track word; let i = $index) {
+        <text
+          dominant-baseline="middle"
+          text-anchor="middle"
+          x="50%"
+          [attr.y]="calculateSvgTextYPos(i)"
+        >
+          {{ word | uppercase }}
+        </text>
+      }
     </svg>
   </div>
 
@@ -126,28 +127,37 @@
       its free and easy!
     </p>
 
-    <ng-container *ngIf="models$ | withLoading | async as models">
-      <baw-loading *ngIf="models.loading" [size]="lg"></baw-loading>
+    @if (models$ | withLoading | async; as models) {
+      @if (models.loading) {
+        <baw-loading [size]="lg"></baw-loading>
+      }
 
-      <p *ngIf="models.error" id="error">
-        Unable to load {{ viewMoreLink.label | titlecase }}
-      </p>
-
-      <baw-model-cards *ngIf="models.value" [models]="models.value">
-        <p *ngIf="models.value.size === 0" id="placeholder" class="m-auto">
-          No {{ viewMoreLink.label | titlecase }}s to display
+      @if (models.error) {
+        <p id="error">
+          Unable to load {{ viewMoreLink.label | titlecase }}
         </p>
+      }
 
-        <a
-          *ngIf="models.value.size > 0"
-          id="viewMore"
-          class="m-auto btn btn-outline-highlight btn-lg"
-          [strongRoute]="viewMoreLink.link"
-        >
-          More {{ viewMoreLink.label | titlecase }}s
-        </a>
-      </baw-model-cards>
-    </ng-container>
+      @if (models.value) {
+        <baw-model-cards [models]="models.value">
+          @if (models.value.size === 0) {
+            <p id="placeholder" class="m-auto">
+              No {{ viewMoreLink.label | titlecase }}s to display
+            </p>
+          }
+
+          @if (models.value.size > 0) {
+            <a
+              id="viewMore"
+              class="m-auto btn btn-outline-highlight btn-lg"
+              [strongRoute]="viewMoreLink.link"
+            >
+              More {{ viewMoreLink.label | titlecase }}s
+            </a>
+          }
+        </baw-model-cards>
+      }
+    }
   </div>
 </section>
 

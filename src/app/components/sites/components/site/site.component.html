@@ -25,23 +25,26 @@
   <!-- Details in left column -->
   <div class="col-sm-6">
     <!-- Loading animation -->
-    <baw-loading
-      *ngIf="recordings === undefined"
-      id="recordings-loader"
-    ></baw-loading>
+    @if (recordings === undefined) {
+      <baw-loading id="recordings-loader"></baw-loading>
+    }
 
     <!-- Handle recordings error -->
-    <p *ngIf="recordings === null" id="recordings-error-description">
-      Unable to load site recordings.
-    </p>
+    @if (recordings === null) {
+      <p id="recordings-error-description">
+        Unable to load site recordings.
+      </p>
+    }
 
     <!-- Handle no recordings -->
-    <p *ngIf="recordings?.length === 0" id="recordings-placeholder-description">
-      This site does not contain any audio recordings.
-    </p>
+    @if (recordings?.length === 0) {
+      <p id="recordings-placeholder-description">
+        This site does not contain any audio recordings.
+      </p>
+    }
 
     <!-- Handle recordings-->
-    <ng-container *ngIf="recordings?.length > 0">
+    @if (recordings?.length > 0) {
       <!-- Description -->
       <p id="recording-dates">
         This site contains recordings from
@@ -50,7 +53,7 @@
           are in the same timezone. This should not be a problem because all
           recordings in the site should be in the same timezone. But I have covered
           potential edge case as a precaution.
-         -->
+        -->
         <baw-zoned-datetime
           [value]="oldestRecording.recordedDate"
           [timezone]="site.timezoneInformation"
@@ -72,7 +75,7 @@
 
       <!-- Recent Annotations Summary -->
       <baw-site-recent-annotations [site]="site"></baw-site-recent-annotations>
-    </ng-container>
+    }
   </div>
   <!-- Map using right column -->
   <div class="col-sm-6" style="min-height: 400px">

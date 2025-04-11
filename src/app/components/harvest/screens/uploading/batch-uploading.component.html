@@ -113,8 +113,8 @@
     <ng-template ngbNavContent>
       <ol>
         <li>
-           Rclone is a <b>command line</b> tool for transferring files, which you can download
-           and install <a target="_blank" href="https://rclone.org/install/">here</a>.
+          Rclone is a <b>command line</b> tool for transferring files, which you can download
+          and install <a target="_blank" href="https://rclone.org/install/">here</a>.
         </li>
         <li>
           Paste the following command into your terminal, making sure to replace the <code>[path to your files]</code>
@@ -199,28 +199,29 @@
     </div>
   </div>
 
-  <div *ngIf="project.sites?.length > 0" class="col">
-    <div class="card h-100">
-      <div class="card-body">
-        <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-open']">
-        </fa-icon>
-
-        <ng-container>
-          <p>
-            We have created some default folders for each of your points/sites.
-            They use the <i>point/site name</i> along with a unique id in their
-            name. You don't have to use these folders if you don't want to.
-          </p>
-          <p>Here is an example of one:</p>
-          <p>
-            <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
-            </fa-icon>
-            {{ exampleSite(project).name + "_" + exampleSite(project).id }}
-          </p>
-        </ng-container>
+  @if (project.sites?.length > 0) {
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <fa-icon class="icon-wrapper" size="2x" [icon]="['fas', 'folder-open']">
+          </fa-icon>
+          <ng-container>
+            <p>
+              We have created some default folders for each of your points/sites.
+              They use the <i>point/site name</i> along with a unique id in their
+              name. You don't have to use these folders if you don't want to.
+            </p>
+            <p>Here is an example of one:</p>
+            <p>
+              <fa-icon class="d-inline" [icon]="['fas', 'folder-closed']">
+              </fa-icon>
+              {{ exampleSite(project).name + "_" + exampleSite(project).id }}
+            </p>
+          </ng-container>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>
 
 <div class="row">

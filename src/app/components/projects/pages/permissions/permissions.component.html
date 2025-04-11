@@ -69,12 +69,13 @@
   <ng-template #resultTemplate let-result="result" let-term="term">
     <div [class.bg-text-secondary]="doesUserAlreadyHavePermissions(result)">
       <ngb-highlight [result]="result.userName" [term]="term"></ngb-highlight>
-      <small
-        class="ms-3 float-end"
-        *ngIf="doesUserAlreadyHavePermissions(result)"
-      >
-        Already Set
-      </small>
+      @if (doesUserAlreadyHavePermissions(result)) {
+        <small
+          class="ms-3 float-end"
+          >
+          Already Set
+        </small>
+      }
     </div>
   </ng-template>
 
@@ -89,14 +90,15 @@
   ></baw-model-selector>
 
   <!-- User permissions -->
-  <baw-selectable-items
-    *ngIf="selectedUser"
-    class="flex-grow-1"
-    [options]="individualOptions"
-    [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
-    [inline]="true"
-    (selectionChange)="createNewPermission(selectedUser, $event)"
-  ></baw-selectable-items>
+  @if (selectedUser) {
+    <baw-selectable-items
+      class="flex-grow-1"
+      [options]="individualOptions"
+      [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
+      [inline]="true"
+      (selectionChange)="createNewPermission(selectedUser, $event)"
+    ></baw-selectable-items>
+  }
 </section>
 
 <h4>Current users</h4>
@@ -121,10 +123,11 @@
     </ng-template>
 
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-      <baw-loading *ngIf="row.user | isUnresolved; else showUser"></baw-loading>
-      <ng-template #showUser>
+      @if (row.user | isUnresolved) {
+        <baw-loading></baw-loading>
+      } @else {
         <a [bawUrl]="row.user.viewUrl">{{ row.user.userName }}</a>
-      </ng-template>
+      }
     </ng-template>
   </ngx-datatable-column>
 

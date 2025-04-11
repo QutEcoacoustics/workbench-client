@@ -18,32 +18,36 @@ import { IItem } from "../item/item.component";
     <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group">
-          <li class="list-group-item" *ngFor="let stat of groupOne">
-            <baw-items-item
-              [icon]="stat.icon"
-              [name]="stat.name"
-              [tooltip]="stat.tooltip"
-              [value]="stat.value"
-              [color]="stat.color"
-            ></baw-items-item>
-          </li>
+          @for (stat of groupOne; track stat) {
+            <li class="list-group-item">
+              <baw-items-item
+                [icon]="stat.icon"
+                [name]="stat.name"
+                [tooltip]="stat.tooltip"
+                [value]="stat.value"
+                [color]="stat.color"
+              ></baw-items-item>
+            </li>
+          }
         </ul>
       </div>
       <div class="col-sm-6">
         <ul class="list-group">
-          <li class="list-group-item" *ngFor="let stat of groupTwo">
-            <baw-items-item
-              [icon]="stat.icon"
-              [name]="stat.name"
-              [tooltip]="stat.tooltip"
-              [value]="stat.value"
-              [color]="stat.color"
-            ></baw-items-item>
-          </li>
+          @for (stat of groupTwo; track stat) {
+            <li class="list-group-item">
+              <baw-items-item
+                [icon]="stat.icon"
+                [name]="stat.name"
+                [tooltip]="stat.tooltip"
+                [value]="stat.value"
+                [color]="stat.color"
+              ></baw-items-item>
+            </li>
+          }
         </ul>
       </div>
     </div>
-  `,
+    `,
     // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false

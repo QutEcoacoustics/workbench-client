@@ -28,15 +28,16 @@ const projectKey = "project";
 @Component({
   selector: "baw-regions-new",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="hideTitle ? '' : 'New Site'"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        [title]="hideTitle ? '' : 'New Site'"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

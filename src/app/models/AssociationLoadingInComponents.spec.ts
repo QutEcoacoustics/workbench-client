@@ -45,19 +45,19 @@ export { MockModel as MockModelWithDecorators };
 @Component({
   selector: "baw-test",
   template: `
-    <ng-container *ngIf="hasMany && model.childModels">
-      <li *ngFor="let item of model.childModels">
-        {{ item }}
-      </li>
-    </ng-container>
-    <ng-container *ngIf="!hasMany && model.childModel">
+    @if (hasMany && model.childModels) {
+      @for (item of model.childModels; track item) {
+        <li>{{ item }}</li>
+      }
+    }
+
+    @if (!hasMany && model.childModel) {
       <p>{{ model.childModel }}</p>
-    </ng-container>
-    <ng-container
-      *ngIf="(hasMany && !model.childModels) || (!hasMany && !model.childModel)"
-    >
+    }
+
+    @if ((hasMany && !model.childModels) || (!hasMany && !model.childModel)) {
       <p>Error</p>
-    </ng-container>
+    }
   `,
   standalone: false
 })

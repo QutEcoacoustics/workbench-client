@@ -13,20 +13,24 @@ import { Duration } from "luxon";
         Started {{ humanizeStage }}
         <baw-time-since [value]="harvest.updatedAt" />
       </small>
-      <small *ngIf="!hasProgress()" class="float-end text-muted font-monospace">
-        waiting in queue
-      </small>
-      <small *ngIf="hasProgress()" class="float-end text-muted font-monospace">
-        @if (expectedRemainingTime && hasProgress()) {
-          ≈<baw-duration
+      @if (!hasProgress()) {
+        <small class="float-end text-muted font-monospace">
+          waiting in queue
+        </small>
+      }
+      @if (hasProgress()) {
+        <small class="float-end text-muted font-monospace">
+          @if (expectedRemainingTime && hasProgress()) {
+            ≈<baw-duration
             [value]="expectedRemainingTime"
             humanized
-          />
+            />
           remaining
         } @else {
           unknown time remaining
         }
       </small>
+    }
     </div>
   `,
   standalone: false

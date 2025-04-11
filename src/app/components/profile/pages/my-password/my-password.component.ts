@@ -21,16 +21,17 @@ const userKey = "user";
 @Component({
   selector: "baw-my-password",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="Update my password"
-      [model]="model"
-      [fields]="fields"
-      btnColor="warning"
-      submitLabel="Update"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="Update my password"
+        [model]="model"
+        [fields]="fields"
+        btnColor="warning"
+        submitLabel="Update"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

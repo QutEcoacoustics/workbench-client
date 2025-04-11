@@ -6,12 +6,16 @@ import { AbstractModel } from "@models/AbstractModel";
 @Component({
   selector: "baw-inline-list",
   template: `
-    <ng-container *ngIf="!!items && items.length > 0; else emptyTemplate">
-      <span *ngFor="let item of items; last as isLast">
-        <a [href]="item.viewUrl">{{ itemText(item) }}</a>
-        <ng-container *ngIf="!isLast">, </ng-container>
-      </span>
-    </ng-container>
+    @if (!!items && items.length > 0) {
+      @for (item of items; track item; let isLast = $last) {
+        <span>
+          <a [href]="item.viewUrl">{{ itemText(item) }}</a>
+          @if (!isLast) {, }
+        </span>
+      }
+    } @else {
+      <ng-template [ngTemplateOutlet]="emptyTemplate"></ng-template>
+    }
   `,
   standalone: false
 })

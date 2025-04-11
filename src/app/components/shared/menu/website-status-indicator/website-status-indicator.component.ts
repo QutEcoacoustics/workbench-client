@@ -10,21 +10,22 @@ import { takeUntil } from "rxjs";
 @Component({
   selector: "baw-website-status-indicator",
   template: `
-    <a
-      *ngIf="shouldShowIcon"
-      class="block nav-link text-danger text-nowrap"
-      [strongRoute]="websiteStatusRoute"
-      [ngbTooltip]="
-        config.settings.brand.long +
-        ' is experiencing a temporary loss of services. ' +
-        'Some parts of the website may not work.'
-      "
-    >
-      <fa-icon
-        class="website-status-warning"
-        [icon]="['fas', 'triangle-exclamation']"
-      ></fa-icon>
-    </a>
+    @if (shouldShowIcon) {
+      <a
+        class="block nav-link text-danger text-nowrap"
+        [strongRoute]="websiteStatusRoute"
+        [ngbTooltip]="
+          config.settings.brand.long +
+          ' is experiencing a temporary loss of services. ' +
+          'Some parts of the website may not work.'
+        "
+      >
+        <fa-icon
+          class="website-status-warning"
+          [icon]="['fas', 'triangle-exclamation']"
+        ></fa-icon>
+      </a>
+    }
   `,
   standalone: false
 })

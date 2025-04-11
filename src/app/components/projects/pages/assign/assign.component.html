@@ -1,4 +1,4 @@
-<ng-container *ngIf="!error">
+@if (!error) {
   <h1>{{ project.name }}</h1>
 
   <h2>Assign Sites</h2>
@@ -58,6 +58,8 @@
   </ngx-datatable>
 
   <baw-form submitLabel="Update" (onSubmit)="onSubmit()"></baw-form>
-</ng-container>
+}
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
+}

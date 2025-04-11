@@ -13,26 +13,26 @@ import { User } from "@models/User";
   selector: "baw-model-link",
   template: `
     <!-- Loading text -->
-    <ng-container *ngIf="model | isUnresolved; else resolved">
+    @if (model | isUnresolved) {
       <ng-content select="#unresolved"></ng-content>
-    </ng-container>
-
-    <ng-template #resolved>
+    } @else {
       <!-- Normal model with view url -->
-      <a *ngIf="!isGhostUser && hasViewUrl" [bawUrl]="model.viewUrl">
-        <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
-      </a>
+      @if (!isGhostUser && hasViewUrl) {
+        <a [bawUrl]="model.viewUrl">
+          <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
+        </a>
+      }
 
       <!-- Abstract Model without view url -->
-      <ng-container *ngIf="!isGhostUser && !hasViewUrl">
+      @if (!isGhostUser && !hasViewUrl) {
         <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
-      </ng-container>
+      }
 
       <!-- Ghost user model -->
-      <ng-container *ngIf="isGhostUser">
+      @if (isGhostUser) {
         <ng-content select="#ghost"></ng-content>
-      </ng-container>
-    </ng-template>
+      }
+    }
 
     <ng-template #modelTemplate>
       <ng-content select="#model"></ng-content>

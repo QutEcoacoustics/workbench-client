@@ -9,23 +9,24 @@ import { FieldWrapper } from "@ngx-formly/core";
   selector: "baw-horizontal-wrapper",
   template: `
     <div class="form-group row">
-      <label
-        [attr.for]="id"
-        class="col-sm-2 col-form-label"
-        *ngIf="props.label"
-      >
-        {{ props.label }}
-        <ng-container *ngIf="props.required && !props.hideRequiredMarker">
-          *
-        </ng-container>
-      </label>
+      @if (props.label) {
+        <label
+          [attr.for]="id"
+          class="col-sm-2 col-form-label"
+          >
+          {{ props.label }}
+          @if (props.required && !props.hideRequiredMarker) { * }
+        </label>
+      }
       <div class="col-sm-7">
         <ng-template #fieldComponent></ng-template>
       </div>
 
-      <div *ngIf="showError" class="col-sm-3 invalid-feedback d-block">
-        <formly-validation-message [field]="field"></formly-validation-message>
-      </div>
+      @if (showError) {
+        <div class="col-sm-3 invalid-feedback d-block">
+          <formly-validation-message [field]="field"></formly-validation-message>
+        </div>
+      }
     </div>
   `,
   standalone: false

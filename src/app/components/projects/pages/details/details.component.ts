@@ -60,7 +60,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-project",
   template: `
-    <ng-container *ngIf="project">
+    @if (project) {
       <h1>{{ project.name }}</h1>
       <div class="row mb-3">
         <div class="col-sm-4">
@@ -93,35 +93,44 @@ const projectKey = "project";
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <p *ngIf="!hasSites && !hasRegions && !loading" class="lead">
-        No additional data to display here, try adding sites to the project
-      </p>
+      @if (!hasSites && !hasRegions && !loading) {
+        <p class="lead">
+          No additional data to display here, try adding sites to the project
+        </p>
+      }
 
       <ul id="model-grid" class="list-group">
         <!-- Google Maps -->
-        <div *ngIf="hasSites || hasRegions || loading" class="item map">
-          <baw-site-map [project]="project"></baw-site-map>
-        </div>
+        @if (hasSites || hasRegions || loading) {
+          <div class="item map">
+            <baw-site-map [project]="project"></baw-site-map>
+          </div>
+        }
 
         <!-- Regions -->
-        <div *ngFor="let region of regions" class="item">
-          <baw-site-card [project]="project" [region]="region"></baw-site-card>
-        </div>
+        @for (region of regions; track region) {
+          <div class="item">
+            <baw-site-card [project]="project" [region]="region"></baw-site-card>
+          </div>
+        }
 
         <!-- Sites -->
-        <div *ngFor="let site of sites" class="item">
-          <baw-site-card [project]="project" [site]="site"></baw-site-card>
-        </div>
+        @for (site of sites; track site) {
+          <div class="item">
+            <baw-site-card [project]="project" [site]="site"></baw-site-card>
+          </div>
+        }
       </ul>
 
-      <ngb-pagination
-        *ngIf="displayPagination"
-        aria-label="Pagination Buttons"
-        class="mt-2 d-flex justify-content-end"
-        [collectionSize]="collectionSize"
-        [(page)]="page"
-      ></ngb-pagination>
-    </ng-container>
+      @if (displayPagination) {
+        <ngb-pagination
+          aria-label="Pagination Buttons"
+          class="mt-2 d-flex justify-content-end"
+          [collectionSize]="collectionSize"
+          [(page)]="page"
+        ></ngb-pagination>
+      }
+    }
 
     <div class="mb-3"></div>
   `,

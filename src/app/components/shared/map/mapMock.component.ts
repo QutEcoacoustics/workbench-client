@@ -6,16 +6,15 @@ import { sanitizeMapMarkers } from "./map.component";
 @Component({
   selector: "baw-map",
   template: `
-    <ng-container *ngIf="hasMarkers; else placeholderMap">
+    @if (hasMarkers) {
       <div class="map-container">
-        <ng-container *ngFor="let marker of markers">
+        @for (marker of markers; track marker) {
           <p>Lat: {{ marker.position.lat }} Long: {{ marker.position.lng }}</p>
-        </ng-container>
+        }
       </div>
-    </ng-container>
-    <ng-template #placeholderMap>
+    } @else {
       <div class="map-placeholder"><span>No locations specified</span></div>
-    </ng-template>
+    }
   `,
   styleUrls: ["./map.component.scss"],
 })

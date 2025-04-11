@@ -26,13 +26,11 @@ import { asFormControl } from "./helper";
         (ngModelChange)="updateModel()"
       />
 
-      <div
-        *ngIf="latitudeError"
-        class="invalid-feedback"
-        style="display: block;"
-      >
-        {{ getError() }}
-      </div>
+      @if (latitudeError) {
+        <div class="invalid-feedback" style="display: block;">
+          {{ getError() }}
+        </div>
+      }
     </div>
 
     <div class="form-group">
@@ -49,13 +47,11 @@ import { asFormControl } from "./helper";
         (ngModelChange)="updateModel()"
       />
 
-      <div
-        *ngIf="longitudeError"
-        class="invalid-feedback"
-        style="display: block;"
-      >
-        {{ getError() }}
-      </div>
+      @if (longitudeError) {
+        <div class="invalid-feedback" style="display: block;">
+          {{ getError() }}
+        </div>
+      }
 
       <input
         type="hidden"

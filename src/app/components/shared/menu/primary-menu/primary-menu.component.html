@@ -5,22 +5,26 @@
 >
   <!-- Left aligned navigation links -->
   <ul class="navbar-nav me-auto">
-    <ng-container *ngFor="let link of links">
-      <baw-header-item
-        *ngIf="isHeaderItem(link)"
-        [link]="link"
-      ></baw-header-item>
-      <baw-header-dropdown
-        *ngIf="isHeaderDropdown(link)"
-        [label]="link.label"
-        [links]="link.items"
-      ></baw-header-dropdown>
-    </ng-container>
+    @for (link of links; track link) {
+      @if (isHeaderItem(link)) {
+        <baw-header-item
+          [link]="link"
+        ></baw-header-item>
+      }
+      @if (isHeaderDropdown(link)) {
+        <baw-header-dropdown
+          [label]="link.label"
+          [links]="link.items"
+        ></baw-header-dropdown>
+      }
+    }
   </ul>
 
   <!-- Right aligned links -->
   <ul class="navbar-nav">
-    <baw-website-status-indicator *ngIf="!isSideNav"></baw-website-status-indicator>
+    @if (!isSideNav) {
+      <baw-website-status-indicator></baw-website-status-indicator>
+    }
 
     <ng-container
       *ngTemplateOutlet="user ? userTemplate : guestTemplate"
@@ -29,24 +33,25 @@
 </nav>
 
 <ng-template #guestTemplate>
-  <baw-header-item
-    *ngFor="let menuItem of [routes.register, routes.login]"
-    [link]="menuItem"
-  ></baw-header-item>
+  @for (menuItem of [routes.register, routes.login]; track menuItem) {
+    <baw-header-item [link]="menuItem"></baw-header-item>
+  }
 </ng-template>
 
 <ng-template #userTemplate>
   <!-- Admin toolbox -->
-  <li *ngIf="user.isAdmin" class="nav-item">
-    <a
-      id="admin-header-link"
-      class="nav-link"
-      strongRouteActive="active"
-      [strongRoute]="routes.admin.route"
-    >
-      <fa-icon [icon]="routes.admin.icon"></fa-icon>
-    </a>
-  </li>
+  @if (user.isAdmin) {
+    <li class="nav-item">
+      <a
+        id="admin-header-link"
+        class="nav-link"
+        strongRouteActive="active"
+        [strongRoute]="routes.admin.route"
+      >
+        <fa-icon [icon]="routes.admin.icon"></fa-icon>
+      </a>
+    </li>
+  }
 
   <!-- Profile photo -->
   <li class="nav-item">

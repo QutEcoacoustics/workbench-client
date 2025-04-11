@@ -26,15 +26,16 @@ const tagGroupKey = "tagGroup";
 @Component({
   selector: "baw-admin-tag-groups-edit",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        [title]="title"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

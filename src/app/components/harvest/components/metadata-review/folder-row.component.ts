@@ -29,11 +29,12 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
         <fa-icon
           [icon]="row.isOpen ? icons.folderOpen : icons.folderClosed"
         ></fa-icon>
-        <fa-layers-counter
-          *ngIf="!row.isRoot"
-          class="text-light fa-custom-counter"
-          [content]="report.itemsTotal ?? 0 | number"
-        ></fa-layers-counter>
+        @if (!row.isRoot) {
+          <fa-layers-counter
+            class="text-light fa-custom-counter"
+            [content]="report.itemsTotal ?? 0 | number"
+          ></fa-layers-counter>
+        }
       </fa-layers>
       <span>
         {{ row.path }}
@@ -41,31 +42,32 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
     </div>
 
     <!-- Create Mapping -->
-    <div *ngIf="!mapping" class="grid-table-item create-mapping">
-      <button
-        class="btn btn-sm btn-outline-primary"
-        (click)="createMapping(row)"
-      >
-        Change Site or UTC for folder
-      </button>
-    </div>
+    @if (!mapping) {
+      <div class="grid-table-item create-mapping">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="createMapping(row)"
+          >
+          Change Site or UTC for folder
+        </button>
+      </div>
+    }
 
-    <ng-container *ngIf="mapping">
+    @if (mapping) {
       <!-- Site Selector -->
       <div class="grid-table-item">
-        <baw-loading
-          *ngIf="mapping.site | isUnresolved; else siteSelector"
-          size="sm"
-        ></baw-loading>
-
-        <ng-template #siteSelector>
+        @if (mapping.site | isUnresolved) {
+          <baw-loading
+            size="sm"
+          ></baw-loading>
+        } @else {
           <baw-harvest-site-selector
             class="w-100"
             [project]="project"
             [site]="mapping.site"
             (siteIdChange)="setSite(mapping, $event)"
           ></baw-harvest-site-selector>
-        </ng-template>
+        }
       </div>
 
       <!-- UTC Offset -->
@@ -85,42 +87,48 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
           (checkedChange)="setIsRecursive(mapping, $event)"
         ></baw-checkbox>
       </div>
-    </ng-container>
+    }
 
     <!-- Issue Icons -->
     <div class="grid-table-item">
-      <div *ngIf="!row.isRoot" class="icon-wrapper">
-        <span
-          *ngIf="harvestItem.hasItemsInvalidFixable"
-          class="badge text-bg-warning pointer"
-          (click)="toggleFolder.emit()"
-        >
-          <fa-icon [icon]="icons.warning"></fa-icon>
-          {{ report.itemsInvalidFixable | number }}
-        </span>
-        <span
-          *ngIf="harvestItem.hasItemsInvalidNotFixable"
-          class="badge text-bg-danger text-light pointer"
-          (click)="toggleFolder.emit()"
-        >
-          <fa-icon [icon]="icons.failure"></fa-icon>
-          {{ report.itemsInvalidNotFixable | number }}
-        </span>
-        <span
-          *ngIf="harvestItem.hasItemsErrored"
-          class="badge text-bg-dark pointer"
-          (click)="toggleFolder.emit()"
-        >
-          <fa-icon [icon]="icons.errorCircle"></fa-icon>
-          {{ report.itemsErrored | number }}
-        </span>
-        <fa-icon
-          *ngIf="!row.harvestItem.hasItemsInvalid"
-          class="text-success pointer"
-          [icon]="['fas', 'circle-check']"
-          (click)="toggleFolder.emit()"
-        ></fa-icon>
-      </div>
+      @if (!row.isRoot) {
+        <div class="icon-wrapper">
+          @if (harvestItem.hasItemsInvalidFixable) {
+            <span
+              class="badge text-bg-warning pointer"
+              (click)="toggleFolder.emit()"
+            >
+              <fa-icon [icon]="icons.warning"></fa-icon>
+              {{ report.itemsInvalidFixable | number }}
+            </span>
+          }
+          @if (harvestItem.hasItemsInvalidNotFixable) {
+            <span
+              class="badge text-bg-danger text-light pointer"
+              (click)="toggleFolder.emit()"
+            >
+              <fa-icon [icon]="icons.failure"></fa-icon>
+              {{ report.itemsInvalidNotFixable | number }}
+            </span>
+          }
+          @if (harvestItem.hasItemsErrored) {
+            <span
+              class="badge text-bg-dark pointer"
+              (click)="toggleFolder.emit()"
+            >
+              <fa-icon [icon]="icons.errorCircle"></fa-icon>
+              {{ report.itemsErrored | number }}
+            </span>
+          }
+          @if (!row.harvestItem.hasItemsInvalid) {
+            <fa-icon
+              class="text-success pointer"
+              [icon]="['fas', 'circle-check']"
+              (click)="toggleFolder.emit()"
+            ></fa-icon>
+          }
+        </div>
+      }
     </div>
   `,
   styleUrls: ["folder-row.component.scss"],

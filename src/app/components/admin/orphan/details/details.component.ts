@@ -20,10 +20,12 @@ const siteKey = "site";
 @Component({
   selector: "baw-admin-orphan",
   template: `
-    <div *ngIf="!failure">
-      <h1>Orphan Site Details</h1>
-      <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
-    </div>
+    @if (!failure) {
+      <div>
+        <h1>Orphan Site Details</h1>
+        <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
+      </div>
+    }
   `,
   standalone: false
 })

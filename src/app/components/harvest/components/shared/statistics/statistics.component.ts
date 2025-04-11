@@ -15,14 +15,15 @@ export interface Statistic {
   selector: "baw-harvest-statistics",
   template: `
     <div class="statistics">
-      <baw-harvest-statistic-group
-        *ngFor="let statGroup of statistics"
-        [statisticGroup]="statGroup"
-      ></baw-harvest-statistic-group>
-
+      @for (statGroup of statistics; track statGroup) {
+        <baw-harvest-statistic-group
+          [statisticGroup]="statGroup"
+        ></baw-harvest-statistic-group>
+      }
+    
       <ng-content></ng-content>
     </div>
-  `,
+    `,
   styles: [`
     .statistics {
       margin-bottom: 2rem;

@@ -25,12 +25,12 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     <div class="modal-footer justify-content-start">
       <div>
         @if (isDirty) {
-        <p>
-          <strong>
-            You have unapplied search filters. If you update the verification
-            grid, your progress will be lost.
-          </strong>
-        </p>
+          <p>
+            <strong>
+              You have unapplied search filters. If you update the verification
+              grid, your progress will be lost.
+            </strong>
+          </p>
         }
 
         <div class="mt-2">

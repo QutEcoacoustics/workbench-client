@@ -18,12 +18,14 @@ import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
         [innerText]="label"
       ></button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
-        <a *ngFor="let link of links" ngbDropdownItem [href]="getHref(link)">
-          {{ link.label }}
-        </a>
+        @for (link of links; track link) {
+          <a ngbDropdownItem [href]="getHref(link)">
+            {{ link.label }}
+          </a>
+        }
       </div>
     </li>
-  `,
+    `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })

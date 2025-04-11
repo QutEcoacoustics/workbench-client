@@ -1,12 +1,11 @@
 <!-- TODO Show something when not meta review stage -->
-<ng-container *ngIf="isMetaReviewStage$ | async">
+@if (isMetaReviewStage$ | async) {
   <h5>
     <fa-icon class="pe-1" [icon]="['fas', 'circle-info']"></fa-icon>Instructions
   </h5>
 
   <p>You can open and close folders by clicking on them.</p>
-
-  <ng-container *ngIf="showFixableIssues">
+  @if (showFixableIssues) {
     <hr />
 
     <h5>
@@ -19,27 +18,33 @@
       however if you do, they will not be included in the final upload.
     </p>
 
-    <p *ngIf="hasError('noSiteId') || hasError('ambiguousDateTime')">
-      Some files require more information from you. Ensure you have set the site
-      and UTC offset for their folder.
-    </p>
+    @if (hasError('noSiteId') || hasError('ambiguousDateTime')) {
+      <p>
+        Some files require more information from you. Ensure you have set the site
+        and UTC offset for their folder.
+      </p>
+    }
 
-    <p *ngIf="hasError('missingDate')">
-      Some files have missing dates. To fix, go back to the upload stage, and
-      ensure their filenames include a
-      <a target="_blank" [href]="filenameGuide | safe: 'url'">date</a>.
-    </p>
+    @if (hasError('missingDate')) {
+      <p>
+        Some files have missing dates. To fix, go back to the upload stage, and
+        ensure their filenames include a
+        <a target="_blank" [href]="filenameGuide | safe: 'url'">date</a>.
+      </p>
+    }
 
-    <p *ngIf="hasError('futureDate')">
-      Some files have dates in the future. To fix, go back to the upload stage,
-      and
-      <a target="_blank" [href]="filenameGuide | safe: 'url'"
-        >rename the files</a
-      >.
-    </p>
-  </ng-container>
+    @if (hasError('futureDate')) {
+      <p>
+        Some files have dates in the future. To fix, go back to the upload stage,
+        and
+        <a target="_blank" [href]="filenameGuide | safe: 'url'">
+          rename the files
+        </a>.
+      </p>
+    }
+  }
 
-  <ng-container *ngIf="showNonFixableIssues">
+  @if (showNonFixableIssues) {
     <hr />
 
     <h5>
@@ -55,39 +60,43 @@
 
     <p>
       If you think there is nothing wrong with your files,
-      <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a
-      >, and we will investigate.
+      <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>,
+      and we will investigate.
     </p>
 
-    <p *ngIf="hasError('invalidExtension')">
-      Some files have invalid extensions, these may not be audio files.
-      Supported file types include: mp3, webm, ogg, flac, and wav. Convert the
-      files to a supported file type, and re-upload.
-    </p>
+    @if (hasError('invalidExtension')) {
+      <p>
+        Some files have invalid extensions, these may not be audio files.
+        Supported file types include: mp3, webm, ogg, flac, and wav. Convert the
+        files to a supported file type, and re-upload.
+      </p>
+    }
 
-    <p *ngIf="corruptedFile">
-      Some files are corrupted, check against the original copy to determine if
-      it was an upload error. If this was an upload error, re-upload it.
-    </p>
+    @if (corruptedFile) {
+      <p>
+        Some files are corrupted, check against the original copy to determine if
+        it was an upload error. If this was an upload error, re-upload it.
+      </p>
+    }
 
-    <p *ngIf="hasError('duplicateFile') || hasError('duplicateFileInHarvest')">
-      Some files are duplicates of previously uploaded files indicating an
-      accidental upload. You should go back to the upload stage and delete the
-      duplicates.<br />If you have duplicates in <i>Site A</i> and in
-      <i>Site B</i> we'll reject both. We don't know for sure which site they're
-      meant to be in.
-    </p>
+    @if (hasError('duplicateFile') || hasError('duplicateFileInHarvest')) {
+      <p>
+        Some files are duplicates of previously uploaded files indicating an
+        accidental upload. You should go back to the upload stage and delete the
+        duplicates.<br />If you have duplicates in <i>Site A</i> and in
+        <i>Site B</i> we'll reject both. We don't know for sure which site they're
+        meant to be in.
+      </p>
+    }
 
-    <p
-      *ngIf="
-        hasError('overlappingFiles') || hasError('overlappingFilesInHarvest')
-      "
-    >
-      Some recordings are overlapping other recordings. This may be a sign of
-      accidentally setting the wrong site on a folder, or a fault in the
-      recording sensor.
-    </p>
-  </ng-container>
+    @if (hasError('overlappingFiles') || hasError('overlappingFilesInHarvest')) {
+      <p>
+        Some recordings are overlapping other recordings. This may be a sign of
+        accidentally setting the wrong site on a folder, or a fault in the
+        recording sensor.
+      </p>
+    }
+  }
 
   <div class="mb-3"></div>
-</ng-container>
+}

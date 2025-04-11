@@ -18,15 +18,16 @@ import schema from "../../project.schema.json";
 @Component({
   selector: "baw-projects-new",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Project"
-      [model]="model"
-      [fields]="fields"
-      submitLabel="Submit"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="New Project"
+        [model]="model"
+        [fields]="fields"
+        submitLabel="Submit"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

@@ -16,16 +16,19 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
         [indentation]="row.parentFolder.indentation"
       ></baw-meta-review-whitespace>
 
-      <baw-loading *ngIf="row.isLoading" class="m-auto"></baw-loading>
+      @if (row.isLoading) {
+        <baw-loading class="m-auto"></baw-loading>
+      }
 
-      <button
-        *ngIf="!row.isLoading"
-        class="btn btn-sm btn-outline-primary m-auto load-more"
-        (click)="loadMore.emit()"
-      >
-        {{ row.parentFolder.isRoot ? "Load More" : "Load more from " }}
-        <span class="font-monospace">{{ row.parentFolder.path }}</span>
-      </button>
+      @if (!row.isLoading) {
+        <button
+          class="btn btn-sm btn-outline-primary m-auto load-more"
+          (click)="loadMore.emit()"
+        >
+          {{ row.parentFolder.isRoot ? "Load More" : "Load more from " }}
+          <span class="font-monospace">{{ row.parentFolder.path }}</span>
+        </button>
+      }
     </div>
   `,
   styles: [`

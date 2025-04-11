@@ -25,11 +25,13 @@ import { map } from "rxjs/operators";
         </div>
 
         <ul class="nav mb-0">
-          <li *ngIf="region" class="nav-item" id="points">
-            <span class="badge rounded-pill text-bg-highlight my-1">
-              {{ numPoints() }} {{ numPoints() === 1 ? "Point" : "Points" }}
-            </span>
-          </li>
+          @if (region) {
+            <li class="nav-item" id="points">
+              <span class="badge rounded-pill text-bg-highlight my-1">
+                {{ numPoints() }} {{ numPoints() === 1 ? "Point" : "Points" }}
+              </span>
+            </li>
+          }
 
           <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
         </ul>
@@ -37,22 +39,23 @@ import { map } from "rxjs/operators";
     </li>
 
     <ng-template #noAudioTemplate>
-      <ng-container *ngIf="hasNoAudio$ | withLoading | async as hasNoAudio">
+      @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
         <li>
-          <span
-            *ngIf="hasNoAudio.value !== false"
-            id="no-audio"
-            class="badge rounded-pill text-bg-secondary my-1"
-          >
-            <baw-loading
-              *ngIf="hasNoAudio.loading"
-              size="sm"
-              color="light"
-            ></baw-loading>
-            <span *ngIf="hasNoAudio.value">No audio yet</span>
-          </span>
+          @if (hasNoAudio.value !== false) {
+            <span
+              id="no-audio"
+              class="badge rounded-pill text-bg-secondary my-1"
+              >
+              @if (hasNoAudio.loading) {
+                <baw-loading size="sm" color="light"></baw-loading>
+              }
+              @if (hasNoAudio.value) {
+                <span>No audio yet</span>
+              }
+            </span>
+          }
         </li>
-      </ng-container>
+      }
     </ng-template>
   `,
   styleUrls: ["./site-card.component.scss"],

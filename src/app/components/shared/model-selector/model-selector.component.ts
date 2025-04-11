@@ -30,9 +30,11 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-model-selector",
   template: `
     <div class="input-group">
-      <div *ngIf="label" class="input-group-prepend input-group-text">
-        {{ label }}
-      </div>
+      @if (label) {
+        <div class="input-group-prepend input-group-text">
+          {{ label }}
+        </div>
+      }
       <input
         #selector="ngbTypeahead"
         type="text"

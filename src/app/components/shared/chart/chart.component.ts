@@ -19,7 +19,7 @@ import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
 const customFormatterName = "customFormatter";
 
-// this component exists so we can render vega-lite charts in an *ngFor loop
+// this component exists so we can render vega-lite charts in an @for loop
 // and use the same schema to render multiple charts with different data
 // and provide a unified error message format. All of the above cannot be done with vega-lite alone
 @Component({

@@ -7,12 +7,14 @@
   and refresh this page.
 </p>
 
-<p *ngIf="harvest.report.itemsErrored > 0" class="alert alert-danger">
-  An unexpected error occurred in
-  {{ harvest.report.itemsErrored | number }} file(s). Please contact us so we
-  can investigate the issue. You can choose to continue the harvest, but any
-  files that produced errors will be ignored.
-</p>
+@if (harvest.report.itemsErrored > 0) {
+  <p class="alert alert-danger">
+    An unexpected error occurred in
+    {{ harvest.report.itemsErrored | number }} file(s). Please contact us so we
+    can investigate the issue. You can choose to continue the harvest, but any
+    files that produced errors will be ignored.
+  </p>
+}
 
 <baw-harvest-statistics [statistics]="statistics"></baw-harvest-statistics>
 
@@ -34,44 +36,48 @@
   <!-- Re-use the progress animation from ngx-datatable -->
   <div class="grid-table-header table-progress">
     <div class="wrapper">
-      <div *ngIf="tableLoading" class="progress-linear">
-        <div class="container">
-          <div class="bar"></div>
+      @if (tableLoading) {
+        <div class="progress-linear">
+          <div class="container">
+            <div class="bar"></div>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 
-  <div
-    *ngFor="let row of rows.toArray(); let even = even; trackBy: trackByRow"
-    class="grid-table-row"
-  >
-    <baw-meta-review-folder-row
-      *ngIf="isFolder(row)"
-      class="display-contents"
-      [harvest]="harvest"
-      [project]="project"
-      [row]="row"
-      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
-      (toggleFolder)="toggleRow(row)"
-      (mappingsChange)="updateHarvestWithMappingChange()"
-    ></baw-meta-review-folder-row>
+  @for (row of rows.toArray(); track trackByRow($index, row); let even = $even) {
+    <div class="grid-table-row">
+      @if (isFolder(row)) {
+        <baw-meta-review-folder-row
+          class="display-contents"
+          [harvest]="harvest"
+          [project]="project"
+          [row]="row"
+          [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+          (toggleFolder)="toggleRow(row)"
+          (mappingsChange)="updateHarvestWithMappingChange()"
+        ></baw-meta-review-folder-row>
+      }
 
-    <baw-meta-review-file-row
-      *ngIf="isFile(row)"
-      class="display-contents"
-      [row]="row"
-      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
-    ></baw-meta-review-file-row>
+      @if (isFile(row)) {
+        <baw-meta-review-file-row
+          class="display-contents"
+          [row]="row"
+          [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+        ></baw-meta-review-file-row>
+      }
 
-    <baw-meta-review-load-more-row
-      *ngIf="isLoadMore(row)"
-      class="display-contents"
-      [row]="row"
-      [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
-      (loadMore)="toggleRow(row)"
-    ></baw-meta-review-load-more-row>
-  </div>
+      @if (isLoadMore(row)) {
+        <baw-meta-review-load-more-row
+          class="display-contents"
+          [row]="row"
+          [ngStyle]="{ backgroundColor: even ? '#f2f2f2' : 'white' }"
+          (loadMore)="toggleRow(row)"
+        ></baw-meta-review-load-more-row>
+      }
+    </div>
+  }
 </div>
 
 <div class="mt-3 d-flex justify-content-between">
@@ -86,9 +92,9 @@
     </button>
 
     <button
-    class="btn btn-outline-primary"
-    [disabled]="transitioningStage"
-    (click)="upload(uploadModal)"
+      class="btn btn-outline-primary"
+      [disabled]="transitioningStage"
+      (click)="upload(uploadModal)"
     >
       Upload more files
     </button>
@@ -96,14 +102,15 @@
 
   <!-- TODO Modal popup when hasUnsavedChanges -->
   <div>
-    <button
-      *ngIf="harvest.isMappingsDirty"
-      class="btn btn-primary"
-      [disabled]="transitioningStage"
-      (click)="extraction(extractionModal)"
-    >
-      Check changes
-    </button>
+    @if (harvest.isMappingsDirty) {
+      <button
+        class="btn btn-primary"
+        [disabled]="transitioningStage"
+        (click)="extraction(extractionModal)"
+      >
+        Check changes
+      </button>
+    }
 
     <button
       id="harvest-continue-button"

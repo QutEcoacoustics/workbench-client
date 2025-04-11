@@ -32,20 +32,21 @@ import { defaultDebounceTime } from "src/app/app.helper";
   selector: "baw-harvest-site-selector",
   template: `
     <!-- Show site name and link if exists -->
-    <div *ngIf="site" class="site-label">
-      <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
-
-      <div>
-        <button
-          type="button"
-          class="btn btn-sm p-0 me-1"
-          [ngbTooltip]="editTooltip"
-          (click)="resetSite()"
-        >
-          <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
-        </button>
+    @if (site) {
+      <div class="site-label">
+        <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm p-0 me-1"
+            [ngbTooltip]="editTooltip"
+            (click)="resetSite()"
+            >
+            <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
+          </button>
+        </div>
       </div>
-    </div>
+    }
 
     <!-- Show user input if no site -->
     <div [class.d-none]="site" class="input-group input-group-sm">

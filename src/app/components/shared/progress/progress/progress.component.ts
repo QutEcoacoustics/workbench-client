@@ -4,8 +4,12 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
   selector: "baw-progress",
   template: `
     <div class="progress">
-      <div *ngIf="showZero" class="progress-bar zero w-100">0%</div>
-      <ng-content *ngIf="!showZero"></ng-content>
+      @if (showZero) {
+        <div class="progress-bar zero w-100">0%</div>
+      }
+      @if (!showZero) {
+        <ng-content></ng-content>
+      }
     </div>
   `,
   styles: [`

@@ -19,7 +19,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 @Component({
   selector: "baw-error-handler",
   template: `
-    <ng-container *ngIf="error && !hideErrorDetails">
+    @if (error && !hideErrorDetails) {
       <h1>{{ getTitle() }}</h1>
 
       <p>{{ error.message }}</p>
@@ -28,7 +28,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
         <a [strongRoute]="reportProblem">Report Problems</a> page and report the
         issue.
       </p>
-    </ng-container>
+    }
   `,
   standalone: false
 })

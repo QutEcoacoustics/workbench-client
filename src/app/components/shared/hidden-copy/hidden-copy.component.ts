@@ -19,7 +19,7 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
         <fa-icon [icon]="['fas', 'eye']"></fa-icon>
       </button>
 
-      <pre class="text-center form-control">{{ visible ? content : "..." }}<ng-content *ngIf="visible"></ng-content></pre>
+      <pre class="text-center form-control">{{ visible ? content : "..." }}@if (visible) {<ng-content></ng-content>}</pre>
 
       <!--
         We use a manual trigger for the "Copied!" tooltip so that so that it is

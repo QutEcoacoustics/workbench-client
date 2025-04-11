@@ -42,15 +42,17 @@ interface TimezoneModel {
           <p>
             The annotations in the CSV will have all their dates and times set
             to a time zone of your choice.
-            <ng-container *ngIf="site">
+            @if (site) {
               The default time zone is the local time for the
               {{ region ? "point" : "site" }} where the audio was recorded.
-            </ng-container>
+            }
           </p>
-          <p *ngIf="site">
-            For example, annotations created for audio from Brisbane will have
-            dates and times set to AEST (+10:00).
-          </p>
+          @if (site) {
+            <p>
+              For example, annotations created for audio from Brisbane will have
+              dates and times set to AEST (+10:00).
+            </p>
+          }
           <p>
             If you have recordings from Brisbane and Perth, which time
             zone do we choose for all downloaded events?

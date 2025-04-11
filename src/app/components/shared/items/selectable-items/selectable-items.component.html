@@ -1,41 +1,47 @@
-<h3 *ngIf="title">
-  {{ title }}
-</h3>
-<p *ngIf="description">
-  {{ description }}
-</p>
+@if (title) {
+  <h3>
+    {{ title }}
+  </h3>
+}
 
-<ng-container *ngIf="inline; else list">
-  <button
-    *ngFor="let option of options; let i = index"
-    class="btn btn-sm btn-default me-1"
-    [disabled]="isSelected(i) || disabled"
-    (click)="changeSelection(i)"
-  >
-    {{ option.label }}
+@if (description) {
+  <p>
+    {{ description }}
+  </p>
+}
 
-    <fa-icon
-      *ngIf="isSelected(i) && !disabled"
-      class="text-success"
-      [icon]="['fas', 'check']"
-    ></fa-icon>
-  </button>
-</ng-container>
-<ng-template #list>
-  <div class="list-group">
+@if (inline) {
+  @for (option of options; track option; let i = $index) {
     <button
-      *ngFor="let option of options; let i = index"
-      class="list-group-item d-flex justify-content-between align-items-center"
-      [disabled]="isSelected(i)"
+      class="btn btn-sm btn-default me-1"
+      [disabled]="isSelected(i) || disabled"
       (click)="changeSelection(i)"
     >
       {{ option.label }}
-
-      <fa-icon
-        *ngIf="isSelected(i)"
-        class="text-success"
-        [icon]="['fas', 'check']"
-      ></fa-icon>
+      @if (isSelected(i) && !disabled) {
+        <fa-icon
+          class="text-success"
+          [icon]="['fas', 'check']"
+        ></fa-icon>
+      }
     </button>
+  }
+} @else {
+  <div class="list-group">
+    @for (option of options; track option; let i = $index) {
+      <button
+        class="list-group-item d-flex justify-content-between align-items-center"
+        [disabled]="isSelected(i)"
+        (click)="changeSelection(i)"
+      >
+        {{ option.label }}
+        @if (isSelected(i)) {
+          <fa-icon
+            class="text-success"
+            [icon]="['fas', 'check']"
+          ></fa-icon>
+        }
+      </button>
+    }
   </div>
-</ng-template>
+}

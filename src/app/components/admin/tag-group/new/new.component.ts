@@ -18,15 +18,16 @@ import schema from "../tag-group.schema.json";
 @Component({
   selector: "baw-admin-tag-groups-new",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Tag Group"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="New Tag Group"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

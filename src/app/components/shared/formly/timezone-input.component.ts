@@ -21,9 +21,11 @@ import { asFormControl } from "./helper";
   selector: "baw-timezone-input",
   template: `
     <div class="form-group">
-      <label *ngIf="props.label" [for]="field.id">
-        {{ props.label + (props.required ? " *" : "") }}
-      </label>
+      @if (props.label) {
+        <label [for]="field.id">
+          {{ props.label + (props.required ? " *" : "") }}
+        </label>
+      }
 
       <ng-template #resultTemplate let-r="result" let-t="term">
         <ngb-highlight
@@ -53,12 +55,11 @@ import { asFormControl } from "./helper";
 
         <div class="input-group-append">
           <span class="input-group-text">
-            <ng-container *ngIf="timezone; else invalidTimezone">
+            @if (timezone) {
               {{ timezone.countryName || timezone.abbreviation }}
-            </ng-container>
-            <ng-template #invalidTimezone>
+            } @else {
               <fa-icon [icon]="invalidIcon" [style.color]="'red'"></fa-icon>
-            </ng-template>
+            }
           </span>
         </div>
       </div>

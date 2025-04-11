@@ -13,7 +13,7 @@ import { ConfigService } from "@services/config/config.service";
 @Component({
   selector: "baw-wip",
   template: `
-    <ng-container *ngIf="showWipContent; else placeholder">
+    @if (showWipContent) {
       <div class="wip-wrapper" ngbTooltip="This feature is a work in progress">
         <ng-container *ngTemplateOutlet="icon"></ng-container>
 
@@ -21,9 +21,7 @@ import { ConfigService } from "@services/config/config.service";
           <ng-content></ng-content>
         </div>
       </div>
-    </ng-container>
-
-    <ng-template #placeholder>
+    } @else {
       <div
         class="wip-placeholder"
         ngbTooltip="This feature is a work in progress"
@@ -33,7 +31,7 @@ import { ConfigService } from "@services/config/config.service";
           This section is a work in progress. Expect new things here soon!
         </p>
       </div>
-    </ng-template>
+    }
 
     <ng-template #icon>
       <div class="wip-icon">

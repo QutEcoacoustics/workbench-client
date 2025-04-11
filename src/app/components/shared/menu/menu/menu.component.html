@@ -1,63 +1,70 @@
-<nav
-  *ngIf="hasLinks() || hasWidgets()"
-  class="navbar navbar-expand-lg text-bg-light p-0 pt-2"
-  [class.side-nav]="isSideNav"
-  [class.fullscreen]="menuService.isFullscreen"
->
-  <ul class="nav align-items-center">
-    <!-- Show hr on action menu when fullscreen -->
-    <hr *ngIf="!isSecondaryMenu() && isSideNav" class="w-100" />
+@if (hasLinks() || hasWidgets()) {
+  <nav
+    class="navbar navbar-expand-lg text-bg-light p-0 pt-2"
+    [class.side-nav]="isSideNav"
+    [class.fullscreen]="menuService.isFullscreen"
+  >
+    <ul class="nav align-items-center">
+      <!-- Show hr on action menu when fullscreen -->
+      @if (!isSecondaryMenu() && isSideNav) {
+        <hr class="w-100" />
+      }
 
-    <li class="nav-item clearfix">
-      <h6 class="float-start nav-link disabled m-0">
-        <ng-container *ngIf="title; else linksTitle">
-          <fa-icon [icon]="title.icon"></fa-icon>
-          {{ title.label | uppercase }}
-        </ng-container>
-        <ng-template #linksTitle>MENU</ng-template>
-      </h6>
-    </li>
+      <li class="nav-item clearfix">
+        <h6 class="float-start nav-link disabled m-0">
+          @if (title) {
+            <fa-icon [icon]="title.icon"></fa-icon>
+            {{ title.label | uppercase }}
+          } @else {
+            MENU
+          }
+        </h6>
+      </li>
 
-    <hr *ngIf="hasLinks()" class="w-100" />
+      @if (hasLinks()) {
+        <hr class="w-100" />
+      }
 
-    <!-- Normal links -->
-    <li
-      *ngFor="let link of formattedLinks; let i = index"
-      class="nav-item menu-link"
-      [style.padding-left]="calculateIndentation(link) + 'em'"
-    >
-      <!-- Modal widget button -->
-      <ng-container *ngIf="isModal(link)">
-        <baw-menu-button
-          class="button"
-          [link]="link"
-          [tooltip]="link.tooltip(user)"
-        ></baw-menu-button>
-      </ng-container>
+      <!-- Normal links -->
+      @for (link of formattedLinks; track link; let i = $index) {
+        <li
+          class="nav-item menu-link"
+          [style.padding-left]="calculateIndentation(link) + 'em'"
+        >
+          <!-- Modal widget button -->
+          @if (isModal(link)) {
+            <baw-menu-button
+              class="button"
+              [link]="link"
+              [tooltip]="link.tooltip(user)"
+            ></baw-menu-button>
+          }
 
-      <!-- Action menu button-->
-      <ng-container *ngIf="isAction(link)">
-        <baw-menu-button
-          class="action"
-          [link]="link"
-          [tooltip]="link.tooltip(user)"
-        ></baw-menu-button>
-      </ng-container>
+          <!-- Action menu button-->
+          @if (isAction(link)) {
+            <baw-menu-button
+              class="action"
+              [link]="link"
+              [tooltip]="link.tooltip(user)"
+            ></baw-menu-button>
+          }
 
-      <!-- Internal/External menu buttons -->
-      <ng-container *ngIf="isInternalLink(link) || isExternalLink(link)">
-        <baw-menu-link
-          [link]="link"
-          [tooltip]="link.tooltip(user)"
-        ></baw-menu-link>
-      </ng-container>
-    </li>
+          <!-- Internal/External menu buttons -->
+          @if (isInternalLink(link) || isExternalLink(link)) {
+            <baw-menu-link
+              [link]="link"
+              [tooltip]="link.tooltip(user)"
+            ></baw-menu-link>
+          }
+        </li>
+      }
 
-    <hr class="w-100" />
+      <hr class="w-100" />
 
-    <!-- Widgets -->
-    <div id="widget">
-      <ng-container id="widgetContainer" bawMenuWidget></ng-container>
-    </div>
-  </ul>
-</nav>
+      <!-- Widgets -->
+      <div id="widget">
+        <ng-container id="widgetContainer" bawMenuWidget></ng-container>
+      </div>
+    </ul>
+  </nav>
+}

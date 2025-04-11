@@ -21,16 +21,17 @@ const userKey = "user";
 @Component({
   selector: "baw-my-edit",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="Profile Settings"
-      [model]="model"
-      [fields]="fields"
-      btnColor="warning"
-      submitLabel="Update"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="Profile Settings"
+        [model]="model"
+        [fields]="fields"
+        btnColor="warning"
+        submitLabel="Update"
+        [submitLoading]="loading"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

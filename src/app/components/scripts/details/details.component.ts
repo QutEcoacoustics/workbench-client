@@ -25,10 +25,12 @@ const scriptKey = "script";
 @Component({
   selector: "baw-admin-script",
   template: `
-    <div *ngIf="!failure">
-      <h1>Script Details</h1>
-      <baw-detail-view [fields]="fields" [model]="script"></baw-detail-view>
-    </div>
+    @if (!failure) {
+      <div>
+        <h1>Script Details</h1>
+        <baw-detail-view [fields]="fields" [model]="script"></baw-detail-view>
+      </div>
+    }
   `,
   standalone: false
 })

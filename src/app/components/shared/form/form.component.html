@@ -1,36 +1,44 @@
-<div
-  *ngIf="fields"
-  class="login-form ps-2 pe-2 pb-3"
-  [ngClass]="{ small: size === 'small' }"
->
-  <h2 *ngIf="title" class="text-center" [innerHTML]="title"></h2>
-  <small class="text-muted">
-    <h6 *ngIf="subTitle" [innerHTML]="subTitle"></h6>
-    <h6><ng-content select="#subTitle"></ng-content></h6>
-  </small>
+@if (fields) {
+  <div
+    class="login-form ps-2 pe-2 pb-3"
+    [ngClass]="{ small: size === 'small' }"
+  >
+    @if (title) {
+      <h2 class="text-center" [innerHTML]="title"></h2>
+    }
 
-  <div class="clearfix">
-    <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
-      <!-- Form -->
-      <formly-form
-        [form]="form"
-        [fields]="fields"
-        [model]="model"
-        (modelChange)="onModelChange($event)"
-      ></formly-form>
+    <small class="text-muted">
+      @if (subTitle) {
+        <h6 [innerHTML]="subTitle"></h6>
+      }
 
-      <!-- Right aligned submit button -->
-      <div class="clearfix">
-        <button
-          *ngIf="submitLabel"
-          type="submit"
-          class="btn float-end mt-3"
-          [ngClass]="'btn-' + btnColor"
-          [disabled]="!fields || submitLoading"
-        >
-          {{ submitLabel }}
-        </button>
-      </div>
-    </form>
+      <h6><ng-content select="#subTitle"></ng-content></h6>
+    </small>
+
+    <div class="clearfix">
+      <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
+        <!-- Form -->
+        <formly-form
+          [form]="form"
+          [fields]="fields"
+          [model]="model"
+          (modelChange)="onModelChange($event)"
+        ></formly-form>
+
+        <!-- Right aligned submit button -->
+        <div class="clearfix">
+          @if (submitLabel) {
+            <button
+              type="submit"
+              class="btn float-end mt-3"
+              [ngClass]="'btn-' + btnColor"
+              [disabled]="!fields || submitLoading"
+              >
+              {{ submitLabel }}
+            </button>
+          }
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+}
