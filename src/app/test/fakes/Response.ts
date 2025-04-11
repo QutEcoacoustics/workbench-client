@@ -1,9 +1,7 @@
 import { IResponse } from "@models/Response";
 import { modelData } from "@test/helpers/faker";
 
-export function generateResponse(
-  data?: Partial<IResponse>
-): Required<IResponse> {
+export function generateResponse(data?: Partial<IResponse>): Required<IResponse> {
   return {
     id: modelData.id(),
     data: modelData.notes(),

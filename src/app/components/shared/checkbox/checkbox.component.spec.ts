@@ -8,8 +8,8 @@ describe("CheckboxComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [CheckboxComponent],
-}).compileComponents();
+      imports: [CheckboxComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CheckboxComponent);
     component = fixture.componentInstance;
@@ -56,32 +56,28 @@ describe("CheckboxComponent", () => {
   it("should be checked", () => {
     component.checked = true;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement =
-      fixture.nativeElement.querySelector("input");
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector("input");
     expect(checkbox.checked).toBeTruthy();
   });
 
   it("should not be checked", () => {
     component.checked = false;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement =
-      fixture.nativeElement.querySelector("input");
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector("input");
     expect(checkbox.checked).toBeFalsy();
   });
 
   it("should be disabled", () => {
     component.disabled = true;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement =
-      fixture.nativeElement.querySelector("input");
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector("input");
     expect(checkbox.disabled).toBeTruthy();
   });
 
   it("should not be disabled", () => {
     component.disabled = false;
     fixture.detectChanges();
-    const checkbox: HTMLInputElement =
-      fixture.nativeElement.querySelector("input");
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector("input");
     expect(checkbox.disabled).toBeFalsy();
   });
 });

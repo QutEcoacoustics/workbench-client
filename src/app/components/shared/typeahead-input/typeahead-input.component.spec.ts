@@ -34,7 +34,7 @@ describe("TypeaheadInputComponent", () => {
 
     defaultFakeSites = Array.from(
       { length: modelData.datatype.number({ min: 3, max: 10 }) },
-      () => new Site(generateSite())
+      () => new Site(generateSite()),
     );
 
     mockSitesService = spectator.inject(SHALLOW_SITE.token);
@@ -45,12 +45,9 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
   }
 
-  const inputBox = (): HTMLInputElement =>
-    spectator.query<HTMLInputElement>("input");
-  const itemPills = (): HTMLSpanElement[] =>
-    spectator.queryAll<HTMLSpanElement>("span");
-  const dropdownOptions = (): HTMLButtonElement[] =>
-    spectator.queryAll<HTMLButtonElement>(".dropdown-item");
+  const inputBox = (): HTMLInputElement => spectator.query<HTMLInputElement>("input");
+  const itemPills = (): HTMLSpanElement[] => spectator.queryAll<HTMLSpanElement>("span");
+  const dropdownOptions = (): HTMLButtonElement[] => spectator.queryAll<HTMLButtonElement>(".dropdown-item");
   const selectedDropdownOption = (): HTMLButtonElement =>
     spectator.query<HTMLButtonElement>("button.dropdown-item.active");
 
@@ -101,10 +98,7 @@ describe("TypeaheadInputComponent", () => {
     spectator.component.multipleInputs = false;
     const numberOfActiveItems = 1;
 
-    spectator.component.value = defaultFakeSites.slice(
-      0,
-      defaultFakeSites.length - numberOfActiveItems
-    );
+    spectator.component.value = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
     spectator.detectChanges();
 
     const pillElements: HTMLSpanElement[] = itemPills();
@@ -115,10 +109,7 @@ describe("TypeaheadInputComponent", () => {
     spectator.component.multipleInputs = true;
     const numberOfActiveItems = 2;
 
-    spectator.component.value = defaultFakeSites.slice(
-      0,
-      defaultFakeSites.length - numberOfActiveItems
-    );
+    spectator.component.value = defaultFakeSites.slice(0, defaultFakeSites.length - numberOfActiveItems);
 
     spectator.detectChanges();
 
@@ -128,7 +119,7 @@ describe("TypeaheadInputComponent", () => {
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
         // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
-        (spectator.component.value[i] as Site).name
+        (spectator.component.value[i] as Site).name,
       );
     });
   });
@@ -185,25 +176,18 @@ describe("TypeaheadInputComponent", () => {
 
     // assert that the component only emitted the second site, and that the first site was removed
     expect(spectator.component.value).toHaveLength(0);
-    expect(spectator.component.modelChange.emit).toHaveBeenCalledWith([
-      siteToSelect,
-    ]);
+    expect(spectator.component.modelChange.emit).toHaveBeenCalledWith([siteToSelect]);
   }));
 
   it("should remove an item if a user clicks backspace on a pill", fakeAsync(() => {
     // the last element should be removed from the active items array when the backspace key is pressed
-    const expectedSites: Site[] = defaultFakeSites.slice(
-      0,
-      defaultFakeSites.length - 1
-    );
+    const expectedSites: Site[] = defaultFakeSites.slice(0, defaultFakeSites.length - 1);
 
     spectator.component.multipleInputs = true;
     spectator.component.value = defaultFakeSites;
 
     const inputBoxElement: HTMLInputElement = inputBox();
-    inputBoxElement.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "Backspace" })
-    );
+    inputBoxElement.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
     spectator.detectChanges();
     tick(defaultDebounceTime);
     spectator.detectChanges();

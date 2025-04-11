@@ -14,10 +14,7 @@ export interface IEventGroup {
   score: IEventScore;
 }
 
-export class EventGroup
-  extends AbstractModel<IEventGroup>
-  implements IEventGroup
-{
+export class EventGroup extends AbstractModel<IEventGroup> implements IEventGroup {
   public provenanceId: Id;
   public tagId: Id;
   public detections: number;

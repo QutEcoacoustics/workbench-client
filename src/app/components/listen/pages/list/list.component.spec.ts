@@ -5,13 +5,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ListenComponent } from "./list.component";
 
 describe("ListenComponent", () => {
-  validateBawClientPage(
-    listenRoute,
-    ListenComponent,
-    [ListenModule],
-    "/listen",
-    "Recent Audio Recordings"
-  );
+  validateBawClientPage(listenRoute, ListenComponent, [ListenModule], "/listen", "Recent Audio Recordings");
 
   assertPageInfo(ListenComponent, "Listen");
 });

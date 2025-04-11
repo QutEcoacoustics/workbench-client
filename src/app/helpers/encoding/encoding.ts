@@ -7,11 +7,7 @@ import { Buffer } from "buffer";
  * @param plainText Plain text to encode
  */
 export function toBase64Url(plainText: string): string {
-  return Buffer.from(plainText)
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+  return Buffer.from(plainText).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 /**

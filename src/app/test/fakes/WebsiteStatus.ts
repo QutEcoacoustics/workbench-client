@@ -9,9 +9,7 @@ import {
 } from "@models/WebsiteStatus";
 import { modelData } from "@test/helpers/faker";
 
-export function generateWebsiteStatus(
-  data?: Partial<IWebsiteStatus>
-): Required<IWebsiteStatus> {
+export function generateWebsiteStatus(data?: Partial<IWebsiteStatus>): Required<IWebsiteStatus> {
   return {
     status: faker.helpers.arrayElement<WebsiteOverallStatus>(["good", "bad"]),
     timedOut: modelData.datatype.boolean(),

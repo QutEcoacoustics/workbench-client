@@ -9,11 +9,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
-import {
-  ThemeColor,
-  ThemeService,
-  ThemeVariant,
-} from "@services/theme/theme.service";
+import { ThemeColor, ThemeService, ThemeVariant } from "@services/theme/theme.service";
 import { rgb } from "d3-color";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -23,18 +19,13 @@ import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
 @Component({
-    selector: "baw-admin-theme-template",
-    templateUrl: "theme-template.component.html",
-    styleUrls: ["theme-template.component.scss"],
-    imports: [FormsModule, NgClass, TitleCasePipe]
+  selector: "baw-admin-theme-template",
+  templateUrl: "theme-template.component.html",
+  styleUrls: ["theme-template.component.scss"],
+  imports: [FormsModule, NgClass, TitleCasePipe],
 })
-class AdminThemeTemplateComponent
-  extends PageComponent
-  implements OnInit, AfterViewInit
-{
-  @ViewChildren("colorBox") private colorBoxes!: QueryList<
-    ElementRef<HTMLElement>
-  >;
+class AdminThemeTemplateComponent extends PageComponent implements OnInit, AfterViewInit {
+  @ViewChildren("colorBox") private colorBoxes!: QueryList<ElementRef<HTMLElement>>;
 
   public selectedColorIndex: number;
   public themeColors: readonly ThemeColor[];
@@ -43,16 +34,14 @@ class AdminThemeTemplateComponent
   public constructor(
     @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
     private theme: ThemeService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.themeColors = this.theme.themeColors;
-    this.themeVariants = this.theme.themeVariants.map(
-      (variant) => `-${variant}`
-    );
+    this.themeVariants = this.theme.themeVariants.map((variant) => `-${variant}`);
 
     this.resetSelection();
   }
@@ -80,9 +69,7 @@ class AdminThemeTemplateComponent
     }
 
     const boxIndex = colorIndex * this.themeVariants.length + variantIndex;
-    const styles = getComputedStyle(
-      this.colorBoxes.get(boxIndex).nativeElement
-    );
+    const styles = getComputedStyle(this.colorBoxes.get(boxIndex).nativeElement);
     return rgb(styles.backgroundColor).formatHex();
   }
 

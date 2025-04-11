@@ -7,10 +7,7 @@ export interface IConfirmPassword {
   recaptchaToken: string;
 }
 
-export class ConfirmPassword
-  extends AbstractForm<IConfirmPassword>
-  implements IConfirmPassword
-{
+export class ConfirmPassword extends AbstractForm<IConfirmPassword> implements IConfirmPassword {
   public readonly kind = "Confirm Password";
   @bawPersistAttr()
   public readonly login: Param;

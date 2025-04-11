@@ -4,7 +4,7 @@ function test(
   input: string | Duration,
   output: string | Duration,
   expectedLuxonOutput: string | Duration,
-  format?: string
+  format?: string,
 ): any {
   return { input, output, expectedLuxonOutput, format };
 }
@@ -67,7 +67,7 @@ describe("Luxon Duration Monkey Patches", () => {
     ];
     /* eslint-enable max-len */
 
-    for (const { input, expectedLuxonOutput, output} of tests) {
+    for (const { input, expectedLuxonOutput, output } of tests) {
       it(`should create ${output} correctly from duration`, () => {
         expect(input.toISO()).toEqual(output);
       });
@@ -103,4 +103,3 @@ describe("Luxon Duration Monkey Patches", () => {
     }
   });
 });
-

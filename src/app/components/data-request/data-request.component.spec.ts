@@ -4,10 +4,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { DataRequestComponent } from "./data-request.component";
 
 xdescribe("DataRequestComponent", () => {
@@ -16,18 +13,9 @@ xdescribe("DataRequestComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockConfigModule,
-        DataRequestComponent,
-    ],
-    providers: [
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-    ],
-}).compileComponents();
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockConfigModule, DataRequestComponent],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DataRequestComponent);
     component = fixture.componentInstance;

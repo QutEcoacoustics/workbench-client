@@ -3,12 +3,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {
-  menuLink,
-  MenuLink,
-  MenuRoute,
-  menuRoute,
-} from "@interfaces/menusInterfaces";
+import { menuLink, MenuLink, MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -28,12 +23,7 @@ describe("MenuLinkComponent", () => {
   let component: MenuLinkComponent;
   const createHost = createHostFactory({
     component: MenuLinkComponent,
-    imports: [
-    MockConfigModule,
-    RouterTestingModule,
-    NgbTooltipModule,
-    IconsModule,
-],
+    imports: [MockConfigModule, RouterTestingModule, NgbTooltipModule, IconsModule],
   });
 
   function getWrapper(): HTMLSpanElement {
@@ -55,11 +45,7 @@ describe("MenuLinkComponent", () => {
     expect(spec.query(".tooltip-inner")).toHaveText(text);
   }
 
-  function setup(
-    inputs: Partial<MenuLinkComponent> = {},
-    routeParams: Params = {},
-    queryParams: Params = {}
-  ) {
+  function setup(inputs: Partial<MenuLinkComponent> = {}, routeParams: Params = {}, queryParams: Params = {}) {
     spec = createHost(
       `
       <baw-menu-link
@@ -84,7 +70,7 @@ describe("MenuLinkComponent", () => {
             params: of(routeParams),
           }),
         ],
-      }
+      },
     );
     component = spec.component;
     config = spec.inject(ConfigService);
@@ -114,8 +100,7 @@ describe("MenuLinkComponent", () => {
   [
     {
       label: "internal link",
-      link: (data: Partial<MenuRoute>) =>
-        menuRoute({ ...defaultRoute, ...data }),
+      link: (data: Partial<MenuRoute>) => menuRoute({ ...defaultRoute, ...data }),
     },
     {
       label: "external link",
@@ -277,7 +262,7 @@ describe("MenuLinkComponent", () => {
             uri: (params) => `https://broken_link/${params?.id}`,
           }),
         },
-        { id: 10 }
+        { id: 10 },
       );
       spec.detectChanges();
       expect(getLink()).toHaveAttribute({ href: "https://broken_link/10" });

@@ -1,10 +1,7 @@
 import { InjectionToken } from "@angular/core";
 
 export class CacheSettings {
-  public constructor(
-    enabled: boolean,
-    withLogging: boolean,
-  ) {
+  public constructor(enabled: boolean, withLogging: boolean) {
     this._enabled = enabled;
     this.withLogging = withLogging;
   }
@@ -43,7 +40,5 @@ export class CacheSettings {
   }
 }
 
-export const CACHE_SETTINGS = new InjectionToken<CacheSettings>(
-  "baw.cache.settings",
-);
+export const CACHE_SETTINGS = new InjectionToken<CacheSettings>("baw.cache.settings");
 export const cacheSettings = new CacheSettings(true, false);

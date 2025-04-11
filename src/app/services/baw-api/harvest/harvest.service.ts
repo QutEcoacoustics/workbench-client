@@ -1,23 +1,9 @@
 import { Injectable } from "@angular/core";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParam,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "@baw-api/api-common";
+import { emptyParam, filterParam, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import {
-  Harvest,
-  HarvestMapping,
-  HarvestStatus,
-  IHarvestMapping,
-} from "@models/Harvest";
+import { Harvest, HarvestMapping, HarvestStatus, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { map, Observable } from "rxjs";
@@ -32,35 +18,22 @@ const shallowEndpoint = stringTemplate`/harvests/${harvestId}${option}`;
 export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
   public constructor(
     private api: BawApiService<Harvest>,
-    private shallowHarvestsApi: ShallowHarvestsService
+    private shallowHarvestsApi: ShallowHarvestsService,
   ) {}
 
   public list(project: IdOr<Project>): Observable<Harvest[]> {
     return this.api.list(Harvest, endpoint(project, emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<Harvest>,
-    project: IdOr<Project>
-  ): Observable<Harvest[]> {
-    return this.api.filter(
-      Harvest,
-      endpoint(project, emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<Harvest>, project: IdOr<Project>): Observable<Harvest[]> {
+    return this.api.filter(Harvest, endpoint(project, emptyParam, filterParam), filters);
   }
 
-  public show(
-    model: IdOr<Harvest>,
-    project: IdOr<Project>
-  ): Observable<Harvest> {
+  public show(model: IdOr<Harvest>, project: IdOr<Project>): Observable<Harvest> {
     return this.api.show(Harvest, endpoint(project, model, emptyParam));
   }
 
-  public showWithoutCache(
-    model: IdOr<Harvest>,
-    project: IdOr<Project>
-  ): Observable<Harvest> {
+  public showWithoutCache(model: IdOr<Harvest>, project: IdOr<Project>): Observable<Harvest> {
     return this.api.show(Harvest, endpoint(project, model, emptyParam), {
       cacheOptions: { isCacheable: disableCache },
     });
@@ -71,38 +44,25 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
       Harvest,
       endpoint(project, emptyParam, emptyParam),
       (harvest) => endpoint(project, harvest, emptyParam),
-      model
+      model,
     );
   }
 
   public update(model: Harvest, project: IdOr<Project>): Observable<Harvest> {
-    return this.api.update(
-      Harvest,
-      endpoint(project, model, emptyParam),
-      model
-    );
+    return this.api.update(Harvest, endpoint(project, model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Harvest>,
-    project: IdOr<Project>
-  ): Observable<Harvest | void> {
+  public destroy(model: IdOr<Harvest>, project: IdOr<Project>): Observable<Harvest | void> {
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
   /** @inheritdoc ShallowHarvestsService.transitionStatus */
-  public transitionStatus(
-    model: IdOr<Harvest>,
-    status: HarvestStatus
-  ): Observable<Harvest> {
+  public transitionStatus(model: IdOr<Harvest>, status: HarvestStatus): Observable<Harvest> {
     return this.shallowHarvestsApi.transitionStatus(model, status);
   }
 
   /** @inheritdoc ShallowHarvestsService.updateMappings */
-  public updateMappings(
-    model: IdOr<Harvest>,
-    mappings: (IHarvestMapping | HarvestMapping)[]
-  ): Observable<Harvest> {
+  public updateMappings(model: IdOr<Harvest>, mappings: (IHarvestMapping | HarvestMapping)[]): Observable<Harvest> {
     return this.shallowHarvestsApi.updateMappings(model, mappings);
   }
 }
@@ -118,11 +78,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   }
 
   public filter(filters: Filters<Harvest>): Observable<Harvest[]> {
-    return this.api.filter(
-      Harvest,
-      shallowEndpoint(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Harvest, shallowEndpoint(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Harvest>): Observable<Harvest> {
@@ -134,7 +90,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
       Harvest,
       shallowEndpoint(emptyParam, emptyParam),
       (harvest) => shallowEndpoint(harvest, emptyParam),
-      model
+      model,
     );
   }
 
@@ -151,10 +107,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    *
    * @param status Status to change to if valid
    */
-  public transitionStatus(
-    model: IdOr<Harvest>,
-    status: HarvestStatus
-  ): Observable<Harvest> {
+  public transitionStatus(model: IdOr<Harvest>, status: HarvestStatus): Observable<Harvest> {
     return this.api
       .httpPatch(shallowEndpoint(model, emptyParam), {
         // TODO This is a sub-optimal solution, if we encounter this in other
@@ -169,13 +122,10 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    *
    * @param name New name of the harvest
    */
-  public updateName(
-    model: Harvest,
-    newHarvestName: string
-  ): Observable<Harvest> {
+  public updateName(model: Harvest, newHarvestName: string): Observable<Harvest> {
     return this.api
       .httpPatch(shallowEndpoint(model, emptyParam), {
-        [this.harvestKind]: { name: newHarvestName }
+        [this.harvestKind]: { name: newHarvestName },
       })
       .pipe(map(this.api.handleSingleResponse(Harvest)));
   }
@@ -185,14 +135,9 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
    *
    * @param mappings Mappings of folders to sites
    */
-  public updateMappings(
-    model: IdOr<Harvest>,
-    mappings: (HarvestMapping | IHarvestMapping)[]
-  ): Observable<Harvest> {
+  public updateMappings(model: IdOr<Harvest>, mappings: (HarvestMapping | IHarvestMapping)[]): Observable<Harvest> {
     const mappingData: IHarvestMapping[] = mappings.map((mapping) =>
-      mapping instanceof HarvestMapping
-        ? mapping.getJsonAttributesForUpdate()
-        : mapping
+      mapping instanceof HarvestMapping ? mapping.getJsonAttributesForUpdate() : mapping,
     );
 
     return this.api
@@ -203,13 +148,10 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   }
 }
 
-export const harvestResolvers = new Resolvers<Harvest, [IdOr<Project>]>(
-  [HarvestsService],
-  "harvestId",
-  ["projectId"]
-).create("Harvest");
+export const harvestResolvers = new Resolvers<Harvest, [IdOr<Project>]>([HarvestsService], "harvestId", [
+  "projectId",
+]).create("Harvest");
 
-export const shallowHarvestResolvers = new Resolvers<Harvest, []>(
-  [ShallowHarvestsService],
-  "harvestId"
-).create("ShallowHarvest");
+export const shallowHarvestResolvers = new Resolvers<Harvest, []>([ShallowHarvestsService], "harvestId").create(
+  "ShallowHarvest",
+);

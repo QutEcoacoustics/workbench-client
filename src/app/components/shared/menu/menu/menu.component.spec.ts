@@ -18,18 +18,9 @@ import {
 } from "@interfaces/menusInterfaces";
 import { ModalComponent, WidgetComponent } from "@menu/widget.component";
 import { WidgetDirective } from "@menu/widget.directive";
-import {
-  MenuModal,
-  menuModal,
-  MenuModalWithoutAction,
-  WidgetMenuItem,
-} from "@menu/widgetItem";
+import { MenuModal, menuModal, MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { Session, User } from "@models/User";
-import {
-  NgbModal,
-  NgbModalModule,
-  NgbTooltipModule,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -49,7 +40,6 @@ import { MenuComponent } from "./menu.component";
 @Component({
   selector: "baw-test-widget",
   template: "<div>Widget working</div>",
-  
 })
 export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
@@ -62,7 +52,6 @@ export class MockWidgetComponent implements WidgetComponent {
 @Component({
   selector: "baw-test-modal",
   template: '<div class="modal-body">Modal working</div>',
-  
 })
 export class MockModalComponent implements ModalComponent {
   public pageData!: any;
@@ -82,20 +71,8 @@ describe("MenuComponent", () => {
   let spec: SpectatorRouting<MenuComponent>;
   const createComponent = createRoutingFactory({
     component: MenuComponent,
-    declarations: [
-      MenuButtonComponent,
-      MenuLinkComponent,
-      WidgetDirective,
-      MockWidgetComponent,
-      MockModalComponent,
-    ],
-    imports: [
-      IconsModule,
-      RouterTestingModule,
-      MockBawApiModule,
-      NgbModalModule,
-      NgbTooltipModule,
-    ],
+    declarations: [MenuButtonComponent, MenuLinkComponent, WidgetDirective, MockWidgetComponent, MockModalComponent],
+    imports: [IconsModule, RouterTestingModule, MockBawApiModule, NgbModalModule, NgbTooltipModule],
   });
   const menuTypes: MenuType[] = ["action", "secondary"];
 
@@ -112,16 +89,14 @@ describe("MenuComponent", () => {
   }
 
   function getMenuRoutes(): MenuLinkComponent[] {
-    return spec
-      .queryAll(MenuLinkComponent)
-      .filter((item) => isInternalRoute(item.link));
+    return spec.queryAll(MenuLinkComponent).filter((item) => isInternalRoute(item.link));
   }
 
   function setup(
     props?: Partial<MenuComponent>,
     data: Data = {},
     params: Params = {},
-    opts?: { isFullscreen?: boolean; localUser?: User }
+    opts?: { isFullscreen?: boolean; localUser?: User },
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -201,12 +176,7 @@ describe("MenuComponent", () => {
       it(`should create mixed links on ${menuType} menu`, () => {
         setup({
           menuType,
-          links: OrderedSet([
-            defaultMenuAction,
-            defaultMenuLink,
-            defaultMenuRoute,
-            defaultMenuModal,
-          ]),
+          links: OrderedSet([defaultMenuAction, defaultMenuLink, defaultMenuRoute, defaultMenuModal]),
         });
         spec.detectChanges();
         expect(getMenuActions().length).toBe(1);
@@ -267,11 +237,7 @@ describe("MenuComponent", () => {
         // TODO We should instead wrap the component in a host instead of
         // manually calling ngOnChanges
         spec.component.ngOnChanges({
-          widgets: new SimpleChange(
-            OrderedSet([defaultWidget]),
-            undefined,
-            false
-          ),
+          widgets: new SimpleChange(OrderedSet([defaultWidget]), undefined, false),
         });
         spec.detectChanges();
         validateNumWidgets(0);
@@ -279,9 +245,7 @@ describe("MenuComponent", () => {
 
       it("should set the widget data using the options provided", () => {
         setup({
-          widgets: OrderedSet([
-            new WidgetMenuItem(MockWidgetComponent, undefined, { testProperty: "test" }),
-          ]),
+          widgets: OrderedSet([new WidgetMenuItem(MockWidgetComponent, undefined, { testProperty: "test" })]),
         });
         spec.detectChanges();
 
@@ -302,15 +266,12 @@ describe("MenuComponent", () => {
               componentInstance: mockComponentInstance,
               dismiss: dismissSpy,
               close: closeSpy,
-            } as any)
+            }) as any,
         );
       }
 
       function assertModalOpen(menuItem: MenuModal) {
-        expect(modal.open).toHaveBeenCalledWith(
-          menuItem.component,
-          menuItem.modalOpts
-        );
+        expect(modal.open).toHaveBeenCalledWith(menuItem.component, menuItem.modalOpts);
       }
 
       beforeEach(() => {
@@ -418,17 +379,10 @@ describe("MenuComponent", () => {
         const link = createLink({
           tooltip: (user: Session) => `Custom tooltip for ${user?.userName}`,
         });
-        setup(
-          { menuType: "action", links: OrderedSet([link]) },
-          undefined,
-          undefined,
-          { localUser: defaultUser }
-        );
+        setup({ menuType: "action", links: OrderedSet([link]) }, undefined, undefined, { localUser: defaultUser });
         spec.detectChanges();
 
-        expect(test.getLink()[0].tooltip).toBe(
-          `Custom tooltip for ${defaultUser.userName}`
-        );
+        expect(test.getLink()[0].tooltip).toBe(`Custom tooltip for ${defaultUser.userName}`);
       });
 
       it("should set link menu item", () => {
@@ -476,11 +430,7 @@ describe("MenuComponent", () => {
     it("should set default indentation to 0", () => {
       setup({
         menuType: "secondary",
-        links: OrderedSet([
-          defaultMenuLink,
-          defaultMenuRoute,
-          defaultMenuAction,
-        ]),
+        links: OrderedSet([defaultMenuLink, defaultMenuRoute, defaultMenuAction]),
       });
       spec.detectChanges();
       expect(getListItems()).toHaveLength(3);

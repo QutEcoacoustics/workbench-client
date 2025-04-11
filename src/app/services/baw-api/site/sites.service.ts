@@ -5,17 +5,7 @@ import type { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParam,
-  IdParamOptional,
-  option,
-  param,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParam, IdParamOptional, option, param, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -39,15 +29,8 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     return this.api.list(Site, endpoint(project, emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<Site>,
-    project: IdOr<Project>
-  ): Observable<Site[]> {
-    return this.api.filter(
-      Site,
-      endpoint(project, emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<Site>, project: IdOr<Project>): Observable<Site[]> {
+    return this.api.filter(Site, endpoint(project, emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Site>, project: IdOr<Project>): Observable<Site> {
@@ -59,7 +42,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
       Site,
       endpoint(project, emptyParam, emptyParam),
       (site) => endpoint(project, site, emptyParam),
-      model
+      model,
     );
   }
 
@@ -67,10 +50,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     return this.api.update(Site, endpoint(project, model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Site>,
-    project: IdOr<Project>
-  ): Observable<Site | void> {
+  public destroy(model: IdOr<Site>, project: IdOr<Project>): Observable<Site | void> {
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
@@ -81,29 +61,16 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
    * @param project Project to filter by
    * @param region Region to filter by (null if you want sites which are not part of a region)
    */
-  public filterByRegion(
-    filters: Filters<Site>,
-    project: IdOr<Project>,
-    region: IdOr<Region>
-  ): Observable<Site[]> {
-    return this.filter(
-      this.api.filterThroughAssociation(filters, "regionId", region),
-      project
-    );
+  public filterByRegion(filters: Filters<Site>, project: IdOr<Project>, region: IdOr<Region>): Observable<Site[]> {
+    return this.filter(this.api.filterThroughAssociation(filters, "regionId", region), project);
   }
 
   /**
    * Retrieve path to generated a CSV file containing all of the annotations for a site.
    * Insert into the `[href]` of an anchor HTML element.
    */
-  public downloadAnnotations(
-    model: IdOr<Site>,
-    project: IdOr<Project>,
-    selectedTimezone: string
-  ): string {
-    const url = new URL(
-      this.api.getPath(annotationsEndpoint(project, model, emptyParam))
-    );
+  public downloadAnnotations(model: IdOr<Site>, project: IdOr<Project>, selectedTimezone: string): string {
+    const url = new URL(this.api.getPath(annotationsEndpoint(project, model, emptyParam)));
     url.searchParams.set("selected_timezone_name", selectedTimezone ?? "UTC");
     return url.toString();
   }
@@ -131,11 +98,7 @@ export class ShallowSitesService implements StandardApi<Site> {
   }
 
   public filter(filters: Filters<Site>): Observable<Site[]> {
-    return this.api.filter(
-      Site,
-      endpointShallow(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Site, endpointShallow(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Site>): Observable<Site> {
@@ -147,7 +110,7 @@ export class ShallowSitesService implements StandardApi<Site> {
       Site,
       endpointShallow(emptyParam, emptyParam),
       (site) => endpointShallow(site, emptyParam),
-      model
+      model,
     );
   }
 
@@ -165,13 +128,8 @@ export class ShallowSitesService implements StandardApi<Site> {
    * @param filters Site filters
    * @param user user to filter by
    */
-  public filterByCreator(
-    filters: Filters<Site>,
-    user: IdOr<User>
-  ): Observable<Site[]> {
-    return this.filter(
-      this.api.filterThroughAssociation(filters, "creatorId", user)
-    );
+  public filterByCreator(filters: Filters<Site>, user: IdOr<User>): Observable<Site[]> {
+    return this.filter(this.api.filterThroughAssociation(filters, "creatorId", user));
   }
 
   /**
@@ -180,13 +138,8 @@ export class ShallowSitesService implements StandardApi<Site> {
    * @param filters Site filters
    * @param region Region to filter by (null if you want sites which are not part of a region)
    */
-  public filterByRegion(
-    filters: Filters<Site>,
-    region: IdOr<Region>
-  ): Observable<Site[]> {
-    return this.filter(
-      this.api.filterThroughAssociation(filters, "regionId", region)
-    );
+  public filterByRegion(filters: Filters<Site>, region: IdOr<Region>): Observable<Site[]> {
+    return this.filter(this.api.filterThroughAssociation(filters, "regionId", region));
   }
 
   /**
@@ -206,13 +159,8 @@ export class ShallowSitesService implements StandardApi<Site> {
   }
 }
 
-export const siteResolvers = new Resolvers<Site, [IdOr<Project>]>(
-  [SitesService],
-  "siteId",
-  ["projectId"]
-).create("Site");
+export const siteResolvers = new Resolvers<Site, [IdOr<Project>]>([SitesService], "siteId", ["projectId"]).create(
+  "Site",
+);
 
-export const shallowSiteResolvers = new Resolvers<Site, []>(
-  [ShallowSitesService],
-  "siteId"
-).create("ShallowSite");
+export const shallowSiteResolvers = new Resolvers<Site, []>([ShallowSitesService], "siteId").create("ShallowSite");

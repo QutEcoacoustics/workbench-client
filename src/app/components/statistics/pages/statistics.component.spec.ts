@@ -6,27 +6,14 @@ import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import {
-  IStatistics,
-  IStatisticsRecent,
-  IStatisticsSummary,
-  Statistics,
-} from "@models/Statistics";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { IStatistics, IStatisticsRecent, IStatisticsSummary, Statistics } from "@models/Statistics";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateStatistics } from "@test/fakes/Statistics";
-import {
-  interceptFilterApiRequest,
-  interceptMappedApiRequests,
-  interceptShowApiRequest,
-} from "@test/helpers/general";
+import { interceptFilterApiRequest, interceptMappedApiRequests, interceptShowApiRequest } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -52,29 +39,17 @@ describe("StatisticsComponent", () => {
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
     imports: [SharedModule, MockBawApiModule],
-    declarations: [
-      mock.recentAnnotationsComponent,
-      mock.recentAudioRecordingsComponent,
-    ],
+    declarations: [mock.recentAnnotationsComponent, mock.recentAudioRecordingsComponent],
   });
 
   assertPageInfo(StatisticsComponent, "Statistics");
 
-  function interceptStatisticsRequest(
-    data: Errorable<IStatistics>
-  ): Promise<any> {
+  function interceptStatisticsRequest(data: Errorable<IStatistics>): Promise<any> {
     return interceptShowApiRequest(statsApi, injector, data, Statistics);
   }
 
-  function interceptAudioEventsRequests(
-    data: Errorable<AudioEvent[]>
-  ): Promise<any> {
-    return interceptFilterApiRequest(
-      audioEventsApi,
-      injector,
-      data,
-      AudioEvent
-    );
+  function interceptAudioEventsRequests(data: Errorable<AudioEvent[]>): Promise<any> {
+    return interceptFilterApiRequest(audioEventsApi, injector, data, AudioEvent);
   }
 
   function interceptAudioRecordingsRequests(data: AudioRecording[]) {
@@ -83,16 +58,13 @@ describe("StatisticsComponent", () => {
       mockAudioRecordingResponses.set(audioRecording.id, audioRecording);
     }
 
-    return interceptMappedApiRequests(
-      audioRecordingsApi.show,
-      mockAudioRecordingResponses
-    );
+    return interceptMappedApiRequests(audioRecordingsApi.show, mockAudioRecordingResponses);
   }
 
   function setup(
     statisticsData: Errorable<IStatistics> = generateStatistics(),
     audioEventsData: Errorable<AudioEvent[]> = [],
-    audioRecordingsData: AudioRecording[] = []
+    audioRecordingsData: AudioRecording[] = [],
   ): { initial: Promise<any>; final: Promise<any> } {
     spec = createComponent({ detectChanges: false });
     statsApi = spec.inject(StatisticsService);
@@ -119,7 +91,7 @@ describe("StatisticsComponent", () => {
 
   function partialStatistic(
     summary?: Partial<IStatisticsSummary>,
-    recent?: Partial<IStatisticsRecent>
+    recent?: Partial<IStatisticsRecent>,
   ): Partial<IStatistics> {
     const partial: Partial<IStatistics> = {};
     if (summary) {
@@ -277,13 +249,8 @@ describe("StatisticsComponent", () => {
     }
 
     it("should display recent annotations", async () => {
-      const audioEvents = [1, 2, 3].map(
-        (id) => new AudioEvent(generateAudioEvent({ id }))
-      );
-      const promise = setup(
-        generateStatistics({ audioEventIds: [1, 2, 3] }),
-        audioEvents
-      );
+      const audioEvents = [1, 2, 3].map((id) => new AudioEvent(generateAudioEvent({ id })));
+      const promise = setup(generateStatistics({ audioEventIds: [1, 2, 3] }), audioEvents);
 
       spec.detectChanges();
       await promise.initial;
@@ -295,15 +262,9 @@ describe("StatisticsComponent", () => {
 
     it("should display recent audio recordings", async () => {
       const audioRecordingIds = [1, 2, 3];
-      const audioRecordings = audioRecordingIds.map(
-        (id) => new AudioRecording(generateAudioRecording({ id }))
-      );
+      const audioRecordings = audioRecordingIds.map((id) => new AudioRecording(generateAudioRecording({ id })));
 
-      const promise = setup(
-        generateStatistics({ audioRecordingIds }),
-        [],
-        audioRecordings
-      );
+      const promise = setup(generateStatistics({ audioRecordingIds }), [], audioRecordings);
 
       spec.detectChanges();
       await promise.initial;
@@ -311,9 +272,7 @@ describe("StatisticsComponent", () => {
       await promise.final;
       spec.detectChanges();
 
-      expect(getRecentAudioRecordings().audioRecordings).toEqual(
-        audioRecordings
-      );
+      expect(getRecentAudioRecordings().audioRecordings).toEqual(audioRecordings);
     });
   });
 });

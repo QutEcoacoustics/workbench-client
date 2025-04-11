@@ -3,10 +3,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { homeMenuItem } from "@components/home/home.menus";
 import { Errorable } from "@helpers/advancedTypes";
-import {
-  ApiErrorDetails,
-  isBawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { ApiErrorDetails, isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -53,7 +50,7 @@ export function nStepObservable<T>(
   subject: Subject<T>,
   callback: () => Errorable<T>,
   isError: boolean = false,
-  stepsRemaining: number = 0
+  stepsRemaining: number = 0,
 ): Promise<void> {
   return new Promise((resolve) => {
     function waitOne() {
@@ -86,16 +83,12 @@ export function nStepObservable<T>(
  * @param models Model data
  * @param callback Model constructor
  */
-export function interceptCustomApiRequest<
-  Service,
-  Data,
-  Model extends AbstractModel
->(
+export function interceptCustomApiRequest<Service, Data, Model extends AbstractModel>(
   service: Service,
   method: keyof Service,
   injector: AssociationInjector,
   model: Errorable<Data> | Errorable<Data[]>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ) {
   const subject = new Subject();
   const isError = isBawApiError(model);
@@ -125,7 +118,7 @@ export function interceptShowApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiShow<Model>>,
   injector: AssociationInjector,
   model: Errorable<Data>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ): Promise<any> {
   return interceptCustomApiRequest(service, "show", injector, model, callback);
 }
@@ -142,15 +135,9 @@ export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiFilter<Model>>,
   injector: AssociationInjector,
   models: Errorable<Data[]>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ): Promise<any> {
-  return interceptCustomApiRequest(
-    service,
-    "filter",
-    injector,
-    models,
-    callback
-  );
+  return interceptCustomApiRequest(service, "filter", injector, models, callback);
 }
 
 /**
@@ -160,13 +147,10 @@ export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
  * @param responses Api responses for each recurring request
  * @param expectations Expected filter parameters for request
  */
-export function interceptRepeatApiRequests<
-  ModelData,
-  Models extends AbstractModel | AbstractModel[]
->(
+export function interceptRepeatApiRequests<ModelData, Models extends AbstractModel | AbstractModel[]>(
   apiRequestType: CompatibleSpy,
   responses: Errorable<Models>[],
-  expectations?: FilterExpectations<ModelData>[]
+  expectations?: FilterExpectations<ModelData>[],
 ): Promise<void>[] {
   const subjects: Subject<Models>[] = [];
   const promises: Promise<void>[] = [];
@@ -174,28 +158,22 @@ export function interceptRepeatApiRequests<
   responses.forEach((response) => {
     const subject = new Subject<Models>();
     subjects.push(subject);
-    promises.push(
-      nStepObservable(subject, () => response, !(response instanceof Array))
-    );
+    promises.push(nStepObservable(subject, () => response, !(response instanceof Array)));
   });
 
   let count = -1;
-  apiRequestType.andCallFake(
-    (filters: Filters<ModelData>, ...params: any[]) => {
-      count++;
-      expectations?.[count]?.(filters, ...params);
-      return subjects[count];
-    }
-  );
+  apiRequestType.andCallFake((filters: Filters<ModelData>, ...params: any[]) => {
+    count++;
+    expectations?.[count]?.(filters, ...params);
+    return subjects[count];
+  });
 
   return promises;
 }
 
-export function interceptMappedApiRequests<
-  Models extends AbstractModel | AbstractModel[]
->(
+export function interceptMappedApiRequests<Models extends AbstractModel | AbstractModel[]>(
   apiRequestType: CompatibleSpy,
-  responses: Map<PropertyKey, Errorable<Models>>
+  responses: Map<PropertyKey, Errorable<Models>>,
 ): Promise<void>[] {
   const subjects = new Map<any, Subject<Models>>();
   const promises: Promise<void>[] = [];
@@ -213,10 +191,7 @@ export function interceptMappedApiRequests<
   return promises;
 }
 
-export type FilterExpectations<T> = (
-  filter: Filters<T>,
-  ...params: any[]
-) => void;
+export type FilterExpectations<T> = (filter: Filters<T>, ...params: any[]) => void;
 
 export function getCallArgs(spy: jasmine.Spy) {
   return spy.calls.mostRecent().args;
@@ -226,9 +201,7 @@ export function assertOk(): void {
   expect(true).toBeTrue();
 }
 
-export function generatePageInfoResolvers(
-  ...models: ResolvedModel[]
-): Partial<IPageInfo> {
+export function generatePageInfoResolvers(...models: ResolvedModel[]): Partial<IPageInfo> {
   const data: Partial<IPageInfo> = { resolvers: {}, pageRoute: homeMenuItem };
 
   models.forEach((model, index) => {

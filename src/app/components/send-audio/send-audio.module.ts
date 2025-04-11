@@ -9,7 +9,7 @@ const components = [SendAudioComponent];
 const routes = sendAudioRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components],
-    exports: [RouterModule, ...components],
+  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  exports: [RouterModule, ...components],
 })
 export class SendAudioModule {}

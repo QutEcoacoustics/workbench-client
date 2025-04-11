@@ -19,7 +19,7 @@ const summaryReportRouteQueryParamResolver = (params) =>
         date: params.date,
         time: params.time,
         charts: params.charts,
-    }
+      }
     : {};
 
 export type ReportRoute = "project" | "region" | "site" | "siteAndRegion";

@@ -2,12 +2,7 @@ import { fakeAsync } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  AuthTriggerData,
-  BawSessionService,
-  GuestUser,
-  guestUser,
-} from "@baw-api/baw-session.service";
+import { AuthTriggerData, BawSessionService, GuestUser, guestUser } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { adminDashboardMenuItem } from "@components/admin/admin.menus";
@@ -17,15 +12,9 @@ import { listenMenuItem } from "@components/listen/listen.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import {
-  loginMenuItem,
-  registerMenuItem,
-} from "@components/security/security.menus";
+import { loginMenuItem, registerMenuItem } from "@components/security/security.menus";
 
-import {
-  CustomMenuItem,
-  Settings,
-} from "@helpers/app-initializer/app-initializer";
+import { CustomMenuItem, Settings } from "@helpers/app-initializer/app-initializer";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -54,11 +43,7 @@ describe("PrimaryMenuComponent", () => {
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
     providers: [MockProvider(ToastService)],
-    declarations: [
-      MockComponent(WebsiteStatusIndicatorComponent),
-      HeaderItemComponent,
-      HeaderDropdownComponent,
-    ],
+    declarations: [MockComponent(WebsiteStatusIndicatorComponent), HeaderItemComponent, HeaderDropdownComponent],
     imports: [RouterTestingModule, MockBawApiModule, IconsModule],
   });
   const registerLinkSelector = "#register-header-link";
@@ -98,9 +83,7 @@ describe("PrimaryMenuComponent", () => {
     router = spec.inject(Router);
 
     if (props?.user !== undefined) {
-      spyOnProperty(session, "authTrigger").and.returnValue(
-        new BehaviorSubject({ user: props?.user ?? guestUser })
-      );
+      spyOnProperty(session, "authTrigger").and.returnValue(new BehaviorSubject({ user: props?.user ?? guestUser }));
     }
   }
 
@@ -200,15 +183,11 @@ describe("PrimaryMenuComponent", () => {
 
           const dropdown = spec.query("baw-header-dropdown");
           expect(dropdown).toBeTruthy();
-          expect(dropdown.querySelector("button")).toContainText(
-            "<< content2 >>"
-          );
+          expect(dropdown.querySelector("button")).toContainText("<< content2 >>");
           expect(dropdown.querySelectorAll("a").length).toBe(2);
         });
 
-        it(`should ${
-          !links.register ? "not " : ""
-        }display register link`, () => {
+        it(`should ${!links.register ? "not " : ""}display register link`, () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
@@ -251,18 +230,15 @@ describe("PrimaryMenuComponent", () => {
 
         if (links.profile) {
           it("should display default profile icon", () => {
-            const user = new User(
-              generateUser({ imageUrls: undefined }, isAdmin)
-            );
+            const user = new User(generateUser({ imageUrls: undefined }, isAdmin));
             setup({ user });
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>(profileWidgetSelector);
             const image = profile.querySelector("img");
-            expect(image).toHaveImage(
-              `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-              { alt: "Profile Icon" }
-            );
+            expect(image).toHaveImage(`${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`, {
+              alt: "Profile Icon",
+            });
           });
 
           it("should display profile custom icon", () => {
@@ -292,9 +268,7 @@ describe("PrimaryMenuComponent", () => {
           }
         });
 
-        it(`should ${
-          !links.admin ? "not " : ""
-        } display admin settings`, () => {
+        it(`should ${!links.admin ? "not " : ""} display admin settings`, () => {
           setup({ user: defaultUser });
           spec.detectChanges();
 
@@ -342,15 +316,11 @@ describe("PrimaryMenuComponent", () => {
       setup({ user: defaultUser });
       handleLogout();
       spyOn(router, "navigateByUrl").and.stub();
-      spec.component["hasLocationGlobal"] = jasmine
-        .createSpy()
-        .and.callFake(() => false);
+      spec.component["hasLocationGlobal"] = jasmine.createSpy().and.callFake(() => false);
       spec.detectChanges();
 
       getLogoutButton().click();
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        homeMenuItem.route.toRouterLink()
-      );
+      expect(router.navigateByUrl).toHaveBeenCalledWith(homeMenuItem.route.toRouterLink());
     });
 
     function getLoggedInTrigger() {
@@ -395,8 +365,7 @@ describe("PrimaryMenuComponent", () => {
   });
 
   describe("status indicator", () => {
-    const statusIndicatorElement = (): HTMLElement =>
-      spec.query("baw-website-status-indicator");
+    const statusIndicatorElement = (): HTMLElement => spec.query("baw-website-status-indicator");
 
     // the functionality of the status indicator is tested within the website-status-indicator component
     // therefore, we only need to assert that the indicator is shown under the correct conditions

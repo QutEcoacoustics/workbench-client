@@ -13,15 +13,23 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 @Component({
-    selector: "baw-admin-analysis-jobs",
-    templateUrl: "../../../audio-analysis/pages/list/list.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, InlineListComponent, UserLinkComponent, DatetimeComponent, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-admin-analysis-jobs",
+  templateUrl: "../../../audio-analysis/pages/list/list.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    InlineListComponent,
+    UserLinkComponent,
+    DatetimeComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminAnalysisJobsComponent extends AnalysesComponent {
   public override get project() {
     return null;
   }
- }
+}
 
 AdminAnalysisJobsComponent.linkToRoute({
   category: adminAnalysisJobsCategory,

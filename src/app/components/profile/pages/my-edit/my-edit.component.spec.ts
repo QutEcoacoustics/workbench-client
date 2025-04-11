@@ -19,20 +19,14 @@ describe("MyProfileEditComponent", () => {
 
   function configureTestingModule(model: User, error?: BawApiError) {
     TestBed.configureTestingModule({
-    imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-        MyEditComponent,
-    ],
-    providers: [
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule, MyEditComponent],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute({ user: userResolvers.show }, { user: { model, error } }),
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute({ user: userResolvers.show }, { user: { model, error } }),
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MyEditComponent);
     component = fixture.componentInstance;

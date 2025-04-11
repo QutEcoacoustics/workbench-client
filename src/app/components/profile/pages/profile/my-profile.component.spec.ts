@@ -18,11 +18,7 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -79,7 +75,7 @@ describe("MyProfileComponent", () => {
   function interceptApiRequest<Model extends AbstractModel, Service>(
     api: SpyObject<Service>,
     filter: keyof Service,
-    response: Intercept<Model> = []
+    response: Intercept<Model> = [],
   ) {
     (response as Model[])?.forEach?.((model) => {
       if (!model.getMetadata()) {
@@ -89,11 +85,7 @@ describe("MyProfileComponent", () => {
 
     const subject = new Subject<Model[]>();
     (api[filter] as any).andCallFake(() => subject);
-    return nStepObservable(
-      subject,
-      () => response,
-      isInstantiated(response["status"])
-    );
+    return nStepObservable(subject, () => response, isInstantiated(response["status"]));
   }
 
   function interceptApiRequests(models: {
@@ -104,11 +96,7 @@ describe("MyProfileComponent", () => {
     tags?: Intercept<Tag>;
   }) {
     return Promise.all([
-      interceptApiRequest(
-        audioEventsApi,
-        "filterByCreator",
-        models.annotations
-      ),
+      interceptApiRequest(audioEventsApi, "filterByCreator", models.annotations),
       interceptApiRequest(bookmarksApi, "filterByCreator", models.bookmarks),
       interceptApiRequest(projectsApi, "filterByCreator", models.projects),
       interceptApiRequest(sitesApi, "filterByCreator", models.sites),
@@ -123,7 +111,7 @@ describe("MyProfileComponent", () => {
   assertPageInfo<User>(MyProfileComponent, "test user's Profile", {
     account: {
       model: new User(generateUser({ userName: "test user" })),
-    }
+    },
   });
 
   it("should create", () => {
@@ -200,9 +188,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(
-        dataRequestMenuItem.route
-      );
+      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(dataRequestMenuItem.route);
     });
 
     it("should have site id in parameters", () => {

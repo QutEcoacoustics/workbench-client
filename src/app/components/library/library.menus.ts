@@ -17,7 +17,7 @@ export const libraryRoute = StrongRoute.newRoot().add("library", (params) =>
         items: params.items,
         sortBy: params.sortBy,
         sortByType: params.sortByType,
-      }
+      },
 );
 
 export const libraryCategory: Category = {
@@ -34,10 +34,7 @@ export const libraryMenuItem = menuRoute({
   tooltip: () => "Library of annotations",
 });
 
-export const annotationRoute = libraryRoute
-  .add(":audioRecordingId")
-  .add("audio_events")
-  .add(":audioEventId");
+export const annotationRoute = libraryRoute.add(":audioRecordingId").add("audio_events").add(":audioEventId");
 
 export const annotationsCategory: Category = {
   icon: ["fas", "book-open"],

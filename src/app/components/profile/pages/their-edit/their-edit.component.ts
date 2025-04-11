@@ -1,17 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  accountResolvers,
-  AccountsService,
-} from "@baw-api/account/accounts.service";
-import {
-  theirEditMenuItem,
-  theirProfileCategory,
-} from "@components/profile/profile.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { accountResolvers, AccountsService } from "@baw-api/account/accounts.service";
+import { theirEditMenuItem, theirProfileCategory } from "@components/profile/profile.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -23,8 +14,8 @@ import { DetailViewComponent } from "../../../shared/detail-view/detail-view.com
 const accountKey = "account";
 
 @Component({
-    selector: "baw-their-edit",
-    template: `
+  selector: "baw-their-edit",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -38,13 +29,10 @@ const accountKey = "account";
 
       <hr />
 
-      <baw-detail-view
-        [model]="originalModel"
-        [fields]="fields"
-      ></baw-detail-view>
+      <baw-detail-view [model]="originalModel" [fields]="fields"></baw-detail-view>
     }
   `,
-    imports: [FormComponent, DetailViewComponent]
+  imports: [FormComponent, DetailViewComponent],
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = schema.fields;
@@ -55,7 +43,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
     private api: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[accountKey] as User,

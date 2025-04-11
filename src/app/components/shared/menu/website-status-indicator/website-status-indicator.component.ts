@@ -11,8 +11,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 
 @Component({
-    selector: "baw-website-status-indicator",
-    template: `
+  selector: "baw-website-status-indicator",
+  template: `
     @if (shouldShowIcon) {
       <a
         class="block nav-link text-danger text-nowrap"
@@ -23,30 +23,23 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
           'Some parts of the website may not work.'
         "
       >
-        <fa-icon
-          class="website-status-warning"
-          [icon]="['fas', 'triangle-exclamation']"
-        ></fa-icon>
+        <fa-icon class="website-status-warning" [icon]="['fas', 'triangle-exclamation']"></fa-icon>
       </a>
     }
   `,
-    imports: [StrongRouteDirective, NgbTooltip, FaIconComponent]
+  imports: [StrongRouteDirective, NgbTooltip, FaIconComponent],
 })
-export class WebsiteStatusIndicatorComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class WebsiteStatusIndicatorComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     protected config: ConfigService,
-    protected api: WebsiteStatusService
+    protected api: WebsiteStatusService,
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.api.status$.pipe(takeUntil(this.unsubscribe)).subscribe((model) => {
-      this.shouldShowIcon =
-        model instanceof SsrContext ? false : !model.isStatusHealthy;
+      this.shouldShowIcon = model instanceof SsrContext ? false : !model.isStatusHealthy;
     });
   }
 

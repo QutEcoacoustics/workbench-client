@@ -4,11 +4,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { Tagging } from "@models/Tagging";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateTagging } from "@test/fakes/Tagging";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { TaggingsService } from "./taggings.service";
 
 type Model = Tagging;
@@ -40,6 +36,6 @@ describe("TaggingsService", (): void => {
     createModel,
     15,
     5,
-    10
+    10,
   );
 });

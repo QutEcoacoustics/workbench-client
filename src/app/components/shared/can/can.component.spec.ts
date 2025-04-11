@@ -15,10 +15,7 @@ describe("IsLoggedInComponent", () => {
   const createHost = createHostFactory({
     component: IfLoggedInComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
   });
 
   function setup(setupState: boolean) {
@@ -89,10 +86,7 @@ describe("IsLoggedInComponent", () => {
 
       it("should have a tooltip", () => {
         const expectedContent = "You must be logged in";
-        expect(wrapperSpan()).toHaveAttribute(
-          "ng-reflect-ngb-tooltip",
-          expectedContent
-        );
+        expect(wrapperSpan()).toHaveAttribute("ng-reflect-ngb-tooltip", expectedContent);
       });
 
       it("should disable buttons and input elements", () => {

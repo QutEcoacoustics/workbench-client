@@ -1,8 +1,4 @@
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
@@ -16,11 +12,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
-import {
-  selectFromTypeahead,
-  toggleDropdown,
-  waitForDropdown,
-} from "@test/helpers/html";
+import { selectFromTypeahead, toggleDropdown, waitForDropdown } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
@@ -32,10 +24,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
-import {
-  interceptFilterApiRequest,
-  interceptShowApiRequest,
-} from "@test/helpers/general";
+import { interceptFilterApiRequest, interceptShowApiRequest } from "@test/helpers/general";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -76,9 +65,7 @@ describe("AnnotationSearchFormComponent", () => {
     modelChangeSpy = spyOn(spec.component.searchParametersChange, "emit");
 
     sitesApiSpy.filter.andCallFake(() => of(mockSitesResponse));
-    sitesApiSpy.show.andCallFake((id: Id) =>
-      of(mockSitesResponse.find((site) => site.id === id))
-    );
+    sitesApiSpy.show.andCallFake((id: Id) => of(mockSitesResponse.find((site) => site.id === id)));
 
     // we mock both filter and show requests because we need to have consistent
     // mock data for the typeahead queries that use filter requests, and the
@@ -91,24 +78,13 @@ describe("AnnotationSearchFormComponent", () => {
       interceptShowApiRequest(
         tagsApiSpy,
         injector,
-        (tag: Tag) =>
-          mockTagsResponse.find((requestModel) => requestModel.id === tag.id),
-        Tag
+        (tag: Tag) => mockTagsResponse.find((requestModel) => requestModel.id === tag.id),
+        Tag,
       ),
 
-      interceptFilterApiRequest(
-        recordingsApiSpy,
-        injector,
-        [mockRecording],
-        AudioRecording
-      ),
+      interceptFilterApiRequest(recordingsApiSpy, injector, [mockRecording], AudioRecording),
 
-      interceptShowApiRequest(
-        recordingsApiSpy,
-        injector,
-        mockRecording,
-        AudioRecording
-      ),
+      interceptShowApiRequest(recordingsApiSpy, injector, mockRecording, AudioRecording),
     ]);
 
     const searchParameters = new AnnotationSearchParameters(params, injector);
@@ -122,28 +98,21 @@ describe("AnnotationSearchFormComponent", () => {
   const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
 
   const tagsTypeahead = () => spec.query("#tags-input");
-  const tagPills = () =>
-    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
+  const tagPills = () => tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
 
   const projectsInput = () => projectsTypeahead().querySelector("input");
   const projectsTypeahead = () => spec.query("#projects-input");
 
   const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
-  const endDateInput = () =>
-    spec.query<HTMLInputElement>("#date-finished-before");
+  const endDateInput = () => spec.query<HTMLInputElement>("#date-finished-before");
 
-  const advancedFiltersToggle = () =>
-    spec.query<HTMLButtonElement>("#advanced-filters-toggle");
-  const advancedFiltersCollapsable = () =>
-    spec.query(".advanced-filters>[ng-reflect-collapsed]");
+  const advancedFiltersToggle = () => spec.query<HTMLButtonElement>("#advanced-filters-toggle");
+  const advancedFiltersCollapsable = () => spec.query(".advanced-filters>[ng-reflect-collapsed]");
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   beforeEach(() => {
     mockTagsResponse = Array.from({ length: 10 }, () => new Tag(generateTag()));
-    mockSitesResponse = Array.from(
-      { length: 10 },
-      () => new Site(generateSite())
-    );
+    mockSitesResponse = Array.from({ length: 10 }, () => new Site(generateSite()));
     mockProject = new Project(generateProject());
     mockRecording = new AudioRecording(generateAudioRecording());
   });
@@ -189,12 +158,8 @@ describe("AnnotationSearchFormComponent", () => {
       waitForDropdown(spec);
 
       expect(endDateInput()).toHaveValue(testEndDate.toFormat("yyyy-MM-dd"));
-      expect(
-        spec.component.searchParameters.recordingDateStartedAfter
-      ).toBeFalsy();
-      expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
-      ).toBeTruthy();
+      expect(spec.component.searchParameters.recordingDateStartedAfter).toBeFalsy();
+      expect(spec.component.searchParameters.recordingDateFinishedBefore).toBeTruthy();
     }));
 
     it("should not apply date filters if the dropdown is closed", fakeAsync(() => {
@@ -210,12 +175,8 @@ describe("AnnotationSearchFormComponent", () => {
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
-      expect(
-        spec.component.searchParameters.recordingDateStartedAfter
-      ).toBeFalsy();
-      expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
-      ).toBeFalsy();
+      expect(spec.component.searchParameters.recordingDateStartedAfter).toBeFalsy();
+      expect(spec.component.searchParameters.recordingDateFinishedBefore).toBeFalsy();
     }));
 
     // check the population of a checkbox boolean input
@@ -257,9 +218,7 @@ describe("AnnotationSearchFormComponent", () => {
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
       expect(spec.component.searchParameters.sites).toEqual([testedSite.id]);
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
-      );
+      expect(modelChangeSpy).toHaveBeenCalledOnceWith(spec.component.searchParameters);
     }));
 
     // check a typeahead input that does not have an optional property backing
@@ -268,9 +227,7 @@ describe("AnnotationSearchFormComponent", () => {
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
       expect(spec.component.searchParameters.tags).toEqual([testedTag.id]);
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
-      );
+      expect(modelChangeSpy).toHaveBeenCalledOnceWith(spec.component.searchParameters);
     }));
 
     // check an external component that is not a typeahead input
@@ -309,9 +266,7 @@ describe("AnnotationSearchFormComponent", () => {
       spec.click(onlyVerifiedCheckbox());
 
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({ onlyUnverified: true })
-      );
+      expect(modelChangeSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ onlyUnverified: true }));
     });
   });
 });

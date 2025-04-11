@@ -26,8 +26,7 @@ export const analysisJobMenuItem = menuRoute({
   tooltip: () => "View audio analysis job",
   route: analysisJobRoute,
   parent: analysesMenuItem,
-  breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel.analysisJob.model.name;

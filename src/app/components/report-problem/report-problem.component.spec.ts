@@ -1,8 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  createRoutingFactory,
-  Spectator,
-} from "@ngneat/spectator";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";

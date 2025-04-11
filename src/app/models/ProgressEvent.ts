@@ -10,10 +10,7 @@ export interface IProgressEvent extends HasCreator {
   activity?: string;
 }
 
-export class ProgressEvent
-  extends AbstractModel<IProgressEvent>
-  implements IProgressEvent
-{
+export class ProgressEvent extends AbstractModel<IProgressEvent> implements IProgressEvent {
   public readonly kind = "Progress Event";
   public readonly id?: Id;
   public readonly creatorId?: Id;

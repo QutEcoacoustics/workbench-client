@@ -1,8 +1,4 @@
-import {
-  createServiceFactory,
-  SpectatorService,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService, SpyObject } from "@ngneat/spectator";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MediaService } from "@services/media/media.service";
@@ -50,10 +46,7 @@ describe("AnnotationService", () => {
 
     mockAudioEvent = new AudioEvent(generateAudioEvent(), injector);
     mockRecording = new AudioRecording(generateAudioRecording(), injector);
-    mockTags = Array.from(
-      { length: 5 },
-      () => new Tag(generateTag(), injector),
-    );
+    mockTags = Array.from({ length: 5 }, () => new Tag(generateTag(), injector));
   }
 
   beforeEach(() => {
@@ -67,9 +60,7 @@ describe("AnnotationService", () => {
   describe("show", () => {
     it("should have all the same property values as the original audio event model", async () => {
       const result = await spec.service.show(mockAudioEvent);
-      expect(result).toEqual(
-        jasmine.objectContaining(mockAudioEvent as any),
-      );
+      expect(result).toEqual(jasmine.objectContaining(mockAudioEvent as any));
     });
 
     it("should resolve the associated audio recording model", async () => {

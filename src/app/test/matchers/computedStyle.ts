@@ -8,20 +8,12 @@ type StyleValue = string | number;
 function validateStyles(
   actual: HTMLElement,
   expected: Partial<CSSStyleDeclaration>,
-  callback: (
-    key: string,
-    actualStyle: StyleValue,
-    expectedStyle: StyleValue
-  ) => CustomMatcherResult
+  callback: (key: string, actualStyle: StyleValue, expectedStyle: StyleValue) => CustomMatcherResult,
 ): CustomMatcherResult {
   if (!actual) {
     return matcherFailure("HTMLElement is undefined");
   } else if (!(actual instanceof HTMLElement)) {
-    return matcherFailure(
-      `Input must be of type HTMLElement, got ${
-        (actual as any).constructor.name
-      } instead`
-    );
+    return matcherFailure(`Input must be of type HTMLElement, got ${(actual as any).constructor.name} instead`);
   } else if (!document.body.contains(actual)) {
     return matcherFailure("HTMLElement does not exist in the DOM");
   }
@@ -57,27 +49,17 @@ export const computedStyleMatchers: CustomMatcherFactories = {
    */
   toHaveComputedStyle(): CustomMatcher {
     return {
-      negativeCompare: (
-        actual: HTMLElement,
-        expected: Partial<CSSStyleDeclaration>
-      ): CustomMatcherResult =>
+      negativeCompare: (actual: HTMLElement, expected: Partial<CSSStyleDeclaration>): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle !== expectedStyle
             ? matcherSuccess()
-            : matcherFailure(
-                `Expected ${key} to be not be equal to ${expectedStyle}`
-              )
+            : matcherFailure(`Expected ${key} to be not be equal to ${expectedStyle}`),
         ),
-      compare: (
-        actual: HTMLElement,
-        expected: Partial<CSSStyleDeclaration>
-      ): CustomMatcherResult =>
+      compare: (actual: HTMLElement, expected: Partial<CSSStyleDeclaration>): CustomMatcherResult =>
         validateStyles(actual, expected, (key, actualStyle, expectedStyle) =>
           actualStyle === expectedStyle
             ? matcherSuccess()
-            : matcherFailure(
-                `Expected ${key} to be equal to ${expectedStyle}, got ${actualStyle} instead`
-              )
+            : matcherFailure(`Expected ${key} to be equal to ${expectedStyle}, got ${actualStyle} instead`),
         ),
     };
   },

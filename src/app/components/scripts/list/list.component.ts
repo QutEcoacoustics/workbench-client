@@ -7,12 +7,7 @@ import { List } from "immutable";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import {
-  adminEditScriptMenuItem,
-  newScriptMenuItem,
-  adminScriptsCategory,
-  scriptsMenuItem,
-} from "../scripts.menus";
+import { adminEditScriptMenuItem, newScriptMenuItem, adminScriptsCategory, scriptsMenuItem } from "../scripts.menus";
 import { DebounceInputComponent } from "../../shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
 import { IfLoggedInComponent } from "../../shared/can/can.component";
@@ -22,17 +17,21 @@ import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.
 export const adminScriptsMenuItemActions = [newScriptMenuItem];
 
 @Component({
-    selector: "baw-scripts",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, IfLoggedInComponent, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-scripts",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    IfLoggedInComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
-class AdminScriptsComponent
-  extends PagedTableTemplate<TableRow, Script>
-  implements OnInit
-{
+class AdminScriptsComponent extends PagedTableTemplate<TableRow, Script> implements OnInit {
   public constructor(
     protected api: ScriptsService,
-    protected session: BawSessionService
+    protected session: BawSessionService,
   ) {
     super(api, (scripts) =>
       scripts.map((script) => ({
@@ -41,19 +40,13 @@ class AdminScriptsComponent
         id: script.id,
         command: script.executableCommand,
         model: script,
-      }))
+      })),
     );
 
     this.filterKey = "name";
   }
 
-  public columns = [
-    { name: "Name" },
-    { name: "Version" },
-    { name: "Id" },
-    { name: "Command" },
-    { name: "Model" },
-  ];
+  public columns = [{ name: "Name" }, { name: "Version" }, { name: "Id" }, { name: "Command" }, { name: "Model" }];
 
   public sortKeys = {
     name: "name",

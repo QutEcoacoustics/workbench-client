@@ -33,19 +33,11 @@ describe("AdminOrphanComponent", () => {
 
   function setup(model: Site, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { site: shallowSiteResolvers.show },
-            { site: { model, error } }
-          ),
+          useValue: mockActivatedRoute({ site: shallowSiteResolvers.show }, { site: { model, error } }),
         },
       ],
     }).compileComponents();
@@ -53,12 +45,8 @@ describe("AdminOrphanComponent", () => {
     fixture = TestBed.createComponent(AdminOrphanComponent);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
 
-    const accountsApi = TestBed.inject(
-      ACCOUNT.token
-    ) as SpyObject<AccountsService>;
-    const projectsApi = TestBed.inject(
-      PROJECT.token
-    ) as SpyObject<ProjectsService>;
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<AccountsService>;
+    const projectsApi = TestBed.inject(PROJECT.token) as SpyObject<ProjectsService>;
 
     component = fixture.componentInstance;
 
@@ -67,16 +55,11 @@ describe("AdminOrphanComponent", () => {
       [2, new Project({ id: 2, siteIds: [1], name: "custom project" })],
       [3, new Project({ id: 3, siteIds: [1], name: "custom project" })],
     ]);
-    projectsApi.show.and.callFake((id: Id) =>
-      of(mockProjectApiResponses.get(id))
-    );
+    projectsApi.show.and.callFake((id: Id) => of(mockProjectApiResponses.get(id)));
 
     const accountsSubject = new Subject<User>();
     const promise = Promise.all([
-      nStepObservable(
-        accountsSubject,
-        () => new User({ id: 1, userName: "custom username" })
-      ),
+      nStepObservable(accountsSubject, () => new User({ id: 1, userName: "custom username" })),
       ...interceptMappedApiRequests(projectsApi.show, mockProjectApiResponses),
     ]);
 
@@ -110,9 +93,7 @@ describe("AdminOrphanComponent", () => {
   });
 
   describe("details", () => {
-    const model = new Site(
-      generateSite({ locationObfuscated: true, projectIds: siteProjectIds })
-    );
+    const model = new Site(generateSite({ locationObfuscated: true, projectIds: siteProjectIds }));
 
     beforeEach(async function () {
       const promise = setup(model);

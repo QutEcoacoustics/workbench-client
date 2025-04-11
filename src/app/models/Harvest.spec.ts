@@ -1,22 +1,12 @@
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { generateHarvest } from "@test/fakes/Harvest";
 
-const createModel = (harvestStatus: HarvestStatus) =>
-    new Harvest(generateHarvest({ status: harvestStatus }));
+const createModel = (harvestStatus: HarvestStatus) => new Harvest(generateHarvest({ status: harvestStatus }));
 
 describe("isAbortable", () => {
-  const abortableHarvestStates: HarvestStatus[] = [
-    "metadataReview",
-    "uploading",
-    "newHarvest"
-  ];
+  const abortableHarvestStates: HarvestStatus[] = ["metadataReview", "uploading", "newHarvest"];
 
-  const notAbortableHarvestStates: HarvestStatus[] = [
-    "scanning",
-    "metadataExtraction",
-    "processing",
-    "complete"
-  ];
+  const notAbortableHarvestStates: HarvestStatus[] = ["scanning", "metadataExtraction", "processing", "complete"];
 
   abortableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
     it(`should return true for a Harvest with the status of ${harvestStatus}`, () => {
@@ -32,18 +22,9 @@ describe("isAbortable", () => {
 });
 
 describe("canUpdate", () => {
-  const transitionableHarvestStates: HarvestStatus[] = [
-    "metadataReview",
-    "uploading",
-    "newHarvest",
-    "complete"
-  ];
+  const transitionableHarvestStates: HarvestStatus[] = ["metadataReview", "uploading", "newHarvest", "complete"];
 
-  const notTransitionableHarvestStates: HarvestStatus[] = [
-    "scanning",
-    "metadataExtraction",
-    "processing"
-  ];
+  const notTransitionableHarvestStates: HarvestStatus[] = ["scanning", "metadataExtraction", "processing"];
 
   transitionableHarvestStates.forEach((harvestStatus: HarvestStatus) => {
     it(`should return true for a Harvest with the status of ${harvestStatus}`, () => {

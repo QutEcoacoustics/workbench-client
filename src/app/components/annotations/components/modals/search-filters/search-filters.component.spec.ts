@@ -22,8 +22,7 @@ describe("SearchFiltersModalComponent", () => {
   }
 
   const exitButton = () => spectator.query<HTMLButtonElement>("#exit-btn");
-  const updateButton = () =>
-    spectator.query<HTMLButtonElement>("#update-filters-btn");
+  const updateButton = () => spectator.query<HTMLButtonElement>("#update-filters-btn");
 
   beforeEach(() => {
     setup();

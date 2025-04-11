@@ -3,16 +3,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  option,
-  param,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, param, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 import { ShowDefaultResolver } from "../ShowDefaultResolver";
@@ -46,7 +37,7 @@ export class ProjectsService implements StandardApi<Project> {
       Project,
       endpoint(emptyParam, emptyParam),
       (project) => endpoint(project, emptyParam),
-      model
+      model,
     );
   }
 
@@ -64,34 +55,22 @@ export class ProjectsService implements StandardApi<Project> {
    * @param filters Project filters
    * @param user user to filter by
    */
-  public filterByCreator(
-    filters: Filters<IProject>,
-    user: IdOr<User>
-  ): Observable<Project[]> {
-    return this.filter(
-      this.api.filterThroughAssociation(filters, "creatorId", user)
-    );
+  public filterByCreator(filters: Filters<IProject>, user: IdOr<User>): Observable<Project[]> {
+    return this.filter(this.api.filterThroughAssociation(filters, "creatorId", user));
   }
 
-  public downloadAnnotations(
-    model: IdOr<Project>,
-    selectedTimezone: string
-  ): string {
-    const url = new URL(
-      this.api.getPath(annotationsEndpoint(model, emptyParam))
-    );
+  public downloadAnnotations(model: IdOr<Project>, selectedTimezone: string): string {
+    const url = new URL(this.api.getPath(annotationsEndpoint(model, emptyParam)));
     url.searchParams.set("selected_timezone_name", selectedTimezone);
     return url.toString();
   }
 }
 
-const defaultProjectResolver = new ShowDefaultResolver<
-  Project,
-  [],
-  ProjectsService
->([ProjectsService], null).create("Project");
+const defaultProjectResolver = new ShowDefaultResolver<Project, [], ProjectsService>([ProjectsService], null).create(
+  "Project",
+);
 
-export const projectResolvers = new Resolvers<Project, []>(
-  [ProjectsService],
-  "projectId"
-).create("Project", defaultProjectResolver);
+export const projectResolvers = new Resolvers<Project, []>([ProjectsService], "projectId").create(
+  "Project",
+  defaultProjectResolver,
+);

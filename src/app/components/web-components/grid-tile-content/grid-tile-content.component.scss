@@ -33,8 +33,14 @@ oe-spectrogram {
   left: anchor(left);
   top: anchor(bottom);
 
-  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
-  position-try: flip-block, flip-inline, flip-block flip-inline;
+  position-try-fallbacks:
+    flip-block,
+    flip-inline,
+    flip-block flip-inline;
+  position-try:
+    flip-block,
+    flip-inline,
+    flip-block flip-inline;
 }
 
 .context-card {

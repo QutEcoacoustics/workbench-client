@@ -23,25 +23,14 @@ describe("UserBadgeComponent", () => {
   const createComponent = createComponentFactory({
     component: UserBadgeComponent,
     declarations: [UserLinkComponent],
-    imports: [
-    RouterTestingModule,
-    MockBawApiModule,
-    PipesModule,
-    TimeSinceComponent,
-    LoadingComponent,
-],
+    imports: [RouterTestingModule, MockBawApiModule, PipesModule, TimeSinceComponent, LoadingComponent],
   });
 
-  const getGhostUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 span");
-  const getUsername = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 a");
-  const getImageWrapper = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLAnchorElement>("#imageLink");
-  const getImage = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLImageElement>("img");
-  const getTimespan = (_spec?: Spectator<any>) =>
-    (spec ?? _spec).queryAll<HTMLParagraphElement>("#lengthOfTime small");
+  const getGhostUsername = (_spec?: Spectator<any>) => (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 span");
+  const getUsername = (_spec?: Spectator<any>) => (spec ?? _spec).queryAll<HTMLAnchorElement>(".fs-5 a");
+  const getImageWrapper = (_spec?: Spectator<any>) => (spec ?? _spec).queryAll<HTMLAnchorElement>("#imageLink");
+  const getImage = (_spec?: Spectator<any>) => (spec ?? _spec).queryAll<HTMLImageElement>("img");
+  const getTimespan = (_spec?: Spectator<any>) => (spec ?? _spec).queryAll<HTMLParagraphElement>("#lengthOfTime small");
 
   function setup(props?: Partial<UserBadgeComponent>) {
     spec = createComponent({
@@ -107,10 +96,9 @@ describe("UserBadgeComponent", () => {
       const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
-      expect(getImage()[0]).toHaveImage(
-        `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-        { alt: user.userName + " profile picture" }
-      );
+      expect(getImage()[0]).toHaveImage(`${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`, {
+        alt: user.userName + " profile picture",
+      });
     });
   });
 
@@ -128,15 +116,12 @@ describe("UserBadgeComponent", () => {
     });
 
     it("should display default image", () => {
-      const user = new User(
-        generateUser({ userName: "custom username", imageUrls: undefined })
-      );
+      const user = new User(generateUser({ userName: "custom username", imageUrls: undefined }));
       setup({ users: [user] });
       spec.detectChanges();
-      expect(getImage()[0]).toHaveImage(
-        `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
-        { alt: "custom username profile picture" }
-      );
+      expect(getImage()[0]).toHaveImage(`${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`, {
+        alt: "custom username profile picture",
+      });
     });
 
     it("should display custom image", () => {

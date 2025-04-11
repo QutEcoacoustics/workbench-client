@@ -33,10 +33,7 @@ describe("ThemeService", () => {
     expect(style.getPropertyValue(lightness)).toBe("");
   }
 
-  function assertCssColor(
-    colorName: ThemeColor,
-    color: { h: number; s: number; l: number }
-  ) {
+  function assertCssColor(colorName: ThemeColor, color: { h: number; s: number; l: number }) {
     const prefix = `--baw-${colorName}`;
     const hue = `${prefix}-hue`;
     const saturation = `${prefix}-saturation`;
@@ -48,9 +45,7 @@ describe("ThemeService", () => {
 
     const style = document.documentElement.style;
     expect(style.getPropertyValue(hue)).toBe(`${readHslValue(color.h)}deg`);
-    expect(style.getPropertyValue(saturation)).toBe(
-      `${readHslValue(color.s)}%`
-    );
+    expect(style.getPropertyValue(saturation)).toBe(`${readHslValue(color.s)}%`);
     expect(style.getPropertyValue(lightness)).toBe(`${readHslValue(color.l)}%`);
   }
 
@@ -118,9 +113,7 @@ describe("ThemeService", () => {
     it("should set colour if theme has a single value", () => {
       spec.service.setTheme({ [themeColors[0]]: defaultRgb });
       assertCssColor(themeColors[0], defaultHsl);
-      themeColors
-        .slice(1)
-        .forEach((themeColor) => assertCssColorUnset(themeColor));
+      themeColors.slice(1).forEach((themeColor) => assertCssColorUnset(themeColor));
     });
 
     it("should set colours if theme has multiple values", () => {
@@ -130,9 +123,7 @@ describe("ThemeService", () => {
       });
       assertCssColor(themeColors[0], defaultHsl);
       assertCssColor(themeColors[1], defaultHsl);
-      themeColors
-        .slice(2)
-        .forEach((themeColor) => assertCssColorUnset(themeColor));
+      themeColors.slice(2).forEach((themeColor) => assertCssColorUnset(themeColor));
     });
   });
 

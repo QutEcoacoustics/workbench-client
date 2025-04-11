@@ -3,10 +3,7 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 /**
  * Like Partial<T> but require certain properties.
  */
-export type PartialWith<T, Keys extends keyof T = keyof T> = Pick<
-  Partial<T>,
-  Exclude<keyof T, Keys>
-> & {
+export type PartialWith<T, Keys extends keyof T = keyof T> = Pick<Partial<T>, Exclude<keyof T, Keys>> & {
   [K in Keys]: T[K];
 };
 
@@ -19,9 +16,7 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
  * Allow either type, but not both
  * TODO Add support for infinite number of types using variadic tuple types
  */
-export type XOR<T, U> = T | U extends Record<string, any>
-  ? (Without<T, U> & U) | (Without<U, T> & T)
-  : T | U;
+export type XOR<T, U> = T | U extends Record<string, any> ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
 
 /**
  * Response may be a promise, or may return in real time
@@ -57,8 +52,8 @@ export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? RecursivePartial<U>[]
     : T[P] extends object
-    ? RecursivePartial<T[P]>
-    : T[P];
+      ? RecursivePartial<T[P]>
+      : T[P];
 };
 
 /** This value may be asynchronous */

@@ -1,11 +1,5 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
-import {
-  makeStateKey,
-  StateKey,
-  TransferState,
-  Inject,
-  Injectable
-} from "@angular/core";
+import { makeStateKey, StateKey, TransferState, Inject, Injectable } from "@angular/core";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { tap } from "rxjs/operators";
@@ -23,13 +17,10 @@ const STATE_KEY_PREFIX = "http_requests:";
 export class RehydrationInterceptorService implements HttpInterceptor {
   public constructor(
     @Inject(IS_SERVER_PLATFORM) private isSsr: boolean,
-    private transferState: TransferState
+    private transferState: TransferState,
   ) {}
 
-  public intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Ignore any requests which are not GET or filter
     const isGetRequest = req.method === "GET";
     const isFilterRequest = req.url.endsWith("/filter");
@@ -39,9 +30,7 @@ export class RehydrationInterceptorService implements HttpInterceptor {
 
     // Predict key for request in state transfer, and intercept request
     const key = makeStateKey<HttpResponse<any>>(STATE_KEY_PREFIX + req.url);
-    return this.isSsr
-      ? this.interceptServerRequests(req, next, key)
-      : this.interceptBrowserRequests(req, next, key);
+    return this.isSsr ? this.interceptServerRequests(req, next, key) : this.interceptBrowserRequests(req, next, key);
   }
 
   /**
@@ -53,7 +42,7 @@ export class RehydrationInterceptorService implements HttpInterceptor {
   private interceptBrowserRequests(
     req: HttpRequest<any>,
     next: HttpHandler,
-    key: StateKey<HttpResponse<any>>
+    key: StateKey<HttpResponse<any>>,
   ): Observable<HttpEvent<any>> {
     // Try reusing transferred response from server
     const cachedResponse = this.transferState.get(key, null);
@@ -70,7 +59,7 @@ export class RehydrationInterceptorService implements HttpInterceptor {
         status: httpStatus.OK,
         statusText: "OK (from server)",
         headers: cachedResponse.headers,
-      })
+      }),
     );
   }
 
@@ -83,7 +72,7 @@ export class RehydrationInterceptorService implements HttpInterceptor {
   private interceptServerRequests(
     req: HttpRequest<any>,
     next: HttpHandler,
-    key: StateKey<HttpResponse<any>>
+    key: StateKey<HttpResponse<any>>,
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       tap((event) => {
@@ -95,7 +84,7 @@ export class RehydrationInterceptorService implements HttpInterceptor {
           const response = { body: event.body, headers: event.headers };
           this.transferState.set(key, response);
         }
-      })
+      }),
     );
   }
 }

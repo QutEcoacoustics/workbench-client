@@ -7,13 +7,8 @@ import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
  */
 @Pipe({ name: "isUnresolved" })
 export class IsUnresolvedPipe implements PipeTransform {
-  public transform(
-    value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel
-  ): boolean {
+  public transform(value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel): boolean {
     const isUnresolvedAccessLevel = value === PermissionLevel.unresolved;
-    return (
-      isUnresolvedAccessLevel ||
-      isUnresolvedModel(value as AbstractModel | AbstractModel[])
-    );
+    return isUnresolvedAccessLevel || isUnresolvedModel(value as AbstractModel | AbstractModel[]);
   }
 }

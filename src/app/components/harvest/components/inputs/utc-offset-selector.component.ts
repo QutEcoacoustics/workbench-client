@@ -4,18 +4,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
 
 @Component({
-    selector: "baw-harvest-utc-offset-selector",
-    template: `
+  selector: "baw-harvest-utc-offset-selector",
+  template: `
     @if (offset) {
       <div class="utc-label">
         <span>{{ offset }}</span>
         <div>
-          <button
-            type="button"
-            class="btn btn-sm p-0 me-1"
-            [ngbTooltip]="editTooltip"
-            (click)="resetSite()"
-            >
+          <button type="button" class="btn btn-sm p-0 me-1" [ngbTooltip]="editTooltip" (click)="resetSite()">
             <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
           </button>
         </div>
@@ -35,19 +30,21 @@ import { FormsModule } from "@angular/forms";
       </select>
     }
   `,
-    styles: [`
-    .utc-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  styles: [
+    `
+      .utc-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .utc-label,
-    select {
-      width: 100%;
-    }
-  `],
-    imports: [NgbTooltip, FaIconComponent, FormsModule]
+      .utc-label,
+      select {
+        width: 100%;
+      }
+    `,
+  ],
+  imports: [NgbTooltip, FaIconComponent, FormsModule],
 })
 export class UTCOffsetSelectorComponent {
   @Input() public offset: string;

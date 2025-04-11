@@ -16,21 +16,15 @@ describe("WebsiteStatusIndicatorComponent", () => {
   let mockApi: jasmine.SpyObj<WebsiteStatusService>;
   let mockStatus: BehaviorSubject<WebsiteStatus>;
 
-  const indicatorElement = (): HTMLAnchorElement =>
-    spectator.query<HTMLAnchorElement>("a");
+  const indicatorElement = (): HTMLAnchorElement => spectator.query<HTMLAnchorElement>("a");
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusIndicatorComponent,
     imports: [MockBawApiModule, SharedModule],
-    providers: [
-      { provide: ActivatedRoute, useValue: mockActivatedRoute() },
-      MockProvider(WebsiteStatusService),
-    ],
+    providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute() }, MockProvider(WebsiteStatusService)],
   });
 
-  function setup(
-    websiteStatus: WebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
-  ): void {
+  function setup(websiteStatus: WebsiteStatus = new WebsiteStatus(generateWebsiteStatus())): void {
     spectator = createComponent({ detectChanges: false });
 
     mockStatus = new BehaviorSubject(websiteStatus);
@@ -123,8 +117,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
     });
 
     const expectedTooltip =
-      "<< brandLong >> is experiencing a temporary loss of services. Some parts " +
-      "of the website may not work.";
+      "<< brandLong >> is experiencing a temporary loss of services. Some parts " + "of the website may not work.";
 
     setup(testStatus);
 

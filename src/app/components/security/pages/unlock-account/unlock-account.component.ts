@@ -1,10 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
-import {
-  securityCategory,
-  unlockAccountMenuItem,
-} from "@components/security/security.menus";
+import { securityCategory, unlockAccountMenuItem } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { IUnlockAccount, UnlockAccount } from "@models/data/UnlockAccount";
 import { List } from "immutable";
@@ -14,8 +11,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./unlock-account.schema.json";
 
 @Component({
-    selector: "baw-confirm-account",
-    template: `
+  selector: "baw-confirm-account",
+  template: `
     <baw-form
       title="Resend unlock instructions"
       [model]="model"
@@ -25,7 +22,7 @@ import schema from "./unlock-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   public fields = schema.fields;
@@ -34,7 +31,7 @@ class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
     private api: UserService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: () =>

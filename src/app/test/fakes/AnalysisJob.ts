@@ -1,9 +1,7 @@
 import { AnalysisJobStatus, IAnalysisJob, OverallProgress } from "@models/AnalysisJob";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJob(
-  data?: Partial<IAnalysisJob>
-): Required<IAnalysisJob> {
+export function generateAnalysisJob(data?: Partial<IAnalysisJob>): Required<IAnalysisJob> {
   const overallDurationSeconds = modelData.datatype.number(3.154e7); // 1 year
   const overallDataLengthBytes = overallDurationSeconds * 22050 * 2; // duration seconds * sample rate * two bytes per sample
   const statuses = [

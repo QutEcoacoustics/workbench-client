@@ -1,16 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  getRoute,
-  isInternalRoute,
-  MenuRoute,
-  NavigableMenuItem,
-} from "@interfaces/menusInterfaces";
+import { getRoute, isInternalRoute, MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import camelCase from "just-camel-case";
@@ -23,16 +13,11 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
  * Displays a header link.
  */
 @Component({
-    selector: "baw-header-item",
-    template: `
+  selector: "baw-header-item",
+  template: `
     <!-- Internal link template -->
     <ng-template #internalRoute>
-      <a
-        class="nav-link"
-        strongRouteActive="active"
-        [id]="label + '-header-link'"
-        [strongRoute]="strongRoute"
-      >
+      <a class="nav-link" strongRouteActive="active" [id]="label + '-header-link'" [strongRoute]="strongRoute">
         {{ link.label }}
       </a>
     </ng-template>
@@ -42,9 +27,7 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
     <!-- Create LI with either internal or external link template -->
     <li class="nav-item">
       @if (hasStrongRoute) {
-        <ng-container
-          [ngTemplateOutlet]="internalRoute"
-        ></ng-container>
+        <ng-container [ngTemplateOutlet]="internalRoute"></ng-container>
       } @else {
         <a class="nav-link" [id]="label + '-header-link'" [href]="href">
           {{ link.label }}
@@ -52,8 +35,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       }
     </li>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet],
 })
 export class HeaderItemComponent implements OnInit {
   @Input() public link: NavigableMenuItem | HeaderItem;

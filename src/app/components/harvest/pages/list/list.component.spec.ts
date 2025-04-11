@@ -30,11 +30,7 @@ describe("ListComponent", () => {
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    declarations: [
-      ConfirmationComponent,
-      UserLinkComponent,
-      WebsiteStatusWarningComponent,
-    ],
+    declarations: [ConfirmationComponent, UserLinkComponent, WebsiteStatusWarningComponent],
     component: ListComponent,
     imports: [MockBawApiModule, SharedModule],
     mocks: [ToastService],
@@ -90,23 +86,15 @@ describe("ListComponent", () => {
   }
 
   function getAbortButton(): HTMLButtonElement {
-    return spec.debugElement.query(
-      (el) => el.nativeElement.innerText === "Abort"
-    ).nativeElement as HTMLButtonElement;
+    return spec.debugElement.query((el) => el.nativeElement.innerText === "Abort").nativeElement as HTMLButtonElement;
   }
 
   function getModalNextButton() {
-    return spec.query<HTMLButtonElement>(
-      "baw-harvest-confirmation-modal #next-btn",
-      { root: true }
-    );
+    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
   }
 
   function getModalCancelButton() {
-    return spec.query<HTMLButtonElement>(
-      "baw-harvest-confirmation-modal #cancel-btn",
-      { root: true }
-    );
+    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
   }
 
   function getCreatorColumnElement(): HTMLElement {
@@ -114,9 +102,7 @@ describe("ListComponent", () => {
   }
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spec.debugElement.query(
-      (element) => element.nativeElement.innerText === text
-    )?.nativeElement as T;
+    return spec.debugElement.query((element) => element.nativeElement.innerText === text)?.nativeElement as T;
   }
 
   beforeEach(() => {
@@ -141,9 +127,7 @@ describe("ListComponent", () => {
 
   it("should not show abort button when harvest cannot be aborted", () => {
     // ensure harvest status is not an abortable state
-    const unAbortableHarvest = new Harvest(
-      generateHarvest({ status: "scanning" })
-    );
+    const unAbortableHarvest = new Harvest(generateHarvest({ status: "scanning" }));
 
     setup(defaultProject, unAbortableHarvest);
 
@@ -172,25 +156,18 @@ describe("ListComponent", () => {
     getModalNextButton().click();
     tick();
 
-    expect(harvestApi.transitionStatus).toHaveBeenCalledWith(
-      defaultHarvest,
-      "complete"
-    );
+    expect(harvestApi.transitionStatus).toHaveBeenCalledWith(defaultHarvest, "complete");
   }));
 
   withDefaultZone("Australia/Perth", () => {
     it("should show created dates in the users local dateTime", () => {
       const harvestUtcCreatedAt = DateTime.fromISO("2020-01-01T00:00:00.000Z");
       const expectedLocalCreatedAt = "2020-01-01 08:00:00";
-      defaultHarvest = new Harvest(
-        generateHarvest({ createdAt: harvestUtcCreatedAt })
-      );
+      defaultHarvest = new Harvest(generateHarvest({ createdAt: harvestUtcCreatedAt }));
 
       setup(defaultProject, defaultHarvest);
 
-      const createdAtLabel = getElementByInnerText<HTMLSpanElement>(
-        expectedLocalCreatedAt
-      );
+      const createdAtLabel = getElementByInnerText<HTMLSpanElement>(expectedLocalCreatedAt);
       expect(createdAtLabel).toExist();
     });
   });
@@ -212,17 +189,9 @@ describe("ListComponent", () => {
     expect(harvestApi.filter).toHaveBeenCalledWith(
       jasmine.objectContaining({
         projection: {
-          include: [
-            "id",
-            "projectId",
-            "name",
-            "createdAt",
-            "creatorId",
-            "streaming",
-            "status",
-          ],
+          include: ["id", "projectId", "name", "createdAt", "creatorId", "streaming", "status"],
         },
-      })
+      }),
     );
   });
 
@@ -242,7 +211,7 @@ describe("ListComponent", () => {
             eq: defaultProject.id,
           },
         },
-      })
+      }),
     );
   });
 
@@ -252,14 +221,13 @@ describe("ListComponent", () => {
     expect(harvestApi.filter).not.toHaveBeenCalledWith(
       jasmine.objectContaining({
         filter: jasmine.any(Object),
-      })
+      }),
     );
   });
 
   it("should not display the harvest project name in the project column if the harvest list is scoped to a project", () => {
     setup(defaultProject, defaultHarvest);
-    const projectColumnHeader =
-      getElementByInnerText<HTMLTableCellElement>("Project");
+    const projectColumnHeader = getElementByInnerText<HTMLTableCellElement>("Project");
     expect(projectColumnHeader).not.toExist();
   });
 
@@ -269,8 +237,7 @@ describe("ListComponent", () => {
     const expectedProject: Project = defaultHarvest.project;
     const expectedProjectName: string = expectedProject.name;
 
-    const projectNameColumnValue: HTMLTableCellElement =
-      getElementByInnerText(expectedProjectName);
+    const projectNameColumnValue: HTMLTableCellElement = getElementByInnerText(expectedProjectName);
 
     expect(projectNameColumnValue).toExist();
   });

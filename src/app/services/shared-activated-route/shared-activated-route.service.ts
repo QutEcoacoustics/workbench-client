@@ -11,15 +11,7 @@ import {
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo, isIPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  BehaviorSubject,
-  filter,
-  map,
-  Observable,
-  Subscriber,
-  switchMap,
-  takeUntil,
-} from "rxjs";
+import { BehaviorSubject, filter, map, Observable, Subscriber, switchMap, takeUntil } from "rxjs";
 
 /**
  * Components outside of the router-outlet are unable to cleanly access data
@@ -53,9 +45,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
 
     this._url = this.trackObservableProperty(({ url }) => url);
     this._params = this.trackObservableProperty(({ params }) => params);
-    this._queryParams = this.trackObservableProperty(
-      ({ queryParams }) => queryParams
-    );
+    this._queryParams = this.trackObservableProperty(({ queryParams }) => queryParams);
     this._fragment = this.trackObservableProperty(({ fragment }) => fragment);
     this._data = this.trackObservableProperty(({ data }) => data);
     this._component = this.trackProperty(({ component }) => component);
@@ -123,9 +113,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
    *
    * @param callback A callback to be called when the current route changes
    */
-  private trackObservableProperty<T>(
-    callback: (value: ActivatedRoute, index: number) => Observable<T>
-  ): Observable<T> {
+  private trackObservableProperty<T>(callback: (value: ActivatedRoute, index: number) => Observable<T>): Observable<T> {
     return this.activatedRoute.pipe(switchMap(callback));
   }
 
@@ -134,9 +122,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
    *
    * @param callback A callback to be called when the current route changes
    */
-  private trackProperty<T>(
-    callback: (value: ActivatedRoute, index: number) => T
-  ): Observable<T> {
+  private trackProperty<T>(callback: (value: ActivatedRoute, index: number) => T): Observable<T> {
     return this.activatedRoute.pipe(map(callback));
   }
 
@@ -148,10 +134,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
       const maxDepth = 5;
       let depth = 0;
 
-      const expandChildren = async (
-        sub: Subscriber<ActivatedRoute>,
-        _route: ActivatedRoute
-      ): Promise<void> => {
+      const expandChildren = async (sub: Subscriber<ActivatedRoute>, _route: ActivatedRoute): Promise<void> => {
         depth++;
         sub.next(_route);
 
@@ -166,8 +149,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
       });
     };
     /** Only care about primary outlets */
-    const isPrimaryOutlet = (_route: ActivatedRoute): boolean =>
-      _route.outlet === "primary";
+    const isPrimaryOutlet = (_route: ActivatedRoute): boolean => _route.outlet === "primary";
     /** Only care about page components */
     const isPageComponent = (_route: ActivatedRoute): boolean =>
       (_route.component as any)?.prototype instanceof PageComponent;
@@ -178,7 +160,7 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
         switchMap(expandAllChildren),
         filter(isPrimaryOutlet),
         filter(isPageComponent),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe((_route: ActivatedRoute): void => {
         this.setActivatedRoute(_route);
