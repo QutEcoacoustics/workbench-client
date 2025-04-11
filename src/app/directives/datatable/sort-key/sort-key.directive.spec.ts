@@ -1,9 +1,5 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import {
-  DatatableComponent,
-  DataTableHeaderCellComponent,
-  NgxDatatableModule,
-} from "@swimlane/ngx-datatable";
+import { DatatableComponent, DataTableHeaderCellComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { getCallArgs } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { DatatableSortEvent } from "../pagination/pagination.directive";
@@ -15,10 +11,7 @@ describe("DatatableSortKeyDirective", () => {
   const createHost = createDirectiveFactory({
     directive: DatatableComponent,
     declarations: [DatatableSortKeyDirective],
-    imports: [
-      NgxDatatableModule,
-      MockComponent(DatatableComponent),
-    ],
+    imports: [NgxDatatableModule, MockComponent(DatatableComponent)],
   });
 
   function assertSortKey(sortKey: string) {
@@ -26,9 +19,7 @@ describe("DatatableSortKeyDirective", () => {
     spec.query(DataTableHeaderCellComponent).onSort();
 
     expect(spec.directive.onColumnSort).toHaveBeenCalled();
-    const sortEvent: DatatableSortEvent = getCallArgs(
-      spec.directive.onColumnSort as jasmine.Spy
-    )[0];
+    const sortEvent: DatatableSortEvent = getCallArgs(spec.directive.onColumnSort as jasmine.Spy)[0];
     expect(sortEvent.column.sortKey).toBe(sortKey);
   }
 
@@ -38,7 +29,7 @@ describe("DatatableSortKeyDirective", () => {
       `
       <ngx-datatable>
         <ngx-datatable-column prop="${sortKey}"></ngx-datatable-column>
-      </ngx-datatable>`
+      </ngx-datatable>`,
     );
     assertSortKey(undefined);
   });
@@ -49,7 +40,7 @@ describe("DatatableSortKeyDirective", () => {
       `
       <ngx-datatable>
         <ngx-datatable-column prop="propKey" sortKey="${sortKey}"></ngx-datatable-column>
-      </ngx-datatable>`
+      </ngx-datatable>`,
     );
     assertSortKey(sortKey);
   });

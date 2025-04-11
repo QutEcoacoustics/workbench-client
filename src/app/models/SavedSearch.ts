@@ -19,10 +19,7 @@ export interface ISavedSearch extends HasCreatorAndDeleter, HasDescription {
   storedQuery?: InnerFilter<AudioRecording>;
 }
 
-export class SavedSearch
-  extends AbstractModel<ISavedSearch>
-  implements ISavedSearch
-{
+export class SavedSearch extends AbstractModel<ISavedSearch> implements ISavedSearch {
   public readonly kind = "Saved Search";
   public readonly id?: Id;
   @bawPersistAttr()

@@ -31,5 +31,5 @@ export const adminOrphanMenuItem = menuRoute({
     const componentModel = routeData.root.firstChild.data;
     const orphanSiteName = componentModel.site.model.name;
     return orphanSiteName;
-  }
+  },
 });

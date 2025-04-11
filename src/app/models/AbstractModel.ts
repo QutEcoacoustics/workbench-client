@@ -4,18 +4,11 @@ import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
 import { Id } from "../interfaces/apiInterfaces";
-import {
-  Capability,
-  CapabilityKey,
-  Meta,
-} from "../services/baw-api/baw-api.service";
+import { Capability, CapabilityKey, Meta } from "../services/baw-api/baw-api.service";
 import { BawAttributeMeta } from "./AttributeDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
 
-export type AbstractModelConstructor<Model> = new (
-  _: Record<string, any>,
-  _injector?: AssociationInjector
-) => Model;
+export type AbstractModelConstructor<Model> = new (_: Record<string, any>, _injector?: AssociationInjector) => Model;
 
 interface SerializationConversionOptions {
   convertCase?: boolean;
@@ -23,8 +16,7 @@ interface SerializationConversionOptions {
 }
 
 type SerializationTargets = XOR<{ create: boolean }, { update: boolean }>;
-type ModelSerializationOptions = SerializationTargets &
-  SerializationConversionOptions;
+type ModelSerializationOptions = SerializationTargets & SerializationConversionOptions;
 
 /**
  * BAW Server Abstract Model
@@ -32,7 +24,7 @@ type ModelSerializationOptions = SerializationTargets &
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(
     raw: Readonly<Model>,
-    protected injector?: AssociationInjector
+    protected injector?: AssociationInjector,
   ) {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
@@ -247,9 +239,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    return this.getModelAttributes({ ...opts, formData: false }).some((attr) =>
-      isInstantiated(this[attr])
-    );
+    return this.getModelAttributes({ ...opts, formData: false }).some((attr) => isInstantiated(this[attr]));
   }
 
   /**
@@ -265,9 +255,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * in a multipart form API request
    */
   private hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
-      isInstantiated(this[attr])
-    );
+    return this.getModelAttributes({ ...opts, formData: true }).some((attr) => isInstantiated(this[attr]));
   }
 
   /**
@@ -275,9 +263,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * multipart form API request. Call `hasFormDataOnlyAttributes` before using
    * this value.
    */
-  private formDataOnlyAttributes(
-    opts?: ModelSerializationOptions
-  ): FormData {
+  private formDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     const keys = this.getModelAttributes({ ...opts, formData: true });
     const data = this.toObject(keys, opts);
@@ -335,26 +321,19 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    *
    * @param keys List of attributes to extract
    */
-  private toObject(
-    keys: string[],
-    opts?: ModelSerializationOptions
-  ): Partial<this> {
+  private toObject(keys: string[], opts?: ModelSerializationOptions): Partial<this> {
     const output: Partial<Writeable<this>> = {};
     keys.forEach((attribute: keyof AbstractModel) => {
       const value = this[attribute];
       if (value instanceof Set) {
         const valueAsArray = Array.from(value);
-        output[attribute] = opts?.convertCase
-          ? valueAsArray.map(snakeCase)
-          : valueAsArray;
+        output[attribute] = opts?.convertCase ? valueAsArray.map(snakeCase) : valueAsArray;
       } else if (value instanceof DateTime) {
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
         output[attribute] = value.as("seconds");
       } else {
-        output[attribute] = opts?.convertCase
-          ? snakeCase(this[attribute])
-          : this[attribute];
+        output[attribute] = opts?.convertCase ? snakeCase(this[attribute]) : this[attribute];
       }
     });
     return output;
@@ -373,12 +352,8 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           // when a  null value is present, we send the value in the json request
           // when a File value is present, we send the value in the formData request
           // The null/json scenario is used to support deleting images.
-          .filter((meta) =>
-            this[meta.key] instanceof File ? opts.formData : true
-          )
-          .filter((meta) =>
-            meta.supportedFormats.includes(opts.formData ? "formData" : "json")
-          )
+          .filter((meta) => (this[meta.key] instanceof File ? opts.formData : true))
+          .filter((meta) => meta.supportedFormats.includes(opts.formData ? "formData" : "json"))
           .map((meta) => meta.key)
       );
     } else {
@@ -387,9 +362,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 }
 
-export abstract class AbstractModel<
-  Model = Record<string, any>
-> extends AbstractModelWithoutId<Model> {
+export abstract class AbstractModel<Model = Record<string, any>> extends AbstractModelWithoutId<Model> {
   /** Model ID */
   public readonly id?: Id;
 
@@ -434,7 +407,7 @@ export class UnresolvedModel extends AbstractModel {
 }
 
 export function isUnresolvedModel<T extends AbstractModel>(
-  model: Readonly<T | T[] | UnresolvedModel>
+  model: Readonly<T | T[] | UnresolvedModel>,
 ): model is UnresolvedModel {
   return model === UnresolvedModel.one || model === UnresolvedModel.many;
 }

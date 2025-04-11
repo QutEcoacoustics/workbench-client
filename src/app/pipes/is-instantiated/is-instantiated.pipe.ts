@@ -9,9 +9,7 @@ import { AbstractModel } from "@models/AbstractModel";
  */
 @Pipe({ name: "isInstantiated" })
 export class isInstantiatedPipe implements PipeTransform {
-  public transform(
-    value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel
-  ): boolean {
+  public transform(value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel): boolean {
     return isInstantiated(value);
   }
 }

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -20,10 +13,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbDate, NgbCollapse, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
-import {
-  createIdSearchCallback,
-  createSearchCallback,
-} from "@shared/typeahead-input/typeahead-callbacks";
+import { createIdSearchCallback, createSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
@@ -32,10 +22,10 @@ import { TypeaheadInputComponent as TypeaheadInputComponent_1 } from "../../../s
 import { WIPComponent } from "../../../shared/wip/wip.component";
 
 @Component({
-    selector: "baw-annotation-search-form",
-    templateUrl: "annotation-search-form.component.html",
-    styleUrl: "annotation-search-form.component.scss",
-    imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent_1, WIPComponent, NgbCollapse, NgbHighlight]
+  selector: "baw-annotation-search-form",
+  templateUrl: "annotation-search-form.component.html",
+  styleUrl: "annotation-search-form.component.scss",
+  imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent_1, WIPComponent, NgbCollapse, NgbHighlight],
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
@@ -44,14 +34,13 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService
+    protected tagsApi: TagsService,
   ) {}
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
   @Output()
-  public searchParametersChange =
-    new EventEmitter<AnnotationSearchParameters>();
+  public searchParametersChange = new EventEmitter<AnnotationSearchParameters>();
 
   @ViewChild("recordingsTypeahead")
   private recordingsTypeahead: TypeaheadInputComponent;
@@ -77,9 +66,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // if there are advanced filters when we initially load the page, we should
     // automatically open the advanced filters accordion so that the user can
     // see that advanced filters are applied
-    const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
-      "audioRecordings",
-    ];
+    const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = ["audioRecordings"];
 
     for (const key of advancedFilterKeys) {
       const value = this.searchParameters[key];
@@ -100,7 +87,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       const dateFinishedBefore = new NgbDate(
         this.searchParameters.recordingDateFinishedBefore.year,
         this.searchParameters.recordingDateFinishedBefore.month,
-        this.searchParameters.recordingDateFinishedBefore.day
+        this.searchParameters.recordingDateFinishedBefore.day,
       );
 
       this.recordingDateTimeFilters = {
@@ -116,9 +103,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters) {
       this.searchParameters.audioRecordings = null;
     } else {
-      const recordingIds = this.recordingsTypeahead.value.map(
-        (model: AudioRecording) => model.id
-      );
+      const recordingIds = this.recordingsTypeahead.value.map((model: AudioRecording) => model.id);
 
       if (recordingIds.length > 0) {
         this.searchParameters.audioRecordings = recordingIds;
@@ -128,10 +113,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  protected updateSubModel(
-    key: keyof AnnotationSearchParameters,
-    subModels: any[]
-  ): void {
+  protected updateSubModel(key: keyof AnnotationSearchParameters, subModels: any[]): void {
     // if the subModels array is empty, the user has not selected any models
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
@@ -148,20 +130,13 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.recordingDate = [
-        dateTimeModel.dateStartedAfter
-          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-          : null,
-        dateTimeModel.dateFinishedBefore
-          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-          : null,
+        dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : null,
+        dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : null,
       ];
     }
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-      this.searchParameters.recordingTime = [
-        dateTimeModel.timeStartedAfter,
-        dateTimeModel.timeFinishedBefore,
-      ];
+      this.searchParameters.recordingTime = [dateTimeModel.timeStartedAfter, dateTimeModel.timeFinishedBefore];
     }
 
     if (!dateTimeModel.dateFiltering) {

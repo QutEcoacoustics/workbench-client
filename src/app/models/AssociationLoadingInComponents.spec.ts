@@ -43,8 +43,8 @@ class MockModel extends AbstractModel {
 export { MockModel as MockModelWithDecorators };
 
 @Component({
-    selector: "baw-test",
-    template: `
+  selector: "baw-test",
+  template: `
     @if (hasMany && model.childModels) {
       @for (item of model.childModels; track item) {
         <li>{{ item }}</li>
@@ -59,7 +59,7 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     }
   `,
-    imports: [RouterTestingModule, MockBawApiModule]
+  imports: [RouterTestingModule, MockBawApiModule],
 })
 class MockComponent {
   @Input() public model: MockModel;
@@ -74,12 +74,9 @@ describe("Association Decorators Loading In Components", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule, MockBawApiModule, MockComponent],
-    providers: [
-        MockStandardApiService,
-        { provide: MOCK.token, useExisting: MockStandardApiService },
-    ],
-}).compileComponents();
+      imports: [RouterTestingModule, MockBawApiModule, MockComponent],
+      providers: [MockStandardApiService, { provide: MOCK.token, useExisting: MockStandardApiService }],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);
@@ -87,37 +84,21 @@ describe("Association Decorators Loading In Components", () => {
     component = fixture.componentInstance;
   });
 
-  function interceptSingleModel(
-    model: AssociatedModel,
-    error?: BawApiError
-  ): Promise<void> {
+  function interceptSingleModel(model: AssociatedModel, error?: BawApiError): Promise<void> {
     const subject = new Subject<AssociatedModel>();
-    const promise = nStepObservable(
-      subject,
-      () => (model ? model : error),
-      !model
-    );
+    const promise = nStepObservable(subject, () => (model ? model : error), !model);
     spyOn(api, "show").and.callFake(() => subject);
     return promise;
   }
 
-  function interceptMultipleModels(
-    error: BawApiError,
-    ...models: Array<Array<AssociatedModel>>
-  ): Promise<any> {
+  function interceptMultipleModels(error: BawApiError, ...models: Array<Array<AssociatedModel>>): Promise<any> {
     const subject = new Subject<AssociatedModel[]>();
-    const promise = Promise.all(
-      models.map((model) =>
-        nStepObservable(subject, () => (model ? model : error), !model)
-      )
-    );
+    const promise = Promise.all(models.map((model) => nStepObservable(subject, () => (model ? model : error), !model)));
     spyOn(api, "filter").and.callFake(() => subject);
     return promise;
   }
 
-  function assertOutput(
-    model?: Readonly<AbstractModel> | Readonly<AbstractModel[]>
-  ) {
+  function assertOutput(model?: Readonly<AbstractModel> | Readonly<AbstractModel[]>) {
     if (model instanceof Array) {
       const listItems = fixture.nativeElement.querySelectorAll("li");
 
@@ -129,13 +110,9 @@ describe("Association Decorators Loading In Components", () => {
         });
       }
     } else if (model instanceof AbstractModel) {
-      expect(fixture.nativeElement.querySelector("p").innerText.trim()).toBe(
-        model.toString()
-      );
+      expect(fixture.nativeElement.querySelector("p").innerText.trim()).toBe(model.toString());
     } else {
-      expect(fixture.nativeElement.querySelector("p").innerText.trim()).toBe(
-        "Error"
-      );
+      expect(fixture.nativeElement.querySelector("p").innerText.trim()).toBe("Error");
     }
   }
 
@@ -157,10 +134,7 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display hasOne error", async () => {
-    const promise = interceptSingleModel(
-      undefined,
-      generateBawApiError(NOT_FOUND)
-    );
+    const promise = interceptSingleModel(undefined, generateBawApiError(NOT_FOUND));
     component.model = new MockModel({ id: 0 }, injector);
     fixture.detectChanges(); // Load childModel
     await promise;

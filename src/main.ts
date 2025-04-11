@@ -15,7 +15,7 @@ const domContentLoadedPromise = new Promise<void>((resolve) =>
   document.addEventListener("DOMContentLoaded", () => {
     document.removeEventListener("DOMContentLoader", () => {});
     resolve();
-  })
+  }),
 );
 
 // Bootstrap Angular

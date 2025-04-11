@@ -12,9 +12,10 @@ import { Router, RouterLinkActive } from "@angular/router";
 import { RouterLinkActiveOptions } from "@directives/strongRoute/strong-route-active.directive";
 import { UrlDirective } from "./url.directive";
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: "a[bawUrlActive]" })
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: "a[bawUrlActive]",
+})
 export class UrlActiveDirective extends RouterLinkActive {
   @ContentChildren(UrlDirective, { descendants: true })
   public linksWithHrefs!: QueryList<UrlDirective>;
@@ -34,7 +35,7 @@ export class UrlActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: UrlDirective
+    @Optional() _link?: UrlDirective,
   ) {
     super(_router, _element, _renderer, _cdr, _link);
   }

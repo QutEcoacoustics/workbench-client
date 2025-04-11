@@ -5,7 +5,7 @@
   "data": {
     "values": []
   },
-    "params": [
+  "params": [
     { "name": "bawTitleSize", "value": 20 },
     { "name": "bawFontSize", "value": 18 }
   ],
@@ -89,8 +89,8 @@
         "title": "Date",
         "format": "%Y-%m-%d"
       },
-      {"field": "formatted_tagId", "title": "Event"},
-      {"field": "formatted_ratio", "title": "Ratio"}
+      { "field": "formatted_tagId", "title": "Event" },
+      { "field": "formatted_ratio", "title": "Ratio" }
     ]
   }
 }

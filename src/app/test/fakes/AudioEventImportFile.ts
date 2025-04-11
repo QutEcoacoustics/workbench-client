@@ -2,13 +2,9 @@ import { IAudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
 import { generateImportedAudioEvent } from "./ImportedAudioEvent";
 
-export function generateAudioEventImportFile(
-  data: Partial<IAudioEventImportFile> = {}
-): IAudioEventImportFile {
+export function generateAudioEventImportFile(data: Partial<IAudioEventImportFile> = {}): IAudioEventImportFile {
   if (data.file && data.path) {
-    throw new Error(
-      "Cannot provide both file and path to mock AudioEventImportFile"
-    );
+    throw new Error("Cannot provide both file and path to mock AudioEventImportFile");
   }
 
   const useMockFile = !data.file && !data.path ? !!data.file : modelData.bool();
@@ -23,9 +19,7 @@ export function generateAudioEventImportFile(
     path: modelData.system.filePath(),
     createdAt: modelData.dateTime(),
     committed: modelData.bool(),
-    importedEvents: modelData.randomArray(5, 20, () =>
-      generateImportedAudioEvent()
-    ),
+    importedEvents: modelData.randomArray(5, 20, () => generateImportedAudioEvent()),
     analysisJobsItemId: modelData.id(),
     audioEventImportId: modelData.id(),
     additionalTagIds: modelData.ids(),

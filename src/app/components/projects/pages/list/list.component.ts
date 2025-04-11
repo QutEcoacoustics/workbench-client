@@ -24,8 +24,8 @@ export const projectsMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-projects-list",
-    template: `
+  selector: "baw-projects-list",
+  template: `
     @if (!error) {
       <baw-debounce-input
         label="Filter"
@@ -55,7 +55,7 @@ export const projectsMenuItemActions = [
     }
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
-    imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
+  imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent],
 })
 class ListComponent extends PaginationTemplate<Project> {
   public models: List<Project> = List([]);
@@ -64,7 +64,7 @@ class ListComponent extends PaginationTemplate<Project> {
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,
-    projectsService: ProjectsService
+    projectsService: ProjectsService,
   ) {
     super(
       router,
@@ -75,7 +75,7 @@ class ListComponent extends PaginationTemplate<Project> {
       () => [],
       (projects) => {
         this.models = List(projects);
-      }
+      },
     );
   }
 }

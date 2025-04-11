@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
@@ -13,8 +8,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 
 // TODO Pass model to content through context
 @Component({
-    selector: "baw-model-link",
-    template: `
+  selector: "baw-model-link",
+  template: `
     <!-- Loading text -->
     @if (model | isUnresolved) {
       <ng-content select="#unresolved"></ng-content>
@@ -41,8 +36,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       <ng-content select="#model"></ng-content>
     </ng-template>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [UrlDirective, NgTemplateOutlet, IsUnresolvedPipe]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UrlDirective, NgTemplateOutlet, IsUnresolvedPipe],
 })
 export class ModelLinkComponent implements OnChanges {
   @Input() public model: AbstractModel;

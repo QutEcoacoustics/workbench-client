@@ -9,14 +9,11 @@ export interface TimeoutOptions {
   timeout: number;
 }
 
-export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>(
-  "Timeout Options",
-  {
-    factory() {
-      return { timeout: null };
-    },
-  }
-);
+export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>("Timeout Options", {
+  factory() {
+    return { timeout: null };
+  },
+});
 
 /**
  * Timeout interceptor. This will terminate any requests which exceed the timeout value set in the project root.
@@ -26,21 +23,13 @@ export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>(
  */
 @Injectable()
 export class TimeoutInterceptor implements HttpInterceptor {
-  public constructor(
-    @Inject(TIMEOUT_OPTIONS) private timeoutOptions: TimeoutOptions
-  ) {}
+  public constructor(@Inject(TIMEOUT_OPTIONS) private timeoutOptions: TimeoutOptions) {}
 
-  public intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       switchMap((event) => {
         if (event.type === HttpEventType.Sent && this.timeoutOptions.timeout) {
-          return NEVER.pipe(
-            startWith(event),
-            timeout(this.timeoutOptions.timeout)
-          );
+          return NEVER.pipe(startWith(event), timeout(this.timeoutOptions.timeout));
         }
 
         return of(event);
@@ -53,13 +42,13 @@ export class TimeoutInterceptor implements HttpInterceptor {
                 REQUEST_TIMEOUT,
                 "Resource request took too long to complete. " +
                   "This may be an issue with your connection to us, or a temporary issue with our services.",
-                {}
-              )
+                {},
+              ),
           );
         }
 
         return throwError(() => error);
-      })
+      }),
     );
   }
 }

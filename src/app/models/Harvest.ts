@@ -1,19 +1,10 @@
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { harvestRoute } from "@components/harvest/harvest.routes";
-import {
-  DateTimeTimezone,
-  HasCreatorAndUpdater,
-  Id,
-} from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, HasCreatorAndUpdater, Id } from "@interfaces/apiInterfaces";
 import { Duration } from "luxon";
 import { AbstractModel, AbstractModelWithoutId } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
-import {
-  bawBytes,
-  bawDateTime,
-  bawDuration,
-  bawPersistAttr,
-} from "./AttributeDecorators";
+import { bawBytes, bawDateTime, bawDuration, bawPersistAttr } from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { Site } from "./Site";
 import type { User } from "./User";
@@ -49,10 +40,7 @@ export interface IHarvestMapping {
   recursive?: boolean;
 }
 
-export class HarvestMapping
-  extends AbstractModelWithoutId
-  implements IHarvestMapping
-{
+export class HarvestMapping extends AbstractModelWithoutId implements IHarvestMapping {
   public readonly kind = "HarvestMapping";
   @bawPersistAttr()
   public path?: string;
@@ -141,11 +129,11 @@ export class Harvest extends AbstractModel implements IHarvest {
   public constructor(data: IHarvest, injector?: AssociationInjector) {
     super(data, injector);
     this.mappings = ((data.mappings as IHarvestMapping[]) ?? []).map(
-      (mapping) => new HarvestMapping(mapping, injector)
+      (mapping) => new HarvestMapping(mapping, injector),
     );
     this.report = new HarvestReport(data.report, injector);
     if (this.uploadUrl) {
-      const matches = this.uploadUrl.match(/sftp:\/\/([^:]+):([0-9]+)$/)
+      const matches = this.uploadUrl.match(/sftp:\/\/([^:]+):([0-9]+)$/);
       this.uploadHost = matches[1];
       this.uploadPort = parseInt(matches[2], 10);
     }
@@ -164,18 +152,11 @@ export class Harvest extends AbstractModel implements IHarvest {
   }
 
   public get uploadUrlWithAuth(): string {
-    return this.uploadUrl.replace(
-      "://",
-      `://${this.uploadUser}:${this.uploadPassword}@`
-    );
+    return this.uploadUrl.replace("://", `://${this.uploadUser}:${this.uploadPassword}@`);
   }
 
   public get canUpdate(): boolean {
-    const notTransitionableStates: HarvestStatus[] = [
-      "scanning",
-      "metadataExtraction",
-      "processing"
-    ];
+    const notTransitionableStates: HarvestStatus[] = ["scanning", "metadataExtraction", "processing"];
 
     return !notTransitionableStates.includes(this.status);
   }
@@ -200,10 +181,7 @@ export interface IHarvestReport {
   runTimeSeconds?: number;
 }
 
-export class HarvestReport
-  extends AbstractModelWithoutId
-  implements IHarvestReport
-{
+export class HarvestReport extends AbstractModelWithoutId implements IHarvestReport {
   public readonly kind = "HarvestReport";
   public readonly itemsTotal?: number;
   public readonly itemsSizeBytes?: number;

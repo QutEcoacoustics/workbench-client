@@ -10,29 +10,25 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ItemsComponent } from "../shared/items/items/items.component";
 import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.directive";
-import {
-  websiteStatusCategory,
-  websiteStatusMenuItem,
-} from "./website-status.menu";
+import { websiteStatusCategory, websiteStatusMenuItem } from "./website-status.menu";
 
 @Component({
-    selector: "baw-website-status",
-    template: `
+  selector: "baw-website-status",
+  template: `
     <h2>Website Status</h2>
     <baw-items [items]="statusItems()"></baw-items>
 
     <p>
       If you are experiencing issues with the website, please
-      <a [strongRoute]="reportProblemRoute">Report a Problem</a> so we can
-      investigate.
+      <a [strongRoute]="reportProblemRoute">Report a Problem</a> so we can investigate.
     </p>
   `,
-    imports: [ItemsComponent, StrongRouteDirective]
+  imports: [ItemsComponent, StrongRouteDirective],
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(
     private api: WebsiteStatusService,
-    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean
+    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean,
   ) {
     super();
   }
@@ -40,9 +36,7 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
   protected reportProblemRoute = reportProblemMenuItem.route;
 
   public ngOnInit(): void {
-    this.api.status$
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((model) => (this.model = model));
+    this.api.status$.pipe(takeUntil(this.unsubscribe)).subscribe((model) => (this.model = model));
   }
 
   protected model: WebsiteStatus;

@@ -24,10 +24,7 @@ function makeAnnotationSearchCategory(subRoute: AnnotationRoute): Category {
   };
 }
 
-function makeVerificationMenuItem(
-  subRoute: AnnotationRoute,
-  parent?: MenuRoute,
-) {
+function makeVerificationMenuItem(subRoute: AnnotationRoute, parent?: MenuRoute) {
   return menuRoute({
     icon: ["fas", "circle-check"],
     label: "Verify Annotations",
@@ -38,10 +35,7 @@ function makeVerificationMenuItem(
   });
 }
 
-function makeAnnotationSearchMenuItem(
-  subRoute: AnnotationRoute,
-  parent?: MenuRoute,
-) {
+function makeAnnotationSearchMenuItem(subRoute: AnnotationRoute, parent?: MenuRoute) {
   return menuRoute({
     icon: ["fas", "layer-group"],
     label: "Search Annotations",
@@ -72,7 +66,6 @@ const verificationMenuItem: AnnotationMenuRoutes = {
   /** /project/:projectId/annotations/verify */
   project: makeVerificationMenuItem("project", annotationSearchMenuitem.project),
 };
-
 
 const verificationCategory = {
   site: makeVerificationCategory("site"),

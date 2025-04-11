@@ -2,21 +2,12 @@ import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { ACCOUNT, ServiceToken } from "@baw-api/ServiceTokens";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import {
-  HasCreator,
-  HasDeleter,
-  HasUpdater,
-  Id,
-  Ids,
-} from "@interfaces/apiInterfaces";
+import { HasCreator, HasDeleter, HasUpdater, Id, Ids } from "@interfaces/apiInterfaces";
 import { Observable, Subscription, zip } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { User } from "./User";
-import {
-  AssociationInjector,
-  ImplementsAssociations,
-} from "./ImplementsInjector";
+import { AssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
 /**
  * Creates an association between the creatorId and its user model
@@ -42,7 +33,6 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
-
 /**
  * Abstract model parameter decorator which automates the process
  * of retrieving models request linked by a group of ids in the parent model.
@@ -62,11 +52,11 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
 export function hasManyFilter<
   Parent extends ImplementsAssociations,
   Child extends AbstractModel,
-  Params extends any[] = []
+  Params extends any[] = [],
 >(
   serviceToken: ServiceToken<ApiFilter<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  routeParams: ReadonlyArray<keyof Parent> = []
+  routeParams: ReadonlyArray<keyof Parent> = [],
 ) {
   /** Create filter to retrieve association models */
   const modelFilter = (parent: Parent) =>
@@ -74,16 +64,15 @@ export function hasManyFilter<
       filter: {
         id: { in: Array.from(parent[identifierKeys] as any) },
       },
-    } as Filters<Child>);
+    }) as Filters<Child>;
 
   return createModelDecorator<Parent, Child, Params, ApiFilter<Child, Params>>(
     serviceToken,
     identifierKeys,
     routeParams,
-    (service, parent: Parent, params: Params) =>
-      service.filter(modelFilter(parent), ...params),
+    (service, parent: Parent, params: Params) => service.filter(modelFilter(parent), ...params),
     UnresolvedModel.many,
-    []
+    [],
   );
 }
 
@@ -96,14 +85,10 @@ export function hasManyFilter<
  * @param routeParams Additional route params required for the show request.
  * This is a list of keys from the parent where the values can be retrieved
  */
-export function hasMany<
-  Parent extends ImplementsAssociations,
-  Child extends AbstractModel,
-  Params extends any[] = []
->(
+export function hasMany<Parent extends ImplementsAssociations, Child extends AbstractModel, Params extends any[] = []>(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  routeParams: ReadonlyArray<keyof Parent> = []
+  routeParams: ReadonlyArray<keyof Parent> = [],
 ) {
   // we use multiple show (GET) requests in the hasMany associations so when
   // multiple models have the same associated models in a hasMany relationship
@@ -118,13 +103,11 @@ export function hasMany<
   const modelRequester = (
     service: ApiShow<Child, Params>,
     parentModel: Parent,
-    params: Params
+    params: Params,
   ): Observable<Child[]> => {
     const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
     // Use zip to combine multiple observables into a single observable that emits an array
-    return zip<Child[]>(
-      associatedModelIds.map((model: Id) => service.show(model, ...params))
-    );
+    return zip<Child[]>(associatedModelIds.map((model: Id) => service.show(model, ...params)));
   };
 
   return createModelDecorator<Parent, Child, Params, ApiShow<Child, Params>>(
@@ -133,7 +116,7 @@ export function hasMany<
     routeParams,
     modelRequester,
     UnresolvedModel.many,
-    []
+    [],
   );
 }
 
@@ -147,24 +130,19 @@ export function hasMany<
  * This is a list of keys from the parent where the values can be retrieved
  * @param failureValue Value to represent a failure to retrieve the model/s
  */
-export function hasOne<
-  Parent extends ImplementsAssociations,
-  Child extends AbstractModel,
-  Params extends any[] = []
->(
+export function hasOne<Parent extends ImplementsAssociations, Child extends AbstractModel, Params extends any[] = []>(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
   identifierKey: KeysOfType<Parent, Id>,
   routeParams: ReadonlyArray<keyof Parent> = [],
-  failureValue: any = null
+  failureValue: any = null,
 ) {
   return createModelDecorator<Parent, Child, Params, ApiShow<Child, Params>>(
     serviceToken,
     identifierKey,
     routeParams,
-    (service, parent: Parent, params: Params) =>
-      service.show(parent[identifierKey] as any, ...params),
+    (service, parent: Parent, params: Params) => service.show(parent[identifierKey] as any, ...params),
     UnresolvedModel.one,
-    failureValue
+    failureValue,
   );
 }
 
@@ -182,18 +160,14 @@ function createModelDecorator<
   Parent extends ImplementsAssociations,
   Child extends AbstractModel,
   Params extends any[],
-  Service
+  Service,
 >(
   serviceToken: ServiceToken<Service>,
   identifierKey: keyof Parent,
   routeParams: ReadonlyArray<keyof Parent>,
-  apiRequest: (
-    service: Service,
-    parent: Parent,
-    params: Params
-  ) => Observable<Child | Child[]>,
+  apiRequest: (service: Service, parent: Parent, params: Params) => Observable<Child | Child[]>,
   unresolvedValue: Readonly<UnresolvedModel> | Readonly<UnresolvedModel[]>,
-  failureValue: any
+  failureValue: any,
 ) {
   /**
    * Update the backing field which stores the last known value of the child model/s
@@ -205,13 +179,7 @@ function createModelDecorator<
   function updateBackingField(
     parent: Parent,
     backingFieldKey: string,
-    child:
-      | Child
-      | Child[]
-      | UnresolvedModel
-      | Readonly<UnresolvedModel>
-      | Readonly<UnresolvedModel[]>
-      | Subscription
+    child: Child | Child[] | UnresolvedModel | Readonly<UnresolvedModel> | Readonly<UnresolvedModel[]> | Subscription,
   ) {
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
@@ -224,9 +192,7 @@ function createModelDecorator<
    *
    * @param parent Parent model
    */
-  function getAssociatedModel(
-    parent: Parent
-  ): Readonly<AbstractModel | AbstractModel[]> {
+  function getAssociatedModel(parent: Parent): Readonly<AbstractModel | AbstractModel[]> {
     // Check for any backing models
     const backingFieldKey = "_" + identifierKey.toString();
     if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
@@ -240,9 +206,7 @@ function createModelDecorator<
     // the options for the rest of the application
     const injector: AssociationInjector = parent["injector"];
     if (!injector) {
-      throw new Error(
-        `${parent} does not have injector service. Tried to access ${identifierKey.toString()}`
-      );
+      throw new Error(`${parent} does not have injector service. Tried to access ${identifierKey.toString()}`);
     }
 
     // Get child model identifying ID/s

@@ -3,16 +3,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Question } from "@models/Question";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParam,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -29,15 +20,8 @@ export class QuestionsService implements StandardApi<Question, [IdOr<Study>]> {
     return this.api.list(Question, endpoint(study, emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<Question>,
-    study: IdOr<Study>
-  ): Observable<Question[]> {
-    return this.api.filter(
-      Question,
-      endpoint(study, emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<Question>, study: IdOr<Study>): Observable<Question[]> {
+    return this.api.filter(Question, endpoint(study, emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Question>, study: IdOr<Study>): Observable<Question> {
@@ -49,7 +33,7 @@ export class QuestionsService implements StandardApi<Question, [IdOr<Study>]> {
       Question,
       endpoint(study, emptyParam, emptyParam),
       (question) => endpoint(study, question, emptyParam),
-      model
+      model,
     );
   }
 
@@ -57,10 +41,7 @@ export class QuestionsService implements StandardApi<Question, [IdOr<Study>]> {
     return this.api.update(Question, endpoint(study, model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Question>,
-    study: IdOr<Study>
-  ): Observable<Question | void> {
+  public destroy(model: IdOr<Question>, study: IdOr<Study>): Observable<Question | void> {
     return this.api.destroy(endpoint(study, model, emptyParam));
   }
 }
@@ -74,11 +55,7 @@ export class ShallowQuestionsService implements StandardApi<Question> {
   }
 
   public filter(filters: Filters<Question>): Observable<Question[]> {
-    return this.api.filter(
-      Question,
-      endpointShallow(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Question, endpointShallow(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Question>): Observable<Question> {
@@ -90,7 +67,7 @@ export class ShallowQuestionsService implements StandardApi<Question> {
       Question,
       endpointShallow(emptyParam, emptyParam),
       (question) => endpointShallow(question, emptyParam),
-      model
+      model,
     );
   }
 
@@ -103,13 +80,10 @@ export class ShallowQuestionsService implements StandardApi<Question> {
   }
 }
 
-export const questionResolvers = new Resolvers<Question, [IdOr<Study>]>(
-  [QuestionsService],
-  "questionId",
-  ["studyId"]
-).create("Question");
+export const questionResolvers = new Resolvers<Question, [IdOr<Study>]>([QuestionsService], "questionId", [
+  "studyId",
+]).create("Question");
 
-export const shallowQuestionResolvers = new Resolvers<Question, []>(
-  [ShallowQuestionsService],
-  "questionId"
-).create("ShallowQuestion");
+export const shallowQuestionResolvers = new Resolvers<Question, []>([ShallowQuestionsService], "questionId").create(
+  "ShallowQuestion",
+);

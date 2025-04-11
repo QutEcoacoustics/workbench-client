@@ -1,9 +1,5 @@
 import { CollectionIds, DateTimeTimezone, FilePath, Id } from "@interfaces/apiInterfaces";
-import {
-  ANALYSIS_JOB_ITEM,
-  AUDIO_EVENT_IMPORT,
-  TAG,
-} from "@baw-api/ServiceTokens";
+import { ANALYSIS_JOB_ITEM, AUDIO_EVENT_IMPORT, TAG } from "@baw-api/ServiceTokens";
 import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
@@ -27,10 +23,7 @@ export interface IAudioEventImportFile {
   additionalTagIds?: CollectionIds;
 }
 
-export class AudioEventImportFile
-  extends AbstractModel<IAudioEventImportFile>
-  implements IAudioEventImportFile
-{
+export class AudioEventImportFile extends AbstractModel<IAudioEventImportFile> implements IAudioEventImportFile {
   public readonly kind = "audio_event_import_file";
   public readonly id?: Id;
   public readonly name?: string;

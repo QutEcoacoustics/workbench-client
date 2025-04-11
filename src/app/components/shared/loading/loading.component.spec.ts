@@ -1,7 +1,4 @@
-import {
-  BootstrapColorTypes,
-  BootstrapScreenSizes,
-} from "@helpers/bootstrapTypes";
+import { BootstrapColorTypes, BootstrapScreenSizes } from "@helpers/bootstrapTypes";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingComponent } from "./loading.component";

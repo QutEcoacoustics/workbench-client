@@ -7,8 +7,8 @@ xdescribe("TheirAnnotationsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TheirAnnotationsComponent],
-}).compileComponents();
+      imports: [TheirAnnotationsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TheirAnnotationsComponent);
     component = fixture.componentInstance;

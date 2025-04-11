@@ -39,18 +39,12 @@ function getDirective<D>(el: HTMLElement, directive: any): D | undefined {
  * @param injectable Injectable element to validate
  * @param props Expected props
  */
-function validateAttributes(
-  util: MatchersUtil,
-  injectable: any,
-  props: Record<string, any>
-): CustomMatcherResult {
+function validateAttributes(util: MatchersUtil, injectable: any, props: Record<string, any>): CustomMatcherResult {
   for (const key of Object.keys(props)) {
     const expected = props[key];
     const actual = injectable[key];
 
-    const errorMsg = `Expected ${util.pp(key)} to be ${util.pp(
-      expected
-    )}, got ${util.pp(actual)} instead`;
+    const errorMsg = `Expected ${util.pp(key)} to be ${util.pp(expected)}, got ${util.pp(actual)} instead`;
 
     if (typeof expected === "boolean") {
       const isFalsy = expected === false && !actual;
@@ -78,7 +72,7 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLElement,
     icon: IconProp,
-    props: Partial<Exclude<FaIconComponent, "icon">> = {}
+    props: Partial<Exclude<FaIconComponent, "icon">> = {},
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -115,7 +109,7 @@ const toHaveImage = (util: MatchersUtil): CustomMatcher => ({
     target: HTMLImageElement,
     src: string,
     imageProps: Partial<HTMLImageElement> = {},
-    directiveProps: Partial<AuthenticatedImageDirective> = {}
+    directiveProps: Partial<AuthenticatedImageDirective> = {},
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Image element should exist");
@@ -128,19 +122,12 @@ const toHaveImage = (util: MatchersUtil): CustomMatcher => ({
       return imageResults;
     }
 
-    const directive = getDirective<AuthenticatedImageDirective>(
-      target,
-      AuthenticatedImageDirective
-    );
+    const directive = getDirective<AuthenticatedImageDirective>(target, AuthenticatedImageDirective);
     if (!directive) {
       return matcherFailure("AuthenticatedImageDirective should exist");
     }
 
-    const directiveResults = validateAttributes(
-      util,
-      directive,
-      directiveProps
-    );
+    const directiveResults = validateAttributes(util, directive, directiveProps);
     if (directiveResults) {
       return directiveResults;
     }
@@ -162,15 +149,9 @@ const toHaveTooltip = (util: MatchersUtil): CustomMatcher => ({
       return matcherSuccess();
     }
     const directive = getDirective<NgbTooltip>(target, NgbTooltip);
-    return !directive
-      ? matcherSuccess()
-      : matcherFailure("Tooltip should not exist");
+    return !directive ? matcherSuccess() : matcherFailure("Tooltip should not exist");
   },
-  compare: (
-    target: HTMLElement,
-    tooltip: string,
-    props?: Partial<NgbTooltip>
-  ): CustomMatcherResult => {
+  compare: (target: HTMLElement, tooltip: string, props?: Partial<NgbTooltip>): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
@@ -201,7 +182,7 @@ const toHaveRoute = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     routerLink: string,
-    props: Partial<Exclude<RouterLink, "routerLink">>
+    props: Partial<Exclude<RouterLink, "routerLink">>,
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -233,16 +214,13 @@ const toHaveStrongRoute = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     strongRoute: StrongRoute,
-    props: Partial<Exclude<StrongRouteDirective, "strongRoute">>
+    props: Partial<Exclude<StrongRouteDirective, "strongRoute">>,
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<StrongRouteDirective>(
-      target,
-      StrongRouteDirective
-    );
+    const directive = getDirective<StrongRouteDirective>(target, StrongRouteDirective);
     if (!directive) {
       return matcherFailure("StrongRouteDirective should exist");
     }
@@ -268,16 +246,13 @@ const toHaveStrongRouteActive = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     klass: string = "active",
-    options: RouterLinkActiveOptions = { exact: false }
+    options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<StrongRouteActiveDirective>(
-      target,
-      StrongRouteActiveDirective
-    );
+    const directive = getDirective<StrongRouteActiveDirective>(target, StrongRouteActiveDirective);
     if (!directive) {
       return matcherFailure("StrongRouteActiveDirective should exist");
     }
@@ -296,7 +271,7 @@ const toHaveUrl = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     bawUrl: string,
-    props: Partial<Exclude<UrlDirective, "bawUrl">>
+    props: Partial<Exclude<UrlDirective, "bawUrl">>,
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -318,16 +293,13 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
   compare: (
     target: HTMLAnchorElement,
     klass: string = "active",
-    options: RouterLinkActiveOptions = { exact: false }
+    options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
     }
 
-    const directive = getDirective<UrlActiveDirective>(
-      target,
-      UrlActiveDirective
-    );
+    const directive = getDirective<UrlActiveDirective>(target, UrlActiveDirective);
     if (!directive) {
       return matcherFailure("UrlActiveDirective should exist");
     }
@@ -347,13 +319,8 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
  */
 const toBeProvidedBy = (): CustomMatcher => ({
   negativeCompare: (target: Injectable): CustomMatcherResult =>
-    target
-      ? matcherSuccess()
-      : matcherFailure("Expected target to be provided by"),
-  compare: (
-    target: Injectable,
-    expectedInjector: Injector
-  ): CustomMatcherResult => {
+    target ? matcherSuccess() : matcherFailure("Expected target to be provided by"),
+  compare: (target: Injectable, expectedInjector: Injector): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Injectable was not defined");
     }

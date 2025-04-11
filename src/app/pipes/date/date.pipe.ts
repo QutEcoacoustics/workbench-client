@@ -26,8 +26,6 @@ export class DateTimePipe implements PipeTransform {
 
     const localizedDate = options?.localTime === true ? value.toLocal() : value;
 
-    return localizedDate.toFormat(
-      options?.includeTime === true ? dateTimeFormat : dateFormat
-    );
+    return localizedDate.toFormat(options?.includeTime === true ? dateTimeFormat : dateFormat);
   }
 }

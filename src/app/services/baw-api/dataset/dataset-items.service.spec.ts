@@ -3,11 +3,7 @@ import { Dataset } from "@models/Dataset";
 import { DatasetItem } from "@models/DatasetItem";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateDatasetItem } from "@test/fakes/DatasetItem";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateImmutableApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateImmutableApi } from "@test/helpers/api-common";
 import { DatasetItemsService } from "./dataset-items.service";
 
 type Model = DatasetItem;
@@ -37,6 +33,6 @@ describe("DatasetItemsService", (): void => {
     updateUrl,
     createModel,
     10,
-    5
+    5,
   );
 });

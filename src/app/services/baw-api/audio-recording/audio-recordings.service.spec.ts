@@ -5,11 +5,7 @@ import { toBase64Url } from "@helpers/encoding/encoding";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
-import {
-  createServiceFactory,
-  SpectatorService,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService, SpyObject } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
   mockServiceImports,
@@ -24,8 +20,7 @@ type Model = AudioRecording;
 type Service = AudioRecordingsService;
 
 describe("AudioRecordingsService", () => {
-  const createModel = () =>
-    new AudioRecording(generateAudioRecording({ id: 5 }));
+  const createModel = () => new AudioRecording(generateAudioRecording({ id: 5 }));
   const baseUrl = "/audio_recordings/";
   let session: SpyObject<BawSessionService>;
   let spec: SpectatorService<AudioRecordingsService>;
@@ -40,15 +35,7 @@ describe("AudioRecordingsService", () => {
     session = spec.inject(BawSessionService);
   });
 
-  validateReadonlyApi(
-    () => spec,
-    AudioRecording,
-    baseUrl,
-    baseUrl + "filter",
-    baseUrl + "5",
-    createModel,
-    5
-  );
+  validateReadonlyApi(() => spec, AudioRecording, baseUrl, baseUrl + "filter", baseUrl + "5", createModel, 5);
 
   validateCustomApiFilter<Model, [IdOr<Site>], Service>(
     () => spec,
@@ -57,13 +44,12 @@ describe("AudioRecordingsService", () => {
     "filterBySite",
     { filter: { siteId: { eq: 5 } } },
     undefined,
-    5
+    5,
   );
 
   const apiRoot = "https://api/";
   function setApiRoot(_apiRoot: string) {
-    const api: BawApiService<AudioRecording> =
-      spec.inject<BawApiService<AudioRecording>>(BawApiService);
+    const api: BawApiService<AudioRecording> = spec.inject<BawApiService<AudioRecording>>(BawApiService);
     spyOn(api, "getPath").and.callFake((url: string) => _apiRoot + url);
   }
 
@@ -71,9 +57,7 @@ describe("AudioRecordingsService", () => {
     it("should return downloadUrl", () => {
       setApiRoot(apiRoot);
       const id = modelData.id();
-      expect(spec.service.downloadUrl(id)).toBe(
-        `${apiRoot}/audio_recordings/${id}/original`
-      );
+      expect(spec.service.downloadUrl(id)).toBe(`${apiRoot}/audio_recordings/${id}/original`);
     });
   });
 
@@ -98,28 +82,20 @@ describe("AudioRecordingsService", () => {
       const snakeCaseFilter = { filter: { duration_seconds: { eq: 10 } } };
 
       setAuthToken(undefined);
-      const expectation =
-        downloadUrl + filterQsp + toBase64Url(JSON.stringify(snakeCaseFilter));
+      const expectation = downloadUrl + filterQsp + toBase64Url(JSON.stringify(snakeCaseFilter));
       expect(spec.service.batchDownloadUrl(filter)).toBe(expectation);
     });
 
     it("should set auth token if logged in", () => {
       const authToken = modelData.authToken();
       setAuthToken(authToken);
-      const expectation =
-        downloadUrl +
-        filterQsp +
-        toBase64Url(JSON.stringify({})) +
-        "&" +
-        authTokenQsp +
-        authToken;
+      const expectation = downloadUrl + filterQsp + toBase64Url(JSON.stringify({})) + "&" + authTokenQsp + authToken;
       expect(spec.service.batchDownloadUrl({})).toBe(expectation);
     });
 
     it("should not set auth token if not logged in", () => {
       setAuthToken(undefined);
-      const expectation =
-        downloadUrl + filterQsp + toBase64Url(JSON.stringify({}));
+      const expectation = downloadUrl + filterQsp + toBase64Url(JSON.stringify({}));
       expect(spec.service.batchDownloadUrl({})).toBe(expectation);
     });
   });

@@ -6,16 +6,7 @@ import { UrlActiveDirective } from "./url-active.directive";
 import { UrlDirective } from "./url.directive";
 
 @Component({
-  template: `
-    <a
-      [bawUrl]="url"
-      [bawUrlActive]="klass"
-      [bawUrlActiveOptions]="activeOptions"
-    >
-      Link
-    </a>
-  `,
-  
+  template: ` <a [bawUrl]="url" [bawUrlActive]="klass" [bawUrlActiveOptions]="activeOptions"> Link </a> `,
 })
 class MockComponent {
   @Input() public url: string;
@@ -38,11 +29,7 @@ describe("UrlActiveDirective", () => {
     ],
   });
 
-  function setup(
-    url: string,
-    klass: string,
-    activeOptions?: { exact: boolean }
-  ) {
+  function setup(url: string, klass: string, activeOptions?: { exact: boolean }) {
     spec = createDirective({ props: { url, klass, activeOptions } });
     router = spec.inject(Router);
     router.initialNavigation();

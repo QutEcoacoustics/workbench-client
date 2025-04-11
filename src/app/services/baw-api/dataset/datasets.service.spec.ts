@@ -1,11 +1,7 @@
 import { Dataset } from "@models/Dataset";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateDataset } from "@test/fakes/Dataset";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { DatasetsService } from "./datasets.service";
 
 describe("DatasetsService", (): void => {
@@ -23,13 +19,5 @@ describe("DatasetsService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    Dataset,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    5
-  );
+  validateStandardApi(() => spec, Dataset, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
 });

@@ -3,9 +3,7 @@ import { IProject, ProjectCapabilities } from "@models/Project";
 import { modelData } from "@test/helpers/faker";
 import { generateMeta } from "./Meta";
 
-export function generateProjectMeta(
-  meta?: Partial<Meta<IProject, ProjectCapabilities>>
-): Meta {
+export function generateProjectMeta(meta?: Partial<Meta<IProject, ProjectCapabilities>>): Meta {
   const capability = {
     can: false,
     details: "Capability is unset by generateProjectMeta",

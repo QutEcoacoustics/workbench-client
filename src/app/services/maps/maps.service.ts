@@ -21,7 +21,7 @@ export class MapsService {
   // have to wait for the underlying component to be created.
   public constructor(
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private config: ConfigService
+    private config: ConfigService,
   ) {
     this.loadPromise = this.embedGoogleMaps();
   }
@@ -68,10 +68,7 @@ export class MapsService {
 
     document.head.appendChild(node);
 
-    return Promise.race([
-      scriptErrorPromise,
-      this.waitForGoogleNamespace(),
-    ]) as Promise<boolean>;
+    return Promise.race([scriptErrorPromise, this.waitForGoogleNamespace()]) as Promise<boolean>;
   }
 
   private async waitForGoogleNamespace(): Promise<boolean> {
@@ -102,8 +99,7 @@ export class MapsService {
     // using loading=async requests a version of the google maps api that does not
     // block the main thread while loading
     // this can improve performance and removes a warning from the dev console
-    const googleMapsBaseUrl =
-      "https://maps.googleapis.com/maps/api/js?loading=async";
+    const googleMapsBaseUrl = "https://maps.googleapis.com/maps/api/js?loading=async";
 
     const mapsKey = this.config.keys.googleMaps;
 

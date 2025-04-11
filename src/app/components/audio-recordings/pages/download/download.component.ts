@@ -9,10 +9,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
-import {
-  audioRecordingMenuItems,
-  audioRecordingsCategory,
-} from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems, audioRecordingsCategory } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -52,8 +49,7 @@ const siteKey = "site";
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   @ViewChild(NgForm) public form: NgForm;
 
-  public filters$: BehaviorSubject<Filters<AudioRecording>> =
-    new BehaviorSubject({});
+  public filters$: BehaviorSubject<Filters<AudioRecording>> = new BehaviorSubject({});
 
   public contactUs = contactUsMenuItem;
   public href = "";
@@ -68,7 +64,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public constructor(
     public session: BawSessionService,
     private route: ActivatedRoute,
-    private recordingsApi: AudioRecordingsService
+    private recordingsApi: AudioRecordingsService,
   ) {
     super();
   }
@@ -78,10 +74,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
 
     this.filters$
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (filters: Filters<AudioRecording>) =>
-          (this.href = this.recordingsApi.batchDownloadUrl(filters))
-      );
+      .subscribe((filters: Filters<AudioRecording>) => (this.href = this.recordingsApi.batchDownloadUrl(filters)));
   }
 
   public get project(): Project {
@@ -109,9 +102,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   }
 }
 
-function getPageInfo(
-  subRoute: keyof typeof audioRecordingMenuItems.batch
-): IPageInfo {
+function getPageInfo(subRoute: keyof typeof audioRecordingMenuItems.batch): IPageInfo {
   return {
     category: audioRecordingsCategory,
     pageRoute: audioRecordingMenuItems.batch[subRoute],

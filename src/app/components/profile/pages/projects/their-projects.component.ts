@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import {
-  theirProfileCategory,
-  theirProjectsMenuItem,
-} from "@components/profile/profile.menus";
+import { theirProfileCategory, theirProjectsMenuItem } from "@components/profile/profile.menus";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -24,9 +21,9 @@ const accountKey = "account";
  * TODO List of projects is filtered incorrectly
  */
 @Component({
-    selector: "baw-their-projects",
-    templateUrl: "./projects.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe]
+  selector: "baw-their-projects",
+  templateUrl: "./projects.component.html",
+  imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe],
 })
 class TheirProjectsComponent extends MyProjectsComponent {
   public constructor(api: ProjectsService, route: ActivatedRoute) {

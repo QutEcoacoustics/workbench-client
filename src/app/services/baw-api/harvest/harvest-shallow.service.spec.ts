@@ -1,11 +1,7 @@
 import { Harvest } from "@models/Harvest";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { ShallowHarvestsService } from "./harvest.service";
 
 describe("ShallowHarvestsService", () => {
@@ -24,15 +20,7 @@ describe("ShallowHarvestsService", () => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    Harvest,
-    baseUrl,
-    baseUrl + "filter",
-    showUrl,
-    createModel,
-    harvestId
-  );
+  validateStandardApi(() => spec, Harvest, baseUrl, baseUrl + "filter", showUrl, createModel, harvestId);
 
   // TODO Implement tests
   // xdescribe("transitionState", () => {});

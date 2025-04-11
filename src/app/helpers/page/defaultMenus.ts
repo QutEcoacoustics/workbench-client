@@ -3,17 +3,11 @@ import { dataRequestMenuItem } from "@components/data-request/data-request.menus
 import { homeCategory, homeMenuItem } from "@components/home/home.menus";
 import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
 import { libraryMenuItem } from "@components/library/library.menus";
-import {
-  myAccountMenuItem,
-  myAnnotationsMenuItem,
-} from "@components/profile/profile.menus";
+import { myAccountMenuItem, myAnnotationsMenuItem } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
-import {
-  loginMenuItem,
-  registerMenuItem,
-} from "@components/security/security.menus";
+import { loginMenuItem, registerMenuItem } from "@components/security/security.menus";
 import { sendAudioMenuItem } from "@components/send-audio/send-audio.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
@@ -38,9 +32,7 @@ export class DefaultMenu {
       contextLinks: OrderedSet([
         homeMenuItem,
         // Change links depending on config settings
-        config.settings.hideProjects
-          ? shallowRegionsMenuItem
-          : projectsMenuItem,
+        config.settings.hideProjects ? shallowRegionsMenuItem : projectsMenuItem,
         loginMenuItem,
         registerMenuItem,
         myAccountMenuItem,

@@ -2,15 +2,7 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  option,
-  ReadAndUpdateApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, ReadAndUpdateApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -30,11 +22,7 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
   }
 
   public filter(filters: Filters<AnalysisJob>): Observable<AnalysisJob[]> {
-    return this.api.filter(
-      AnalysisJob,
-      endpoint(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(AnalysisJob, endpoint(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<AnalysisJob>): Observable<AnalysisJob> {
@@ -46,7 +34,6 @@ export class AnalysisJobsService implements ReadAndUpdateApi<AnalysisJob> {
   }
 }
 
-export const analysisJobResolvers = new Resolvers<AnalysisJob, []>(
-  [AnalysisJobsService],
-  "analysisJobId"
-).create("AnalysisJob");
+export const analysisJobResolvers = new Resolvers<AnalysisJob, []>([AnalysisJobsService], "analysisJobId").create(
+  "AnalysisJob",
+);

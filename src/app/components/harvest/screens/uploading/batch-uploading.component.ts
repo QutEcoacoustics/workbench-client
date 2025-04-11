@@ -49,7 +49,7 @@ export class BatchUploadingComponent implements OnInit {
     public stages: HarvestStagesService,
     public modals: NgbModal,
     private config: ConfigService,
-    private deviceDetector: DeviceDetectorService
+    private deviceDetector: DeviceDetectorService,
   ) {}
 
   public ngOnInit(): void {
@@ -58,10 +58,7 @@ export class BatchUploadingComponent implements OnInit {
   }
 
   public activateTab(tabName: UploadingInstructionTab): void {
-    this.active = Math.max(
-      ["Windows", "Mac", "Linux", "RClone"].indexOf(tabName) + 1,
-      1
-    );
+    this.active = Math.max(["Windows", "Mac", "Linux", "RClone"].indexOf(tabName) + 1, 1);
   }
 
   public get harvest(): Harvest {

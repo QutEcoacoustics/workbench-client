@@ -2,18 +2,11 @@ import { Errorable } from "@helpers/advancedTypes";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo, PageInfo } from "@helpers/page/pageInfo";
-import {
-  PermissionLevel,
-  hasRequiredAccessLevelOrHigher,
-} from "@interfaces/apiInterfaces";
+import { PermissionLevel, hasRequiredAccessLevelOrHigher } from "@interfaces/apiInterfaces";
 import { MockModel } from "@models/AbstractModel.spec";
 import { Project } from "@models/Project";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import {
-  createComponentFactory,
-  mockProvider,
-  Spectator,
-} from "@ngneat/spectator";
+import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfo } from "@test/fakes/PageInfo";
@@ -76,11 +69,7 @@ describe("AllowsOriginalDownloadComponent", () => {
   });
 
   describe("access level", () => {
-    const levels = [
-      PermissionLevel.owner,
-      PermissionLevel.writer,
-      PermissionLevel.reader,
-    ];
+    const levels = [PermissionLevel.owner, PermissionLevel.writer, PermissionLevel.reader];
 
     levels.forEach((required) => {
       levels.forEach((current) => {
@@ -96,7 +85,7 @@ describe("AllowsOriginalDownloadComponent", () => {
             generateProject({
               allowOriginalDownload: required,
               accessLevel: current,
-            })
+            }),
           );
         });
 
@@ -105,9 +94,7 @@ describe("AllowsOriginalDownloadComponent", () => {
             it(`should show ${hasAccess ? "" : "not "} allowed`, () => {
               setProject(project);
               spec.detectChanges();
-              expect(spec.query("#has-access")).toHaveText(
-                hasAccess ? "Allowed" : "Not Allowed"
-              );
+              expect(spec.query("#has-access")).toHaveText(hasAccess ? "Allowed" : "Not Allowed");
             });
 
             it("should show tooltip", () => {
@@ -115,9 +102,7 @@ describe("AllowsOriginalDownloadComponent", () => {
               spec.detectChanges();
               const tooltip = getTooltip();
               expect(tooltip).toContain(project.name);
-              expect(tooltip).toContain(
-                required ? titleCase(required) : "not set any permissions"
-              );
+              expect(tooltip).toContain(required ? titleCase(required) : "not set any permissions");
             });
           });
         });

@@ -2,17 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers, SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
-import {
-  editPointMenuItem,
-  pointMenuItem,
-  pointsCategory,
-} from "@components/sites/points.menus";
+import { editPointMenuItem, pointMenuItem, pointsCategory } from "@components/sites/points.menus";
 import { deletePointModal, pointAnnotationsModal } from "@components/sites/points.modals";
 import { deleteSiteModal, siteAnnotationsModal } from "@components/sites/sites.modals";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
@@ -30,11 +23,7 @@ import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import {
-  editSiteMenuItem,
-  siteMenuItem,
-  sitesCategory,
-} from "../../sites.menus";
+import { editSiteMenuItem, siteMenuItem, sitesCategory } from "../../sites.menus";
 import { SiteComponent } from "../../components/site/site.component";
 
 export const siteMenuItemActions = [
@@ -67,17 +56,13 @@ const siteKey = "site";
  * Site Details Component
  */
 @Component({
-    selector: "baw-site-details",
-    template: `
+  selector: "baw-site-details",
+  template: `
     @if (!failure) {
-      <baw-site
-        [project]="project"
-        [region]="region"
-        [site]="site"
-      ></baw-site>
+      <baw-site [project]="project" [region]="region" [site]="site"></baw-site>
     }
   `,
-    imports: [SiteComponent]
+  imports: [SiteComponent],
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;
@@ -109,7 +94,8 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 
   public deleteModel(): void {
-    this.sitesApi.destroy(this.site, this.project)
+    this.sitesApi
+      .destroy(this.site, this.project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
@@ -124,7 +110,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
             const hideProjects = this.config.settings.hideProjects;
             this.router.navigateByUrl(hideProjects ? shallowRegionsRoute.toRouterLink() : this.project.viewUrl);
           }
-        }
+        },
       });
   }
 }

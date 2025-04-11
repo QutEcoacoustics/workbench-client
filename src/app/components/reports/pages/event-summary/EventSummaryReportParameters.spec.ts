@@ -1,10 +1,7 @@
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { Filters } from "@baw-api/baw-api.service";
 import { Params } from "@angular/router";
-import {
-  Chart,
-  EventSummaryReportParameters,
-} from "./EventSummaryReportParameters";
+import { Chart, EventSummaryReportParameters } from "./EventSummaryReportParameters";
 
 describe("EventSummaryReportParameters", () => {
   // as this is a component specific data model, it's not generalized in the model fakes
@@ -67,9 +64,7 @@ describe("EventSummaryReportParameters", () => {
 
     const realizedFilter: Filters<EventSummaryReport> = dataModel.toFilter();
 
-    expect(JSON.stringify(realizedFilter)).toEqual(
-      JSON.stringify(expectedFilter)
-    );
+    expect(JSON.stringify(realizedFilter)).toEqual(JSON.stringify(expectedFilter));
   });
 
   it("should create correctly from incomplete query string parameters", () => {
@@ -108,10 +103,7 @@ describe("EventSummaryReportParameters", () => {
     expect(dataModel.provenances).toEqual([11, 23, 2]);
     expect(dataModel.tags).toEqual([10, 11, 12]);
     expect(dataModel.score).toEqual(0.5);
-    expect(dataModel.charts).toEqual([
-      Chart.speciesCompositionCurve,
-      Chart.speciesAccumulationCurve,
-    ]);
+    expect(dataModel.charts).toEqual([Chart.speciesCompositionCurve, Chart.speciesAccumulationCurve]);
     expect(dataModel.bucketSize).toEqual("month");
     expect(dataModel.daylightSavings).toEqual(true);
   });

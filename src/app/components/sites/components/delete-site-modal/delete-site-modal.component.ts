@@ -5,16 +5,11 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 
 @Component({
-    selector: "baw-delete-site-modal",
-    template: `
+  selector: "baw-delete-site-modal",
+  template: `
     <div class="modal-header">
       <h4 class="modal-title">Delete {{ isPoint ? "Point" : "Site" }}</h4>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="dismissModal(false)"
-      ></button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="dismissModal(false)"></button>
     </div>
 
     <div class="modal-body">
@@ -26,11 +21,9 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       </span>
 
       <p class="alert alert-warning">
-        When this {{ isPoint ? "point" : "site" }} is deleted it will be made
-        invisible. For data safety: all audio recordings will no longer be
-        accessible but will be recoverable. If you need to recover these
-        recordings after they have been deleted, please
-        <a [strongRoute]="contactUsRoute" (click)="dismissModal(false)">Contact Us</a>.
+        When this {{ isPoint ? "point" : "site" }} is deleted it will be made invisible. For data safety: all audio
+        recordings will no longer be accessible but will be recoverable. If you need to recover these recordings after
+        they have been deleted, please <a [strongRoute]="contactUsRoute" (click)="dismissModal(false)">Contact Us</a>.
       </p>
     </div>
 
@@ -39,7 +32,7 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
-    imports: [StrongRouteDirective]
+  imports: [StrongRouteDirective],
 })
 export class DeleteSiteModalComponent extends DeleteModalComponent {
   public constructor() {

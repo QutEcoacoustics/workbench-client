@@ -4,15 +4,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
-import {
-  newRegionMenuItem,
-  shallowNewRegionMenuItem,
-  shallowRegionsCategory,
-} from "@components/regions/regions.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { newRegionMenuItem, shallowNewRegionMenuItem, shallowRegionsCategory } from "@components/regions/regions.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
@@ -27,8 +20,8 @@ const projectKey = "project";
  * New Region Component
  */
 @Component({
-    selector: "baw-regions-new",
-    template: `
+  selector: "baw-regions-new",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="hideTitle ? '' : 'New Site'"
@@ -40,7 +33,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;
@@ -50,7 +43,7 @@ class NewComponent extends FormTemplate<Region> {
     private api: RegionsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
