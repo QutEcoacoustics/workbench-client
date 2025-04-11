@@ -9,7 +9,8 @@
   "scripts": {
     "ci": "npm ci --force",
     "build": "ng build --configuration production",
-    "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js .",
+    "lint": "ng lint",
+    "format": "ng format",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host 0.0.0.0 --disable-host-check",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",

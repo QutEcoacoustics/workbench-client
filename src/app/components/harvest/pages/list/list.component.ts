@@ -19,7 +19,6 @@ import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
-import { NgIf } from "@angular/common";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
@@ -37,7 +36,7 @@ const projectKey = "project";
 @Component({
     selector: "baw-harvests",
     templateUrl: "list.component.html",
-    imports: [NgIf, StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, LoadingComponent, UrlDirective, ConfirmationComponent, IsUnresolvedPipe]
+    imports: [StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, LoadingComponent, UrlDirective, ConfirmationComponent, IsUnresolvedPipe]
 })
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;

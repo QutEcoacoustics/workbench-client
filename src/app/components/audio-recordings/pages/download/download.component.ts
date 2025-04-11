@@ -27,7 +27,6 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { BehaviorSubject, takeUntil } from "rxjs";
 import { loginMenuItem } from "src/app/components/security/security.menus";
-import { NgIf } from "@angular/common";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DateTimeFilterComponent } from "../../../shared/date-time-filter/date-time-filter.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
@@ -47,7 +46,6 @@ const siteKey = "site";
     DateTimeFilterComponent,
     DownloadTableComponent,
     StrongRouteDirective,
-    NgIf,
     HiddenCopyComponent,
   ],
 })

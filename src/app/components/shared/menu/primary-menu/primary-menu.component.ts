@@ -45,10 +45,20 @@ export interface HeaderDropdown {
  * Primary Menu Component.
  */
 @Component({
-    selector: "baw-primary-menu",
-    templateUrl: "primary-menu.component.html",
-    styleUrls: ["primary-menu.component.scss"],
-    imports: [HeaderItemComponent, HeaderDropdownComponent, WebsiteStatusIndicatorComponent, NgTemplateOutlet, StrongRouteActiveDirective, StrongRouteDirective, FaIconComponent, UrlActiveDirective, AuthenticatedImageDirective]
+  selector: "baw-primary-menu",
+  templateUrl: "primary-menu.component.html",
+  styleUrls: ["primary-menu.component.scss"],
+  imports: [
+    HeaderItemComponent,
+    HeaderDropdownComponent,
+    WebsiteStatusIndicatorComponent,
+    NgTemplateOutlet,
+    StrongRouteActiveDirective,
+    StrongRouteDirective,
+    FaIconComponent,
+    UrlActiveDirective,
+    AuthenticatedImageDirective,
+  ],
 })
 export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

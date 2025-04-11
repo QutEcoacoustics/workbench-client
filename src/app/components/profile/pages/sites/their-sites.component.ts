@@ -25,9 +25,19 @@ const accountKey = "account";
  * TODO List of sites is filtered incorrectly
  */
 @Component({
-    selector: "baw-their-sites",
-    templateUrl: "./sites.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, TimeSinceComponent, LoadingComponent, StrongRouteDirective, ErrorHandlerComponent, TitleCasePipe, IsUnresolvedPipe]
+  selector: "baw-their-sites",
+  templateUrl: "./sites.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    TimeSinceComponent,
+    LoadingComponent,
+    StrongRouteDirective,
+    ErrorHandlerComponent,
+    TitleCasePipe,
+    IsUnresolvedPipe,
+  ],
 })
 class TheirSitesComponent extends MySitesComponent {
   public get account(): User {

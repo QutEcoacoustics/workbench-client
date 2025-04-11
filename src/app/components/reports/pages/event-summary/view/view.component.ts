@@ -28,7 +28,12 @@ import {
 } from "@baw-api/reports/event-report/event-summary-report.service";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
-import { Location, DecimalPipe, PercentPipe, TitleCasePipe } from "@angular/common";
+import {
+  Location,
+  DecimalPipe,
+  PercentPipe,
+  TitleCasePipe,
+} from "@angular/common";
 import { Map } from "immutable";
 import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -57,10 +62,25 @@ const siteKey = "site";
 const reportKey = "report";
 
 @Component({
-    selector: "baw-summary-report",
-    templateUrl: "./view.component.html",
-    styleUrl: "./view.component.scss",
-    imports: [NgbTooltip, FaIconComponent, DatetimeComponent, InlineListComponent, SiteMapComponent, ChartComponent, DurationComponent, NgbCollapse, DecimalPipe, PercentPipe, TitleCasePipe, IsUnresolvedPipe, TimePipe, DateTimePipe]
+  selector: "baw-summary-report",
+  templateUrl: "./view.component.html",
+  styleUrl: "./view.component.scss",
+  imports: [
+    NgbTooltip,
+    FaIconComponent,
+    DatetimeComponent,
+    InlineListComponent,
+    SiteMapComponent,
+    ChartComponent,
+    DurationComponent,
+    NgbCollapse,
+    DecimalPipe,
+    PercentPipe,
+    TitleCasePipe,
+    IsUnresolvedPipe,
+    TimePipe,
+    DateTimePipe,
+  ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

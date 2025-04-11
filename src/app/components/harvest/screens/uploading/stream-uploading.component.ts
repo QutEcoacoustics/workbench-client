@@ -17,9 +17,20 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 @Component({
-    selector: "baw-harvest-stream-uploading",
-    templateUrl: "stream-uploading.component.html",
-    imports: [UploadUrlComponent, StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, LoadingComponent, UrlDirective, ConfirmationComponent, DecimalPipe, IsUnresolvedPipe, SafePipe]
+  selector: "baw-harvest-stream-uploading",
+  templateUrl: "stream-uploading.component.html",
+  imports: [
+    UploadUrlComponent,
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    LoadingComponent,
+    UrlDirective,
+    ConfirmationComponent,
+    DecimalPipe,
+    IsUnresolvedPipe,
+    SafePipe,
+  ],
 })
 export class StreamUploadingComponent implements OnInit {
   public active = 1;

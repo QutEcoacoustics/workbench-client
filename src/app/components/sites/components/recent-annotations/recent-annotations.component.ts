@@ -9,15 +9,15 @@ import {
 import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { takeUntil } from "rxjs";
-import { NgIf, NgFor, NgTemplateOutlet } from "@angular/common";
+import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-site-recent-annotations",
-    templateUrl: "./recent-annotations.component.html",
-    imports: [NgIf, LoadingComponent, NgFor, NgTemplateOutlet, UrlDirective, IsUnresolvedPipe]
+  selector: "baw-site-recent-annotations",
+  templateUrl: "./recent-annotations.component.html",
+  imports: [LoadingComponent, NgTemplateOutlet, UrlDirective, IsUnresolvedPipe],
 })
 export class RecentAnnotationsComponent
   extends withUnsubscribe()

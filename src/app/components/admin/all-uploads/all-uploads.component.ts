@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
 import { ListComponent } from "@components/harvest/pages/list/list.component";
-import { NgIf } from "@angular/common";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { adminCategory, adminUploadsMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
@@ -16,9 +15,20 @@ import { ConfirmationComponent } from "../../harvest/components/modal/confirmati
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-all-uploads",
-    templateUrl: "../../harvest/pages/list/list.component.html",
-    imports: [NgIf, StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, LoadingComponent, UrlDirective, ConfirmationComponent, IsUnresolvedPipe]
+  selector: "baw-all-uploads",
+  templateUrl: "../../harvest/pages/list/list.component.html",
+  imports: [
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatetimeComponent,
+    UserLinkComponent,
+    LoadingComponent,
+    UrlDirective,
+    ConfirmationComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class AllUploadsComponent extends ListComponent {
   public override get project() {
