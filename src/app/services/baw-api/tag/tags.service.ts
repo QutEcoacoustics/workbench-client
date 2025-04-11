@@ -7,9 +7,22 @@ import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { createSearchCallback } from "@shared/typeahead-input/typeahead-callbacks";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { BawProvider, BawResolver, ResolvedModel, Resolvers } from "../resolver-common";
+import {
+  BawProvider,
+  BawResolver,
+  ResolvedModel,
+  Resolvers,
+} from "../resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
@@ -31,7 +44,12 @@ export class TagsService implements StandardApi<Tag> {
   }
 
   public create(model: Tag): Observable<Tag> {
-    return this.api.create(Tag, endpoint(emptyParam, emptyParam), (tag) => endpoint(tag, emptyParam), model);
+    return this.api.create(
+      Tag,
+      endpoint(emptyParam, emptyParam),
+      (tag) => endpoint(tag, emptyParam),
+      model
+    );
   }
 
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
@@ -49,8 +67,13 @@ export class TagsService implements StandardApi<Tag> {
    * @param filters Tag filters
    * @param user user to filter by
    */
-  public filterByCreator(filters: Filters<Tag>, user: IdOr<User>): Observable<Tag[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "creatorId", user));
+  public filterByCreator(
+    filters: Filters<Tag>,
+    user: IdOr<User>
+  ): Observable<Tag[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "creatorId", user)
+    );
   }
 
   public typeaheadCallback(): TypeaheadSearchCallback<Tag> {
@@ -62,17 +85,27 @@ export class TagsService implements StandardApi<Tag> {
    * TODO Replace with reference to baw server
    */
   public tagTypes(): Observable<TagType[]> {
-    return of(["general", "common_name", "species_name", "looks_like", "sounds_like"]).pipe(
-      map((types) => types.map((type) => new TagType({ name: type }))),
-    );
+    return of([
+      "general",
+      "common_name",
+      "species_name",
+      "looks_like",
+      "sounds_like",
+    ]).pipe(map((types) => types.map((type) => new TagType({ name: type }))));
   }
 }
 
 class TagResolvers {
   public create(name: string) {
-    const additionalProvider = new Resolvers<Tag, []>([TagsService], "tagId").create(name);
+    const additionalProvider = new Resolvers<Tag, []>(
+      [TagsService],
+      "tagId"
+    ).create(name);
     const tagTypeProvider = new TagTypeResolvers().create(name);
-    const providers = [...additionalProvider.providers, ...tagTypeProvider.providers];
+    const providers = [
+      ...additionalProvider.providers,
+      ...tagTypeProvider.providers,
+    ];
 
     return {
       ...additionalProvider,
@@ -82,7 +115,13 @@ class TagResolvers {
   }
 }
 
-class TagTypeResolvers extends BawResolver<TagType[], Tag, [], TagsService, { tagTypes: string }> {
+class TagTypeResolvers extends BawResolver<
+  TagType[],
+  Tag,
+  [],
+  TagsService,
+  { tagTypes: string }
+> {
   public constructor() {
     super([TagsService], undefined, undefined);
   }
@@ -90,9 +129,9 @@ class TagTypeResolvers extends BawResolver<TagType[], Tag, [], TagsService, { ta
   public createProviders(
     name: string,
     resolver: Type<{
-      resolve: ResolveFn<ResolvedModel<TagType[]>>;
-    }>,
-    deps: Type<TagsService>[],
+    resolve: ResolveFn<ResolvedModel<TagType[]>>;
+}>,
+    deps: Type<TagsService>[]
   ): { tagTypes: string } & {
     providers: BawProvider[];
   } {
@@ -108,7 +147,10 @@ class TagTypeResolvers extends BawResolver<TagType[], Tag, [], TagsService, { ta
     };
   }
 
-  public resolverFn(__: ActivatedRouteSnapshot, api: TagsService): Observable<TagType[]> {
+  public resolverFn(
+    __: ActivatedRouteSnapshot,
+    api: TagsService
+  ): Observable<TagType[]> {
     return api.tagTypes();
   }
 }

@@ -36,7 +36,7 @@ function test(
   dateTimeAttribute: string,
   date?: boolean,
   time?: boolean,
-  explicitTimezone?: string,
+  explicitTimezone?: string
 ): TestCase {
   return {
     name,
@@ -197,7 +197,9 @@ describe("ZonedDateTimeComponent", () => {
           // because our component can accept both a IANAZone and a FixedOffsetZone, we want to test both
           // depending on the shape of the descriptor
           if (!ianaZone.isValid) {
-            luxonZone = FixedOffsetZone.parseSpecifier(`UTC${testCase.explicitTimezone}`);
+            luxonZone = FixedOffsetZone.parseSpecifier(
+              `UTC${testCase.explicitTimezone}`
+            );
           }
 
           const luxonTestTimezone: TestTimezone = {

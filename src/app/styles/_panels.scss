@@ -1,4 +1,14 @@
-$theme-colors: ("highlight", "primary", "secondary", "success", "info", "warning", "danger", "light", "dark");
+$theme-colors: (
+  "highlight",
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+  "light",
+  "dark"
+);
 
 $theme-color-variants: ("", "-lighter", "-lightest", "-darker", "-darkest");
 

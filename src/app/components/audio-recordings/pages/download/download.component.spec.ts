@@ -1,7 +1,10 @@
 import { fakeAsync } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { BawSessionService, guestAuthToken } from "@baw-api/baw-session.service";
+import {
+  BawSessionService,
+  guestAuthToken,
+} from "@baw-api/baw-session.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
@@ -9,7 +12,11 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { SharedModule } from "@shared/shared.module";
@@ -37,7 +44,13 @@ describe("DownloadAudioRecordingsComponent", () => {
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
-    imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule, MockBawApiModule],
+    imports: [
+      SharedModule,
+      NgbCollapseModule,
+      MockConfigModule,
+      CacheModule,
+      MockBawApiModule,
+    ],
     declarations: [
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
@@ -46,14 +59,20 @@ describe("DownloadAudioRecordingsComponent", () => {
     ],
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls
-    providers: [mockProvider(ToastService), BawSessionService, BawApiService, AudioRecordingsService],
+    providers: [
+      mockProvider(ToastService),
+      BawSessionService,
+      BawApiService,
+      AudioRecordingsService,
+    ],
   });
 
   const getProjectInput = () => spec.query<HTMLInputElement>("#project");
   const getRegionInput = () => spec.query<HTMLInputElement>("#region");
   const getSiteInput = () => spec.query<HTMLInputElement>("#site");
   const getSiteLabel = () => spec.query<HTMLLabelElement>("#site-label");
-  const getDownloadLink = () => spec.query<HTMLAnchorElement>("#download-script");
+  const getDownloadLink = () =>
+    spec.query<HTMLAnchorElement>("#download-script");
 
   function loadForm() {
     // Have to do this tick because of
@@ -63,7 +82,12 @@ describe("DownloadAudioRecordingsComponent", () => {
     spec.detectChanges();
   }
 
-  function setup(project: Project, region?: Region, site?: Site, authToken?: AuthToken) {
+  function setup(
+    project: Project,
+    region?: Region,
+    site?: Site,
+    authToken?: AuthToken
+  ) {
     const resolvers = {};
     const models = {};
 
@@ -118,7 +142,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -147,7 +173,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -183,7 +211,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -212,7 +242,9 @@ describe("DownloadAudioRecordingsComponent", () => {
         spec.detectChanges();
         loadForm();
         expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
-        expect(getDownloadLink()).toHaveHref(api.batchDownloadUrl(expectedFilter));
+        expect(getDownloadLink()).toHaveHref(
+          api.batchDownloadUrl(expectedFilter)
+        );
       }));
     });
 
@@ -271,7 +303,9 @@ describe("DownloadAudioRecordingsComponent", () => {
       expect(spec.query("#guest-run-script")).toBeTruthy();
       expect(spec.query(HiddenCopyComponent)).toBeFalsy();
 
-      expect((spec.query("#guest-run-script") as HTMLElement).innerText).toEqual("Log in to see this command.");
+      expect(
+        (spec.query("#guest-run-script") as HTMLElement).innerText
+      ).toEqual("Log in to see this command.");
     });
 
     it("should show instructions for logged in users", () => {
@@ -284,7 +318,9 @@ describe("DownloadAudioRecordingsComponent", () => {
       const hiddenCopy = spec.query(HiddenCopyComponent);
       expect(hiddenCopy).toBeTruthy();
       expect(hiddenCopy.tooltip).toBe("Show/Hide command");
-      expect(hiddenCopy.value).toBe(`./download_audio_files.ps1 -auth_token "${authToken}"`);
+      expect(hiddenCopy.value).toBe(
+        `./download_audio_files.ps1 -auth_token "${authToken}"`
+      );
     });
 
     it("should hide logged in user instructions after logout", () => {
@@ -292,7 +328,8 @@ describe("DownloadAudioRecordingsComponent", () => {
       setup(defaultProject, undefined, undefined, authToken);
       spec.detectChanges();
 
-      spec.inject<Writeable<BawSessionService>>(BawSessionService).authToken = guestAuthToken;
+      spec.inject<Writeable<BawSessionService>>(BawSessionService).authToken =
+        guestAuthToken;
       spec.detectChanges();
 
       expect(spec.query("#guest-run-script")).toBeTruthy();

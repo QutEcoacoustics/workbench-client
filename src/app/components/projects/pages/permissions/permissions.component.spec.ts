@@ -22,15 +22,21 @@ describe("PermissionsComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule, PermissionsComponent],
-      providers: [
+    imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+        PermissionsComponent,
+    ],
+    providers: [
         mockProvider(PermissionsService),
         {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
+            provide: ActivatedRoute,
+            useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsComponent);
     component = fixture.componentInstance;

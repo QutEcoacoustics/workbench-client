@@ -14,7 +14,13 @@ import { AdminUserListComponent } from "./users/user.component";
 import { AllUploadsComponent } from "./all-uploads/all-uploads.component";
 import { DateTimeExampleComponent } from "./datetime-example/datetime-example.component";
 
-const modules = [AnalysisJobsModule, OrphanSitesModule, SettingsModule, TagGroupsModule, TagsModule];
+const modules = [
+  AnalysisJobsModule,
+  OrphanSitesModule,
+  SettingsModule,
+  TagGroupsModule,
+  TagsModule,
+];
 const components = [
   AdminDashboardComponent,
   AdminUserListComponent,
@@ -25,7 +31,7 @@ const components = [
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...modules, ...components],
-  exports: [RouterModule, ...components, ...modules],
+    imports: [SharedModule, RouterModule.forChild(routes), ...modules, ...components],
+    exports: [RouterModule, ...components, ...modules],
 })
 export class AdminModule {}

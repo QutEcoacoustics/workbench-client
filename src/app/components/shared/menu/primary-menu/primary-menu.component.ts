@@ -10,7 +10,10 @@ import { listenMenuItem } from "@components/listen/listen.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { loginMenuItem, registerMenuItem } from "@components/security/security.menus";
+import {
+  loginMenuItem,
+  registerMenuItem,
+} from "@components/security/security.menus";
 import { PartialWith } from "@helpers/advancedTypes";
 import { CustomMenuItem } from "@helpers/app-initializer/app-initializer";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -75,7 +78,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
     private api: SecurityService,
     private session: BawSessionService,
     private config: ConfigService,
-    private router: Router,
+    private router: Router
   ) {
     super();
   }
@@ -85,11 +88,15 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
     this.trackLoggedInState();
   }
 
-  public isHeaderItem(item: HeaderItem | HeaderDropdown | NavigableMenuItem): item is HeaderItem | NavigableMenuItem {
+  public isHeaderItem(
+    item: HeaderItem | HeaderDropdown | NavigableMenuItem
+  ): item is HeaderItem | NavigableMenuItem {
     return !this.isHeaderDropdown(item);
   }
 
-  public isHeaderDropdown(item: HeaderItem | HeaderDropdown | NavigableMenuItem): item is HeaderDropdown {
+  public isHeaderDropdown(
+    item: HeaderItem | HeaderDropdown | NavigableMenuItem
+  ): item is HeaderDropdown {
     return !!(item as HeaderDropdown).items;
   }
 
@@ -112,7 +119,9 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
 
   private setHeaderLinks() {
     this.links = List([
-      this.config.settings.hideProjects ? shallowRegionsMenuItem : projectsMenuItem,
+      this.config.settings.hideProjects
+        ? shallowRegionsMenuItem
+        : projectsMenuItem,
       listenMenuItem,
       libraryMenuItem,
       ...this.retrieveHeaderLinks(),
@@ -121,22 +130,26 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   private trackLoggedInState() {
-    this.session.authTrigger.pipe(takeUntil(this.unsubscribe)).subscribe(({ user }) => (this.user = user));
+    this.session.authTrigger
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ user }) => (this.user = user));
   }
 
   /**
    * Retrieve header links from app config
    */
   private retrieveHeaderLinks(): (HeaderItem | HeaderDropdown)[] {
-    return this.config.settings.customMenu.map((header): HeaderItem | HeaderDropdown => {
-      if (header.items) {
-        return {
-          label: header.title,
-          items: header.items.map((item) => this.generateLink(item)),
-        };
+    return this.config.settings.customMenu.map(
+      (header): HeaderItem | HeaderDropdown => {
+        if (header.items) {
+          return {
+            label: header.title,
+            items: header.items.map((item) => this.generateLink(item)),
+          };
+        }
+        return this.generateLink(header);
       }
-      return this.generateLink(header);
-    });
+    );
   }
 
   /**

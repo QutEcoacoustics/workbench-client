@@ -7,7 +7,10 @@ export interface IUnlockAccount {
   recaptchaToken: string;
 }
 
-export class UnlockAccount extends AbstractForm<IUnlockAccount> implements IUnlockAccount {
+export class UnlockAccount
+  extends AbstractForm<IUnlockAccount>
+  implements IUnlockAccount
+{
   public readonly kind = "Unlock Account";
   @bawPersistAttr()
   public readonly login: Param;

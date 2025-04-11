@@ -1,4 +1,8 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { ToastInfo, ToastOptions, ToastService } from "@services/toasts/toasts.service";
 import { modelData } from "@test/helpers/faker";
 import { ToastComponent } from "./toast.component";
@@ -21,7 +25,13 @@ describe("ToastComponent", () => {
 
     testedToast = {
       title: modelData.lorem.sentence(),
-      variant: modelData.helpers.arrayElement(["default", "success", "info", "warning", "danger"]),
+      variant: modelData.helpers.arrayElement([
+        "default",
+        "success",
+        "info",
+        "warning",
+        "danger",
+      ]),
     };
     setToastProperties(testedToast);
 

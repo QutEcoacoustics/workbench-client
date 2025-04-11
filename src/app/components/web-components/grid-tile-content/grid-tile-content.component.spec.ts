@@ -1,4 +1,8 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SharedModule } from "@shared/shared.module";
 import { getElementByInnerText } from "@test/helpers/html";
@@ -45,9 +49,14 @@ describe("GridTileContentComponent", () => {
     // I hard code the audio recording duration and event start/end times so
     // that I know the audio event will neatly fit within the audio recording
     // when context is added
-    mockAudioRecording = new AudioRecording(generateAudioRecording({ durationSeconds: 600 }), injectorSpy);
+    mockAudioRecording = new AudioRecording(
+      generateAudioRecording({ durationSeconds: 600 }),
+      injectorSpy
+    );
 
-    mockAudioRecording.getMediaUrl = jasmine.createSpy("getSplittableUrl").and.returnValue(testAsset("example.flac"));
+    mockAudioRecording.getMediaUrl = jasmine
+      .createSpy("getSplittableUrl")
+      .and.returnValue(testAsset("example.flac"));
 
     mockAnnotation = new Annotation(
       generateAnnotation({
@@ -56,7 +65,7 @@ describe("GridTileContentComponent", () => {
         audioRecording: mockAudioRecording,
         audioRecordingId: mockAudioRecording.id,
       }),
-      injectorSpy,
+      injectorSpy
     );
 
     updateContext(mockAnnotation);
@@ -75,7 +84,8 @@ describe("GridTileContentComponent", () => {
   const contextButton = () => getElementByInnerText(spectator, "Show More");
   const contextCloseButton = () => spectator.query("#close-btn");
   const contextCard = () => spectator.query(".context-card");
-  const spectrogram = () => spectator.query<SpectrogramComponent>("oe-spectrogram");
+  const spectrogram = () =>
+    spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
     patchSharedArrayBuffer();
@@ -89,7 +99,9 @@ describe("GridTileContentComponent", () => {
   });
 
   it("should emit a context request event when loaded", () => {
-    expect(contextRequestSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ callback: jasmine.any(Function) }));
+    expect(contextRequestSpy).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({ callback: jasmine.any(Function) })
+    );
   });
 
   describe("listen link", () => {

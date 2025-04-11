@@ -78,7 +78,7 @@ describe("PageComponents", () => {
         DummyComponent.linkToRoute({
           category: homeCategory,
           pageRoute: defaultMenuItem,
-        }),
+        })
       ).toEqual(DummyComponent);
     });
 
@@ -112,7 +112,7 @@ describe("PageComponents", () => {
         DummyComponent.linkToRoute({
           category: homeCategory,
           pageRoute: defaultMenuItem,
-        }),
+        })
       ).toEqual(DummyComponent);
     });
   });

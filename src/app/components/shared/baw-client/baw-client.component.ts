@@ -1,7 +1,18 @@
-import { Component, ElementRef, HostListener, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  Input,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -11,27 +22,26 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
-  selector: "baw-client",
-  template: `
+    selector: "baw-client",
+    template: `
     @if (url) {
       <iframe #content [src]="url">
         <!-- This warning only shows on browsers which don't support iframes -->
         <p>
-          Unfortunately your browser does not support iframes. Please ensure you are utilising a common browser which is
-          running the most up to date version.
+          Unfortunately your browser does not support iframes. Please ensure you
+          are utilising a common browser which is running the most up to date
+          version.
         </p>
       </iframe>
     }
   `,
-  styles: [
-    `
-      iframe {
-        border: 0px;
-        min-height: 100%;
-        width: 100%;
-      }
-    `,
-  ],
+    styles: [`
+    iframe {
+      border: 0px;
+      min-height: 100%;
+      width: 100%;
+    }
+  `]
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;
@@ -68,7 +78,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     private config: ConfigService,
     private router: Router,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -96,7 +106,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.unsubscribe),
+        takeUntil(this.unsubscribe)
       )
       .subscribe((event: NavigationEnd) => this.updateUrl(event.url));
   }
@@ -112,6 +122,8 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     const { oldClientOrigin, oldClientBase } = this.config.endpoints;
 
     // Bypass angular default security
-    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(oldClientOrigin + oldClientBase + "#" + url);
+    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(
+      oldClientOrigin + oldClientBase + "#" + url
+    );
   }
 }

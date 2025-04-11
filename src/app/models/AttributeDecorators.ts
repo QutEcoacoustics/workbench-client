@@ -21,7 +21,11 @@ export interface BawAttributeMeta extends BawAttributeOptions {
  * Persist an attribute of an abstract model so that the attribute will be sent
  * during a specific type of API request determined by opts set
  */
-function persistAttr(model: AbstractModel, key: string, opts: boolean | Partial<BawAttributeOptions>): void {
+function persistAttr(
+  model: AbstractModel,
+  key: string,
+  opts: boolean | Partial<BawAttributeOptions>
+): void {
   // If opts is false, cancel early
   if (opts === false) {
     return;
@@ -75,7 +79,10 @@ export function bawReadonlyConvertCase(convertCase = true) {
 /**
  * Convert image url/s into an array of image urls
  */
-export function bawImage<Model>(defaultUrl: string, opts?: BawDecoratorOptions<Model>) {
+export function bawImage<Model>(
+  defaultUrl: string,
+  opts?: BawDecoratorOptions<Model>
+) {
   // Retrieve default image and prepend site url if required
   const defaultImage: ImageUrl = {
     size: ImageSizes.default,
@@ -108,46 +115,56 @@ export function bawImage<Model>(defaultUrl: string, opts?: BawDecoratorOptions<M
     return url;
   }
 
-  return createDecorator<Model>(opts, (model, key, imageUrls: string | ImageUrl[]) => {
-    // Get API root if injector exists
-    const apiRoot = model["injector"]?.get(API_ROOT) ?? "";
-    if (!apiRoot) {
-      console.warn(`${model} does not have injector service. Tried to access ${key.toString()}`);
-    }
-
-    // Convert string to ImageURL[] and append default image
-    if (typeof imageUrls === "string") {
-      model[key] = [{ size: ImageSizes.unknown, url: normalizeUrl(apiRoot, imageUrls) }, defaultImage];
-    } else if (imageUrls instanceof Array && imageUrls.length > 0) {
-      // TODO This code chunk is only a temporary hack and can be removed without modification when the baw-api issue below is resolved
-      // https://github.com/QutEcoacoustics/baw-server/issues/640
-      // at the moment, default images are defined by the baw-api by returning image urls matching the regex expression below
-      // in a future iteration of the api, the image urls attribute will not be returned when the image is a default image
-      const defaultImageMatchingRegex = new RegExp("^/images/(.*)/(\\1)_span.*.png$");
-      // iterate through the image url's validating if they match the default image url format. If they do, set the default flag
-      imageUrls = imageUrls.map((image) => ({
-        ...image,
-        ...(defaultImageMatchingRegex.test(image.url) && { default: true }),
-      }));
-
-      // Copy and sort image urls
-      const output = imageUrls
-        .map((imageUrl) => ({
-          ...imageUrl,
-          url: normalizeUrl(apiRoot, imageUrl.url),
-        }))
-        .sort(sortImageUrls);
-
-      // Append default image
-      if (missingDefault(output)) {
-        output.push(defaultImage);
+  return createDecorator<Model>(
+    opts,
+    (model, key, imageUrls: string | ImageUrl[]) => {
+      // Get API root if injector exists
+      const apiRoot = model["injector"]?.get(API_ROOT) ?? "";
+      if (!apiRoot) {
+        console.warn(
+          `${model} does not have injector service. Tried to access ${key.toString()}`
+        );
       }
 
-      model[key] = output;
-    } else {
-      model[key] = [defaultImage];
+      // Convert string to ImageURL[] and append default image
+      if (typeof imageUrls === "string") {
+        model[key] = [
+          { size: ImageSizes.unknown, url: normalizeUrl(apiRoot, imageUrls) },
+          defaultImage,
+        ];
+      } else if (imageUrls instanceof Array && imageUrls.length > 0) {
+        // TODO This code chunk is only a temporary hack and can be removed without modification when the baw-api issue below is resolved
+        // https://github.com/QutEcoacoustics/baw-server/issues/640
+        // at the moment, default images are defined by the baw-api by returning image urls matching the regex expression below
+        // in a future iteration of the api, the image urls attribute will not be returned when the image is a default image
+        const defaultImageMatchingRegex = new RegExp(
+          "^/images/(.*)/(\\1)_span.*.png$"
+        );
+        // iterate through the image url's validating if they match the default image url format. If they do, set the default flag
+        imageUrls = imageUrls.map((image) => ({
+          ...image,
+          ...(defaultImageMatchingRegex.test(image.url) && { default: true }),
+        }));
+
+        // Copy and sort image urls
+        const output = imageUrls
+          .map((imageUrl) => ({
+            ...imageUrl,
+            url: normalizeUrl(apiRoot, imageUrl.url),
+          }))
+          .sort(sortImageUrls);
+
+        // Append default image
+        if (missingDefault(output)) {
+          output.push(defaultImage);
+        }
+
+        model[key] = output;
+      } else {
+        model[key] = [defaultImage];
+      }
     }
-  });
+  );
 }
 
 /**
@@ -171,12 +188,12 @@ export function bawCollection<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 export function bawSubModel<ParentModel, SubModel>(
   classConstructor: AbstractModelConstructor<SubModel>,
-  opts?: BawDecoratorOptions<ParentModel>,
+  opts?: BawDecoratorOptions<ParentModel>
 ) {
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, value: SubModel) =>
-      (model[key] = new classConstructor(value, model["injector"])),
+      (model[key] = new classConstructor(value, model["injector"]))
   );
 }
 
@@ -189,59 +206,70 @@ export function bawSubModel<ParentModel, SubModel>(
  */
 export function bawSubModelCollection<ParentModel, SubModel>(
   classConstructor: AbstractModelConstructor<SubModel>,
-  opts?: BawDecoratorOptions<ParentModel>,
+  opts?: BawDecoratorOptions<ParentModel>
 ) {
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, values: SubModel[]) =>
-      (model[key] = values?.map((value) => new classConstructor(value, model["injector"]))),
+      (model[key] = values?.map(
+        (value) => new classConstructor(value, model["injector"])
+      ))
   );
 }
 
 /**
  * Convert timestamp string into DateTimeTimezone
  */
-export function bawDateTime<Model>(opts?: BawDecoratorOptions<Model>, zoneKey?: keyof Model) {
-  return createDecorator<Model>(opts, (model, key, timestamp: string | DateTime) => {
-    if (!timestamp) {
-      model[key] = null;
-    } else if (timestamp instanceof DateTime) {
-      model[key] = timestamp;
-    } else {
-      if (zoneKey) {
-        model[key] = DateTime.fromISO(timestamp).setZone(model[zoneKey]);
+export function bawDateTime<Model>(
+  opts?: BawDecoratorOptions<Model>,
+  zoneKey?: keyof Model
+) {
+  return createDecorator<Model>(
+    opts,
+    (model, key, timestamp: string | DateTime) => {
+      if (!timestamp) {
+        model[key] = null;
+      } else if (timestamp instanceof DateTime) {
+        model[key] = timestamp;
       } else {
-        model[key] = DateTime.fromISO(timestamp, { setZone: true });
+        if (zoneKey) {
+          model[key] = DateTime.fromISO(timestamp).setZone(model[zoneKey]);
+        } else {
+          model[key] = DateTime.fromISO(timestamp, { setZone: true });
+        }
       }
     }
-  });
+  );
 }
 
 /**
  * Convert duration string into Duration
  */
 export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
-  return createDecorator<Model>(opts, (model, key, seconds: number | Duration) => {
-    if (seconds instanceof Duration) {
-      return;
-    }
+  return createDecorator<Model>(
+    opts,
+    (model, key, seconds: number | Duration) => {
+      if (seconds instanceof Duration) {
+        return;
+      }
 
-    /*
+      /*
       Extra object fields required, do not remove. Duration calculates itself
       based on the time spans provided, if years is removed for example,
       the output will just keep incrementing months (i.e 24 months, instead of 2 years).
       */
-    model[key] = isInstantiated(seconds)
-      ? Duration.fromObject({
-          years: 0,
-          months: 0,
-          days: 0,
-          hours: 0,
-          minutes: 0,
-          seconds,
-        }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
-      : null;
-  });
+      model[key] = isInstantiated(seconds)
+        ? Duration.fromObject({
+            years: 0,
+            months: 0,
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds,
+          }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
+        : null;
+    }
+  );
 }
 
 /**
@@ -264,7 +292,7 @@ export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
-  setValue: (model: any, key: symbol, ...args: any[]) => void,
+  setValue: (model: any, key: symbol, ...args: any[]) => void
 ) {
   return function (model: ImplementsAssociations, key: string): void {
     // Store decorated keys value

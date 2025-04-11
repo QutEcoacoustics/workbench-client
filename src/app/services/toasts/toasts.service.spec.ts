@@ -22,7 +22,13 @@ describe("ToastsService", () => {
     return {
       title: modelData.lorem.sentence(),
       message: modelData.lorem.sentence(),
-      variant: modelData.helpers.arrayElement<ToastVariant>(["default", "success", "info", "warning", "danger"]),
+      variant: modelData.helpers.arrayElement<ToastVariant>([
+        "default",
+        "success",
+        "info",
+        "warning",
+        "danger",
+      ]),
       options: generateToastOptions(),
     };
   }
@@ -106,7 +112,11 @@ describe("ToastsService", () => {
         const toastInfo = generateToastInfo();
         const toastOptions = generateToastOptions();
 
-        spec.service[testCase.method](toastInfo.message, toastInfo.title, toastOptions);
+        spec.service[testCase.method](
+          toastInfo.message,
+          toastInfo.title,
+          toastOptions
+        );
 
         expect(spec.service.toasts()).toEqual([
           {
@@ -114,7 +124,7 @@ describe("ToastsService", () => {
             message: toastInfo.message,
             options: toastOptions,
             variant: testCase.expectedVariant,
-          },
+          }
         ]);
       });
     }

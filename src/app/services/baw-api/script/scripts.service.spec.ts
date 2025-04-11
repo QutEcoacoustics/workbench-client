@@ -2,7 +2,11 @@ import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateScript } from "@test/fakes/Script";
-import { mockServiceImports, mockServiceProviders, validateNonDestructableApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateNonDestructableApi,
+} from "@test/helpers/api-common";
 
 describe("ScriptsService", function () {
   const createModel = () => new Script(generateScript({ id: 5 }));
@@ -19,5 +23,13 @@ describe("ScriptsService", function () {
     spec = createService();
   });
 
-  validateNonDestructableApi(() => spec, Script, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateNonDestructableApi(
+    () => spec,
+    Script,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

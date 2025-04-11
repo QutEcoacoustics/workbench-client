@@ -13,20 +13,18 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
 import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
-  selector: "baw-harvest-issue-widget",
-  templateUrl: "validations.component.html",
-  styles: [
-    `
-      hr {
-        margin: 1rem -1rem;
-      }
+    selector: "baw-harvest-issue-widget",
+    templateUrl: "validations.component.html",
+    styles: [`
+    hr {
+      margin: 1rem -1rem;
+    }
 
-      p {
-        font-size: 0.85em;
-      }
-    `,
-  ],
-  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe],
+    p {
+      font-size: 0.85em;
+    }
+  `],
+    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe]
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;
@@ -35,13 +33,13 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
 
   public constructor(
     private stages: HarvestStagesService,
-    private config: ConfigService,
+    private config: ConfigService
   ) {}
 
   public ngOnInit(): void {
     this.isMetaReviewStage$ = this.stages.harvest$.pipe(
       startWith(false),
-      map((): boolean => this.stages.isCurrentStage("metadataReview")),
+      map((): boolean => this.stages.isCurrentStage("metadataReview"))
     );
   }
 
@@ -50,11 +48,15 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   }
 
   public get showFixableIssues(): boolean {
-    return this.stages.harvestItemErrors.some((validation): boolean => validation.status === "fixable");
+    return this.stages.harvestItemErrors.some(
+      (validation): boolean => validation.status === "fixable"
+    );
   }
 
   public get showNonFixableIssues(): boolean {
-    return this.stages.harvestItemErrors.some((validation): boolean => validation.status === "notFixable");
+    return this.stages.harvestItemErrors.some(
+      (validation): boolean => validation.status === "notFixable"
+    );
   }
 
   public get filenameGuide(): string {
@@ -74,4 +76,6 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   }
 }
 
-export const harvestValidationsWidgetMenuItem = new WidgetMenuItem(ValidationsWidgetComponent);
+export const harvestValidationsWidgetMenuItem = new WidgetMenuItem(
+  ValidationsWidgetComponent
+);

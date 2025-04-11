@@ -12,7 +12,8 @@ import { BawApiService, unknownErrorCode } from "./baw-api.service";
  * Reads through a HTML document for recaptcha setup code to extract the
  * seed and action.
  */
-const extractRecaptchaValues = /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
+const extractRecaptchaValues =
+  /grecaptcha\.execute\('(.+?)', {action: '(.+?)'}\)/;
 
 /*
  * Looks for a hidden input in HTML document, name of input is
@@ -30,7 +31,7 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
 export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public constructor(
     private api: BawApiService<Model>,
-    private http: HttpClient,
+    private http: HttpClient
   ) {}
 
   /**
@@ -46,7 +47,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public makeFormRequest(
     formEndpoint: string,
     submissionEndpoint: string,
-    body: (authToken: string) => URLSearchParams,
+    body: (authToken: string) => URLSearchParams
   ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
     return this.htmlRequest(formEndpoint).pipe(
@@ -54,32 +55,44 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
         if (!isInstantiated(token)) {
-          throw new BawApiError(BAD_REQUEST, "Unable to retrieve authenticity token for form request.", {});
+          throw new BawApiError(
+            BAD_REQUEST,
+            "Unable to retrieve authenticity token for form request.",
+            {}
+          );
         }
         return token;
       }),
       // Mimic a traditional form-based request
-      mergeMap((token: string) => this.formRequest(submissionEndpoint, body(token))),
+      mergeMap((token: string) =>
+        this.formRequest(submissionEndpoint, body(token))
+      ),
       tap((response: string) => {
         // Check for recaptcha error message in page body
         const errorMsg = "Captcha response was not correct.";
         if (response.includes(errorMsg)) {
-          throw new BawApiError(BAD_REQUEST, "Captcha response was not correct.", {});
+          throw new BawApiError(
+            BAD_REQUEST,
+            "Captcha response was not correct.",
+            {}
+          );
         }
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError),
+      catchError(this.handleError)
     );
   }
 
   public makeFormRequestWithoutOutput(
     formEndpoint: string,
     submissionEndpoint: string,
-    body: (authToken: string) => URLSearchParams,
+    body: (authToken: string) => URLSearchParams
   ): Observable<void> {
-    return this.makeFormRequest(formEndpoint, submissionEndpoint, body).pipe(map(() => undefined));
+    return this.makeFormRequest(formEndpoint, submissionEndpoint, body).pipe(
+      map(() => undefined)
+    );
   }
 
   /**
@@ -97,14 +110,18 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         const action = values?.[2];
 
         if (!seed || !action) {
-          throw new BawApiError(unknownErrorCode, "Unable to setup recaptcha.", {});
+          throw new BawApiError(
+            unknownErrorCode,
+            "Unable to setup recaptcha.",
+            {}
+          );
         }
         return { seed, action };
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError),
+      catchError(this.handleError)
     );
   }
 
@@ -130,7 +147,10 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
    * @param path API path
    * @param formData Request body
    */
-  public formRequest(path: string, formData: URLSearchParams): Observable<string> {
+  public formRequest(
+    path: string,
+    formData: URLSearchParams
+  ): Observable<string> {
     return this.http.post(this.getPath(path), formData.toString(), {
       responseType: "text",
       headers: new HttpHeaders({
@@ -145,7 +165,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   /**
    * @see BawApiService.handleError for more information
    */
-  public handleError = (err: BawApiError | Error): Observable<never> => this.api.handleError(err);
+  public handleError = (err: BawApiError | Error): Observable<never> =>
+    this.api.handleError(err);
 
   /**
    * @see BawApiService.getPath for more information

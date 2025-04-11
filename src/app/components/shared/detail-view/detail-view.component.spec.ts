@@ -26,15 +26,18 @@ describe("DetailViewComponent", () => {
     component: DetailViewComponent,
     declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
+    MockBawApiModule,
+    RouterTestingModule,
+    PipesModule,
 
-      // standalone components
-      CheckboxComponent,
-      LoadingComponent,
+    // standalone components
+    CheckboxComponent,
+    LoadingComponent,
+],
+    providers: [
+      MockStandardApiService,
+      { provide: MOCK.token, useExisting: MockStandardApiService },
     ],
-    providers: [MockStandardApiService, { provide: MOCK.token, useExisting: MockStandardApiService }],
   });
 
   function getWrapper() {
@@ -145,7 +148,9 @@ describe("DetailViewComponent", () => {
         const values = getValues();
         expect(values[0]).toHaveExactText("5");
         expect(values[1]).toHaveExactText("10");
-        expect(values[2].innerText).toContain(JSON.stringify({ test: "value" }, null, 4));
+        expect(values[2].innerText).toContain(
+          JSON.stringify({ test: "value" }, null, 4)
+        );
       });
     });
 
@@ -171,7 +176,10 @@ describe("DetailViewComponent", () => {
 
       it("should handle hasOne associated model", async () => {
         const subject = new Subject<AssociatedModel>();
-        const promise = nStepObservable(subject, () => new AssociatedModel({ id: 1 }));
+        const promise = nStepObservable(
+          subject,
+          () => new AssociatedModel({ id: 1 })
+        );
         spyOn(api, "show").and.callFake(() => subject);
 
         setupComponent("childModel");

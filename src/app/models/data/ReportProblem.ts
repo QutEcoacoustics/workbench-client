@@ -12,7 +12,10 @@ export interface IReportProblem {
   recaptchaToken: string;
 }
 
-export class ReportProblem extends AbstractForm<IReportProblem> implements IReportProblem {
+export class ReportProblem
+  extends AbstractForm<IReportProblem>
+  implements IReportProblem
+{
   public readonly kind = "Report Problem";
   @bawPersistAttr()
   public readonly name: Param;

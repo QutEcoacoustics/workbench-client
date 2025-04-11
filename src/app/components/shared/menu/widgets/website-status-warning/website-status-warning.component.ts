@@ -7,8 +7,8 @@ import { AsyncPipe } from "@angular/common";
 import { StrongRouteDirective } from "../../../../../directives/strongRoute/strong-route.directive";
 
 @Component({
-  selector: "baw-website-status-warning",
-  template: `
+    selector: "baw-website-status-warning",
+    template: `
     @if (!(api.status$ | async)?.[feature]) {
       <section>
         <div class="alert alert-danger">
@@ -29,7 +29,7 @@ import { StrongRouteDirective } from "../../../../../directives/strongRoute/stro
       </section>
     }
   `,
-  imports: [StrongRouteDirective, AsyncPipe],
+    imports: [StrongRouteDirective, AsyncPipe]
 })
 export class WebsiteStatusWarningComponent {
   public constructor(protected api: WebsiteStatusService) {}

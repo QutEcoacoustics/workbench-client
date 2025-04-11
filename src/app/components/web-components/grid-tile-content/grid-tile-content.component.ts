@@ -14,7 +14,10 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { gridTileContext } from "@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
-import { ContextSubscription, WithContext } from "@helpers/context/context-decorators";
+import {
+  ContextSubscription,
+  WithContext,
+} from "@helpers/context/context-decorators";
 
 export const gridTileContentSelector = "baw-grid-tile-content";
 
@@ -30,7 +33,7 @@ export const gridTileContentSelector = "baw-grid-tile-content";
 export class GridTileContentComponent implements WithContext {
   public constructor(
     public elementRef: ElementRef,
-    public changeDetectorRef: ChangeDetectorRef,
+    public changeDetectorRef: ChangeDetectorRef
   ) {}
 
   @ViewChild("contextSpectrogram")
@@ -80,6 +83,7 @@ export class GridTileContentComponent implements WithContext {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "baw-grid-tile-content": NgElement & WithProperties<typeof GridTileContentComponent>;
+    "baw-grid-tile-content": NgElement &
+      WithProperties<typeof GridTileContentComponent>;
   }
 }

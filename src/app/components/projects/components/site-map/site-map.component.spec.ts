@@ -5,7 +5,11 @@ import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { MapComponent } from "@shared/map/map.component";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -39,7 +43,11 @@ describe("SiteMapComponent", () => {
     api = spec.inject(SitesService);
   }
 
-  function setComponentProps(project: Project, region?: Region, sitesSubset?: Site[]): void {
+  function setComponentProps(
+    project: Project,
+    region?: Region,
+    sitesSubset?: Site[]
+  ): void {
     spec.setInput({
       project,
       region,
@@ -47,7 +55,10 @@ describe("SiteMapComponent", () => {
     });
   }
 
-  function generatePagedSites(numSites: number, overrides: ISite = {}): Site[][] {
+  function generatePagedSites(
+    numSites: number,
+    overrides: ISite = {}
+  ): Site[][] {
     /**
      * Calculate page number for site position. Page numbers begin from 1
      */
@@ -75,7 +86,9 @@ describe("SiteMapComponent", () => {
 
   function generateMarkers(allSites: Site[][]) {
     const markers: google.maps.MarkerOptions[] = [];
-    allSites.forEach((sites) => markers.push(...sites.map((site) => site.getMapMarker())));
+    allSites.forEach((sites) =>
+      markers.push(...sites.map((site) => site.getMapMarker()))
+    );
     return markers;
   }
 
@@ -86,12 +99,12 @@ describe("SiteMapComponent", () => {
   function interceptApiRequest(
     responses: Errorable<Site[]>[],
     expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
-    hasRegion?: boolean,
+    hasRegion?: boolean
   ): Promise<void>[] {
     return interceptRepeatApiRequests<ISite, Site[]>(
       hasRegion ? api.filterByRegion : api.filter,
       responses,
-      expectations,
+      expectations
     );
   }
 
@@ -170,7 +183,8 @@ describe("SiteMapComponent", () => {
       await assertMapMarkers(promise, []);
     });
 
-    it("should only display markers in the markersSubset", () => {});
+    it("should only display markers in the markersSubset", () => {
+    });
   });
 
   describe("api", () => {
@@ -189,7 +203,9 @@ describe("SiteMapComponent", () => {
       setup();
 
       const sites = generatePagedSites(1);
-      const promise = Promise.all(interceptApiRequest(sites, [assertFilter(1, defaultProject)]));
+      const promise = Promise.all(
+        interceptApiRequest(sites, [assertFilter(1, defaultProject)])
+      );
       setComponentProps(defaultProject);
 
       spec.detectChanges();
@@ -204,8 +220,8 @@ describe("SiteMapComponent", () => {
       const promise = Promise.all(
         interceptApiRequest(
           sites,
-          [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject)),
-        ),
+          [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject))
+        )
       );
       setComponentProps(defaultProject);
 
@@ -218,7 +234,13 @@ describe("SiteMapComponent", () => {
       setup();
 
       const sites = generatePagedSites(1);
-      const promise = Promise.all(interceptApiRequest(sites, [assertFilter(1, defaultProject, defaultRegion)], true));
+      const promise = Promise.all(
+        interceptApiRequest(
+          sites,
+          [assertFilter(1, defaultProject, defaultRegion)],
+          true
+        )
+      );
       setComponentProps(defaultProject, defaultRegion);
 
       spec.detectChanges();

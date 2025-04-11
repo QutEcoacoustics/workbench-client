@@ -30,10 +30,16 @@ describe("AdminUserListComponent", () => {
     spec = createComponent({ detectChanges: false });
     api = spec.inject(AccountsService);
 
-    defaultUser = new User(generateUser({ id: 1, userName: "username", isConfirmed: false }));
+    defaultUser = new User(
+      generateUser({ id: 1, userName: "username", isConfirmed: false })
+    );
     defaultUsers = [];
     for (let id = 0; id < defaultApiPageSize; id++) {
-      defaultUsers.push(new User(generateUser({ id, userName: "user " + id, isConfirmed: false })));
+      defaultUsers.push(
+        new User(
+          generateUser({ id, userName: "user " + id, isConfirmed: false })
+        )
+      );
     }
 
     this.defaultModels = defaultUsers;
@@ -80,7 +86,9 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should call toRelative for lastLogin", () => {
-      const user = new User(generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" }));
+      const user = new User(
+        generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
+      );
       datatableApiResponse<User>(api, [user]);
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
       spec.detectChanges();
@@ -89,7 +97,9 @@ describe("AdminUserListComponent", () => {
     });
 
     it("should display last login", () => {
-      const user = new User(generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" }));
+      const user = new User(
+        generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
+      );
       datatableApiResponse<User>(api, [user]);
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
       spec.detectChanges();
@@ -106,7 +116,9 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
-      const checkbox: HTMLInputElement = isConfirmedCell.querySelector("input[type='checkbox']");
+      const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
+        "input[type='checkbox']"
+      );
 
       expect(checkbox.checked).toBeTrue();
       expect(checkbox.disabled).toBeTrue();
@@ -119,7 +131,9 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
-      const checkbox: HTMLInputElement = isConfirmedCell.querySelector("input[type='checkbox']");
+      const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
+        "input[type='checkbox']"
+      );
 
       expect(checkbox.checked).toBeFalse();
       expect(checkbox.disabled).toBeTrue();

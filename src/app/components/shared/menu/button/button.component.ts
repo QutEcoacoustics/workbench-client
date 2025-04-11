@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
 import { MenuModal } from "@menu/widgetItem";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -8,9 +13,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
  * Menu Button Component
  */
 @Component({
-  selector: "baw-menu-button",
-  template: `
-    <div placement="auto" [ngbTooltip]="tooltipContent" [class.disabled]="link.disabled">
+    selector: "baw-menu-button",
+    template: `
+    <div
+      placement="auto"
+      [ngbTooltip]="tooltipContent"
+      [class.disabled]="link.disabled"
+    >
       <button
         class="btn ps-3 py-2 rounded text-start border-0"
         (click)="link.action()"
@@ -29,10 +38,10 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       {{ tooltip }}
     </ng-template>
   `,
-  styleUrls: ["./button.component.scss"],
-  // This will be recreated every time the page loads
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgbTooltip, FaIconComponent],
+    styleUrls: ["./button.component.scss"],
+    // This will be recreated every time the page loads
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NgbTooltip, FaIconComponent]
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;

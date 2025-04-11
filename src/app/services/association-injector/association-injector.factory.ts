@@ -2,7 +2,11 @@ import { Injector, Provider } from "@angular/core";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
 import { BawApiService, BawServiceOptions } from "../baw-api/baw-api.service";
-import { services, serviceTokens, serviceResolvers } from "../baw-api/ServiceProviders";
+import {
+  services,
+  serviceTokens,
+  serviceResolvers,
+} from "../baw-api/ServiceProviders";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 
 //! WARNING: to minimize the risk of a circular dependency
@@ -18,7 +22,9 @@ export const associationApiOptions = Object.freeze({
   disableNotification: true,
 }) satisfies BawServiceOptions;
 
-function associationInjectorFactory(parentInjector: Injector): AssociationInjector {
+function associationInjectorFactory(
+  parentInjector: Injector
+): AssociationInjector {
   // I assign associationInjector to a variable first so that TypeScript will
   // type-check the Injector before we disable type-checking in the brand cast
   const associationInjector = Injector.create({

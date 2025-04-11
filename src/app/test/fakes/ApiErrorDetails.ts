@@ -1,11 +1,15 @@
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
-import httpCodes, { INTERNAL_SERVER_ERROR, UNAUTHORIZED, UNPROCESSABLE_ENTITY } from "http-status";
+import httpCodes, {
+  INTERNAL_SERVER_ERROR,
+  UNAUTHORIZED,
+  UNPROCESSABLE_ENTITY,
+} from "http-status";
 
 // TODO Make this is the default method for error generation
 export function generateApiErrorDetails(
   status: number = UNAUTHORIZED,
-  custom?: Partial<ApiErrorDetails>,
+  custom?: Partial<ApiErrorDetails>
 ): ApiErrorDetails {
   let message: string;
   switch (status) {

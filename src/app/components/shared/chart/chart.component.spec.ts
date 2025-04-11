@@ -21,7 +21,11 @@ describe("ChartComponent", () => {
     mocks: [ToastService],
   });
 
-  function setup(defaultSpec: Map<string, object>, defaultData?: Data, defaultDataset?: Datasets): void {
+  function setup(
+    defaultSpec: Map<string, object>,
+    defaultData?: Data,
+    defaultDataset?: Datasets
+  ): void {
     spectator = createComponent({ detectChanges: false });
 
     spectator.component.spec = defaultSpec;
@@ -59,8 +63,10 @@ describe("ChartComponent", () => {
     { startDate: "01-11-2020", endDate: "12-12-2020" },
   ];
 
-  const chartElement = (): HTMLDivElement => spectator.query<HTMLDivElement>(".chartContainer");
-  const chartSvg = (): SVGElement => chartElement().querySelector<SVGElement>("svg");
+  const chartElement = (): HTMLDivElement =>
+    spectator.query<HTMLDivElement>(".chartContainer");
+  const chartSvg = (): SVGElement =>
+    chartElement().querySelector<SVGElement>("svg");
 
   beforeEach(fakeAsync(() => setup(validSpec, validData)));
 

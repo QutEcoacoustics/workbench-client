@@ -5,7 +5,13 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { VisualizeComponent } from "./details.component";
 
 describe("VisualizeComponent", () => {
-  validateBawClientPage(visualizeRoute, VisualizeComponent, [VisualizeModule], "/visualize", "Audio distribution");
+  validateBawClientPage(
+    visualizeRoute,
+    VisualizeComponent,
+    [VisualizeModule],
+    "/visualize",
+    "Audio distribution"
+  );
 
   assertPageInfo(VisualizeComponent, "View Timeline");
 });

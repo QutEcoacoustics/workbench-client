@@ -12,23 +12,27 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
  * Menu Link Component
  */
 @Component({
-  selector: "baw-breadcrumbs",
-  template: `
-    @if (
-      {
-        breadcrumbs: breadcrumbs$ | async,
-        queryParams: queryParams$ | async,
-        routeParams: routeParams$ | async,
-      };
-      as data
-    ) {
+    selector: "baw-breadcrumbs",
+    template: `
+    @if ({
+      breadcrumbs: breadcrumbs$ | async,
+      queryParams: queryParams$ | async,
+      routeParams: routeParams$ | async
+    }; as data) {
       @if (shouldShowBreadcrumbs(data)) {
-        <nav aria-label="breadcrumb" class="text-bg-light">
+        <nav
+          aria-label="breadcrumb"
+          class="text-bg-light"
+        >
           <ol class="breadcrumb p-1">
             @for (breadcrumb of data.breadcrumbs; track breadcrumb) {
               <li class="breadcrumb-item">
                 <fa-icon class="pe-1" [icon]="breadcrumb.icon"></fa-icon>
-                <a [strongRoute]="breadcrumb.route" [routeParams]="data.routeParams" [queryParams]="data.queryParams">
+                <a
+                  [strongRoute]="breadcrumb.route"
+                  [routeParams]="data.routeParams"
+                  [queryParams]="data.queryParams"
+                >
                   {{ breadcrumb.label }}
                 </a>
               </li>
@@ -38,8 +42,8 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
       }
     }
   `,
-  styleUrls: ["breadcrumb.component.scss"],
-  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe],
+    styleUrls: ["breadcrumb.component.scss"],
+    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe]
 })
 export class BreadcrumbComponent implements OnInit {
   public queryParams$: Observable<Params>;
@@ -48,11 +52,13 @@ export class BreadcrumbComponent implements OnInit {
 
   public constructor(
     private sharedRoute: SharedActivatedRouteService,
-    private menu: MenuService,
+    private menu: MenuService
   ) {}
 
   public ngOnInit(): void {
-    this.breadcrumbs$ = this.menu.menuUpdate.pipe(map(({ breadcrumbs }) => breadcrumbs));
+    this.breadcrumbs$ = this.menu.menuUpdate.pipe(
+      map(({ breadcrumbs }) => breadcrumbs)
+    );
 
     /*
      * Components outside of router-outlet are unable to read the query/route

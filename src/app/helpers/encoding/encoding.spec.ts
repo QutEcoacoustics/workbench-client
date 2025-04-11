@@ -34,7 +34,8 @@ describe("encoding", () => {
         some: 5,
         value: [1, 2, 3],
       }),
-      encoded: "eyJjdXN0b20iOnsib2JqZWN0Ijoid2l0aCJ9LCJzb21lIjo1LCJ2YWx1ZSI6WzEsMiwzXX0",
+      encoded:
+        "eyJjdXN0b20iOnsib2JqZWN0Ijoid2l0aCJ9LCJzb21lIjo1LCJ2YWx1ZSI6WzEsMiwzXX0",
     },
     // Object with non latin text, and symbols
     {
@@ -42,7 +43,8 @@ describe("encoding", () => {
         nonLatin: "Привет",
         specialCharacters: "~!@#$%^&*()_+{}|:\"<>?'",
       }),
-      encoded: "eyJub25MYXRpbiI6ItCf0YDQuNCy0LXRgiIsInNwZWNpYWxDaGFyYWN0ZXJzIjoifiFAIyQlXiYqKClfK3t9fDpcIjw-PycifQ",
+      encoded:
+        "eyJub25MYXRpbiI6ItCf0YDQuNCy0LXRgiIsInNwZWNpYWxDaGFyYWN0ZXJzIjoifiFAIyQlXiYqKClfK3t9fDpcIjw-PycifQ",
     },
   ].forEach(({ input, encoded }) => {
     it(`should encode ${input}`, () => {

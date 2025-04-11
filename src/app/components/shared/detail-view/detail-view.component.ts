@@ -4,23 +4,27 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 @Component({
-  selector: "baw-detail-view",
-  template: `
+    selector: "baw-detail-view",
+    template: `
     @for (field of fields; track field) {
       <div class="row">
-        <dt class="col-sm-3 text-start text-sm-end fw-bold" [innerText]="field.props.label"></dt>
-        <baw-render-field class="col-sm-9" [value]="getValue(field)"></baw-render-field>
+        <dt
+          class="col-sm-3 text-start text-sm-end fw-bold"
+          [innerText]="field.props.label"
+        ></dt>
+        <baw-render-field
+          class="col-sm-9"
+          [value]="getValue(field)"
+        ></baw-render-field>
       </div>
     }
-  `,
-  styles: [
-    `
-      dt {
-        margin-bottom: 1rem;
-      }
     `,
-  ],
-  imports: [RenderFieldComponent],
+    styles: [`
+    dt {
+      margin-bottom: 1rem;
+    }
+  `],
+    imports: [RenderFieldComponent]
 })
 export class DetailViewComponent {
   @Input() public fields: FormlyFieldConfig[];

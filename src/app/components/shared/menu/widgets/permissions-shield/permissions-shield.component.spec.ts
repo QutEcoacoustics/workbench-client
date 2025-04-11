@@ -18,7 +18,10 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { generatePageInfoResolvers, nStepObservable } from "@test/helpers/general";
+import {
+  generatePageInfoResolvers,
+  nStepObservable,
+} from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of, Subject } from "rxjs";
 import { Harvest } from "@models/Harvest";
@@ -97,7 +100,9 @@ describe("PermissionsShieldComponent", () => {
       updaterId: defaultUser.id,
     } as const;
 
-    defaultProject = new Project(generateProject({ ownerIds: [defaultUser.id], ...userData }));
+    defaultProject = new Project(
+      generateProject({ ownerIds: [defaultUser.id], ...userData })
+    );
     defaultRegion = new Region(generateRegion(userData));
     defaultSite = new Site(generateSite(userData));
     defaultHarvest = new Harvest(generateHarvest(userData));
@@ -125,13 +130,22 @@ describe("PermissionsShieldComponent", () => {
     });
 
     it("should prioritize site if there is no harvest", () => {
-      setup([{ model: defaultModel }, { model: defaultProject }, { model: defaultSite }, { model: defaultRegion }]);
+      setup([
+        { model: defaultModel },
+        { model: defaultProject },
+        { model: defaultSite },
+        { model: defaultRegion },
+      ]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultSite);
     });
 
     it("should prioritize region if no site", () => {
-      setup([{ model: defaultModel }, { model: defaultRegion }, { model: defaultProject }]);
+      setup([
+        { model: defaultModel },
+        { model: defaultRegion },
+        { model: defaultProject },
+      ]);
       spec.detectChanges();
       expect(spec.component.model).toEqual(defaultRegion);
     });
@@ -236,7 +250,9 @@ describe("PermissionsShieldComponent", () => {
         }
 
         function assertUsers(...users: User[]) {
-          expect(getUserBadge().users).toEqual(multipleUsers ? users : users[0]);
+          expect(getUserBadge().users).toEqual(
+            multipleUsers ? users : users[0]
+          );
         }
 
         it("should create badge label", async () => {
@@ -291,7 +307,9 @@ describe("PermissionsShieldComponent", () => {
           spec.detectChanges();
 
           if (timestampKey) {
-            expect(getUserBadge().timestamp).toEqual(defaultProject[timestampKey]);
+            expect(getUserBadge().timestamp).toEqual(
+              defaultProject[timestampKey]
+            );
           } else {
             expect(getUserBadge().timestamp).toBeFalsy();
           }

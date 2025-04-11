@@ -10,14 +10,14 @@ const verificationRouteName = "verify";
 const annotationSearchRouteQueryParamResolver = (params: Record<string, string>) =>
   params
     ? {
-        projects: params.projects,
-        regions: params.regions,
-        sites: params.sties,
-        tags: params.tags,
-        onlyUnverified: params.onlyUnverified,
-        date: params.date,
-        time: params.time,
-      }
+      projects: params.projects,
+      regions: params.regions,
+      sites: params.sties,
+      tags: params.tags,
+      onlyUnverified: params.onlyUnverified,
+      date: params.date,
+      time: params.time,
+    }
     : {};
 
 export type AnnotationRoute = "project" | "region" | "site" | "siteAndRegion";
@@ -38,10 +38,7 @@ export const verificationRoute: AnnotationStrongRoute = {
   /** /project/:projectId/site/:siteId/annotations/verify */
   site: annotationSearchRoute.site.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
   /** /project/:projectId/region/:regionId/site/:siteId/annotations/verify */
-  siteAndRegion: annotationSearchRoute.siteAndRegion.add(
-    verificationRouteName,
-    annotationSearchRouteQueryParamResolver,
-  ),
+  siteAndRegion: annotationSearchRoute.siteAndRegion.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
   /** /project/:projectId/region/:regionId/annotations/verify */
   region: annotationSearchRoute.region.add(verificationRouteName, annotationSearchRouteQueryParamResolver),
   /** /project/:projectId/annotations/verify */

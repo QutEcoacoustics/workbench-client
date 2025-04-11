@@ -15,8 +15,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
  * A single menu widget displaying a user account and its relationship to the model
  */
 @Component({
-  selector: "baw-user-badge",
-  template: `
+    selector: "baw-user-badge",
+    template: `
     @for (user of models; track user) {
       <div>
         <!-- Spinner -->
@@ -35,12 +35,20 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
                   <ng-container *ngTemplateOutlet="userImage"></ng-container>
                 </a>
               } @else {
-                <img class="rounded" [src]="user.imageUrls" [alt]="user.userName + ' profile picture'" />
+                <img
+                  class="rounded"
+                  [src]="user.imageUrls"
+                  [alt]="user.userName + ' profile picture'"
+                  />
               }
 
               <!-- User Image -->
               <ng-template #userImage>
-                <img class="rounded" [src]="user.imageUrls" [alt]="user.userName + ' profile picture'" />
+                <img
+                  class="rounded"
+                  [src]="user.imageUrls"
+                  [alt]="user.userName + ' profile picture'"
+                />
               </ng-template>
             </div>
 
@@ -51,7 +59,10 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
               <!-- Timestamp -->
               <br />
               @if (timestamp) {
-                <span id="lengthOfTime" style="word-wrap: break-word">
+                <span
+                  id="lengthOfTime"
+                  style="word-wrap: break-word"
+                >
                   <small>
                     <baw-time-since [value]="timestamp" />
                   </small>
@@ -63,17 +74,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </div>
     }
   `,
-  styleUrls: ["./user-badge.component.scss"],
-  imports: [
-    LoadingComponent,
-    UrlDirective,
-    NgTemplateOutlet,
-    AuthenticatedImageDirective,
-    UserLinkComponent,
-    TimeSinceComponent,
-    IsGhostUserPipe,
-    IsUnresolvedPipe,
-  ],
+    styleUrls: ["./user-badge.component.scss"],
+    imports: [LoadingComponent, UrlDirective, NgTemplateOutlet, AuthenticatedImageDirective, UserLinkComponent, TimeSinceComponent, IsGhostUserPipe, IsUnresolvedPipe]
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

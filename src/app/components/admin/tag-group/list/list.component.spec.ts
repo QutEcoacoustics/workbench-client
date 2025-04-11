@@ -23,10 +23,17 @@ describe("AdminTagGroupsComponent", () => {
   let modalService: SpyObject<NgbModal>;
   let modalConfigService: SpyObject<NgbModalConfig>;
 
+
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, ...appLibraryImports, MockBawApiModule, AdminTagGroupsComponent],
-    }).compileComponents();
+    imports: [
+        SharedModule,
+        RouterTestingModule,
+        ...appLibraryImports,
+        MockBawApiModule,
+        AdminTagGroupsComponent,
+    ],
+}).compileComponents();
 
     TestBed.inject(ToastService);
     fixture = TestBed.createComponent(AdminTagGroupsComponent);
@@ -76,7 +83,7 @@ describe("AdminTagGroupsComponent", () => {
 
       // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
       spyOn(modalService, "open").and.returnValue({
-        result: new Promise((resolve) => resolve(true)),
+        result: new Promise((resolve) => resolve(true))
       });
       fixture.componentInstance.confirmTagGroupDeletion(null, mockTagGroup);
 

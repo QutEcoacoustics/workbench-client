@@ -3,7 +3,11 @@ import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
-import { bawCollection, bawDateTime, bawDuration } from "@models/AttributeDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawDuration,
+} from "@models/AttributeDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Duration } from "luxon";
@@ -70,7 +74,10 @@ export class StatisticsRecent extends AbstractModelWithoutId {
   public readonly audioRecordingIds: Ids;
   @bawCollection()
   public readonly audioEventIds: Ids;
-  @hasMany<StatisticsRecent, AudioRecording>(AUDIO_RECORDING, "audioRecordingIds")
+  @hasMany<StatisticsRecent, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordingIds"
+  )
   public audioRecordings: AudioRecording[];
   @hasManyFilter<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEventIds")
   public audioEvents: AudioEvent[];

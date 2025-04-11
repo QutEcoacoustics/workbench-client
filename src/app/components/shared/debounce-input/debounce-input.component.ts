@@ -5,8 +5,8 @@ import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
 
 @Component({
-  selector: "baw-debounce-input",
-  template: `
+    selector: "baw-debounce-input",
+    template: `
     <div class="input-group mb-3">
       @if (label) {
         <div class="input-group-prepend input-group-text">
@@ -21,9 +21,12 @@ import { defaultDebounceTime } from "src/app/app.helper";
         (keyup)="onFilter($event)"
       />
     </div>
-  `,
+  `
 })
-export class DebounceInputComponent extends withUnsubscribe() implements OnInit {
+export class DebounceInputComponent
+  extends withUnsubscribe()
+  implements OnInit
+{
   @Input() public label: string;
   @Input() public placeholder = "";
   @Input() public default = "";
@@ -33,7 +36,11 @@ export class DebounceInputComponent extends withUnsubscribe() implements OnInit 
 
   public ngOnInit() {
     this.input$
-      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged(), takeUntil(this.unsubscribe))
+      .pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((input) => this.filter.next(input));
   }
 

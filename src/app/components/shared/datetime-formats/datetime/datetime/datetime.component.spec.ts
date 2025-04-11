@@ -26,7 +26,7 @@ function test(
   expectedTooltip: string,
   expectedDateTimeAttribute: string,
   date?: boolean,
-  time?: boolean,
+  time?: boolean
 ): TestCase {
   return {
     name,
@@ -122,7 +122,9 @@ describe("DatetimeComponent", () => {
         });
 
         it("should have the correct dateTime attribute", () => {
-          expect(timeElement().dateTime).toBe(testCase.expectedDateTimeAttribute);
+          expect(timeElement().dateTime).toBe(
+            testCase.expectedDateTimeAttribute
+          );
         });
       });
     });

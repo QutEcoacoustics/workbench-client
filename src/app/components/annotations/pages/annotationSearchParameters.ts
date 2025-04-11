@@ -1,6 +1,12 @@
 import { Params } from "@angular/router";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { AUDIO_RECORDING, PROJECT, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_RECORDING,
+  PROJECT,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
@@ -61,7 +67,9 @@ export interface IAnnotationSearchParameters {
 
 // we exclude project, region, and site from the serialization table because
 // we do not want them emitted in the query string
-const serializationTable: IQueryStringParameterSpec<Partial<IAnnotationSearchParameters>> = {
+const serializationTable: IQueryStringParameterSpec<
+  Partial<IAnnotationSearchParameters>
+> = {
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
@@ -76,7 +84,9 @@ const serializationTable: IQueryStringParameterSpec<Partial<IAnnotationSearchPar
   sites: jsNumberArray,
 };
 
-const deserializationTable: IQueryStringParameterSpec<Partial<IAnnotationSearchParameters>> = {
+const deserializationTable: IQueryStringParameterSpec<
+  Partial<IAnnotationSearchParameters>
+> = {
   ...serializationTable,
 
   routeProjectId: jsNumber,
@@ -86,16 +96,20 @@ const deserializationTable: IQueryStringParameterSpec<Partial<IAnnotationSearchP
 
 export class AnnotationSearchParameters
   extends AbstractData
-  implements IAnnotationSearchParameters, HasAssociationInjector, IParameterModel<AudioEvent>
+  implements
+    IAnnotationSearchParameters,
+    HasAssociationInjector,
+    IParameterModel<AudioEvent>
 {
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: AssociationInjector,
+    public injector?: AssociationInjector
   ) {
-    const deserializedObject: IAnnotationSearchParameters = deserializeParamsToObject<IAnnotationSearchParameters>(
-      queryStringParameters,
-      deserializationTable,
-    );
+    const deserializedObject: IAnnotationSearchParameters =
+      deserializeParamsToObject<IAnnotationSearchParameters>(
+        queryStringParameters,
+        deserializationTable
+      );
 
     const objectData = {};
     const objectKeys = Object.keys(deserializedObject);
@@ -127,7 +141,10 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  @hasMany<AnnotationSearchParameters, AudioRecording>(AUDIO_RECORDING, "audioRecordings")
+  @hasMany<AnnotationSearchParameters, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordings"
+  )
   public audioRecordingModels?: AudioRecording[];
   @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
   public projectModels?: Project[];
@@ -173,7 +190,10 @@ export class AnnotationSearchParameters
   }
 
   public toQueryParams(): Params {
-    return serializeObjectToParams<IAnnotationSearchParameters>(this, serializationTable);
+    return serializeObjectToParams<IAnnotationSearchParameters>(
+      this,
+      serializationTable
+    );
   }
 
   public modelFilters(): InnerFilter<Project | Region | Site> {
@@ -211,11 +231,13 @@ export class AnnotationSearchParameters
     } as any;
   }
 
-  private recordingDateTimeFilters(initialFilter: InnerFilter<AudioEvent>): InnerFilter<AudioEvent> {
+  private recordingDateTimeFilters(
+    initialFilter: InnerFilter<AudioEvent>
+  ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
       initialFilter,
       this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore,
+      this.recordingDateFinishedBefore
     );
 
     // time filtering is currently disabled until we can filter on custom fields
@@ -236,7 +258,9 @@ export class AnnotationSearchParameters
   // TODO: this function is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  private eventDateTimeFilters(initialFilter: InnerFilter<AudioEvent>): InnerFilter<AudioEvent> {
+  private eventDateTimeFilters(
+    initialFilter: InnerFilter<AudioEvent>
+  ): InnerFilter<AudioEvent> {
     return initialFilter;
   }
 }

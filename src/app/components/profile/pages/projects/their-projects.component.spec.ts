@@ -7,7 +7,11 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PermissionLevel } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -115,17 +119,19 @@ describe("TheirProjectsComponent", () => {
     });
 
     describe("access level", () => {
-      (["reader", "writer", "owner"] as PermissionLevel[]).forEach((accessLevel) => {
-        it(`should display ${accessLevel} permissions`, async () => {
-          const project = new Project({ ...generateProject(), accessLevel });
+      (["reader", "writer", "owner"] as PermissionLevel[]).forEach(
+        (accessLevel) => {
+          it(`should display ${accessLevel} permissions`, async () => {
+            const project = new Project({ ...generateProject(), accessLevel });
 
-          setup(defaultUser);
-          interceptRequest([project]);
-          spec.detectChanges();
+            setup(defaultUser);
+            interceptRequest([project]);
+            spec.detectChanges();
 
-          expect(getCells()[2]).toHaveText(titleCase(accessLevel));
-        });
-      });
+            expect(getCells()[2]).toHaveText(titleCase(accessLevel));
+          });
+        }
+      );
     });
   });
 });

@@ -9,7 +9,11 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -28,11 +32,21 @@ describe("CardComponent", () => {
   let spec: Spectator<CardComponent>;
   const createComponent = createComponentFactory({
     component: CardComponent,
-    imports: [RouterTestingModule, MockBawApiModule, PipesModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    imports: [
+    RouterTestingModule,
+    MockBawApiModule,
+    PipesModule,
+],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
-  function setup(model: Project | Region, recordings: Errorable<AudioRecording[]> = []) {
+  function setup(
+    model: Project | Region,
+    recordings: Errorable<AudioRecording[]> = []
+  ) {
     spec = createComponent({ detectChanges: false, props: { model } });
 
     const subject = new Subject<AudioRecording[]>();
@@ -42,10 +56,16 @@ describe("CardComponent", () => {
     } else {
       recordingApi.filterByRegion.and.callFake(() => subject);
     }
-    return nStepObservable(subject, () => recordings, isBawApiError(recordings));
+    return nStepObservable(
+      subject,
+      () => recordings,
+      isBawApiError(recordings)
+    );
   }
 
-  function validateCard<T extends Project | Region>(createModel: (data?: any) => T) {
+  function validateCard<T extends Project | Region>(
+    createModel: (data?: any) => T
+  ) {
     it("should create", () => {
       setup(createModel());
       spec.detectChanges();
@@ -111,7 +131,9 @@ describe("CardComponent", () => {
     });
 
     it("should have image route when route provided", () => {
-      const strongRoute = StrongRoute.newRoot().addFeatureModule(modelData.random.word());
+      const strongRoute = StrongRoute.newRoot().addFeatureModule(
+        modelData.random.word()
+      );
       const model = createModel({ route: strongRoute });
       setup(model);
       spec.detectChanges();
@@ -121,7 +143,9 @@ describe("CardComponent", () => {
     });
 
     it("should have title route when route provided", () => {
-      const strongRoute = StrongRoute.newRoot().addFeatureModule(modelData.random.word());
+      const strongRoute = StrongRoute.newRoot().addFeatureModule(
+        modelData.random.word()
+      );
       const model = createModel({ route: strongRoute });
       setup(model);
       spec.detectChanges();
@@ -155,7 +179,9 @@ describe("CardComponent", () => {
 
     it("should not show no audio badge if model has recordings", async () => {
       const model = createModel();
-      const promise = setup(model, [new AudioRecording(generateAudioRecording())]);
+      const promise = setup(model, [
+        new AudioRecording(generateAudioRecording()),
+      ]);
       spec.detectChanges();
       await promise;
       spec.detectChanges();

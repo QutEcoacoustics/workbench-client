@@ -1,9 +1,24 @@
-import { AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  AUDIO_RECORDING,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
-import { DateTimeTimezone, HasAllUsers, Id, Ids } from "@interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Ids,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { creator, deleter, hasMany, hasOne, updater } from "./AssociationDecorators";
+import {
+  creator,
+  deleter,
+  hasMany,
+  hasOne,
+  updater,
+} from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
@@ -28,7 +43,10 @@ export interface IAudioEvent extends HasAllUsers {
   audioEventImportFileId?: Id;
 }
 
-export class AudioEvent extends AbstractModel<IAudioEvent> implements IAudioEvent {
+export class AudioEvent
+  extends AbstractModel<IAudioEvent>
+  implements IAudioEvent
+{
   public readonly kind = "Audio Event";
   @bawPersistAttr()
   public readonly audioRecordingId?: Id;
@@ -68,14 +86,19 @@ export class AudioEvent extends AbstractModel<IAudioEvent> implements IAudioEven
   public deleter?: User;
   @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne<AudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne<AudioEvent, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenanceId"
+  )
   public provenance?: AudioEventProvenance;
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];
 
   public constructor(audioEvent: IAudioEvent, injector?: AssociationInjector) {
     super(audioEvent, injector);
-    this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map((tagging) => new Tagging(tagging, injector));
+    this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
+      (tagging) => new Tagging(tagging, injector)
+    );
   }
 
   public get viewUrl(): string {
@@ -92,7 +115,7 @@ export class AudioEvent extends AbstractModel<IAudioEvent> implements IAudioEven
   public get listenViewUrl(): string {
     return listenRecordingMenuItem.route.format(
       { audioRecordingId: this.audioRecordingId },
-      { start: this.startTimeSeconds, padding: 10 },
+      { start: this.startTimeSeconds, padding: 10 }
     );
   }
 

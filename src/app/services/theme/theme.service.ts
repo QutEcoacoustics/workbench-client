@@ -51,7 +51,7 @@ export class ThemeService {
 
   public constructor(
     @Inject(DOCUMENT) private document: Document,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {
     // Read the root style of the website
     this.root = this.document.documentElement;
@@ -121,7 +121,9 @@ export class ThemeService {
     const targetColor = hsl(color);
 
     bootstrapVariables.forEach(([variable, lightnessAdjustment]) => {
-      const hslColor = targetColor.copy({ l: targetColor.l + lightnessAdjustment }).clamp();
+      const hslColor = targetColor
+        .copy({ l: targetColor.l + lightnessAdjustment })
+        .clamp();
 
       const rgbColor = rgb(hslColor);
 
@@ -134,15 +136,24 @@ export class ThemeService {
     });
   }
 
-  private setBootstrapColorInBrowser(variable: BootstrapVariable, rgbColor: RGBColor): void {
+  private setBootstrapColorInBrowser(
+    variable: BootstrapVariable,
+    rgbColor: RGBColor
+  ): void {
     this.root.style.setProperty(variable, rgbColor.toString());
 
     // bootstrap seems to double define css color variables, one with the RGB color (as per above)
     // and one as an array of r, g, and b, values which can be inserted into other constructs
-    this.root.style.setProperty(`${variable}-rgb`, `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`);
+    this.root.style.setProperty(
+      `${variable}-rgb`,
+      `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`
+    );
   }
 
-  private setBootstrapColorInSsr(variable: BootstrapVariable, rgbColor: RGBColor): void {
+  private setBootstrapColorInSsr(
+    variable: BootstrapVariable,
+    rgbColor: RGBColor
+  ): void {
     const style = this.document.createElement("style");
     style.innerHTML = `
       :root {
@@ -153,7 +164,10 @@ export class ThemeService {
     this.document.head.appendChild(style);
   }
 
-  private setColorInBrowser(colorName: ThemeColor, color?: HSLColor | string): void {
+  private setColorInBrowser(
+    colorName: ThemeColor,
+    color?: HSLColor | string
+  ): void {
     const { hue, saturation, lightness } = this.getCssVariables(colorName);
 
     if (!color) {
@@ -165,20 +179,30 @@ export class ThemeService {
 
     const hslColor = typeof color === "string" ? hsl(color) : color;
     if (isNaN(hslColor.opacity)) {
-      console.warn(`Invalid theme color given for ${colorName} detected: ${color}`);
+      console.warn(
+        `Invalid theme color given for ${colorName} detected: ${color}`
+      );
       return;
     }
 
     this.root.style.setProperty(hue, `${this.readHslValue(hslColor.h)}deg`);
-    this.root.style.setProperty(saturation, `${this.readHslValue(hslColor.s, true)}%`);
-    this.root.style.setProperty(lightness, `${this.readHslValue(hslColor.l, true)}%`);
+    this.root.style.setProperty(
+      saturation,
+      `${this.readHslValue(hslColor.s, true)}%`
+    );
+    this.root.style.setProperty(
+      lightness,
+      `${this.readHslValue(hslColor.l, true)}%`
+    );
   }
 
   private setColorInSsr(colorName: ThemeColor, color: HSLColor | string): void {
     const { hue, saturation, lightness } = this.getCssVariables(colorName);
     const hslColor = typeof color === "string" ? hsl(color) : color;
     if (isNaN(hslColor.opacity)) {
-      console.warn(`Invalid theme color given for ${colorName} detected: ${color}`);
+      console.warn(
+        `Invalid theme color given for ${colorName} detected: ${color}`
+      );
       return;
     }
 

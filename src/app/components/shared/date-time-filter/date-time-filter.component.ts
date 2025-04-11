@@ -20,7 +20,12 @@ import { Site } from "@models/Site";
 import { NgbDate, NgbCollapse, NgbInputDatepicker } from "@ng-bootstrap/ng-bootstrap";
 import { FromJS, fromJS } from "immutable";
 import { DateTime, Duration } from "luxon";
-import { BehaviorSubject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  takeUntil,
+} from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { TimeComponent } from "../input/time/time.component";
@@ -39,12 +44,15 @@ export interface DateTimeFilterModel {
 }
 
 @Component({
-  selector: "baw-date-time-filter",
-  templateUrl: "date-time-filter.component.html",
-  styleUrls: ["date-time-filter.component.scss"],
-  imports: [FormsModule, NgbCollapse, NgbInputDatepicker, FaIconComponent, TimeComponent],
+    selector: "baw-date-time-filter",
+    templateUrl: "date-time-filter.component.html",
+    styleUrls: ["date-time-filter.component.scss"],
+    imports: [FormsModule, NgbCollapse, NgbInputDatepicker, FaIconComponent, TimeComponent]
 })
-export class DateTimeFilterComponent extends withUnsubscribe() implements AfterViewInit, AfterContentChecked {
+export class DateTimeFilterComponent
+  extends withUnsubscribe()
+  implements AfterViewInit, AfterContentChecked
+{
   public constructor(private changeDetector: ChangeDetectorRef) {
     super();
   }
@@ -68,7 +76,11 @@ export class DateTimeFilterComponent extends withUnsubscribe() implements AfterV
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
-      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged(), takeUntil(this.unsubscribe))
+      .pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe)
+      )
       .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
   }
 
@@ -99,10 +111,7 @@ export class DateTimeFilterComponent extends withUnsubscribe() implements AfterV
     }
   }
 
-  private generateFilters(
-    previousFilters: FromJS<Filters<AudioRecording>>,
-    model: DateTimeFilterModel,
-  ): [boolean, Filters] {
+  private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, model: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setModelFilters(newInnerFilters);
@@ -136,10 +145,7 @@ export class DateTimeFilterComponent extends withUnsubscribe() implements AfterV
     return filters;
   }
 
-  private setDateFilters(
-    model: DateTimeFilterModel,
-    filters: InnerFilter<AudioRecording>,
-  ): InnerFilter<AudioRecording> {
+  private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartDate = model?.dateStartedAfter;
     const modelEndDate = model?.dateFinishedBefore;
 
@@ -149,16 +155,15 @@ export class DateTimeFilterComponent extends withUnsubscribe() implements AfterV
     }
 
     // using the Luxon DateTime object emits both the time and date. This prevents us from explicitly adding it later on
-    const startDate = modelStartDate && DateTime.fromObject(modelStartDate, { zone: "utc" });
-    const endDate = modelEndDate && DateTime.fromObject(modelEndDate, { zone: "utc" });
+    const startDate =
+      modelStartDate && DateTime.fromObject(modelStartDate, { zone: "utc" });
+    const endDate =
+      modelEndDate && DateTime.fromObject(modelEndDate, { zone: "utc" });
 
     return filterDate(filters, startDate, endDate);
   }
 
-  private setTimeOfDayFilters(
-    model: DateTimeFilterModel,
-    filters: InnerFilter<AudioRecording>,
-  ): InnerFilter<AudioRecording> {
+  private setTimeOfDayFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
     const modelStartTime = model?.timeStartedAfter;
     const modelEndTime = model?.timeFinishedBefore;
 
@@ -167,6 +172,11 @@ export class DateTimeFilterComponent extends withUnsubscribe() implements AfterV
       return filters;
     }
 
-    return filterTime(filters, model.ignoreDaylightSavings, modelStartTime, modelEndTime);
+    return filterTime(
+      filters,
+      model.ignoreDaylightSavings,
+      modelStartTime,
+      modelEndTime
+    );
   }
 }

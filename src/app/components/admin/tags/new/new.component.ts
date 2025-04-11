@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -13,8 +16,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 const typeOfTagsKey = "typeOfTags";
 
 @Component({
-  selector: "baw-admin-tags-new",
-  template: `
+    selector: "baw-admin-tags-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Tag"
@@ -26,7 +29,7 @@ const typeOfTagsKey = "typeOfTags";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;
@@ -35,7 +38,7 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     private api: TagsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router,
+    router: Router
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.text),
@@ -51,10 +54,12 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
       return;
     }
 
-    this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(({ name }) => ({
-      label: name,
-      value: name,
-    }));
+    this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(
+      ({ name }) => ({
+        label: name,
+        value: name,
+      })
+    );
   }
 
   public get typeOfTags(): TagType[] {

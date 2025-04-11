@@ -17,5 +17,5 @@ export function ParameterModel(_serialization: IQueryStringParameterSpec) {
     public toFilter(): Filters<T> {
       throw new Error("Method not implemented.");
     }
-  };
+  }
 }

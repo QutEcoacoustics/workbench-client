@@ -15,7 +15,9 @@ describe("AudioEventImportService", () => {
   const mockModelId = modelData.id();
   const baseUrl = "/audio_event_imports/";
   const updateUrl = baseUrl + mockModelId;
-  const createModel = () => new AudioEventImport(generateAudioEventImport({ id: mockModelId }));
+  const createModel = () => new AudioEventImport(
+    generateAudioEventImport({ id: mockModelId })
+  );
 
   const createService = createServiceFactory({
     service: AudioEventImportService,
@@ -34,6 +36,7 @@ describe("AudioEventImportService", () => {
     baseUrl + "filter",
     updateUrl,
     createModel,
-    mockModelId,
+    mockModelId
   );
 });
+

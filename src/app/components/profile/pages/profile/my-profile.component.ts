@@ -76,7 +76,10 @@ const userKey = "user";
     UrlDirective,
   ],
 })
-class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnInit {
+class MyProfileComponent
+  extends withUnsubscribe(PageComponent)
+  implements OnInit
+{
   public dataRequest = dataRequestMenuItem.route;
   public lastSeenAt: string;
   public membershipLength: string;
@@ -136,7 +139,7 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
     public router?: Router,
     protected securityApi?: SecurityService,
     private accountsApi?: AccountsService,
-    private notifications?: ToastService,
+    private notifications?: ToastService
   ) {
     super();
   }
@@ -171,7 +174,9 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.user?.userName));
+          this.notifications.success(
+            defaultSuccessMsg("destroyed", this.user?.userName)
+          );
           this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
         },
       });
@@ -179,8 +184,10 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
 
   /** Update user details */
   protected updateUserProfile(user: User) {
-    this.lastSeenAt = user.lastSeenAt?.toRelative() || "Unknown time since last logged in";
-    this.membershipLength = user.createdAt?.toRelative() || "Unknown membership length";
+    this.lastSeenAt =
+      user.lastSeenAt?.toRelative() || "Unknown time since last logged in";
+    this.membershipLength =
+      user.createdAt?.toRelative() || "Unknown membership length";
   }
 
   /** Retrieve user statistics and update page */
@@ -201,13 +208,16 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
         paging: { items: 10 },
         sorting: { orderBy: "updatedAt", direction: "desc" },
       },
-      (models) => (this.tags = models),
+      (models) => (this.tags = models)
     );
     this.updateStatistic(this.bookmarksApi, bookmarks, user);
     this.updateStatistic(this.sitesApi, sites, user);
-    this.updateStatistic<Site, ShallowSitesService>(this.sitesApi, points, user, {
-      filter: { regionId: { notEqual: null } },
-    });
+    this.updateStatistic<Site, ShallowSitesService>(
+      this.sitesApi,
+      points,
+      user,
+      { filter: { regionId: { notEqual: null } } }
+    );
     this.updateStatistic(this.audioEventsApi, annotations, user);
   }
 
@@ -217,7 +227,7 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
     index: number,
     user: User,
     additionalFilters: Filters<Model> = {},
-    callback?: (models: Model[]) => void,
+    callback?: (models: Model[]) => void
   ): void {
     function getPageTotal(model: Model) {
       return (model as unknown as AbstractModel).getMetadata().paging.total;
@@ -229,7 +239,10 @@ class MyProfileComponent extends withUnsubscribe(PageComponent) implements OnIni
       .subscribe({
         next: (models) => {
           const total = models.length > 0 ? getPageTotal(models[0]) : 0;
-          this.userStatistics = this.userStatistics.update(index, (statistic) => ({ ...statistic, value: total }));
+          this.userStatistics = this.userStatistics.update(
+            index,
+            (statistic) => ({ ...statistic, value: total })
+          );
           callback?.(models);
         },
         error: () => this.handleError(index),

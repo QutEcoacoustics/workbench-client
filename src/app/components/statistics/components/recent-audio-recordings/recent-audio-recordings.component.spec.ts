@@ -6,9 +6,17 @@ import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
-import { createComponentFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  mockProvider,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import { DataTableBodyCellComponent, DatatableComponent } from "@swimlane/ngx-datatable";
+import {
+  DataTableBodyCellComponent,
+  DatatableComponent,
+} from "@swimlane/ngx-datatable";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
@@ -30,7 +38,9 @@ describe("RecentAudioRecordingsComponent", () => {
     providers: [mockProvider(ToastService)],
   });
 
-  function interceptSiteRequest(data?: Errorable<Partial<ISite>>): Promise<any> {
+  function interceptSiteRequest(
+    data?: Errorable<Partial<ISite>>
+  ): Promise<any> {
     const response = isBawApiError(data) ? data : generateSite(data);
     return interceptShowApiRequest(api, injector, response, Site);
   }
@@ -88,7 +98,9 @@ describe("RecentAudioRecordingsComponent", () => {
     }
 
     function getCellElements() {
-      return spec.queryAll("datatable-body-cell").map((el) => el.firstElementChild);
+      return spec
+        .queryAll("datatable-body-cell")
+        .map((el) => el.firstElementChild);
     }
 
     function assertCellLoading(element: Element, loading: boolean) {
@@ -175,7 +187,8 @@ describe("RecentAudioRecordingsComponent", () => {
 
     describe("actions", () => {
       const getActionCellElement = () => getCellElements()[3];
-      const getPlayButton = () => getActionCellElement().querySelector<HTMLAnchorElement>("#playBtn");
+      const getPlayButton = () =>
+        getActionCellElement().querySelector<HTMLAnchorElement>("#playBtn");
 
       it("should link to listen page", async () => {
         await setup({ recordings: [defaultRecording] });

@@ -1,8 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
-import { editProjectMenuItem, projectCategory } from "@components/projects/projects.menus";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
+import {
+  editProjectMenuItem,
+  projectCategory,
+} from "@components/projects/projects.menus";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
@@ -14,8 +23,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 const projectKey = "project";
 
 @Component({
-  selector: "baw-project-edit",
-  template: `
+    selector: "baw-project-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -27,7 +36,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = schema.fields;
@@ -37,7 +46,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
     private api: ProjectsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[projectKey] as Project,
@@ -56,7 +65,9 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
     this.title = `Edit ${this.model.name}`;
 
     if (!this.model.can("updateAllowAudioUpload").can) {
-      this.fields = this.fields.filter((field) => field.key !== "allowAudioUpload");
+      this.fields = this.fields.filter(
+        (field) => field.key !== "allowAudioUpload"
+      );
     }
   }
 

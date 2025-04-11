@@ -3,7 +3,7 @@
   "settings": {
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
+      "source.fixAll": "explicit"
     },
     "cSpell.words": [
       "ecosounds",
@@ -46,7 +46,7 @@
       "**/package-lock.json",
       "**/tsconfig.json",
       "**/tsconfig*.json",
-      "**/vscode-extension/**",
+      "**/vscode-extension/**"
     ],
     "workbench.colorCustomizations": {
       "activityBar.background": "#3795b0",
@@ -65,12 +65,12 @@
       "statusBar.foreground": "#e7e7e7",
       "sash.hoverBorder": "#3795b0",
       "statusBarItem.remoteBackground": "#2b7489",
-      "statusBarItem.remoteForeground": "#e7e7e7",
+      "statusBarItem.remoteForeground": "#e7e7e7"
     },
     "angularKarmaTestExplorer.debugMode": true,
     "explorer.compactFolders": false,
     "files.eol": "\n",
-    "prettier.trailingComma": "all",
+    "prettier.trailingComma": "all"
   },
   "extensions": {
     "recommendations": [
@@ -78,7 +78,7 @@
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
       "xabikos.jasminesnippets",
-      "aaron-bond.better-comments",
-    ],
-  },
+      "aaron-bond.better-comments"
+    ]
+  }
 }

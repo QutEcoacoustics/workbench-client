@@ -43,7 +43,10 @@ describe("AnalysisJobComponent", () => {
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute({ analysisJob: "resolver" }, { analysisJob: { model, error } }),
+          useValue: mockActivatedRoute(
+            { analysisJob: "resolver" },
+            { analysisJob: { model, error } }
+          ),
         },
       ],
     });
@@ -60,8 +63,14 @@ describe("AnalysisJobComponent", () => {
     const scriptsSubject = new Subject<Script>();
 
     const promise = Promise.all([
-      nStepObservable(accountsSubject, () => new User(generateUser({ id: 1, userName: "custom username" }))),
-      nStepObservable(scriptsSubject, () => new Script(generateScript({ id: 1, name: "custom script" }))),
+      nStepObservable(
+        accountsSubject,
+        () => new User(generateUser({ id: 1, userName: "custom username" }))
+      ),
+      nStepObservable(
+        scriptsSubject,
+        () => new Script(generateScript({ id: 1, name: "custom script" }))
+      ),
     ]);
 
     // Catch associated models
@@ -93,7 +102,7 @@ describe("AnalysisJobComponent", () => {
       generateAnalysisJob({
         scriptIds: [modelData.id()],
         audioEventImportIds: [modelData.id()],
-      }),
+      })
     );
 
     beforeEach(async function () {
@@ -143,3 +152,4 @@ describe("AnalysisJobComponent", () => {
     details.forEach((detail) => assertDetail(detail));
   });
 });
+

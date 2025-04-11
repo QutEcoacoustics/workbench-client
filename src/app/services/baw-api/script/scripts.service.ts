@@ -2,7 +2,15 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IScript, Script } from "@models/Script";
 import { Observable } from "rxjs";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, NonDestructibleApi, option } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  NonDestructibleApi,
+  option,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -31,7 +39,12 @@ export class ScriptsService implements NonDestructibleApi<Script> {
 
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
   public create(model: Script): Observable<Script> {
-    return this.api.create(Script, endpoint(emptyParam, emptyParam), (script) => endpoint(script, emptyParam), model);
+    return this.api.create(
+      Script,
+      endpoint(emptyParam, emptyParam),
+      (script) => endpoint(script, emptyParam),
+      model
+    );
   }
 
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/435
@@ -40,4 +53,7 @@ export class ScriptsService implements NonDestructibleApi<Script> {
   }
 }
 
-export const scriptResolvers = new Resolvers<Script, []>([ScriptsService], "scriptId").create("Script");
+export const scriptResolvers = new Resolvers<Script, []>(
+  [ScriptsService],
+  "scriptId"
+).create("Script");

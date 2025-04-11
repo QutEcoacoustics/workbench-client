@@ -40,7 +40,7 @@ export class StreamUploadingComponent implements OnInit {
   public constructor(
     public modals: NgbModal,
     private stages: HarvestStagesService,
-    private config: ConfigService,
+    private config: ConfigService
   ) {}
 
   public get harvest(): Harvest {

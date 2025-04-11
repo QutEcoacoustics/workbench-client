@@ -16,7 +16,9 @@ import { getPageInfos } from "./pageComponent";
 export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
   const component = strongRoute.pageComponent;
   const config = strongRoute.angularRouteConfig;
-  const pageInfo = getPageInfos(component)?.find((info) => info.route === strongRoute);
+  const pageInfo = getPageInfos(component)?.find(
+    (info) => info.route === strongRoute
+  );
 
   if (!pageInfo || !isInstantiated(pageInfo.route.pathFragment)) {
     return null;

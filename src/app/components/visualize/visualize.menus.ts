@@ -11,5 +11,6 @@ export const visualizeMenuItem = menuRoute({
   icon: visualizeCategory.icon,
   label: "View Timeline",
   route: visualizeRoute,
-  tooltip: () => "Explore the timeline of audio recordings through visualization",
+  tooltip: () =>
+    "Explore the timeline of audio recordings through visualization",
 });
