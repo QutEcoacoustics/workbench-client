@@ -1,9 +1,5 @@
 import { HttpBackend } from "@angular/common/http";
-import {
-  NgModule,
-  inject,
-  provideAppInitializer,
-} from "@angular/core";
+import { NgModule, inject, provideAppInitializer } from "@angular/core";
 import { AppInitializer } from "@helpers/app-initializer/app-initializer";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ImportsService } from "@services/import/import.service";
@@ -18,7 +14,7 @@ import { API_CONFIG, API_ROOT } from "./config.tokens";
         inject(ConfigService),
         inject(HttpBackend),
         inject(IS_SERVER_PLATFORM),
-        inject(ImportsService)
+        inject(ImportsService),
       );
 
       return initializerCallback();

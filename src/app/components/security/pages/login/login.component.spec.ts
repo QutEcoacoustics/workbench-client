@@ -39,7 +39,7 @@ import schema from "./login.schema.json";
     <baw-toast-provider></baw-toast-provider>
     <baw-authentication-login></baw-authentication-login>
   `,
-  standalone: false
+  standalone: false,
 })
 class TestHostComponent {}
 
@@ -55,37 +55,22 @@ describe("LoginComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TestHostComponent,
-    imports: [
-      ...testFormImports,
-      SecurityModule,
-      MockBawApiModule,
-      ToastComponent,
-      ToastProviderComponent,
-    ],
+    imports: [...testFormImports, SecurityModule, MockBawApiModule, ToastComponent, ToastProviderComponent],
     providers: testFormProviders,
     declarations: [FormComponent],
   });
 
   const component = () => spec.query(LoginComponent);
 
-  const communicationsDismissButton = () =>
-    spec.query<HTMLButtonElement>(".btn-close");
-  const communicationsYesButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "Yes");
-  const communicationsNoButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "No");
+  const communicationsDismissButton = () => spec.query<HTMLButtonElement>(".btn-close");
+  const communicationsYesButton = () => getElementByInnerText<HTMLButtonElement>(spec, "Yes");
+  const communicationsNoButton = () => getElementByInnerText<HTMLButtonElement>(spec, "No");
 
-  const usernameField = () =>
-    spec.query<HTMLInputElement>("[autocomplete='username']");
-  const passwordField = () =>
-    spec.query<HTMLInputElement>("[autocomplete='current-password']");
-  const submitButton = () =>
-    spec.query<HTMLButtonElement>("button[type='submit']");
+  const usernameField = () => spec.query<HTMLInputElement>("[autocomplete='username']");
+  const passwordField = () => spec.query<HTMLInputElement>("[autocomplete='current-password']");
+  const submitButton = () => spec.query<HTMLButtonElement>("button[type='submit']");
 
-  function typeInForm(
-    username = modelData.internet.userName(),
-    password = modelData.internet.password()
-  ): void {
+  function typeInForm(username = modelData.internet.userName(), password = modelData.internet.password()): void {
     spec.typeInElement(username, usernameField());
     spec.typeInElement(password, passwordField());
     spec.detectChanges();
@@ -122,9 +107,7 @@ describe("LoginComponent", () => {
     accountSpy = spec.inject(ACCOUNT.token);
 
     session = spec.inject(BawSessionService);
-    spyOnProperty(session, "currentUser").and.returnValue(
-      new User(generateUser())
-    );
+    spyOnProperty(session, "currentUser").and.returnValue(new User(generateUser()));
 
     notifications = spec.inject(ToastService);
     spyOn(notifications, "error").and.callThrough();
@@ -137,24 +120,16 @@ describe("LoginComponent", () => {
       navigationId: navigationId ?? 1,
     }));
 
-    accountSpy.optOutContactable = jasmine
-      .createSpy("optOutContactable")
-      .and.returnValue(of([]));
-    accountSpy.optInContactable = jasmine
-      .createSpy("optInContactable")
-      .and.returnValue(of([]));
+    accountSpy.optOutContactable = jasmine.createSpy("optOutContactable").and.returnValue(of([]));
+    accountSpy.optInContactable = jasmine.createSpy("optInContactable").and.returnValue(of([]));
   }
 
   function setLoginError() {
     const subject = new Subject<void>();
     const promise = nStepObservable(
       subject,
-      () =>
-        generateBawApiError(
-          UNAUTHORIZED,
-          "Incorrect user name, email, or password."
-        ),
-      true
+      () => generateBawApiError(UNAUTHORIZED, "Incorrect user name, email, or password."),
+      true,
     );
     spyOn(api, "signIn").and.callFake(() => subject);
     return promise;
@@ -200,9 +175,7 @@ describe("LoginComponent", () => {
       spec.detectChanges();
 
       component().submit({ login: "username", password: "password" });
-      expect(api.signIn).toHaveBeenCalledWith(
-        new LoginDetails({ login: "username", password: "password" })
-      );
+      expect(api.signIn).toHaveBeenCalledWith(new LoginDetails({ login: "username", password: "password" }));
     });
   });
 
@@ -272,9 +245,7 @@ describe("LoginComponent", () => {
       await promise;
 
       expect(router.navigateByUrl).not.toHaveBeenCalled();
-      expect(notifications.error).toHaveBeenCalledWith(
-        "Unable to redirect back to previous page"
-      );
+      expect(notifications.error).toHaveBeenCalledWith("Unable to redirect back to previous page");
     });
 
     it("should ignore non-ecosounds redirect url", async () => {
@@ -295,9 +266,7 @@ describe("LoginComponent", () => {
       setup();
       isSignedIn(true);
       spec.detectChanges();
-      expect(notifications.error).toHaveBeenCalledWith(
-        "You are already logged in."
-      );
+      expect(notifications.error).toHaveBeenCalledWith("You are already logged in.");
     });
   });
 
@@ -381,16 +350,12 @@ describe("LoginComponent", () => {
 
       it("should make the correct api calls for a 'yes' response", () => {
         clickButton(spec, communicationsYesButton());
-        expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
-        );
+        expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(session.currentUser.id);
       });
 
       it("should make the correct api calls for a 'no' response", () => {
         clickButton(spec, communicationsNoButton());
-        expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
-        );
+        expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(session.currentUser.id);
       });
     });
   });

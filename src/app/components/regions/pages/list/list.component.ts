@@ -49,8 +49,8 @@ export const regionsMenuItemActions = [
       }
     }
     <baw-error-handler [error]="error"></baw-error-handler>
-    `,
-  standalone: false
+  `,
+  standalone: false,
 })
 class ListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);
@@ -59,7 +59,7 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,
-    regionsService: ShallowRegionsService
+    regionsService: ShallowRegionsService,
   ) {
     super(
       router,
@@ -70,7 +70,7 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
       () => [],
       (regions) => {
         this.models = List(regions);
-      }
+      },
     );
   }
 }

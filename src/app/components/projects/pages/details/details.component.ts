@@ -3,10 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { harvestsMenuItem } from "@components/harvest/harvest.menus";
@@ -25,10 +22,7 @@ import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import {
-  allowsOriginalDownloadWidgetMenuItem,
-  permissionsWidgetMenuItem,
-} from "@menu/widget.menus";
+import { allowsOriginalDownloadWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -64,17 +58,10 @@ const projectKey = "project";
       <h1>{{ project.name }}</h1>
       <div class="row mb-3">
         <div class="col-sm-4">
-          <img
-            class="img-thumbnail mx-auto d-block"
-            [src]="project.imageUrls"
-            [alt]="project.name + ' image'"
-          />
+          <img class="img-thumbnail mx-auto d-block" [src]="project.imageUrls" [alt]="project.name + ' image'" />
         </div>
         <div class="col-sm-8">
-          <p
-            id="project_description"
-            [innerHTML]="project.descriptionHtml || defaultDescription"
-          ></p>
+          <p id="project_description" [innerHTML]="project.descriptionHtml || defaultDescription"></p>
         </div>
       </div>
 
@@ -94,9 +81,7 @@ const projectKey = "project";
       ></baw-debounce-input>
 
       @if (!hasSites && !hasRegions && !loading) {
-        <p class="lead">
-          No additional data to display here, try adding sites to the project
-        </p>
+        <p class="lead">No additional data to display here, try adding sites to the project</p>
       }
 
       <ul id="model-grid" class="list-group">
@@ -135,11 +120,9 @@ const projectKey = "project";
     <div class="mb-3"></div>
   `,
   styleUrls: ["./details.component.scss"],
-  standalone: false
+  standalone: false,
 })
-class DetailsComponent
-  extends PaginationTemplate<Site | Region>
-  implements OnInit {
+class DetailsComponent extends PaginationTemplate<Site | Region> implements OnInit {
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
   public defaultDescription = "<i>No description found</i>";
@@ -189,11 +172,8 @@ class DetailsComponent
           this.hasRegions = true;
         }
 
-        this.collectionSize = Math.max(
-          this.collectionSizes.sites,
-          this.collectionSizes.regions
-        );
-      }
+        this.collectionSize = Math.max(this.collectionSizes.sites, this.collectionSizes.regions);
+      },
     );
   }
 
@@ -207,7 +187,8 @@ class DetailsComponent
   }
 
   public deleteModel(): void {
-    this.projectsApi.destroy(this.project)
+    this.projectsApi
+      .destroy(this.project)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
@@ -227,11 +208,7 @@ class DetailsComponent
 
     return merge(
       this.regionsApi.filter(this.generateFilter() as Filters, this.project.id),
-      this.sitesApi.filterByRegion(
-        this.generateFilter() as Filters,
-        this.project.id,
-        null
-      )
+      this.sitesApi.filterByRegion(this.generateFilter() as Filters, this.project.id, null),
     );
   }
 }
@@ -241,10 +218,7 @@ DetailsComponent.linkToRoute({
   pageRoute: projectMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([
-      permissionsWidgetMenuItem,
-      allowsOriginalDownloadWidgetMenuItem,
-    ]),
+    actionWidgets: List([permissionsWidgetMenuItem, allowsOriginalDownloadWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

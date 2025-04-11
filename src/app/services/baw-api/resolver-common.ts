@@ -8,23 +8,11 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
 import type { AbstractData } from "@models/AbstractData";
-import type {
-  AbstractModel,
-  AbstractModelConstructor,
-} from "@models/AbstractModel";
+import type { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
-import {
-  ApiCreate,
-  ApiDestroy,
-  ApiFilter,
-  ApiFilterShow,
-  ApiList,
-  ApiShow,
-  ApiUpdate,
-  IdOr,
-} from "./api-common";
+import { ApiCreate, ApiDestroy, ApiFilter, ApiFilterShow, ApiList, ApiShow, ApiUpdate, IdOr } from "./api-common";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
@@ -32,11 +20,7 @@ import { BawApiService, unknownErrorCode } from "./baw-api.service";
  * This allows a service to define its own custom resolver
  */
 export abstract class BawResolver<
-  OutputModel extends
-    | AbstractData
-    | AbstractData[]
-    | AbstractModel
-    | AbstractModel[],
+  OutputModel extends AbstractData | AbstractData[] | AbstractModel | AbstractModel[],
   ServiceModel extends AbstractModel,
   ServiceParams extends any[],
   Service extends
@@ -48,7 +32,7 @@ export abstract class BawResolver<
     | ApiUpdate<ServiceModel, ServiceParams>
     | ApiDestroy<ServiceModel, ServiceParams, IdOr<ServiceModel>>
     | ApiFilterShow<ServiceModel, ServiceParams>,
-  ResolverName = { customResolver: string }
+  ResolverName = { customResolver: string },
 > {
   public constructor(
     /** Dependencies required for Service (including service) */
@@ -56,13 +40,10 @@ export abstract class BawResolver<
     /** Unique ID of model to retrieve */
     protected uniqueId?: string,
     /** Parameters supplied to service request */
-    protected params?: MonoTuple<string, ServiceParams["length"]>
+    protected params?: MonoTuple<string, ServiceParams["length"]>,
   ) {}
 
-  public create(
-    name: string,
-    required: boolean = false
-  ): ResolverName & { providers: BawProvider[] } {
+  public create(name: string, required: boolean = false): ResolverName & { providers: BawProvider[] } {
     // Store reference to 'this' values before 'this' is changed inside class
     const { uniqueId, params: serviceArgs, resolverFn } = this;
 
@@ -74,9 +55,7 @@ export abstract class BawResolver<
        *
        * @param route Route Snapshot
        */
-      public resolve(
-        route: ActivatedRouteSnapshot
-      ): Observable<ResolvedModel<OutputModel>> {
+      public resolve(route: ActivatedRouteSnapshot): Observable<ResolvedModel<OutputModel>> {
         const modelId = this.getModelId(route);
         const additionalArgs = this.getServiceArguments(route);
 
@@ -90,7 +69,7 @@ export abstract class BawResolver<
             }
             // Modify output to match ResolvedModel interface
             return of({ error });
-          })
+          }),
         );
       }
 
@@ -103,8 +82,7 @@ export abstract class BawResolver<
           return undefined;
         }
 
-        const id =
-          route.paramMap.get(uniqueId) ?? route.queryParamMap.get(uniqueId);
+        const id = route.paramMap.get(uniqueId) ?? route.queryParamMap.get(uniqueId);
         return isInstantiated(id) ? convertToId(id) : undefined;
       }
 
@@ -112,16 +90,13 @@ export abstract class BawResolver<
        * Retrieve additional service arguments from route fragments and query parameters.
        * Returns empty array if none required
        */
-      private getServiceArguments(
-        route: ActivatedRouteSnapshot
-      ): ServiceParams {
+      private getServiceArguments(route: ActivatedRouteSnapshot): ServiceParams {
         if (!serviceArgs || serviceArgs.length === 0) {
           return [] as ServiceParams;
         }
 
         return serviceArgs.map((urlId) => {
-          const id =
-            route.paramMap.get(urlId) ?? route.queryParamMap.get(urlId);
+          const id = route.paramMap.get(urlId) ?? route.queryParamMap.get(urlId);
           return convertToId(id);
         }) as ServiceParams;
       }
@@ -142,7 +117,7 @@ export abstract class BawResolver<
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<OutputModel>>;
     }>,
-    deps: Type<Service>[]
+    deps: Type<Service>[],
   ): ResolverName & { providers: BawProvider[] };
 
   /**
@@ -157,7 +132,7 @@ export abstract class BawResolver<
     route: ActivatedRouteSnapshot,
     api: Service,
     id: Id,
-    ids: ServiceParams
+    ids: ServiceParams,
   ): Observable<OutputModel>;
 }
 
@@ -169,14 +144,13 @@ export abstract class BawResolver<
 export class Resolvers<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params> &
-    ApiShow<Model, Params, IdOr<Model>> = ApiList<Model, Params> &
-    ApiShow<Model, Params, IdOr<Model>>
+  Service extends ApiList<Model, Params> & ApiShow<Model, Params, IdOr<Model>> = ApiList<Model, Params> &
+    ApiShow<Model, Params, IdOr<Model>>,
 > {
   public constructor(
     private serviceDeps: Type<Service>[],
     private uniqueId?: string,
-    private params?: MonoTuple<string, Params["length"]>
+    private params?: MonoTuple<string, Params["length"]>,
   ) {}
 
   /**
@@ -184,25 +158,13 @@ export class Resolvers<
    *
    * @param name Name of provider
    */
-  public create<T extends object & { providers: BawProvider[] }>(
-    name: string,
-    extra: T = null
-  ) {
+  public create<T extends object & { providers: BawProvider[] }>(name: string, extra: T = null) {
     const { serviceDeps, uniqueId, params } = this;
-    const listResolver = new ListResolver<Model, Params, Service>(
-      serviceDeps,
-      params
-    ).create(name);
-    const showResolver = new ShowResolver<Model, Params, Service>(
-      serviceDeps,
-      uniqueId,
-      params
-    ).create(name);
-    const showOptionalResolver = new ShowOptionalResolver<
-      Model,
-      Params,
-      Service
-    >(serviceDeps, uniqueId, params).create(name);
+    const listResolver = new ListResolver<Model, Params, Service>(serviceDeps, params).create(name);
+    const showResolver = new ShowResolver<Model, Params, Service>(serviceDeps, uniqueId, params).create(name);
+    const showOptionalResolver = new ShowOptionalResolver<Model, Params, Service>(serviceDeps, uniqueId, params).create(
+      name,
+    );
 
     return {
       ...listResolver,
@@ -227,12 +189,9 @@ export class Resolvers<
 export class ListResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params> = ApiList<Model, Params>
+  Service extends ApiList<Model, Params> = ApiList<Model, Params>,
 > extends BawResolver<Model[], Model, Params, Service, { list: string }> {
-  public constructor(
-    deps: Type<Service>[],
-    params?: MonoTuple<string, Params["length"]>
-  ) {
+  public constructor(deps: Type<Service>[], params?: MonoTuple<string, Params["length"]>) {
     super(deps, undefined, params);
   }
 
@@ -241,7 +200,7 @@ export class ListResolver<
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<Model[]>>;
     }>,
-    deps: Type<Service>[]
+    deps: Type<Service>[],
   ) {
     return {
       list: name + "ListResolver",
@@ -262,17 +221,9 @@ export class ListResolver<
 export class ShowResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
-    Model,
-    Params,
-    IdOr<Model>
-  >
+  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<Model, Params, IdOr<Model>>,
 > extends BawResolver<Model, Model, Params, Service, { show: string }> {
-  public constructor(
-    deps: Type<Service>[],
-    uniqueId?: string,
-    params?: MonoTuple<string, Params["length"]>
-  ) {
+  public constructor(deps: Type<Service>[], uniqueId?: string, params?: MonoTuple<string, Params["length"]>) {
     super(deps, uniqueId, params);
   }
 
@@ -281,7 +232,7 @@ export class ShowResolver<
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<Model>>;
     }>,
-    deps: Type<Service>[]
+    deps: Type<Service>[],
   ) {
     return {
       show: name + "ShowResolver",
@@ -307,17 +258,9 @@ export class ShowResolver<
 export class ShowOptionalResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
-    Model,
-    Params,
-    IdOr<Model>
-  >
+  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<Model, Params, IdOr<Model>>,
 > extends BawResolver<Model, Model, Params, Service, { showOptional: string }> {
-  public constructor(
-    deps: Type<Service>[],
-    uniqueId?: string,
-    params?: MonoTuple<string, Params["length"]>
-  ) {
+  public constructor(deps: Type<Service>[], uniqueId?: string, params?: MonoTuple<string, Params["length"]>) {
     super(deps, uniqueId, params);
   }
 
@@ -326,13 +269,11 @@ export class ShowOptionalResolver<
     resolver: Type<{
       resolve: ResolveFn<ResolvedModel<Model>>;
     }>,
-    deps: Type<Service>[]
+    deps: Type<Service>[],
   ) {
     return {
       showOptional: name + "OptionalShowResolver",
-      providers: [
-        { provide: name + "OptionalShowResolver", useClass: resolver, deps },
-      ],
+      providers: [{ provide: name + "OptionalShowResolver", useClass: resolver, deps }],
     };
   }
 
@@ -351,7 +292,7 @@ export class ShowOptionalResolver<
 export interface BawProvider {
   provide: string;
   useClass: Type<{
-    resolve: ResolveFn<any>
+    resolve: ResolveFn<any>;
   }>;
   deps: Type<any>[];
 }
@@ -359,9 +300,7 @@ export interface BawProvider {
 /**
  * Resolver model output
  */
-export interface ResolvedModel<
-  T = AbstractModel | AbstractModel[] | AbstractData | AbstractData[]
-> {
+export interface ResolvedModel<T = AbstractModel | AbstractModel[] | AbstractData | AbstractData[]> {
   model?: T;
   error?: BawApiError;
 }
@@ -380,12 +319,8 @@ function convertToId(id: string): Id {
  *
  * @param resolvedModelList List of models to validate
  */
-export function hasResolvedSuccessfully(
-  resolvedModelList: ResolvedModelList
-): boolean {
-  return Object.values(resolvedModelList).every(
-    (model) => !(model instanceof Error)
-  );
+export function hasResolvedSuccessfully(resolvedModelList: ResolvedModelList): boolean {
+  return Object.values(resolvedModelList).every((model) => !(model instanceof Error));
 }
 
 /**
@@ -411,11 +346,7 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
 
     // If error detected, return
     if (!resolvedModel) {
-      models[key] = new BawApiError(
-        unknownErrorCode,
-        "Model could not be resolved",
-        {}
-      );
+      models[key] = new BawApiError(unknownErrorCode, "Model could not be resolved", {});
     } else if (resolvedModel.error) {
       models[key] = resolvedModel.error;
     } else {
@@ -435,7 +366,7 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
  */
 export function retrieveResolvedModel<T extends AbstractModel>(
   data: IPageInfo,
-  model: AbstractModelConstructor<T>
+  model: AbstractModelConstructor<T>,
 ): T | undefined {
   const resolvedModels = retrieveResolvers(data);
   for (const value of Object.values(resolvedModels)) {
@@ -447,10 +378,5 @@ export function retrieveResolvedModel<T extends AbstractModel>(
 }
 
 export interface ResolvedModelList {
-  [key: string]:
-    | AbstractModel
-    | AbstractModel[]
-    | AbstractData
-    | AbstractData[]
-    | BawApiError;
+  [key: string]: AbstractModel | AbstractModel[] | AbstractData | AbstractData[] | BawApiError;
 }

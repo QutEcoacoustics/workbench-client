@@ -11,10 +11,7 @@ describe("AudioRecordingFilters", () => {
   describe("addDateFilters", () => {
     // inner filters created by the filter helper functions do not produce expected filters until JSON.stringify() is applied
     // to make this assertion easier, we can mock an API calling .toJSON() on nested sub objects by stringifying the result
-    function assertFilters(
-      observedResult: InnerFilter<unknown>,
-      expectedResult: InnerFilter<AudioRecording>
-    ): void {
+    function assertFilters(observedResult: InnerFilter<unknown>, expectedResult: InnerFilter<AudioRecording>): void {
       const observedResultString = JSON.stringify(observedResult);
       const expectedResultString = JSON.stringify(expectedResult);
 
@@ -105,11 +102,7 @@ describe("AudioRecordingFilters", () => {
           },
         } as InnerFilter<AudioRecording>;
 
-        const observedResult = filterTime(
-          emptyFilter,
-          ignoringDaylightSavings,
-          startTimeObject
-        );
+        const observedResult = filterTime(emptyFilter, ignoringDaylightSavings, startTimeObject);
         expect(observedResult).toEqual(expectedFilter);
       });
 
@@ -137,7 +130,7 @@ describe("AudioRecordingFilters", () => {
           // we can put undefined here because in real world scenarios, the start time input will return undefined
           // if there is an invalid input (e.g. no input or incorrectly formatted time)
           undefined,
-          endTimeObject
+          endTimeObject,
         );
         expect(observedResult).toEqual(expectedFilter);
       });
@@ -172,12 +165,7 @@ describe("AudioRecordingFilters", () => {
           ],
         };
 
-        const observedResult = filterTime(
-          emptyFilter,
-          ignoringDaylightSavings,
-          startTimeObject,
-          endTimeObject
-        );
+        const observedResult = filterTime(emptyFilter, ignoringDaylightSavings, startTimeObject, endTimeObject);
         expect(observedResult).toEqual(expectedFilter);
       });
 
@@ -219,12 +207,7 @@ describe("AudioRecordingFilters", () => {
           ],
         };
 
-        const observedResult = filterTime(
-          initialFilters,
-          ignoringDaylightSavings,
-          startTimeObject,
-          endTimeObject
-        );
+        const observedResult = filterTime(initialFilters, ignoringDaylightSavings, startTimeObject, endTimeObject);
         expect(observedResult).toEqual(expectedFilter);
       });
 
@@ -258,12 +241,7 @@ describe("AudioRecordingFilters", () => {
           ],
         };
 
-        const observedResult = filterTime(
-          initialFilters,
-          ignoringDaylightSavings,
-          startTimeObject,
-          endTimeObject
-        );
+        const observedResult = filterTime(initialFilters, ignoringDaylightSavings, startTimeObject, endTimeObject);
         expect(observedResult).toEqual(expectedFilter);
       });
 
@@ -271,10 +249,7 @@ describe("AudioRecordingFilters", () => {
         ignoringDaylightSavings ? "ignoring" : "using"
       } daylight savings time`, () => {
         const initialFilters: InnerFilter<AudioRecording> = {};
-        const observedResult = filterTime(
-          initialFilters,
-          ignoringDaylightSavings
-        );
+        const observedResult = filterTime(initialFilters, ignoringDaylightSavings);
         expect(observedResult).toEqual(initialFilters);
       });
     });

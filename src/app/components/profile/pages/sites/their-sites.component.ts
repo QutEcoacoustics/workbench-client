@@ -1,10 +1,7 @@
 import { Component } from "@angular/core";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
-import {
-  theirProfileCategory,
-  theirSitesMenuItem,
-} from "@components/profile/profile.menus";
+import { theirProfileCategory, theirSitesMenuItem } from "@components/profile/profile.menus";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { theirProfileActions } from "../profile/their-profile.component";
@@ -18,7 +15,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-sites",
   templateUrl: "./sites.component.html",
-  standalone: false
+  standalone: false,
 })
 class TheirSitesComponent extends MySitesComponent {
   public get account(): User {

@@ -2,15 +2,7 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -31,11 +23,7 @@ export class TagGroupsService implements StandardApi<TagGroup> {
   }
 
   public filter(filters: Filters<TagGroup>): Observable<TagGroup[]> {
-    return this.api.filter(
-      TagGroup,
-      endpoint(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(TagGroup, endpoint(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<TagGroup>): Observable<TagGroup> {
@@ -47,7 +35,7 @@ export class TagGroupsService implements StandardApi<TagGroup> {
       TagGroup,
       endpoint(emptyParam, emptyParam),
       (tagGroup) => endpoint(tagGroup, emptyParam),
-      model
+      model,
     );
   }
 
@@ -60,7 +48,4 @@ export class TagGroupsService implements StandardApi<TagGroup> {
   }
 }
 
-export const tagGroupResolvers = new Resolvers<TagGroup, []>(
-  [TagGroupsService],
-  "tagGroupId"
-).create("TagGroup");
+export const tagGroupResolvers = new Resolvers<TagGroup, []>([TagGroupsService], "tagGroupId").create("TagGroup");

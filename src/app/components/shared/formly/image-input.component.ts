@@ -30,18 +30,12 @@ import { asFormControl } from "./helper";
         />
 
         @if (!usesDefaultImage) {
-          <button
-            type="button"
-            (click)="removeImage()"
-            class="btn btn-outline-danger pb-1"
-          >
-            Remove
-          </button>
+          <button type="button" (click)="removeImage()" class="btn btn-outline-danger pb-1">Remove</button>
         }
       </div>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")
@@ -73,15 +67,13 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
 
     // returns true if the current image used is a default image and if the user hasn't redefined the image
     // or returns true if the user explicitly sets the image as default, by setting the models image attribute to null
-    return (
-      (isUsingServerDefaultImage && this.model.image === undefined) ||
-      this.model.image === null
-    );
+    return (isUsingServerDefaultImage && this.model.image === undefined) || this.model.image === null;
   }
 
   private fileName(filePath: string): string {
     return (
-      filePath?.split("/")
+      filePath
+        ?.split("/")
         .pop()
         // remove URL parameters from the file name
         .split("?")
@@ -100,9 +92,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     // This should not be possible because only one file can be selected
     if (images.length !== 1) {
       // TODO Display error to user
-      throw new Error(
-        "File input returned multiple files. This should only return one value"
-      );
+      throw new Error("File input returned multiple files. This should only return one value");
     }
 
     this.formControl.setValue(images.item(0));

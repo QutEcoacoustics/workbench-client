@@ -1,9 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "datasets": {},
-  "params": [
-    { "name": "bawFontSize", "value": 18 }
-  ],
+  "params": [{ "name": "bawFontSize", "value": 18 }],
   "resolve": {
     "scale": {
       "x": "shared"
@@ -50,7 +48,7 @@
             "color": {
               "field": "startDate",
               "legend": {
-                "values": [ "Recordings" ],
+                "values": ["Recordings"],
                 "symbolStrokeColor": "var(--baw-primary)"
               }
             }
@@ -62,7 +60,7 @@
             "color": {
               "field": "startDate",
               "legend": {
-                "values": [ "Analysis" ],
+                "values": ["Analysis"],
                 "symbolStrokeColor": "var(--baw-success)"
               }
             }
@@ -74,7 +72,7 @@
             "color": {
               "field": "startDate",
               "legend": {
-                "values": [ "Missing Analysis" ],
+                "values": ["Missing Analysis"],
                 "symbolStrokeColor": "var(--baw-warning)"
               }
             }
@@ -86,7 +84,7 @@
             "color": {
               "field": "startDate",
               "legend": {
-                "values": [ "Failed Analysis" ],
+                "values": ["Failed Analysis"],
                 "symbolStrokeColor": "var(--baw-danger)"
               }
             }

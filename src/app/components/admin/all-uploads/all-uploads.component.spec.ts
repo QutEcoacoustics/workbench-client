@@ -51,9 +51,7 @@ describe("AllUploadsComponent", () => {
     spyOnProperty(fakeHarvest, "creator").and.callFake(() => fakeUser);
 
     const mockHarvestProject: Project = new Project(generateProject());
-    spyOnProperty(fakeHarvest, "project").and.callFake(
-      () => mockHarvestProject
-    );
+    spyOnProperty(fakeHarvest, "project").and.callFake(() => mockHarvestProject);
 
     // mock the harvest service filter API to populate the
     // list component ngx-datatable
@@ -77,8 +75,7 @@ describe("AllUploadsComponent", () => {
   });
 
   it("should have the harvest list table", () => {
-    const datatableElement: HTMLElement =
-      spectator.query<HTMLElement>("ngx-datatable");
+    const datatableElement: HTMLElement = spectator.query<HTMLElement>("ngx-datatable");
     expect(datatableElement).toExist();
   });
 
@@ -89,22 +86,14 @@ describe("AllUploadsComponent", () => {
     expect(fakeHarvestApi.filter).not.toHaveBeenCalledWith(
       jasmine.objectContaining({
         filter: jasmine.any(Object),
-      })
+      }),
     );
 
     // assert that projection conditions were still applied to the request body
     expect(fakeHarvestApi.filter).toHaveBeenCalledWith(
       jasmine.objectContaining({
         projection: {
-          include: [
-            "id",
-            "projectId",
-            "name",
-            "createdAt",
-            "creatorId",
-            "streaming",
-            "status",
-          ],
+          include: ["id", "projectId", "name", "createdAt", "creatorId", "streaming", "status"],
         },
       }),
     );

@@ -6,7 +6,7 @@ import { Directive, ViewContainerRef } from "@angular/core";
  */
 @Directive({
   selector: "[bawMenuWidget]",
-  standalone: false
+  standalone: false,
 })
 export class WidgetDirective {
   public constructor(public viewContainerRef: ViewContainerRef) {}

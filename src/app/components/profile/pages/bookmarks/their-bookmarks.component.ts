@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
-import {
-  theirBookmarksMenuItem,
-  theirProfileCategory,
-} from "@components/profile/profile.menus";
+import { theirBookmarksMenuItem, theirProfileCategory } from "@components/profile/profile.menus";
 import { IBookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
@@ -21,7 +18,7 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
-  standalone: false
+  standalone: false,
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
   public constructor(api: BookmarksService, route: ActivatedRoute) {

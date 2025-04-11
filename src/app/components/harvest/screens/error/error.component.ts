@@ -8,11 +8,11 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 
     <p>
       An unknown error occurred during the uploading process. Please go to the
-      <a [strongRoute]="reportProblem.route">{{ reportProblem.label }}</a> page
-      and report the issue so it can be resolved.
+      <a [strongRoute]="reportProblem.route">{{ reportProblem.label }}</a> page and report the issue so it can be
+      resolved.
     </p>
   `,
-  standalone: false
+  standalone: false,
 })
 export class ErrorComponent {
   public reportProblem = reportProblemMenuItem;

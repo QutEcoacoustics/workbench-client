@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import baseSchema from "@components/sites/site.base.json";
 import extendedSchema from "@components/sites/site.extended.json";
@@ -27,12 +24,9 @@ const siteKey = "site";
       </div>
     }
   `,
-  standalone: false
+  standalone: false,
 })
-class AdminOrphanComponent
-  extends withUnsubscribe(PageComponent)
-  implements OnInit
-{
+class AdminOrphanComponent extends withUnsubscribe(PageComponent) implements OnInit {
   public site: Site;
   public failure: boolean;
   public fields = [...baseSchema.fields, ...extendedSchema.fields];

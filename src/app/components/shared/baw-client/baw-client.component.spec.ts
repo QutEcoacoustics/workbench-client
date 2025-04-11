@@ -48,9 +48,7 @@ describe("BawClientComponent", () => {
 
   function preventLoadingBawClient() {
     spyOn(spec.component, "updateUrl").and.callFake(() => {
-      spec.component.url = sanitizer.bypassSecurityTrustResourceUrl(
-        "https://broken_link"
-      );
+      spec.component.url = sanitizer.bypassSecurityTrustResourceUrl("https://broken_link");
     });
   }
 
@@ -67,7 +65,7 @@ describe("BawClientComponent", () => {
       new MessageEvent("window:message", {
         origin: origin ?? config.endpoints.oldClientOrigin,
         data,
-      })
+      }),
     );
   }
 
@@ -188,7 +186,7 @@ describe("BawClientComponent", () => {
       expect(getIframe()).toContainText(
         "Unfortunately your browser does not support iframes. " +
           "Please ensure you are utilising a common browser which " +
-          "is running the most up to date version."
+          "is running the most up to date version.",
       );
     });
   });
@@ -203,9 +201,7 @@ describe("BawClientComponent", () => {
       await waitForLoad();
       spec.detectChanges();
 
-      expect(getIframe().contentWindow.document.body).toContainText(
-        "Client application home page"
-      );
+      expect(getIframe().contentWindow.document.body).toContainText("Client application home page");
     });
 
     it("should pass url to old client in iframe", () => {

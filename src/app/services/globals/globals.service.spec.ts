@@ -36,7 +36,7 @@ describe("GlobalsService", () => {
       spec.service.initialize();
 
       expect(getCallArgs(consoleSpy)[0]).toContain(
-        "Some functionality of this website can be toggled from the dev tools. A list of commands and their usages can be seen below:"
+        "Some functionality of this website can be toggled from the dev tools. A list of commands and their usages can be seen below:",
       );
     });
   });
@@ -50,9 +50,7 @@ describe("GlobalsService", () => {
     });
 
     it("should list option", () => {
-      expect(getCallArgs(consoleSpy)[0]).toContain(
-        `- __bawWorkbenchClient.${funcName}:`
-      );
+      expect(getCallArgs(consoleSpy)[0]).toContain(`- __bawWorkbenchClient.${funcName}:`);
     });
 
     it("should turn caching on", () => {
@@ -85,9 +83,7 @@ describe("GlobalsService", () => {
     });
 
     it("should list option", () => {
-      expect(getCallArgs(consoleSpy)[0]).toContain(
-        `- __bawWorkbenchClient.${funcName}:`
-      );
+      expect(getCallArgs(consoleSpy)[0]).toContain(`- __bawWorkbenchClient.${funcName}:`);
     });
 
     it("should turn cache logging on", () => {

@@ -13,8 +13,8 @@ describe("ConfirmationModalComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: DeleteModalComponent,
-    imports: [ MockBawApiModule ],
-    mocks: [ ToastService, NgbModalRef ],
+    imports: [MockBawApiModule],
+    mocks: [ToastService, NgbModalRef],
   });
 
   function setup(): void {
@@ -32,9 +32,7 @@ describe("ConfirmationModalComponent", () => {
   beforeEach(() => setup());
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (el) => el.nativeElement.innerText === text
-    ).nativeElement as T;
+    return spectator.debugElement.query((el) => el.nativeElement.innerText === text).nativeElement as T;
   }
 
   const getDeleteButton = (): HTMLAnchorElement => getElementByInnerText<HTMLAnchorElement>("Delete");

@@ -25,30 +25,24 @@ export const formlyConfig: ConfigOption = {
       component: PasswordConfirmationInputComponent,
     },
   ],
-  wrappers: [
-    { name: "form-field-horizontal", component: HorizontalWrapperComponent },
-  ],
+  wrappers: [{ name: "form-field-horizontal", component: HorizontalWrapperComponent }],
   validationMessages: [
     { name: "required", message: "This field is required" },
     {
       name: "minLength",
-      message: (_, field) =>
-        `Input should have at least ${field.props.minLength} characters`,
+      message: (_, field) => `Input should have at least ${field.props.minLength} characters`,
     },
     {
       name: "maxLength",
-      message: (_, field) =>
-        `This value should be less than ${field.props.maxLength} characters`,
+      message: (_, field) => `This value should be less than ${field.props.maxLength} characters`,
     },
     {
       name: "min",
-      message: (_, field) =>
-        `This value should be more than ${field.props.min}`,
+      message: (_, field) => `This value should be more than ${field.props.min}`,
     },
     {
       name: "max",
-      message: (_, field) =>
-        `This value should be less than ${field.props.max}`,
+      message: (_, field) => `This value should be less than ${field.props.max}`,
     },
   ],
 };

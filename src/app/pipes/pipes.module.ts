@@ -20,9 +20,7 @@ const pipes = [
   DateTimePipe,
 ];
 
-const providers = [
-  DatePipe,
-];
+const providers = [DatePipe];
 
 @NgModule({
   declarations: pipes,

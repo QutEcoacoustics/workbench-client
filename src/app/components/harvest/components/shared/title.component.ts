@@ -12,9 +12,9 @@ import { takeUntil, throwError } from "rxjs";
   selector: "baw-harvest-title",
   templateUrl: "./title.component.html",
   styleUrls: ["./title.component.scss"],
-  standalone: false
+  standalone: false,
 })
-export class TitleComponent extends withUnsubscribe()  {
+export class TitleComponent extends withUnsubscribe() {
   @Input() public project: Project;
   @Input() public harvest: Harvest;
 
@@ -23,19 +23,22 @@ export class TitleComponent extends withUnsubscribe()  {
   public constructor(
     public harvestService: ShallowHarvestsService,
     private notifications: ToastService,
-  ){ super() }
+  ) {
+    super();
+  }
 
   public updateHarvestName(form: NgForm) {
     const newHarvestName = form.value["harvestNameInput"];
 
     if (newHarvestName !== this.harvest.name) {
-      this.harvestService.updateName(this.harvest, newHarvestName)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        error: (err: BawApiError): void => {
-          throwError(() => err);
-        },
-      });
+      this.harvestService
+        .updateName(this.harvest, newHarvestName)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          error: (err: BawApiError): void => {
+            throwError(() => err);
+          },
+        });
 
       this.harvest.name = newHarvestName;
       this.notifications.success(`Successfully Renamed Upload to ${this.harvest.name}`);
@@ -44,6 +47,5 @@ export class TitleComponent extends withUnsubscribe()  {
     this.toggleHarvestNameEditing(false);
   }
 
-  public toggleHarvestNameEditing = (state: boolean) =>
-    this.editingHarvestName = state;
+  public toggleHarvestNameEditing = (state: boolean) => (this.editingHarvestName = state);
 }

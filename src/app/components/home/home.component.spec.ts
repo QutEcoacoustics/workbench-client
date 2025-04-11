@@ -10,11 +10,7 @@ import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -53,24 +49,14 @@ describe("HomeComponent", () => {
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {
-    const promise = interceptFilterApiRequest<IRegion, Region>(
-      regionApi,
-      undefined,
-      regions,
-      Region
-    );
+    const promise = interceptFilterApiRequest<IRegion, Region>(regionApi, undefined, regions, Region);
     spec.detectChanges();
     await promise;
     spec.detectChanges();
   }
 
   async function awaitProjects(projects: Errorable<Project[]>) {
-    const promise = interceptFilterApiRequest<IProject, Project>(
-      projectApi,
-      undefined,
-      projects,
-      Project
-    );
+    const promise = interceptFilterApiRequest<IProject, Project>(projectApi, undefined, projects, Project);
     spec.detectChanges();
     await promise;
     spec.detectChanges();
@@ -78,7 +64,7 @@ describe("HomeComponent", () => {
 
   function setConfigHideProjects(hidden: boolean) {
     spyOnProperty(config, "settings").and.callFake(
-      () => ({ ...testApiConfig.settings, hideProjects: !!hidden } as Settings)
+      () => ({ ...testApiConfig.settings, hideProjects: !!hidden }) as Settings,
     );
     config.settings.hideProjects = hidden;
   }
@@ -195,18 +181,12 @@ describe("HomeComponent", () => {
       });
 
       it("should display multiple models", async () => {
-        const models: any[] = [
-          test.generateModel(),
-          test.generateModel(),
-          test.generateModel(),
-        ];
+        const models: any[] = [test.generateModel(), test.generateModel(), test.generateModel()];
         await test.awaitModel(models);
 
         const cards = getModelCards().models;
         assertModelCardsCount(3);
-        models.forEach((model, index) =>
-          expect(cards.get(index)).toEqual(model)
-        );
+        models.forEach((model, index) => expect(cards.get(index)).toEqual(model));
         expect(getViewMoreButton()).toBeTruthy();
       });
 

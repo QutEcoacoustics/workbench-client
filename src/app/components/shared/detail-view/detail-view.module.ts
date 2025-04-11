@@ -13,18 +13,18 @@ import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
 
 @NgModule({
-    declarations: [RenderFieldComponent, DetailViewComponent, ModelLinkComponent],
-    exports: [RenderFieldComponent, DetailViewComponent],
-    imports: [
-        CheckboxModule,
-        CommonModule,
-        DirectivesModule,
-        LoadingModule,
-        PipesModule,
-        DurationComponent,
-        TimeSinceComponent,
-        ZonedDateTimeComponent,
-        DatetimeComponent
-    ]
+  declarations: [RenderFieldComponent, DetailViewComponent, ModelLinkComponent],
+  exports: [RenderFieldComponent, DetailViewComponent],
+  imports: [
+    CheckboxModule,
+    CommonModule,
+    DirectivesModule,
+    LoadingModule,
+    PipesModule,
+    DurationComponent,
+    TimeSinceComponent,
+    ZonedDateTimeComponent,
+    DatetimeComponent,
+  ],
 })
 export class DetailViewModule {}

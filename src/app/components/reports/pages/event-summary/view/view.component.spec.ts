@@ -12,9 +12,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateEventSummaryReportUrlParameters } from "@test/fakes/data/EventSummaryReportParameters";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import {
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
+import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
@@ -55,12 +53,8 @@ describe("ViewEventReportComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultReport = new EventSummaryReport(
-      generateEventSummaryReport()
-    );
-    defaultParameterDataModel = new EventSummaryReportParameters(
-      generateEventSummaryReportUrlParameters()
-    );
+    defaultReport = new EventSummaryReport(generateEventSummaryReport());
+    defaultParameterDataModel = new EventSummaryReportParameters(generateEventSummaryReportUrlParameters());
 
     setup();
   });
@@ -70,11 +64,9 @@ describe("ViewEventReportComponent", () => {
     window.localStorage.clear();
   });
 
-  const printButtonElement = (): HTMLAnchorElement =>
-    spectator.query<HTMLAnchorElement>("a#print-button");
+  const printButtonElement = (): HTMLAnchorElement => spectator.query<HTMLAnchorElement>("a#print-button");
   // there are two locations in the view where the raw events can be download from in the report
-  const pointMaps = (): SiteMapComponent =>
-    spectator.query(SiteMapComponent);
+  const pointMaps = (): SiteMapComponent => spectator.query(SiteMapComponent);
 
   function setPrintDialogPreference(showPrintDialog: boolean): void {
     const localStorageKey = "hidePrintModal";
@@ -122,7 +114,7 @@ describe("ViewEventReportComponent", () => {
       new KeyboardEvent("keydown", {
         ctrlKey: true,
         key: "p",
-      })
+      }),
     );
 
     expect(printSpy).not.toHaveBeenCalled();
@@ -138,7 +130,7 @@ describe("ViewEventReportComponent", () => {
       new KeyboardEvent("keydown", {
         ctrlKey: true,
         key: "p",
-      })
+      }),
     );
 
     expect(printSpy).toHaveBeenCalled();

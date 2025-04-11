@@ -4,15 +4,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
-import {
-  newRegionMenuItem,
-  shallowNewRegionMenuItem,
-  shallowRegionsCategory,
-} from "@components/regions/regions.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { newRegionMenuItem, shallowNewRegionMenuItem, shallowRegionsCategory } from "@components/regions/regions.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
@@ -39,7 +32,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;
@@ -49,7 +42,7 @@ class NewComponent extends FormTemplate<Region> {
     private api: RegionsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

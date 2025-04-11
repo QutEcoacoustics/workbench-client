@@ -19,19 +19,14 @@ describe("AdminTagGroupsNewComponent", () => {
   let notifications: ToastService;
   let router: Router;
 
-  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
+  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group");
 
   // xdescribe("form", () => {});
 
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          ...appLibraryImports,
-          SharedModule,
-          RouterTestingModule,
-          MockBawApiModule,
-        ],
+        imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
         declarations: [AdminTagGroupsNewComponent],
         providers: [
           {

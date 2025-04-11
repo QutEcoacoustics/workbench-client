@@ -16,19 +16,14 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       } @else {
         <span [innerText]="user.userName"></span>
         @if (user?.isGhost) {
-          <fa-icon
-            class="ms-1"
-            [icon]="icon"
-            [placement]="tooltipPlacement"
-            [ngbTooltip]="getHint()"
-          ></fa-icon>
+          <fa-icon class="ms-1" [icon]="icon" [placement]="tooltipPlacement" [ngbTooltip]="getHint()"></fa-icon>
         }
       }
       <!-- Show ghost user -->
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card

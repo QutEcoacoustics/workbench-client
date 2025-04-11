@@ -19,12 +19,7 @@ describe("AdminOrphansComponent", () => {
   beforeEach(function () {
     TestBed.configureTestingModule({
       declarations: [AdminOrphansComponent],
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminOrphansComponent);

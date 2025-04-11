@@ -5,8 +5,7 @@ import { DateTime, Duration } from "luxon";
 // eg. "6 years 2 months ago"
 // to ensure that we have uniformity in formats, we should use this helper function
 export function humanizedDuration(value: Duration | DateTime): string {
-  const durationSince =
-    value instanceof DateTime ? value.diffNow().rescale() : value;
+  const durationSince = value instanceof DateTime ? value.diffNow().rescale() : value;
 
   return toRelative(durationSince, {
     largest: 2,

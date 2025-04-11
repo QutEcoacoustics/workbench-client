@@ -9,7 +9,7 @@ import { ConfigService } from "@services/config/config.service";
 @Component({
   selector: "baw-harvest-stream-uploading",
   templateUrl: "stream-uploading.component.html",
-  standalone: false
+  standalone: false,
 })
 export class StreamUploadingComponent implements OnInit {
   public active = 1;
@@ -19,7 +19,7 @@ export class StreamUploadingComponent implements OnInit {
   public constructor(
     public modals: NgbModal,
     private stages: HarvestStagesService,
-    private config: ConfigService
+    private config: ConfigService,
   ) {}
 
   public get harvest(): Harvest {

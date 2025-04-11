@@ -1,9 +1,4 @@
-import {
-  APP_ID,
-  ApplicationRef,
-  DoBootstrap,
-  NgModule,
-} from "@angular/core";
+import { APP_ID, ApplicationRef, DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -39,10 +34,7 @@ import { DataRequestModule } from "./components/data-request/data-request.module
 import { ErrorModule } from "./components/error/error.module";
 import { HomeModule } from "./components/home/home.module";
 import { ListenModule } from "./components/listen/listen.module";
-import {
-  MyAccountModule,
-  ProfileModule,
-} from "./components/profile/profile.module";
+import { MyAccountModule, ProfileModule } from "./components/profile/profile.module";
 import { ProjectsModule } from "./components/projects/projects.module";
 import { ReportProblemsModule } from "./components/report-problem/report-problem.module";
 import { SecurityModule } from "./components/security/security.module";

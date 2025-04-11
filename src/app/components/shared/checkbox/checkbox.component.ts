@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
   selector: "baw-checkbox",
@@ -23,13 +17,15 @@ import {
       </div>
     </div>
   `,
-  styles: [`
-    .checkbox-wrapper {
-      width: min-content;
-    }
-  `],
+  styles: [
+    `
+      .checkbox-wrapper {
+        width: min-content;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class CheckboxComponent {
   @Input() public id: string;

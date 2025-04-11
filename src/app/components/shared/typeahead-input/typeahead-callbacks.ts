@@ -9,7 +9,7 @@ import { TypeaheadSearchCallback } from "./typeahead-input.component";
 export function createSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
-  filters: InnerFilter<T> = {}
+  filters: InnerFilter<T> = {},
 ): TypeaheadSearchCallback<T> {
   return (text: any, activeItems: T[]): Observable<T[]> =>
     api.filter({
@@ -17,7 +17,7 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
         contains<T, keyof T>(key, text, filters),
 
         // we add a "not in" condition to exclude items that are already selected
-        notIn<T>(key, activeItems)
+        notIn<T>(key, activeItems),
       ),
     });
 }
@@ -25,7 +25,7 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
 export function createIdSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
-  filters: InnerFilter<T> = {}
+  filters: InnerFilter<T> = {},
 ): TypeaheadSearchCallback<T> {
   return (text: any): Observable<T[]> => {
     const id = Number(text);

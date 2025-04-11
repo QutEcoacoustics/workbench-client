@@ -8,28 +8,17 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
-import {
-  adminEditTagMenuItem,
-  adminNewTagMenuItem,
-  adminTagsCategory,
-  adminTagsMenuItem,
-} from "../tags.menus";
+import { adminEditTagMenuItem, adminNewTagMenuItem, adminTagsCategory, adminTagsMenuItem } from "../tags.menus";
 
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Component({
   selector: "baw-admin-tags",
   templateUrl: "./list.component.html",
-  standalone: false
+  standalone: false,
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
-  public columns = [
-    { name: "Text" },
-    { name: "Taxonomic" },
-    { name: "Retired" },
-    { name: "type" },
-    { name: "Tag" },
-  ];
+  public columns = [{ name: "Text" }, { name: "Taxonomic" }, { name: "Retired" }, { name: "type" }, { name: "Tag" }];
   public sortKeys = {
     text: "text",
     taxonomic: "isTaxonomic",
@@ -50,7 +39,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
         retired: tag.retired,
         type: tag.typeOfTag,
         tag,
-      }))
+      })),
     );
 
     this.filterKey = "text";
@@ -61,7 +50,8 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     const userConfirmed = await modal.result.catch((_) => false);
 
     if (userConfirmed) {
-      this.tagsApi.destroy(tagModel)
+      this.tagsApi
+        .destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
           complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.text)),

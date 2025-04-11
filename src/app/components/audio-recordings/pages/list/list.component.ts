@@ -5,10 +5,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
-import {
-  audioRecordingMenuItems,
-  audioRecordingsCategory,
-} from "@components/audio-recordings/audio-recording.menus";
+import { audioRecordingMenuItems, audioRecordingsCategory } from "@components/audio-recordings/audio-recording.menus";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { filterModel } from "@helpers/filters/filters";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -37,33 +34,27 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
-  standalone: false
+  standalone: false,
 })
 class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit, AfterViewInit
 {
-  public columns = [
-    { name: "Recorded" },
-    { name: "Duration" },
-    { name: "Uploader" },
-    { name: "Site" },
-  ];
+  public columns = [{ name: "Recorded" }, { name: "Duration" }, { name: "Uploader" }, { name: "Site" }];
   public sortKeys = {
     uploader: "uploaderId",
     recorded: "recordedDate",
     duration: "durationSeconds",
     site: "siteId",
   };
-  public filters$: BehaviorSubject<Filters<AudioRecording>> =
-    new BehaviorSubject({});
+  public filters$: BehaviorSubject<Filters<AudioRecording>> = new BehaviorSubject({});
   protected api: AudioRecordingsService;
 
   public constructor(
     @Inject(API_ROOT) public apiRoot: string,
     api: AudioRecordingsService,
     route: ActivatedRoute,
-    private config: ConfigService
+    private config: ConfigService,
   ) {
     super(
       api,
@@ -77,9 +68,9 @@ class AudioRecordingsListComponent
             recorded: recording,
             duration: recording.duration,
             model: recording,
-          })
+          }),
         ),
-      route
+      route,
     );
 
     // Set default filter
@@ -141,9 +132,7 @@ class AudioRecordingsListComponent
     this.getPageData();
   }
 
-  protected override apiAction(
-    filters: Filters<AudioRecording>
-  ): Observable<AudioRecording[]> {
+  protected override apiAction(filters: Filters<AudioRecording>): Observable<AudioRecording[]> {
     if (this.site) {
       filters.filter = filterModel<Site, AudioRecording>("sites", this.site, filters.filter);
     } else if (this.region) {

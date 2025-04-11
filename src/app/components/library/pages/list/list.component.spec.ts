@@ -5,13 +5,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { LibraryComponent } from "./list.component";
 
 describe("LibraryComponent", () => {
-  validateBawClientPage(
-    libraryRoute,
-    LibraryComponent,
-    [LibraryModule],
-    "/library",
-    "Annotation Library"
-  );
+  validateBawClientPage(libraryRoute, LibraryComponent, [LibraryModule], "/library", "Annotation Library");
 
   assertPageInfo(LibraryComponent, "Library");
 });

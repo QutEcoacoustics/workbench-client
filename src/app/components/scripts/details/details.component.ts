@@ -1,9 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -13,11 +10,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import baseSchema from "../script.base.schema.json";
 import extendedSchema from "../script.extended.schema.json";
-import {
-  adminEditScriptMenuItem,
-  scriptMenuItem,
-  adminScriptsCategory,
-} from "../scripts.menus";
+import { adminEditScriptMenuItem, scriptMenuItem, adminScriptsCategory } from "../scripts.menus";
 
 export const adminScriptActions = [adminEditScriptMenuItem];
 const scriptKey = "script";
@@ -32,12 +25,9 @@ const scriptKey = "script";
       </div>
     }
   `,
-  standalone: false
+  standalone: false,
 })
-class AdminScriptComponent
-  extends withUnsubscribe(PageComponent)
-  implements OnInit
-{
+class AdminScriptComponent extends withUnsubscribe(PageComponent) implements OnInit {
   public constructor(private route: ActivatedRoute) {
     super();
   }

@@ -10,12 +10,11 @@ import { FieldWrapper } from "@ngx-formly/core";
   template: `
     <div class="form-group row">
       @if (props.label) {
-        <label
-          [attr.for]="id"
-          class="col-sm-2 col-form-label"
-          >
+        <label [attr.for]="id" class="col-sm-2 col-form-label">
           {{ props.label }}
-          @if (props.required && !props.hideRequiredMarker) { * }
+          @if (props.required && !props.hideRequiredMarker) {
+            *
+          }
         </label>
       }
       <div class="col-sm-7">
@@ -29,6 +28,6 @@ import { FieldWrapper } from "@ngx-formly/core";
       }
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class HorizontalWrapperComponent extends FieldWrapper {}

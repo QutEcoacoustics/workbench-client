@@ -7,11 +7,7 @@ import { RecentAudioRecordingsComponent } from "./components/recent-audio-record
 import { StatisticsComponent } from "./pages/statistics.component";
 import { statisticsRoute } from "./statistics.menus";
 
-const components = [
-  StatisticsComponent,
-  RecentAnnotationsComponent,
-  RecentAudioRecordingsComponent,
-];
+const components = [StatisticsComponent, RecentAnnotationsComponent, RecentAudioRecordingsComponent];
 const routes = statisticsRoute.compileRoutes(getRouteConfigForPage);
 
 /**

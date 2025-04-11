@@ -5,11 +5,7 @@ import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Harvest, HarvestStatus } from "@models/Harvest";
-import {
-  HarvestItem,
-  HarvestItemValidation,
-  ValidationName,
-} from "@models/HarvestItem";
+import { HarvestItem, HarvestItemValidation, ValidationName } from "@models/HarvestItem";
 import { Project } from "@models/Project";
 import { Step } from "@shared/stepper/stepper.component";
 import { Map } from "immutable";
@@ -50,7 +46,7 @@ export class HarvestStagesService implements OnDestroy {
   public constructor(
     private notifications: ToastService,
     private harvestApi: HarvestsService,
-    private harvestItemApi: HarvestItemsService
+    private harvestItemApi: HarvestItemsService,
   ) {
     this.trackHarvest();
   }
@@ -78,9 +74,7 @@ export class HarvestStagesService implements OnDestroy {
     { label: "Complete", icon: ["fas", "flag-checkered"] },
   ];
 
-  private _streamingStages: Step[] = [0, 1, 6].map(
-    (step): Step => this._stages[step]
-  );
+  private _streamingStages: Step[] = [0, 1, 6].map((step): Step => this._stages[step]);
 
   public get stages(): Step[] {
     return this.harvest?.streaming ? this._streamingStages : this._stages;
@@ -165,38 +159,27 @@ export class HarvestStagesService implements OnDestroy {
    * @param harvestItem Parent harvest item to retrieve items from
    * @param page Page number of request
    */
-  public async getHarvestItems(
-    harvestItem: HarvestItem | null,
-    page: number
-  ): Promise<HarvestItem[]> {
+  public async getHarvestItems(harvestItem: HarvestItem | null, page: number): Promise<HarvestItem[]> {
     /** Extract all validation errors, and track them in harvestItemErrors */
     const extractHarvestItemErrors = (items: HarvestItem[]): void => {
-      this.harvestItemErrors = this.harvestItemErrors.withMutations(
-        (list): void => {
-          items.forEach((_item: HarvestItem): void => {
-            _item.validations?.forEach((validation): void => {
-              list = list.set(validation.name, validation);
-            });
+      this.harvestItemErrors = this.harvestItemErrors.withMutations((list): void => {
+        items.forEach((_item: HarvestItem): void => {
+          _item.validations?.forEach((validation): void => {
+            list = list.set(validation.name, validation);
           });
-        }
-      );
+        });
+      });
     };
 
     try {
       return firstValueFrom(
         this.harvestItemApi
           .listByPage(page, this.project, this.harvest, harvestItem)
-          .pipe(
-            first(),
-            tap(extractHarvestItemErrors),
-            takeUntil(this.unsubscribe)
-          )
+          .pipe(first(), tap(extractHarvestItemErrors), takeUntil(this.unsubscribe)),
       );
     } catch (err: any) {
       console.error(err);
-      this.notifications.error(
-        `Failed to load the contents of ${harvestItem?.path ?? ""}`
-      );
+      this.notifications.error(`Failed to load the contents of ${harvestItem?.path ?? ""}`);
       return [];
     }
   }
@@ -220,17 +203,15 @@ export class HarvestStagesService implements OnDestroy {
           }
 
           const delaySeconds = 5;
-          this.notifications.info(
-            `Attempting to reload page in ${delaySeconds} seconds`
-          );
+          this.notifications.info(`Attempting to reload page in ${delaySeconds} seconds`);
           // Just in case, check if the transition was successful. Long
           // transitions can cause timeouts
           of(null).pipe(
             delay(delaySeconds * 1000),
-            tap((): void => this.harvestTrigger$.next())
+            tap((): void => this.harvestTrigger$.next()),
           );
           return throwError(() => err);
-        })
+        }),
       )
       .subscribe({
         next: (harvest): void => {
@@ -272,19 +253,14 @@ export class HarvestStagesService implements OnDestroy {
     this.harvestTrigger$
       .pipe(
         filter((): boolean => isInstantiated(this.harvest)),
-        switchMap(
-          (): Observable<Harvest> =>
-            this.harvestApi.showWithoutCache(this.harvest, this.project)
-        ),
+        switchMap((): Observable<Harvest> => this.harvestApi.showWithoutCache(this.harvest, this.project)),
         catchError((err: BawApiError) => {
-          this.notifications.error(
-            "Failed to load harvest data, refresh this page to reconnect",
-            undefined,
-            { autoHide: false }
-          );
+          this.notifications.error("Failed to load harvest data, refresh this page to reconnect", undefined, {
+            autoHide: false,
+          });
           return throwError(() => err);
         }),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe((harvest): void => {
         this.setHarvest(harvest);

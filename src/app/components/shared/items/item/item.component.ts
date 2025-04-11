@@ -9,29 +9,20 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   template: `
     <div class="clearfix" style="font-size: 0.925rem;">
       <!-- Item icon -->
-      <fa-icon
-        id="icon"
-        class="me-2"
-        [icon]="icon"
-        [ngbTooltip]="tooltipText"
-      ></fa-icon>
+      <fa-icon id="icon" class="me-2" [icon]="icon" [ngbTooltip]="tooltipText"></fa-icon>
 
       <!-- Item name -->
       <span id="name">{{ name }}</span>
 
       <!-- Item value -->
-      <span
-        id="value"
-        class="badge rounded text-bg-secondary float-end"
-        [ngClass]="color && 'bg-' + color"
-      >
+      <span id="value" class="badge rounded text-bg-secondary float-end" [ngClass]="color && 'bg-' + color">
         {{ value ?? "Unknown" }}
       </span>
     </div>
   `,
   // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class ItemComponent {
   @Input() public icon: IconProp;

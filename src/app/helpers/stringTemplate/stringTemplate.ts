@@ -8,10 +8,7 @@
  * @param placeholders Placeholders that are substituted for token when
  *  templating is done. Note these are transform functions.
  */
-export function stringTemplate<T extends ((input: any) => any)[]>(
-  strings: TemplateStringsArray,
-  ...placeholders: T
-) {
+export function stringTemplate<T extends ((input: any) => any)[]>(strings: TemplateStringsArray, ...placeholders: T) {
   // https://github.com/microsoft/TypeScript/issues/12754 should improve this even more
   return function template(...tokens: { [K in keyof T]: ParamType<T[K]> }) {
     // interleave the strings with the parameters

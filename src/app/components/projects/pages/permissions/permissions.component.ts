@@ -6,10 +6,7 @@ import { PermissionsService } from "@baw-api/permissions/permissions.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { theirProfileMenuItem } from "@components/profile/profile.menus";
-import {
-  editProjectPermissionsMenuItem,
-  projectCategory,
-} from "@components/projects/projects.menus";
+import { editProjectPermissionsMenuItem, projectCategory } from "@components/projects/projects.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -22,16 +19,7 @@ import { User } from "@models/User";
 import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
-import {
-  BehaviorSubject,
-  filter,
-  map,
-  mergeMap,
-  Observable,
-  of,
-  switchMap,
-  takeUntil,
-} from "rxjs";
+import { BehaviorSubject, filter, map, mergeMap, Observable, of, switchMap, takeUntil } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { projectMenuItemActions } from "../details/details.component";
@@ -42,12 +30,9 @@ const projectKey = "project";
   selector: "baw-project-permissions",
   templateUrl: "permissions.component.html",
   styleUrls: ["permissions.component.scss"],
-  standalone: false
+  standalone: false,
 })
-class PermissionsComponent
-  extends withUnsubscribe(PageComponent)
-  implements OnInit
-{
+class PermissionsComponent extends withUnsubscribe(PageComponent) implements OnInit {
   public project: Project;
   /** Permissions for anonymous guests */
   public anonymousPermission: Permission;
@@ -104,19 +89,15 @@ class PermissionsComponent
   }
 
   public ngOnInit(): void {
-    const projectModel: ResolvedModel<Project> =
-      this.route.snapshot.data[projectKey];
+    const projectModel: ResolvedModel<Project> = this.route.snapshot.data[projectKey];
     this.project = projectModel.model;
 
-    const getLevel = (
-      filters: Filters<Permission>,
-      next: (permission: Permission) => void
-    ) =>
+    const getLevel = (filters: Filters<Permission>, next: (permission: Permission) => void) =>
       this.permissionsApi
         .filter(filters, this.project)
         .pipe(
           map((permissions) => permissions[0]),
-          takeUntil(this.unsubscribe)
+          takeUntil(this.unsubscribe),
         )
         .subscribe(next);
 
@@ -131,15 +112,11 @@ class PermissionsComponent
 
   /** Determine if user in typeahead already has permissions */
   public doesUserAlreadyHavePermissions(user: User): boolean {
-    return this.permissionsMatchingUsername.some(
-      (permission) => permission.userId === user.id
-    );
+    return this.permissionsMatchingUsername.some((permission) => permission.userId === user.id);
   }
 
   /** Get permissions for current table page */
-  public getPermissions = (
-    filters: Filters<Permission>
-  ): Observable<Permission[]> =>
+  public getPermissions = (filters: Filters<Permission>): Observable<Permission[]> =>
     this.permissionsApi.filter(filters, this.project);
 
   /** Get users for typeahead, this also updates permissionsMatchingUsername */
@@ -161,24 +138,20 @@ class PermissionsComponent
           users = _users;
           return this.permissionsApi.filter(
             { filter: { userId: { in: users.map((_user) => _user.id) } } },
-            this.project
+            this.project,
           );
         }),
         map((permissionsForUsers: Permission[]) => {
           this.permissionsMatchingUsername = permissionsForUsers;
           return users;
-        })
+        }),
       );
   };
 
   /** Determine highest permission for user */
   public highestPermission(user: Permission): string {
     const hasLevel = (level: PermissionLevel): boolean =>
-      [
-        this.anonymousPermission?.level,
-        this.usersPermission?.level,
-        user.level,
-      ].includes(level);
+      [this.anonymousPermission?.level, this.usersPermission?.level, user.level].includes(level);
 
     if (hasLevel(PermissionLevel.owner)) {
       return "Owner";
@@ -200,15 +173,13 @@ class PermissionsComponent
 
   /** Get selection index for permission level */
   public getSelectionIndex(level: PermissionLevel): number {
-    return isInstantiated(level)
-      ? this.selectionIndex[level]
-      : this.selectionIndex.none;
+    return isInstantiated(level) ? this.selectionIndex[level] : this.selectionIndex.none;
   }
 
   /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
     return this.permissionsMatchingUsername?.find(
-      (permission) => permission.userId === ((userId as User)?.id ?? userId)
+      (permission) => permission.userId === ((userId as User)?.id ?? userId),
     );
   }
 
@@ -240,10 +211,7 @@ class PermissionsComponent
   }
 
   /** Update permissions for existing user */
-  public updateExistingPermission(
-    permission: Permission,
-    selection: number
-  ): void {
+  public updateExistingPermission(permission: Permission, selection: number): void {
     // TODO It would be nice to use the username
     const successMsg = "Successfully updated user permission";
     const level = this.individualOptions[selection].value;
@@ -275,7 +243,7 @@ class PermissionsComponent
         allowAnonymous: true,
         allowLoggedIn: false,
       },
-      this.injector
+      this.injector,
     );
 
     if (selection === this.selectionIndex.none) {
@@ -286,20 +254,17 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(
-        (result: Permission) => {
-          this.notifications.success(successMsg);
-          this.anonymousPermission = result;
-        }
-      );
+      this.updatePermission(permission, level).subscribe((result: Permission) => {
+        this.notifications.success(successMsg);
+        this.anonymousPermission = result;
+      });
     }
   }
 
   /** Update base permissions for all users */
   public updateUserPermission(selection: number): void {
     const level = this.individualOptions[selection].value;
-    const successMsg =
-      "Successfully updated permissions for all logged in users";
+    const successMsg = "Successfully updated permissions for all logged in users";
     const permission = new Permission(
       {
         id: this.usersPermission?.id,
@@ -307,7 +272,7 @@ class PermissionsComponent
         allowAnonymous: false,
         allowLoggedIn: true,
       },
-      this.injector
+      this.injector,
     );
     if (selection === this.selectionIndex.none) {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -317,50 +282,40 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(
-        (result: Permission) => {
-          this.notifications.success(successMsg);
-          this.usersPermission = result;
-        }
-      );
+      this.updatePermission(permission, level).subscribe((result: Permission) => {
+        this.notifications.success(successMsg);
+        this.usersPermission = result;
+      });
     }
   }
 
   /** Create or update a permission based on if the id property exists */
-  private updatePermission(
-    permission: Permission,
-    level: PermissionLevel
-  ): Observable<Permission> {
+  private updatePermission(permission: Permission, level: PermissionLevel): Observable<Permission> {
     return this.isUserOnlyOwnerOfProject(permission).pipe(
       filter((isOnlyOwner) => !isOnlyOwner),
       mergeMap(() => {
         permission.level = level;
         // If we know the id for this permission, use it
-        permission.id =
-          permission.id ?? this.getPermissionForUser(permission.userId)?.id;
+        permission.id = permission.id ?? this.getPermissionForUser(permission.userId)?.id;
 
         // Choose between create or update based on if an id exists
         return isInstantiated(permission.id)
           ? this.permissionsApi.update(permission, this.project)
           : this.permissionsApi.create(permission, this.project);
-      })
+      }),
     );
   }
 
   /** Destroy a permission */
-  private destroyPermission(
-    permission: Permission
-  ): Observable<void | Permission> {
+  private destroyPermission(permission: Permission): Observable<void | Permission> {
     return this.isUserOnlyOwnerOfProject(permission).pipe(
       filter((isOnlyOwner) => !isOnlyOwner),
-      mergeMap(() => this.permissionsApi.destroy(permission, this.project))
+      mergeMap(() => this.permissionsApi.destroy(permission, this.project)),
     );
   }
 
   /** Determine if the permissions are for the only remaining owner */
-  private isUserOnlyOwnerOfProject(
-    permission: Permission
-  ): Observable<boolean> {
+  private isUserOnlyOwnerOfProject(permission: Permission): Observable<boolean> {
     if (permission.level !== PermissionLevel.owner) {
       return of(false);
     }
@@ -374,18 +329,18 @@ class PermissionsComponent
             userId: { notEq: permission.userId },
           },
         },
-        this.project
+        this.project,
       )
       .pipe(
         map((permissions) => {
           if (permissions.length === 0) {
             this.notifications.error(
-              "This is the only owner of the project, their permissions cannot be changed unless another owner is appointed."
+              "This is the only owner of the project, their permissions cannot be changed unless another owner is appointed.",
             );
             return true;
           }
           return false;
-        })
+        }),
       );
   }
 

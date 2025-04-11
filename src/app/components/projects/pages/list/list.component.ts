@@ -52,7 +52,7 @@ export const projectsMenuItemActions = [
     }
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
-  standalone: false
+  standalone: false,
 })
 class ListComponent extends PaginationTemplate<Project> {
   public models: List<Project> = List([]);
@@ -61,7 +61,7 @@ class ListComponent extends PaginationTemplate<Project> {
     router: Router,
     route: ActivatedRoute,
     config: NgbPaginationConfig,
-    projectsService: ProjectsService
+    projectsService: ProjectsService,
   ) {
     super(
       router,
@@ -72,7 +72,7 @@ class ListComponent extends PaginationTemplate<Project> {
       () => [],
       (projects) => {
         this.models = List(projects);
-      }
+      },
     );
   }
 }

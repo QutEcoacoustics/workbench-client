@@ -37,29 +37,21 @@ describe("AssignComponent", () => {
     mockApi.filter.and.callFake(() => of(mockSites));
 
     mockApi.show = jasmine.createSpy("show") as any;
-    mockApi.show.and.callFake((id) =>
-      of(mockSites.find((site) => site.id === id))
-    );
+    mockApi.show.and.callFake((id) => of(mockSites.find((site) => site.id === id)));
 
     mockApi.update = jasmine.createSpy("update") as any;
     mockApi.update.and.callFake((model: Site) => of(model));
 
-    spyOnProperty(spectator.component, "project", "get").and.callFake(
-      () => mockProject
-    );
+    spyOnProperty(spectator.component, "project", "get").and.callFake(() => mockProject);
 
     spectator.detectChanges();
   }
 
-  const projectHeader = (): HTMLHeadingElement =>
-    spectator.query<HTMLHeadingElement>("h1");
-  const updateButton = (): HTMLButtonElement =>
-    spectator.query<HTMLButtonElement>("button[type='submit']");
+  const projectHeader = (): HTMLHeadingElement => spectator.query<HTMLHeadingElement>("h1");
+  const updateButton = (): HTMLButtonElement => spectator.query<HTMLButtonElement>("button[type='submit']");
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text
-    )?.nativeElement as T;
+    return spectator.debugElement.query((element) => element.nativeElement.innerText === text)?.nativeElement as T;
   }
 
   function submitForm(): void {
@@ -74,9 +66,7 @@ describe("AssignComponent", () => {
 
   function getSiteCheckbox(siteName: string): HTMLInputElement {
     const siteRow = getSiteRow(siteName);
-    const siteCheckbox = siteRow.querySelector<HTMLInputElement>(
-      "input[type='checkbox']"
-    );
+    const siteCheckbox = siteRow.querySelector<HTMLInputElement>("input[type='checkbox']");
 
     return siteCheckbox;
   }
@@ -113,7 +103,7 @@ describe("AssignComponent", () => {
           id,
           name: `${modelData.param()}-${id}`,
           projectIds: [],
-        })
+        }),
       );
 
       site.addMetadata(defaultMetadata);
@@ -171,17 +161,13 @@ describe("AssignComponent", () => {
     const mockProjectId = 0;
     const mockSiteId = 42;
 
-    const mockSite = new Site(
-      generateSite({ id: mockSiteId, projectIds: [mockProjectId] })
-    );
+    const mockSite = new Site(generateSite({ id: mockSiteId, projectIds: [mockProjectId] }));
     mockSite.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
 
     mockSites = [mockSite];
-    mockProject = new Project(
-      generateProject({ id: 0, siteIds: [mockSiteId] })
-    );
+    mockProject = new Project(generateProject({ id: 0, siteIds: [mockSiteId] }));
 
     setup();
 
@@ -191,7 +177,7 @@ describe("AssignComponent", () => {
     expect(mockApi.update).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         projectIds: expectedProjectIds,
-      })
+      }),
     );
   });
 
@@ -205,7 +191,7 @@ describe("AssignComponent", () => {
     expect(mockApi.update).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         projectIds: expectedProjectIds,
-      })
+      }),
     );
   });
 

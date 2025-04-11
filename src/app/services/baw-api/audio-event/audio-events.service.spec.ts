@@ -3,11 +3,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { AudioEventsService } from "./audio-events.service";
 
 type Model = AudioEvent;
@@ -38,6 +34,6 @@ describe("AudioEventsService", () => {
     updateUrl,
     createModel,
     10,
-    5
+    5,
   );
 });

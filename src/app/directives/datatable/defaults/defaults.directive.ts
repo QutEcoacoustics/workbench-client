@@ -1,10 +1,6 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import {
-  ColumnMode,
-  DatatableComponent,
-  SortType,
-} from "@swimlane/ngx-datatable";
+import { ColumnMode, DatatableComponent, SortType } from "@swimlane/ngx-datatable";
 
 /**
  * Datatable default directives.
@@ -16,7 +12,7 @@ import {
  */
 @Directive({
   selector: "[bawDatatableDefaults]",
-  standalone: false
+  standalone: false,
 })
 export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalPaging = true;
@@ -32,7 +28,7 @@ export class DatatableDefaultsDirective implements OnInit {
 
   public constructor(
     @Host() private datatable: DatatableComponent,
-    private datatableRef: ElementRef
+    private datatableRef: ElementRef,
   ) {}
 
   public ngOnInit(): void {

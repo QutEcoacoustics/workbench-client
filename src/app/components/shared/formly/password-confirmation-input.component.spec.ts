@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
@@ -17,12 +12,7 @@ describe("FormlyPasswordConfirmationInput", () => {
 
   const createHost = createHostFactory({
     component: PasswordConfirmationInputComponent,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      FormlyModule.forRoot(formlyConfig),
-      FormlyBootstrapModule,
-    ],
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule.forRoot(formlyConfig), FormlyBootstrapModule],
   });
 
   function getInputs() {
@@ -65,7 +55,7 @@ describe("FormlyPasswordConfirmationInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
     spectator.detectChanges();
   }

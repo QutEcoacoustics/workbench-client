@@ -5,10 +5,8 @@ import { TableTemplate } from "./tableTemplate";
 
 @Component({
   selector: "baw-test-component",
-  template: `
-    <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
-  `,
-  standalone: false
+  template: ` <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable> `,
+  standalone: false,
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
@@ -35,10 +33,7 @@ describe("TableTemplate", () => {
   }
 
   function checkMatch(filterMatch: (filter: string, cell: any) => boolean) {
-    spyOn(
-      component as any,
-      "filterMatch"
-    ).and.callFake((val: string, row: any) => filterMatch(val, row));
+    spyOn(component as any, "filterMatch").and.callFake((val: string, row: any) => filterMatch(val, row));
   }
 
   beforeEach(() => {
@@ -78,11 +73,7 @@ describe("TableTemplate", () => {
       createRows(rows);
       fixture.detectChanges();
 
-      expect(component["rows"]).toEqual([
-        { id: "a" },
-        { id: "b" },
-        { id: "c" },
-      ]);
+      expect(component["rows"]).toEqual([{ id: "a" }, { id: "b" }, { id: "c" }]);
     });
   });
 
@@ -106,11 +97,7 @@ describe("TableTemplate", () => {
 
       component["updateFilter"]({ target: { value: "" } });
       fixture.detectChanges();
-      expect(component["rows"]).toEqual([
-        { id: "a" },
-        { id: "b" },
-        { id: "c" },
-      ]);
+      expect(component["rows"]).toEqual([{ id: "a" }, { id: "b" }, { id: "c" }]);
     });
 
     it("should handle single character", () => {
@@ -168,11 +155,7 @@ describe("TableTemplate", () => {
 
       component["updateFilter"]({ target: { value: "" } });
       fixture.detectChanges();
-      expect(component["rows"]).toEqual([
-        { id: "aa" },
-        { id: "ac" },
-        { id: "ad" },
-      ]);
+      expect(component["rows"]).toEqual([{ id: "aa" }, { id: "ac" }, { id: "ad" }]);
     });
   });
 

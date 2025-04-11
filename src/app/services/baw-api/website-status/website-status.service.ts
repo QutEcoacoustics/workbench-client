@@ -1,36 +1,17 @@
 import { HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
-import {
-  BawApiError,
-  isBawApiError,
-} from "@helpers/custom-errors/baw-api-error";
-import {
-  IWebsiteStatus,
-  ServerTimeout,
-  SsrContext,
-  WebsiteStatus,
-} from "@models/WebsiteStatus";
+import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
+import { IWebsiteStatus, ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
 import { disableCache } from "@services/cache/ngHttpCachingConfig";
-import {
-  Observable,
-  catchError,
-  defer,
-  interval,
-  map,
-  of,
-  shareReplay,
-  startWith,
-  switchMap,
-  throwError,
-} from "rxjs";
+import { Observable, catchError, defer, interval, map, of, shareReplay, startWith, switchMap, throwError } from "rxjs";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable()
 export class WebsiteStatusService {
   public constructor(
     private api: BawApiService<WebsiteStatus>,
-    @Inject(IS_SERVER_PLATFORM) private isSsr: boolean
+    @Inject(IS_SERVER_PLATFORM) private isSsr: boolean,
   ) {
     if (this.isSsr) {
       this.status$ = of(SsrContext.instance);
@@ -40,10 +21,8 @@ export class WebsiteStatusService {
       this.tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
 
       this.status$ = this.tick$.pipe(
-        switchMap(() =>
-          this.show().pipe(catchError(() => of(ServerTimeout.instance)))
-        ),
-        shareReplay(1)
+        switchMap(() => this.show().pipe(catchError(() => of(ServerTimeout.instance)))),
+        shareReplay(1),
       );
     }
   }
@@ -70,14 +49,12 @@ export class WebsiteStatusService {
     ).pipe(
       map((response: IWebsiteStatus) => new WebsiteStatus(response)),
       catchError((err: BawApiError | Error) => {
-        const bawError = isBawApiError(err)
-          ? err
-          : new BawApiError(unknownErrorCode, err.message, {});
+        const bawError = isBawApiError(err) ? err : new BawApiError(unknownErrorCode, err.message, {});
 
         console.error("Error fetching API /status endpoint:", bawError.message);
 
         return throwError((): BawApiError => bawError);
-      })
+      }),
     );
   }
 }

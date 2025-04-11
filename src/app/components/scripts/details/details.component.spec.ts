@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  scriptResolvers,
-  ScriptsService,
-} from "@baw-api/script/scripts.service";
+import { scriptResolvers, ScriptsService } from "@baw-api/script/scripts.service";
 import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
@@ -32,32 +29,20 @@ describe("ScriptComponent", () => {
 
   function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [AdminScriptComponent],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { script: scriptResolvers.show },
-            { script: { model, error } }
-          ),
+          useValue: mockActivatedRoute({ script: scriptResolvers.show }, { script: { model, error } }),
         },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
-    const accountsApi = TestBed.inject(
-      ACCOUNT.token
-    ) as SpyObject<AccountsService>;
-    const scriptsApi = TestBed.inject(
-      SCRIPT.token
-    ) as SpyObject<ScriptsService>;
+    const accountsApi = TestBed.inject(ACCOUNT.token) as SpyObject<AccountsService>;
+    const scriptsApi = TestBed.inject(SCRIPT.token) as SpyObject<ScriptsService>;
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();
@@ -71,21 +56,15 @@ describe("ScriptComponent", () => {
     }
 
     return Promise.all([
-      nStepObservable(
-        accountsSubject,
-        () => new User({ id: 1, userName: "custom username" })
-      ),
-      nStepObservable(
-        scriptsSubject,
-        () => new Script({ id: 1, name: "custom script" })
-      ),
+      nStepObservable(accountsSubject, () => new User({ id: 1, userName: "custom username" })),
+      nStepObservable(scriptsSubject, () => new Script({ id: 1, name: "custom script" })),
     ]);
   }
 
   assertPageInfo<Script>(AdminScriptComponent, "Test Script", {
     script: {
       model: new Script(generateScript({ name: "Test Script" })),
-    }
+    },
   });
 
   it("should create", () => {

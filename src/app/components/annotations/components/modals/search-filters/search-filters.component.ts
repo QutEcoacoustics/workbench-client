@@ -27,8 +27,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
         @if (isDirty) {
           <p>
             <strong>
-              You have unapplied search filters. If you update the verification
-              grid, your progress will be lost.
+              You have unapplied search filters. If you update the verification grid, your progress will be lost.
             </strong>
           </p>
         }
@@ -48,7 +47,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
             (click)="success()"
             [ngClass]="{
               'btn-primary': !isDirty,
-              'btn-warning': isDirty
+              'btn-warning': isDirty,
             }"
           >
             Update search filters
@@ -57,7 +56,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;

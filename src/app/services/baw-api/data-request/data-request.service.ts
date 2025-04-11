@@ -13,33 +13,28 @@ export class DataRequestService {
 
   public dataRequest(details: DataRequest): Observable<void> {
     const validateEmail = (page: string): void => {
-      const errMsg =
-        'id="data_class_data_request_email" /><span class="help-block">is invalid';
+      const errMsg = 'id="data_class_data_request_email" /><span class="help-block">is invalid';
       if (page.includes(errMsg)) {
         throw Error("Email address is invalid");
       }
     };
 
     const validateOrganization = (page: string): void => {
-      const errMsg =
-        'id="data_class_data_request_group" /><span class="help-block">can&#39;t be blank';
+      const errMsg = 'id="data_class_data_request_group" /><span class="help-block">can&#39;t be blank';
       if (page.includes(errMsg)) {
         throw Error("Organization name is invalid");
       }
     };
 
     const validateOrganizationType = (page: string): void => {
-      const errMsg =
-        '</select><span class="help-block">is not included in the list';
+      const errMsg = '</select><span class="help-block">is not included in the list';
       if (page.includes(errMsg)) {
         throw Error("Organization type is invalid");
       }
     };
 
     return this.api
-      .makeFormRequest(dataRequestEndpoint(), dataRequestEndpoint(), (token) =>
-        details.getBody(token)
-      )
+      .makeFormRequest(dataRequestEndpoint(), dataRequestEndpoint(), (token) => details.getBody(token))
       .pipe(
         map((page) => {
           validateEmail(page);
@@ -48,7 +43,7 @@ export class DataRequestService {
         }),
         // Complete observable
         first(),
-        catchError(this.api.handleError)
+        catchError(this.api.handleError),
       );
   }
 

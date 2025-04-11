@@ -26,25 +26,17 @@ describe("DeleteSiteModalComponent", () => {
     spectator.component.successCallback = () => null;
 
     mockSharedActivatedRoute = spectator.inject(SharedActivatedRouteService);
-    spyOnProperty(
-      mockSharedActivatedRoute,
-      "pageComponentInstance",
-      "get"
-    ).and.returnValue(mockPageComponent);
+    spyOnProperty(mockSharedActivatedRoute, "pageComponentInstance", "get").and.returnValue(mockPageComponent);
   }
 
   beforeEach(() => setup());
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (el) => el.nativeElement.innerText === text
-    ).nativeElement as T;
+    return spectator.debugElement.query((el) => el.nativeElement.innerText === text).nativeElement as T;
   }
 
-  const getDeleteButton = (): HTMLAnchorElement =>
-    getElementByInnerText<HTMLAnchorElement>("Delete");
-  const getCancelButton = (): HTMLAnchorElement =>
-    getElementByInnerText<HTMLAnchorElement>("Cancel");
+  const getDeleteButton = (): HTMLAnchorElement => getElementByInnerText<HTMLAnchorElement>("Delete");
+  const getCancelButton = (): HTMLAnchorElement => getElementByInnerText<HTMLAnchorElement>("Cancel");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(DeleteSiteModalComponent);
@@ -72,8 +64,7 @@ describe("DeleteSiteModalComponent", () => {
   });
 
   it("should dismiss the modal when the 'Contact Us' link is clicked", () => {
-    const contactUsLinkElement: HTMLAnchorElement =
-      getElementByInnerText<HTMLAnchorElement>("Contact Us");
+    const contactUsLinkElement: HTMLAnchorElement = getElementByInnerText<HTMLAnchorElement>("Contact Us");
     spyOn(spectator.component, "dismissModal").and.stub();
 
     contactUsLinkElement.click();
@@ -85,27 +76,25 @@ describe("DeleteSiteModalComponent", () => {
     spectator.component.isPoint = true;
     spectator.detectChanges();
 
-    const expectedText = "When this point is deleted it will be made " +
+    const expectedText =
+      "When this point is deleted it will be made " +
       "invisible. For data safety: all audio recordings will no longer be " +
       "accessible but will be recoverable. If you need to recover these " +
-      "recordings after they have been deleted, please Contact Us."
+      "recordings after they have been deleted, please Contact Us.";
 
-    expect(
-      getElementByInnerText(expectedText)
-    ).toExist();
+    expect(getElementByInnerText(expectedText)).toExist();
   });
 
   it("should have the correct test for sites", () => {
     spectator.component.isPoint = false;
     spectator.detectChanges();
 
-    const expectedText = "When this site is deleted it will be made " +
+    const expectedText =
+      "When this site is deleted it will be made " +
       "invisible. For data safety: all audio recordings will no longer be " +
       "accessible but will be recoverable. If you need to recover these " +
-      "recordings after they have been deleted, please Contact Us."
+      "recordings after they have been deleted, please Contact Us.";
 
-    expect(
-      getElementByInnerText(expectedText)
-    ).toExist();
+    expect(getElementByInnerText(expectedText)).toExist();
   });
 });

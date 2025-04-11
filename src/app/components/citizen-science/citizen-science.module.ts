@@ -8,12 +8,7 @@ import { CitSciListenItemComponent } from "./pages/listen-item/listen-item.compo
 import { CitSciListenComponent } from "./pages/listen/listen.component";
 import { CitSciResponsesComponent } from "./pages/responses/responses.component";
 
-const components = [
-  CitSciAboutComponent,
-  CitSciListenComponent,
-  CitSciListenItemComponent,
-  CitSciResponsesComponent,
-];
+const components = [CitSciAboutComponent, CitSciListenComponent, CitSciListenItemComponent, CitSciResponsesComponent];
 
 const routes = citSciRoute.compileRoutes(getRouteConfigForPage);
 

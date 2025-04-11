@@ -1,18 +1,11 @@
 import { LocationStrategy } from "@angular/common";
 import { Directive, ElementRef, Input, Renderer2 } from "@angular/core";
-import {
-  ActivatedRoute,
-  DefaultUrlSerializer,
-  Params,
-  Router,
-  RouterLink,
-  UrlTree,
-} from "@angular/router";
+import { ActivatedRoute, DefaultUrlSerializer, Params, Router, RouterLink, UrlTree } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
 @Directive({
   selector: "a[bawUrl]",
-  standalone: false
+  standalone: false,
 })
 export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;

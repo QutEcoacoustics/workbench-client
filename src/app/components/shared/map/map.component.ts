@@ -1,19 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { GoogleMap, MapAnchorPoint, MapInfoWindow } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  MapMarkerOptions,
-  MapOptions,
-  MapsService,
-} from "@services/maps/maps.service";
+import { MapMarkerOptions, MapOptions, MapsService } from "@services/maps/maps.service";
 import { List } from "immutable";
 
 /**
@@ -23,7 +11,7 @@ import { List } from "immutable";
   selector: "baw-map",
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
-  standalone: false
+  standalone: false,
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   public constructor(private mapService: MapsService) {
@@ -112,18 +100,13 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
  * @param marker Marker to validate
  */
 function isMarkerValid(marker: MapMarkerOptions): boolean {
-  return (
-    typeof marker?.position?.lat === "number" &&
-    typeof marker?.position?.lng === "number"
-  );
+  return typeof marker?.position?.lat === "number" && typeof marker?.position?.lng === "number";
 }
 
 /**
  * Handles sanitization of map markers so change detection will run properly
  */
-export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
-): List<MapMarkerOptions> {
+export function sanitizeMapMarkers(markers: MapMarkerOptions | MapMarkerOptions[]): List<MapMarkerOptions> {
   const output: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {

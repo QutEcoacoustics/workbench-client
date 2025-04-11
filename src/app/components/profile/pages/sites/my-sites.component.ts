@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { userResolvers } from "@baw-api/user/user.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
-import {
-  myAccountCategory,
-  mySitesMenuItem,
-} from "@components/profile/profile.menus";
+import { myAccountCategory, mySitesMenuItem } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
@@ -19,15 +16,10 @@ const userKey = "user";
 @Component({
   selector: "baw-my-sites",
   templateUrl: "./sites.component.html",
-  standalone: false
+  standalone: false,
 })
 class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
-  public columns = [
-    { name: "Site" },
-    { name: "Last Modified" },
-    { name: "Permission" },
-    { name: "Annotation" },
-  ];
+  public columns = [{ name: "Site" }, { name: "Last Modified" }, { name: "Permission" }, { name: "Annotation" }];
   public sortKeys = { site: "name", lastModified: "updatedAt" };
   public annotationLink = dataRequestMenuItem.route;
   protected api: ShallowSitesService;
@@ -42,7 +34,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
           permission: site,
           annotation: site,
         })),
-      route
+      route,
     );
   }
 

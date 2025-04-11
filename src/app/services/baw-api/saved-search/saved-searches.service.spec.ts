@@ -1,11 +1,7 @@
 import { SavedSearch } from "@models/SavedSearch";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateSavedSearch } from "@test/fakes/SavedSearch";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateImmutableApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateImmutableApi } from "@test/helpers/api-common";
 import { SavedSearchesService } from "./saved-searches.service";
 
 describe("SavedSearchesService", (): void => {
@@ -23,13 +19,5 @@ describe("SavedSearchesService", (): void => {
     spec = createService();
   });
 
-  validateImmutableApi(
-    () => spec,
-    SavedSearch,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    5
-  );
+  validateImmutableApi(() => spec, SavedSearch, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
 });

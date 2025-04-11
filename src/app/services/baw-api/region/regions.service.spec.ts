@@ -3,11 +3,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateRegion } from "@test/fakes/Region";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { RegionsService } from "./regions.service";
 
 type Model = Region;
@@ -37,6 +33,6 @@ describe("RegionsService", (): void => {
     updateUrl,
     createModel,
     10,
-    5
+    5,
   );
 });

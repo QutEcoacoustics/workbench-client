@@ -2,10 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  scriptResolvers,
-  ScriptsService,
-} from "@baw-api/script/scripts.service";
+import { scriptResolvers, ScriptsService } from "@baw-api/script/scripts.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
@@ -33,20 +30,12 @@ describe("AdminScriptsEditComponent", () => {
 
   function configureTestingModule(model?: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [AdminScriptsEditComponent],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { script: scriptResolvers.show },
-            { script: { model, error } }
-          ),
+          useValue: mockActivatedRoute({ script: scriptResolvers.show }, { script: { model, error } }),
         },
       ],
     }).compileComponents();

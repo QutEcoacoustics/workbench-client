@@ -4,10 +4,7 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { userResolvers } from "@baw-api/user/user.service";
-import {
-  myAccountCategory,
-  myAnnotationsMenuItem,
-} from "@components/profile/profile.menus";
+import { myAccountCategory, myAnnotationsMenuItem } from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
@@ -20,7 +17,7 @@ const userKey = "user";
 @Component({
   selector: "baw-my-annotations",
   templateUrl: "./annotations.component.html",
-  standalone: false
+  standalone: false,
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
@@ -30,7 +27,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public constructor(
     api: ShallowAudioEventsService,
     route: ActivatedRoute,
-    private session: BawSessionService
+    private session: BawSessionService,
   ) {
     super(
       api,
@@ -41,7 +38,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
           tags: audioEvent,
           model: audioEvent,
         })),
-      route
+      route,
     );
   }
 

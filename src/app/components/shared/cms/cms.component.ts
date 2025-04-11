@@ -1,13 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Inject,
-  Input,
-  OnInit,
-  Renderer2,
-} from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, Renderer2 } from "@angular/core";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -29,7 +21,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-  standalone: false
+  standalone: false,
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;
@@ -42,7 +34,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     private elRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
   ) {
     super();
   }

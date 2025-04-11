@@ -6,40 +6,23 @@ import { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  ShallowSitesService,
-  siteResolvers,
-} from "@baw-api/site/sites.service";
-import {
-  regionResolvers,
-  ShallowRegionsService,
-} from "@baw-api/region/regions.service";
+import { ShallowSitesService, siteResolvers } from "@baw-api/site/sites.service";
+import { regionResolvers, ShallowRegionsService } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
-import {
-  reportMenuItems,
-  reportCategories,
-} from "@components/reports/reports.menu";
+import { reportMenuItems, reportCategories } from "@components/reports/reports.menu";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { StrongRoute } from "@interfaces/strongRoute";
-import {
-  notIn,
-  filterAnd,
-  filterModel,
-  contains,
-} from "@helpers/filters/filters";
+import { notIn, filterAnd, filterModel, contains } from "@helpers/filters/filters";
 import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { StandardApi } from "@baw-api/api-common";
-import {
-  BucketSize,
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
+import { BucketSize, EventSummaryReportParameters } from "../EventSummaryReportParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -47,8 +30,8 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-new-summary-report",
-    templateUrl: "./new.component.html",
-    standalone: false
+  templateUrl: "./new.component.html",
+  standalone: false,
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
@@ -56,7 +39,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     protected regionsApi: ShallowRegionsService,
     protected provenanceApi: AudioEventProvenanceService,
     protected tagsApi: TagsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     super();
     this.model = new EventSummaryReportParameters();
@@ -70,9 +53,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
   protected get componentTitle(): string {
     if (this.site) {
-      return this.site.isPoint
-        ? `Point: ${this.site.name}`
-        : `Site: ${this.site.name}`;
+      return this.site.isPoint ? `Point: ${this.site.name}` : `Site: ${this.site.name}`;
     } else if (this.region) {
       return `Site: ${this.region.name}`;
     }
@@ -103,17 +84,13 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public createSearchCallback<T extends AbstractModel>(
     api: StandardApi<T>,
     key: string = "name",
-    includeDefaultFilters: boolean = true
+    includeDefaultFilters: boolean = true,
   ): TypeaheadSearchCallback {
     return (text: string, activeItems: T[]): Observable<T[]> =>
       api.filter({
         filter: filterAnd(
-          contains<T, keyof T>(
-            key as keyof T,
-            text as any,
-            includeDefaultFilters && this.defaultFilter()
-          ),
-          notIn<T>(key as keyof AbstractModel, activeItems)
+          contains<T, keyof T>(key as keyof T, text as any, includeDefaultFilters && this.defaultFilter()),
+          notIn<T>(key as keyof AbstractModel, activeItems),
         ),
       });
   }
@@ -121,9 +98,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   // since the report is mounted at multiple points in the client (projects, regions, sites), we need to derive the lowest route to use
   public viewReportRoute(): StrongRoute {
     if (this.site) {
-      return this.site.isPoint
-        ? reportMenuItems.view.siteAndRegion.route
-        : reportMenuItems.view.site.route;
+      return this.site.isPoint ? reportMenuItems.view.siteAndRegion.route : reportMenuItems.view.site.route;
     } else if (this.region) {
       return reportMenuItems.view.region.route;
     }
@@ -144,25 +119,16 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
-  protected updateViewModelFromDateTimeModel(
-    dateTimeModel: DateTimeFilterModel
-  ): void {
+  protected updateViewModelFromDateTimeModel(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.model.date = [
-        dateTimeModel.dateStartedAfter
-          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-          : null,
-        dateTimeModel.dateFinishedBefore
-          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-          : null,
+        dateTimeModel.dateStartedAfter ? DateTime.fromObject(dateTimeModel.dateStartedAfter) : null,
+        dateTimeModel.dateFinishedBefore ? DateTime.fromObject(dateTimeModel.dateFinishedBefore) : null,
       ];
     }
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-      this.model.time = [
-        dateTimeModel.timeStartedAfter,
-        dateTimeModel.timeFinishedBefore,
-      ];
+      this.model.time = [dateTimeModel.timeStartedAfter, dateTimeModel.timeFinishedBefore];
 
       // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value
       this.model.daylightSavings = !dateTimeModel.ignoreDaylightSavings;

@@ -28,22 +28,15 @@ function item(data: IItem): Map<keyof IItem, any> {
     <baw-items [items]="getGroupOne()"></baw-items>
     <baw-items [items]="getGroupTwo()"></baw-items>
 
-    <baw-recent-annotations
-      [annotations]="recent?.audioEvents"
-    ></baw-recent-annotations>
+    <baw-recent-annotations [annotations]="recent?.audioEvents"></baw-recent-annotations>
 
     <br />
 
-    <baw-recent-audio-recordings
-      [audioRecordings]="recent?.audioRecordings"
-    ></baw-recent-audio-recordings>
+    <baw-recent-audio-recordings [audioRecordings]="recent?.audioRecordings"></baw-recent-audio-recordings>
   `,
-  standalone: false
+  standalone: false,
 })
-class StatisticsComponent
-  extends withUnsubscribe(PageComponent)
-  implements OnInit
-{
+class StatisticsComponent extends withUnsubscribe(PageComponent) implements OnInit {
   private groupOne = {
     projects: item({
       name: "Projects",
@@ -120,17 +113,11 @@ class StatisticsComponent
         const groupOne = this.groupOne;
         const groupTwo = this.groupTwo;
 
-        function setGroupOneValue(
-          key: keyof typeof groupOne,
-          value: string | number
-        ) {
+        function setGroupOneValue(key: keyof typeof groupOne, value: string | number) {
           groupOne[key] = groupOne[key].set("value", value);
         }
 
-        function setGroupTwoValue(
-          key: keyof typeof groupTwo,
-          value: string | number
-        ) {
+        function setGroupTwoValue(key: keyof typeof groupTwo, value: string | number) {
           groupTwo[key] = groupTwo[key].set("value", value);
         }
 
@@ -144,21 +131,15 @@ class StatisticsComponent
         setGroupTwoValue("uniqueTags", summary.tagsAppliedUniqueTotal);
         setGroupTwoValue("tagsApplied", summary.tagsAppliedTotal);
         setGroupTwoValue("newAnnotations", recent.audioEventIds.size);
-        setGroupTwoValue(
-          "annotationDuration",
-          toRelative(summary.annotationsTotalDuration, { largest: 2 })
-        );
+        setGroupTwoValue("annotationDuration", toRelative(summary.annotationsTotalDuration, { largest: 2 }));
         setGroupTwoValue("users", summary.usersOnline);
-        setGroupTwoValue(
-          "storedData",
-          filesize(summary.audioRecordingsTotalSize, { round: 2 })
-        );
+        setGroupTwoValue("storedData", filesize(summary.audioRecordingsTotalSize, { round: 2 }));
         setGroupTwoValue("newRecordings", summary.audioRecordingsRecent);
         setGroupTwoValue(
           "audioDuration",
           toRelative(summary.audioRecordingsTotalDuration, {
             largest: 2,
-          })
+          }),
         );
 
         this.recent = recent;
@@ -166,15 +147,11 @@ class StatisticsComponent
   }
 
   public getGroupOne(): List<IItem> {
-    return List<IItem>(
-      Object.keys(this.groupOne).map((key) => this.groupOne[key].toObject())
-    );
+    return List<IItem>(Object.keys(this.groupOne).map((key) => this.groupOne[key].toObject()));
   }
 
   public getGroupTwo(): List<IItem> {
-    return List<IItem>(
-      Object.keys(this.groupTwo).map((key) => this.groupTwo[key].toObject())
-    );
+    return List<IItem>(Object.keys(this.groupTwo).map((key) => this.groupTwo[key].toObject()));
   }
 }
 

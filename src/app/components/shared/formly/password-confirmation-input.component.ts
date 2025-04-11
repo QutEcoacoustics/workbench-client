@@ -22,19 +22,14 @@ import { asFormControl } from "./helper";
       />
 
       @if (passwordError) {
-        <div
-          class="invalid-feedback"
-          style="display: block;"
-        >
+        <div class="invalid-feedback" style="display: block;">
           {{ getError() }}
         </div>
       }
     </div>
 
     <div class="form-group mb-3">
-      <label for="confirmation">
-        Password Confirmation {{ props.required ? " *" : "" }}
-      </label>
+      <label for="confirmation"> Password Confirmation {{ props.required ? " *" : "" }} </label>
       <input
         id="confirmation"
         type="password"
@@ -53,18 +48,11 @@ import { asFormControl } from "./helper";
       }
     </div>
 
-    <input
-      type="hidden"
-      [id]="field.id"
-      [formControl]="asFormControl(formControl)"
-    />
+    <input type="hidden" [id]="field.id" [formControl]="asFormControl(formControl)" />
   `,
-  standalone: false
+  standalone: false,
 })
-export class PasswordConfirmationInputComponent
-  extends FieldType
-  implements OnInit
-{
+export class PasswordConfirmationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;
   public password = "";
   public passwordError: boolean;

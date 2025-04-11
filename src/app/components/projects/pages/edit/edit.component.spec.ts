@@ -2,11 +2,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { testFormlyFields } from "@test/helpers/formly";
@@ -92,9 +88,7 @@ describe("ProjectsEditComponent", () => {
   describe("capability fields", () => {
     describe("updateAllowAudioUpload capability", () => {
       function getField() {
-        return spec.component.fields.find(
-          (field) => field.key === "allowAudioUpload"
-        );
+        return spec.component.fields.find((field) => field.key === "allowAudioUpload");
       }
 
       it("should hide allowAudioUpload field when unset", () => {
@@ -104,7 +98,7 @@ describe("ProjectsEditComponent", () => {
               createHarvest: { can: false, details: "Unset in test" },
               updateAllowAudioUpload: { can: false, details: "Unset in test" },
             },
-          })
+          }),
         );
         setup(defaultProject);
         spec.detectChanges();
@@ -118,7 +112,7 @@ describe("ProjectsEditComponent", () => {
               createHarvest: { can: false, details: "Unset in test" },
               updateAllowAudioUpload: { can: true, details: null },
             },
-          })
+          }),
         );
         setup(defaultProject);
         spec.detectChanges();

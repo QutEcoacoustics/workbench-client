@@ -22,21 +22,13 @@ describe("PermissionsComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule],
       declarations: [PermissionsComponent],
       providers: [
         mockProvider(PermissionsService),
         {
           provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { project: projectResolvers.show },
-            { project: { model, error } }
-          ),
+          useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
         },
       ],
     }).compileComponents();

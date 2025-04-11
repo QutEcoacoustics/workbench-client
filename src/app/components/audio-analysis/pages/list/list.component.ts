@@ -3,10 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import {
-  analysesMenuItem,
-  analysisCategory,
-} from "@components/audio-analysis/analysis-jobs.menus";
+import { analysesMenuItem, analysisCategory } from "@components/audio-analysis/analysis-jobs.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Param } from "@interfaces/apiInterfaces";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -29,12 +26,12 @@ const projectKey = "project";
 @Component({
   selector: "baw-analyses",
   templateUrl: "list.component.html",
-  standalone: false
+  standalone: false,
 })
 class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(
     protected api: AnalysisJobsService,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
   ) {
     super(api, (analysisJobs) =>
       analysisJobs.map((analysisJob) => ({
@@ -45,7 +42,7 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
         status: analysisJob.overallStatus,
         statusUpdated: analysisJob.updatedAt,
         model: analysisJob,
-      }))
+      })),
     );
   }
 
@@ -80,9 +77,7 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
     throw new Error("Project is not defined in route");
   }
 
-  protected override apiAction(
-    filters: Filters<AnalysisJob>
-  ): Observable<AnalysisJob[]> {
+  protected override apiAction(filters: Filters<AnalysisJob>): Observable<AnalysisJob[]> {
     if (!this.project) {
       return this.api.filter(filters);
     }

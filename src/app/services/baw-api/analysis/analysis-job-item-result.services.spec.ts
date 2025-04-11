@@ -19,7 +19,7 @@ describe("AnalysisJobItemsResultsService", (): void => {
       generateAnalysisJobResults({
         id: 5,
         resultsPath: mockResultsPath,
-      })
+      }),
     );
 
   const createService = createServiceFactory({
@@ -42,16 +42,8 @@ describe("AnalysisJobItemsResultsService", (): void => {
     undefined, // analysis job item results
     10, // analysis job
     15, // audio recording
-    undefined // options
+    undefined, // options
   );
 
-  validateApiShow(
-    () => spec as any,
-    AnalysisJobItemResult,
-    baseUrl + mockResultsPath,
-    undefined,
-    createModel,
-    10,
-    15
-  );
+  validateApiShow(() => spec as any, AnalysisJobItemResult, baseUrl + mockResultsPath, undefined, createModel, 10, 15);
 });

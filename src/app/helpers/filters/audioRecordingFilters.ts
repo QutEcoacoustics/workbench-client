@@ -14,7 +14,7 @@ import { filterAnd } from "./filters";
 export function filterDate(
   filters: InnerFilter<AudioRecording>,
   startDate?: DateTime,
-  endDate?: DateTime
+  endDate?: DateTime,
 ): InnerFilter<AudioRecording> {
   if (startDate) {
     // to return the most data that matches the date range interval we want to return any audio recordings that have any audio that overlaps
@@ -51,7 +51,7 @@ export function filterTime(
   filters: InnerFilter<AudioRecording>,
   ignoreDayLightSavings: boolean,
   startTime?: Duration,
-  endTime?: Duration
+  endTime?: Duration,
 ): InnerFilter<AudioRecording> {
   // the api expects time filters to be in the format of "hh:mm" (e.g. 08:12)
   // since Luxon's Duration toJSON() method outputs the times in the ISO 8601 period format (e.g. P23DT23H)

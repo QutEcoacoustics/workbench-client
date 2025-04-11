@@ -2,17 +2,9 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
-import {
-  createServiceFactory,
-  SpectatorService,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createServiceFactory, SpectatorService, SpyObject } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
 
@@ -33,15 +25,7 @@ describe("AccountsService", () => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    User,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    mockModelId
-  );
+  validateStandardApi(() => spec, User, baseUrl, baseUrl + "filter", updateUrl, createModel, mockModelId);
 
   describe("opt into communications", () => {
     let bawApi: SpyObject<BawApiService<User>>;
@@ -58,7 +42,7 @@ describe("AccountsService", () => {
       expect(bawApi.update).toHaveBeenCalledOnceWith(
         User,
         updateUrl,
-        jasmine.objectContaining({ contactable: UserConcent.yes})
+        jasmine.objectContaining({ contactable: UserConcent.yes }),
       );
     });
 
@@ -69,7 +53,7 @@ describe("AccountsService", () => {
       expect(bawApi.update).toHaveBeenCalledOnceWith(
         User,
         updateUrl,
-        jasmine.objectContaining({ contactable: UserConcent.no })
+        jasmine.objectContaining({ contactable: UserConcent.no }),
       );
     });
   });

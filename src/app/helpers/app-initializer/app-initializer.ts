@@ -19,7 +19,7 @@ export class AppInitializer {
     configService: ConfigService,
     _httpBackend: any,
     _IS_SERVER_PLATFORM: any,
-    importsService: ImportsService
+    importsService: ImportsService,
   ): AppInitializerType {
     const instantiatedConfig = configService.init(config);
     const dynamicImports = importsService.init();
@@ -104,9 +104,7 @@ function failure(msg: string): false {
 }
 
 function paramFailure(param: string, msg?: string): false {
-  return failure(
-    `Invalid configuration ${param} param${msg ? `: ${msg}` : ""}`
-  );
+  return failure(`Invalid configuration ${param} param${msg ? `: ${msg}` : ""}`);
 }
 
 function success(): true {
@@ -118,10 +116,7 @@ function success(): true {
  *
  * @param config Variable to evaluate
  */
-export function isConfiguration(
-  config: Configuration,
-  isServer: boolean
-): config is Configuration {
+export function isConfiguration(config: Configuration, isServer: boolean): config is Configuration {
   if (!config) {
     return failure("No configuration set");
   }
@@ -147,7 +142,7 @@ export function isConfiguration(
   const siteUrl = config.endpoints.clientOrigin + config.endpoints.clientDir;
   if (!isServer && !window.location.toString().includes(siteUrl)) {
     console.warn(
-      "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional"
+      "Configuration siteRoot and siteDir do not match the current deployment location. Validate this is intentional",
     );
   }
 

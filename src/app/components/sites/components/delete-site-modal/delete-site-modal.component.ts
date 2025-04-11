@@ -8,12 +8,7 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Delete {{ isPoint ? "Point" : "Site" }}</h4>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="dismissModal(false)"
-      ></button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="dismissModal(false)"></button>
     </div>
 
     <div class="modal-body">
@@ -25,11 +20,9 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
       </span>
 
       <p class="alert alert-warning">
-        When this {{ isPoint ? "point" : "site" }} is deleted it will be made
-        invisible. For data safety: all audio recordings will no longer be
-        accessible but will be recoverable. If you need to recover these
-        recordings after they have been deleted, please
-        <a [strongRoute]="contactUsRoute" (click)="dismissModal(false)">Contact Us</a>.
+        When this {{ isPoint ? "point" : "site" }} is deleted it will be made invisible. For data safety: all audio
+        recordings will no longer be accessible but will be recoverable. If you need to recover these recordings after
+        they have been deleted, please <a [strongRoute]="contactUsRoute" (click)="dismissModal(false)">Contact Us</a>.
       </p>
     </div>
 
@@ -38,7 +31,7 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class DeleteSiteModalComponent extends DeleteModalComponent {
   public constructor() {

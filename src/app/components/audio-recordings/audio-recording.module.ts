@@ -9,16 +9,9 @@ import { DownloadAudioRecordingsComponent } from "./pages/download/download.comp
 import { AudioRecordingsListComponent } from "./pages/list/list.component";
 import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
 
-const internalComponents = [
-  SitesWithoutTimezonesComponent,
-  DownloadTableComponent,
-];
+const internalComponents = [SitesWithoutTimezonesComponent, DownloadTableComponent];
 
-const components = [
-  AudioRecordingsListComponent,
-  AudioRecordingsDetailsComponent,
-  DownloadAudioRecordingsComponent,
-];
+const components = [AudioRecordingsListComponent, AudioRecordingsDetailsComponent, DownloadAudioRecordingsComponent];
 
 const routes = Object.values(audioRecordingsRoutes)
   .map((route) => route.compileRoutes(getRouteConfigForPage))

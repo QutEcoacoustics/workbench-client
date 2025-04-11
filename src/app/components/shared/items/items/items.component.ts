@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from "@angular/core";
 import { List } from "immutable";
 import { IItem } from "../item/item.component";
 
@@ -47,10 +41,10 @@ import { IItem } from "../item/item.component";
         </ul>
       </div>
     </div>
-    `,
-    // Pure Component
+  `,
+  // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 export class ItemsComponent implements OnInit, OnChanges {
   @Input() public items: List<IItem>;

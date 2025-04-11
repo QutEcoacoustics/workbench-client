@@ -7,18 +7,13 @@ import { ModalComponent } from "@menu/widget.component";
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Delete Item</h4>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="dismissModal(false)"
-      ></button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="dismissModal(false)"></button>
     </div>
 
     <div class="modal-body">
-        <span id="subTitle">
-          <p>Are you certain you wish to delete this item?</p>
-        </span>
+      <span id="subTitle">
+        <p>Are you certain you wish to delete this item?</p>
+      </span>
     </div>
 
     <div class="modal-footer">
@@ -26,7 +21,7 @@ import { ModalComponent } from "@menu/widget.component";
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class DeleteModalComponent extends withUnsubscribe() implements ModalComponent {
   @Input() public successCallback?: () => void;

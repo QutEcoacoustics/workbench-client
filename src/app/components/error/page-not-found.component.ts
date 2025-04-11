@@ -9,12 +9,11 @@ import { pageNotFoundMenuItem } from "./error.menus";
   template: `
     <h1>Not Found</h1>
     <div>
-      This page doesn't seem to exist, if you believe this is an error please go
-      to the <a [strongRoute]="reportProblem">Report Problems</a> page and
-      report the issue.
+      This page doesn't seem to exist, if you believe this is an error please go to the
+      <a [strongRoute]="reportProblem">Report Problems</a> page and report the issue.
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;

@@ -18,11 +18,7 @@ import { MenuService } from "@services/menu/menu.service";
 
       <div class="container">
         <!-- Brand Logo -->
-        <a
-          class="navbar-brand"
-          strongRouteActive="active"
-          [strongRoute]="homeMenuItem.route"
-        >
+        <a class="navbar-brand" strongRouteActive="active" [strongRoute]="homeMenuItem.route">
           {{ config.settings.brand.short }}
         </a>
 
@@ -35,24 +31,27 @@ import { MenuService } from "@services/menu/menu.service";
           We therefore add another indicator when in mobile view so that there is always a warning indicator
           for a bad website status.
         -->
-        <baw-website-status-indicator
-          class="d-block d-lg-none"
-        ></baw-website-status-indicator>
+        <baw-website-status-indicator class="d-block d-lg-none"></baw-website-status-indicator>
       </div>
     </nav>
 
     <!-- Displace header section of webpage -->
     <div style="height: 3.5rem"></div>
   `,
-  styles: [`
-    #navbar {
-      background-color: var(--baw-header);
-    }
-  `],
-  standalone: false
+  styles: [
+    `
+      #navbar {
+        background-color: var(--baw-header);
+      }
+    `,
+  ],
+  standalone: false,
 })
 export class HeaderComponent {
   public homeMenuItem = homeMenuItem;
 
-  public constructor(public menu: MenuService, public config: ConfigService) {}
+  public constructor(
+    public menu: MenuService,
+    public config: ConfigService,
+  ) {}
 }

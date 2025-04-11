@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -29,18 +22,11 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import {
-  annotationResolvers,
-  AnnotationService,
-} from "@services/models/annotation.service";
+import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import {
-  ConfirmedStatus,
-  IVerification,
-  Verification,
-} from "@models/Verification";
+import { ConfirmedStatus, IVerification, Verification } from "@models/Verification";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
@@ -66,12 +52,9 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "verification.component.html",
   styleUrl: "verification.component.scss",
-  standalone: false
+  standalone: false,
 })
-class VerificationComponent
-  extends PageComponent
-  implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
-{
+class VerificationComponent extends PageComponent implements OnInit, AfterViewInit, UnsavedInputCheckingComponent {
   public constructor(
     private audioEventApi: ShallowAudioEventsService,
     private verificationApi: ShallowVerificationService,
@@ -82,7 +65,7 @@ class VerificationComponent
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }
@@ -103,9 +86,7 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      annotationsKey
-    ] as AnnotationSearchParameters;
+    this.searchParameters ??= models[annotationsKey] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
     this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
@@ -164,8 +145,7 @@ class VerificationComponent
 
       // I have to use "as string" here because the upstream typing is incorrect
       // TODO: We should remove this "as string" and improve the upstream typing
-      const mappedDecision =
-        confirmedMapping[subjectWrapper.verification.confirmed as string];
+      const mappedDecision = confirmedMapping[subjectWrapper.verification.confirmed as string];
 
       const tagId = subjectWrapper.tag.id;
 
@@ -181,7 +161,7 @@ class VerificationComponent
       const apiRequest = this.verificationApi.createOrUpdate(
         verification,
         subject as AudioEvent,
-        this.session.currentUser
+        this.session.currentUser,
       );
 
       // I use firstValueFrom so that the observable is evaluated
@@ -222,9 +202,7 @@ class VerificationComponent
 
   protected verifyAnnotationsRoute(): StrongRoute {
     if (this.site) {
-      return this.site.isPoint
-        ? annotationMenuItems.verify.siteAndRegion.route
-        : annotationMenuItems.verify.site.route;
+      return this.site.isPoint ? annotationMenuItems.verify.siteAndRegion.route : annotationMenuItems.verify.site.route;
     } else if (this.region) {
       return annotationMenuItems.verify.region.route;
     }
@@ -239,9 +217,7 @@ class VerificationComponent
       const serviceObservable = this.audioEventApi.filter(filters);
 
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
-      const annotations = await Promise.all(
-        items.map((item) => this.annotationsService.show(item))
-      );
+      const annotations = await Promise.all(items.map((item) => this.annotationsService.show(item)));
 
       return new Object({
         subjects: annotations,
@@ -267,9 +243,7 @@ class VerificationComponent
   // TODO: this function can be improved with instanceof checks once we export
   // data model constructors from the web components
   // see: https://github.com/ecoacoustics/web-components/issues/303
-  private isDecisionEvent(
-    event: Event
-  ): event is CustomEvent<SubjectWrapper[]> {
+  private isDecisionEvent(event: Event): event is CustomEvent<SubjectWrapper[]> {
     return (
       event instanceof CustomEvent &&
       event.detail instanceof Array &&
@@ -287,8 +261,7 @@ class VerificationComponent
 
   private filterConditions(page: number): Filters<AudioEvent> {
     const paging: Paging = { page };
-    const filter: InnerFilter<AudioEvent> =
-      this.searchParameters.toFilter().filter;
+    const filter: InnerFilter<AudioEvent> = this.searchParameters.toFilter().filter;
 
     return { filter, paging };
   }
@@ -304,9 +277,7 @@ class VerificationComponent
   }
 }
 
-function getPageInfo(
-  subRoute: keyof typeof annotationMenuItems.verify
-): IPageInfo {
+function getPageInfo(subRoute: keyof typeof annotationMenuItems.verify): IPageInfo {
   return {
     pageRoute: annotationMenuItems.verify[subRoute],
     category: annotationMenuItems.verify[subRoute],

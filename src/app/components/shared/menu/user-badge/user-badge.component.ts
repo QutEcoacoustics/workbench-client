@@ -27,20 +27,12 @@ import { DateTime } from "luxon";
                   <ng-container *ngTemplateOutlet="userImage"></ng-container>
                 </a>
               } @else {
-                <img
-                  class="rounded"
-                  [src]="user.imageUrls"
-                  [alt]="user.userName + ' profile picture'"
-                  />
+                <img class="rounded" [src]="user.imageUrls" [alt]="user.userName + ' profile picture'" />
               }
 
               <!-- User Image -->
               <ng-template #userImage>
-                <img
-                  class="rounded"
-                  [src]="user.imageUrls"
-                  [alt]="user.userName + ' profile picture'"
-                />
+                <img class="rounded" [src]="user.imageUrls" [alt]="user.userName + ' profile picture'" />
               </ng-template>
             </div>
 
@@ -51,10 +43,7 @@ import { DateTime } from "luxon";
               <!-- Timestamp -->
               <br />
               @if (timestamp) {
-                <span
-                  id="lengthOfTime"
-                  style="word-wrap: break-word"
-                >
+                <span id="lengthOfTime" style="word-wrap: break-word">
                   <small>
                     <baw-time-since [value]="timestamp" />
                   </small>
@@ -67,7 +56,7 @@ import { DateTime } from "luxon";
     }
   `,
   styleUrls: ["./user-badge.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

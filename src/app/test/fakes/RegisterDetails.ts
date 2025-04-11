@@ -1,9 +1,7 @@
 import { IRegisterDetails } from "@models/data/RegisterDetails";
 import { modelData } from "@test/helpers/faker";
 
-export function generateRegisterDetails(
-  data?: Partial<IRegisterDetails>
-): Required<IRegisterDetails> {
+export function generateRegisterDetails(data?: Partial<IRegisterDetails>): Required<IRegisterDetails> {
   const password = modelData.internet.password();
   return {
     email: modelData.internet.email(),

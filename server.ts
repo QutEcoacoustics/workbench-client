@@ -72,7 +72,7 @@ export function app(path: string): express.Express {
     }
 
     next();
-  })
+  });
 
   // special case rendering our settings file - we already have it loaded
   server.get(`${assetRoot}/environment.json`, (request, response) => {
@@ -87,7 +87,7 @@ export function app(path: string): express.Express {
     "*.*",
     express.static(distFolder, {
       maxAge: "1y",
-    })
+    }),
   );
 
   // All regular routes use the Angular engine

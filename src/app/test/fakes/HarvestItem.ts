@@ -8,26 +8,15 @@ import {
 import { modelData } from "@test/helpers/faker";
 
 export function generateHarvestItemValidation(
-  data?: Partial<IHarvestItemValidation>
+  data?: Partial<IHarvestItemValidation>,
 ): Required<IHarvestItemValidation> {
-  const status = modelData.helpers.arrayElement([
-    "fixable",
-    "notFixable",
-  ] as const);
+  const status = modelData.helpers.arrayElement(["fixable", "notFixable"] as const);
 
   let name: ValidationName;
   if (status === "fixable") {
-    name = modelData.helpers.arrayElement([
-      "noSiteId",
-      "ambiguousDateTime",
-      "futureDate",
-    ] as const);
+    name = modelData.helpers.arrayElement(["noSiteId", "ambiguousDateTime", "futureDate"] as const);
   } else {
-    name = modelData.helpers.arrayElement([
-      "doesNotExist",
-      "duplicateFile",
-      "overlappingFiles",
-    ] as const);
+    name = modelData.helpers.arrayElement(["doesNotExist", "duplicateFile", "overlappingFiles"] as const);
   }
 
   return {
@@ -38,9 +27,7 @@ export function generateHarvestItemValidation(
   };
 }
 
-export function generateHarvestReport(
-  data?: Partial<IHarvestItemReport>
-): Required<IHarvestItemReport> {
+export function generateHarvestReport(data?: Partial<IHarvestItemReport>): Required<IHarvestItemReport> {
   return {
     itemsTotal: modelData.datatype.number(),
     itemsSizeBytes: modelData.datatype.number(),
@@ -56,18 +43,12 @@ export function generateHarvestReport(
   };
 }
 
-export function generateHarvestItem(
-  data?: Partial<IHarvestItem>
-): Required<IHarvestItem> {
+export function generateHarvestItem(data?: Partial<IHarvestItem>): Required<IHarvestItem> {
   const validations = Array(modelData.datatype.number({ min: 0, max: 3 }))
     .fill(0)
     .map(() => generateHarvestItemValidation());
 
-  const status: HarvestItemState = validations.find(
-    (v) => v.status === "notFixable"
-  )
-    ? "failed"
-    : "completed";
+  const status: HarvestItemState = validations.find((v) => v.status === "notFixable") ? "failed" : "completed";
 
   return {
     id: modelData.id(),

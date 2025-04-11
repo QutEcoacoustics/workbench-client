@@ -7,7 +7,7 @@ import { PageComponent } from "@helpers/page/pageComponent";
   selector: "baw-about-ethics",
   template: '<baw-cms [page]="page"></baw-cms>',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  standalone: false,
 })
 class EthicsComponent extends PageComponent {
   public page = CMS.ethics;

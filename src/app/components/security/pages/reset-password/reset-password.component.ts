@@ -1,10 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
-import {
-  resetPasswordMenuItem,
-  securityCategory,
-} from "@components/security/security.menus";
+import { resetPasswordMenuItem, securityCategory } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { IResetPassword, ResetPassword } from "@models/data/ResetPassword";
 import { List } from "immutable";
@@ -24,7 +21,7 @@ import schema from "./reset-password.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+  standalone: false,
 })
 class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   public fields = schema.fields;
@@ -33,7 +30,7 @@ class ResetPasswordComponent extends FormTemplate<ResetPassword> {
     private api: UserService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: () =>

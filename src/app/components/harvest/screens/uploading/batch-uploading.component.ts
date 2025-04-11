@@ -7,13 +7,13 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { DeviceDetectorService } from "ngx-device-detector";
 
-export type UploadingInstructionTab="Windows"|"Mac"|"Linux"|"RClone"
+export type UploadingInstructionTab = "Windows" | "Mac" | "Linux" | "RClone";
 
 @Component({
   selector: "baw-harvest-batch-uploading",
   templateUrl: "batch-uploading.component.html",
   styleUrls: ["batch-uploading.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class BatchUploadingComponent implements OnInit {
   public active = 1;
@@ -22,12 +22,12 @@ export class BatchUploadingComponent implements OnInit {
     public stages: HarvestStagesService,
     public modals: NgbModal,
     private config: ConfigService,
-    private deviceDetector: DeviceDetectorService
+    private deviceDetector: DeviceDetectorService,
   ) {}
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
-    this.activateTab(this.deviceDetector.os as UploadingInstructionTab)
+    this.activateTab(this.deviceDetector.os as UploadingInstructionTab);
   }
 
   public activateTab(tabName: UploadingInstructionTab): void {

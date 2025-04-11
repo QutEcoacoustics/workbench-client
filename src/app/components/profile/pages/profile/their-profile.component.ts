@@ -36,7 +36,7 @@ const accountKey = "account";
   selector: "baw-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
-  standalone: false
+  standalone: false,
 })
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
@@ -49,23 +49,13 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
     bookmarksApi: BookmarksService,
     projectsApi: ProjectsService,
     sitesApi: ShallowSitesService,
-    tagsApi: TagsService
+    tagsApi: TagsService,
   ) {
-    super(
-      config,
-      session,
-      route,
-      audioEventsApi,
-      bookmarksApi,
-      projectsApi,
-      sitesApi,
-      tagsApi
-    );
+    super(config, session, route, audioEventsApi, bookmarksApi, projectsApi, sitesApi, tagsApi);
   }
 
   public ngOnInit() {
-    const accountModel: ResolvedModel<User> =
-      this.route.snapshot.data[accountKey];
+    const accountModel: ResolvedModel<User> = this.route.snapshot.data[accountKey];
 
     if (accountModel.error) {
       return;

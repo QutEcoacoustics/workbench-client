@@ -1,35 +1,15 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewChild,
-  ViewContainerRef,
-} from "@angular/core";
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import {
-  AnyMenuItem,
-  isButton,
-  isExternalLink,
-  isInternalRoute,
-  LabelAndIcon,
-} from "@interfaces/menusInterfaces";
+import { AnyMenuItem, isButton, isExternalLink, isInternalRoute, LabelAndIcon } from "@interfaces/menusInterfaces";
 import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
 import { ModalComponent } from "../widgets/widget.component";
 import { WidgetDirective } from "../widgets/widget.directive";
-import {
-  isMenuModal,
-  menuModal,
-  MenuModal,
-  MenuModalWithoutAction,
-  WidgetMenuItem,
-} from "../widgets/widgetItem";
+import { isMenuModal, menuModal, MenuModal, MenuModalWithoutAction, WidgetMenuItem } from "../widgets/widgetItem";
 
 /**
  * Menu Component.
@@ -39,7 +19,7 @@ import {
   selector: "baw-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
-  standalone: false
+  standalone: false,
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;
@@ -61,7 +41,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   public constructor(
     public menuService: MenuService,
     private session: BawSessionService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -112,9 +92,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
       // Change modal menu item links into menu actions
-      this.links.map((link) =>
-        isMenuModal(link) ? this.createModalAction(link) : link
-      )
+      this.links.map((link) => (isMenuModal(link) ? this.createModalAction(link) : link))
     );
   }
 

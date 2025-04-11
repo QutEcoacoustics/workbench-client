@@ -72,10 +72,7 @@ export interface MetaReviewLoadMore extends MetaReviewBase {
   isLoading: boolean;
 }
 
-export type MetaReviewRow =
-  | MetaReviewFile
-  | MetaReviewFolder
-  | MetaReviewLoadMore;
+export type MetaReviewRow = MetaReviewFile | MetaReviewFolder | MetaReviewLoadMore;
 
 export type Rows = List<MetaReviewRow>;
 
@@ -90,12 +87,9 @@ const rootMappingPath = "";
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",
   styleUrls: ["metadata-review.component.scss"],
-  standalone: false
+  standalone: false,
 })
-export class MetadataReviewComponent
-  extends withUnsubscribe()
-  implements OnInit, UnsavedInputCheckingComponent
-{
+export class MetadataReviewComponent extends withUnsubscribe() implements OnInit, UnsavedInputCheckingComponent {
   /** Changes to harvest have not yet been saved to the server */
   public hasUnsavedChanges: boolean;
   public newSiteMenuItem = newSiteMenuItem;
@@ -105,9 +99,7 @@ export class MetadataReviewComponent
   /** Table is loading new data */
   public tableLoading: boolean;
 
-  private userInputBuffer$ = new Subject<
-    MetaReviewFolder | MetaReviewLoadMore
-  >();
+  private userInputBuffer$ = new Subject<MetaReviewFolder | MetaReviewLoadMore>();
 
   public icons = metaReviewIcons;
 
@@ -116,7 +108,7 @@ export class MetadataReviewComponent
     private stages: HarvestStagesService,
     private config: ConfigService,
     private notification: ToastService,
-    private harvestApi: ShallowHarvestsService
+    private harvestApi: ShallowHarvestsService,
   ) {
     super();
   }
@@ -146,9 +138,7 @@ export class MetadataReviewComponent
       path: rootMappingPath,
       parentFolder: null,
       // Root folder does not have harvestItem, use hard-coded path for search
-      mapping: this.harvest.mappings.find(
-        (mapping) => mapping.path === rootMappingPath
-      ),
+      mapping: this.harvest.mappings.find((mapping) => mapping.path === rootMappingPath),
     };
 
     this.rows = List<MetaReviewRow>([rootFolder]);
@@ -184,7 +174,7 @@ export class MetadataReviewComponent
         tap((rows): void => {
           this.rows = rows;
         }),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe();
 
@@ -244,9 +234,7 @@ export class MetadataReviewComponent
   }
 
   public trackByRow = (_: number, row: MetaReviewRow): string =>
-    (row as MetaReviewFolder).isRoot
-      ? (row as MetaReviewFolder).path
-      : row.harvestItem?.path;
+    (row as MetaReviewFolder).isRoot ? (row as MetaReviewFolder).path : row.harvestItem?.path;
 
   public updateHarvestWithMappingChange(): void {
     // create a new "temporary" model of the Harvest mappings
@@ -284,8 +272,7 @@ export class MetadataReviewComponent
           // update the wider Harvest model once the baw-api PATCH request was accepted
           this.harvest.mappings = adjustedMappings;
         },
-        error: (err: BawApiError) =>
-          this.notification.error("Failed to make that change: " + err.message),
+        error: (err: BawApiError) => this.notification.error("Failed to make that change: " + err.message),
       });
   }
 
@@ -296,16 +283,9 @@ export class MetadataReviewComponent
    *
    * @param row Table row
    */
-  private async loadMore(
-    rows: Rows,
-    rowIndex: number,
-    row: MetaReviewFolder | MetaReviewLoadMore
-  ): Promise<Rows> {
+  private async loadMore(rows: Rows, rowIndex: number, row: MetaReviewFolder | MetaReviewLoadMore): Promise<Rows> {
     this.tableLoading = true;
-    const harvestItems = await this.stages.getHarvestItems(
-      row.harvestItem,
-      row.page
-    );
+    const harvestItems = await this.stages.getHarvestItems(row.harvestItem, row.page);
     this.tableLoading = false;
 
     if (harvestItems.length === 0) {
@@ -313,10 +293,7 @@ export class MetadataReviewComponent
     }
 
     const parentFolder = this.isFolder(row) ? row : row.parentFolder;
-    const newRows = harvestItems.map(
-      (harvestItem): MetaReviewRow =>
-        this.generateRow(harvestItem, parentFolder)
-    );
+    const newRows = harvestItems.map((harvestItem): MetaReviewRow => this.generateRow(harvestItem, parentFolder));
 
     const meta = harvestItems[0].getMetadata();
     if (meta && meta.paging.maxPage !== meta.paging.page) {
@@ -340,11 +317,7 @@ export class MetadataReviewComponent
    *
    * @param row Table row
    */
-  private closeFolder(
-    rows: Rows,
-    rowIndex: number,
-    row: MetaReviewFolder
-  ): Rows {
+  private closeFolder(rows: Rows, rowIndex: number, row: MetaReviewFolder): Rows {
     /**
      * Check if the parent, or ancestors, of the child row match the parent
      * folder
@@ -387,10 +360,7 @@ export class MetadataReviewComponent
    * @param parentFolder Parent folder
    * @param page Page of folder to load
    */
-  private generateLoadMore(
-    parentFolder: MetaReviewFolder | null,
-    page: number
-  ): MetaReviewLoadMore {
+  private generateLoadMore(parentFolder: MetaReviewFolder | null, page: number): MetaReviewLoadMore {
     return {
       rowType: RowType.loadMore,
       harvestItem: parentFolder.harvestItem,
@@ -407,10 +377,7 @@ export class MetadataReviewComponent
    * @param harvestItem Harvest item
    * @param parentFolder Parent folder
    */
-  private generateRow(
-    harvestItem: HarvestItem,
-    parentFolder: MetaReviewFolder
-  ): MetaReviewFolder | MetaReviewFile {
+  private generateRow(harvestItem: HarvestItem, parentFolder: MetaReviewFolder): MetaReviewFolder | MetaReviewFile {
     const mapping = this.findMapping(this.harvest, harvestItem);
     // While it is technically possible in linux to have filenames which
     // include the character '/', our server should block it from being used
@@ -452,13 +419,8 @@ export class MetadataReviewComponent
    * @param harvest Harvest
    * @param harvestItem Harvest Item
    */
-  private findMapping(
-    harvest: Harvest,
-    harvestItem: HarvestItem
-  ): HarvestMapping | null {
-    return harvest.mappings.find(
-      (_mapping): boolean => harvestItem.path === _mapping.path
-    );
+  private findMapping(harvest: Harvest, harvestItem: HarvestItem): HarvestMapping | null {
+    return harvest.mappings.find((_mapping): boolean => harvestItem.path === _mapping.path);
   }
 
   /**

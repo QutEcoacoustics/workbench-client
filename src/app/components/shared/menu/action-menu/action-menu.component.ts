@@ -14,15 +14,9 @@ import { takeUntil } from "rxjs";
 @Component({
   selector: "baw-action-menu",
   template: `
-    <baw-menu
-      menuType="action"
-      [title]="title"
-      [links]="links"
-      [widgets]="widgets"
-      [isSideNav]="isSideNav"
-    ></baw-menu>
+    <baw-menu menuType="action" [title]="title" [links]="links" [widgets]="widgets" [isSideNav]="isSideNav"></baw-menu>
   `,
-  standalone: false
+  standalone: false,
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;
@@ -36,12 +30,10 @@ export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.menu.menuUpdate
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(({ actionMenu }): void => {
-        this.title = actionMenu.title;
-        this.links = actionMenu.links;
-        this.widgets = actionMenu.widgets;
-      });
+    this.menu.menuUpdate.pipe(takeUntil(this.unsubscribe)).subscribe(({ actionMenu }): void => {
+      this.title = actionMenu.title;
+      this.links = actionMenu.links;
+      this.widgets = actionMenu.widgets;
+    });
   }
 }

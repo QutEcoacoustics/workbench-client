@@ -1,11 +1,7 @@
 import { Question } from "@models/Question";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateQuestion } from "@test/fakes/Question";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-  validateStandardApi,
-} from "@test/helpers/api-common";
+import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
 import { ShallowQuestionsService } from "./questions.service";
 
 describe("ShallowQuestionsService", (): void => {
@@ -23,13 +19,5 @@ describe("ShallowQuestionsService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(
-    () => spec,
-    Question,
-    baseUrl,
-    baseUrl + "filter",
-    updateUrl,
-    createModel,
-    5
-  );
+  validateStandardApi(() => spec, Question, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
 });

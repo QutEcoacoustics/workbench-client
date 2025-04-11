@@ -34,9 +34,7 @@ import { asFormControl } from "./helper";
     </div>
 
     <div class="form-group">
-      <label for="longitude">
-        Longitude {{ props.required ? " *" : "" }}
-      </label>
+      <label for="longitude"> Longitude {{ props.required ? " *" : "" }} </label>
       <input
         id="longitude"
         type="number"
@@ -53,11 +51,7 @@ import { asFormControl } from "./helper";
         </div>
       }
 
-      <input
-        type="hidden"
-        [id]="field.id"
-        [formControl]="asFormControl(formControl)"
-      />
+      <input type="hidden" [id]="field.id" [formControl]="asFormControl(formControl)" />
     </div>
 
     <div class="mb-3" style="height: 400px">
@@ -68,7 +62,7 @@ import { asFormControl } from "./helper";
       ></baw-map>
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;

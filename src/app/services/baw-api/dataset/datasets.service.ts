@@ -2,15 +2,7 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset } from "@models/Dataset";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -38,7 +30,7 @@ export class DatasetsService implements StandardApi<Dataset> {
       Dataset,
       endpoint(emptyParam, emptyParam),
       (dataset) => endpoint(dataset, emptyParam),
-      model
+      model,
     );
   }
 
@@ -51,7 +43,4 @@ export class DatasetsService implements StandardApi<Dataset> {
   }
 }
 
-export const datasetResolvers = new Resolvers<Dataset, []>(
-  [DatasetsService],
-  "datasetId"
-).create("Dataset");
+export const datasetResolvers = new Resolvers<Dataset, []>([DatasetsService], "datasetId").create("Dataset");

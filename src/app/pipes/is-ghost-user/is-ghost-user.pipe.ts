@@ -7,7 +7,7 @@ import { User } from "@models/User";
  */
 @Pipe({
   name: "isGhostUser",
-  standalone: false
+  standalone: false,
 })
 export class IsGhostUserPipe implements PipeTransform {
   /**
@@ -17,10 +17,7 @@ export class IsGhostUserPipe implements PipeTransform {
    * - `"deleted"` = Deleted user,
    * - `"all"` = Both unknown and deleted users
    */
-  public transform(
-    value: AbstractModel,
-    type: "unknown" | "deleted" | "all" = "all"
-  ): boolean {
+  public transform(value: AbstractModel, type: "unknown" | "deleted" | "all" = "all"): boolean {
     if (!value || !(value instanceof User)) {
       return true;
     }

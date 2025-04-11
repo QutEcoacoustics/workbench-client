@@ -3,11 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  FormCheckingComponent,
-  FormTouchedGuard,
-  withFormCheck,
-} from "./form.guard";
+import { FormCheckingComponent, FormTouchedGuard, withFormCheck } from "./form.guard";
 
 describe("FormTouchedGuard", () => {
   let guard: FormTouchedGuard;
@@ -71,16 +67,13 @@ describe("WithFormCheck", () => {
   @Component({
     selector: "baw-testing",
     template: `
-        <div>
-          @for (schema of schemas; track schema) {
-            <baw-form
-              [model]="schema.model"
-              [fields]="schema.fields"
-            ></baw-form>
-          }
-        </div>
-        `,
-    standalone: false
+      <div>
+        @for (schema of schemas; track schema) {
+          <baw-form [model]="schema.model" [fields]="schema.fields"></baw-form>
+        }
+      </div>
+    `,
+    standalone: false,
   })
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];

@@ -8,7 +8,7 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 @Component({
   selector: "baw-admin-datetime-templates",
   templateUrl: "datetime-example.component.html",
-  standalone: false
+  standalone: false,
 })
 class DateTimeExampleComponent extends PageComponent {
   public constructor() {

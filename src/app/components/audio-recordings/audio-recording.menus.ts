@@ -5,12 +5,7 @@ import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
-import {
-  Category,
-  menuLink,
-  MenuRoute,
-  menuRoute,
-} from "@interfaces/menusInterfaces";
+import { Category, menuLink, MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import {
   audioRecordingBatchRoutes,
@@ -27,10 +22,7 @@ export const audioRecordingsCategory: Category = {
   route: audioRecordingsRoutes.base,
 };
 
-function makeListMenuItem(
-  subRoute: RecordingRoute,
-  parent?: MenuRoute
-): MenuRoute {
+function makeListMenuItem(subRoute: RecordingRoute, parent?: MenuRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-archive"],
     label: "Audio Recordings",
@@ -48,8 +40,7 @@ function makeDetailsMenuItem(subRoute: RecordingRoute): MenuRoute {
     route: audioRecordingRoutes[subRoute],
     parent: listMenuItems[subRoute],
     // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
-    breadcrumbResolve: (pageInfo) =>
-      retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+    breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
     title: (routeData: RouterStateSnapshot): string => {
       const componentModel = routeData.root.firstChild.data;
       return componentModel.audioRecording.model.id.toString();
@@ -119,8 +110,7 @@ export const downloadAudioRecordingMenuItem = menuLink({
   label: "Download",
   tooltip: () => "Download audio recording",
   // Relative routes go to api
-  uri: ({ audioRecordingId }) =>
-    audioRecordingOriginalEndpoint(audioRecordingId),
+  uri: ({ audioRecordingId }) => audioRecordingOriginalEndpoint(audioRecordingId),
 });
 
 // TODO: when this button is clicked it should action a download
@@ -129,5 +119,5 @@ export const downloadAudioRecordingAnalysesMenuItem = menuLink({
   label: "Download Analyses",
   tooltip: () => "Download audio recording analyses",
   disabled: "BETA: Will be available soon.",
-  uri: () => "#"
+  uri: () => "#",
 });

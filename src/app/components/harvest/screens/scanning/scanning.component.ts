@@ -13,10 +13,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
 
     <h4>Progress</h4>
 
-    <baw-harvest-eta
-      [harvest]="harvest"
-      [progress]="newFileProgress + metadataProgress"
-    ></baw-harvest-eta>
+    <baw-harvest-eta [harvest]="harvest" [progress]="newFileProgress + metadataProgress"></baw-harvest-eta>
 
     <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
@@ -32,7 +29,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
       ></baw-progress-bar>
     </baw-progress>
   `,
-  standalone: false
+  standalone: false,
 })
 export class ScanningComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}

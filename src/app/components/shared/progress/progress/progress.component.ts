@@ -12,19 +12,21 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
       }
     </div>
   `,
-  styles: [`
-    .progress > baw-progress-bar {
-      display: contents;
-    }
+  styles: [
+    `
+      .progress > baw-progress-bar {
+        display: contents;
+      }
 
-    .zero {
-      background-color: unset;
-      color: black;
-    }
-  `],
+      .zero {
+        background-color: unset;
+        color: black;
+      }
+    `,
+  ],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
-  standalone: false
+  standalone: false,
 })
 export class ProgressComponent {
   @Input() public showZero: boolean;

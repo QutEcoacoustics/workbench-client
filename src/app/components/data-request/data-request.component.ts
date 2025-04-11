@@ -20,9 +20,7 @@ import schema from "./data-request.schema.json";
 
     <ol>
       <li>Open the project, site, or point page you're interested in</li>
-      <li>
-        Use the <i>Download Annotations</i> button to download annotations
-      </li>
+      <li>Use the <i>Download Annotations</i> button to download annotations</li>
     </ol>
 
     <baw-form
@@ -36,17 +34,17 @@ import schema from "./data-request.schema.json";
     >
       <span id="subTitle">
         <p>
-          Use this form to request a customized annotations list or other data
-          related to the audio recordings on this website.
+          Use this form to request a customized annotations list or other data related to the audio recordings on this
+          website.
         </p>
         <p>
-          You <strong>do not need</strong> to use this form if you need the
-          standard <strong>annotations CSV</strong> download.
+          You <strong>do not need</strong> to use this form if you need the standard
+          <strong>annotations CSV</strong> download.
         </p>
       </span>
     </baw-form>
   `,
-  standalone: false
+  standalone: false,
 })
 class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
   public fields = schema.fields;
@@ -58,8 +56,7 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
     protected router: Router,
   ) {
     super(notifications, route, router, {
-      successMsg: () =>
-        "Your request was successfully submitted. We will be in contact shortly.",
+      successMsg: () => "Your request was successfully submitted. We will be in contact shortly.",
     });
   }
 
@@ -70,8 +67,7 @@ class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
       .seed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: ({ seed, action }) =>
-          (this.recaptchaSeed = { state: "loaded", seed, action }),
+        next: ({ seed, action }) => (this.recaptchaSeed = { state: "loaded", seed, action }),
         error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");

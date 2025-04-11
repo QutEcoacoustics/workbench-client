@@ -11,10 +11,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <baw-harvest-eta
-      [harvest]="harvest"
-      [progress]="successProgress + errorProgress"
-    ></baw-harvest-eta>
+    <baw-harvest-eta [harvest]="harvest" [progress]="successProgress + errorProgress"></baw-harvest-eta>
 
     <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
@@ -30,7 +27,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
       ></baw-progress-bar>
     </baw-progress>
   `,
-  standalone: false
+  standalone: false,
 })
 export class ProcessingComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}
@@ -48,9 +45,7 @@ export class ProcessingComponent implements OnInit {
   }
 
   public get errorProgress(): number {
-    return this.stages.calculateProgress(
-      this.report.itemsFailed + this.report.itemsErrored
-    );
+    return this.stages.calculateProgress(this.report.itemsFailed + this.report.itemsErrored);
   }
 
   public get harvest(): Harvest {

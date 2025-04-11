@@ -48,7 +48,7 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
       }
     </div>
   `,
-  standalone: false
+  standalone: false,
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */
@@ -90,10 +90,10 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   }
 
   /** Invoked when the model has been changed */
-  public onChange: (_: Duration) => void = () => this.dirty = true;
+  public onChange: (_: Duration) => void = () => (this.dirty = true);
 
   /** Invoked when the model has been touched */
-  public onTouched: () => void = () => this.touched = true;
+  public onTouched: () => void = () => (this.touched = true);
 
   /** Method that is invoked on an update of a model. */
   public updateChanges = () => this.onChange(this.value);
@@ -115,8 +115,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   /**
    * Method that is invoked when the control status changes to or from "DISABLED".
    */
-  public setDisabledState = (isDisabled: boolean) =>
-    (this.disabled = isDisabled);
+  public setDisabledState = (isDisabled: boolean) => (this.disabled = isDisabled);
 
   /**
    * Writes a new item to the element.

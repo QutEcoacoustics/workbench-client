@@ -8,11 +8,7 @@ import {
   QueryList,
   Renderer2,
 } from "@angular/core";
-import {
-  IsActiveMatchOptions,
-  Router,
-  RouterLinkActive,
-} from "@angular/router";
+import { IsActiveMatchOptions, Router, RouterLinkActive } from "@angular/router";
 import { StrongRouteDirective } from "./strong-route.directive";
 
 export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
@@ -20,7 +16,7 @@ export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRouteActive]",
-  standalone: false
+  standalone: false,
 })
 export class StrongRouteActiveDirective extends RouterLinkActive {
   @ContentChildren(StrongRouteDirective, { descendants: true })
@@ -41,7 +37,7 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
     _element: ElementRef,
     _renderer: Renderer2,
     _cdr: ChangeDetectorRef,
-    @Optional() _link?: StrongRouteDirective
+    @Optional() _link?: StrongRouteDirective,
   ) {
     super(_router, _element, _renderer, _cdr, _link);
   }

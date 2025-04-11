@@ -1,31 +1,16 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  TemplateRef,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output, TemplateRef } from "@angular/core";
 import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
 import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  switchMap,
-} from "rxjs";
+import { debounceTime, distinctUntilChanged, map, Observable, switchMap } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 
-export type TypeaheadSearchCallback<T = object> = (
-  text: string,
-  activeItems: T[]
-) => Observable<T[]>;
+export type TypeaheadSearchCallback<T = object> = (text: string, activeItems: T[]) => Observable<T[]>;
 
 @Component({
   selector: "baw-typeahead-input",
   templateUrl: "typeahead-input.component.html",
   styleUrl: "typeahead-input.component.scss",
-  standalone: false
+  standalone: false,
 })
 export class TypeaheadInputComponent {
   /**
@@ -60,10 +45,8 @@ export class TypeaheadInputComponent {
     return text$.pipe(
       debounceTime(defaultDebounceTime),
       distinctUntilChanged(),
-      switchMap((term: string) =>
-        this.searchCallback ? this.searchCallback(term, this.value) : []
-      ),
-      map((items: object[]) => items.slice(0, maximumResults))
+      switchMap((term: string) => (this.searchCallback ? this.searchCallback(term, this.value) : [])),
+      map((items: object[]) => items.slice(0, maximumResults)),
     );
   };
 

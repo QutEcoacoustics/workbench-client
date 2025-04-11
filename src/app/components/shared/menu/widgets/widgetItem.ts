@@ -15,7 +15,7 @@ export class WidgetMenuItem {
     /** Whether or not to show this link */
     public predicate?: UserCallback<boolean>,
     /** Options to be passed to the component */
-    public options?: Record<string, unknown>
+    public options?: Record<string, unknown>,
   ) {}
 }
 
@@ -34,9 +34,9 @@ export interface MenuModal extends Omit<MenuAction, "kind"> {
 /** Modal widget menu item without action function set */
 export type MenuModalWithoutAction = Omit<MenuModal, "action">;
 
-export function menuModal<
-  T extends Omit<MenuModal, "kind" | "action" | "assignComponentData">
->(item: T): MenuModal | MenuModalWithoutAction {
+export function menuModal<T extends Omit<MenuModal, "kind" | "action" | "assignComponentData">>(
+  item: T,
+): MenuModal | MenuModalWithoutAction {
   return Object.assign(item, {
     kind: "MenuModal" as const,
     indentation: item.parent ? item.parent.indentation + 1 : 0,
@@ -64,8 +64,6 @@ export function menuModal<
  *
  * @param item Menu item
  */
-export function isMenuModal(
-  item: any
-): item is MenuModal | MenuModalWithoutAction {
+export function isMenuModal(item: any): item is MenuModal | MenuModalWithoutAction {
   return (item as MenuModal).kind === "MenuModal";
 }
