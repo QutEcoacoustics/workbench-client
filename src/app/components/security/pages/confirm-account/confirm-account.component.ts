@@ -13,8 +13,8 @@ import {
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
-import schema from "./confirm-account.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
+import schema from "./confirm-account.schema.json";
 
 @Component({
     selector: "baw-confirm-account",

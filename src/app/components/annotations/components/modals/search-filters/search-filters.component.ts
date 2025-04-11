@@ -5,8 +5,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
 import { NgClass } from "@angular/common";
+import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
 
 @Component({
     selector: "baw-search-filters-modal",

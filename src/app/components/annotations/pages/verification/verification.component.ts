@@ -44,8 +44,8 @@ import {
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { ProgressWarningComponent as ProgressWarningComponent_1 } from "../../components/modals/progress-warning/progress-warning.component";
 import { SearchFiltersModalComponent as SearchFiltersModalComponent_1 } from "../../components/modals/search-filters/search-filters.component";
 

@@ -24,8 +24,8 @@ import { Site } from "@models/Site";
 import { List } from "immutable";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
-import schema from "./audio-recording.schema.json";
 import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
+import schema from "./audio-recording.schema.json";
 
 const audioRecordingKey = "audioRecording";
 const projectKey = "project";

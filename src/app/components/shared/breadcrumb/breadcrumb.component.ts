@@ -5,8 +5,8 @@ import { BreadcrumbsData, MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, Observable } from "rxjs";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
 import { AsyncPipe } from "@angular/common";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
 
 /**
  * Menu Link Component

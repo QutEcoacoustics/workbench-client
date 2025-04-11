@@ -17,10 +17,10 @@ import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { concatMap, Subject, takeUntil, tap } from "rxjs";
+import { NgStyle, DecimalPipe } from "@angular/common";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 import { StatisticsComponent } from "../../components/shared/statistics/statistics.component";
 import { FolderRowComponent } from "../../components/metadata-review/folder-row.component";
-import { NgStyle, DecimalPipe } from "@angular/common";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
 import { ConfirmationComponent } from "../../components/modal/confirmation.component";
@@ -94,10 +94,20 @@ const rootMappingPath = "";
  * - Wrap table in virtual scroll
  */
 @Component({
-    selector: "baw-harvest-metadata-review",
-    templateUrl: "metadata-review.component.html",
-    styleUrls: ["metadata-review.component.scss"],
-    imports: [StrongRouteDirective, StatisticsComponent, NgbTooltip, FolderRowComponent, NgStyle, FileRowComponent, LoadMoreComponent, ConfirmationComponent, DecimalPipe]
+  selector: "baw-harvest-metadata-review",
+  templateUrl: "metadata-review.component.html",
+  styleUrls: ["metadata-review.component.scss"],
+  imports: [
+    StrongRouteDirective,
+    StatisticsComponent,
+    NgbTooltip,
+    FolderRowComponent,
+    NgStyle,
+    FileRowComponent,
+    LoadMoreComponent,
+    ConfirmationComponent,
+    DecimalPipe,
+  ],
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()

@@ -14,14 +14,14 @@ import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
-import { homeCategory, homeMenuItem } from "./home.menus";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AsyncPipe, UpperCasePipe, TitleCasePipe } from "@angular/common";
 import { LoadingComponent } from "../shared/loading/loading.component";
 import { CardsComponent } from "../shared/model-cards/cards/cards.component";
 import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.directive";
 import { AuthenticatedImageDirective } from "../../directives/image/image.directive";
-import { AsyncPipe, UpperCasePipe, TitleCasePipe } from "@angular/common";
 import { WithLoadingPipe } from "../../pipes/with-loading/with-loading.pipe";
+import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
     selector: "baw-home",

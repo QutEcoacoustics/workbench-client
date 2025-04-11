@@ -6,9 +6,9 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 

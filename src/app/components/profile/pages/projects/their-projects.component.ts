@@ -9,13 +9,13 @@ import {
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { theirProfileActions } from "../profile/their-profile.component";
-import { MyProjectsComponent } from "./my-projects.component";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { TitleCasePipe } from "@angular/common";
+import { theirProfileActions } from "../profile/their-profile.component";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
-import { TitleCasePipe } from "@angular/common";
+import { MyProjectsComponent } from "./my-projects.component";
 
 const accountKey = "account";
 

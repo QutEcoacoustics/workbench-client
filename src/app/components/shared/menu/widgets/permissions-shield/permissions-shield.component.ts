@@ -15,9 +15,9 @@ import { Site } from "@models/Site";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil } from "rxjs";
 import { Harvest } from "@models/Harvest";
+import { TitleCasePipe } from "@angular/common";
 import { WidgetComponent } from "../widget.component";
 import { UserBadgeComponent } from "../../user-badge/user-badge.component";
-import { TitleCasePipe } from "@angular/common";
 
 /**
  * Permissions Shield Component.

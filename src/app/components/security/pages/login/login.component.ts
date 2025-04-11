@@ -21,9 +21,9 @@ import { ToastComponent } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
-import schema from "./login.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
 import { ToastComponent as ToastComponent_1 } from "../../../shared/toast/toast.component";
+import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
   confirmAccountMenuItem,

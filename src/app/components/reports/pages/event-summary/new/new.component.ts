@@ -36,16 +36,16 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { StandardApi } from "@baw-api/api-common";
+import { FormsModule } from "@angular/forms";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { TitleCasePipe } from "@angular/common";
 import {
   BucketSize,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import { FormsModule } from "@angular/forms";
 import { DateTimeFilterComponent } from "../../../../shared/date-time-filter/date-time-filter.component";
 import { TypeaheadInputComponent } from "../../../../shared/typeahead-input/typeahead-input.component";
 import { StrongRouteDirective } from "../../../../../directives/strongRoute/strong-route.directive";
-import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { TitleCasePipe } from "@angular/common";
 
 const projectKey = "project";
 const regionKey = "region";

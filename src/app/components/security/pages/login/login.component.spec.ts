@@ -39,7 +39,7 @@ import schema from "./login.schema.json";
     <baw-toast-provider></baw-toast-provider>
     <baw-authentication-login></baw-authentication-login>
   `,
-  standalone: false
+  
 })
 class TestHostComponent {}
 

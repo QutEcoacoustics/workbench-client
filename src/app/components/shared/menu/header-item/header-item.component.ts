@@ -14,9 +14,9 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import camelCase from "just-camel-case";
+import { NgTemplateOutlet } from "@angular/common";
 import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { NgTemplateOutlet } from "@angular/common";
 
 /**
  * Header Item Component.

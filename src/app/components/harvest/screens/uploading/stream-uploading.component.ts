@@ -5,14 +5,14 @@ import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DecimalPipe } from "@angular/common";
 import { UploadUrlComponent } from "../../components/shared/upload-url.component";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ConfirmationComponent } from "../../components/modal/confirmation.component";
-import { DecimalPipe } from "@angular/common";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 

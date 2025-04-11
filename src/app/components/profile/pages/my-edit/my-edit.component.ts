@@ -14,8 +14,8 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { myAccountActions } from "../profile/my-profile.component";
-import schema from "./my-edit.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
+import schema from "./my-edit.schema.json";
 
 const userKey = "user";
 

@@ -6,6 +6,7 @@ import { Script } from "@models/Script";
 import { List } from "immutable";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   adminEditScriptMenuItem,
   newScriptMenuItem,
@@ -13,7 +14,6 @@ import {
   scriptsMenuItem,
 } from "../scripts.menus";
 import { DebounceInputComponent } from "../../shared/debounce-input/debounce-input.component";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
 import { IfLoggedInComponent } from "../../shared/can/can.component";
 import { UrlDirective } from "../../../directives/url/url.directive";

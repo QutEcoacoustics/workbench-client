@@ -12,9 +12,9 @@ import { ContactUs, IContactUs } from "@models/data/ContactUs";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs/operators";
-import schema from "./contact-us.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import schema from "./contact-us.schema.json";
 
 @Component({
     selector: "baw-about-contact-us",

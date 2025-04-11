@@ -18,8 +18,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
-import schema from "./register.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
+import schema from "./register.schema.json";
 
 @Component({
     selector: "baw-authentication-register",

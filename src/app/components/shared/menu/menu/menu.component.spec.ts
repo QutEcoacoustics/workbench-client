@@ -49,7 +49,7 @@ import { MenuComponent } from "./menu.component";
 @Component({
   selector: "baw-test-widget",
   template: "<div>Widget working</div>",
-  standalone: false
+  
 })
 export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
@@ -62,7 +62,7 @@ export class MockWidgetComponent implements WidgetComponent {
 @Component({
   selector: "baw-test-modal",
   template: '<div class="modal-body">Modal working</div>',
-  standalone: false
+  
 })
 export class MockModalComponent implements ModalComponent {
   public pageData!: any;

@@ -25,11 +25,11 @@ import {
   GridTileContentComponent,
   gridTileContentSelector,
 } from "@components/web-components/grid-tile-content/grid-tile-content.component";
+import { LoadingBarModule } from "@ngx-loading-bar/core";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "./services/config/config.service";
 import { HeaderComponent } from "./components/shared/menu/header/header.component";
-import { LoadingBarModule } from "@ngx-loading-bar/core";
 import { ToastProviderComponent } from "./components/shared/toast-provider/toast-provider.component";
 import { SideNavComponent } from "./components/shared/menu/side-nav/side-nav.component";
 import { PrimaryMenuComponent } from "./components/shared/menu/primary-menu/primary-menu.component";

@@ -5,11 +5,11 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { ValidationName } from "@models/HarvestItem";
 import { ConfigService } from "@services/config/config.service";
 import { map, Observable, startWith } from "rxjs";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AsyncPipe } from "@angular/common";
 import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
-import { AsyncPipe } from "@angular/common";
 import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
