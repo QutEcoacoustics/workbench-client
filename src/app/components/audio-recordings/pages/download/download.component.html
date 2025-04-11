@@ -159,19 +159,17 @@
     Copy and paste the following command into your PowerShell session.
   </p>
 
-  <div
-    id="guest-run-script"
-    class="alert alert-warning"
-    *ngIf="!session.authToken"
-  >
-    <i><a [strongRoute]="loginStrongRoute">Log in</a> to see this command.</i>
-  </div>
-
+  @if (!session.authToken) {
+    <div id="guest-run-script" class="alert alert-warning">
+      <i><a [strongRoute]="loginStrongRoute">Log in</a> to see this command.</i>
+    </div>
+  }
+  
   @if (session.authToken) {
     <baw-hidden-copy
       tooltip="Show/Hide command"
       [value]="runScriptCommand"
-      >
+    >
       <code>{{ runScriptCommand }}</code>
     </baw-hidden-copy>
   }
