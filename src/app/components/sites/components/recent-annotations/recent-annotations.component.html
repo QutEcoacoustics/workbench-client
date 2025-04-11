@@ -2,44 +2,48 @@
 
 <ul class="nav">
   <!-- Loading animation -->
-  <baw-loading *ngIf="!recentAudioEvents" id="annotation-loader"></baw-loading>
+  @if (!recentAudioEvents) {
+    <baw-loading id="annotation-loader"></baw-loading>
+  }
 
   <!-- Handle no annotations -->
-  <p *ngIf="recentAudioEvents?.length === 0" id="no-annotations">
-    No recent annotations found
-  </p>
+  @if (recentAudioEvents?.length === 0) {
+    <p id="no-annotations">
+      No recent annotations found
+    </p>
+  }
 
   <!-- For each annotation and tagging -->
-  <ng-container *ngFor="let event of recentAudioEvents">
-    <li *ngIf="event.taggings.length === 0" class="nav-item">
-      <ng-container
-        [ngTemplateOutlet]="notTagged"
-        [ngTemplateOutletContext]="{ event }"
-      ></ng-container>
-    </li>
-
-    <li *ngFor="let tagging of event.taggings" class="nav-item">
-      <ng-container
-        [ngTemplateOutlet]="tagged"
-        [ngTemplateOutletContext]="{ tagging, event }"
-      ></ng-container>
-    </li>
-  </ng-container>
+  @for (event of recentAudioEvents; track event) {
+    @if (event.taggings.length === 0) {
+      <li class="nav-item">
+        <ng-container
+          [ngTemplateOutlet]="notTagged"
+          [ngTemplateOutletContext]="{ event }"
+        ></ng-container>
+      </li>
+    }
+    
+    @for (tagging of event.taggings; track tagging) {
+      <li class="nav-item">
+        <ng-container
+          [ngTemplateOutlet]="tagged"
+          [ngTemplateOutletContext]="{ tagging, event }"
+        ></ng-container>
+      </li>
+    }
+  }
 </ul>
 
 <!-- Show event creator for untagged event -->
 <ng-template #notTagged let-event="event">
   <!-- Annotation link -->
   <a class="nav-link rounded-link-default" [bawUrl]="event.listenViewUrl">
-    <baw-loading
-      *ngIf="event.creator | isUnresolved; else loaded"
-      id="tag-loader"
-      size="sm"
-    ></baw-loading>
-
-    <ng-template #loaded>
+    @if (event.creator | isUnresolved) {
+      <baw-loading id="tag-loader" size="sm"></baw-loading>
+    } @else {
       (not tagged) by {{ event.creator.userName }}
-    </ng-template>
+    }
   </a>
 </ng-template>
 
@@ -50,16 +54,12 @@
     <!--
       Loading when unresolved
     -->
-    <ng-container
-      *ngIf="modelsUnresolved(event.creator, tagging.tag); else loaded"
-    >
+    @if (modelsUnresolved(event.creator, tagging.tag)) {
       <baw-loading id="tag-loader" size="sm"></baw-loading>
-    </ng-container>
-
-    <!-- Annotation details -->
-    <ng-template #loaded>
+    } @else {
+      <!-- Annotation details -->
       "{{ tagging.tag.text }}" by
       {{ event.creator.userName }}
-    </ng-template>
+    }
   </a>
 </ng-template>
