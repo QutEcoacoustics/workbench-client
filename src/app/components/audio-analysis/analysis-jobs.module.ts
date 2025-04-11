@@ -14,8 +14,7 @@ const components = [
 const routes = analysesRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: components,
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [RouterModule, ...components],
 })
 export class AnalysisModule {}

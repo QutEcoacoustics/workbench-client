@@ -17,7 +17,7 @@ import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { UserLinkModule } from "@shared/user-link/user-link.module";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
-import { LoadingModule } from "../loading/loading.module";
+
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { MenuButtonComponent } from "./button/button.component";
 import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
@@ -58,29 +58,27 @@ const publicComponents = [
  * Menus Module
  */
 @NgModule({
-  declarations: [...privateComponents, ...publicComponents],
-  imports: [
+    imports: [
     CommonModule,
     RouterModule,
     NgbModalModule,
     NgbTooltipModule,
     NgbDropdownModule,
     IconsModule,
-    LoadingModule,
     PipesModule,
     DirectivesModule,
     UserLinkModule,
-
     TimeSinceComponent,
-  ],
-  providers: [
-    {
-      provide: DEFAULT_MENU,
-      useFactory: DefaultMenu.getMenu,
-      deps: [ConfigService],
-    },
-    MenuService,
-  ],
-  exports: publicComponents,
+    ...privateComponents, ...publicComponents,
+],
+    providers: [
+        {
+            provide: DEFAULT_MENU,
+            useFactory: DefaultMenu.getMenu,
+            deps: [ConfigService],
+        },
+        MenuService,
+    ],
+    exports: publicComponents,
 })
 export class MenuModule {}

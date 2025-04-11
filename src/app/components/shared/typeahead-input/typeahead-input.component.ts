@@ -5,7 +5,7 @@ import {
   Output,
   TemplateRef,
 } from "@angular/core";
-import { NgbTypeaheadSelectItemEvent } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTypeaheadSelectItemEvent, NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
 import {
   debounceTime,
@@ -15,6 +15,9 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgTemplateOutlet } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 export type TypeaheadSearchCallback<T = object> = (
   text: string,
@@ -22,10 +25,10 @@ export type TypeaheadSearchCallback<T = object> = (
 ) => Observable<T[]>;
 
 @Component({
-  selector: "baw-typeahead-input",
-  templateUrl: "typeahead-input.component.html",
-  styleUrl: "typeahead-input.component.scss",
-  standalone: false
+    selector: "baw-typeahead-input",
+    templateUrl: "typeahead-input.component.html",
+    styleUrl: "typeahead-input.component.scss",
+    imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule]
 })
 export class TypeaheadInputComponent {
   /**

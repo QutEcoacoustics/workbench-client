@@ -21,6 +21,8 @@ import { ToastComponent } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
+import { FormComponent } from "../../../shared/form/form.component";
+import { ToastComponent as ToastComponent_1 } from "../../../shared/toast/toast.component";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [
@@ -30,8 +32,8 @@ export const loginMenuItemActions = [
 ];
 
 @Component({
-  selector: "baw-authentication-login",
-  template: `
+    selector: "baw-authentication-login",
+    template: `
     <baw-form
       title="Log in"
       size="small"
@@ -66,7 +68,7 @@ export const loginMenuItemActions = [
       </ng-template>
     </baw-toast>
   `,
-  standalone: false
+    imports: [FormComponent, ToastComponent_1]
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = schema.fields;

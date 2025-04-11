@@ -7,10 +7,7 @@ import { AbstractModel } from "@models/AbstractModel";
  * Evaluate if a value is not undefined or null
  * This is useful in ngIf statements to check if a value is defined
  */
-@Pipe({
-  name: "isInstantiated",
-  standalone: false
-})
+@Pipe({ name: "isInstantiated" })
 export class isInstantiatedPipe implements PipeTransform {
   public transform(
     value: Readonly<AbstractModel | AbstractModel[]> | PermissionLevel

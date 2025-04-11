@@ -1,10 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestReport } from "@models/Harvest";
+import { CanCloseDialogComponent } from "../../components/shared/can-close-dialog.component";
+import { EtaComponent } from "../../components/shared/eta.component";
+import { ProgressComponent } from "../../../shared/progress/progress/progress.component";
+import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component";
 
 @Component({
-  selector: "baw-harvest-scanning",
-  template: `
+    selector: "baw-harvest-scanning",
+    template: `
     <h3>Scanning</h3>
 
     <p>We are searching through our files to find all the files you uploaded</p>
@@ -32,7 +36,7 @@ import { Harvest, HarvestReport } from "@models/Harvest";
       ></baw-progress-bar>
     </baw-progress>
   `,
-  standalone: false
+    imports: [CanCloseDialogComponent, EtaComponent, ProgressComponent, ProgressBarComponent]
 })
 export class ScanningComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}

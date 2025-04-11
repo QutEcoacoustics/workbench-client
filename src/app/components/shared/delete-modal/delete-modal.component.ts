@@ -3,8 +3,8 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ModalComponent } from "@menu/widget.component";
 
 @Component({
-  selector: "baw-delete-modal",
-  template: `
+    selector: "baw-delete-modal",
+    template: `
     <div class="modal-header">
       <h4 class="modal-title">Delete Item</h4>
       <button
@@ -25,8 +25,7 @@ import { ModalComponent } from "@menu/widget.component";
       <a class="btn btn-outline-primary" (click)="closeModal(false)">Cancel</a>
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
-  `,
-  standalone: false
+  `
 })
 export class DeleteModalComponent extends withUnsubscribe() implements ModalComponent {
   @Input() public successCallback?: () => void;

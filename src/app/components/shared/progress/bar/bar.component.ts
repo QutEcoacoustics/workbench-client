@@ -1,9 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
+import { NgClass, NgStyle } from "@angular/common";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: "baw-progress-bar",
-  template: `
+    selector: "baw-progress-bar",
+    template: `
     <div
       class="progress-bar"
       role="progressbar"
@@ -18,12 +20,12 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
       {{ progress + "%" }}
     </div>
   `,
-  styles: [`
+    styles: [`
     div {
       cursor: help;
     }
   `],
-  standalone: false
+    imports: [NgClass, NgStyle, NgbTooltip]
 })
 export class ProgressBarComponent {
   @Input() public progress: number;

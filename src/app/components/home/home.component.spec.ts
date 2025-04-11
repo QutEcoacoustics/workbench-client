@@ -5,7 +5,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
@@ -20,7 +19,6 @@ import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { CardComponent } from "@shared/model-cards/card/card.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -30,6 +28,7 @@ import { interceptFilterApiRequest } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -42,14 +41,13 @@ describe("HomeComponent", () => {
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
-      MockBawApiModule,
-      MockConfigModule,
-      IconsModule,
-      MockDirectivesModule,
-      RouterTestingModule,
-      LoadingModule,
-      PipesModule,
-    ],
+    MockBawApiModule,
+    MockConfigModule,
+    IconsModule,
+    RouterTestingModule,
+    PipesModule,
+    LoadingComponent,
+],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

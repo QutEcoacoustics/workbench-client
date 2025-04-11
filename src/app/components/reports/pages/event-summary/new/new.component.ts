@@ -36,19 +36,25 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { StandardApi } from "@baw-api/api-common";
+import { FormsModule } from "@angular/forms";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { TitleCasePipe } from "@angular/common";
 import {
   BucketSize,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
+import { DateTimeFilterComponent } from "../../../../shared/date-time-filter/date-time-filter.component";
+import { TypeaheadInputComponent } from "../../../../shared/typeahead-input/typeahead-input.component";
+import { StrongRouteDirective } from "../../../../../directives/strongRoute/strong-route.directive";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-  selector: "baw-new-summary-report",
+    selector: "baw-new-summary-report",
     templateUrl: "./new.component.html",
-    standalone: false
+    imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

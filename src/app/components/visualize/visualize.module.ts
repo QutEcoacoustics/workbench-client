@@ -10,8 +10,7 @@ const components = [VisualizeComponent];
 const routes = visualizeRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: components,
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [RouterModule, ...components],
 })
 export class VisualizeModule {}

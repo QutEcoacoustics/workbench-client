@@ -30,12 +30,12 @@ const pointRoutes = pointsRoute.compileRoutes(getRouteConfigForPage);
  * Sites Module
  */
 @NgModule({
-  declarations: components,
-  imports: [
-    RegionsModule,
-    SharedModule,
-    RouterModule.forChild([...siteRoutes, ...pointRoutes]),
-  ],
-  exports: [RouterModule, ...components],
+    imports: [
+        RegionsModule,
+        SharedModule,
+        RouterModule.forChild([...siteRoutes, ...pointRoutes]),
+        ...components,
+    ],
+    exports: [RouterModule, ...components],
 })
 export class SitesModule {}

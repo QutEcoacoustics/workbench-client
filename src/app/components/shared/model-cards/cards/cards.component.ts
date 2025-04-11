@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
+import { CardComponent } from "../card/card.component";
 
 /**
  * Cards Component
@@ -10,8 +11,8 @@ import { List } from "immutable";
  * to signify when the user is the owner/editor of the project
  */
 @Component({
-  selector: "baw-model-cards",
-  template: `
+    selector: "baw-model-cards",
+    template: `
     <div class="row">
       @for (model of models ?? []; track model) {
         <baw-card [model]="model"></baw-card>
@@ -21,8 +22,8 @@ import { List } from "immutable";
       </div>
     </div>
     `,
-  styleUrls: ["./cards.component.scss"],
-  standalone: false
+    styleUrls: ["./cards.component.scss"],
+    imports: [CardComponent]
 })
 export class CardsComponent {
   @Input() public models: List<Project | Region>;

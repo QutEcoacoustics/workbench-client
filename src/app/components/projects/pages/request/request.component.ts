@@ -11,11 +11,14 @@ import { Project } from "@models/Project";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { projectsMenuItemActions } from "../list/list.component";
+import { WIPComponent } from "../../../shared/wip/wip.component";
+import { FormComponent } from "../../../shared/form/form.component";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 import schema from "./request.schema.json";
 
 @Component({
-  selector: "baw-projects-request",
-  template: `
+    selector: "baw-projects-request",
+    template: `
     <baw-wip>
       @if (projects) {
         <baw-form
@@ -33,7 +36,7 @@ import schema from "./request.schema.json";
       }
     </baw-wip>
   `,
-  standalone: false
+    imports: [WIPComponent, FormComponent, ErrorHandlerComponent]
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: BawApiError;

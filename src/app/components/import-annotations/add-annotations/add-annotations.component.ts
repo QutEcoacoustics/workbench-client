@@ -46,11 +46,33 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { FormsModule } from "@angular/forms";
+import {
+  NgClass,
+  NgTemplateOutlet,
+  AsyncPipe,
+  DecimalPipe,
+} from "@angular/common";
+import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import {
+  VirtualDatatablePaginationDirective,
+} from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
 } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
+import { FileValueAccessorDirective } from "../../shared/formly/file-input.directive";
+import { ErrorCardComponent } from "../../shared/error-card/error-card.component";
+import { TypeaheadInputComponent as TypeaheadInputComponent_1 } from "../../shared/typeahead-input/typeahead-input.component";
+import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
+import { LoadingComponent } from "../../shared/loading/loading.component";
+import { UrlDirective } from "../../../directives/url/url.directive";
+import { InlineListComponent } from "../../shared/inline-list/inline-list.component";
+import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+import { isInstantiatedPipe } from "../../../pipes/is-instantiated/is-instantiated.pipe";
 
 interface QueuedFile {
   file: Readonly<File>;
@@ -105,7 +127,27 @@ const audioEventImportKey = "audioEventImport";
   selector: "baw-add-annotations",
   templateUrl: "add-annotations.component.html",
   styleUrl: "add-annotations.component.scss",
-  standalone: false
+  imports: [
+    FormsModule,
+    FileValueAccessorDirective,
+    NgClass,
+    NgbTooltip,
+    FaIconComponent,
+    ErrorCardComponent,
+    TypeaheadInputComponent_1,
+    NgTemplateOutlet,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    VirtualDatatablePaginationDirective,
+    LoadingComponent,
+    UrlDirective,
+    InlineListComponent,
+    NgbHighlight,
+    AsyncPipe,
+    DecimalPipe,
+    IsUnresolvedPipe,
+    isInstantiatedPipe,
+  ],
 })
 class AddAnnotationsComponent
   extends PageComponent
@@ -434,7 +476,7 @@ class AddAnnotationsComponent
           queueModel.additionalTagIds
         );
         return of(result);
-      }),
+      })
     );
   }
 

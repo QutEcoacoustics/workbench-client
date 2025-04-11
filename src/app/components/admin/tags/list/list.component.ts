@@ -8,19 +8,26 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   adminEditTagMenuItem,
   adminNewTagMenuItem,
   adminTagsCategory,
   adminTagsMenuItem,
 } from "../tags.menus";
+import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
+import { CheckboxComponent } from "../../../shared/checkbox/checkbox.component";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { DeleteModalComponent } from "../../../shared/delete-modal/delete-modal.component";
+import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Component({
-  selector: "baw-admin-tags",
-  templateUrl: "./list.component.html",
-  standalone: false
+    selector: "baw-admin-tags",
+    templateUrl: "./list.component.html",
+    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, CheckboxComponent, StrongRouteDirective, DeleteModalComponent, ErrorHandlerComponent]
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [

@@ -1,11 +1,9 @@
 import { Directive, Host, Input, OnChanges } from "@angular/core";
 import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 
-@Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: "[sortKey]",
-  standalone: false
-})
+@Directive({ 
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: "[sortKey]" })
 export class DatatableSortKeyDirective implements OnChanges {
   @Input() public sortKey: string;
 

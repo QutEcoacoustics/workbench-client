@@ -11,6 +11,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 export interface Step {
   label: string;
@@ -18,9 +19,9 @@ export interface Step {
 }
 
 @Component({
-  selector: "baw-stepper",
-  styleUrls: ["./stepper.component.scss"],
-  template: `
+    selector: "baw-stepper",
+    styleUrls: ["./stepper.component.scss"],
+    template: `
     <div #stepper class="stepper mb-3">
       <div class="lines">
         <div #leftDots class="dots"></div>
@@ -46,7 +47,7 @@ export interface Step {
       </div>
     </div>
     `,
-  standalone: false
+    imports: [FaIconComponent]
 })
 export class StepperComponent
   implements OnChanges, AfterViewChecked, OnDestroy

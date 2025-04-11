@@ -5,10 +5,7 @@ import { User } from "@models/User";
 /**
  * Evaluate if a model is a ghost user or undefined
  */
-@Pipe({
-  name: "isGhostUser",
-  standalone: false
-})
+@Pipe({ name: "isGhostUser" })
 export class IsGhostUserPipe implements PipeTransform {
   /**
    * @param value User to evaluate

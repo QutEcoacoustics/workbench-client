@@ -26,20 +26,20 @@ describe("AdminTagGroupsNewComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          ...appLibraryImports,
-          SharedModule,
-          RouterTestingModule,
-          MockBawApiModule,
-        ],
-        declarations: [AdminTagGroupsNewComponent],
-        providers: [
-          {
+    imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+        AdminTagGroupsNewComponent,
+    ],
+    providers: [
+        {
             provide: ActivatedRoute,
             useValue: mockActivatedRoute(),
-          },
-        ],
-      }).compileComponents();
+        },
+    ],
+}).compileComponents();
 
       fixture = TestBed.createComponent(AdminTagGroupsNewComponent);
       api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;

@@ -6,15 +6,14 @@ import { PipesModule } from "@pipes/pipes.module";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 @NgModule({
-  declarations: [AnnotationEventCardComponent],
-  imports: [
-    CommonModule,
-    FontAwesomeModule,
-    PipesModule,
-
-    ZonedDateTimeComponent,
-  ],
-  exports: [AnnotationEventCardComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        CommonModule,
+        FontAwesomeModule,
+        PipesModule,
+        ZonedDateTimeComponent,
+        AnnotationEventCardComponent,
+    ],
+    exports: [AnnotationEventCardComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AudioEventCardModule {}

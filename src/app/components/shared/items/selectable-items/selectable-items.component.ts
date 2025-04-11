@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Selectable Items Component.
  * This creates a list of items for a user to choose from.
  */
 @Component({
-  selector: "baw-selectable-items",
-  templateUrl: "./selectable-items.component.html",
-  styles: [`
+    selector: "baw-selectable-items",
+    templateUrl: "./selectable-items.component.html",
+    styles: [`
     button {
       height: 100%;
     }
@@ -16,7 +17,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       cursor: not-allowed;
     }
   `],
-  standalone: false
+    imports: [FaIconComponent]
 })
 export class SelectableItemsComponent {
   @Input() public title: string;

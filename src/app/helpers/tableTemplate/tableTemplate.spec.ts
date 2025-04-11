@@ -4,11 +4,11 @@ import { SharedModule } from "@shared/shared.module";
 import { TableTemplate } from "./tableTemplate";
 
 @Component({
-  selector: "baw-test-component",
-  template: `
+    selector: "baw-test-component",
+    template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-  standalone: false
+    imports: [SharedModule]
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
@@ -43,9 +43,8 @@ describe("TableTemplate", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MockComponent],
-      imports: [SharedModule],
-    }).compileComponents();
+    imports: [SharedModule, MockComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     component = fixture.componentInstance;

@@ -17,14 +17,16 @@ import {
 import { rgb } from "d3-color";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { FormsModule } from "@angular/forms";
+import { NgClass, TitleCasePipe } from "@angular/common";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
 @Component({
-  selector: "baw-admin-theme-template",
-  templateUrl: "theme-template.component.html",
-  styleUrls: ["theme-template.component.scss"],
-  standalone: false
+    selector: "baw-admin-theme-template",
+    templateUrl: "theme-template.component.html",
+    styleUrls: ["theme-template.component.scss"],
+    imports: [FormsModule, NgClass, TitleCasePipe]
 })
 class AdminThemeTemplateComponent
   extends PageComponent

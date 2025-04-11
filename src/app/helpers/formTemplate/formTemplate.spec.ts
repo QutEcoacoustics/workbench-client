@@ -34,7 +34,7 @@ class MockModel extends AbstractModel {
 @Component({
   selector: "baw-test-component",
   template: "<div><baw-form></baw-form></div>",
-  standalone: false
+  
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(

@@ -6,13 +6,16 @@ import {
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ConfigService } from "@services/config/config.service";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgTemplateOutlet } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Work In Progress Component
  */
 @Component({
-  selector: "baw-wip",
-  template: `
+    selector: "baw-wip",
+    template: `
     @if (showWipContent) {
       <div class="wip-wrapper" ngbTooltip="This feature is a work in progress">
         <ng-container *ngTemplateOutlet="icon"></ng-container>
@@ -39,11 +42,11 @@ import { ConfigService } from "@services/config/config.service";
       </div>
     </ng-template>
   `,
-  styleUrls: ["wip.component.scss"],
-  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    styleUrls: ["wip.component.scss"],
+    // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [NgbTooltip, NgTemplateOutlet, FaIconComponent]
 })
 export class WIPComponent implements OnInit {
   public production: boolean;

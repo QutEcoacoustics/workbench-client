@@ -10,11 +10,12 @@ import { IResetPassword, ResetPassword } from "@models/data/ResetPassword";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
+import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./reset-password.schema.json";
 
 @Component({
-  selector: "baw-reset-password",
-  template: `
+    selector: "baw-reset-password",
+    template: `
     <baw-form
       title="Forgot your password?"
       [model]="model"
@@ -24,7 +25,7 @@ import schema from "./reset-password.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class ResetPasswordComponent extends FormTemplate<ResetPassword> {
   public fields = schema.fields;

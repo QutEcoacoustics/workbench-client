@@ -12,11 +12,13 @@ import { ContactUs, IContactUs } from "@models/data/ContactUs";
 import { RecaptchaState } from "@shared/form/form.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs/operators";
+import { FormComponent } from "../../../shared/form/form.component";
+import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 import schema from "./contact-us.schema.json";
 
 @Component({
-  selector: "baw-about-contact-us",
-  template: `
+    selector: "baw-about-contact-us",
+    template: `
     <baw-form
       title="Contact Us"
       [model]="model"
@@ -33,7 +35,7 @@ import schema from "./contact-us.schema.json";
       </span>
     </baw-form>
   `,
-  standalone: false
+    imports: [FormComponent, StrongRouteDirective]
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = schema.fields;

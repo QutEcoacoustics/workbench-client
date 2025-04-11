@@ -21,7 +21,7 @@ import {
   loginMenuItem,
   registerMenuItem,
 } from "@components/security/security.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import {
   CustomMenuItem,
   Settings,
@@ -50,6 +50,7 @@ describe("PrimaryMenuComponent", () => {
   let session: BawSessionService;
   let router: Router;
   let spec: Spectator<PrimaryMenuComponent>;
+
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
     providers: [MockProvider(ToastService)],
@@ -58,12 +59,7 @@ describe("PrimaryMenuComponent", () => {
       HeaderItemComponent,
       HeaderDropdownComponent,
     ],
-    imports: [
-      RouterTestingModule,
-      MockBawApiModule,
-      IconsModule,
-      MockDirectivesModule,
-    ],
+    imports: [RouterTestingModule, MockBawApiModule, IconsModule],
   });
   const registerLinkSelector = "#register-header-link";
   const adminLinkSelector = "#admin-header-link";

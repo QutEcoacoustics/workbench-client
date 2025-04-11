@@ -7,6 +7,7 @@ import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "../shared/form/form.component";
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
@@ -14,8 +15,8 @@ import {
 import schema from "./report-problem.schema.json";
 
 @Component({
-  selector: "baw-report-problem",
-  template: `
+    selector: "baw-report-problem",
+    template: `
     <baw-form
       title="Report Problem"
       submitLabel="Submit"
@@ -31,7 +32,7 @@ import schema from "./report-problem.schema.json";
       </span>
     </baw-form>
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class ReportProblemComponent
   extends FormTemplate<ReportProblem>

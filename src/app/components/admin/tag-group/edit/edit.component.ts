@@ -20,12 +20,13 @@ import {
   adminTagGroupsRoute,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const tagGroupKey = "tagGroup";
 
 @Component({
-  selector: "baw-admin-tag-groups-edit",
-  template: `
+    selector: "baw-admin-tag-groups-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -37,7 +38,7 @@ const tagGroupKey = "tagGroup";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>

@@ -18,12 +18,13 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { projectMenuItemActions } from "../details/details.component";
 import schema from "../../project.schema.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 
 @Component({
-  selector: "baw-project-edit",
-  template: `
+    selector: "baw-project-edit",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -35,7 +36,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class EditComponent extends FormTemplate<Project> implements OnInit {
   public fields = schema.fields;

@@ -33,23 +33,20 @@ describe("AdminScriptsEditComponent", () => {
 
   function configureTestingModule(model?: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
-      ],
-      declarations: [AdminScriptsEditComponent],
-      providers: [
+        AdminScriptsEditComponent,
+    ],
+    providers: [
         {
-          provide: ActivatedRoute,
-          useValue: mockActivatedRoute(
-            { script: scriptResolvers.show },
-            { script: { model, error } }
-          ),
+            provide: ActivatedRoute,
+            useValue: mockActivatedRoute({ script: scriptResolvers.show }, { script: { model, error } }),
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsEditComponent);
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;

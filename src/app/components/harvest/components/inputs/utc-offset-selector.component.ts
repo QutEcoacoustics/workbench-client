@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: "baw-harvest-utc-offset-selector",
-  template: `
+    selector: "baw-harvest-utc-offset-selector",
+    template: `
     @if (offset) {
       <div class="utc-label">
         <span>{{ offset }}</span>
@@ -32,7 +35,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       </select>
     }
   `,
-  styles: [`
+    styles: [`
     .utc-label {
       display: flex;
       justify-content: space-between;
@@ -44,7 +47,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       width: 100%;
     }
   `],
-  standalone: false
+    imports: [NgbTooltip, FaIconComponent, FormsModule]
 })
 export class UTCOffsetSelectorComponent {
   @Input() public offset: string;

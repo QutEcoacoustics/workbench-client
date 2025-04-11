@@ -7,7 +7,7 @@ import {
   ethicsMenuItem,
 } from "@components/about/about.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -19,7 +19,7 @@ describe("FooterComponent", () => {
   let spec: Spectator<FooterComponent>;
   const createComponent = createComponentFactory({
     component: FooterComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
+    imports: [RouterTestingModule, MockConfigModule],
   });
 
   beforeEach(() => {

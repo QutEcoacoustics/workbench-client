@@ -19,6 +19,7 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { regionsMenuItemActions } from "../list/list.component";
 import schema from "../../region.base.json";
+import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 
@@ -26,8 +27,8 @@ const projectKey = "project";
  * New Region Component
  */
 @Component({
-  selector: "baw-regions-new",
-  template: `
+    selector: "baw-regions-new",
+    template: `
     @if (!failure) {
       <baw-form
         [title]="hideTitle ? '' : 'New Site'"
@@ -39,7 +40,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;

@@ -12,7 +12,7 @@ const directives = [
 ];
 
 @NgModule({
-  declarations: directives,
-  exports: directives,
+    imports: [...directives],
+    exports: directives,
 })
 export class BawDatatableModule {}

@@ -1,13 +1,12 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "baw-harvest-can-close-dialog",
-  template: `
+    selector: "baw-harvest-can-close-dialog",
+    template: `
     <p>
       You can leave this page and come back later. The process won't be
       interrupted.
     </p>
-  `,
-  standalone: false
+  `
 })
 export class CanCloseDialogComponent {}

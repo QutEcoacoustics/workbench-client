@@ -12,7 +12,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { formlyConfig } from "@shared/formly/custom-inputs.module";
-import { LoadingModule } from "@shared/loading/loading.module";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { IMockBuilder } from "ng-mocks";
 import { NgxCaptchaModule } from "ngx-captcha";
 import { BehaviorSubject } from "rxjs";
@@ -25,9 +25,10 @@ export const testFormImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
-  LoadingModule,
   NgxCaptchaModule,
   RouterTestingModule,
+
+  LoadingComponent,
 ];
 
 export const testFormProviders = [

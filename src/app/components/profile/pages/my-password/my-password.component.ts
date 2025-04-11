@@ -14,13 +14,14 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { myAccountActions } from "../profile/my-profile.component";
+import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./my-password.schema.json";
 
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-password",
-  template: `
+    selector: "baw-my-password",
+    template: `
     @if (!failure) {
       <baw-form
         title="Update my password"
@@ -33,7 +34,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-  standalone: false
+    imports: [FormComponent]
 })
 class MyPasswordComponent extends FormTemplate<User> {
   public fields = schema.fields;

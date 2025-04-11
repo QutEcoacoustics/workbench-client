@@ -10,8 +10,7 @@ import {
  * Shared Components Module
  */
 @NgModule({
-  declarations: [...internalComponents, ...sharedComponents],
-  imports: internalModules,
-  exports: [...sharedModules, ...sharedComponents],
+    imports: [...internalModules, ...internalComponents, ...sharedComponents],
+    exports: [...sharedModules, ...sharedComponents],
 })
 export class SharedModule {}

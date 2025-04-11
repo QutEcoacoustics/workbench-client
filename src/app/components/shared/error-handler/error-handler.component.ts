@@ -12,13 +12,14 @@ import {
   UNAUTHORIZED,
 } from "http-status";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
 
 /**
  * Error Handler Wrapper
  */
 @Component({
-  selector: "baw-error-handler",
-  template: `
+    selector: "baw-error-handler",
+    template: `
     @if (error && !hideErrorDetails) {
       <h1>{{ getTitle() }}</h1>
 
@@ -30,7 +31,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       </p>
     }
   `,
-  standalone: false
+    imports: [StrongRouteDirective]
 })
 export class ErrorHandlerComponent implements OnInit {
   @Input() public error: ApiErrorDetails | BawApiError;

@@ -10,8 +10,7 @@ const routes = pageNotFoundRoute.compileRoutes(getRouteConfigForPage);
 const components = [PageNotFoundComponent, ResolverHandlerComponent];
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  declarations: components,
-  exports: [...components, RouterModule],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [...components, RouterModule],
 })
 export class ErrorModule {}

@@ -43,8 +43,8 @@ class MockModel extends AbstractModel {
 export { MockModel as MockModelWithDecorators };
 
 @Component({
-  selector: "baw-test",
-  template: `
+    selector: "baw-test",
+    template: `
     @if (hasMany && model.childModels) {
       @for (item of model.childModels; track item) {
         <li>{{ item }}</li>
@@ -59,7 +59,7 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     }
   `,
-  standalone: false
+    imports: [RouterTestingModule, MockBawApiModule]
 })
 class MockComponent {
   @Input() public model: MockModel;
@@ -74,13 +74,12 @@ describe("Association Decorators Loading In Components", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MockComponent],
-      imports: [RouterTestingModule, MockBawApiModule],
-      providers: [
+    imports: [RouterTestingModule, MockBawApiModule, MockComponent],
+    providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);

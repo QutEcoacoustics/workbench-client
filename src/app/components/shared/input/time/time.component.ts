@@ -12,20 +12,20 @@ import { DateTime, Duration } from "luxon";
 import { getErrorMessages, shouldShowError } from "../input.helpers";
 
 @Component({
-  selector: "baw-time",
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: TimeComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: TimeComponent,
-    },
-  ],
-  template: `
+    selector: "baw-time",
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: TimeComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: TimeComponent,
+        },
+    ],
+    template: `
     <div class="input-group">
       <span class="input-group-text">{{ label }}</span>
       <input
@@ -47,8 +47,7 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
         </div>
       }
     </div>
-  `,
-  standalone: false
+  `
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */

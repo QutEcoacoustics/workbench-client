@@ -16,6 +16,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { takeUntil } from "rxjs";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { FormComponent } from "../form/form.component";
 import schema from "./annotations-download.schema.json";
 
 interface TimezoneModel {
@@ -24,8 +25,8 @@ interface TimezoneModel {
 
 // TODO This will be expanded to download user annotations as well
 @Component({
-  selector: "baw-annotation-download",
-  template: `
+    selector: "baw-annotation-download",
+    template: `
     <div class="modal-header">
       <h4 class="modal-title">Annotations Download</h4>
       <button
@@ -72,13 +73,13 @@ interface TimezoneModel {
       </a>
     </div>
   `,
-  styles: [`
+    styles: [`
     /* Otherwise timezone selector cannot be seen on firefox */
     .modal-body {
       overflow-y: unset;
     }
   `],
-  standalone: false
+    imports: [FormComponent]
 })
 export class AnnotationDownloadComponent
   extends withUnsubscribe()

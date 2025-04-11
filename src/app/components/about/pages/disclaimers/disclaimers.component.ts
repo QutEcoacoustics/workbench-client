@@ -5,12 +5,13 @@ import {
   disclaimersMenuItem,
 } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { CmsComponent } from "../../../shared/cms/cms.component";
 
 @Component({
-  selector: "baw-about-disclaimers",
-  template: '<baw-cms [page]="page"></baw-cms>',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: "baw-about-disclaimers",
+    template: '<baw-cms [page]="page"></baw-cms>',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CmsComponent]
 })
 class DisclaimersComponent extends PageComponent {
   public page = CMS.privacy;
