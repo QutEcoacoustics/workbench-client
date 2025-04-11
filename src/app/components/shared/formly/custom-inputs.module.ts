@@ -14,7 +14,7 @@ import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
-export const formlyConfig: ConfigOption = {
+export const formlyConfig= {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
@@ -51,7 +51,7 @@ export const formlyConfig: ConfigOption = {
         `This value should be less than ${field.props.max}`,
     },
   ],
-};
+} as const satisfies ConfigOption;
 
 const components = [
   FileValueAccessorDirective,

@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
-import { Statistic } from "./statistics.component";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { Statistic } from "./statistics.component";
 
 @Component({
     selector: "baw-harvest-statistic-item",

@@ -33,15 +33,11 @@ import { Map } from "immutable";
 import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import coveragePlotSchema from "./coveragePlot.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
-import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
-import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { DatetimeComponent } from "../../../../shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "../../../../shared/inline-list/inline-list.component";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
@@ -50,6 +46,10 @@ import { DurationComponent } from "../../../../shared/datetime-formats/duration/
 import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { TimePipe } from "../../../../../pipes/time/time.pipe";
 import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
+import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
+import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
+import confidencePlotSchema from "./confidencePlot.schema.json";
+import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";

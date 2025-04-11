@@ -8,15 +8,15 @@ import {
 import { IAudioEvent } from "@models/AudioEvent";
 import { User } from "@models/User";
 import { List } from "immutable";
-import { theirProfileActions } from "../profile/their-profile.component";
-import { MyAnnotationsComponent } from "./my-annotations.component";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { theirProfileActions } from "../profile/their-profile.component";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { TimeSinceComponent } from "../../../shared/datetime-formats/time-since/time-since.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { MyAnnotationsComponent } from "./my-annotations.component";
 
 const accountKey = "user";
 

@@ -6,9 +6,9 @@ import { DataRequest, IDataRequest } from "@models/data/DataRequest";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "../shared/form/form.component";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import schema from "./data-request.schema.json";
-import { FormComponent } from "../shared/form/form.component";
 
 @Component({
     selector: "baw-data-request",

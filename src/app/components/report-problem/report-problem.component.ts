@@ -7,12 +7,12 @@ import { ConfigService } from "@services/config/config.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "../shared/form/form.component";
 import {
   reportProblemMenuItem,
   reportProblemsCategory,
 } from "./report-problem.menus";
 import schema from "./report-problem.schema.json";
-import { FormComponent } from "../shared/form/form.component";
 
 @Component({
     selector: "baw-report-problem",

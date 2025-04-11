@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
+import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../../loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
-import { NgTemplateOutlet } from "@angular/common";
 import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
 import { UserLinkComponent } from "../../user-link/user-link/user-link.component";
 import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";

@@ -9,15 +9,15 @@ import { NgClass } from "@angular/common";
  * Loading Animation
  */
 @Component({
-    selector: "baw-loading",
-    template: `
+  selector: "baw-loading",
+  template: `
     <div class="d-flex justify-content-center m-0 p-0">
       <div id="spinner" role="status" [ngClass]="spinnerClass">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
   `,
-    imports: [NgClass]
+  imports: [NgClass]
 })
 export class LoadingComponent implements OnInit {
   @Input() public color: BootstrapColorTypes = "info";

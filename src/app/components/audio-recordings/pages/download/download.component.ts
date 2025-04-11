@@ -27,11 +27,11 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { BehaviorSubject, takeUntil } from "rxjs";
 import { loginMenuItem } from "src/app/components/security/security.menus";
+import { NgIf } from "@angular/common";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DateTimeFilterComponent } from "../../../shared/date-time-filter/date-time-filter.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { NgIf } from "@angular/common";
 import { HiddenCopyComponent } from "../../../shared/hidden-copy/hidden-copy.component";
 
 const projectKey = "project";
@@ -39,9 +39,17 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-    selector: "baw-download",
-    templateUrl: "download.component.html",
-    imports: [SitesWithoutTimezonesComponent, FormsModule, DateTimeFilterComponent, DownloadTableComponent, StrongRouteDirective, NgIf, HiddenCopyComponent]
+  selector: "baw-download",
+  templateUrl: "download.component.html",
+  imports: [
+    SitesWithoutTimezonesComponent,
+    FormsModule,
+    DateTimeFilterComponent,
+    DownloadTableComponent,
+    StrongRouteDirective,
+    NgIf,
+    HiddenCopyComponent,
+  ],
 })
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   @ViewChild(NgForm) public form: NgForm;
@@ -73,7 +81,8 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
     this.filters$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(
-        (filters: Filters<AudioRecording>) => this.href = this.recordingsApi.batchDownloadUrl(filters)
+        (filters: Filters<AudioRecording>) =>
+          (this.href = this.recordingsApi.batchDownloadUrl(filters))
       );
   }
 

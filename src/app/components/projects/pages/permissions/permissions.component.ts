@@ -34,15 +34,15 @@ import {
 } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { projectMenuItemActions } from "../details/details.component";
 import { SelectableItemsComponent } from "../../../shared/items/selectable-items/selectable-items.component";
-import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { ModelSelectorComponent } from "../../../shared/model-selector/model-selector.component";
 import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "../../../../directives/datatable/pagination/pagination.directive";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
@@ -50,10 +50,23 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 const projectKey = "project";
 
 @Component({
-    selector: "baw-project-permissions",
-    templateUrl: "permissions.component.html",
-    styleUrls: ["permissions.component.scss"],
-    imports: [SelectableItemsComponent, NgbHighlight, ModelSelectorComponent, DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, FaIconComponent, LoadingComponent, UrlDirective, NgbTooltip, IsUnresolvedPipe]
+  selector: "baw-project-permissions",
+  templateUrl: "permissions.component.html",
+  styleUrls: ["permissions.component.scss"],
+  imports: [
+    SelectableItemsComponent,
+    NgbHighlight,
+    ModelSelectorComponent,
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    FaIconComponent,
+    LoadingComponent,
+    UrlDirective,
+    NgbTooltip,
+    IsUnresolvedPipe,
+  ],
 })
 class PermissionsComponent
   extends withUnsubscribe(PageComponent)
@@ -109,7 +122,7 @@ class PermissionsComponent
     private permissionsApi: PermissionsService,
     private accountsApi: AccountsService,
     private route: ActivatedRoute,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();
   }

@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
 import { ListComponent } from "@components/harvest/pages/list/list.component";
+import { NgIf } from "@angular/common";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { adminCategory, adminUploadsMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
-import { NgIf } from "@angular/common";
 import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
 import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";

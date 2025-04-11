@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { DurationComponent } from "../../../shared/datetime-formats/duration/duration.component";
 import { TimeSinceComponent } from "../../../shared/datetime-formats/time-since/time-since.component";

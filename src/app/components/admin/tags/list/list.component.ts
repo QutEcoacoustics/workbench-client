@@ -8,6 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   adminEditTagMenuItem,
   adminNewTagMenuItem,
@@ -15,7 +16,6 @@ import {
   adminTagsMenuItem,
 } from "../tags.menus";
 import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { CheckboxComponent } from "../../../shared/checkbox/checkbox.component";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";

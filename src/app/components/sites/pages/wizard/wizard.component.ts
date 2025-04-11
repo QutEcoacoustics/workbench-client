@@ -11,8 +11,8 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import { newSiteMenuItem } from "../../sites.menus";
 import { NgClass } from "@angular/common";
+import { newSiteMenuItem } from "../../sites.menus";
 import { SiteNewComponent } from "../new/new.component";
 import { NewComponent } from "../../../regions/pages/new/new.component";
 

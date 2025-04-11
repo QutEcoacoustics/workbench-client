@@ -12,9 +12,9 @@ import {
   filter,
   map,
 } from "rxjs/operators";
-import { asFormControl } from "./helper";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { asFormControl } from "./helper";
 
 /**
  * Timezone Input

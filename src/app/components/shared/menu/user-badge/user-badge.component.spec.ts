@@ -7,7 +7,6 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
 import { generateUser } from "@test/fakes/User";
 import { websiteHttpUrl } from "@test/helpers/url";
@@ -20,15 +19,16 @@ describe("UserBadgeComponent", () => {
   let spec: Spectator<UserBadgeComponent>;
   let defaultUser: User;
   let unresolvedUser: User;
+
   const createComponent = createComponentFactory({
     component: UserBadgeComponent,
     declarations: [UserLinkComponent],
     imports: [
     RouterTestingModule,
     MockBawApiModule,
-    LoadingModule,
     PipesModule,
     TimeSinceComponent,
+    LoadingComponent,
 ],
   });
 

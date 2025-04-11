@@ -9,6 +9,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   adminEditTagGroupMenuItem,
   adminNewTagGroupMenuItem,
@@ -17,7 +18,6 @@ import {
 } from "../tag-group.menus";
 import { adminDeleteTagGroupModal } from "../tag-group.modals";
 import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 import { DeleteModalComponent } from "../../../shared/delete-modal/delete-modal.component";

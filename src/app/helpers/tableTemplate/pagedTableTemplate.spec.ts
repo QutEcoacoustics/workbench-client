@@ -32,7 +32,7 @@ import { PagedTableTemplate, TablePage } from "./pagedTableTemplate";
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-  standalone: false
+  
 })
 class MockComponent extends PagedTableTemplate<
   { id: Id; name: string },

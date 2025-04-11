@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { CMS } from "@baw-api/cms/cms.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 import { CmsComponent } from "../shared/cms/cms.component";
+import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Component({
     selector: "baw-send-audio",

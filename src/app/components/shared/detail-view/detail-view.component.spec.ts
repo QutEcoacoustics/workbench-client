@@ -6,13 +6,13 @@ import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service"
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
-import { CheckboxModule } from "@shared/checkbox/checkbox.module";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { interceptShowApiRequest, nStepObservable, viewports } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { DetailViewComponent } from "./detail-view.component";
 import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -26,12 +26,13 @@ describe("DetailViewComponent", () => {
     component: DetailViewComponent,
     declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
-    CheckboxModule,
-    LoadingModule,
-    MockBawApiModule,
     MockBawApiModule,
     RouterTestingModule,
     PipesModule,
+
+    // standalone components
+    CheckboxComponent,
+    LoadingComponent,
 ],
     providers: [
       MockStandardApiService,

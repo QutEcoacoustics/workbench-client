@@ -14,9 +14,19 @@ import { DurationComponent } from "../../../shared/datetime-formats/duration/dur
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-download-table",
-    templateUrl: "./download-table.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatatableSortKeyDirective, LoadingComponent, UrlDirective, ZonedDateTimeComponent, DurationComponent, IsUnresolvedPipe]
+  selector: "baw-download-table",
+  templateUrl: "./download-table.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatatableSortKeyDirective,
+    LoadingComponent,
+    UrlDirective,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    IsUnresolvedPipe,
+  ],
 })
 export class DownloadTableComponent {
   @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;

@@ -10,8 +10,8 @@ import { IUnlockAccount, UnlockAccount } from "@models/data/UnlockAccount";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { loginMenuItemActions } from "../login/login.component";
-import schema from "./unlock-account.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
+import schema from "./unlock-account.schema.json";
 
 @Component({
     selector: "baw-confirm-account",

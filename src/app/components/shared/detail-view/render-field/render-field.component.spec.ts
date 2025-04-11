@@ -7,8 +7,6 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
-import { CheckboxModule } from "@shared/checkbox/checkbox.module";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { modelData } from "@test/helpers/faker";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
@@ -18,6 +16,7 @@ import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-sin
 import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
@@ -27,8 +26,6 @@ describe("RenderFieldComponent", () => {
     component: RenderFieldComponent,
     declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-    CheckboxModule,
-    LoadingModule,
     MockBawApiModule,
     RouterTestingModule,
     PipesModule,
@@ -36,6 +33,8 @@ describe("RenderFieldComponent", () => {
     ZonedDateTimeComponent,
     DurationComponent,
     TimeSinceComponent,
+    LoadingComponent,
+    CheckboxComponent,
 ],
   });
 
