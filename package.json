@@ -10,7 +10,7 @@
     "ci": "npm ci --force",
     "build": "ng build --configuration production",
     "lint": "ng lint",
-    "format": "ng format",
+    "format": "prettier . --write",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host 0.0.0.0 --disable-host-check",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
@@ -119,6 +119,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-viewport": "^1.0.9",
     "ng-mocks": "^14.12.1",
+    "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "webpack-bundle-analyzer": "^4.10.1"
