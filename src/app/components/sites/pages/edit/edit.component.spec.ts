@@ -6,7 +6,11 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -39,7 +43,9 @@ describe("SiteEditComponent", () => {
   describe("form", () => {
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
-        const fields: FormlyFieldConfig[] = withRegion ? pointSchema.fields : siteSchema.fields;
+        const fields: FormlyFieldConfig[] = withRegion
+          ? pointSchema.fields
+          : siteSchema.fields;
         const modelName = withRegion ? "Point" : "Site";
 
         testFormlyFields([
@@ -85,7 +91,11 @@ describe("SiteEditComponent", () => {
 
     assertPageInfo(SiteEditComponent, "Edit");
 
-    function setup(project: Errorable<Project>, site: Errorable<Site>, region?: Errorable<Region>) {
+    function setup(
+      project: Errorable<Project>,
+      site: Errorable<Site>,
+      region?: Errorable<Region>
+    ) {
       function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
         return isBawApiError(model) ? { error: model } : { model };
       }
@@ -110,15 +120,19 @@ describe("SiteEditComponent", () => {
       spec.detectChanges();
     }
 
-    const longitudeInputElement = (): HTMLInputElement => spec.query<HTMLInputElement>("#longitude");
-    const latitudeInputElement = (): HTMLInputElement => spec.query<HTMLInputElement>("#latitude");
+    const longitudeInputElement = (): HTMLInputElement =>
+      spec.query<HTMLInputElement>("#longitude");
+    const latitudeInputElement = (): HTMLInputElement =>
+      spec.query<HTMLInputElement>("#latitude");
 
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
         beforeEach(() => {
           defaultProject = new Project(generateProject());
           defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
-          defaultSite = new Site(generateSite(withRegion ? { regionId: defaultRegion.id } : {}));
+          defaultSite = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
         });
 
         it("should create", () => {
@@ -149,7 +163,10 @@ describe("SiteEditComponent", () => {
           api.update.and.callFake(() => new Subject());
 
           spec.component.submit({ ...defaultSite });
-          expect(api.update).toHaveBeenCalledWith(new Site({ ...defaultSite }), defaultProject);
+          expect(api.update).toHaveBeenCalledWith(
+            new Site({ ...defaultSite }),
+            defaultProject
+          );
         });
 
         it("should redirect to site", () => {
@@ -158,7 +175,9 @@ describe("SiteEditComponent", () => {
           api.update.and.callFake(() => new BehaviorSubject<Site>(site));
 
           spec.component.submit({});
-          expect(spec.router.navigateByUrl).toHaveBeenCalledWith(site.getViewUrl(defaultProject));
+          expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
+            site.getViewUrl(defaultProject)
+          );
         });
 
         it("should handle being modified to have a null location", () => {
@@ -179,7 +198,7 @@ describe("SiteEditComponent", () => {
               longitude: null,
               latitude: null,
             }),
-            defaultProject,
+            defaultProject
           );
         });
       });

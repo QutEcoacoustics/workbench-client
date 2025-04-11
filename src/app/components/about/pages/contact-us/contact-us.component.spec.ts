@@ -13,8 +13,14 @@ xdescribe("ContactUsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, SharedModule, MockBawApiModule, RouterTestingModule, ContactUsComponent],
-    }).compileComponents();
+    imports: [
+        ...appLibraryImports,
+        SharedModule,
+        MockBawApiModule,
+        RouterTestingModule,
+        ContactUsComponent,
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ContactUsComponent);
     component = fixture.componentInstance;

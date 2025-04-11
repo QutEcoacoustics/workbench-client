@@ -12,20 +12,20 @@ import { DateTime, Duration } from "luxon";
 import { getErrorMessages, shouldShowError } from "../input.helpers";
 
 @Component({
-  selector: "baw-time",
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: TimeComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: TimeComponent,
-    },
-  ],
-  template: `
+    selector: "baw-time",
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: TimeComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: TimeComponent,
+        },
+    ],
+    template: `
     <div class="input-group">
       <span class="input-group-text">{{ label }}</span>
       <input
@@ -47,7 +47,7 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
         </div>
       }
     </div>
-  `,
+  `
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */
@@ -89,10 +89,10 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   }
 
   /** Invoked when the model has been changed */
-  public onChange: (_: Duration) => void = () => (this.dirty = true);
+  public onChange: (_: Duration) => void = () => this.dirty = true;
 
   /** Invoked when the model has been touched */
-  public onTouched: () => void = () => (this.touched = true);
+  public onTouched: () => void = () => this.touched = true;
 
   /** Method that is invoked on an update of a model. */
   public updateChanges = () => this.onChange(this.value);
@@ -114,7 +114,8 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   /**
    * Method that is invoked when the control status changes to or from "DISABLED".
    */
-  public setDisabledState = (isDisabled: boolean) => (this.disabled = isDisabled);
+  public setDisabledState = (isDisabled: boolean) =>
+    (this.disabled = isDisabled);
 
   /**
    * Writes a new item to the element.

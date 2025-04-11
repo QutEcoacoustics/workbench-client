@@ -13,7 +13,7 @@
   // center the elements in the flexbox
   // translateY(0.25rem) is equivalent to m-1 in ng-bootstrap
   .fit-content {
-    transform: translateY(0.25rem);
-    height: fit-content;
+      transform: translateY(0.25rem);
+      height: fit-content;
   }
 }

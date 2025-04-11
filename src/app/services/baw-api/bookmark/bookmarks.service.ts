@@ -3,7 +3,15 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Bookmark } from "@models/Bookmark";
 import type { User } from "@models/User";
 import { Observable } from "rxjs";
-import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
+import {
+  emptyParam,
+  filterParam,
+  id,
+  IdOr,
+  IdParamOptional,
+  option,
+  StandardApi,
+} from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -19,7 +27,11 @@ export class BookmarksService implements StandardApi<Bookmark> {
   }
 
   public filter(filters: Filters<Bookmark>): Observable<Bookmark[]> {
-    return this.api.filter(Bookmark, endpoint(emptyParam, filterParam), filters);
+    return this.api.filter(
+      Bookmark,
+      endpoint(emptyParam, filterParam),
+      filters
+    );
   }
 
   public show(model: IdOr<Bookmark>): Observable<Bookmark> {
@@ -31,7 +43,7 @@ export class BookmarksService implements StandardApi<Bookmark> {
       Bookmark,
       endpoint(emptyParam, emptyParam),
       (bookmark) => endpoint(bookmark, emptyParam),
-      model,
+      model
     );
   }
 
@@ -49,9 +61,17 @@ export class BookmarksService implements StandardApi<Bookmark> {
    * @param filters Bookmark filters
    * @param user user to filter by
    */
-  public filterByCreator(filters: Filters<Bookmark>, user: IdOr<User>): Observable<Bookmark[]> {
-    return this.filter(this.api.filterThroughAssociation(filters, "creatorId", user));
+  public filterByCreator(
+    filters: Filters<Bookmark>,
+    user: IdOr<User>
+  ): Observable<Bookmark[]> {
+    return this.filter(
+      this.api.filterThroughAssociation(filters, "creatorId", user)
+    );
   }
 }
 
-export const bookmarkResolvers = new Resolvers<Bookmark, []>([BookmarksService], "bookmarkId").create("Bookmark");
+export const bookmarkResolvers = new Resolvers<Bookmark, []>(
+  [BookmarksService],
+  "bookmarkId"
+).create("Bookmark");

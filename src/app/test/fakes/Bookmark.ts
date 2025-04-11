@@ -1,7 +1,9 @@
 import { IBookmark } from "@models/Bookmark";
 import { modelData } from "@test/helpers/faker";
 
-export function generateBookmark(data?: Partial<IBookmark>): Required<IBookmark> {
+export function generateBookmark(
+  data?: Partial<IBookmark>
+): Required<IBookmark> {
   return {
     id: modelData.id(),
     audioRecordingId: modelData.id(),

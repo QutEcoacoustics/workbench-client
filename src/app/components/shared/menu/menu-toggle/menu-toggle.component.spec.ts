@@ -1,8 +1,15 @@
-import { shouldNotComplete, shouldNotFail } from "@baw-api/baw-api.service.spec";
+import {
+  shouldNotComplete,
+  shouldNotFail,
+} from "@baw-api/baw-api.service.spec";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
-import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  mockProvider,
+  Spectator,
+} from "@ngneat/spectator";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { MenuState, MenuToggleComponent } from "./menu-toggle.component";
@@ -14,7 +21,11 @@ describe("MenuToggleComponent", () => {
     imports: [IconsModule, MockBawApiModule],
   });
 
-  function setup(props: Partial<MenuToggleComponent>, isFullscreen = true, isMenuOpen = false): void {
+  function setup(
+    props: Partial<MenuToggleComponent>,
+    isFullscreen = true,
+    isMenuOpen = false
+  ): void {
     spec = createComponent({
       props,
       providers: [
@@ -42,13 +53,24 @@ describe("MenuToggleComponent", () => {
     });
     it("should have hidden description for secondary menu", () => {
       setup({ menuType: "secondary" });
-      expect(spec.query(".visually-hidden")).toHaveText("Toggle secondary Menu");
+      expect(spec.query(".visually-hidden")).toHaveText(
+        "Toggle secondary Menu"
+      );
     });
   });
 
   describe("color", () => {
     (
-      ["danger", "dark", "info", "light", "primary", "secondary", "success", "warning"] as BootstrapColorTypes[]
+      [
+        "danger",
+        "dark",
+        "info",
+        "light",
+        "primary",
+        "secondary",
+        "success",
+        "warning",
+      ] as BootstrapColorTypes[]
     ).forEach((color) => {
       it(`should set bootstrap text property to text-${color}`, () => {
         setup({ menuType: "secondary", color });
@@ -100,7 +122,10 @@ describe("MenuToggleComponent", () => {
       return spec.component.menu.toggleMenu;
     }
 
-    function menuToggleEvents(done: DoneFn, ...events: ((state: MenuState) => void)[]) {
+    function menuToggleEvents(
+      done: DoneFn,
+      ...events: ((state: MenuState) => void)[]
+    ) {
       let counter = 0;
       spec.component.menuToggle.subscribe({
         next: (state) => {
@@ -120,7 +145,7 @@ describe("MenuToggleComponent", () => {
       menuToggleEvents(
         done,
         () => expect(getToggleMenuSpy()).not.toHaveBeenCalled(),
-        () => expect(getToggleMenuSpy()).toHaveBeenCalled(),
+        () => expect(getToggleMenuSpy()).toHaveBeenCalled()
       );
       clickButton();
     });
@@ -130,7 +155,7 @@ describe("MenuToggleComponent", () => {
       menuToggleEvents(
         done,
         (state) => validateIcon(state),
-        (state) => validateIcon(state),
+        (state) => validateIcon(state)
       );
       setMenuState(true, true);
       clickButton();
@@ -141,7 +166,7 @@ describe("MenuToggleComponent", () => {
       menuToggleEvents(
         done,
         (state) => expect(state).toBe(MenuState.closed),
-        (state) => expect(state).toBe(MenuState.opened),
+        (state) => expect(state).toBe(MenuState.opened)
       );
       setMenuState(true, true);
       clickButton();

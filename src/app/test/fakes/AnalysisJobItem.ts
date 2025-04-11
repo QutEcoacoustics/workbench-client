@@ -1,7 +1,12 @@
-import { AnalysisJobItemStatus, IAnalysisJobItem } from "@models/AnalysisJobItem";
+import {
+  AnalysisJobItemStatus,
+  IAnalysisJobItem,
+} from "@models/AnalysisJobItem";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnalysisJobItem(data?: Partial<IAnalysisJobItem>): Required<IAnalysisJobItem> {
+export function generateAnalysisJobItem(
+  data?: Partial<IAnalysisJobItem>
+): Required<IAnalysisJobItem> {
   const statuses: AnalysisJobItemStatus[] = [
     "successful",
     "new",

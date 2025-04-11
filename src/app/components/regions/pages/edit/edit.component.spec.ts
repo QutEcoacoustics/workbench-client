@@ -1,10 +1,17 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
+import {
+  regionResolvers,
+  RegionsService,
+} from "@baw-api/region/regions.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -111,7 +118,9 @@ describe("RegionsEditComponent", () => {
       api.update.and.callFake(() => new BehaviorSubject<Region>(region));
 
       spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(region.getViewUrl(defaultProject));
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+        region.getViewUrl(defaultProject)
+      );
     });
   });
 });

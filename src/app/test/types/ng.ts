@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { ViewEncapsulation, ChangeDetectionStrategy, Injector } from "@angular/core";
+import {
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  Injector,
+} from "@angular/core";
 
 // TODO Replace this entire type file with a version from angular instead of
 // maintaining ourselves
@@ -34,7 +38,9 @@ export interface Ng {
   applyChanges: (component: {}) => void;
   getComponent: <T>(element: Element) => T | null;
   getContext: <T>(element: Element) => T | null;
-  getDirectiveMetadata: (directiveOrComponentInstance: any) => ComponentDebugMetadata | DirectiveDebugMetadata | null;
+  getDirectiveMetadata: (
+    directiveOrComponentInstance: any
+  ) => ComponentDebugMetadata | DirectiveDebugMetadata | null;
   getDirectives: (node: Node) => {}[];
   getHostElement: (componentOrDirective: {}) => Element;
   getInjector: (elementOrDir: {} | Element) => Injector;

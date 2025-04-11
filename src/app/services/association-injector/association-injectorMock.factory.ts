@@ -15,11 +15,16 @@ export const mockAssociationInjector: Provider = {
   deps: [Injector],
 };
 
-export function mockAssociationInjectorFactory(parentInjector: Injector): AssociationInjector {
+export function mockAssociationInjectorFactory(
+  parentInjector: Injector
+): AssociationInjector {
   const associationInjector = Injector.create({
     name: "AssociationInjector",
     parent: parentInjector,
-    providers: [{ provide: BAW_SERVICE_OPTIONS, useValue: associationApiOptions }, ...mockProviders],
+    providers: [
+      { provide: BAW_SERVICE_OPTIONS, useValue: associationApiOptions },
+      ...mockProviders,
+    ],
   });
 
   return associationInjector as AssociationInjector;

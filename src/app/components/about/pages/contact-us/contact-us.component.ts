@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ContactUsService } from "@baw-api/report/contact-us.service";
-import { aboutCategory, contactUsMenuItem } from "@components/about/about.menus";
+import {
+  aboutCategory,
+  contactUsMenuItem,
+} from "@components/about/about.menus";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
@@ -14,8 +17,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
 import schema from "./contact-us.schema.json";
 
 @Component({
-  selector: "baw-about-contact-us",
-  template: `
+    selector: "baw-about-contact-us",
+    template: `
     <baw-form
       title="Contact Us"
       [model]="model"
@@ -27,11 +30,12 @@ import schema from "./contact-us.schema.json";
     >
       <span id="subTitle">
         This form is for general enquiries. We have separate forms to
-        <a [strongRoute]="dataRequestRoute">request data</a> or <a [strongRoute]="reportProblemRoute">report issues</a>.
+        <a [strongRoute]="dataRequestRoute">request data</a> or
+        <a [strongRoute]="reportProblemRoute">report issues</a>.
       </span>
     </baw-form>
   `,
-  imports: [FormComponent, StrongRouteDirective],
+    imports: [FormComponent, StrongRouteDirective]
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = schema.fields;
@@ -43,7 +47,7 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
     private api: ContactUsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router,
+    router: Router
   ) {
     super(notifications, route, router, {
       successMsg: () =>
@@ -60,7 +64,8 @@ class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
       .seed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: ({ seed, action }) => (this.recaptchaSeed = { state: "loaded", action, seed }),
+        next: ({ seed, action }) =>
+          (this.recaptchaSeed = { state: "loaded", action, seed }),
         error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");

@@ -6,7 +6,11 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -20,9 +24,15 @@ const pageKey = "page";
 @Component({
   selector: "baw-test",
   template: "",
+  
 })
 class MockComponent extends PaginationTemplate<Project> {
-  public constructor(router: Router, route: ActivatedRoute, config: NgbPaginationConfig, api: ProjectsService) {
+  public constructor(
+    router: Router,
+    route: ActivatedRoute,
+    config: NgbPaginationConfig,
+    api: ProjectsService
+  ) {
     super(
       router,
       route,
@@ -30,7 +40,7 @@ class MockComponent extends PaginationTemplate<Project> {
       api,
       "id",
       () => [],
-      () => {},
+      () => {}
     );
   }
 }
@@ -53,10 +63,14 @@ describe("PaginationTemplate", () => {
   function interceptFilter(
     models: Project[] = [],
     error?: BawApiError,
-    expectations?: (filters: Filters, ...args: any[]) => void,
+    expectations?: (filters: Filters, ...args: any[]) => void
   ) {
     const subject = new Subject<Project[]>();
-    const promise = nStepObservable(subject, () => (error ? error : models), !!error);
+    const promise = nStepObservable(
+      subject,
+      () => (error ? error : models),
+      !!error
+    );
     api.filter.andCallFake((filters: Filters, ...args: any[]) => {
       expectations?.(filters, args);
       return subject;
@@ -67,7 +81,9 @@ describe("PaginationTemplate", () => {
   function generateFilter(page: number = 1, filterText?: string) {
     return {
       paging: { page },
-      filter: filterText ? { [component["filterKey"]]: { contains: filterText } } : {},
+      filter: filterText
+        ? { [component["filterKey"]]: { contains: filterText } }
+        : {},
     };
   }
 
@@ -316,15 +332,17 @@ describe("PaginationTemplate", () => {
 
     it("should create api request with new values", (done) => {
       let count = 0;
-      const spy = jasmine.createSpy().and.callFake((values: { page: number; filterText: string }) => {
-        if (count === 0) {
-          count++;
-          expect(values.page).toBe(5);
-        } else {
-          expect(values.filterText).toBe("custom filter");
-          done();
-        }
-      });
+      const spy = jasmine
+        .createSpy()
+        .and.callFake((values: { page: number; filterText: string }) => {
+          if (count === 0) {
+            count++;
+            expect(values.page).toBe(5);
+          } else {
+            expect(values.filterText).toBe("custom filter");
+            done();
+          }
+        });
       component.apiRequest$.next = spy;
       spectator.setRouteQueryParam("page", "5");
       spectator.setRouteQueryParam("query", "custom filter");

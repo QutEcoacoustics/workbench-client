@@ -2,7 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { assignSiteMenuItem, projectCategory } from "@components/projects/projects.menus";
+import {
+  assignSiteMenuItem,
+  projectCategory,
+} from "@components/projects/projects.menus";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
@@ -27,19 +30,20 @@ const projectKey = "project";
  * of how this page works
  */
 @Component({
-  selector: "baw-assign",
-  templateUrl: "./assign.component.html",
-  styleUrls: ["./assign.component.scss"],
-  imports: [
-    DebounceInputComponent,
-    NgxDatatableModule,
-    DatatableDefaultsDirective,
-    FormComponent,
-    ErrorHandlerComponent,
-  ],
+    selector: "baw-assign",
+    templateUrl: "./assign.component.html",
+    styleUrls: ["./assign.component.scss"],
+    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, FormComponent, ErrorHandlerComponent]
 })
-class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnInit {
-  public columns = [{ name: "Site Id" }, { name: "Name" }, { name: "Description" }];
+class AssignComponent
+  extends PagedTableTemplate<TableRow, Site>
+  implements OnInit
+{
+  public columns = [
+    { name: "Site Id" },
+    { name: "Name" },
+    { name: "Description" },
+  ];
   public sortKeys = { siteId: "id", name: "name" };
   public error: BawApiError;
   protected api: ShallowSitesService;
@@ -48,7 +52,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnIn
   public constructor(
     siteApi: ShallowSitesService,
     private notifications: ToastService,
-    route: ActivatedRoute,
+    route: ActivatedRoute
   ) {
     super(
       siteApi,
@@ -68,7 +72,7 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnIn
             }
           });
         });
-      },
+      }
     );
 
     this.filterKey = "name";
@@ -88,13 +92,18 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnIn
 
     const newSiteIds = Array.from(this.project.siteIds);
 
-    const removedSites = this.oldSiteIds.filter((oldId) => !newSiteIds.some((id) => id === oldId));
+    const removedSites = this.oldSiteIds.filter(
+      (oldId) => !newSiteIds.some((id) => id === oldId)
+    );
 
-    const newSites = newSiteIds.filter((newId) => !this.oldSiteIds.some((id) => id === newId));
+    const newSites = newSiteIds.filter(
+      (newId) => !this.oldSiteIds.some((id) => id === newId)
+    );
 
     // this is not related to baw-server/issues/502 because baw-api.service always emits the model kind
     // in the request body. Meaning that project_ids is retained in the request body.
-    const createFilter = (site: Site) => this.api.update(site);
+    const createFilter = (site: Site) =>
+      this.api.update(site);
 
     // Workaround required because API ignores changes to project ids
     forkJoin<Site[]>([
@@ -104,8 +113,8 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnIn
           mergeMap((site) => {
             site.projectIds.add(this.project.id);
             return createFilter(site);
-          }),
-        ),
+          })
+        )
       ),
       // Remove project id from old sites
       ...removedSites.map((id) =>
@@ -113,8 +122,8 @@ class AssignComponent extends PagedTableTemplate<TableRow, Site> implements OnIn
           mergeMap((site) => {
             site.projectIds.delete(this.project.id);
             return createFilter(site);
-          }),
-        ),
+          })
+        )
       ),
     ])
       .pipe(takeUntil(this.unsubscribe))

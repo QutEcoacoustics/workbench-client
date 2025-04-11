@@ -6,8 +6,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ClipboardModule } from "ngx-clipboard";
 
 @Component({
-  selector: "baw-hidden-copy",
-  template: `
+    selector: "baw-hidden-copy",
+    template: `
     <div id="auth-token" class="input-group">
       <button
         id="visibility-btn"
@@ -23,8 +23,7 @@ import { ClipboardModule } from "ngx-clipboard";
         <fa-icon [icon]="['fas', 'eye']"></fa-icon>
       </button>
 
-      <pre
-        class="text-center form-control">{{ visible ? content : "..." }}@if (visible) {<ng-content></ng-content>}</pre>
+      <pre class="text-center form-control">{{ visible ? content : "..." }}@if (visible) {<ng-content></ng-content>}</pre>
 
       <!--
         We use a manual trigger for the "Copied!" tooltip so that so that it is
@@ -36,7 +35,12 @@ import { ClipboardModule } from "ngx-clipboard";
         We can't add the ngbTooltip with the ngxClipboard directive otherwise
         the content fails to copy.
       -->
-      <span #copyTooltip="ngbTooltip" ngbTooltip="Copied!" triggers="manual" container="body">
+      <span
+        #copyTooltip="ngbTooltip"
+        ngbTooltip="Copied!"
+        triggers="manual"
+        container="body"
+      >
         <button
           id="copy-btn"
           class="btn"
@@ -51,14 +55,13 @@ import { ClipboardModule } from "ngx-clipboard";
       </span>
     </div>
   `,
-  styles: [
-    `
-      #auth-token pre {
-        margin: 0;
-        white-space: pre-wrap;
-      }
+    styles: [`
+    #auth-token pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
 
-      /*
+    /*
       In bootstrap, any element that is inside the same form-control has
       its edge border radius set to 0 so that all inner form-control
       elements are flush.
@@ -68,13 +71,12 @@ import { ClipboardModule } from "ngx-clipboard";
       to keep consistent with the bootstrap styling, I manually flatten the
       left edges of the copy button.
     */
-      #copy-btn {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-    `,
-  ],
-  imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule],
+    #copy-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  `],
+    imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule]
 })
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";

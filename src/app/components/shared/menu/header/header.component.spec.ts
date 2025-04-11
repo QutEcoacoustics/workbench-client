@@ -18,7 +18,10 @@ describe("HeaderComponent", () => {
   let spec: Spectator<HeaderComponent>;
   const createComponent = createComponentFactory({
     component: HeaderComponent,
-    providers: [MockProvider(ToastService), MockProvider(MenuService, { isFullscreen: false })],
+    providers: [
+      MockProvider(ToastService),
+      MockProvider(MenuService, { isFullscreen: false }),
+    ],
     declarations: [
       MockComponent(MenuToggleComponent),
       MockComponent(PrimaryMenuComponent),
@@ -58,7 +61,9 @@ describe("HeaderComponent", () => {
 
   describe("config", () => {
     it("should read brand name from config", () => {
-      expect(spec.query(".navbar-brand")).toHaveText(config.settings.brand.short);
+      expect(spec.query(".navbar-brand")).toHaveText(
+        config.settings.brand.short
+      );
     });
   });
 
@@ -76,7 +81,8 @@ describe("HeaderComponent", () => {
   });
 
   describe("status indicator", () => {
-    const statusIndicatorElement = (): HTMLElement => spec.query("baw-website-status-indicator");
+    const statusIndicatorElement = (): HTMLElement =>
+      spec.query("baw-website-status-indicator");
 
     it("should show when in mobile view", () => {
       viewport.set(viewports.small);

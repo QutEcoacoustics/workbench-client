@@ -10,8 +10,8 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-  selector: "baw-recent-audio-recordings",
-  template: `
+    selector: "baw-recent-audio-recordings",
+    template: `
     <h2>Recent Audio Recordings</h2>
 
     <ngx-datatable
@@ -62,24 +62,27 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </ngx-datatable-column>
 
       <!-- Actions -->
-      <ngx-datatable-column name="Model" [width]="70" [maxWidth]="70" [sortable]="false">
-        <ng-template let-column="column" ngx-datatable-header-template> </ng-template>
+      <ngx-datatable-column
+        name="Model"
+        [width]="70"
+        [maxWidth]="70"
+        [sortable]="false"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+        </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a id="playBtn" class="btn btn-sm btn-primary" [bawUrl]="value.viewUrl"> Play </a>
+          <a
+            id="playBtn"
+            class="btn btn-sm btn-primary"
+            [bawUrl]="value.viewUrl"
+          >
+            Play
+          </a>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-  imports: [
-    NgxDatatableModule,
-    DatatableDefaultsDirective,
-    FaIconComponent,
-    LoadingComponent,
-    DurationComponent,
-    TimeSinceComponent,
-    UrlDirective,
-    IsUnresolvedPipe,
-  ],
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, FaIconComponent, LoadingComponent, DurationComponent, TimeSinceComponent, UrlDirective, IsUnresolvedPipe]
 })
 export class RecentAudioRecordingsComponent implements OnChanges {
   @Input() public audioRecordings!: AudioRecording[] | undefined;
@@ -90,7 +93,12 @@ export class RecentAudioRecordingsComponent implements OnChanges {
 
   public ngOnChanges(): void {
     if (!this.columns) {
-      this.columns = [{ name: "Site" }, { name: "Duration" }, { name: "Uploaded" }, { name: "Model" }];
+      this.columns = [
+        { name: "Site" },
+        { name: "Duration" },
+        { name: "Uploaded" },
+        { name: "Model" },
+      ];
     }
 
     this.rows = (this.audioRecordings ?? []).map((recording) => ({

@@ -3,7 +3,11 @@ import { Response } from "@models/Response";
 import { Study } from "@models/Study";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateResponse } from "@test/fakes/Response";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { ResponsesService } from "./responses.service";
 
 type Model = Response;
@@ -33,6 +37,6 @@ describe("ResponsesService", (): void => {
     updateUrl,
     createModel,
     10,
-    5,
+    5
   );
 });

@@ -8,8 +8,8 @@ xdescribe("SitesWithoutTimezonesComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SitesWithoutTimezonesComponent],
-    }).compileComponents();
+    imports: [SitesWithoutTimezonesComponent],
+}).compileComponents();
   });
 
   beforeEach(() => {

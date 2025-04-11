@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+} from "@angular/core";
 import { List } from "immutable";
 import { IItem, ItemComponent } from "../item/item.component";
 
@@ -7,8 +13,8 @@ import { IItem, ItemComponent } from "../item/item.component";
  * This creates a list of items split into two columns.
  */
 @Component({
-  selector: "baw-items",
-  template: `
+    selector: "baw-items",
+    template: `
     <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group">
@@ -41,10 +47,10 @@ import { IItem, ItemComponent } from "../item/item.component";
         </ul>
       </div>
     </div>
-  `,
-  // Pure Component
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ItemComponent],
+    `,
+    // Pure Component
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ItemComponent]
 })
 export class ItemsComponent implements OnInit, OnChanges {
   @Input() public items: List<IItem>;

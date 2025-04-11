@@ -7,8 +7,8 @@ describe("AdminThemeTemplateComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminThemeTemplateComponent],
-    }).compileComponents();
+    imports: [AdminThemeTemplateComponent],
+}).compileComponents();
   });
 
   beforeEach(() => {

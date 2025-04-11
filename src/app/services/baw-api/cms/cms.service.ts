@@ -29,7 +29,7 @@ const endpoint = stringTemplate`/cms/${page}`;
 export class CmsService {
   public constructor(
     private http: HttpClient,
-    @Inject(API_ROOT) private apiRoot: string,
+    @Inject(API_ROOT) private apiRoot: string
   ) {}
 
   public get(cms: CMS): Observable<string> {

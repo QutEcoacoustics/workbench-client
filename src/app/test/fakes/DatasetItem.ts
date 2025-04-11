@@ -1,7 +1,9 @@
 import { IDatasetItem } from "@models/DatasetItem";
 import { modelData } from "@test/helpers/faker";
 
-export function generateDatasetItem(data?: Partial<IDatasetItem>): Required<IDatasetItem> {
+export function generateDatasetItem(
+  data?: Partial<IDatasetItem>
+): Required<IDatasetItem> {
   const [startTimeSeconds, endTimeSeconds] = modelData.startEndSeconds();
 
   return {

@@ -3,7 +3,11 @@ import { SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormComponent } from "@shared/form/form.component";
 import { generateProject } from "@test/fakes/Project";
@@ -36,7 +40,9 @@ describe("SiteNewComponent", () => {
   describe("form", () => {
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
-        const fields: FormlyFieldConfig[] = withRegion ? pointSchema.fields : siteSchema.fields;
+        const fields: FormlyFieldConfig[] = withRegion
+          ? pointSchema.fields
+          : siteSchema.fields;
         const modelName = withRegion ? "Point" : "Site";
 
         testFormlyFields([
@@ -117,16 +123,23 @@ describe("SiteNewComponent", () => {
         it("should call api", () => {
           setup(defaultProject, defaultRegion);
           api.create.and.callFake(() => new Subject());
-          const site = new Site(generateSite(withRegion ? { regionId: defaultRegion.id } : {}));
+          const site = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
 
           spec.component.submit({ ...site });
-          expect(api.create).toHaveBeenCalledWith(new Site({ ...site }), defaultProject);
+          expect(api.create).toHaveBeenCalledWith(
+            new Site({ ...site }),
+            defaultProject
+          );
         });
 
         it("should contain the region and project id in the api calls site model", () => {
           setup(defaultProject, defaultRegion);
           api.create.and.callFake(() => new Subject());
-          const site = new Site(generateSite(withRegion ? { regionId: defaultRegion.id } : {}));
+          const site = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
 
           spec.component.submit({ ...site });
 
@@ -136,16 +149,23 @@ describe("SiteNewComponent", () => {
             regionId: withRegion ? defaultRegion.id : undefined,
           });
 
-          expect(api.create).toHaveBeenCalledWith(expectedSiteModel, defaultProject);
+          expect(api.create).toHaveBeenCalledWith(
+            expectedSiteModel,
+            defaultProject
+          );
         });
 
         it("should redirect to site", () => {
           setup(defaultProject, defaultRegion);
-          const site = new Site(generateSite(withRegion ? { regionId: defaultRegion.id } : {}));
+          const site = new Site(
+            generateSite(withRegion ? { regionId: defaultRegion.id } : {})
+          );
           api.create.and.callFake(() => new BehaviorSubject<Site>(site));
 
           spec.component.submit({});
-          expect(spec.router.navigateByUrl).toHaveBeenCalledWith(site.getViewUrl(defaultProject));
+          expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
+            site.getViewUrl(defaultProject)
+          );
         });
       });
     });

@@ -1,7 +1,12 @@
 import { ComponentFixture } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ApiFilter } from "@baw-api/api-common";
-import { defaultApiPageSize, Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
+import {
+  defaultApiPageSize,
+  Filters,
+  InnerFilter,
+  Paging,
+} from "@baw-api/baw-api.service";
 import { ApiErrorDetails } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel } from "@models/AbstractModel";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
@@ -10,7 +15,9 @@ import { BehaviorSubject, Subject } from "rxjs";
 /**
  * Get all rows from datatable component
  */
-export function getDatatableRows(fixture: ComponentFixture<any>): HTMLElement[] {
+export function getDatatableRows(
+  fixture: ComponentFixture<any>
+): HTMLElement[] {
   return fixture.nativeElement.querySelectorAll("datatable-body-row");
 }
 
@@ -44,7 +51,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   api: ApiFilter<M, any[]>,
   models: M[],
   paging?: Paging,
-  apiAction: string = "filter",
+  apiAction: string = "filter"
 ) {
   paging = {
     page: 1,
@@ -64,9 +71,10 @@ export function datatableApiResponse<M extends AbstractModel>(
  * `function()` instead of `() =>` when using functions which depend on `this` as the
  * arrow function re-declares `this` and tests will fail.
  */
-export function assertPagination<MockModel extends AbstractModel, TestedService extends ApiFilter<MockModel, any[]>>(
-  apiAction: string = "filter",
-) {
+export function assertPagination<
+  MockModel extends AbstractModel,
+  TestedService extends ApiFilter<MockModel, any[]>
+>(apiAction: string = "filter") {
   describe("pagination", function () {
     let api: TestedService;
     let defaultModels: MockModel[];
@@ -80,7 +88,11 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     let defaultPaging: Paging;
     let fixture: ComponentFixture<any>;
 
-    function assertSecondRequestFilters(done: () => void, expectation: Filters, models: MockModel[]) {
+    function assertSecondRequestFilters(
+      done: () => void,
+      expectation: Filters,
+      models: MockModel[]
+    ) {
       let secondRequest = false;
       const paging = {
         page: 1,
@@ -130,7 +142,10 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
       }, 0);
     }
 
-    function buildExpectedFilters(paging?: Paging, filter: InnerFilter<MockModel> = defaultInnerFilters): Filters {
+    function buildExpectedFilters(
+      paging?: Paging,
+      filter: InnerFilter<MockModel> = defaultInnerFilters
+    ): Filters {
       const result: Filters = {};
 
       if (filter) {
@@ -163,7 +178,9 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     });
 
     it("should request the second page from api", (done) => {
-      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [defaultModels[0]]);
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [
+        defaultModels[0],
+      ]);
       fixture.detectChanges();
 
       const pageBtn = fixture.nativeElement.querySelectorAll("li.pages a")[1];
@@ -171,7 +188,9 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     });
 
     it("should request next page from api", (done) => {
-      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [defaultModels[0]]);
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 2 }), [
+        defaultModels[0],
+      ]);
       fixture.detectChanges();
 
       const pager = fixture.nativeElement.querySelector("datatable-pager");
@@ -180,7 +199,9 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     });
 
     it("should request final page from api", (done) => {
-      assertSecondRequestFilters(done, buildExpectedFilters({ page: 4 }), [defaultModels[0]]);
+      assertSecondRequestFilters(done, buildExpectedFilters({ page: 4 }), [
+        defaultModels[0],
+      ]);
       fixture.detectChanges();
 
       const pager = fixture.nativeElement.querySelector("datatable-pager");
@@ -193,7 +214,7 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
       fixture.detectChanges();
 
       const errorHandler: ErrorHandlerComponent = fixture.debugElement.query(
-        By.css("baw-error-handler"),
+        By.css("baw-error-handler")
       ).componentInstance;
       expect(errorHandler).toBeTruthy();
 
@@ -222,7 +243,12 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     });
 
     it("should handle full api page response", () => {
-      datatableApiResponse(api, defaultModels, { total: defaultApiPageSize }, apiAction);
+      datatableApiResponse(
+        api,
+        defaultModels,
+        { total: defaultApiPageSize },
+        apiAction
+      );
       fixture.detectChanges();
 
       const rows = getDatatableRows(fixture);
@@ -231,7 +257,12 @@ export function assertPagination<MockModel extends AbstractModel, TestedService 
     });
 
     it("should handle 4 pages", () => {
-      datatableApiResponse(api, [defaultModels[0]], { total: 100, maxPage: 4 }, apiAction);
+      datatableApiResponse(
+        api,
+        [defaultModels[0]],
+        { total: 100, maxPage: 4 },
+        apiAction
+      );
       fixture.detectChanges();
 
       const pager = getPagerButtons();

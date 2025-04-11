@@ -1,7 +1,10 @@
 import { ISite } from "@models/Site";
 import { modelData } from "@test/helpers/faker";
 
-export function generateSite(data?: Partial<ISite>, hasRegion?: boolean): Required<ISite> {
+export function generateSite(
+  data?: Partial<ISite>,
+  hasRegion?: boolean
+): Required<ISite> {
   return {
     id: modelData.id(),
     name: modelData.param(),

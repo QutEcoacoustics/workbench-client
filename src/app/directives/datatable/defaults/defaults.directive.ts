@@ -1,6 +1,10 @@
 import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { ColumnMode, DatatableComponent, SortType } from "@swimlane/ngx-datatable";
+import {
+  ColumnMode,
+  DatatableComponent,
+  SortType,
+} from "@swimlane/ngx-datatable";
 
 /**
  * Datatable default directives.
@@ -25,7 +29,7 @@ export class DatatableDefaultsDirective implements OnInit {
 
   public constructor(
     @Host() private datatable: DatatableComponent,
-    private datatableRef: ElementRef,
+    private datatableRef: ElementRef
   ) {}
 
   public ngOnInit(): void {

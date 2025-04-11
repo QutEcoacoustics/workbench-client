@@ -1,5 +1,7 @@
 {
-  "ignorePatterns": ["projects/**/*"],
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
   "overrides": [
     {
       "extends": [
@@ -11,12 +13,22 @@
         "plugin:import/warnings",
         "plugin:import/typescript"
       ],
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "parserOptions": {
         "createDefaultProgram": true,
-        "project": ["tsconfig.json", "tsconfig.spec.json"]
+        "project": [
+          "tsconfig.json",
+          "tsconfig.spec.json"
+        ]
       },
-      "plugins": ["eslint-plugin-rxjs", "rxjs-angular", "@typescript-eslint", "import"],
+      "plugins": [
+        "eslint-plugin-rxjs",
+        "rxjs-angular",
+        "@typescript-eslint",
+        "import"
+      ],
       "rules": {
         // TODO: we should consider enabling these rules in the future as part of https://github.com/QutEcoacoustics/workbench-client/issues/2066
         // they are disabled right now because we used to use the ng-cli-compat config which had these rules disabled
@@ -34,7 +46,10 @@
         "no-console": [
           "error",
           {
-            "allow": ["warn", "error"]
+            "allow": [
+              "warn",
+              "error"
+            ]
           }
         ],
         "import/no-unresolved": "off",
@@ -42,7 +57,9 @@
         "@angular-eslint/component-selector": [
           "error",
           {
-            "prefix": ["baw"],
+            "prefix": [
+              "baw"
+            ],
             "style": "kebab-case",
             "type": "element"
           }
@@ -50,7 +67,9 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "prefix": ["baw"],
+            "prefix": [
+              "baw"
+            ],
             "style": "camelCase",
             "type": "attribute"
           }
@@ -96,10 +115,21 @@
             "avoidEscape": true
           }
         ],
-        "@typescript-eslint/semi": ["off", null],
-        "arrow-parens": ["off", "always"],
-        "brace-style": ["off"],
-        "eqeqeq": ["error", "always"],
+        "@typescript-eslint/semi": [
+          "off",
+          null
+        ],
+        "arrow-parens": [
+          "off",
+          "always"
+        ],
+        "brace-style": [
+          "off"
+        ],
+        "eqeqeq": [
+          "error",
+          "always"
+        ],
         "guard-for-in": "off",
         "import/order": "error",
         "no-implicit-globals": "error",
@@ -127,8 +157,12 @@
       }
     },
     {
-      "extends": ["plugin:@angular-eslint/template/recommended"],
-      "files": ["*.html"],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "files": [
+        "*.html"
+      ],
       "rules": {}
     }
   ],

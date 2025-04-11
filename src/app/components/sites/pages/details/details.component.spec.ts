@@ -10,7 +10,10 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { MockComponent } from "ng-mocks";
 import { Region } from "@models/Region";
 import { generateRegion } from "@test/fakes/Region";
-import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -43,7 +46,11 @@ describe("SiteDetailsComponent", () => {
     component: SiteDetailsComponent,
   });
 
-  function setup(project: Errorable<Project>, site: Errorable<Site>, region?: Errorable<Region>) {
+  function setup(
+    project: Errorable<Project>,
+    site: Errorable<Site>,
+    region?: Errorable<Region>
+  ) {
     function getResolvedModel<T>(model: Errorable<T>): ResolvedModel<T> {
       return isBawApiError(model) ? { error: model } : { model };
     }
@@ -76,20 +83,16 @@ describe("SiteDetailsComponent", () => {
   // since sites and points use the same client model class, we can assert that both the site and point details page use the same title
   assertPageInfo<Site>(SiteDetailsComponent, "test name", {
     site: {
-      model: new Site(generateSite({ name: "test name" })),
+      model: new Site(generateSite({ name: "test name" }))
     },
   });
 
   [true, false].forEach((withRegion) => {
     describe(withRegion ? "withRegion" : "withoutRegion", () => {
       beforeEach(() => {
-        defaultRegion = withRegion
-          ? new Region(
-              generateRegion({
-                projectId: defaultProject.id,
-              }),
-            )
-          : undefined;
+        defaultRegion = withRegion ? new Region(generateRegion({
+          projectId: defaultProject.id,
+        })) : undefined;
 
         if (withRegion) {
           defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
@@ -142,7 +145,7 @@ describe("SiteDetailsComponent", () => {
             configService ||= spec.inject(ConfigService);
             configService.settings.hideProjects = projectsHidden;
           });
-          afterEach(() => (configService.settings.hideProjects = false));
+          afterEach(() => configService.settings.hideProjects = false);
 
           it("should invoke the correct api calls when the deleteModel() method is called", () => {
             spec.detectChanges();

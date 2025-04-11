@@ -13,11 +13,21 @@ import { MenuComponent } from "../menu/menu.component";
  * links. It also acts as a breadcrumb showing the user their current location.
  */
 @Component({
-  selector: "baw-secondary-menu",
-  template: ` <baw-menu menuType="secondary" [links]="links" [widgets]="widgets" [isSideNav]="isSideNav"></baw-menu> `,
-  imports: [MenuComponent],
+    selector: "baw-secondary-menu",
+    template: `
+    <baw-menu
+      menuType="secondary"
+      [links]="links"
+      [widgets]="widgets"
+      [isSideNav]="isSideNav"
+    ></baw-menu>
+  `,
+    imports: [MenuComponent]
 })
-export class SecondaryMenuComponent extends withUnsubscribe() implements OnInit {
+export class SecondaryMenuComponent
+  extends withUnsubscribe()
+  implements OnInit
+{
   @Input() public isSideNav: boolean;
 
   public links: Set<NavigableMenuItem | MenuModalWithoutAction>;
@@ -28,9 +38,11 @@ export class SecondaryMenuComponent extends withUnsubscribe() implements OnInit 
   }
 
   public ngOnInit(): void {
-    this.menu.menuUpdate.pipe(takeUntil(this.unsubscribe)).subscribe(({ secondaryMenu }): void => {
-      this.links = secondaryMenu.links;
-      this.widgets = secondaryMenu.widgets;
-    });
+    this.menu.menuUpdate
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(({ secondaryMenu }): void => {
+        this.links = secondaryMenu.links;
+        this.widgets = secondaryMenu.widgets;
+      });
   }
 }

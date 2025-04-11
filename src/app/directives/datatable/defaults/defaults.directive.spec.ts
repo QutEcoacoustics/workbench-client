@@ -4,8 +4,15 @@ import { SharedModule } from "@shared/shared.module";
 import { DatatableDefaultsDirective } from "./defaults.directive";
 
 describe("DatatableDefaultsDirective", () => {
-  function assertAttribute(selector: string, attribute: string, expectedValue: string) {
-    expect(spectator.query(selector)).toHaveAttribute("ng-reflect-" + attribute, expectedValue);
+  function assertAttribute(
+    selector: string,
+    attribute: string,
+    expectedValue: string
+  ) {
+    expect(spectator.query(selector)).toHaveAttribute(
+      "ng-reflect-" + attribute,
+      expectedValue
+    );
   }
 
   let spectator: SpectatorDirective<DatatableDefaultsDirective>;
@@ -31,7 +38,7 @@ describe("DatatableDefaultsDirective", () => {
             rows: [{ id: 1 }],
             columns: [{ prop: "id" }],
           },
-        },
+        }
       );
     });
 
@@ -48,7 +55,11 @@ describe("DatatableDefaultsDirective", () => {
     });
 
     it("should set limit", () => {
-      assertAttribute("datatable-body", "page-size", defaultApiPageSize.toString());
+      assertAttribute(
+        "datatable-body",
+        "page-size",
+        defaultApiPageSize.toString()
+      );
     });
 
     it("should set row height", () => {
@@ -82,7 +93,7 @@ describe("DatatableDefaultsDirective", () => {
             rows: [{ id: 1 }],
             columns: [{ prop: "id" }],
           },
-        },
+        }
       );
 
       assertAttribute("datatable-footer", "footer-height", "150");
@@ -106,7 +117,7 @@ describe("DatatableDefaultsDirective", () => {
             rows: [{ id: 1 }],
             columns: [{ prop: "id" }],
           },
-        },
+        }
       );
 
       assertAttribute("datatable-footer", "footer-height", "150");

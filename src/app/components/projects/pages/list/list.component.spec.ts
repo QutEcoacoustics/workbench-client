@@ -6,7 +6,11 @@ import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
@@ -42,7 +46,10 @@ describe("ProjectsListComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
-  function generateProjects(numRegions: number, overrides: IProject = {}): Project[] {
+  function generateProjects(
+    numRegions: number,
+    overrides: IProject = {}
+  ): Project[] {
     const projects = [];
     for (let i = 0; i < Math.min(numRegions, defaultApiPageSize); i++) {
       const project = new Project(generateProject(overrides));
@@ -58,10 +65,14 @@ describe("ProjectsListComponent", () => {
 
   async function handleApiRequest(
     models: Errorable<Project[]>,
-    assertFilter: (filters: Filters<Project>) => void = () => {},
+    assertFilter: (filters: Filters<Project>) => void = () => {}
   ) {
     const subject = new Subject<Project[]>();
-    const promise = nStepObservable(subject, () => models, isBawApiError(models));
+    const promise = nStepObservable(
+      subject,
+      () => models,
+      isBawApiError(models)
+    );
     api.filter.and.callFake((filters) => {
       assertFilter(filters);
       return subject;

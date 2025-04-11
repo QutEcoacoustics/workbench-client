@@ -62,7 +62,10 @@ export const jsStringArray = {
 };
 
 /** Converts an object to an Angular `Params` object with stringified values */
-export function serializeObjectToParams<T>(queryStringParameters: T, spec: IQueryStringParameterSpec): Params {
+export function serializeObjectToParams<T>(
+  queryStringParameters: T,
+  spec: IQueryStringParameterSpec
+): Params {
   const resultParameter: Params = {};
 
   // under our current typescript config, queryString can be undefined
@@ -71,27 +74,32 @@ export function serializeObjectToParams<T>(queryStringParameters: T, spec: IQuer
     return resultParameter;
   }
 
-  Object.entries(queryStringParameters).forEach(([key, value]: [string, string]) => {
-    // null and undefined values are omitted when used on angular HTTPParams
-    // therefore, we should not serialize them as they will have no effect on the query string
-    // we use isInstantiated here because we want to serialize "falsey" values such as 0 and empty strings
-    // we also omit empty arrays so that we don't end up with empty query string parameters for arrays
-    if (!isInstantiated(value)) {
-      return;
-    }
+  Object.entries(queryStringParameters).forEach(
+    ([key, value]: [string, string]) => {
+      // null and undefined values are omitted when used on angular HTTPParams
+      // therefore, we should not serialize them as they will have no effect on the query string
+      // we use isInstantiated here because we want to serialize "falsey" values such as 0 and empty strings
+      // we also omit empty arrays so that we don't end up with empty query string parameters for arrays
+      if (!isInstantiated(value)) {
+        return;
+      }
 
-    const serializationTechnique = spec[key];
+      const serializationTechnique = spec[key];
 
-    if (serializationTechnique) {
-      resultParameter[key] = serializationTechnique.serialize(value);
+      if (serializationTechnique) {
+        resultParameter[key] = serializationTechnique.serialize(value);
+      }
     }
-  });
+  );
 
   return resultParameter;
 }
 
 /** Converts a Angular `Params` object to an object with instantiated types and objects */
-export function deserializeParamsToObject<T>(queryString: Params, spec: IQueryStringParameterSpec): T {
+export function deserializeParamsToObject<T>(
+  queryString: Params,
+  spec: IQueryStringParameterSpec
+): T {
   const returnedObject = {};
 
   // under our current typescript config, queryString can be undefined
@@ -176,7 +184,9 @@ function dateArrayToQueryString(value: DateTime[]): string {
 }
 
 function durationArrayToQueryString(value: Duration[]): string {
-  return value.map((duration: Duration) => durationToQueryString(duration)).join(",");
+  return value
+    .map((duration: Duration) => durationToQueryString(duration))
+    .join(",");
 }
 
 function arrayToQueryString(value: unknown[]): string {

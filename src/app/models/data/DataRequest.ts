@@ -11,7 +11,7 @@ export const dataRequestGroupType = [
   { key: "personal", value: "Personal" },
 ] as const;
 
-export type DataRequestGroupType = (typeof dataRequestGroupType)[number]["key"];
+export type DataRequestGroupType = typeof dataRequestGroupType[number]["key"];
 
 export interface IDataRequest {
   name: Param;
@@ -22,7 +22,10 @@ export interface IDataRequest {
   recaptchaToken: string;
 }
 
-export class DataRequest extends AbstractForm<IDataRequest> implements IDataRequest {
+export class DataRequest
+  extends AbstractForm<IDataRequest>
+  implements IDataRequest
+{
   public readonly kind = "Data Request";
   @bawPersistAttr()
   public readonly name: string;

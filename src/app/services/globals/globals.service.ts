@@ -11,7 +11,7 @@ export class GlobalsService {
 
   public constructor(
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
   ) {}
 
   public initialize(): void {

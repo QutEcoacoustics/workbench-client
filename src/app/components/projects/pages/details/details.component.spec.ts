@@ -1,7 +1,10 @@
 import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
@@ -12,12 +15,19 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
-import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { FilterExpectations, interceptRepeatApiRequests } from "@test/helpers/general";
+import {
+  FilterExpectations,
+  interceptRepeatApiRequests,
+} from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
@@ -54,15 +64,23 @@ describe("ProjectDetailsComponent", () => {
     },
   });
 
-  function createModelWithMeta<M extends AbstractModel>(construct: (id: number) => M, numModels: number) {
+  function createModelWithMeta<M extends AbstractModel>(
+    construct: (id: number) => M,
+    numModels: number
+  ) {
     const models: M[][] = [];
     const maxPages = Math.ceil(numModels / defaultApiPageSize);
     const getMinModelIdInPage = (page: number) => page * defaultApiPageSize;
-    const getMaxModelIdInPage = (page: number) => numModels - page * defaultApiPageSize;
+    const getMaxModelIdInPage = (page: number) =>
+      numModels - page * defaultApiPageSize;
 
     for (let page = 0; page < maxPages; page++) {
       models.push([]);
-      for (let itemNo = getMinModelIdInPage(page); itemNo < getMaxModelIdInPage(page); itemNo++) {
+      for (
+        let itemNo = getMinModelIdInPage(page);
+        itemNo < getMaxModelIdInPage(page);
+        itemNo++
+      ) {
         const model = construct(itemNo);
         model.addMetadata({ paging: { total: numModels } });
         models[page].push(model);
@@ -73,11 +91,17 @@ describe("ProjectDetailsComponent", () => {
   }
 
   function createSitesWithMeta(numSites: number) {
-    return createModelWithMeta<Site>((id) => new Site(generateSite({ id })), numSites);
+    return createModelWithMeta<Site>(
+      (id) => new Site(generateSite({ id })),
+      numSites
+    );
   }
 
   function createRegionsWithMeta(numRegions: number) {
-    return createModelWithMeta<Region>((id) => new Region(generateRegion({ id })), numRegions);
+    return createModelWithMeta<Region>(
+      (id) => new Region(generateRegion({ id })),
+      numRegions
+    );
   }
 
   function setup(model: Project, error?: BawApiError) {
@@ -100,23 +124,26 @@ describe("ProjectDetailsComponent", () => {
     siteResponses: Errorable<Site[]>[],
     regionResponses: Errorable<Region[]>[],
     siteExpectations?: FilterExpectations<ISite>[],
-    regionExpectations?: FilterExpectations<IRegion>[],
+    regionExpectations?: FilterExpectations<IRegion>[]
   ) {
     const sitePromises = interceptRepeatApiRequests<ISite, Site[]>(
       siteApi.filterByRegion,
       siteResponses,
-      siteExpectations,
+      siteExpectations
     );
     const regionPromises = interceptRepeatApiRequests<IRegion, Region[]>(
       regionApi.filter,
       regionResponses,
-      regionExpectations,
+      regionExpectations
     );
 
     return { sites: sitePromises, regions: regionPromises };
   }
 
-  async function awaitChanges(promises: { sites: Promise<void>[]; regions: Promise<void>[] }) {
+  async function awaitChanges(promises: {
+    sites: Promise<void>[];
+    regions: Promise<void>[];
+  }) {
     const promise = Promise.all([...promises.sites, ...promises.regions]);
     await promise;
     spectator.detectChanges();
@@ -149,16 +176,24 @@ describe("ProjectDetailsComponent", () => {
     setup(project);
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
-    const description = spectator.query<HTMLParagraphElement>("#project_description");
-    expect(description.innerHTML.trim()).toContain("<i>No description found</i>");
+    const description = spectator.query<HTMLParagraphElement>(
+      "#project_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      "<i>No description found</i>"
+    );
   });
 
   it("should display project description", () => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
-    const description = spectator.query<HTMLParagraphElement>("#project_description");
-    expect(description.innerHTML.trim()).toContain(defaultProject.descriptionHtml);
+    const description = spectator.query<HTMLParagraphElement>(
+      "#project_description"
+    );
+    expect(description.innerHTML.trim()).toContain(
+      defaultProject.descriptionHtml
+    );
   });
 
   it("should invoke the correct api calls when the deleteModel() method is called", () => {
@@ -207,7 +242,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should display maps component when sites exist", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(createSitesWithMeta(1), emptyResponse);
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        emptyResponse
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getMap()).toBeTruthy();
@@ -215,7 +253,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should display maps component when regions exist", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(emptyResponse, createRegionsWithMeta(1));
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getMap()).toBeTruthy();
@@ -223,7 +264,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should display maps component when sites and regions exist", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(createSitesWithMeta(1), createRegionsWithMeta(1));
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        createRegionsWithMeta(1)
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getMap()).toBeTruthy();
@@ -231,7 +275,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should provide project to maps component", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(emptyResponse, createRegionsWithMeta(1));
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getMap().project).toEqual(defaultProject);
@@ -247,13 +294,21 @@ describe("ProjectDetailsComponent", () => {
       return spectator.queryAll(SiteCardComponent);
     }
 
-    function assertSiteCard(card: SiteCardComponent, project: Project, site: Site) {
+    function assertSiteCard(
+      card: SiteCardComponent,
+      project: Project,
+      site: Site
+    ) {
       expect(card).toBeTruthy();
       expect(card.project).toEqual(project);
       expect(card.site).toEqual(site);
     }
 
-    function assertRegionCard(card: SiteCardComponent, project: Project, region: Region) {
+    function assertRegionCard(
+      card: SiteCardComponent,
+      project: Project,
+      region: Region
+    ) {
       expect(card).toBeTruthy();
       expect(card.project).toEqual(project);
       expect(card.region).toEqual(region);
@@ -270,7 +325,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should hide placeholder when sites found", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(createSitesWithMeta(1), emptyResponse);
+      const promise = interceptApiRequest(
+        createSitesWithMeta(1),
+        emptyResponse
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getPlaceholder()).toBeFalsy();
@@ -278,7 +336,10 @@ describe("ProjectDetailsComponent", () => {
 
     it("should hide placeholder when regions found", async () => {
       setup(defaultProject);
-      const promise = interceptApiRequest(emptyResponse, createRegionsWithMeta(1));
+      const promise = interceptApiRequest(
+        emptyResponse,
+        createRegionsWithMeta(1)
+      );
       spectator.detectChanges();
       await awaitChanges(promise);
       expect(getPlaceholder()).toBeFalsy();
@@ -333,13 +394,13 @@ describe("ProjectDetailsComponent", () => {
       isSite: boolean,
       expectations: FilterExpectations<ISite | IRegion>[],
       pageNo?: number,
-      filterText?: string,
+      filterText?: string
     ) {
       const promise = interceptApiRequest(
         [initialResponse, []],
         [initialResponse, []],
         isSite ? expectations : undefined,
-        !isSite ? expectations : undefined,
+        !isSite ? expectations : undefined
       );
       await awaitChanges(promise);
       if (pageNo) {
@@ -415,7 +476,12 @@ describe("ProjectDetailsComponent", () => {
                 });
                 done();
               };
-              handleOnInit(isSite, [initialExpectation, expectation], 5, "custom filter");
+              handleOnInit(
+                isSite,
+                [initialExpectation, expectation],
+                5,
+                "custom filter"
+              );
             });
           }
 

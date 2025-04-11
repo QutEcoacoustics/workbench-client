@@ -1,5 +1,10 @@
 import { libraryMenuItem } from "@components/library/library.menus";
-import { DateTimeTimezone, HasCreatorAndUpdater, Hash, Id } from "../interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Hash,
+  Id,
+} from "../interfaces/apiInterfaces";
 import { AbstractData } from "./AbstractData";
 import { AbstractModel } from "./AbstractModel";
 import { creator, updater } from "./AssociationDecorators";

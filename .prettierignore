@@ -9,6 +9,3 @@ src/app/services/baw-api/ServiceTokens.ts
 # we ignore .html files because prettier doesn't play nice with compiler
 # control flow (e.g. @if, @else, and @for)
 *.html
-
-package-lock.json
-node_modules/

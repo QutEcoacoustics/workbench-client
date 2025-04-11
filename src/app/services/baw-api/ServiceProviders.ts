@@ -1,4 +1,7 @@
-import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import {
+  annotationResolvers,
+  AnnotationService,
+} from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
@@ -6,14 +9,36 @@ import {
   analysisJobItemResultResolvers,
   AnalysisJobItemResultsService,
 } from "./analysis/analysis-job-item-result.service";
-import { analysisJobItemResolvers, AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
-import { analysisJobResolvers, AnalysisJobsService } from "./analysis/analysis-jobs.service";
-import { AudioEventImportService, audioEventImportResolvers } from "./audio-event-import/audio-event-import.service";
-import { audioEventResolvers, AudioEventsService, ShallowAudioEventsService } from "./audio-event/audio-events.service";
-import { audioRecordingResolvers, AudioRecordingsService } from "./audio-recording/audio-recordings.service";
-import { bookmarkResolvers, BookmarksService } from "./bookmark/bookmarks.service";
+import {
+  analysisJobItemResolvers,
+  AnalysisJobItemsService,
+} from "./analysis/analysis-job-items.service";
+import {
+  analysisJobResolvers,
+  AnalysisJobsService,
+} from "./analysis/analysis-jobs.service";
+import {
+  AudioEventImportService,
+  audioEventImportResolvers,
+} from "./audio-event-import/audio-event-import.service";
+import {
+  audioEventResolvers,
+  AudioEventsService,
+  ShallowAudioEventsService,
+} from "./audio-event/audio-events.service";
+import {
+  audioRecordingResolvers,
+  AudioRecordingsService,
+} from "./audio-recording/audio-recordings.service";
+import {
+  bookmarkResolvers,
+  BookmarksService,
+} from "./bookmark/bookmarks.service";
 import { DataRequestService } from "./data-request/data-request.service";
-import { datasetItemResolvers, DatasetItemsService } from "./dataset/dataset-items.service";
+import {
+  datasetItemResolvers,
+  DatasetItemsService,
+} from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
 import {
   harvestItemResolvers,
@@ -27,8 +52,14 @@ import {
   shallowHarvestResolvers,
   ShallowHarvestsService,
 } from "./harvest/harvest.service";
-import { permissionResolvers, PermissionsService } from "./permissions/permissions.service";
-import { progressEventResolvers, ProgressEventsService } from "./progress-event/progress-events.service";
+import {
+  permissionResolvers,
+  PermissionsService,
+} from "./permissions/permissions.service";
+import {
+  progressEventResolvers,
+  ProgressEventsService,
+} from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
   audioEventProvenanceResolvers,
@@ -43,10 +74,18 @@ import {
 import { ContactUsService } from "./report/contact-us.service";
 import { ReportProblemService } from "./report/report-problem.service";
 import { BawProvider } from "./resolver-common";
-import { SavedSearchesService, savedSearchResolvers } from "./saved-search/saved-searches.service";
+import {
+  SavedSearchesService,
+  savedSearchResolvers,
+} from "./saved-search/saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./script/scripts.service";
 import * as Tokens from "./ServiceTokens";
-import { shallowSiteResolvers, ShallowSitesService, siteResolvers, SitesService } from "./site/sites.service";
+import {
+  shallowSiteResolvers,
+  ShallowSitesService,
+  siteResolvers,
+  SitesService,
+} from "./site/sites.service";
 import { StatisticsService } from "./statistics/statistics.service";
 import {
   questionResolvers,
@@ -65,7 +104,10 @@ import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
 import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
-import { EventSummaryReportService, eventSummaryResolvers } from "./reports/event-report/event-summary-report.service";
+import {
+  EventSummaryReportService,
+  eventSummaryResolvers,
+} from "./reports/event-report/event-summary-report.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
 import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import {

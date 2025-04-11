@@ -18,7 +18,10 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { CONFLICT, INTERNAL_SERVER_ERROR } from "http-status";
 import { catchError, firstValueFrom, of, throwError } from "rxjs";
-import { ShallowVerificationService, VerificationService } from "./verification.service";
+import {
+  ShallowVerificationService,
+  VerificationService,
+} from "./verification.service";
 
 type Model = Verification;
 
@@ -37,7 +40,7 @@ describe("VerificationService", () => {
       generateVerification({
         id: testModelId,
         audioEventId: testAudioEventId,
-      }),
+      })
     );
 
   const baseUrl = `/audio_recordings/${testAudioRecordingId}/audio_events/${testAudioEventId}/verifications/`;
@@ -63,13 +66,14 @@ describe("VerificationService", () => {
     createModel,
     testModelId,
     testAudioRecordingId,
-    testAudioEventId,
+    testAudioEventId
   );
 });
 
 describe("ShallowVerificationService", () => {
   const testModelId = modelData.id();
-  const createModel = () => new Verification(generateVerification({ id: testModelId }));
+  const createModel = () =>
+    new Verification(generateVerification({ id: testModelId }));
   const baseUrl = "/verifications/";
   const updateUrl: string = baseUrl + testModelId;
   let spec: SpectatorService<ShallowVerificationService>;
@@ -91,7 +95,7 @@ describe("ShallowVerificationService", () => {
     baseUrl + "filter",
     updateUrl,
     createModel,
-    testModelId,
+    testModelId
   );
 
   describe("custom methods", () => {
@@ -106,7 +110,9 @@ describe("ShallowVerificationService", () => {
 
     beforeEach(() => {
       mockModel = createModel();
-      mockAudioEvent = new AudioEvent(generateAudioEvent({ id: mockModel.audioEventId }));
+      mockAudioEvent = new AudioEvent(
+        generateAudioEvent({ id: mockModel.audioEventId })
+      );
       mockUser = new User(generateUser({ id: mockModel.creatorId }));
 
       mockCreateResponse = createModel();
@@ -116,15 +122,21 @@ describe("ShallowVerificationService", () => {
       api = spec.inject<BawApiService<Model>>(BawApiService);
 
       spyOn(api, "create").and.callFake(() =>
-        mockCreateResponse instanceof BawApiError ? throwError(() => mockCreateResponse) : of(mockCreateResponse),
+        mockCreateResponse instanceof BawApiError
+          ? throwError(() => mockCreateResponse)
+          : of(mockCreateResponse)
       );
 
       spyOn(api, "update").and.callFake(() =>
-        mockUpdateResponse instanceof BawApiError ? throwError(() => mockUpdateResponse) : of(mockUpdateResponse),
+        mockUpdateResponse instanceof BawApiError
+          ? throwError(() => mockUpdateResponse)
+          : of(mockUpdateResponse)
       );
 
       spyOn(api, "filter").and.callFake(() =>
-        mockFilterResponse instanceof BawApiError ? throwError(() => mockFilterResponse) : of(mockFilterResponse),
+        mockFilterResponse instanceof BawApiError
+          ? throwError(() => mockFilterResponse)
+          : of(mockFilterResponse)
       );
     });
 
@@ -132,7 +144,10 @@ describe("ShallowVerificationService", () => {
       it("should call the filter api with the correct data", () => {
         const expectedFilters = {
           filter: {
-            and: [{ audioEventId: { eq: mockAudioEvent.id } }, { creatorId: { eq: mockUser.id } }],
+            and: [
+              { audioEventId: { eq: mockAudioEvent.id } },
+              { creatorId: { eq: mockUser.id } },
+            ],
           },
           paging: {
             items: 1,
@@ -141,11 +156,17 @@ describe("ShallowVerificationService", () => {
 
         spec.service.audioEventUserVerification(mockAudioEvent, mockUser);
 
-        expect(api.filter).toHaveBeenCalledOnceWith(Verification, jasmine.anything(), expectedFilters);
+        expect(api.filter).toHaveBeenCalledOnceWith(
+          Verification,
+          jasmine.anything(),
+          expectedFilters
+        );
       });
 
       it("should return the verification if the audio event is verified", async () => {
-        const response = await firstValueFrom(spec.service.audioEventUserVerification(mockAudioEvent, mockUser));
+        const response = await firstValueFrom(
+          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+        );
 
         expect(response).toEqual(mockFilterResponse[0]);
       });
@@ -153,7 +174,9 @@ describe("ShallowVerificationService", () => {
       it("should return null if the audio event is not verified", async () => {
         mockFilterResponse = [];
 
-        const response = await firstValueFrom(spec.service.audioEventUserVerification(mockAudioEvent, mockUser));
+        const response = await firstValueFrom(
+          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+        );
 
         expect(response).toBeNull();
       });
@@ -161,14 +184,22 @@ describe("ShallowVerificationService", () => {
 
     describe("createOrUpdate", () => {
       it("should emit a create request if the verification does not exist", () => {
-        spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).subscribe();
+        spec.service
+          .createOrUpdate(mockModel, mockAudioEvent, mockUser)
+          .subscribe();
         expect(api.create).toHaveBeenCalledTimes(1);
       });
 
       it("should emit an update request if there is a verification conflict", async () => {
-        mockCreateResponse = new BawApiError<Verification>(CONFLICT, "Conflict", null);
+        mockCreateResponse = new BawApiError<Verification>(
+          CONFLICT,
+          "Conflict",
+          null
+        );
 
-        const response = await firstValueFrom(spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser));
+        const response = await firstValueFrom(
+          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser)
+        );
 
         expect(api.create).toHaveBeenCalledTimes(1);
         expect(api.update).toHaveBeenCalledTimes(1);
@@ -177,10 +208,16 @@ describe("ShallowVerificationService", () => {
       });
 
       it("should not emit an update request if there is an internal server error", async () => {
-        mockCreateResponse = new BawApiError<Verification>(INTERNAL_SERVER_ERROR, "Internal Server Error", null);
+        mockCreateResponse = new BawApiError<Verification>(
+          INTERNAL_SERVER_ERROR,
+          "Internal Server Error",
+          null
+        );
 
         const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).pipe(catchError(() => of(null))),
+          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).pipe(
+            catchError(() => of(null))
+          )
         );
 
         expect(api.create).toHaveBeenCalledTimes(1);

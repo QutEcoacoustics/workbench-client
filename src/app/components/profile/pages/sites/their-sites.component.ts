@@ -1,7 +1,10 @@
 import { Component } from "@angular/core";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { theirProfileCategory, theirSitesMenuItem } from "@components/profile/profile.menus";
+import {
+  theirProfileCategory,
+  theirSitesMenuItem,
+} from "@components/profile/profile.menus";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";

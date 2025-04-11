@@ -42,7 +42,7 @@ describe("MenuButtonComponent", () => {
           tooltip: "tooltip",
           ...inputs,
         },
-      },
+      }
     );
     component = spec.component;
   }
@@ -150,7 +150,8 @@ describe("MenuButtonComponent", () => {
       const tooltip = getTooltip();
       tooltip.open();
       spec.detectChanges();
-      const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef.nativeElement;
+      const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef
+        .nativeElement;
       expect(tooltipEl).toContainText("custom disabled message");
     });
   });

@@ -18,7 +18,10 @@ describe("WebsiteCapabilityWarningComponent", () => {
   const createComponent = createComponentFactory({
     component: WebsiteStatusWarningComponent,
     imports: [MockBawApiModule, SharedModule],
-    providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute() }, MockProvider(WebsiteStatusService)],
+    providers: [
+      { provide: ActivatedRoute, useValue: mockActivatedRoute() },
+      MockProvider(WebsiteStatusService),
+    ],
   });
 
   const warningMessage = () => spectator.query(".alert", { root: true });
@@ -26,7 +29,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
   function setup(
     mockWebsiteStatus = new WebsiteStatus(generateWebsiteStatus()),
     feature?: KeysOfType<WebsiteStatus, boolean>,
-    message: string = "",
+    message: string = ""
   ): void {
     spectator = createComponent({ detectChanges: false });
 
@@ -54,13 +57,13 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const goodWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      }),
+      })
     );
 
     const badWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Dead",
-      }),
+      })
     );
 
     setup(goodWebsiteStatus, "isUploadingHealthy");
@@ -77,13 +80,13 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const goodWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      }),
+      })
     );
 
     const badWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Dead",
-      }),
+      })
     );
 
     setup(badWebsiteStatus, "isUploadingHealthy");
@@ -100,7 +103,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const mockWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      }),
+      })
     );
 
     setup(mockWebsiteStatus, "isUploadingHealthy", "upload audio");
@@ -112,7 +115,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const mockWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         storage: "No audio recording storage directories are available.",
-      }),
+      })
     );
 
     setup(mockWebsiteStatus, "isStorageHealthy", "download audio");

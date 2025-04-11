@@ -2,7 +2,10 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { userResolvers } from "@baw-api/user/user.service";
-import { myAccountCategory, myProjectsMenuItem } from "@components/profile/profile.menus";
+import {
+  myAccountCategory,
+  myProjectsMenuItem,
+} from "@components/profile/profile.menus";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
@@ -17,13 +20,17 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 const userKey = "user";
 
 @Component({
-  selector: "baw-my-projects",
-  templateUrl: "./projects.component.html",
-  imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe],
+    selector: "baw-my-projects",
+    templateUrl: "./projects.component.html",
+    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe]
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   protected api: ProjectsService;
-  public columns = [{ name: "Project" }, { name: "Sites" }, { name: "Permission" }];
+  public columns = [
+    { name: "Project" },
+    { name: "Sites" },
+    { name: "Permission" },
+  ];
   public sortKeys = { project: "name" };
 
   public constructor(api: ProjectsService, route: ActivatedRoute) {
@@ -35,7 +42,7 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
           sites: project.siteIds.size,
           permission: project.accessLevel,
         })),
-      route,
+      route
     );
   }
 

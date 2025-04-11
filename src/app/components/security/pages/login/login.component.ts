@@ -25,11 +25,15 @@ import { FormComponent } from "../../../shared/form/form.component";
 import { ToastComponent as ToastComponent_1 } from "../../../shared/toast/toast.component";
 import schema from "./login.schema.json";
 
-export const loginMenuItemActions = [confirmAccountMenuItem, resetPasswordMenuItem, unlockAccountMenuItem];
+export const loginMenuItemActions = [
+  confirmAccountMenuItem,
+  resetPasswordMenuItem,
+  unlockAccountMenuItem,
+];
 
 @Component({
-  selector: "baw-authentication-login",
-  template: `
+    selector: "baw-authentication-login",
+    template: `
     <baw-form
       title="Log in"
       size="small"
@@ -41,19 +45,30 @@ export const loginMenuItemActions = [confirmAccountMenuItem, resetPasswordMenuIt
       (onSubmit)="submit($event)"
     ></baw-form>
 
-    <baw-toast #communicationsToast [title]="'Subscribe to email updates'" [options]="{ autoHide: false }">
+    <baw-toast
+      #communicationsToast
+      [title]="'Subscribe to email updates'"
+      [options]="{ autoHide: false }"
+    >
       <ng-template>
         <p>Can we email you with updates to our platform?</p>
 
         <div class="d-flex justify-content-end">
-          <button class="btn btn-primary me-2" (click)="optInContactable()">Yes</button>
+          <button class="btn btn-primary me-2" (click)="optInContactable()">
+            Yes
+          </button>
 
-          <button class="btn btn-danger text-white" (click)="optOutContactable()">No</button>
+          <button
+            class="btn btn-danger text-white"
+            (click)="optOutContactable()"
+          >
+            No
+          </button>
         </div>
       </ng-template>
     </baw-toast>
   `,
-  imports: [FormComponent, ToastComponent_1],
+    imports: [FormComponent, ToastComponent_1]
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = schema.fields;
@@ -71,7 +86,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
     private accountsApi: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router,
+    protected router: Router
   ) {
     super(notifications, route, router, {
       hasFormCheck: false,
@@ -116,7 +131,8 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
     this.redirectUrl = homeMenuItem.route;
     const noHistory = 1;
-    const navigationId = (this.location.getState() as any)?.navigationId ?? noHistory;
+    const navigationId =
+      (this.location.getState() as any)?.navigationId ?? noHistory;
     const redirect: string | boolean = this.route.snapshot.queryParams.redirect;
 
     // If no redirect, redirect home
@@ -133,7 +149,8 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       // Check if redirect url is safe
       if (
         redirect.startsWith("/") ||
-        redirectUrl.protocol + "//" + redirectUrl.hostname === validUrl.protocol + "//" + validUrl.hostname
+        redirectUrl.protocol + "//" + redirectUrl.hostname ===
+          validUrl.protocol + "//" + validUrl.hostname
       ) {
         this.redirectUrl = redirect;
       }
@@ -151,12 +168,16 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
   protected optInContactable() {
     this.communicationsToastElement.close();
-    firstValueFrom(this.accountsApi.optInContactable(this.session.currentUser.id));
+    firstValueFrom(
+      this.accountsApi.optInContactable(this.session.currentUser.id)
+    );
   }
 
   protected optOutContactable() {
     this.communicationsToastElement.close();
-    firstValueFrom(this.accountsApi.optOutContactable(this.session.currentUser.id));
+    firstValueFrom(
+      this.accountsApi.optOutContactable(this.session.currentUser.id)
+    );
   }
 }
 

@@ -1,4 +1,8 @@
-import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
+import {
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -41,13 +45,15 @@ describe("AnnotationsListComponent", () => {
     fakeAnnotationImport = new AudioEventImport(
       generateAudioEventImport({
         createdAt,
-      }),
+      })
     );
 
     fakeAnnotationImport.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
-    spyOnProperty(fakeAnnotationImport, "creator").and.callFake(() => defaultUser);
+    spyOnProperty(fakeAnnotationImport, "creator").and.callFake(
+      () => defaultUser
+    );
 
     spectator = createComponent({
       detectChanges: false,
@@ -83,13 +89,18 @@ describe("AnnotationsListComponent", () => {
   }
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query((element) => element.nativeElement.innerText === text)?.nativeElement as T;
+    return spectator.debugElement.query(
+      (element) => element.nativeElement.innerText === text
+    )?.nativeElement as T;
   }
 
-  const viewImportButton = (): HTMLButtonElement => spectator.query<HTMLButtonElement>("[name='view-button']");
-  const deleteImportButton = (): HTMLButtonElement => spectator.query<HTMLButtonElement>("[name='delete-button']");
+  const viewImportButton = (): HTMLButtonElement =>
+    spectator.query<HTMLButtonElement>("[name='view-button']");
+  const deleteImportButton = (): HTMLButtonElement =>
+    spectator.query<HTMLButtonElement>("[name='delete-button']");
   // I must use { root: true }
-  const modalConfirmButton = (): HTMLButtonElement => spectator.query<HTMLButtonElement>(".btn-danger", { root: true });
+  const modalConfirmButton = (): HTMLButtonElement =>
+    spectator.query<HTMLButtonElement>(".btn-danger", { root: true });
 
   beforeEach(() => setup());
 
@@ -121,7 +132,8 @@ describe("AnnotationsListComponent", () => {
   it("should show created dates in the users local timezone", () => {
     const expectedLocalTime = "2022-11-05 04:12:31";
 
-    const importCreatedColumn = getElementByInnerText<HTMLTableCellElement>(expectedLocalTime);
+    const importCreatedColumn =
+      getElementByInnerText<HTMLTableCellElement>(expectedLocalTime);
 
     expect(importCreatedColumn).toExist();
   });

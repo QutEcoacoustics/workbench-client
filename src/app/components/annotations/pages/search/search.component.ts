@@ -1,4 +1,10 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
@@ -14,7 +20,10 @@ import { NgbModal, NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-b
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
-import { annotationResolvers, AnnotationService } from "@services/models/annotation.service";
+import {
+  annotationResolvers,
+  AnnotationService,
+} from "@services/models/annotation.service";
 import { firstValueFrom } from "rxjs";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
@@ -34,19 +43,15 @@ const siteKey = "site";
 const annotationsKey = "annotations";
 
 @Component({
-  selector: "baw-annotations-search",
-  templateUrl: "search.component.html",
-  styleUrl: "search.component.scss",
-  imports: [
-    AnnotationSearchFormComponent,
-    IfLoggedInComponent,
-    AnnotationEventCardComponent,
-    NgbPagination,
-    ErrorHandlerComponent,
-    FiltersWarningModalComponent_1,
-  ],
+    selector: "baw-annotations-search",
+    templateUrl: "search.component.html",
+    styleUrl: "search.component.scss",
+    imports: [AnnotationSearchFormComponent, IfLoggedInComponent, AnnotationEventCardComponent, NgbPagination, ErrorHandlerComponent, FiltersWarningModalComponent_1]
 })
-class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implements OnInit {
+class AnnotationSearchComponent
+  extends PaginationTemplate<AudioEvent>
+  implements OnInit
+{
   public constructor(
     protected audioEventApi: ShallowAudioEventsService,
     protected route: ActivatedRoute,
@@ -54,7 +59,7 @@ class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implement
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super(
       router,
@@ -65,14 +70,16 @@ class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implement
       () => [],
       async (newResults: AudioEvent[]) => {
         this.loading = true;
-        this.searchResults = await Promise.all(newResults.map(async (result) => await annotationService.show(result)));
+        this.searchResults = await Promise.all(
+          newResults.map(async (result) => await annotationService.show(result))
+        );
 
         if (newResults.length > 0) {
           this.paginationInformation = newResults[0].getMetadata().paging;
         }
         this.loading = false;
       },
-      () => this.searchParameters.toFilter().filter,
+      () => this.searchParameters.toFilter().filter
     );
 
     // we make the page size an even number so that the page of results is more
@@ -90,7 +97,9 @@ class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implement
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[annotationsKey] as AnnotationSearchParameters;
+    this.searchParameters ??= models[
+      annotationsKey
+    ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
 
     this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
@@ -175,7 +184,7 @@ class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implement
           siteId: this.searchParameters.routeSiteId,
         }),
       ],
-      { queryParams },
+      { queryParams }
     );
   }
 
@@ -192,7 +201,9 @@ class AnnotationSearchComponent extends PaginationTemplate<AudioEvent> implement
   }
 }
 
-function getPageInfo(subRoute: keyof typeof annotationMenuItems.search): IPageInfo {
+function getPageInfo(
+  subRoute: keyof typeof annotationMenuItems.search
+): IPageInfo {
   return {
     pageRoute: annotationMenuItems.search[subRoute],
     category: annotationMenuItems.search[subRoute],

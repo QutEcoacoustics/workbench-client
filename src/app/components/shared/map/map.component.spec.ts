@@ -1,9 +1,16 @@
 import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { Site } from "@models/Site";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
-import { destroyGoogleMaps, mockGoogleNamespace } from "@test/helpers/googleMaps";
+import {
+  destroyGoogleMaps,
+  mockGoogleNamespace,
+} from "@test/helpers/googleMaps";
 import { modelData } from "@test/helpers/faker";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedModule } from "@shared/shared.module";
@@ -20,7 +27,12 @@ describe("MapComponent", () => {
 
   const createComponent = createComponentFactory({
     component: MapComponent,
-    imports: [MockBawApiModule, MockConfigModule, SharedModule, MockModule(GoogleMapsModule)],
+    imports: [
+      MockBawApiModule,
+      MockConfigModule,
+      SharedModule,
+      MockModule(GoogleMapsModule),
+    ],
   });
 
   function getMap() {
@@ -98,7 +110,8 @@ describe("MapComponent", () => {
     });
 
     it("should display an error if the google maps bundle fails to load", () => {
-      const expectedText = "Failure loading map Please ensure your ad-block is not blocking Google Maps";
+      const expectedText =
+        "Failure loading map Please ensure your ad-block is not blocking Google Maps";
 
       setup();
       triggerLoadFailure();
@@ -140,7 +153,9 @@ describe("MapComponent", () => {
     });
 
     xit("should display multiple markers", () => {
-      const markers = modelData.randomArray(3, 3, () => new Site(generateSite()).getMapMarker());
+      const markers = modelData.randomArray(3, 3, () =>
+        new Site(generateSite()).getMapMarker()
+      );
 
       setup(markers);
       triggerLoadSuccess();

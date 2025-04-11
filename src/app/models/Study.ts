@@ -1,6 +1,11 @@
 import { DATASET } from "@baw-api/ServiceTokens";
 import { citSciAboutMenuItem } from "@components/citizen-science/citizen-science.menus";
-import { DateTimeTimezone, HasCreatorAndUpdater, Id, Param } from "@interfaces/apiInterfaces";
+import {
+  DateTimeTimezone,
+  HasCreatorAndUpdater,
+  Id,
+  Param,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne, updater } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";

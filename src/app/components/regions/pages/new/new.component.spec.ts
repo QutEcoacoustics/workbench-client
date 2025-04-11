@@ -2,21 +2,36 @@ import { fakeAsync, tick } from "@angular/core/testing";
 import { Router, RouterOutlet } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
+import {
+  projectResolvers,
+  ProjectsService,
+} from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
-import { regionsRoute, shallowRegionsRoute } from "@components/regions/regions.routes";
+import {
+  regionsRoute,
+  shallowRegionsRoute,
+} from "@components/regions/regions.routes";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { createRoutingFactory, createSpyObject, SpectatorRouting, SpyObject } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  createSpyObject,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
-import { addStandardFormImportsToMockBuilder, testFormImports, testFormProviders } from "@test/helpers/testbed";
+import {
+  addStandardFormImportsToMockBuilder,
+  testFormImports,
+  testFormProviders,
+} from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -97,7 +112,10 @@ describe("RegionsNewComponent", () => {
       setup();
       api.create.and.callFake(() => new Subject());
       spectator.component.submit({});
-      expect(api.create).toHaveBeenCalledWith(jasmine.any(Object), defaultProject);
+      expect(api.create).toHaveBeenCalledWith(
+        jasmine.any(Object),
+        defaultProject
+      );
     });
 
     it("should redirect to region", () => {
@@ -106,14 +124,18 @@ describe("RegionsNewComponent", () => {
       api.create.and.callFake(() => new BehaviorSubject<Region>(region));
 
       spectator.component.submit({});
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(region.getViewUrl(defaultProject));
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+        region.getViewUrl(defaultProject)
+      );
     });
   });
 });
 
 describe("routing and resolvers", () => {
   const nestedRoutes = regionsRoute.compileRoutes(getRouteConfigForPage);
-  const shallowRoutes = shallowRegionsRoute.compileRoutes(getRouteConfigForPage);
+  const shallowRoutes = shallowRegionsRoute.compileRoutes(
+    getRouteConfigForPage
+  );
 
   let project: Project;
   let defaultProject: Project;
@@ -130,7 +152,10 @@ describe("routing and resolvers", () => {
     api.filter.and.callFake(() => of([defaultProject]));
 
     // set up ngMocks according to https://ng-mocks.sudo.eu/guides/routing-resolver
-    const builder = MockBuilder([NewComponent, RouterTestingModule.withRoutes([...nestedRoutes, ...shallowRoutes])])
+    const builder = MockBuilder([
+      NewComponent,
+      RouterTestingModule.withRoutes([...nestedRoutes, ...shallowRoutes]),
+    ])
       .keep(MockBawApiModule, { export: true })
       .provide({ provide: ProjectsService, useValue: api });
 

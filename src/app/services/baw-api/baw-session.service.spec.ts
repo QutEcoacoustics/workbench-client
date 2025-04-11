@@ -3,7 +3,11 @@ import { User } from "@models/User";
 import { SpectatorService, createServiceFactory } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
-import { BawSessionService, guestAuthToken, guestUser } from "./baw-session.service";
+import {
+  BawSessionService,
+  guestAuthToken,
+  guestUser,
+} from "./baw-session.service";
 
 describe("BawSessionService", () => {
   let defaultUser: User;

@@ -14,7 +14,11 @@ import { DateTime, Duration } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
-import { BucketSize, Chart, EventSummaryReportParameters } from "../EventSummaryReportParameters";
+import {
+  BucketSize,
+  Chart,
+  EventSummaryReportParameters,
+} from "../EventSummaryReportParameters";
 import { NewEventReportComponent } from "./new.component";
 
 describe("NewEventReportComponent", () => {
@@ -63,15 +67,20 @@ describe("NewEventReportComponent", () => {
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion({ projectId: defaultProject.id }));
+    defaultRegion = new Region(
+      generateRegion({ projectId: defaultProject.id })
+    );
     defaultSite = new Site(generateSite({ regionId: defaultRegion.id }));
 
     setup();
   });
 
-  const pageTitle = (): string => spectator.query<HTMLHeadingElement>("h1.text-muted").innerText;
-  const regionsInput = (): HTMLElement => spectator.query<HTMLElement>("baw-typeahead-input[label='Site(s)']");
-  const sitesInput = (): HTMLElement => spectator.queryAll<HTMLElement>("baw-typeahead-input")[1];
+  const pageTitle = (): string =>
+    spectator.query<HTMLHeadingElement>("h1.text-muted").innerText;
+  const regionsInput = (): HTMLElement =>
+    spectator.query<HTMLElement>("baw-typeahead-input[label='Site(s)']");
+  const sitesInput = (): HTMLElement =>
+    spectator.queryAll<HTMLElement>("baw-typeahead-input")[1];
 
   assertPageInfo(NewEventReportComponent, "New Event Summary Report");
 
@@ -86,13 +95,18 @@ describe("NewEventReportComponent", () => {
       bucketSize: defaultBucketSize,
     };
 
-    expect(spectator.component.model.toQueryParams()).toEqual(expectedQueryParams);
+    expect(spectator.component.model.toQueryParams()).toEqual(
+      expectedQueryParams
+    );
   });
 
   it("should use the correct query parameters when all form fields have a value", () => {
     const provenanceCutOff = 0.5;
     const bucketSize: BucketSize = BucketSize.day;
-    const charts: Chart[] = [Chart.falseColorSpectrograms, Chart.speciesAccumulationCurve];
+    const charts: Chart[] = [
+      Chart.falseColorSpectrograms,
+      Chart.speciesAccumulationCurve,
+    ];
 
     const provenances: Id[] = [1, 2];
 
@@ -125,7 +139,9 @@ describe("NewEventReportComponent", () => {
     spectator.component.model.tags = [1, 2];
     spectator.component.model.bucketSize = bucketSize;
 
-    expect(spectator.component.model.toQueryParams()).toEqual(expectedQueryParams);
+    expect(spectator.component.model.toQueryParams()).toEqual(
+      expectedQueryParams
+    );
   });
 
   it("should use the correct page header for points", () => {
@@ -139,7 +155,8 @@ describe("NewEventReportComponent", () => {
 
     // because we are fetching the typeahead input component, and the html input element is disabled
     // we need to fetch the raw HTML input DOM element so that we can check that it has been disabled by Angular
-    const inputElement: HTMLInputElement = sitesInput().querySelector("#typeahead-input");
+    const inputElement: HTMLInputElement =
+      sitesInput().querySelector("#typeahead-input");
 
     expect(inputElement).toHaveProperty("disabled");
   });
@@ -150,8 +167,12 @@ describe("NewEventReportComponent", () => {
 
     spectator.detectChanges();
 
-    expect(regionsInput().querySelector("input")[0]).not.toHaveAttribute("disabled");
-    expect(sitesInput().querySelector("input")[0]).not.toHaveAttribute("disabled");
+    expect(regionsInput().querySelector("input")[0]).not.toHaveAttribute(
+      "disabled"
+    );
+    expect(sitesInput().querySelector("input")[0]).not.toHaveAttribute(
+      "disabled"
+    );
   });
 
   it("should hide the 'Site' (region) input if the report is being generated is a site with no points", () => {

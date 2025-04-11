@@ -5,10 +5,10 @@ import { CmsComponent } from "../shared/cms/cms.component";
 import { sendAudioCategory, sendAudioMenuItem } from "./send-audio.menus";
 
 @Component({
-  selector: "baw-send-audio",
-  template: '<baw-cms [page]="page"></baw-cms>',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CmsComponent],
+    selector: "baw-send-audio",
+    template: '<baw-cms [page]="page"></baw-cms>',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CmsComponent]
 })
 class SendAudioComponent extends PageComponent {
   public page = CMS.dataUpload;

@@ -9,7 +9,11 @@ import { StreamUploadingComponent } from "@components/harvest/screens/uploading/
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";

@@ -33,13 +33,17 @@ describe("WebsiteStatusComponent", () => {
     ],
   });
 
-  function setup(fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus())) {
+  function setup(
+    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
+  ) {
     spectator = createComponent({ detectChanges: false });
 
     mockApi = spectator.inject(WebsiteStatusService);
     mockApi.status$ = new BehaviorSubject(fakeWebsiteStatus);
 
-    spyOnProperty(navigator, "onLine", "get").and.callFake(() => userHasInternet);
+    spyOnProperty(navigator, "onLine", "get").and.callFake(
+      () => userHasInternet
+    );
 
     spectator.detectChanges();
   }
@@ -83,7 +87,9 @@ describe("WebsiteStatusComponent", () => {
 
     setup(fakeWebsiteStatus);
 
-    expectedValues.forEach((item) => assertGridItemText(item.name, item.value.toString()));
+    expectedValues.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
   });
 
   it("should display the correct text for an unhealthy response", () => {
@@ -111,7 +117,9 @@ describe("WebsiteStatusComponent", () => {
 
     setup(fakeWebsiteStatus);
 
-    expectedValues.forEach((item) => assertGridItemText(item.name, item.value.toString()));
+    expectedValues.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
   });
 
   it("should display the correct text for a partially healthy response", () => {
@@ -139,7 +147,9 @@ describe("WebsiteStatusComponent", () => {
 
     setup(fakeWebsiteStatus);
 
-    expectedValues.forEach((item) => assertGridItemText(item.name, item.value.toString()));
+    expectedValues.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
   });
 
   it("should display the correct text if the server does not give a response", () => {
@@ -159,7 +169,9 @@ describe("WebsiteStatusComponent", () => {
 
     setup(fakeWebsiteStatus);
 
-    expectedValues.forEach((item) => assertGridItemText(item.name, item.value.toString()));
+    expectedValues.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
   });
 
   it("should display the correct text if in a SSR context", () => {
@@ -179,6 +191,8 @@ describe("WebsiteStatusComponent", () => {
 
     setup(fakeWebsiteStatus);
 
-    expectedValue.forEach((item) => assertGridItemText(item.name, item.value.toString()));
+    expectedValue.forEach((item) =>
+      assertGridItemText(item.name, item.value.toString())
+    );
   });
 });

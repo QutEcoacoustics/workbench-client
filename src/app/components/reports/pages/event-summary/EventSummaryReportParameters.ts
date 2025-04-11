@@ -1,5 +1,10 @@
 import { Params } from "@angular/router";
-import { AUDIO_EVENT_PROVENANCE, SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import {
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
+} from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
@@ -71,16 +76,20 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
-  implements IEventSummaryReportParameters, HasAssociationInjector, IParameterModel<EventSummaryReport>
+  implements
+    IEventSummaryReportParameters,
+    HasAssociationInjector,
+    IParameterModel<EventSummaryReport>
 {
   public constructor(
     queryStringParameters: Params = {},
-    public injector?: AssociationInjector,
+    public injector?: AssociationInjector
   ) {
-    const deserializedObject: IEventSummaryReportParameters = deserializeParamsToObject<IEventSummaryReportParameters>(
-      queryStringParameters,
-      serializationTable,
-    );
+    const deserializedObject: IEventSummaryReportParameters =
+      deserializeParamsToObject<IEventSummaryReportParameters>(
+        queryStringParameters,
+        serializationTable
+      );
 
     Object.keys(deserializedObject).forEach((key: string) => {
       this[key] = deserializedObject[key];
@@ -106,7 +115,10 @@ export class EventSummaryReportParameters
   public siteModels?: Site[];
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenances")
+  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
+    AUDIO_EVENT_PROVENANCE,
+    "provenances"
+  )
   public provenanceModels?: AudioEventProvenance[];
 
   public get dateStartedAfter(): DateTime | null {
@@ -129,19 +141,35 @@ export class EventSummaryReportParameters
     let filter: InnerFilter<EventSummaryReport>;
 
     if (this.sites) {
-      filter = filterModelIds<EventSummaryReport>("region", Array.from(this.sites), filter);
+      filter = filterModelIds<EventSummaryReport>(
+        "region",
+        Array.from(this.sites),
+        filter
+      );
     }
 
     if (this.points) {
-      filter = filterModelIds<EventSummaryReport>("site", Array.from(this.points), filter);
+      filter = filterModelIds<EventSummaryReport>(
+        "site",
+        Array.from(this.points),
+        filter
+      );
     }
 
     if (this.provenances) {
-      filter = filterModelIds<EventSummaryReport>("provenance", Array.from(this.provenances), filter);
+      filter = filterModelIds<EventSummaryReport>(
+        "provenance",
+        Array.from(this.provenances),
+        filter
+      );
     }
 
     if (this.tags) {
-      filter = filterModelIds<EventSummaryReport>("tag", Array.from(this.tags), filter);
+      filter = filterModelIds<EventSummaryReport>(
+        "tag",
+        Array.from(this.tags),
+        filter
+      );
     }
 
     // we use isInstantiated() here because 0 is a valid value for score
@@ -162,18 +190,31 @@ export class EventSummaryReportParameters
     }
 
     if (this.dateStartedAfter || this.dateFinishedBefore) {
-      filter = filterDate(filter, this.dateStartedAfter, this.dateFinishedBefore);
+      filter = filterDate(
+        filter,
+        this.dateStartedAfter,
+        this.dateFinishedBefore
+      );
     }
 
     if (this.timeStartedAfter || this.timeFinishedBefore) {
-      filter = filterTime(filter, this.daylightSavings, this.timeStartedAfter, this.timeFinishedBefore);
+      filter = filterTime(
+        filter,
+        this.daylightSavings,
+        this.timeStartedAfter,
+        this.timeFinishedBefore
+      );
     }
 
     return { filter };
   }
 
   public toQueryParams(): Params {
-    const queryParameters = serializeObjectToParams<IEventSummaryReportParameters>(this, serializationTable);
+    const queryParameters =
+      serializeObjectToParams<IEventSummaryReportParameters>(
+        this,
+        serializationTable
+      );
 
     return queryParameters;
   }

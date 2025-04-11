@@ -12,7 +12,10 @@ describe("DataSharingPolicyComponent", () => {
   const createComponent = createComponentFactory({
     component: DataSharingPolicyComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

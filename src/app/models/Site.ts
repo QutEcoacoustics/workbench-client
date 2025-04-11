@@ -23,7 +23,12 @@ import {
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { creator, hasMany, updater } from "./AssociationDecorators";
-import { bawCollection, bawDateTime, bawImage, bawPersistAttr } from "./AttributeDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawImage,
+  bawPersistAttr,
+} from "./AttributeDecorators";
 import type { Project } from "./Project";
 import type { User } from "./User";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -206,7 +211,8 @@ export class Site extends AbstractModel<ISite> implements ISite {
    * ! When using map markers, you should always run the output through `sanitizeMapMarkers()`
    */
   public getMapMarker(): MapMarkerOptions {
-    const hasCoordinates = isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
+    const hasCoordinates =
+      isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
 
     return hasCoordinates
       ? {

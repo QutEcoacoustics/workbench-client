@@ -1,18 +1,24 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
-import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
+import {
+  defaultSuccessMsg,
+  FormTemplate,
+} from "@helpers/formTemplate/formTemplate";
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
-import { adminNewTagGroupMenuItem, adminTagGroupsCategory } from "../tag-group.menus";
+import {
+  adminNewTagGroupMenuItem,
+  adminTagGroupsCategory,
+} from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-  selector: "baw-admin-tag-groups-new",
-  template: `
+    selector: "baw-admin-tag-groups-new",
+    template: `
     @if (!failure) {
       <baw-form
         title="New Tag Group"
@@ -24,7 +30,7 @@ import { FormComponent } from "../../../shared/form/form.component";
       ></baw-form>
     }
   `,
-  imports: [FormComponent],
+    imports: [FormComponent]
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = schema.fields;
@@ -33,10 +39,11 @@ class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
     private api: TagGroupsService,
     notifications: ToastService,
     route: ActivatedRoute,
-    router: Router,
+    router: Router
   ) {
     super(notifications, route, router, {
-      successMsg: (model) => defaultSuccessMsg("created", model.groupIdentifier),
+      successMsg: (model) =>
+        defaultSuccessMsg("created", model.groupIdentifier),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }

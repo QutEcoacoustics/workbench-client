@@ -36,7 +36,8 @@ export class DownloadTableComponent {
 
   public constructor(private recordingsApi: AudioRecordingsService) {}
 
-  public getModels = (filters: Filters<AudioRecording>) => this.recordingsApi.filter(filters);
+  public getModels = (filters: Filters<AudioRecording>) =>
+    this.recordingsApi.filter(filters);
 
   public asRecording(model: any): AudioRecording {
     return model;

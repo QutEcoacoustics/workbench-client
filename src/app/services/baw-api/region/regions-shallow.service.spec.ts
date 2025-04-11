@@ -1,7 +1,11 @@
 import { Region } from "@models/Region";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateRegion } from "@test/fakes/Region";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { ShallowRegionsService } from "./regions.service";
 
 describe("ShallowRegionsService", function () {
@@ -19,5 +23,13 @@ describe("ShallowRegionsService", function () {
     spec = createService();
   });
 
-  validateStandardApi(() => spec, Region, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateStandardApi(
+    () => spec,
+    Region,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 });

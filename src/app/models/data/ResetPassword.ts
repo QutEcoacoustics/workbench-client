@@ -7,7 +7,10 @@ export interface IResetPassword {
   recaptchaToken: string;
 }
 
-export class ResetPassword extends AbstractForm<IResetPassword> implements IResetPassword {
+export class ResetPassword
+  extends AbstractForm<IResetPassword>
+  implements IResetPassword
+{
   public readonly kind = "Reset Password";
   @bawPersistAttr()
   public readonly login: Param;

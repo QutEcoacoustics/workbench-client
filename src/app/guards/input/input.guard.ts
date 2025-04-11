@@ -19,7 +19,9 @@ export class UnsavedInputGuard implements CanDeactivate<UnsavedInputCheckingComp
     }
 
     return component.hasUnsavedChanges
-      ? confirm("Changes to this page will be lost! Are you sure you want to leave?")
+      ? confirm(
+          "Changes to this page will be lost! Are you sure you want to leave?"
+        )
       : true;
   }
 }

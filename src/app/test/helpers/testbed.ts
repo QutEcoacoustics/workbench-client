@@ -31,7 +31,9 @@ export const testFormImports = [
   LoadingComponent,
 ];
 
-export const testFormProviders = [provideHttpClientTesting()];
+export const testFormProviders = [
+  provideHttpClientTesting(),
+];
 
 export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
   const module = builder.build();
@@ -55,7 +57,7 @@ export function mockActivatedRoute(
   resolvers: MockResolvers = {},
   data: MockData = {},
   params: MockParams = {},
-  queryParams: Params = {},
+  queryParams: Params = {}
 ) {
   return {
     snapshot: {

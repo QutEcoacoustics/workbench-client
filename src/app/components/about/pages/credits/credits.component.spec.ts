@@ -12,7 +12,10 @@ describe("AboutCreditsComponent", () => {
   const createComponent = createComponentFactory({
     component: CreditsComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

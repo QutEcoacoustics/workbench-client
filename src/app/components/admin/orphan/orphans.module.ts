@@ -10,7 +10,7 @@ const components = [AdminOrphansComponent, AdminOrphanComponent];
 const routes = adminOrphansRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+    imports: [SharedModule, RouterModule.forChild(routes), ...components],
+    exports: [RouterModule, ...components],
 })
 export class OrphanSitesModule {}

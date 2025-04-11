@@ -26,7 +26,15 @@ describe("ProjectsService", (): void => {
     spec = createService();
   });
 
-  validateStandardApi(() => spec, Project, baseUrl, baseUrl + "filter", updateUrl, createModel, 5);
+  validateStandardApi(
+    () => spec,
+    Project,
+    baseUrl,
+    baseUrl + "filter",
+    updateUrl,
+    createModel,
+    5
+  );
 
   validateCustomApiFilter<Project, [IdOr<User>], ProjectsService>(
     () => spec,
@@ -35,6 +43,6 @@ describe("ProjectsService", (): void => {
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
     undefined,
-    5,
+    5
   );
 });

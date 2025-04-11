@@ -36,7 +36,7 @@ describe("Shallow AudioEventsService", (): void => {
     "filterByCreator",
     { filter: { creatorId: { eq: 5 } } },
     undefined,
-    5,
+    5
   );
 
   validateCustomApiFilter<Model, [IdOr<Site>], Service>(
@@ -46,6 +46,6 @@ describe("Shallow AudioEventsService", (): void => {
     "filterBySite",
     { filter: { ["audioRecordings.siteId" as any]: { eq: 5 } } },
     undefined,
-    5,
+    5
   );
 });

@@ -2,7 +2,11 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { SpectatorService, createServiceFactory } from "@ngneat/spectator";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { AudioEventProvenanceService } from "./AudioEventProvenance.service";
 
 // TODO: enable once the api is complete
@@ -12,7 +16,8 @@ import { AudioEventProvenanceService } from "./AudioEventProvenance.service";
 // if a user tries to use the service through the web page
 xdescribe("AudioEventProvenanceService", () => {
   const modelId: Id = 5;
-  const createModel = () => new AudioEventProvenance(generateAudioEventProvenance({ id: modelId }));
+  const createModel = () =>
+    new AudioEventProvenance(generateAudioEventProvenance({ id: modelId }));
 
   const baseUrl = "/provenance/";
   const updateUrl: string = baseUrl + modelId;
@@ -35,6 +40,6 @@ xdescribe("AudioEventProvenanceService", () => {
     baseUrl + "filter",
     updateUrl,
     createModel,
-    modelId,
+    modelId
   );
 });

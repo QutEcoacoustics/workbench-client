@@ -3,15 +3,18 @@ import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 import { AnalysisJobComponent } from "@components/audio-analysis/pages/details/details.component";
-import { adminAnalysisJobMenuItem, adminAnalysisJobsCategory } from "../analysis-jobs.menus";
+import {
+  adminAnalysisJobMenuItem,
+  adminAnalysisJobsCategory,
+} from "../analysis-jobs.menus";
 import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const analysisJobKey = "analysisJob";
 
 @Component({
-  selector: "baw-admin-analysis-job",
-  templateUrl: "../../../audio-analysis/pages/details/details.component.html",
-  imports: [DetailViewComponent],
+    selector: "baw-admin-analysis-job",
+    templateUrl: "../../../audio-analysis/pages/details/details.component.html",
+    imports: [DetailViewComponent]
 })
 class AdminAnalysisJobComponent extends AnalysisJobComponent {}
 

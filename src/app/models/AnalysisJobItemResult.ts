@@ -21,8 +21,14 @@ export interface IAnalysisJobItemResult {
   children?: AnalysisJobItemResult[];
 }
 
-export class AnalysisJobItemResult extends AbstractModel implements IAnalysisJobItemResult {
-  public constructor(analysisJobItemResults: IAnalysisJobItemResult, injector?: AssociationInjector) {
+export class AnalysisJobItemResult
+  extends AbstractModel
+  implements IAnalysisJobItemResult
+{
+  public constructor(
+    analysisJobItemResults: IAnalysisJobItemResult,
+    injector?: AssociationInjector
+  ) {
     super(analysisJobItemResults, injector);
   }
 
@@ -42,7 +48,10 @@ export class AnalysisJobItemResult extends AbstractModel implements IAnalysisJob
   // Associations
   @hasOne<AnalysisJobItemResult, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
-  @hasOne<AnalysisJobItemResult, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne<AnalysisJobItemResult, AudioRecording>(
+    AUDIO_RECORDING,
+    "audioRecordingId"
+  )
   public audioRecording?: AudioRecording;
 
   public get viewUrl(): string {

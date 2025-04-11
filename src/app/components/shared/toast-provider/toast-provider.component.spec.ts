@@ -1,5 +1,13 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import { ToastOptions, ToastService, ToastVariant } from "@services/toasts/toasts.service";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
+import {
+  ToastOptions,
+  ToastService,
+  ToastVariant,
+} from "@services/toasts/toasts.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { modelData } from "@test/helpers/faker";
 import { SharedModule } from "@shared/shared.module";
@@ -49,12 +57,22 @@ describe("ToastProviderComponent", () => {
       delay: modelData.datatype.number(),
     };
 
-    toastServiceSpy.show(modelData.lorem.sentence(), modelData.lorem.sentence(), testedOptions);
+    toastServiceSpy.show(
+      modelData.lorem.sentence(),
+      modelData.lorem.sentence(),
+      testedOptions
+    );
     spec.detectChanges();
 
     const targetToast = toasts()[0];
-    expect(targetToast).toHaveAttribute("ng-reflect-autohide", testedOptions.autoHide.toString());
-    expect(targetToast).toHaveAttribute("ng-reflect-delay", testedOptions.delay.toString());
+    expect(targetToast).toHaveAttribute(
+      "ng-reflect-autohide",
+      testedOptions.autoHide.toString()
+    );
+    expect(targetToast).toHaveAttribute(
+      "ng-reflect-delay",
+      testedOptions.delay.toString()
+    );
   });
 
   it("should use the correct default values if no options are provided", () => {
@@ -67,8 +85,14 @@ describe("ToastProviderComponent", () => {
     spec.detectChanges();
 
     const targetToast = toasts()[0];
-    expect(targetToast).toHaveAttribute("ng-reflect-autohide", expectedDefaultOptions.autoHide.toString());
-    expect(targetToast).toHaveAttribute("ng-reflect-delay", expectedDefaultOptions.delay.toString());
+    expect(targetToast).toHaveAttribute(
+      "ng-reflect-autohide",
+      expectedDefaultOptions.autoHide.toString()
+    );
+    expect(targetToast).toHaveAttribute(
+      "ng-reflect-delay",
+      expectedDefaultOptions.delay.toString()
+    );
   });
 
   it("should remove a toast correctly after the auto hide triggers", fakeAsync(() => {
@@ -139,7 +163,7 @@ describe("ToastProviderComponent", () => {
     for (const test of testCases) {
       it(`should have the correct theming for a '${test.expectedVariant}' toast variant`, () => {
         toastServiceSpy[test.method]();
-        spec.detectChanges();
+         spec.detectChanges();
 
         const targetToast = toasts()[0];
         expect(targetToast).toHaveClass(`bg-${test.expectedVariant}`);
@@ -155,7 +179,7 @@ describe("ToastProviderComponent", () => {
 
         const iconAttributeName = "ng-reflect-icon";
         if (test.expectedIcon === null) {
-          expect(toastIcon).not.toHaveAttribute(iconAttributeName);
+          expect(toastIcon).not.toHaveAttribute(iconAttributeName,);
         } else {
           expect(toastIcon).toHaveAttribute(iconAttributeName, test.expectedIcon.toString());
         }

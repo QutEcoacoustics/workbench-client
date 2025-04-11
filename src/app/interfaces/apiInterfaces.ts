@@ -61,10 +61,18 @@ export enum PermissionLevel {
  * equal to or greater than this level
  * @param currentLevel The current access level
  */
-export function hasRequiredAccessLevelOrHigher(requiredLevel: PermissionLevel, currentLevel: PermissionLevel): boolean {
+export function hasRequiredAccessLevelOrHigher(
+  requiredLevel: PermissionLevel,
+  currentLevel: PermissionLevel
+): boolean {
   const { owner, writer, reader, unresolved, unknown } = PermissionLevel;
 
-  if (!unresolved || !currentLevel || unresolved === currentLevel || unknown === currentLevel) {
+  if (
+    !unresolved ||
+    !currentLevel ||
+    unresolved === currentLevel ||
+    unknown === currentLevel
+  ) {
     return false;
   }
 
@@ -95,7 +103,10 @@ export type DateTimeTimezone = DateTime;
  *
  * @param dur Duration
  */
-export function toRelative(dur: Duration, opts?: HumanizeDurationOptions): string {
+export function toRelative(
+  dur: Duration,
+  opts?: HumanizeDurationOptions
+): string {
   return humanizeDuration(dur.as("milliseconds"), { delimiter: " ", ...opts });
 }
 
@@ -174,7 +185,11 @@ export function isImageUrl(value: any): value is ImageUrl {
   expectedKeys += hasHeight ? 1 : 0;
   expectedKeys += hasWidth ? 1 : 0;
 
-  return keys.length === expectedKeys && keys.includes("size") && keys.includes("url");
+  return (
+    keys.length === expectedKeys &&
+    keys.includes("size") &&
+    keys.includes("url")
+  );
 }
 
 export interface HasCreator {

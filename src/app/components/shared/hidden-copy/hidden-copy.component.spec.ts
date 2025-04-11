@@ -20,8 +20,7 @@ describe("HiddenCopyComponent", () => {
     props.content ??= "content";
     props.tooltip ??= "tooltip";
 
-    spec = createHost(
-      `
+    spec = createHost(`
       <baw-hidden-copy
         [value]="value"
         [content]="content"
@@ -29,11 +28,9 @@ describe("HiddenCopyComponent", () => {
         [color]="color"
         [disabled]="disabled"
       ></baw-hidden-copy>
-  `,
-      {
-        hostProps: props,
-      },
-    );
+  `, {
+      hostProps: props,
+    });
 
     clipboardService = spec.inject(ClipboardService);
     clipboardService.copyFromContent = jasmine.createSpy("copyFromContent") as any;
@@ -150,9 +147,10 @@ describe("HiddenCopyComponent", () => {
 
     it("should display ng-content when visible", () => {
       const content = modelData.random.words();
-      spec = createHost(`<baw-hidden-copy><span>${content}</span></baw-hidden-copy>`, {
-        hostProps: { value: "value" },
-      });
+      spec = createHost(
+        `<baw-hidden-copy><span>${content}</span></baw-hidden-copy>`,
+        { hostProps: { value: "value" } }
+      );
       getVisibilityButton().click();
       spec.detectChanges();
       expect(spec.query("pre")).toHaveText(content);
@@ -190,7 +188,12 @@ describe("HiddenCopyComponent", () => {
     let color: BootstrapColorTypes;
 
     beforeEach(() => {
-      color = modelData.helpers.arrayElement<BootstrapColorTypes>(["primary", "secondary", "success", "danger"]);
+      color = modelData.helpers.arrayElement<BootstrapColorTypes>([
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+      ]);
       setup({ color });
     });
 

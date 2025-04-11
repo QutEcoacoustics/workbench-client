@@ -6,15 +6,16 @@ import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-  selector: "baw-horizontal-wrapper",
-  template: `
+    selector: "baw-horizontal-wrapper",
+    template: `
     <div class="form-group row">
       @if (props.label) {
-        <label [attr.for]="id" class="col-sm-2 col-form-label">
+        <label
+          [attr.for]="id"
+          class="col-sm-2 col-form-label"
+          >
           {{ props.label }}
-          @if (props.required && !props.hideRequiredMarker) {
-            *
-          }
+          @if (props.required && !props.hideRequiredMarker) { * }
         </label>
       }
       <div class="col-sm-7">
@@ -28,6 +29,6 @@ import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
       }
     </div>
   `,
-  imports: [FormlyModule],
+    imports: [FormlyModule]
 })
 export class HorizontalWrapperComponent extends FieldWrapper {}

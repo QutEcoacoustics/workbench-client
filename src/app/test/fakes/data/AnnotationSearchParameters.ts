@@ -3,7 +3,7 @@ import { IAnnotationSearchParameters } from "@components/annotations/pages/annot
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnnotationSearchParameters(
-  data?: Partial<IAnnotationSearchParameters>,
+  data?: Partial<IAnnotationSearchParameters>
 ): Required<IAnnotationSearchParameters> {
   return {
     projects: modelData.ids(),
@@ -26,7 +26,9 @@ export function generateAnnotationSearchParameters(
   };
 }
 
-export function generateAnnotationSearchUrlParameters(data?: Params): Params {
+export function generateAnnotationSearchUrlParameters(
+  data?: Params
+): Params {
   return {
     projects: modelData.ids().join(","),
     regions: modelData.ids().join(","),

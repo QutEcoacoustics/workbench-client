@@ -1,4 +1,8 @@
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { CacheModule } from "@services/cache/cache.module";
 import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";

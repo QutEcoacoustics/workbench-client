@@ -1,4 +1,9 @@
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -14,7 +19,13 @@ describe("FormlyTimezoneInput", () => {
 
   const createHost = createHostFactory({
     component: TimezoneInputComponent,
-    imports: [NgbModule, FormsModule, ReactiveFormsModule, FormlyModule.forRoot(formlyConfig), FormlyBootstrapModule],
+    imports: [
+      NgbModule,
+      FormsModule,
+      ReactiveFormsModule,
+      FormlyModule.forRoot(formlyConfig),
+      FormlyBootstrapModule,
+    ],
   });
 
   function setup(props: FormlyFieldProps = {}) {
@@ -37,7 +48,7 @@ describe("FormlyTimezoneInput", () => {
             props,
           },
         },
-      },
+      }
     );
     spec.detectChanges();
   }

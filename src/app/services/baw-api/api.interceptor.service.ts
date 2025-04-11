@@ -9,8 +9,14 @@ import {
   HttpResponse,
 } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { toCamelCase, toSnakeCase } from "@helpers/case-converter/case-converter";
-import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
+import {
+  toCamelCase,
+  toSnakeCase,
+} from "@helpers/case-converter/case-converter";
+import {
+  BawApiError,
+  isBawApiError,
+} from "@helpers/custom-errors/baw-api-error";
 import { API_ROOT } from "@services/config/config.tokens";
 import { NOT_FOUND } from "http-status";
 import { Observable, throwError } from "rxjs";
@@ -33,7 +39,7 @@ export const CREDENTIALS_CONTEXT = new HttpContextToken<boolean>(() => true);
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
-    public session: BawSessionService,
+    public session: BawSessionService
   ) {}
 
   /**
@@ -44,7 +50,10 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @param request Http Request
    * @param next Function to be run after interceptor
    */
-  public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  public intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     if (!request.url.includes(this.apiRoot)) {
       return next.handle(request);
     }
@@ -81,7 +90,10 @@ export class BawApiInterceptor implements HttpInterceptor {
       converted[key] = value;
       converted = toSnakeCase(converted);
 
-      newParams = newParams.set(Object.keys(converted)[0], converted[Object.keys(converted)[0]]);
+      newParams = newParams.set(
+        Object.keys(converted)[0],
+        converted[Object.keys(converted)[0]]
+      );
     }
 
     request = request.clone({ params: newParams });
@@ -89,9 +101,11 @@ export class BawApiInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       // Convert incoming data
       map((response) =>
-        response instanceof HttpResponse ? response.clone({ body: toCamelCase(response.body) }) : response,
+        response instanceof HttpResponse
+          ? response.clone({ body: toCamelCase(response.body) })
+          : response
       ),
-      catchError(this.handleError),
+      catchError(this.handleError)
     );
   }
 
@@ -101,7 +115,9 @@ export class BawApiInterceptor implements HttpInterceptor {
    * @param response HTTP Error
    * @throws Observable<never>
    */
-  private handleError = (response: HttpErrorResponse | ApiErrorResponse | BawApiError): Observable<never> => {
+  private handleError = (
+    response: HttpErrorResponse | ApiErrorResponse | BawApiError
+  ): Observable<never> => {
     // Interceptor has already handled this error
     if (isBawApiError(response)) {
       return throwError(() => response);
@@ -115,7 +131,7 @@ export class BawApiInterceptor implements HttpInterceptor {
         response.status,
         response.error.meta.error.details,
         toCamelCase(responseData),
-        toCamelCase(response.error.meta.error?.info),
+        toCamelCase(response.error.meta.error?.info)
       );
       return throwError(() => error);
     }
@@ -126,13 +142,16 @@ export class BawApiInterceptor implements HttpInterceptor {
       const clientHasInternet = navigator.onLine;
 
       const noClientInternetMessage =
-        "You are not be connected to the internet. " + "Please check your internet (or VPN) connection and try again.";
+        "You are not be connected to the internet. " +
+        "Please check your internet (or VPN) connection and try again.";
       const serverTimeoutMessage =
         "A request took longer than expected to return, " +
         "this may be an issue with your connection to us, " +
         "or a temporary issue with our services.";
 
-      const errorMessage = clientHasInternet ? serverTimeoutMessage : noClientInternetMessage;
+      const errorMessage = clientHasInternet
+        ? serverTimeoutMessage
+        : noClientInternetMessage;
 
       const error = new BawApiError(CLIENT_TIMEOUT, errorMessage, responseData);
 
@@ -143,15 +162,18 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (response.status === NOT_FOUND) {
       const error = new BawApiError(
         NOT_FOUND,
-        "The following action does not exist, " + "if you believe this is an error please report a problem.",
-        responseData,
+        "The following action does not exist, " +
+          "if you believe this is an error please report a problem.",
+        responseData
       );
       return throwError(() => error);
     }
 
     // Unknown error occurred, throw generic error
     console.error("Unknown error occurred: ", response);
-    return throwError(() => new BawApiError(response.status, response.message, responseData));
+    return throwError(
+      () => new BawApiError(response.status, response.message, responseData)
+    );
   };
 }
 
@@ -167,6 +189,8 @@ interface ApiErrorResponse extends HttpErrorResponse {
  *
  * @param errorResponse Error response
  */
-function isErrorResponse(errorResponse: any): errorResponse is ApiErrorResponse {
+function isErrorResponse(
+  errorResponse: any
+): errorResponse is ApiErrorResponse {
   return !!(errorResponse as ApiErrorResponse)?.error?.meta?.error?.details;
 }

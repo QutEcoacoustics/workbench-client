@@ -4,7 +4,8 @@ import { DatatablePaginationDirective } from "@directives/datatable/pagination/p
 import { AbstractModel } from "@models/AbstractModel";
 import { map, Observable, of, startWith } from "rxjs";
 
-export type VirtualDatabaseModelInput<T extends AbstractModel> = () => Observable<T[]>;
+export type VirtualDatabaseModelInput<T extends AbstractModel> =
+  () => Observable<T[]>;
 
 /**
  * @description
@@ -68,7 +69,7 @@ export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
         });
 
         return models.slice(start, end);
-      }),
+      })
     );
   }
 }

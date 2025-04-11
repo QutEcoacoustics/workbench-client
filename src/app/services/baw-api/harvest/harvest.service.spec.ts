@@ -2,7 +2,11 @@ import { BawApiService } from "@baw-api/baw-api.service";
 import { Harvest } from "@models/Harvest";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceImports,
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { of } from "rxjs";
 import { HarvestsService, ShallowHarvestsService } from "./harvest.service";
 
@@ -33,7 +37,7 @@ describe("HarvestsService", () => {
     baseUrl + harvestId,
     createModel,
     harvestId, // harvest
-    5, //project
+    5 //project
   );
 
   beforeEach((): void => {
@@ -61,7 +65,7 @@ describe("HarvestsService", () => {
         // disable eslint for this line because the harvest value
         // hasn't passed through the http interceptor api yet
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        { Harvest: { name: newHarvestName } },
+        { Harvest: { name: newHarvestName } }
       );
     });
   });

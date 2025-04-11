@@ -13,7 +13,10 @@ describe("SendAudioComponent", () => {
   const createComponent = createComponentFactory({
     component: SendAudioComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    providers: [
+      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClientTesting(),
+    ],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

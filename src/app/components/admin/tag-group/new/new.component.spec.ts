@@ -19,27 +19,27 @@ describe("AdminTagGroupsNewComponent", () => {
   let notifications: ToastService;
   let router: Router;
 
-  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group");
+  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
 
   // xdescribe("form", () => {});
 
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          ...appLibraryImports,
-          SharedModule,
-          RouterTestingModule,
-          MockBawApiModule,
-          AdminTagGroupsNewComponent,
-        ],
-        providers: [
-          {
+    imports: [
+        ...appLibraryImports,
+        SharedModule,
+        RouterTestingModule,
+        MockBawApiModule,
+        AdminTagGroupsNewComponent,
+    ],
+    providers: [
+        {
             provide: ActivatedRoute,
             useValue: mockActivatedRoute(),
-          },
-        ],
-      }).compileComponents();
+        },
+    ],
+}).compileComponents();
 
       fixture = TestBed.createComponent(AdminTagGroupsNewComponent);
       api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;

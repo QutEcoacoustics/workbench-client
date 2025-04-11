@@ -21,11 +21,15 @@ describe("ItemsComponent", () => {
   }
 
   function getLeftColumn(): NodeListOf<HTMLElement> {
-    return spec.queryAll("ul.list-group")[0].querySelectorAll<HTMLElement>("baw-items-item");
+    return spec
+      .queryAll("ul.list-group")[0]
+      .querySelectorAll<HTMLElement>("baw-items-item");
   }
 
   function getRightColumn(): NodeListOf<HTMLElement> {
-    return spec.queryAll("ul.list-group")[1].querySelectorAll<HTMLElement>("baw-items-item");
+    return spec
+      .queryAll("ul.list-group")[1]
+      .querySelectorAll<HTMLElement>("baw-items-item");
   }
 
   function assertItem(item: ItemComponent, data: IItem) {
