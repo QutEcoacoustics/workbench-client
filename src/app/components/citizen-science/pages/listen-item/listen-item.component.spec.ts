@@ -9,6 +9,6 @@ describe("CitSciListenItemComponent", () => {
     CitSciListenItemComponent,
     [CitizenScienceModule],
     "/citsci/example-question/listen/123456789",
-    "Example Question"
+    "Example Question",
   );
 });

@@ -9,12 +9,7 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import {
-  adminEditTagMenuItem,
-  adminNewTagMenuItem,
-  adminTagsCategory,
-  adminTagsMenuItem,
-} from "../tags.menus";
+import { adminEditTagMenuItem, adminNewTagMenuItem, adminTagsCategory, adminTagsMenuItem } from "../tags.menus";
 import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { CheckboxComponent } from "../../../shared/checkbox/checkbox.component";
@@ -25,18 +20,20 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Component({
-    selector: "baw-admin-tags",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, CheckboxComponent, StrongRouteDirective, DeleteModalComponent, ErrorHandlerComponent]
+  selector: "baw-admin-tags",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    CheckboxComponent,
+    StrongRouteDirective,
+    DeleteModalComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
-  public columns = [
-    { name: "Text" },
-    { name: "Taxonomic" },
-    { name: "Retired" },
-    { name: "type" },
-    { name: "Tag" },
-  ];
+  public columns = [{ name: "Text" }, { name: "Taxonomic" }, { name: "Retired" }, { name: "type" }, { name: "Tag" }];
   public sortKeys = {
     text: "text",
     taxonomic: "isTaxonomic",
@@ -57,7 +54,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
         retired: tag.retired,
         type: tag.typeOfTag,
         tag,
-      }))
+      })),
     );
 
     this.filterKey = "text";
@@ -68,7 +65,8 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     const userConfirmed = await modal.result.catch((_) => false);
 
     if (userConfirmed) {
-      this.tagsApi.destroy(tagModel)
+      this.tagsApi
+        .destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
           complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.text)),

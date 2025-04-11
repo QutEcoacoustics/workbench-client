@@ -4,14 +4,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { regionMenuItemActions } from "@components/regions/pages/details/details.component";
-import {
-  newPointMenuItem,
-  pointsCategory,
-} from "@components/sites/points.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { newPointMenuItem, pointsCategory } from "@components/sites/points.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -25,9 +19,9 @@ const projectKey = "project";
 const regionKey = "region";
 
 @Component({
-    selector: "baw-sites-new",
-    templateUrl: "./new.component.html",
-    imports: [FormComponent]
+  selector: "baw-sites-new",
+  templateUrl: "./new.component.html",
+  imports: [FormComponent],
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public title = "";
@@ -36,12 +30,11 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
     protected api: SitesService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      redirectUser: (model) =>
-        this.router.navigateByUrl(model.getViewUrl(this.project)),
+      redirectUser: (model) => this.router.navigateByUrl(model.getViewUrl(this.project)),
       getModel: () => {
         // TODO: for some reason if we use a set here, the project ids don't get
         // serialized correctly when sending the model body

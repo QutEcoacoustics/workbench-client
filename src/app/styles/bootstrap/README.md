@@ -4,7 +4,7 @@ The purpose of these scss files is to override the default styles of bootstrap. 
 
 ## Folder Structure
 
-Currently the folder structure attempts to follow the folder structure of bootstrap. If you are unsure where a new style should exist, view either the bootstrap [docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/) or the [github repository](https://github.com/twbs/bootstrap/tree/v5.0.2). To simplify imports, we create an _index.scss file per folder, and import all styles inside the folder, into the file.
+Currently the folder structure attempts to follow the folder structure of bootstrap. If you are unsure where a new style should exist, view either the bootstrap [docs](https://getbootstrap.com/docs/5.0/getting-started/introduction/) or the [github repository](https://github.com/twbs/bootstrap/tree/v5.0.2). To simplify imports, we create an \_index.scss file per folder, and import all styles inside the folder, into the file.
 
 ## Further Details
 

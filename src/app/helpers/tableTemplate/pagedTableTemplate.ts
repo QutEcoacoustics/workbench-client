@@ -2,21 +2,11 @@ import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { Direction, Filters } from "@baw-api/baw-api.service";
-import {
-  hasResolvedSuccessfully,
-  ResolvedModelList,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
-import {
-  ColumnMode,
-  DatatableComponent,
-  SelectionType,
-  SortType,
-  TableColumn,
-} from "@swimlane/ngx-datatable";
+import { ColumnMode, DatatableComponent, SelectionType, SortType, TableColumn } from "@swimlane/ngx-datatable";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { defaultDebounceTime } from "src/app/app.helper";
@@ -29,10 +19,7 @@ import { PageComponent } from "../page/pageComponent";
  */
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
-  extends PageComponent
-  implements OnInit
-{
+export abstract class PagedTableTemplate<TableRow, M extends AbstractModel> extends PageComponent implements OnInit {
   @ViewChild(DatatableComponent) public table: DatatableComponent;
 
   // Table variables
@@ -69,18 +56,14 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
     private rowsCallback: (models: M[]) => TableRow[],
     protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
-    private preselectRows: (rows: TableRow[]) => void = () => {}
+    private preselectRows: (rows: TableRow[]) => void = () => {},
   ) {
     super();
     this.pageNumber = 0;
     this.filters = {};
 
     this.filterEvent$
-      .pipe(
-        debounceTime(defaultDebounceTime),
-        distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
-      )
+      .pipe(debounceTime(defaultDebounceTime), distinctUntilChanged(), takeUntil(this.unsubscribe))
       .subscribe({
         next: () => this.getPageData(),
         // Filter event doesn't have an error output

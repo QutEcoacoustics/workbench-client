@@ -1,9 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TestRequest } from "@angular/common/http/testing";
-import {
-  BawApiInterceptor,
-  CREDENTIALS_CONTEXT,
-} from "@baw-api/api.interceptor.service";
+import { BawApiInterceptor, CREDENTIALS_CONTEXT } from "@baw-api/api.interceptor.service";
 import {
   ApiResponse,
   BawApiService,
@@ -20,13 +17,7 @@ import { AuthToken } from "@interfaces/apiInterfaces";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 import { User } from "@models/User";
-import {
-  createHttpFactory,
-  HttpMethod,
-  mockProvider,
-  SpectatorHttp,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createHttpFactory, HttpMethod, mockProvider, SpectatorHttp, SpyObject } from "@ngneat/spectator";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
@@ -40,22 +31,10 @@ import { BehaviorSubject, noop, Observable, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import {
-  NgHttpCachingConfig,
-  NgHttpCachingService,
-  withNgHttpCachingContext,
-} from "ng-http-caching";
-import {
-  defaultCachingConfig,
-  disableCache,
-  enableCache,
-} from "@services/cache/ngHttpCachingConfig";
+import { NgHttpCachingConfig, NgHttpCachingService, withNgHttpCachingContext } from "ng-http-caching";
+import { defaultCachingConfig, disableCache, enableCache } from "@services/cache/ngHttpCachingConfig";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import {
-  BawSessionService,
-  guestAuthToken,
-  guestUser,
-} from "./baw-session.service";
+import { BawSessionService, guestAuthToken, guestUser } from "./baw-session.service";
 import { MockShowApiService } from "./mock/apiMocks.service";
 
 export const shouldNotSucceed = () => {
@@ -182,11 +161,11 @@ describe("BawApiService", () => {
     const headers = req.request.headers;
     expect(headers.get("Accept")).toBe(
       "application/json",
-      "Request should contain Accept Headers set to 'application/json'"
+      "Request should contain Accept Headers set to 'application/json'",
     );
     expect(headers.get("Content-Type")).toBe(
       "application/json",
-      "Request should contain Content-Type Headers set to 'application/json"
+      "Request should contain Content-Type Headers set to 'application/json",
     );
   }
 
@@ -194,7 +173,7 @@ describe("BawApiService", () => {
     verifyHeaders(req);
     expect(req.request.headers.get("Authorization")).toBe(
       `Token token="${authToken}"`,
-      "Request should container Authorization Header with token set"
+      "Request should container Authorization Header with token set",
     );
   }
 
@@ -245,12 +224,10 @@ describe("BawApiService", () => {
       single: model,
       multi: [model],
       error: new BawApiError(UNAUTHORIZED, "Unauthorized Access", null),
-      errorInfo: new BawApiError(
-        UNPROCESSABLE_ENTITY,
-        "Record could not be saved",
-        null,
-        { name: ["has already been taken"], image: [] },
-      ),
+      errorInfo: new BawApiError(UNPROCESSABLE_ENTITY, "Record could not be saved", null, {
+        name: ["has already been taken"],
+        image: [],
+      }),
     };
   });
 
@@ -316,14 +293,9 @@ describe("BawApiService", () => {
           opts: unknown[] = [],
           next: (value: any) => void = noop,
           error: (err: any) => void = noop,
-          complete: () => void = noop
+          complete: () => void = noop,
         ): void {
-          (
-            service[httpMethod.functionName](
-              testedApiPath,
-              ...opts
-            ) as Observable<ApiResponse<unknown>>
-          ).subscribe({
+          (service[httpMethod.functionName](testedApiPath, ...opts) as Observable<ApiResponse<unknown>>).subscribe({
             next,
             error,
             complete,
@@ -357,17 +329,10 @@ describe("BawApiService", () => {
 
           // we have a special case for GET and GET because these function signatures don't take a body argument
           // (the third argument in every other function)
-          if (
-            httpMethod.method === HttpMethod.DELETE ||
-            httpMethod.method === HttpMethod.GET
-          ) {
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
             functionCallOptions = [undefined, { withCredentials: false }];
           } else {
-            functionCallOptions = [
-              undefined,
-              undefined,
-              { withCredentials: false },
-            ];
+            functionCallOptions = [undefined, undefined, { withCredentials: false }];
           }
 
           functionCall(functionCallOptions);
@@ -382,17 +347,10 @@ describe("BawApiService", () => {
 
           let functionCallOptions: unknown[];
 
-          if (
-            httpMethod.method === HttpMethod.DELETE ||
-            httpMethod.method === HttpMethod.GET
-          ) {
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
             functionCallOptions = [undefined, { withCredentials: true }];
           } else {
-            functionCallOptions = [
-              undefined,
-              undefined,
-              { withCredentials: true },
-            ];
+            functionCallOptions = [undefined, undefined, { withCredentials: true }];
           }
 
           functionCall(functionCallOptions);
@@ -407,17 +365,10 @@ describe("BawApiService", () => {
 
           let functionCallOptions: unknown[];
 
-          if (
-            httpMethod.method === HttpMethod.DELETE ||
-            httpMethod.method === HttpMethod.GET
-          ) {
+          if (httpMethod.method === HttpMethod.DELETE || httpMethod.method === HttpMethod.GET) {
             functionCallOptions = [undefined, { withCredentials: false }];
           } else {
-            functionCallOptions = [
-              undefined,
-              undefined,
-              { withCredentials: false },
-            ];
+            functionCallOptions = [undefined, undefined, { withCredentials: false }];
           }
 
           functionCall(functionCallOptions);
@@ -435,7 +386,7 @@ describe("BawApiService", () => {
               expect(data).toEqual(response);
               done();
             },
-            shouldNotFail
+            shouldNotFail,
           );
           flushResponse(catchFunctionCall(), response);
         });
@@ -448,7 +399,7 @@ describe("BawApiService", () => {
               expect(data).toEqual(response);
               done();
             },
-            shouldNotFail
+            shouldNotFail,
           );
           flushResponse(catchFunctionCall(), response);
         });
@@ -539,14 +490,12 @@ describe("BawApiService", () => {
           isCacheable: enableCache,
         };
 
-        service
-          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
-          .subscribe();
+        service.httpGet(testedApiPath, defaultApiHeaders, { cacheOptions }).subscribe();
 
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext(
           { ...defaultCachingConfig, ...cacheOptions },
-          withCacheLogging()
+          withCacheLogging(),
         );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
@@ -558,15 +507,13 @@ describe("BawApiService", () => {
           isCacheable: disableCache,
         };
 
-        service
-          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
-          .subscribe();
+        service.httpGet(testedApiPath, defaultApiHeaders, { cacheOptions }).subscribe();
 
         const context = catchFunctionCall().request.context;
 
         const expectedContext = withNgHttpCachingContext(
           { ...defaultCachingConfig, ...cacheOptions },
-          withCacheLogging()
+          withCacheLogging(),
         );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
@@ -578,14 +525,12 @@ describe("BawApiService", () => {
           isCacheable: enableCache,
           lifetime: 32_821,
         };
-        service
-          .httpGet(testedApiPath, defaultApiHeaders, { cacheOptions })
-          .subscribe();
+        service.httpGet(testedApiPath, defaultApiHeaders, { cacheOptions }).subscribe();
 
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext(
           { ...defaultCachingConfig, ...cacheOptions },
-          withCacheLogging()
+          withCacheLogging(),
         );
         expectedContext.set(CREDENTIALS_CONTEXT, true);
 
@@ -613,7 +558,7 @@ describe("BawApiService", () => {
         const context = catchFunctionCall().request.context;
         const expectedContext = withNgHttpCachingContext(
           { ...defaultCachingConfig, ...cacheOptions },
-          withCacheLogging()
+          withCacheLogging(),
         );
         expectedContext.set(CREDENTIALS_CONTEXT, false);
 
@@ -664,204 +609,177 @@ describe("BawApiService", () => {
         shouldClearCache: true,
       },
     ];
-    tests.forEach(
-      ({
-        method,
-        http,
-        singleResult,
-        multiResult,
-        updateOnAuthTrigger,
-        shouldClearCache,
-      }) => {
-        describe(method, () => {
-          let defaultBody: IMockModel;
-          let defaultFilter: Filters<IMockModel>;
-          // the default options for the baw service methods eg. show, create, list, filterShow, filter, etc...
-          // because the default options are applied in lower level methods eg. httpGet, httpPost, etc...
-          // we expect that low level methods are called by high level methods with an empty options object as their default
-          // (indicating no options were passed in by the programmer)
-          // if options are passed in by the programmer, the options object will be a partial options object
-          let defaultBawMethodOptions: BawServiceOptions;
+    tests.forEach(({ method, http, singleResult, multiResult, updateOnAuthTrigger, shouldClearCache }) => {
+      describe(method, () => {
+        let defaultBody: IMockModel;
+        let defaultFilter: Filters<IMockModel>;
+        // the default options for the baw service methods eg. show, create, list, filterShow, filter, etc...
+        // because the default options are applied in lower level methods eg. httpGet, httpPost, etc...
+        // we expect that low level methods are called by high level methods with an empty options object as their default
+        // (indicating no options were passed in by the programmer)
+        // if options are passed in by the programmer, the options object will be a partial options object
+        let defaultBawMethodOptions: BawServiceOptions;
 
-          beforeEach(() => {
-            defaultBody = { id: 1, name: "test", caseConversion: {} };
-            defaultFilter = { paging: { page: 1 } };
-            defaultBawMethodOptions = {};
+        beforeEach(() => {
+          defaultBody = { id: 1, name: "test", caseConversion: {} };
+          defaultFilter = { paging: { page: 1 } };
+          defaultBawMethodOptions = {};
+        });
+
+        function errorRequest(error: BawApiError): jasmine.Spy {
+          const spy = jasmine.createSpy(http).and.callFake(() => {
+            const subject = new Subject();
+            subject.error(error);
+            return subject;
           });
+          service[http] = spy;
+          return spy;
+        }
 
-          function errorRequest(error: BawApiError): jasmine.Spy {
-            const spy = jasmine.createSpy(http).and.callFake(() => {
-              const subject = new Subject();
-              subject.error(error);
-              return subject;
-            });
-            service[http] = spy;
-            return spy;
-          }
+        function successRequest(response: ApiResponse<unknown>): jasmine.Spy {
+          const spy = jasmine.createSpy(http).and.callFake(() => {
+            const subject = new BehaviorSubject<ApiResponse<unknown>>(response);
+            setTimeout(() => subject.complete(), 0);
+            return subject;
+          });
+          service[http] = spy;
+          return spy;
+        }
 
-          function successRequest(response: ApiResponse<unknown>): jasmine.Spy {
-            const spy = jasmine.createSpy(http).and.callFake(() => {
-              const subject = new BehaviorSubject<ApiResponse<unknown>>(
-                response
+        function functionCall(): Observable<MockModel[] | MockModel> {
+          switch (method) {
+            case "list":
+            case "show":
+              return service[method](MockModel, testedApiPath);
+            case "filter":
+              return service[method](MockModel, testedApiPath, defaultFilter);
+            case "create":
+              return service[method](
+                MockModel,
+                testedApiPath,
+                (model) => testedApiPath + model.id,
+                new MockModel(defaultBody, associationInjector),
               );
-              setTimeout(() => subject.complete(), 0);
-              return subject;
+            case "update":
+              return service[method](MockModel, testedApiPath, new MockModel(defaultBody, associationInjector));
+            case "destroy":
+              return service[method](testedApiPath);
+          }
+        }
+
+        it(`should call ${http}`, () => {
+          const response = singleResult
+            ? { meta: meta.single, data: responses.single }
+            : { meta: meta.multi, data: [] };
+          const spy = successRequest(response);
+          functionCall().subscribe();
+
+          switch (method) {
+            case "list":
+            case "show":
+              expect(spy).toHaveBeenCalledWith(testedApiPath, defaultApiHeaders, defaultBawMethodOptions);
+              break;
+            case "filter":
+              expect(spy).toHaveBeenCalledWith(testedApiPath, defaultFilter, undefined, defaultBawMethodOptions);
+              break;
+            case "create":
+            case "update":
+              expect(spy).toHaveBeenCalledWith(
+                testedApiPath,
+                {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  "Mock Model": defaultBody,
+                },
+                undefined,
+                defaultBawMethodOptions,
+              );
+              break;
+            case "destroy":
+              expect(spy).toHaveBeenCalledWith(testedApiPath, undefined, defaultBawMethodOptions);
+              break;
+          }
+        });
+
+        if (singleResult) {
+          it("should handle response", (done) => {
+            const response = { meta: meta.single, data: responses.single };
+            const model = new MockModel(response.data, associationInjector);
+            model.addMetadata(response.meta);
+
+            successRequest(response);
+            functionCall().subscribe({
+              next: (data) => {
+                // Destroy returns void
+                if (method === "destroy") {
+                  expect(data).toBe(null);
+                } else {
+                  expect(data).toEqual(model);
+                }
+                done();
+              },
+              error: shouldNotFail,
             });
-            service[http] = spy;
-            return spy;
-          }
+          });
+        }
 
-          function functionCall(): Observable<MockModel[] | MockModel> {
-            switch (method) {
-              case "list":
-              case "show":
-                return service[method](MockModel, testedApiPath);
-              case "filter":
-                return service[method](MockModel, testedApiPath, defaultFilter);
-              case "create":
-                return service[method](
-                  MockModel,
-                  testedApiPath,
-                  (model) => testedApiPath + model.id,
-                  new MockModel(defaultBody, associationInjector)
-                );
-              case "update":
-                return service[method](
-                  MockModel,
-                  testedApiPath,
-                  new MockModel(defaultBody, associationInjector)
-                );
-              case "destroy":
-                return service[method](testedApiPath);
-            }
-          }
-
-          it(`should call ${http}`, () => {
-            const response = singleResult
-              ? { meta: meta.single, data: responses.single }
-              : { meta: meta.multi, data: [] };
-            const spy = successRequest(response);
-            functionCall().subscribe();
-
-            switch (method) {
-              case "list":
-              case "show":
-                expect(spy).toHaveBeenCalledWith(
-                  testedApiPath,
-                  defaultApiHeaders,
-                  defaultBawMethodOptions
-                );
-                break;
-              case "filter":
-                expect(spy).toHaveBeenCalledWith(
-                  testedApiPath,
-                  defaultFilter,
-                  undefined,
-                  defaultBawMethodOptions
-                );
-                break;
-              case "create":
-              case "update":
-                expect(spy).toHaveBeenCalledWith(
-                  testedApiPath,
-                  {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    "Mock Model": defaultBody,
-                  },
-                  undefined,
-                  defaultBawMethodOptions
-                );
-                break;
-              case "destroy":
-                expect(spy).toHaveBeenCalledWith(
-                  testedApiPath,
-                  undefined,
-                  defaultBawMethodOptions
-                );
-                break;
-            }
+        if (multiResult) {
+          it("should handle empty response", (done) => {
+            successRequest({ meta: meta.multi, data: [] });
+            functionCall().subscribe({
+              next: (data) => {
+                expect(data).toEqual([]);
+                done();
+              },
+              error: shouldNotFail,
+            });
           });
 
-          if (singleResult) {
-            it("should handle response", (done) => {
-              const response = { meta: meta.single, data: responses.single };
-              const model = new MockModel(response.data, associationInjector);
+          it("should handle response", (done) => {
+            const response = { meta: meta.multi, data: responses.multi };
+            const models = response.data.map((_data) => {
+              const model = new MockModel(_data, associationInjector);
               model.addMetadata(response.meta);
-
-              successRequest(response);
-              functionCall().subscribe({
-                next: (data) => {
-                  // Destroy returns void
-                  if (method === "destroy") {
-                    expect(data).toBe(null);
-                  } else {
-                    expect(data).toEqual(model);
-                  }
-                  done();
-                },
-                error: shouldNotFail,
-              });
-            });
-          }
-
-          if (multiResult) {
-            it("should handle empty response", (done) => {
-              successRequest({ meta: meta.multi, data: [] });
-              functionCall().subscribe({
-                next: (data) => {
-                  expect(data).toEqual([]);
-                  done();
-                },
-                error: shouldNotFail,
-              });
+              return model;
             });
 
-            it("should handle response", (done) => {
-              const response = { meta: meta.multi, data: responses.multi };
-              const models = response.data.map((_data) => {
-                const model = new MockModel(_data, associationInjector);
-                model.addMetadata(response.meta);
-                return model;
-              });
-
-              successRequest(response);
-              functionCall().subscribe({
-                next: (data) => {
-                  expect(data).toEqual(models);
-                  done();
-                },
-                error: shouldNotFail,
-              });
-            });
-          }
-
-          it("should handle error response", (done) => {
-            errorRequest(responses.error);
+            successRequest(response);
             functionCall().subscribe({
-              next: shouldNotSucceed,
-              error: (err) => {
-                expect(err).toEqual(responses.error);
+              next: (data) => {
+                expect(data).toEqual(models);
                 done();
               },
+              error: shouldNotFail,
             });
           });
+        }
 
-          it("should handle error info response", (done) => {
-            errorRequest(responses.errorInfo);
-            functionCall().subscribe({
-              next: shouldNotSucceed,
-              error: (err) => {
-                expect(err).toEqual(responses.errorInfo);
-                done();
-              },
-            });
+        it("should handle error response", (done) => {
+          errorRequest(responses.error);
+          functionCall().subscribe({
+            next: shouldNotSucceed,
+            error: (err) => {
+              expect(err).toEqual(responses.error);
+              done();
+            },
           });
+        });
 
-          // prettier wants to break this up into multiple lines with the
-          // ternary operator being on a separate line. However, this makes it
-          // harder to read and understand the logic
-          // prettier-ignore
-          it(`should ${shouldClearCache ? "clear" : "not clear"} the cache`, (done) => {
+        it("should handle error info response", (done) => {
+          errorRequest(responses.errorInfo);
+          functionCall().subscribe({
+            next: shouldNotSucceed,
+            error: (err) => {
+              expect(err).toEqual(responses.errorInfo);
+              done();
+            },
+          });
+        });
+
+        // prettier wants to break this up into multiple lines with the
+        // ternary operator being on a separate line. However, this makes it
+        // harder to read and understand the logic
+        // prettier-ignore
+        it(`should ${shouldClearCache ? "clear" : "not clear"} the cache`, (done) => {
             const expectedCacheCleans = shouldClearCache ? 1 : 0;
 
             cachingSpy.clearCache = jasmine.createSpy("clearCache") as any;
@@ -879,78 +797,74 @@ describe("BawApiService", () => {
             });
           });
 
-          if (updateOnAuthTrigger) {
-            if (singleResult) {
-              it("should retrigger if auth changes", (done) => {
-                let count = 0;
-                const response = { meta: meta.single, data: responses.single };
-                const model = new MockModel(
-                  responses.single,
-                  associationInjector
-                );
-                model.addMetadata(response.meta);
+        if (updateOnAuthTrigger) {
+          if (singleResult) {
+            it("should retrigger if auth changes", (done) => {
+              let count = 0;
+              const response = { meta: meta.single, data: responses.single };
+              const model = new MockModel(responses.single, associationInjector);
+              model.addMetadata(response.meta);
 
-                successRequest(response);
-                functionCall().subscribe({
-                  next: (data): void => {
-                    expect(data).toEqual(model);
-                    if (count === 2) {
-                      done();
-                    } else {
-                      count++;
-                    }
-                  },
-                  error: shouldNotFail,
-                });
-                signIn(defaultUser, defaultAuthToken);
-                signOut();
-              });
-            }
-
-            if (multiResult) {
-              it("should retrigger if auth changes", (done) => {
-                let count = 0;
-                const response = { meta: meta.multi, data: responses.multi };
-                const models = responses.multi.map((_data) => {
-                  const model = new MockModel(_data, associationInjector);
-                  model.addMetadata(response.meta);
-                  return model;
-                });
-
-                successRequest(response);
-                functionCall().subscribe({
-                  next: (data): void => {
-                    expect(data).toEqual(models);
-                    if (count === 2) {
-                      done();
-                    } else {
-                      count++;
-                    }
-                  },
-                  error: shouldNotFail,
-                });
-                signIn(defaultUser, defaultAuthToken);
-                signOut();
-              });
-            }
-          } else {
-            it("should complete on api response", (done) => {
-              const response = singleResult
-                ? { meta: meta.single, data: responses.single }
-                : { meta: meta.multi, data: responses.multi };
               successRequest(response);
               functionCall().subscribe({
-                error: shouldNotFail,
-                complete: () => {
-                  assertOk();
-                  done();
+                next: (data): void => {
+                  expect(data).toEqual(model);
+                  if (count === 2) {
+                    done();
+                  } else {
+                    count++;
+                  }
                 },
+                error: shouldNotFail,
               });
+              signIn(defaultUser, defaultAuthToken);
+              signOut();
             });
           }
-        });
-      }
-    );
+
+          if (multiResult) {
+            it("should retrigger if auth changes", (done) => {
+              let count = 0;
+              const response = { meta: meta.multi, data: responses.multi };
+              const models = responses.multi.map((_data) => {
+                const model = new MockModel(_data, associationInjector);
+                model.addMetadata(response.meta);
+                return model;
+              });
+
+              successRequest(response);
+              functionCall().subscribe({
+                next: (data): void => {
+                  expect(data).toEqual(models);
+                  if (count === 2) {
+                    done();
+                  } else {
+                    count++;
+                  }
+                },
+                error: shouldNotFail,
+              });
+              signIn(defaultUser, defaultAuthToken);
+              signOut();
+            });
+          }
+        } else {
+          it("should complete on api response", (done) => {
+            const response = singleResult
+              ? { meta: meta.single, data: responses.single }
+              : { meta: meta.multi, data: responses.multi };
+            successRequest(response);
+            functionCall().subscribe({
+              error: shouldNotFail,
+              complete: () => {
+                assertOk();
+                done();
+              },
+            });
+          });
+        }
+      });
+    });
 
     // TODO: re-enable these tests once we support caching filter requests
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2170

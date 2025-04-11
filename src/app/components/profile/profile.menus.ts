@@ -4,12 +4,7 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
-import {
-  defaultEditIcon,
-  defaultUserIcon,
-  isAdminPredicate,
-  isLoggedInPredicate,
-} from "src/app/app.menus";
+import { defaultEditIcon, defaultUserIcon, isAdminPredicate, isLoggedInPredicate } from "src/app/app.menus";
 
 function getUserName(user: AbstractModel) {
   return user ? (user as User).userName : "unknown";
@@ -33,8 +28,7 @@ export const myAccountMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
   tooltip: () => "View profile",
-  breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, User)?.userName,
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, User)?.userName,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
 
@@ -108,9 +102,7 @@ export const myAnnotationsMenuItem = menuRoute({
 /**
  * Their Profile Menus
  */
-export const theirProfileRoute = StrongRoute.newRoot()
-  .add("user_accounts")
-  .add(":accountId");
+export const theirProfileRoute = StrongRoute.newRoot().add("user_accounts").add(":accountId");
 
 export const theirProfileCategory: Category = {
   icon: ["fas", "user-circle"],
@@ -125,12 +117,11 @@ export const theirProfileMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
   tooltip: () => "View their profile",
-  breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, User)?.userName,
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, User)?.userName,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return `${componentModel.account.model.userName}'s Profile`;
-  }
+  },
 });
 
 export const theirEditMenuItem = menuRoute({

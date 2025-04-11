@@ -1,10 +1,7 @@
 import { Inject, Injectable, INJECTOR, Injector } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { homeMenuItem } from "@components/home/home.menus";
-import {
-  projectMenuItem,
-  projectsMenuItem,
-} from "@components/projects/projects.menus";
+import { projectMenuItem, projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -12,12 +9,7 @@ import { DEFAULT_MENU, IDefaultMenu } from "@helpers/page/defaultMenus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  AnyMenuItem,
-  LabelAndIcon,
-  MenuRoute,
-  NavigableMenuItem,
-} from "@interfaces/menusInterfaces";
+import { AnyMenuItem, LabelAndIcon, MenuRoute, NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { User } from "@models/User";
@@ -72,7 +64,7 @@ export class MenuService extends withUnsubscribe() {
     private sharedRoute: SharedActivatedRouteService,
     @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu,
     @Inject(INJECTOR) private injector: Injector,
-    private config: ConfigService
+    private config: ConfigService,
   ) {
     super();
 
@@ -105,21 +97,17 @@ export class MenuService extends withUnsubscribe() {
     this._menuUpdate = new BehaviorSubject(this.getData());
 
     /** Track the local user */
-    this.session.authTrigger
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(({ user }): void => {
-        this._user = user;
-        updateState();
-      });
+    this.session.authTrigger.pipe(takeUntil(this.unsubscribe)).subscribe(({ user }): void => {
+      this._user = user;
+      updateState();
+    });
 
-    this.sharedRoute.pageInfo
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((page: IPageInfo): void => {
-        // Close menu because of navigation, and update other state values
-        this._isMenuOpen = false;
-        this._pageInfo = page;
-        updateState();
-      });
+    this.sharedRoute.pageInfo.pipe(takeUntil(this.unsubscribe)).subscribe((page: IPageInfo): void => {
+      // Close menu because of navigation, and update other state values
+      this._isMenuOpen = false;
+      this._pageInfo = page;
+      updateState();
+    });
   }
 
   /** Returns true if current page is fullscreen */
@@ -210,12 +198,10 @@ export class MenuService extends withUnsubscribe() {
 
     return this.rootToMenuRoute(this.pageInfo.pageRoute).map(
       (breadcrumb): Breadcrumb => ({
-        label:
-          breadcrumb.breadcrumbResolve?.(this.pageInfo, this.injector) ??
-          breadcrumb.label,
+        label: breadcrumb.breadcrumbResolve?.(this.pageInfo, this.injector) ?? breadcrumb.label,
         icon: breadcrumb.icon,
         route: breadcrumb.route,
-      })
+      }),
     );
   }
 
@@ -225,10 +211,7 @@ export class MenuService extends withUnsubscribe() {
         ?.filter(this.filterByPredicate)
         ?.sort(this.sortByOrderAndIndentation)
         ?.toOrderedSet() ?? OrderedSet();
-    const widgets =
-      this.pageInfo.menus?.actionWidgets
-        ?.filter(this.filterByPredicate)
-        ?.toOrderedSet() ?? OrderedSet();
+    const widgets = this.pageInfo.menus?.actionWidgets?.filter(this.filterByPredicate)?.toOrderedSet() ?? OrderedSet();
 
     return {
       title: this.pageInfo.category ?? this.defaultMenu.defaultCategory,
@@ -239,14 +222,9 @@ export class MenuService extends withUnsubscribe() {
 
   private getSecondaryMenuData(): SecondaryMenuData {
     // Get current page and all parents
-    const parentMenuRoutes = this.rootToMenuRoute(this.pageInfo.pageRoute).map(
-      (menuRoute) => menuRoute
-    );
+    const parentMenuRoutes = this.rootToMenuRoute(this.pageInfo.pageRoute).map((menuRoute) => menuRoute);
 
-    const widgets =
-      this.pageInfo.menus?.linkWidgets
-        ?.filter(this.filterByPredicate)
-        ?.toOrderedSet() ?? OrderedSet();
+    const widgets = this.pageInfo.menus?.linkWidgets?.filter(this.filterByPredicate)?.toOrderedSet() ?? OrderedSet();
 
     // Combine current route ancestry with default menu
     const links = this.defaultMenu.contextLinks
@@ -272,10 +250,7 @@ export class MenuService extends withUnsubscribe() {
        * to the shallow regions route. This also happens to have no parent
        * route and will stop the route traversal
        */
-      if (
-        hideProjects &&
-        [projectMenuItem, projectsMenuItem].includes(current)
-      ) {
+      if (hideProjects && [projectMenuItem, projectsMenuItem].includes(current)) {
         current = shallowRegionsMenuItem;
       }
 
@@ -285,11 +260,7 @@ export class MenuService extends withUnsubscribe() {
     return menuRoutes.reverse();
   }
 
-  private filterByPredicate = <
-    T extends AnyMenuItem | WidgetMenuItem | MenuModalWithoutAction
-  >(
-    link: T
-  ): boolean => {
+  private filterByPredicate = <T extends AnyMenuItem | WidgetMenuItem | MenuModalWithoutAction>(link: T): boolean => {
     if (!link) {
       return false;
     }
@@ -302,9 +273,7 @@ export class MenuService extends withUnsubscribe() {
    * @param a First menu item
    * @param b Second menu item
    */
-  private sortByOrderAndIndentation<
-    T extends AnyMenuItem | MenuModalWithoutAction
-  >(a: T, b: T): number {
+  private sortByOrderAndIndentation<T extends AnyMenuItem | MenuModalWithoutAction>(a: T, b: T): number {
     // If no order, return equal - i.e. a stable sort!
     if (!isInstantiated(a.order) && !isInstantiated(b.order)) {
       return 0;

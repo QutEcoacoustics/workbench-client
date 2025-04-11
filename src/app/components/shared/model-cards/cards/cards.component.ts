@@ -11,8 +11,8 @@ import { CardComponent } from "../card/card.component";
  * to signify when the user is the owner/editor of the project
  */
 @Component({
-    selector: "baw-model-cards",
-    template: `
+  selector: "baw-model-cards",
+  template: `
     <div class="row">
       @for (model of models ?? []; track model) {
         <baw-card [model]="model"></baw-card>
@@ -21,9 +21,9 @@ import { CardComponent } from "../card/card.component";
         <ng-content></ng-content>
       </div>
     </div>
-    `,
-    styleUrls: ["./cards.component.scss"],
-    imports: [CardComponent]
+  `,
+  styleUrls: ["./cards.component.scss"],
+  imports: [CardComponent],
 })
 export class CardsComponent {
   @Input() public models: List<Project | Region>;

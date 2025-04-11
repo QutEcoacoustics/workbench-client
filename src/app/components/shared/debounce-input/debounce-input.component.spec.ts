@@ -5,11 +5,7 @@ describe("DebounceInputComponent", () => {
   let spectator: SpectatorHost<DebounceInputComponent>;
   const createHost = createHostFactory(DebounceInputComponent);
 
-  function setup(
-    label?: string,
-    placeholder?: string,
-    onFilter?: (input: string) => any
-  ) {
+  function setup(label?: string, placeholder?: string, onFilter?: (input: string) => any) {
     // Conditionally add inputs so that baw-debounce-input defaults aren't overridden
     spectator = createHost(
       `
@@ -19,7 +15,7 @@ describe("DebounceInputComponent", () => {
         (filter)="onFilter($event)"
       ></baw-debounce-input>
       `,
-      { hostProps: { label, placeholder, onFilter } }
+      { hostProps: { label, placeholder, onFilter } },
     );
   }
 
@@ -41,9 +37,7 @@ describe("DebounceInputComponent", () => {
 
   describe("placeholder", () => {
     function assertPlaceholder(placeholder: string) {
-      expect(spectator.query<HTMLInputElement>("input").placeholder).toBe(
-        placeholder
-      );
+      expect(spectator.query<HTMLInputElement>("input").placeholder).toBe(placeholder);
     }
 
     it("should handle no placeholder", () => {
@@ -65,10 +59,7 @@ describe("DebounceInputComponent", () => {
     // Spectator.typeInElement not triggering update for some reason
     function keyboardPress(...keys: string[]) {
       keys.forEach((_, index) => {
-        spectator.typeInElement(
-          keys.join("").substring(0, index + 1),
-          getInput()
-        );
+        spectator.typeInElement(keys.join("").substring(0, index + 1), getInput());
         getInput().dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
       });
     }

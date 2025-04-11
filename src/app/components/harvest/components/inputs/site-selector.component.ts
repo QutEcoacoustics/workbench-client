@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
@@ -29,19 +22,14 @@ import { FormsModule } from "@angular/forms";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 
 @Component({
-    selector: "baw-harvest-site-selector",
-    template: `
+  selector: "baw-harvest-site-selector",
+  template: `
     <!-- Show site name and link if exists -->
     @if (site) {
       <div class="site-label">
         <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
         <div>
-          <button
-            type="button"
-            class="btn btn-sm p-0 me-1"
-            [ngbTooltip]="editTooltip"
-            (click)="resetSite()"
-            >
+          <button type="button" class="btn btn-sm p-0 me-1" [ngbTooltip]="editTooltip" (click)="resetSite()">
             <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
           </button>
         </div>
@@ -65,19 +53,21 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
       />
     </div>
   `,
-    styles: [`
-    .site-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  styles: [
+    `
+      .site-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .site-label,
-    .input-group {
-      width: 100%;
-    }
-  `],
-    imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
+      .site-label,
+      .input-group {
+        width: 100%;
+      }
+    `,
+  ],
+  imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule],
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
@@ -93,20 +83,15 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
 
   public constructor(
     private config: ConfigService,
-    private sitesApi: SitesService
+    private sitesApi: SitesService,
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
-      const debouncedText$ = text$.pipe(
-        debounceTime(defaultDebounceTime),
-        distinctUntilChanged()
-      );
-      const clicksWithClosedPopup$ = this.click$.pipe(
-        filter(() => !this.selector.isPopupOpen())
-      );
+      const debouncedText$ = text$.pipe(debounceTime(defaultDebounceTime), distinctUntilChanged());
+      const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.selector.isPopupOpen()));
       const inputFocus$ = this.focus$;
 
       return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
@@ -120,9 +105,9 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
                 },
               },
             },
-            this.project
-          )
-        )
+            this.project,
+          ),
+        ),
       );
     };
   }

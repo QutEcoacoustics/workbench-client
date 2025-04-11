@@ -3,16 +3,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParam,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParam, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -33,15 +24,8 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
     return this.api.list(Region, endpoint(project, emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<IRegion>,
-    project: IdOr<Project>
-  ): Observable<Region[]> {
-    return this.api.filter(
-      Region,
-      endpoint(project, emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<IRegion>, project: IdOr<Project>): Observable<Region[]> {
+    return this.api.filter(Region, endpoint(project, emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Region>, project: IdOr<Project>): Observable<Region> {
@@ -53,7 +37,7 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
       Region,
       endpoint(project, emptyParam, emptyParam),
       (region) => endpoint(project, region, emptyParam),
-      model
+      model,
     );
   }
 
@@ -61,10 +45,7 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
     return this.api.update(Region, endpoint(project, model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Region>,
-    project: IdOr<Project>
-  ): Observable<Region | void> {
+  public destroy(model: IdOr<Region>, project: IdOr<Project>): Observable<Region | void> {
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 }
@@ -82,11 +63,7 @@ export class ShallowRegionsService implements StandardApi<Region> {
   }
 
   public filter(filters: Filters<Region>): Observable<Region[]> {
-    return this.api.filter(
-      Region,
-      endpointShallow(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(Region, endpointShallow(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<Region>): Observable<Region> {
@@ -98,7 +75,7 @@ export class ShallowRegionsService implements StandardApi<Region> {
       Region,
       endpointShallow(emptyParam, emptyParam),
       (region) => endpointShallow(region, emptyParam),
-      model
+      model,
     );
   }
 
@@ -111,13 +88,10 @@ export class ShallowRegionsService implements StandardApi<Region> {
   }
 }
 
-export const regionResolvers = new Resolvers<Region, [IdOr<Project>]>(
-  [RegionsService],
-  "regionId",
-  ["projectId"]
-).create("Region");
+export const regionResolvers = new Resolvers<Region, [IdOr<Project>]>([RegionsService], "regionId", [
+  "projectId",
+]).create("Region");
 
-export const shallowRegionResolvers = new Resolvers<Region, []>(
-  [ShallowRegionsService],
-  "regionId"
-).create("ShallowRegion");
+export const shallowRegionResolvers = new Resolvers<Region, []>([ShallowRegionsService], "regionId").create(
+  "ShallowRegion",
+);

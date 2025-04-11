@@ -2,10 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import {
-  projectResolvers,
-  ProjectsService,
-} from "@baw-api/project/projects.service";
+import { projectResolvers, ProjectsService } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
@@ -25,20 +22,14 @@ describe("ProjectsRequestComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-    imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-        RequestComponent,
-    ],
-    providers: [
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule, RequestComponent],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;

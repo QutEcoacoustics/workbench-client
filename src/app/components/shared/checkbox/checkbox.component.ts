@@ -1,15 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 import { NgClass } from "@angular/common";
 
 @Component({
-    selector: "baw-checkbox",
-    template: `
+  selector: "baw-checkbox",
+  template: `
     <div class="checkbox-wrapper" [ngClass]="{ 'mx-auto': isCentered }">
       <div class="custom-control custom-checkbox">
         <input
@@ -24,13 +18,15 @@ import { NgClass } from "@angular/common";
       </div>
     </div>
   `,
-    styles: [`
-    .checkbox-wrapper {
-      width: min-content;
-    }
-  `],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgClass]
+  styles: [
+    `
+      .checkbox-wrapper {
+        width: min-content;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass],
 })
 export class CheckboxComponent {
   @Input() public id: string;

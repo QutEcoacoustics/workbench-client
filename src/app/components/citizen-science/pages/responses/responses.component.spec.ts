@@ -9,6 +9,6 @@ describe("CitSciResponsesComponent", () => {
     CitSciResponsesComponent,
     [CitizenScienceModule],
     "/citsci/example-question/responses",
-    "Responses"
+    "Responses",
   );
 });

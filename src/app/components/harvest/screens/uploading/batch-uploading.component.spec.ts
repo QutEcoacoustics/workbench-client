@@ -7,11 +7,7 @@ import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
@@ -52,9 +48,7 @@ describe("BatchUploadingComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
     project["injector"] = injector;
     harvest["injector"] = injector;
-    stages = spec.inject<SpyObject<HarvestStagesService>>(
-      HarvestStagesService as any
-    );
+    stages = spec.inject<SpyObject<HarvestStagesService>>(HarvestStagesService as any);
     // spy needs to be created after createComponent is called and cannot be
     // created inside a mockProvider definition
     stages.transition = jasmine.createSpy("transition") as any;
@@ -68,17 +62,11 @@ describe("BatchUploadingComponent", () => {
   }
 
   function getModalNextBtn() {
-    return spec.query<HTMLButtonElement>(
-      "baw-harvest-confirmation-modal #next-btn",
-      { root: true }
-    );
+    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
   }
 
   function getModalCancelBtn() {
-    return spec.query<HTMLButtonElement>(
-      "baw-harvest-confirmation-modal #cancel-btn",
-      { root: true }
-    );
+    return spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
   }
 
   function getModal() {
@@ -147,9 +135,7 @@ describe("BatchUploadingComponent", () => {
     }
 
     function setCurrentTab(tabLabel: string) {
-      const tab = spec
-        .queryAll<HTMLAnchorElement>("a.nav-link")
-        .find((item) => item.innerText === tabLabel);
+      const tab = spec.queryAll<HTMLAnchorElement>("a.nav-link").find((item) => item.innerText === tabLabel);
       spec.click(tab);
     }
 
@@ -213,7 +199,7 @@ describe("BatchUploadingComponent", () => {
     it("should abort upload when abort is clicked and the 'abort upload' modal button is clicked", (done) => {
       launchModal(
         "#cancel-btn",
-        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone.",
       );
       clickModalNext(() => {
         expect(stages.transition).toHaveBeenCalledWith("complete");
@@ -232,7 +218,7 @@ describe("BatchUploadingComponent", () => {
     it("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
       launchModal(
         "#cancel-btn",
-        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone.",
       );
       cancelModal(done);
     });

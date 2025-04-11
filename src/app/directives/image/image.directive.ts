@@ -1,11 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  Inject,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
+import { Directive, ElementRef, Inject, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
@@ -17,11 +10,12 @@ export const notFoundImage: ImageUrl = {
   size: ImageSizes.fallback,
 };
 
-@Directive({ 
-    // Directive applies directly to all image tags instead of being
-    // explicitly called
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: "img" })
+@Directive({
+  // Directive applies directly to all image tags instead of being
+  // explicitly called
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: "img",
+})
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
   @Input() public src: ImageUrl[] | string;
@@ -47,7 +41,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
     private session: BawSessionService,
-    private imageRef: ElementRef<HTMLImageElement>
+    private imageRef: ElementRef<HTMLImageElement>,
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -164,11 +158,7 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Returns true if the default image is the only option left available
    */
   private useDefaultImage(): boolean {
-    return (
-      this.images.count() === 0 &&
-      this.currentImage !== this.defaultImage &&
-      !!this.defaultImage
-    );
+    return this.images.count() === 0 && this.currentImage !== this.defaultImage && !!this.defaultImage;
   }
 
   /** Get image reference native element */

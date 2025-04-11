@@ -7,17 +7,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
  */
 export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
   formInputs.forEach(
-    ({
-      testGroup,
-      setup = () => {},
-      field,
-      key,
-      type,
-      required = false,
-      label,
-      inputType,
-      description,
-    }) => {
+    ({ testGroup, setup = () => {}, field, key, type, required = false, label, inputType, description }) => {
       describe(testGroup, () => {
         beforeEach(() => {
           setup();
@@ -59,7 +49,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           });
         }
       });
-    }
+    },
   );
 }
 

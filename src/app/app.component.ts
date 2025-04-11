@@ -1,17 +1,7 @@
-import {
-  Component,
-  Inject,
-  Injectable,
-  INJECTOR,
-  Injector,
-  OnInit,
-} from "@angular/core";
+import { Component, Inject, Injectable, INJECTOR, Injector, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { NavigationEnd, Router, RouterStateSnapshot, TitleStrategy, RouterOutlet } from "@angular/router";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
@@ -44,10 +34,21 @@ declare const gtag: Gtag.Gtag;
  * App Root Component
  */
 @Component({
-    selector: "baw-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
-    imports: [HeaderComponent, LoadingBarModule, ToastProviderComponent, SideNavComponent, PrimaryMenuComponent, SecondaryMenuComponent, ActionMenuComponent, BreadcrumbComponent, RouterOutlet, FooterComponent]
+  selector: "baw-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
+  imports: [
+    HeaderComponent,
+    LoadingBarModule,
+    ToastProviderComponent,
+    SideNavComponent,
+    PrimaryMenuComponent,
+    SecondaryMenuComponent,
+    ActionMenuComponent,
+    BreadcrumbComponent,
+    RouterOutlet,
+    FooterComponent,
+  ],
 })
 export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;
@@ -60,7 +61,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     private router: Router,
     @Inject(INJECTOR) protected injector: Injector,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    globals: GlobalsService
+    globals: GlobalsService,
   ) {
     super();
     /*
@@ -77,10 +78,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
       const hasCustomElement = !!customElements.get(gridTileContentSelector);
 
       if (!hasCustomElement) {
-        const webComponentElement = createCustomElement(
-          GridTileContentComponent,
-          { injector }
-        );
+        const webComponentElement = createCustomElement(GridTileContentComponent, { injector });
         customElements.define(gridTileContentSelector, webComponentElement);
       }
     }
@@ -89,14 +87,10 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   public ngOnInit(): void {
     this.fullscreen = true;
 
-    this.sharedRoute.pageInfo
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((pageInfo): void => {
-        this.fullscreen = pageInfo.fullscreen;
-        this.resolvedSuccessfully = hasResolvedSuccessfully(
-          retrieveResolvers(pageInfo)
-        );
-      });
+    this.sharedRoute.pageInfo.pipe(takeUntil(this.unsubscribe)).subscribe((pageInfo): void => {
+      this.fullscreen = pageInfo.fullscreen;
+      this.resolvedSuccessfully = hasResolvedSuccessfully(retrieveResolvers(pageInfo));
+    });
 
     // Google Analytics is not tracked during SSR
     if (this.isServer) {
@@ -107,7 +101,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe((event: NavigationEnd): void => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -117,15 +111,17 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
 
   protected onRouterOutlet(componentInstance: PageComponent | unknown): void {
     if (componentInstance || componentInstance === null) {
-      this.sharedRoute.pageComponentInstance =
-        componentInstance as PageComponent;
+      this.sharedRoute.pageComponentInstance = componentInstance as PageComponent;
     }
   }
 }
 
 @Injectable()
 export class PageTitleStrategy extends TitleStrategy {
-  public constructor(private title: Title, private config: ConfigService) {
+  public constructor(
+    private title: Title,
+    private config: ConfigService,
+  ) {
     super();
   }
 
@@ -148,10 +144,7 @@ export class PageTitleStrategy extends TitleStrategy {
         const hideProjects: boolean = this.config.settings.hideProjects;
         const titleOptions: TitleOptionsHash = { hideProjects };
 
-        const routeFragmentTitle = subRoute.title(
-          this.routerState,
-          titleOptions
-        );
+        const routeFragmentTitle = subRoute.title(this.routerState, titleOptions);
 
         // to explicitly omit a route title fragment, the title callback will return null
         if (isInstantiated(routeFragmentTitle)) {
@@ -168,9 +161,7 @@ export class PageTitleStrategy extends TitleStrategy {
       componentTitle = " | " + titleCase(subRoute.label);
     }
 
-    return subRoute?.parent
-      ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle
-      : componentTitle;
+    return subRoute?.parent ? this.buildHierarchicalTitle(subRoute.parent) + componentTitle : componentTitle;
   }
 
   // all site titles should follow the format <<brandName>> | ...PageComponentTitles

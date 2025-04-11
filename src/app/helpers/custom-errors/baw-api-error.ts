@@ -46,12 +46,7 @@ export class BawApiError<T = Record<PropertyKey, unknown>> extends Error {
       }
     });
 
-    return (
-      this._message +
-      (newline ?? ": [") +
-      formattedInfo.join(newline ?? ", ") +
-      (newline ? "" : "]")
-    );
+    return this._message + (newline ?? ": [") + formattedInfo.join(newline ?? ", ") + (newline ? "" : "]");
   }
 }
 
@@ -82,7 +77,6 @@ export function isApiErrorDetails(error: any): error is ApiErrorDetails {
   if (!error || !(error instanceof Object)) {
     return false;
   }
-  const inputHasKey = (key: string): boolean =>
-    Object.prototype.hasOwnProperty.call(error, key);
+  const inputHasKey = (key: string): boolean => Object.prototype.hasOwnProperty.call(error, key);
   return ["status", "message"].every((key) => inputHasKey(key));
 }

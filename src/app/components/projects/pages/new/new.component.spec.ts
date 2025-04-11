@@ -1,10 +1,6 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -78,9 +74,7 @@ describe("ProjectsNewComponent", () => {
   describe("capability fields", () => {
     describe("updateAllowAudioUpload capability", () => {
       function getField() {
-        return spec.component.fields.find(
-          (field) => field.key === "allowAudioUpload"
-        );
+        return spec.component.fields.find((field) => field.key === "allowAudioUpload");
       }
 
       it("should hide allowAudioUpload field", () => {

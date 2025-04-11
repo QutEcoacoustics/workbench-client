@@ -1,11 +1,7 @@
 import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
-import {
-  defaultApiPageSize,
-  Filters,
-  InnerFilter,
-} from "@baw-api/baw-api.service";
+import { defaultApiPageSize, Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AbstractModel } from "@models/AbstractModel";
@@ -18,10 +14,7 @@ const pageKey = "page";
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class PaginationTemplate<M extends AbstractModel>
-  extends PageComponent
-  implements OnInit
-{
+export abstract class PaginationTemplate<M extends AbstractModel> extends PageComponent implements OnInit {
   /**
    * Observable to wrap api request behavior
    */
@@ -53,9 +46,9 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public filter: string;
   /**
-    * A configuraiton property that can be used to overwrite how many
-    * items are fetched in a page of results
-    */
+   * A configuraiton property that can be used to overwrite how many
+   * items are fetched in a page of results
+   */
   public pageSize?: number;
   /**
    * Tracks the current filter page
@@ -88,8 +81,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     /**
      * Default inner filter values
      */
-    protected defaultInnerFilter: () => InnerFilter<M> = () =>
-      ({} as InnerFilter<M>)
+    protected defaultInnerFilter: () => InnerFilter<M> = () => ({}) as InnerFilter<M>,
   ) {
     super();
   }
@@ -114,7 +106,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           this.updateQueryParams(this.page, this.filter);
         }),
         switchMap(() => this.getModels()),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: (models: M[]) => {
@@ -129,9 +121,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
         },
       });
 
-    this.route.queryParams
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => this.updateFromUrl());
+    this.route.queryParams.pipe(takeUntil(this.unsubscribe)).subscribe(() => this.updateFromUrl());
   }
 
   /**

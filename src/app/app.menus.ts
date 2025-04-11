@@ -33,10 +33,7 @@ export const isLoggedInPredicate = (user: User): boolean => !!user;
  * @param user Session User Data
  * @param data Page Data
  */
-export const isProjectEditorPredicate = (
-  user: User,
-  data: IPageInfo
-): boolean => {
+export const isProjectEditorPredicate = (user: User, data: IPageInfo): boolean => {
   const project = retrieveResolvedModel(data, Project);
   return isAdminPredicate(user) || !!project?.canEdit;
 };
@@ -47,10 +44,7 @@ export const isProjectEditorPredicate = (
  * @param user Session User Data
  * @param data Page Data
  */
-export const isProjectWriterPredicate = (
-  user: User,
-  data: IPageInfo
-): boolean => {
+export const isProjectWriterPredicate = (user: User, data: IPageInfo): boolean => {
   const project = retrieveResolvedModel(data, Project);
   return isAdminPredicate(user) || !!project?.canContribute;
 };
@@ -60,8 +54,7 @@ export const isProjectWriterPredicate = (
  *
  * @param user Session User Data
  */
-export const isAdminPredicate = (user: User): boolean =>
-  isLoggedInPredicate(user) && user.isAdmin;
+export const isAdminPredicate = (user: User): boolean => isLoggedInPredicate(user) && user.isAdmin;
 
 /**
  * Returns true only if the user is an admin and is not in a production environment
@@ -69,5 +62,4 @@ export const isAdminPredicate = (user: User): boolean =>
  *
  * @param user User session data. This will be used to check if the user is an admin
  */
-export const isWorkInProgressPredicate = (user: User): boolean =>
-  !environment.production || isAdminPredicate(user);
+export const isWorkInProgressPredicate = (user: User): boolean => !environment.production || isAdminPredicate(user);

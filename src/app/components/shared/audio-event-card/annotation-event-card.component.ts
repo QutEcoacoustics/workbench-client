@@ -6,10 +6,10 @@ import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datet
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-annotation-event-card",
-    templateUrl: "annotation-event-card.component.html",
-    styleUrl: "annotation-event-card.component.scss",
-    imports: [FaIconComponent, ZonedDateTimeComponent, IsUnresolvedPipe]
+  selector: "baw-annotation-event-card",
+  templateUrl: "annotation-event-card.component.html",
+  styleUrl: "annotation-event-card.component.scss",
+  imports: [FaIconComponent, ZonedDateTimeComponent, IsUnresolvedPipe],
 })
 export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
   @Input({ required: true })

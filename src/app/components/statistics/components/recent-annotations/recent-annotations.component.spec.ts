@@ -4,12 +4,7 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import {
-  ACCOUNT,
-  AUDIO_RECORDING,
-  SHALLOW_SITE,
-  TAG,
-} from "@baw-api/ServiceTokens";
+import { ACCOUNT, AUDIO_RECORDING, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -18,26 +13,16 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
-import {
-  DataTableBodyCellComponent,
-  DatatableComponent,
-} from "@swimlane/ngx-datatable";
+import { DataTableBodyCellComponent, DatatableComponent } from "@swimlane/ngx-datatable";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
-import {
-  interceptMappedApiRequests,
-  interceptShowApiRequest,
-} from "@test/helpers/general";
+import { interceptMappedApiRequests, interceptShowApiRequest } from "@test/helpers/general";
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -77,15 +62,8 @@ describe("RecentAnnotationsComponent", () => {
     return interceptShowApiRequest(api.users, injector, data, User);
   }
 
-  function interceptAudioRecordingsRequest(
-    data: Errorable<AudioRecording>,
-  ): Promise<any> {
-    return interceptShowApiRequest(
-      api.recordings,
-      injector,
-      data,
-      AudioRecording,
-    );
+  function interceptAudioRecordingsRequest(data: Errorable<AudioRecording>): Promise<any> {
+    return interceptShowApiRequest(api.recordings, injector, data, AudioRecording);
   }
 
   function interceptTagsRequest(data: Errorable<Tag>[]): Promise<void>[] {
@@ -163,16 +141,9 @@ describe("RecentAnnotationsComponent", () => {
 
     defaultUser = new User(generateUser(), injector);
     defaultSite = new Site(generateSite(), injector);
-    defaultRecording = new AudioRecording(
-      generateAudioRecording({ siteId: defaultSite.id }),
-      injector,
-    );
+    defaultRecording = new AudioRecording(generateAudioRecording({ siteId: defaultSite.id }), injector);
 
-    defaultTags = modelData.randomArray(2, 5, () =>
-      new Tag(
-        generateTag({ creatorId: defaultUser.id }),
-        injector,
-      ));
+    defaultTags = modelData.randomArray(2, 5, () => new Tag(generateTag({ creatorId: defaultUser.id }), injector));
 
     // the audio events use the "taggings" property for the tag associations
     // therefore, the tagging ids and the tag ids must match
@@ -182,7 +153,7 @@ describe("RecentAnnotationsComponent", () => {
         audioEventId: audioEventId,
         tagId: tag.id,
         creatorId: defaultUser.id,
-      })
+      }),
     );
     defaultAnnotation = new AudioEvent(
       generateAudioEvent({
@@ -221,9 +192,7 @@ describe("RecentAnnotationsComponent", () => {
     }
 
     function getCellElements() {
-      return spec
-        .queryAll("datatable-body-cell")
-        .map((el) => el.firstElementChild);
+      return spec.queryAll("datatable-body-cell").map((el) => el.firstElementChild);
     }
 
     function assertCellLoading(element: Element, loading: boolean) {
@@ -333,10 +302,8 @@ describe("RecentAnnotationsComponent", () => {
     });
 
     describe("tags", () => {
-      const getTagsCell = (isLoggedIn: boolean) =>
-        getCells()[isLoggedIn ? 2 : 0];
-      const getTagsCellElement = (isLoggedIn: boolean) =>
-        getCellElements()[isLoggedIn ? 2 : 0];
+      const getTagsCell = (isLoggedIn: boolean) => getCells()[isLoggedIn ? 2 : 0];
+      const getTagsCellElement = (isLoggedIn: boolean) => getCellElements()[isLoggedIn ? 2 : 0];
 
       it("should display column if not logged in", async () => {
         await setup({ isLoggedIn: false, awaitInitialRequests: true });
@@ -363,9 +330,7 @@ describe("RecentAnnotationsComponent", () => {
       });
 
       it("should display (none) text if no tags exist when resolved", async () => {
-        const annotations = [
-          new AudioEvent(generateAudioEvent({ taggings: [] }), injector),
-        ];
+        const annotations = [new AudioEvent(generateAudioEvent({ taggings: [] }), injector)];
 
         await setup(
           {
@@ -397,8 +362,7 @@ describe("RecentAnnotationsComponent", () => {
     });
 
     describe("updated", () => {
-      const getUpdatedCellElement = (isLoggedIn: boolean) =>
-        getCellElements()[isLoggedIn ? 3 : 1];
+      const getUpdatedCellElement = (isLoggedIn: boolean) => getCellElements()[isLoggedIn ? 3 : 1];
 
       function assertTimestamp(cell: Element, annotation: AudioEvent) {
         const expectedText = humanizedDuration(annotation.updatedAt);
@@ -417,37 +381,22 @@ describe("RecentAnnotationsComponent", () => {
     });
 
     describe("actions", () => {
-      const getActionCellElement = (isLoggedIn: boolean) =>
-        getCellElements()[isLoggedIn ? 4 : 2];
+      const getActionCellElement = (isLoggedIn: boolean) => getCellElements()[isLoggedIn ? 4 : 2];
       const getPlayButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
-          "#playBtn",
-        );
+        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>("#playBtn");
       const getAnnotationButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
-          "#annotationBtn",
-        );
+        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>("#annotationBtn");
 
       [false, true].forEach((isLoggedIn) => {
-        it(`should link to listen page when ${
-          isLoggedIn ? "" : "not "
-        }logged in`, async () => {
-            await setup({ isLoggedIn });
-            expect(getPlayButton(isLoggedIn)).toHaveUrl(
-              defaultAnnotation.listenViewUrl,
-            );
-          },
-        );
+        it(`should link to listen page when ${isLoggedIn ? "" : "not "}logged in`, async () => {
+          await setup({ isLoggedIn });
+          expect(getPlayButton(isLoggedIn)).toHaveUrl(defaultAnnotation.listenViewUrl);
+        });
 
-        it(`should link to annotations page when ${
-          isLoggedIn ? "" : "not "
-        }logged in`, async () => {
-            await setup({ isLoggedIn });
-            expect(getAnnotationButton(isLoggedIn)).toHaveUrl(
-              defaultAnnotation.annotationViewUrl,
-            );
-          },
-        );
+        it(`should link to annotations page when ${isLoggedIn ? "" : "not "}logged in`, async () => {
+          await setup({ isLoggedIn });
+          expect(getAnnotationButton(isLoggedIn)).toHaveUrl(defaultAnnotation.annotationViewUrl);
+        });
       });
     });
   });

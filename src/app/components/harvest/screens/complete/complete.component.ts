@@ -27,10 +27,26 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 @Component({
-    selector: "baw-harvest-complete",
-    templateUrl: "complete.component.html",
-    styleUrls: ["complete.component.scss"],
-    imports: [StatisticsComponent, StatisticGroupComponent, StatisticItemComponent, StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatatableSortKeyDirective, LoadingComponent, UrlDirective, ZonedDateTimeComponent, DurationComponent, FaIconComponent, IsUnresolvedPipe, SafePipe]
+  selector: "baw-harvest-complete",
+  templateUrl: "complete.component.html",
+  styleUrls: ["complete.component.scss"],
+  imports: [
+    StatisticsComponent,
+    StatisticGroupComponent,
+    StatisticItemComponent,
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatatableSortKeyDirective,
+    LoadingComponent,
+    UrlDirective,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    FaIconComponent,
+    IsUnresolvedPipe,
+    SafePipe,
+  ],
 })
 export class CompleteComponent implements OnInit {
   public projectMenuItem = projectMenuItem;
@@ -39,7 +55,7 @@ export class CompleteComponent implements OnInit {
   public constructor(
     public stages: HarvestStagesService,
     private harvestItemsApi: ShallowHarvestItemsService,
-    private recordingsApi: AudioRecordingsService
+    private recordingsApi: AudioRecordingsService,
   ) {}
 
   public ngOnInit(): void {

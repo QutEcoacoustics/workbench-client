@@ -7,12 +7,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import {
-  createComponentFactory,
-  mockProvider,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
@@ -130,10 +125,7 @@ describe("AnnotationDownloadComponent", () => {
     });
 
     it("should not refer to sites if region is defined", () => {
-      setup(
-        [projectKey, regionKey, siteKey],
-        [defaultProject, defaultRegion, defaultSite]
-      );
+      setup([projectKey, regionKey, siteKey], [defaultProject, defaultRegion, defaultSite]);
       spec.detectChanges();
       expect(getBody()).toHaveText(" point");
       expect(getBody()).not.toHaveText(" site");
@@ -151,10 +143,7 @@ describe("AnnotationDownloadComponent", () => {
     let siteWithoutTimezone: Site;
 
     beforeEach(
-      () =>
-        (siteWithoutTimezone = new Site(
-          generateSite({ timezoneInformation: undefined, tzinfoTz: undefined })
-        ))
+      () => (siteWithoutTimezone = new Site(generateSite({ timezoneInformation: undefined, tzinfoTz: undefined }))),
     );
 
     it("should have timezone input", () => {
@@ -190,9 +179,7 @@ describe("AnnotationDownloadComponent", () => {
 
     it("submit button should be a href pointing to downloadAnnotations", () => {
       setup([projectKey, siteKey], [defaultProject, defaultSite]);
-      siteApi.downloadAnnotations.andCallFake(
-        () => "http://www.broken.com/broken_link"
-      );
+      siteApi.downloadAnnotations.andCallFake(() => "http://www.broken.com/broken_link");
       spec.detectChanges();
       expect(getSubmitButton().href).toBe("http://www.broken.com/broken_link");
     });
@@ -204,21 +191,18 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultProject,
-        spec.component.model.timezone
+        spec.component.model.timezone,
       );
     });
 
     it("should call the site downloadAnnotations api with site and regions project if region exists", () => {
-      setup(
-        [projectKey, regionKey, siteKey],
-        [defaultProject, defaultRegion, defaultSite]
-      );
+      setup([projectKey, regionKey, siteKey], [defaultProject, defaultRegion, defaultSite]);
       spec.detectChanges();
       // Button href will call this function on load
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultRegion.projectId,
-        spec.component.model.timezone
+        spec.component.model.timezone,
       );
     });
 
@@ -226,10 +210,7 @@ describe("AnnotationDownloadComponent", () => {
       setup([projectKey], [defaultProject]);
       spec.detectChanges();
 
-      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(
-        defaultProject,
-        "UTC",
-      );
+      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(defaultProject, "UTC");
     });
 
     // explicit timezones can be set by the user using the timezone dropdown
@@ -241,17 +222,11 @@ describe("AnnotationDownloadComponent", () => {
       spec.component.model.timezone = explicitTimezone;
       spec.detectChanges();
 
-      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(
-        defaultProject,
-        explicitTimezone
-      );
+      expect(projectApi.downloadAnnotations).toHaveBeenCalledWith(defaultProject, explicitTimezone);
     });
 
     it("should call the site apis downloadAnnotations with timezone", () => {
-      setup(
-        [projectKey, regionKey, siteKey],
-        [defaultProject, defaultRegion, defaultSite]
-      );
+      setup([projectKey, regionKey, siteKey], [defaultProject, defaultRegion, defaultSite]);
       spec.detectChanges();
       spec.component.model.timezone = "Australia/Brisbane";
       spec.detectChanges();
@@ -259,15 +234,12 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultRegion.projectId,
-        "Australia/Brisbane"
+        "Australia/Brisbane",
       );
     });
 
     it("should not emit Etc in UTC timezone on submit", () => {
-      setup(
-        [projectKey, regionKey, siteKey],
-        [defaultProject, defaultRegion, defaultSite]
-      );
+      setup([projectKey, regionKey, siteKey], [defaultProject, defaultRegion, defaultSite]);
       spec.detectChanges();
 
       // because vvo/tzdb sets the timezone identifier of UTC to Etc/UTC we want to mock this behavior
@@ -275,11 +247,7 @@ describe("AnnotationDownloadComponent", () => {
       spec.component.model.timezone = "Etc/UTC";
       spec.detectChanges();
 
-      expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
-        defaultSite,
-        defaultRegion.projectId,
-        "UTC"
-      );
+      expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(defaultSite, defaultRegion.projectId, "UTC");
     });
   });
 });

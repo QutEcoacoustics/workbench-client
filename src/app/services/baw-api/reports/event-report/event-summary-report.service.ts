@@ -1,25 +1,12 @@
 import { Injectable, Type, Inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
-import {
-  IdParamOptional,
-  id,
-  option,
-  ApiFilterShow,
-  emptyParam,
-} from "@baw-api/api-common";
+import { IdParamOptional, id, option, ApiFilterShow, emptyParam } from "@baw-api/api-common";
 import { ApiResponse, BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import {
-  BawProvider,
-  BawResolver,
-  ResolvedModel,
-} from "@baw-api/resolver-common";
+import { BawProvider, BawResolver, ResolvedModel } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import {
-  EventSummaryReport,
-  IEventSummaryReport,
-} from "@models/EventSummaryReport";
+import { EventSummaryReport, IEventSummaryReport } from "@models/EventSummaryReport";
 import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
 import { Observable, map, of } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
@@ -32,20 +19,18 @@ const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option
 
 //! the api endpoint associated with this service is not currently implemented. Therefore this service is a draft and subject to change
 @Injectable()
-export class EventSummaryReportService
-  implements ApiFilterShow<EventSummaryReport>
-{
+export class EventSummaryReportService implements ApiFilterShow<EventSummaryReport> {
   public constructor(
     protected session: BawSessionService,
     protected api: BawApiService<EventSummaryReport>,
-    @Inject(API_ROOT) private apiRoot: string
+    @Inject(API_ROOT) private apiRoot: string,
   ) {}
 
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface
   public filterShow(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    filters: Filters<EventSummaryReport>
+    filters: Filters<EventSummaryReport>,
   ): Observable<EventSummaryReport> {
     const regionIds: number[] = [14, 7];
     const siteIds: number[] = [3600, 3609, 3332, 3331];
@@ -72,9 +57,7 @@ export class EventSummaryReportService
           score: {
             histogram: [
               // these values should be rounded to 1 decimal place in the confidence plot
-              0.91,
-              0.82, 0.71, 0.71, 0.62, 0.63, 0.54, 0.52, 0.51, 0.51, 0.41, 0.4,
-              0.3, 0.32, 0.22, 0.13,
+              0.91, 0.82, 0.71, 0.71, 0.62, 0.63, 0.54, 0.52, 0.51, 0.51, 0.41, 0.4, 0.3, 0.32, 0.22, 0.13,
             ],
             standardDeviation: 0.2,
             mean: 0.5,
@@ -89,8 +72,8 @@ export class EventSummaryReportService
           bucketsWithDetections: 0.7,
           score: {
             histogram: [
-              0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3,
-              0.3, 0.5, 0.1, 0.7, 0.7, 0.6, 0.7, 0.8, 0.8, 0.9,
+              0.1, 0.2, 0.3, 0.3, 0.6, 0.6, 0.5, 0.2, 0.5, 0.5, 0.4, 0.4, 0.3, 0.3, 0.5, 0.1, 0.7, 0.7, 0.6, 0.7, 0.8,
+              0.8, 0.9,
             ],
             standardDeviation: 0.4,
             mean: 0.6,
@@ -105,8 +88,7 @@ export class EventSummaryReportService
           bucketsWithDetections: 0.7,
           score: {
             histogram: [
-              0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3,
-              0.3, 0.3, 0.1, 0.6, 0.7, 0.8, 0.9,
+              0.2, 0.5, 0.4, 0.4, 0.3, 0.3, 0.6, 0.2, 0.4, 0.3, 0.1, 0.4, 0.3, 0.3, 0.3, 0.1, 0.6, 0.7, 0.8, 0.9,
             ],
             standardDeviation: 0.1,
             mean: 0.3,
@@ -120,10 +102,7 @@ export class EventSummaryReportService
           detections: 55,
           bucketsWithDetections: 0.7,
           score: {
-            histogram: [
-              0.9, 0.1, 0.7, 0.7, 0.6, 0.3, 0.5, 0.3, 0.5, 0.2, 0.4, 0.4, 0.3,
-              0.3, 1, 0.9,
-            ],
+            histogram: [0.9, 0.1, 0.7, 0.7, 0.6, 0.3, 0.5, 0.3, 0.5, 0.2, 0.4, 0.4, 0.3, 0.3, 1, 0.9],
             standardDeviation: 0.2,
             mean: 0.5,
             min: 0.1,
@@ -194,9 +173,7 @@ export class EventSummaryReportService
             { startDate: "2023-05-23", endDate: "2023-05-24" },
             { startDate: "2023-05-28", endDate: "2023-05-29" },
           ],
-          failedAnalysisCoverage: [
-            { startDate: "2023-05-26", endDate: "2023-05-27" },
-          ],
+          failedAnalysisCoverage: [{ startDate: "2023-05-26", endDate: "2023-05-27" }],
         },
         // TODO: I might be able to remove this
         analysisConfidenceData: [
@@ -219,7 +196,7 @@ export class EventSummaryReportService
           total: fakeReport.eventGroups.length,
           items: fakeReport.eventGroups.length,
         },
-      })
+      }),
     );
 
     //we have to create a fake response so that we can add the correct injection service
@@ -232,19 +209,12 @@ export class EventSummaryReportService
     };
 
     // using the api.handleSingleResponse method, we can create a model with the correct injected services
-    return of(fakeResponse).pipe(
-      map(this.api.handleSingleResponse(EventSummaryReport))
-    );
+    return of(fakeResponse).pipe(map(this.api.handleSingleResponse(EventSummaryReport)));
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);
   }
 
   public downloadEventsTableUrl(filters: Filters<EventSummaryReport>): string {
-    return (
-      this.apiRoot +
-      endpoint(emptyParam, emptyParam) +
-      "events.csv?" +
-      this.api.encodeFilter(filters)
-    );
+    return this.apiRoot + endpoint(emptyParam, emptyParam) + "events.csv?" + this.api.encodeFilter(filters);
   }
 }
 
@@ -269,11 +239,9 @@ class EventSummaryReportResolver extends BawResolver<
   public createProviders(
     name: string,
     resolver: Type<{
-      resolve: ResolveFn<
-        ResolvedModel<[EventSummaryReport, EventSummaryReportParameters]>
-      >;
+      resolve: ResolveFn<ResolvedModel<[EventSummaryReport, EventSummaryReportParameters]>>;
     }>,
-    deps: Type<EventSummaryReportService>[]
+    deps: Type<EventSummaryReportService>[],
   ): ResolverNames & { providers: BawProvider[] } {
     const filterShowProvider = {
       filterShow: name + "CreateFromFilterResolver",
@@ -291,7 +259,7 @@ class EventSummaryReportResolver extends BawResolver<
 
   public resolverFn(
     route: ActivatedRouteSnapshot,
-    api: EventSummaryReportService
+    api: EventSummaryReportService,
   ): Observable<[EventSummaryReport, EventSummaryReportParameters]> {
     const fakeEvents = [1, 2, 1950, 39, 277];
     const fakeProvenances = [1];
@@ -307,23 +275,19 @@ class EventSummaryReportResolver extends BawResolver<
 
     // because we are returning the data model that was used to fetch the reports model
     // we need to unpack the model response and create a new observable that encapsulates both the report and data model
-    return new Observable<[EventSummaryReport, EventSummaryReportParameters]>(
-      (subscriber) => {
-        api.filterShow(filters).subscribe((data: EventSummaryReport) => {
-          parametersModel.injector = data["injector"];
+    return new Observable<[EventSummaryReport, EventSummaryReportParameters]>((subscriber) => {
+      api.filterShow(filters).subscribe((data: EventSummaryReport) => {
+        parametersModel.injector = data["injector"];
 
-          data.eventGroups.forEach(
-            (eventGroup) => (eventGroup["injector"] = data["injector"])
-          );
+        data.eventGroups.forEach((eventGroup) => (eventGroup["injector"] = data["injector"]));
 
-          subscriber.next([data, parametersModel]);
-          subscriber.complete();
-        });
-      }
-    );
+        subscriber.next([data, parametersModel]);
+        subscriber.complete();
+      });
+    });
   }
 }
 
-export const eventSummaryResolvers = new EventSummaryReportResolver([
-  EventSummaryReportService,
-]).create("AudioEventSummaryReport");
+export const eventSummaryResolvers = new EventSummaryReportResolver([EventSummaryReportService]).create(
+  "AudioEventSummaryReport",
+);

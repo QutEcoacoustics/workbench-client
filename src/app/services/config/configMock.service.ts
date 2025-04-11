@@ -1,10 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  Configuration,
-  Endpoints,
-  Keys,
-  Settings,
-} from "@helpers/app-initializer/app-initializer";
+import { Configuration, Endpoints, Keys, Settings } from "@helpers/app-initializer/app-initializer";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { environment } from "src/environments/environment";
 import { assetRoot } from "./config.service";

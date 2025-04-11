@@ -6,11 +6,7 @@ import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IRegion, Region } from "@models/Region";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
@@ -45,10 +41,7 @@ describe("RegionsListComponent", () => {
     imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
-  function generateRegions(
-    numRegions: number,
-    overrides: IRegion = {}
-  ): Region[] {
+  function generateRegions(numRegions: number, overrides: IRegion = {}): Region[] {
     const regions = [];
     for (let i = 0; i < Math.min(numRegions, defaultApiPageSize); i++) {
       const region = new Region(generateRegion(overrides));
@@ -64,14 +57,10 @@ describe("RegionsListComponent", () => {
 
   async function handleApiRequest(
     models: Errorable<Region[]>,
-    assertFilter: (filters: Filters<Region>) => void = () => {}
+    assertFilter: (filters: Filters<Region>) => void = () => {},
   ) {
     const subject = new Subject<Region[]>();
-    const promise = nStepObservable(
-      subject,
-      () => models,
-      isBawApiError(models)
-    );
+    const promise = nStepObservable(subject, () => models, isBawApiError(models));
     api.filter.and.callFake((filters) => {
       assertFilter(filters);
       return subject;

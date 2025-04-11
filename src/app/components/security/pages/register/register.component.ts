@@ -3,15 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { homeMenuItem } from "@components/home/home.menus";
-import {
-  registerMenuItem,
-  securityCategory,
-} from "@components/security/security.menus";
+import { registerMenuItem, securityCategory } from "@components/security/security.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
-import {
-  IRegisterDetails,
-  RegisterDetails,
-} from "@models/data/RegisterDetails";
+import { IRegisterDetails, RegisterDetails } from "@models/data/RegisterDetails";
 import { RecaptchaState } from "@shared/form/form.component";
 import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -22,8 +16,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./register.schema.json";
 
 @Component({
-    selector: "baw-authentication-register",
-    template: `
+  selector: "baw-authentication-register",
+  template: `
     <baw-form
       title="Register"
       size="small"
@@ -35,12 +29,9 @@ import schema from "./register.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
-class RegisterComponent
-  extends FormTemplate<RegisterDetails>
-  implements OnInit
-{
+class RegisterComponent extends FormTemplate<RegisterDetails> implements OnInit {
   public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
@@ -50,7 +41,7 @@ class RegisterComponent
     private accountsApi: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       hasFormCheck: false,
@@ -86,18 +77,16 @@ class RegisterComponent
   }
 
   protected apiAction(model: IRegisterDetails) {
-    const signUpObservable = this.securityApi
-      .signUp(new RegisterDetails(model))
-      .pipe(
-        map(() => {
-          firstValueFrom(
-            this.accountsApi.updateContactableConcent(
-              this.session.currentUser.id,
-              model.contactable ? UserConcent.yes : UserConcent.no
-            )
-          );
-        })
-      );
+    const signUpObservable = this.securityApi.signUp(new RegisterDetails(model)).pipe(
+      map(() => {
+        firstValueFrom(
+          this.accountsApi.updateContactableConcent(
+            this.session.currentUser.id,
+            model.contactable ? UserConcent.yes : UserConcent.no,
+          ),
+        );
+      }),
+    );
 
     return signUpObservable;
   }

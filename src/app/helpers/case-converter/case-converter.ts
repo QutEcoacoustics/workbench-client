@@ -13,11 +13,7 @@ import allowList from "./allow-list.json";
  * @param callback to convert key.
  * @return converted object
  */
-const convertCase = (
-  oldObject: any,
-  callback: (callbackVal?: string) => string,
-  convertValue?: boolean
-): any => {
+const convertCase = (oldObject: any, callback: (callbackVal?: string) => string, convertValue?: boolean): any => {
   let newObject: any;
 
   // Prevent conversion of periods (.)
@@ -28,19 +24,13 @@ const convertCase = (
       .join(".");
   }
 
-  if (
-    !oldObject ||
-    typeof oldObject !== "object" ||
-    !Object.keys(oldObject).length
-  ) {
+  if (!oldObject || typeof oldObject !== "object" || !Object.keys(oldObject).length) {
     // Change object value
     return convertValue ? converterFn(oldObject) : oldObject;
   }
 
   if (Array.isArray(oldObject)) {
-    newObject = oldObject.map((element) =>
-      convertCase(element, callback, convertValue)
-    );
+    newObject = oldObject.map((element) => convertCase(element, callback, convertValue));
   } else {
     newObject = {};
 
@@ -52,9 +42,7 @@ const convertCase = (
     // Change object keys
     Object.keys(oldObject).forEach((oldKey) => {
       const newKey = converterFn(oldKey);
-      const allowedKeys =
-        convertValue ||
-        allowList.keys.some((key) => key === newKey || key === oldKey);
+      const allowedKeys = convertValue || allowList.keys.some((key) => key === newKey || key === oldKey);
 
       // knowledge on how to simplify an object using an objects implementation of toJSON is lost after case conversion
       // therefore, all values that can be simplified through toJSON implementations should be actioned
@@ -64,7 +52,7 @@ const convertCase = (
       const simplifiedOldObject = implementsToJSON ? oldObjectValue.toJSON() : oldObjectValue;
 
       const convertedCase = convertCase(simplifiedOldObject, callback, allowedKeys);
-      newObject[newKey] = convertedCase
+      newObject[newKey] = convertedCase;
     });
   }
 
@@ -80,12 +68,12 @@ const convertCase = (
 type ToCamelCase<T> = T extends `${infer A}_${infer B}`
   ? `${Uncapitalize<A>}${Capitalize<ToCamelCase<B>>}`
   : T extends string
-  ? Uncapitalize<T>
-  : T extends (infer A)[]
-  ? ToCamelCase<A>[]
-  : T extends object
-  ? { [K in keyof T as ToCamelCase<K>]: T[K] }
-  : T;
+    ? Uncapitalize<T>
+    : T extends (infer A)[]
+      ? ToCamelCase<A>[]
+      : T extends object
+        ? { [K in keyof T as ToCamelCase<K>]: T[K] }
+        : T;
 
 /**
  * Convert camel case text into snake case
@@ -98,28 +86,26 @@ type ToSnakeCase<T> = T extends `${infer A}${infer B}${infer C}`
     ? `${A}_${Lowercase<B>}${ToSnakeCase<C>}`
     : `${Lowercase<A>}${ToSnakeCase<`${B}${C}`>}`
   : T extends string
-  ? Lowercase<T>
-  : T extends (infer A)[]
-  ? ToSnakeCase<A>[]
-  : T extends object
-  ? { [K in keyof T as ToSnakeCase<K>]: T[K] }
-  : T;
+    ? Lowercase<T>
+    : T extends (infer A)[]
+      ? ToSnakeCase<A>[]
+      : T extends object
+        ? { [K in keyof T as ToSnakeCase<K>]: T[K] }
+        : T;
 
 /**
  * Convert object to camelCase
  *
  * @param obj Object to convert
  */
-export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
-  convertCase(obj, camelCase);
+export const toCamelCase = <T>(obj: T): ToCamelCase<T> => convertCase(obj, camelCase);
 
 /**
  * Convert object to snake_case
  *
  * @param obj Object to convert
  */
-export const toSnakeCase = <T>(obj: T): ToSnakeCase<T> =>
-  convertCase(obj, snakeCase);
+export const toSnakeCase = <T>(obj: T): ToSnakeCase<T> => convertCase(obj, snakeCase);
 
 // TODO Type this function similar to camel and snake case
 export function titleCase(str: string): string {

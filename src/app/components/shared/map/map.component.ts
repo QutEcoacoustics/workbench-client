@@ -1,19 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { GoogleMap, MapAnchorPoint, MapInfoWindow, MapMarker } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import {
-  MapMarkerOptions,
-  MapOptions,
-  MapsService,
-} from "@services/maps/maps.service";
+import { MapMarkerOptions, MapOptions, MapsService } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { LoadingComponent } from "../loading/loading.component";
 
@@ -21,10 +9,10 @@ import { LoadingComponent } from "../loading/loading.component";
  * Google Maps Wrapper Component
  */
 @Component({
-    selector: "baw-map",
-    templateUrl: "./map.component.html",
-    styleUrl: "./map.component.scss",
-    imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent]
+  selector: "baw-map",
+  templateUrl: "./map.component.html",
+  styleUrl: "./map.component.scss",
+  imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   public constructor(private mapService: MapsService) {
@@ -113,18 +101,13 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
  * @param marker Marker to validate
  */
 function isMarkerValid(marker: MapMarkerOptions): boolean {
-  return (
-    typeof marker?.position?.lat === "number" &&
-    typeof marker?.position?.lng === "number"
-  );
+  return typeof marker?.position?.lat === "number" && typeof marker?.position?.lng === "number";
 }
 
 /**
  * Handles sanitization of map markers so change detection will run properly
  */
-export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
-): List<MapMarkerOptions> {
+export function sanitizeMapMarkers(markers: MapMarkerOptions | MapMarkerOptions[]): List<MapMarkerOptions> {
   const output: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {

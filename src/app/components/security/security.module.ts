@@ -20,7 +20,7 @@ const components = [
 const routes = securityRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components],
-    exports: [RouterModule, ...components],
+  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  exports: [RouterModule, ...components],
 })
 export class SecurityModule {}

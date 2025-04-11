@@ -13,9 +13,9 @@ import { switchMap, takeUntil } from "rxjs/operators";
 import { MapComponent } from "../../../shared/map/map.component";
 
 @Component({
-    selector: "baw-site-map",
-    template: '<baw-map [markers]="markers"></baw-map>',
-    imports: [MapComponent]
+  selector: "baw-site-map",
+  template: '<baw-map [markers]="markers"></baw-map>',
+  imports: [MapComponent],
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // TODO Implement system to change colour of selected sites
@@ -54,11 +54,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     this.pushMarkers(this.sitesSubset ?? []);
   }
 
-  private getFilter(
-    filters: Filters<ISite>,
-    project: Project,
-    region?: Region,
-  ): Observable<Site[]> {
+  private getFilter(filters: Filters<ISite>, project: Project, region?: Region): Observable<Site[]> {
     return this.region
       ? this.sitesApi.filterByRegion(filters, project, region)
       : this.sitesApi.filter(filters, project);
@@ -73,9 +69,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
-      observables.push(
-        this.getFilter({ paging: { page } }, this.project, this.region),
-      );
+      observables.push(this.getFilter({ paging: { page } }, this.project, this.region));
     }
 
     this.pushMarkers(sites);
@@ -86,8 +80,6 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * Push new sites to markers list
    */
   private pushMarkers(sites: Site[]): void {
-    this.markers = this.markers.concat(
-      sanitizeMapMarkers(sites.map((site) => site.getMapMarker())),
-    );
+    this.markers = this.markers.concat(sanitizeMapMarkers(sites.map((site) => site.getMapMarker())));
   }
 }

@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { Observable } from "rxjs";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -30,21 +23,18 @@ interface CanPredicate {
  * ```
  */
 @Component({
-    selector: "baw-can",
-    template: `
-    <span
-      #contentWrapper
-      [ngbTooltip]="session.isLoggedIn ? null : 'You must be logged in'"
-    >
+  selector: "baw-can",
+  template: `
+    <span #contentWrapper [ngbTooltip]="session.isLoggedIn ? null : 'You must be logged in'">
       <ng-content></ng-content>
     </span>
   `,
-    imports: [NgbTooltip]
+  imports: [NgbTooltip],
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
   public constructor(
     public session: BawSessionService,
-    public elementRef: ElementRef
+    public elementRef: ElementRef,
   ) {}
 
   @Input()

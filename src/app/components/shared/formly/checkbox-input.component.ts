@@ -8,8 +8,8 @@ import { asFormControl } from "./helper";
  * ! Warning, test manually after changes
  */
 @Component({
-    selector: "baw-checkbox-input",
-    template: `
+  selector: "baw-checkbox-input",
+  template: `
     <div class="custom-control custom-checkbox ps-2">
       <input
         type="checkbox"
@@ -21,8 +21,8 @@ import { asFormControl } from "./helper";
       <label class="custom-control-label" [for]="id + '-checkbox'"></label>
     </div>
   `,
-    styleUrl: "checkbox-input.component.scss",
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule]
+  styleUrl: "checkbox-input.component.scss",
+  imports: [FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class CheckboxInputComponent extends FieldType {
   public asFormControl = asFormControl;

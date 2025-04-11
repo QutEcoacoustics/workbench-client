@@ -45,11 +45,7 @@ export function assertDetail(detail: Detail) {
 // Group of functions handling asserting the various types of detail views
 //
 
-function assertValue(
-  detail: View,
-  index: number,
-  views: NodeListOf<HTMLDListElement>
-) {
+function assertValue(detail: View, index: number, views: NodeListOf<HTMLDListElement>) {
   if (isInstantiated(detail.checkbox)) {
     assertCheckbox(views[index], detail.checkbox);
   } else if (isInstantiated(detail.code)) {
@@ -81,10 +77,7 @@ function assertCode(view: HTMLDListElement, value: Record<string, any>) {
   expect(code.innerText).toContain(JSON.stringify(value, null, 4));
 }
 
-function assertPlainText(
-  view: HTMLDListElement,
-  value: string | number | DateTime | Duration
-) {
+function assertPlainText(view: HTMLDListElement, value: string | number | DateTime | Duration) {
   const plainText: HTMLElement = view.querySelector("#plain");
   const result = value.toString();
 
@@ -117,11 +110,7 @@ function assertImages(view: HTMLDListElement, value: string | ImageUrl[]) {
   });
 }
 
-function assertChildren(
-  index: number,
-  views: NodeListOf<HTMLDListElement>,
-  values: View[]
-) {
+function assertChildren(index: number, views: NodeListOf<HTMLDListElement>, values: View[]) {
   values.forEach((value, childNo) => {
     assertValue(value, index + childNo, views);
   });

@@ -4,10 +4,7 @@
 import "zone.js/testing";
 
 import { getTestBed } from "@angular/core/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from "@angular/platform-browser-dynamic/testing";
 import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
@@ -36,7 +33,4 @@ beforeEach(function () {
 });
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
-);
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

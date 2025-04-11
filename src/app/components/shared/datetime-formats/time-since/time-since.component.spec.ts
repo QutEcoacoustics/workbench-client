@@ -22,7 +22,7 @@ function test(
   value: Duration | Date | DateTime,
   expectedText: string,
   expectedTooltip: string,
-  expectedDateTimeAttribute: string
+  expectedDateTimeAttribute: string,
 ): TestCase {
   return {
     name,
@@ -172,9 +172,7 @@ describe("TimeSince", () => {
         });
 
         it("should have the correct dateTime attribute", () => {
-          expect(timeElement().dateTime).toBe(
-            testCase.expectedDateTimeAttribute
-          );
+          expect(timeElement().dateTime).toBe(testCase.expectedDateTimeAttribute);
         });
       });
     });

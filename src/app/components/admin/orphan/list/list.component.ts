@@ -15,14 +15,17 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 @Component({
-    selector: "baw-admin-orphans",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-admin-orphans",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
-class AdminOrphansComponent
-  extends PagedTableTemplate<TableRow, Site>
-  implements OnInit
-{
+class AdminOrphansComponent extends PagedTableTemplate<TableRow, Site> implements OnInit {
   public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor(api: ShallowSitesService) {
@@ -31,7 +34,7 @@ class AdminOrphansComponent
         id: site.id,
         site: site.name,
         model: site,
-      }))
+      })),
     );
 
     this.filterKey = "name";
