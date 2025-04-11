@@ -10,11 +10,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { MapComponent } from "@shared/map/map.component";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -58,24 +54,20 @@ describe("SiteComponent", () => {
 
   function interceptEventsRequest(
     audioEvents: Errorable<AudioEvent[]> = [],
-    expectation: FilterExpectations<AudioEvent> = () => {}
+    expectation: FilterExpectations<AudioEvent> = () => {},
   ) {
     const subject = new Subject<AudioEvent[]>();
     eventsApi.filterBySite.andCallFake((filters) => {
       expectation(filters);
       return subject;
     });
-    return nStepObservable(
-      subject,
-      () => audioEvents,
-      isInstantiated(audioEvents["status"])
-    );
+    return nStepObservable(subject, () => audioEvents, isInstantiated(audioEvents["status"]));
   }
 
   function interceptRecordingsRequest(
     recordings: Errorable<AudioRecording[]> = [],
     newExpectation: FilterExpectations<AudioRecording> = () => {},
-    oldExpectation: FilterExpectations<AudioRecording> = () => {}
+    oldExpectation: FilterExpectations<AudioRecording> = () => {},
   ) {
     const subject = new Subject<AudioRecording[]>();
 
@@ -89,18 +81,12 @@ describe("SiteComponent", () => {
       return subject;
     });
 
-    return nStepObservable(
-      subject,
-      () => recordings,
-      isInstantiated(recordings["status"])
-    );
+    return nStepObservable(subject, () => recordings, isInstantiated(recordings["status"]));
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
-    defaultSite = new Site(
-      generateSite({ imageUrls: [modelData.imageUrls()[0]] })
-    );
+    defaultSite = new Site(generateSite({ imageUrls: [modelData.imageUrls()[0]] }));
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
@@ -132,10 +118,9 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      expect(image).toHaveImage(
-        `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
-        { alt: `${site.name} image` }
-      );
+      expect(image).toHaveImage(`${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`, {
+        alt: `${site.name} image`,
+      });
     });
 
     it("should display custom site image", () => {
@@ -271,24 +256,18 @@ describe("SiteComponent", () => {
           dates: true,
         },
       ].forEach((test) => {
-        it(`should ${test.placeholder ? "" : "not "}display placeholder if ${
-          test.label
-        }`, async () => {
+        it(`should ${test.placeholder ? "" : "not "}display placeholder if ${test.label}`, async () => {
           await setupRecordings(test.recordings());
           const placeholder = getPlaceholderDescription();
           if (test.placeholder) {
             expect(placeholder).toBeTruthy();
-            expect(placeholder).toHaveText(
-              "This site does not contain any audio recordings."
-            );
+            expect(placeholder).toHaveText("This site does not contain any audio recordings.");
           } else {
             expect(placeholder).toBeFalsy();
           }
         });
 
-        it(`should ${test.error ? "" : "not "}display error message if ${
-          test.label
-        }`, async () => {
+        it(`should ${test.error ? "" : "not "}display error message if ${test.label}`, async () => {
           await setupRecordings(test.recordings());
           const placeholder = getErrorDescription();
           if (test.error) {
@@ -299,9 +278,7 @@ describe("SiteComponent", () => {
           }
         });
 
-        it(`should ${test.dates ? "" : "not "}display recording dates if ${
-          test.label
-        }`, async () => {
+        it(`should ${test.dates ? "" : "not "}display recording dates if ${test.label}`, async () => {
           await setupRecordings(test.recordings());
           const dates = getRecordingDates();
           if (test.dates) {

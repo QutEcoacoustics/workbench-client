@@ -4,11 +4,7 @@ import { regionMenuItem } from "@components/regions/regions.menus";
 import { siteMenuItem } from "@components/sites/sites.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { isWorkInProgressPredicate } from "src/app/app.menus";
-import {
-  ReportRoute,
-  newEventReportRoute,
-  eventReportRoute,
-} from "./reports.routes";
+import { ReportRoute, newEventReportRoute, eventReportRoute } from "./reports.routes";
 
 export type ReportMenuRoutes = Record<ReportRoute, MenuRoute>;
 
@@ -28,10 +24,7 @@ function makeNewReportCategory(subRoute: ReportRoute): Category {
   };
 }
 
-function makeViewEventReportMenuItem(
-  subRoute: ReportRoute,
-  parent?: MenuRoute
-): MenuRoute {
+function makeViewEventReportMenuItem(subRoute: ReportRoute, parent?: MenuRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-lines"],
     label: "Event Summary Report",
@@ -42,10 +35,7 @@ function makeViewEventReportMenuItem(
   });
 }
 
-function makeNewEventReportMenuItem(
-  subRoute: ReportRoute,
-  parent?: MenuRoute
-): MenuRoute {
+function makeNewEventReportMenuItem(subRoute: ReportRoute, parent?: MenuRoute): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-circle-plus"],
     label: "New Event Summary Report",
@@ -71,7 +61,7 @@ const newReportMenuItem: ReportMenuRoutes = {
   /** /project/:projectId/site/:siteId/reports/event-summary/new */
   site: makeNewEventReportMenuItem("site", siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary/new */
-  siteAndRegion: makeNewEventReportMenuItem("siteAndRegion",pointMenuItem),
+  siteAndRegion: makeNewEventReportMenuItem("siteAndRegion", pointMenuItem),
   /** /project/:projectId/region/:regionId/reports/event-summary/new */
   region: makeNewEventReportMenuItem("region", regionMenuItem),
   /** /project/:projectId/reports/event-summary/new */

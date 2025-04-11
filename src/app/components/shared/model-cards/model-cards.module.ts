@@ -13,15 +13,16 @@ import { CardsComponent } from "./cards/cards.component";
  * Cards Module
  */
 @NgModule({
-    imports: [
+  imports: [
     CommonModule,
     RouterModule,
     DirectivesModule,
     IconsModule,
     NgbTooltipModule,
     PipesModule,
-    CardsComponent, CardComponent,
-],
-    exports: [CardsComponent],
+    CardsComponent,
+    CardComponent,
+  ],
+  exports: [CardsComponent],
 })
 export class ModelCardsModule {}

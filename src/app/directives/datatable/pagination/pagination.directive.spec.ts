@@ -19,15 +19,9 @@ describe("DatatablePaginationDirective", () => {
   let defaultModels: MockModel[];
   let spec: SpectatorDirective<DatatablePaginationDirective<MockModel>>;
 
-  const createDirective = createDirectiveFactory<
-    DatatablePaginationDirective<MockModel>
-  >({
+  const createDirective = createDirectiveFactory<DatatablePaginationDirective<MockModel>>({
     directive: DatatablePaginationDirective,
-    declarations: [
-      DataTableColumnDirective,
-      DatatableDefaultsDirective,
-      DatatableSortKeyDirective,
-    ],
+    declarations: [DataTableColumnDirective, DatatableDefaultsDirective, DatatableSortKeyDirective],
     imports: [NgxDatatableModule],
   });
 
@@ -35,7 +29,7 @@ describe("DatatablePaginationDirective", () => {
     modelOpts: {
       numModels: number;
       totalModels?: number;
-    } = { numModels: 1 }
+    } = { numModels: 1 },
   ): void {
     const models: MockModel[] = [];
     for (let i = 0; i < modelOpts.numModels; i++) {
@@ -56,7 +50,7 @@ describe("DatatablePaginationDirective", () => {
   function setup(
     props: Partial<DatatablePaginationDirective<MockModel>>,
     columns: { prop: string; sortKey?: string }[] = [{ prop: "id" }],
-    detectChanges: boolean = true
+    detectChanges: boolean = true,
   ): void {
     const columnsHtml = columns
       .map(
@@ -64,7 +58,7 @@ describe("DatatablePaginationDirective", () => {
           `<ngx-datatable-column
             prop="${column.prop}"
             ${column.sortKey ? `sortKey="${column.sortKey}"` : ""}
-          ></ngx-datatable-column>`
+          ></ngx-datatable-column>`,
       )
       .join("");
 
@@ -75,7 +69,7 @@ describe("DatatablePaginationDirective", () => {
         [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
       >${columnsHtml}</ngx-datatable>
     `,
-      { hostProps: props, detectChanges }
+      { hostProps: props, detectChanges },
     );
   }
 
@@ -89,9 +83,7 @@ describe("DatatablePaginationDirective", () => {
   }
 
   function getRowValues(row: number): HTMLElement[] {
-    return spec.queryAll(
-      `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
-    );
+    return spec.queryAll(`datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`);
   }
 
   function setPage(page: number) {
@@ -119,10 +111,7 @@ describe("DatatablePaginationDirective", () => {
 
     it("should output model as row in a multi column datatable", () => {
       generateModels({ numModels: 3 });
-      setup({ filters: {}, getModels: getModels() }, [
-        { prop: "id" },
-        { prop: "name" },
-      ]);
+      setup({ filters: {}, getModels: getModels() }, [{ prop: "id" }, { prop: "name" }]);
       const rows = getRows();
       expect(rows).toHaveLength(3);
 
@@ -297,7 +286,7 @@ describe("DatatablePaginationDirective", () => {
           ></ngx-datatable-column>
         </ngx-datatable>
       `,
-        { hostProps: { filters: {}, getModels: getModels() } }
+        { hostProps: { filters: {}, getModels: getModels() } },
       );
       sortColumn(0);
       assertSort("sortKey");
@@ -314,7 +303,7 @@ describe("DatatablePaginationDirective", () => {
           <ngx-datatable-column prop="id"></ngx-datatable-column>
         </ngx-datatable>
       `,
-        { hostProps: { filters: {}, getModels: getModels() } }
+        { hostProps: { filters: {}, getModels: getModels() } },
       );
       sortColumn(0);
       assertSort("id");
@@ -336,7 +325,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ prop: "id" }],
           },
-        }
+        },
       );
       sortColumn(0);
       assertSort("id");
@@ -358,7 +347,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ name: "Id" }],
           },
-        }
+        },
       );
       sortColumn(0);
       assertSort("id");
@@ -380,7 +369,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ name: "Id", sortKey: "sortKey" }],
           },
-        }
+        },
       );
       sortColumn(0);
       assertSort("sortKey");

@@ -165,7 +165,7 @@ conversionCallbacks.forEach((test: IConversionCallback) => {
     });
 
     it("should call toJSON on simple objects that implement toJSON", () => {
-    const before = {
+      const before = {
         field_one: "content one",
         "field-two": "content two",
         toJSON: () => "toJsonResult",
@@ -256,10 +256,7 @@ conversionCallbacks.forEach((test: IConversionCallback) => {
           toJSON: () => "toJsonResult",
         },
       ];
-      const expected = [
-        { [fieldOne]: "content one one", [fieldTwo]: "content two two" },
-        "toJsonResult",
-      ];
+      const expected = [{ [fieldOne]: "content one one", [fieldTwo]: "content two two" }, "toJsonResult"];
 
       const result = test.callback(before);
       expect(expected).toEqual(result);
@@ -281,10 +278,7 @@ conversionCallbacks.forEach((test: IConversionCallback) => {
           },
         ],
       ];
-      const expected = [
-        ["toJsonResult"],
-        [{ [fieldOne]: "content two one", [fieldTwo]: "content two two" }],
-      ];
+      const expected = [["toJsonResult"], [{ [fieldOne]: "content two one", [fieldTwo]: "content two two" }]];
 
       const result = test.callback(before);
       expect(expected).toEqual(result);

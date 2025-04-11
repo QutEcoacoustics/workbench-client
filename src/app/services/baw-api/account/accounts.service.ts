@@ -8,15 +8,7 @@ import { catchError } from "rxjs/operators";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id, UserConcent } from "@interfaces/apiInterfaces";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  option,
-  StandardApi,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, option, StandardApi } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -56,17 +48,12 @@ export class AccountsService implements StandardApi<User> {
           default:
             return throwError(() => err);
         }
-      })
+      }),
     );
   }
 
   public create(model: User): Observable<User> {
-    return this.api.create(
-      User,
-      endpoint(emptyParam, emptyParam),
-      (user) => endpoint(user, emptyParam),
-      model
-    );
+    return this.api.create(User, endpoint(emptyParam, emptyParam), (user) => endpoint(user, emptyParam), model);
   }
 
   public update(model: User): Observable<User> {
@@ -90,7 +77,4 @@ export class AccountsService implements StandardApi<User> {
   }
 }
 
-export const accountResolvers = new Resolvers<User, []>(
-  [AccountsService],
-  "accountId"
-).create("Account");
+export const accountResolvers = new Resolvers<User, []>([AccountsService], "accountId").create("Account");

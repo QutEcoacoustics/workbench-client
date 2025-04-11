@@ -8,8 +8,8 @@ xdescribe("ModelLinkComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [ModelLinkComponent],
-}).compileComponents();
+      imports: [ModelLinkComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

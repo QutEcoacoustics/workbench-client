@@ -54,7 +54,7 @@ describe("AnalysisJobComponent", () => {
 
   assertPagination<AnalysisJob, AnalysisJobsService>();
 
-  assertPageInfo(AdminAnalysisJobsComponent, "Analysis Jobs")
+  assertPageInfo(AdminAnalysisJobsComponent, "Analysis Jobs");
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(AdminAnalysisJobsComponent);

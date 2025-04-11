@@ -38,17 +38,9 @@
 ///   name and begin with a `-`
 /// @param {percentage} $lightness - Lightness value of the colour
 @mixin create-variant($property, $variant, $lightness) {
-  --baw-#{$property}#{$variant}: hsl(
-    var(--baw-#{$property}-hue),
-    var(--baw-#{$property}-saturation),
-    #{$lightness}
-  );
-  --baw-#{$property}#{$variant}-hsl: var(--baw-#{$property}-hue),
-    var(--baw-#{$property}-saturation), #{$lightness};
-  --baw-#{$property}#{$variant}-contrast: #{contrast(
-      #{$lightness},
-      var(--baw-contrast-threshold)
-    )};
+  --baw-#{$property}#{$variant}: hsl(var(--baw-#{$property}-hue), var(--baw-#{$property}-saturation), #{$lightness});
+  --baw-#{$property}#{$variant}-hsl: var(--baw-#{$property}-hue), var(--baw-#{$property}-saturation), #{$lightness};
+  --baw-#{$property}#{$variant}-contrast: #{contrast(#{$lightness}, var(--baw-contrast-threshold))};
 }
 
 /// Create a mix of color options for a specific property
@@ -73,27 +65,11 @@
 
   @include create-variant($property, "", var(--baw-#{$property}-lightness));
 
-  @include create-variant(
-    $property,
-    "-lighter",
-    lighten(var(--baw-#{$property}-lightness), #{$lighter-offset})
-  );
+  @include create-variant($property, "-lighter", lighten(var(--baw-#{$property}-lightness), #{$lighter-offset}));
 
-  @include create-variant(
-    $property,
-    "-lightest",
-    lighten(var(--baw-#{$property}-lightness), #{$lightest-offset})
-  );
+  @include create-variant($property, "-lightest", lighten(var(--baw-#{$property}-lightness), #{$lightest-offset}));
 
-  @include create-variant(
-    $property,
-    "-darker",
-    darken(var(--baw-#{$property}-lightness), #{$darker-offset})
-  );
+  @include create-variant($property, "-darker", darken(var(--baw-#{$property}-lightness), #{$darker-offset}));
 
-  @include create-variant(
-    $property,
-    "-darkest",
-    darken(var(--baw-#{$property}-lightness), #{$darkest-offset})
-  );
+  @include create-variant($property, "-darkest", darken(var(--baw-#{$property}-lightness), #{$darkest-offset}));
 }

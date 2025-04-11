@@ -8,15 +8,12 @@ import { RecaptchaState } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "../shared/form/form.component";
-import {
-  reportProblemMenuItem,
-  reportProblemsCategory,
-} from "./report-problem.menus";
+import { reportProblemMenuItem, reportProblemsCategory } from "./report-problem.menus";
 import schema from "./report-problem.schema.json";
 
 @Component({
-    selector: "baw-report-problem",
-    template: `
+  selector: "baw-report-problem",
+  template: `
     <baw-form
       title="Report Problem"
       submitLabel="Submit"
@@ -32,12 +29,9 @@ import schema from "./report-problem.schema.json";
       </span>
     </baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
-class ReportProblemComponent
-  extends FormTemplate<ReportProblem>
-  implements OnInit
-{
+class ReportProblemComponent extends FormTemplate<ReportProblem> implements OnInit {
   public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public sourceRepoLink: string;
@@ -47,7 +41,7 @@ class ReportProblemComponent
     private config: ConfigService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: () =>
@@ -64,8 +58,7 @@ class ReportProblemComponent
       .seed()
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        next: ({ seed, action }) =>
-          (this.recaptchaSeed = { state: "loaded", seed, action }),
+        next: ({ seed, action }) => (this.recaptchaSeed = { state: "loaded", seed, action }),
         error: (err) => {
           console.error(err);
           this.notifications.error("Failed to load form");

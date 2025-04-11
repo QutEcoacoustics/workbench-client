@@ -31,9 +31,16 @@ export const adminTagGroupMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-admin-tag-groups-list",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, StrongRouteDirective, DeleteModalComponent, ErrorHandlerComponent]
+  selector: "baw-admin-tag-groups-list",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    StrongRouteDirective,
+    DeleteModalComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
@@ -50,7 +57,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
         tag: tagGroup.tagId,
         group: tagGroup.groupIdentifier,
         model: tagGroup,
-      }))
+      })),
     );
 
     this.filterKey = "groupIdentifier";
@@ -61,7 +68,8 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
     const userConfirmed = await modal.result.catch((_) => false);
 
     if (userConfirmed) {
-      this.tagGroupsApi.destroy(tagModel)
+      this.tagGroupsApi
+        .destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
           complete: () => this.notifications.success(defaultSuccessMsg("destroyed", this.tagModel?.groupIdentifier)),

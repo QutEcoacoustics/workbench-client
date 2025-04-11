@@ -7,15 +7,11 @@ import { AdminTagsComponent } from "./list/list.component";
 import { AdminTagsNewComponent } from "./new/new.component";
 import { adminTagsRoute } from "./tags.menus";
 
-const components = [
-  AdminTagsComponent,
-  AdminTagsEditComponent,
-  AdminTagsNewComponent,
-];
+const components = [AdminTagsComponent, AdminTagsEditComponent, AdminTagsNewComponent];
 const routes = adminTagsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components],
-    exports: [RouterModule, ...components],
+  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  exports: [RouterModule, ...components],
 })
 export class TagsModule {}

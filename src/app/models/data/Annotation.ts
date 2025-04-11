@@ -58,16 +58,12 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public get listenViewUrl(): string {
     return listenRecordingMenuItem.route.format(
       { audioRecordingId: this.audioRecordingId },
-      { start: this.startTimeSeconds, padding: 10 }
+      { start: this.startTimeSeconds, padding: 10 },
     );
   }
 
   public get audioLink(): string {
-    return this.mediaService.createMediaUrl(
-      this.audioRecording,
-      this.startTimeSeconds,
-      this.endTimeSeconds
-    );
+    return this.mediaService.createMediaUrl(this.audioRecording, this.startTimeSeconds, this.endTimeSeconds);
   }
 
   public contextUrl(contextSize: number): string {

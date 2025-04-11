@@ -95,7 +95,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     private eventImportsApi: AudioEventImportService,
     private eventImportFileApi: AudioEventImportFileService,
     private notifications: ToastService,
-    private router: Router
+    private router: Router,
   ) {
     super();
   }
@@ -145,9 +145,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   }
 
   // used to fetch all previously imported events for the events ngx-datatable
-  protected getEventModels = (
-    filters: Filters<AudioEvent>
-  ): Observable<AudioEvent[]> => {
+  protected getEventModels = (filters: Filters<AudioEvent>): Observable<AudioEvent[]> => {
     const eventImportFilters: Filters<AudioEvent> = {
       filter: {
         "audio_event_imports.id": {
@@ -160,9 +158,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     return this.eventsApi.filter(eventImportFilters);
   };
 
-  protected getFileModels = (
-    filters: Filters<AudioEventImportFile>
-  ): Observable<AudioEventImportFile[]> => {
+  protected getFileModels = (filters: Filters<AudioEventImportFile>): Observable<AudioEventImportFile[]> => {
     return this.eventImportFileApi.filter(filters, this.audioEventImport);
   };
 
@@ -172,12 +168,8 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(
-            defaultSuccessMsg("destroyed", this.audioEventImport.name)
-          );
-          this.router.navigateByUrl(
-            annotationsImportMenuItem.route.toRouterLink()
-          );
+          this.notifications.success(defaultSuccessMsg("destroyed", this.audioEventImport.name));
+          this.router.navigateByUrl(annotationsImportMenuItem.route.toRouterLink());
         },
       });
   }

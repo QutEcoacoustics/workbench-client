@@ -220,5 +220,5 @@ jobs:
 
     uses: ./.github/workflows/publish.yml
     with:
-      release_tag: 'beta'
+      release_tag: "beta"
     secrets: inherit

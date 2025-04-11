@@ -10,8 +10,8 @@ import { TimeSinceComponent } from "../../../shared/datetime-formats/time-since/
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-recent-annotations",
-    template: `
+  selector: "baw-recent-annotations",
+  template: `
     <h2>Recent Annotations</h2>
 
     <ngx-datatable
@@ -31,9 +31,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
           </ng-template>
 
           <ng-template let-value="value" ngx-datatable-cell-template>
-            @if (
-              (value.audioRecording | isUnresolved) ||
-              (value.audioRecording?.site | isUnresolved)) {
+            @if ((value.audioRecording | isUnresolved) || (value.audioRecording?.site | isUnresolved)) {
               <baw-loading size="sm"></baw-loading>
             } @else {
               <span>
@@ -99,34 +97,24 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </ngx-datatable-column>
 
       <!-- Actions -->
-      <ngx-datatable-column
-        name="Model"
-        [width]="175"
-        [maxWidth]="175"
-        [sortable]="false"
-      >
-        <ng-template let-column="column" ngx-datatable-header-template>
-        </ng-template>
+      <ngx-datatable-column name="Model" [width]="175" [maxWidth]="175" [sortable]="false">
+        <ng-template let-column="column" ngx-datatable-header-template> </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <a
-            id="playBtn"
-            class="btn btn-sm btn-primary me-2"
-            [bawUrl]="value.listenViewUrl"
-          >
-            Play
-          </a>
-          <a
-            id="annotationBtn"
-            class="btn btn-sm btn-secondary"
-            [bawUrl]="value.annotationViewUrl"
-          >
-            Annotation
-          </a>
+          <a id="playBtn" class="btn btn-sm btn-primary me-2" [bawUrl]="value.listenViewUrl"> Play </a>
+          <a id="annotationBtn" class="btn btn-sm btn-secondary" [bawUrl]="value.annotationViewUrl"> Annotation </a>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, FaIconComponent, LoadingComponent, UrlDirective, TimeSinceComponent, IsUnresolvedPipe]
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FaIconComponent,
+    LoadingComponent,
+    UrlDirective,
+    TimeSinceComponent,
+    IsUnresolvedPipe,
+  ],
 })
 export class RecentAnnotationsComponent implements OnChanges {
   @Input() public annotations!: AudioEvent[] | undefined;
@@ -139,13 +127,7 @@ export class RecentAnnotationsComponent implements OnChanges {
 
   public ngOnChanges(): void {
     if (!this.columns) {
-      this.columns = [
-        { name: "Site" },
-        { name: "User" },
-        { name: "Tags" },
-        { name: "Updated" },
-        { name: "Model" },
-      ];
+      this.columns = [{ name: "Site" }, { name: "User" }, { name: "Tags" }, { name: "Updated" }, { name: "Model" }];
     }
 
     this.rows = (this.annotations ?? []).map((recording) => ({

@@ -1,9 +1,5 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import {
-  defaultEditIcon,
-  defaultNewIcon,
-  isAdminPredicate,
-} from "src/app/app.menus";
+import { defaultEditIcon, defaultNewIcon, isAdminPredicate } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { adminDashboardMenuItem, adminRoute } from "../admin.menus";
 

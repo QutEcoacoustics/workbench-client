@@ -21,10 +21,7 @@ export interface IWebsiteStatus {
   batchAnalysis: BatchAnalysisStatus | undefined;
 }
 
-export class WebsiteStatus
-  extends AbstractModelWithoutId<Partial<IWebsiteStatus>>
-  implements IWebsiteStatus
-{
+export class WebsiteStatus extends AbstractModelWithoutId<Partial<IWebsiteStatus>> implements IWebsiteStatus {
   public constructor(model: Partial<IWebsiteStatus>, injector?: AssociationInjector) {
     super(model, injector);
   }

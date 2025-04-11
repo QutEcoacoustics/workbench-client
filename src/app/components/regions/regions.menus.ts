@@ -3,17 +3,9 @@ import { RouterStateSnapshot } from "@angular/router";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { Region } from "@models/Region";
-import {
-  defaultEditIcon,
-  defaultNewIcon,
-  isProjectEditorPredicate,
-} from "src/app/app.menus";
+import { defaultEditIcon, defaultNewIcon, isProjectEditorPredicate } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
-import {
-  regionRoute,
-  regionsRoute,
-  shallowRegionsRoute,
-} from "./regions.routes";
+import { regionRoute, regionsRoute, shallowRegionsRoute } from "./regions.routes";
 
 export const shallowRegionsCategory: Category = {
   icon: ["fas", "map-signs"],
@@ -49,8 +41,7 @@ export const regionMenuItem = menuRoute({
   parent: projectMenuItem,
   route: regionRoute,
   tooltip: () => "The current site",
-  breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, Region)?.name,
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Region)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel?.region?.model?.name ?? "Unknown";

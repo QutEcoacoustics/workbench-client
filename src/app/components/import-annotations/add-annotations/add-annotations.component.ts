@@ -1,17 +1,7 @@
-import {
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild,
-  ViewChildren,
-} from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, ViewChild, ViewChildren } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import {
-  ImportedAudioEvent,
-  EventImportError,
-} from "@models/AudioEventImport/ImportedAudioEvent";
+import { ImportedAudioEvent, EventImportError } from "@models/AudioEventImport/ImportedAudioEvent";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
@@ -36,10 +26,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
+import { hasResolvedSuccessfully, retrieveResolvers } from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -47,22 +34,12 @@ import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { FormsModule } from "@angular/forms";
-import {
-  NgClass,
-  NgTemplateOutlet,
-  AsyncPipe,
-  DecimalPipe,
-} from "@angular/common";
+import { NgClass, NgTemplateOutlet, AsyncPipe, DecimalPipe } from "@angular/common";
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import {
-  VirtualDatatablePaginationDirective,
-} from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
-import {
-  addAnnotationImportMenuItem,
-  annotationsImportCategory,
-} from "../import-annotations.menu";
+import { VirtualDatatablePaginationDirective } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
+import { addAnnotationImportMenuItem, annotationsImportCategory } from "../import-annotations.menu";
 import { annotationImportRoute } from "../import-annotations.routes";
 import { FileValueAccessorDirective } from "../../shared/formly/file-input.directive";
 import { ErrorCardComponent } from "../../shared/error-card/error-card.component";
@@ -149,17 +126,14 @@ const audioEventImportKey = "audioEventImport";
     isInstantiatedPipe,
   ],
 })
-class AddAnnotationsComponent
-  extends PageComponent
-  implements OnInit, UnsavedInputCheckingComponent
-{
+class AddAnnotationsComponent extends PageComponent implements OnInit, UnsavedInputCheckingComponent {
   public constructor(
     protected tagsApi: TagsService,
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }
@@ -192,10 +166,7 @@ class AddAnnotationsComponent
   private extensionMappings = { csv: "text/csv" } as const;
 
   public get hasUnsavedChanges(): boolean {
-    return (
-      this.importState !== ImportState.NONE &&
-      this.importState !== ImportState.COMMITTED
-    );
+    return this.importState !== ImportState.NONE && this.importState !== ImportState.COMMITTED;
   }
 
   // a predicate to check if every import group is valid
@@ -239,22 +210,18 @@ class AddAnnotationsComponent
   protected getEventModels = (): Observable<TableRow[]> => {
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
-        const instantiatedFiles = files.filter((file) =>
-          isInstantiated(file.model)
-        );
+        const instantiatedFiles = files.filter((file) => isInstantiated(file.model));
 
         return instantiatedFiles.flatMap((file, fileIndex: number) => {
-          return file.model?.importedEvents.map(
-            (event: ImportedAudioEvent, eventIndex: number) => {
-              return new TableRow({
-                fileId: fileIndex + 1,
-                eventId: eventIndex + 1,
-                event,
-              });
-            }
-          );
+          return file.model?.importedEvents.map((event: ImportedAudioEvent, eventIndex: number) => {
+            return new TableRow({
+              fileId: fileIndex + 1,
+              eventId: eventIndex + 1,
+              event,
+            });
+          });
         });
-      })
+      }),
     );
   };
 
@@ -293,7 +260,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], [])
+      this.importFileToBufferedFile(file, null, [], []),
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -308,9 +275,7 @@ class AddAnnotationsComponent
     return this.importFiles$.pipe(map((files) => files.length > 0));
   }
 
-  protected hasRecordingErrors(
-    model: ImportedAudioEvent
-  ): model is ImportedAudioEvent & {
+  protected hasRecordingErrors(model: ImportedAudioEvent): model is ImportedAudioEvent & {
     errors: {
       audioRecordingId: Required<EventImportError["audioRecordingId"]>;
     };
@@ -320,10 +285,7 @@ class AddAnnotationsComponent
 
   // uses a reference to the ImportGroup object and update the additional tag
   // ids property
-  protected updateExtraTags(
-    extraTags: object[],
-    host: TypeaheadInputComponent
-  ): void {
+  protected updateExtraTags(extraTags: object[], host: TypeaheadInputComponent): void {
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
     // tags are applied
@@ -351,11 +313,7 @@ class AddAnnotationsComponent
   }
 
   protected removeBufferedFile(model: QueuedFile): void {
-    this.importFiles$.next(
-      this.importFiles$.value.filter(
-        (file: QueuedFile) => file.file !== model.file
-      )
-    );
+    this.importFiles$.next(this.importFiles$.value.filter((file: QueuedFile) => file.file !== model.file));
 
     const importedFiles = this.importFiles$.value.map((file) => file.file);
     this.updateFileInputFiles(importedFiles);
@@ -380,9 +338,7 @@ class AddAnnotationsComponent
 
     this.importState = ImportState.UPLOADING;
 
-    const fileUploadObservables = this.importFiles$.value.map(
-      (model: QueuedFile) => this.commitFile(model)
-    );
+    const fileUploadObservables = this.importFiles$.value.map((model: QueuedFile) => this.commitFile(model));
 
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
@@ -399,7 +355,7 @@ class AddAnnotationsComponent
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
               annotationId: this.audioEventImport.id,
-            })
+            }),
           );
         },
       });
@@ -409,9 +365,7 @@ class AddAnnotationsComponent
     this.importState = ImportState.UPLOADING;
 
     const models: QueuedFile[] = this.importFiles$.value;
-    const fileUploadObservables = models.map((model: QueuedFile) =>
-      this.dryRunFile(model)
-    );
+    const fileUploadObservables = models.map((model: QueuedFile) => this.dryRunFile(model));
 
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
@@ -435,10 +389,7 @@ class AddAnnotationsComponent
     return this.importFile(model, false);
   }
 
-  private importFile(
-    queueModel: QueuedFile,
-    commit: boolean
-  ): Observable<QueuedFile> {
+  private importFile(queueModel: QueuedFile, commit: boolean): Observable<QueuedFile> {
     const importFileModel = this.createAudioEventImportFile(queueModel);
     const file = queueModel.file;
 
@@ -449,17 +400,12 @@ class AddAnnotationsComponent
     return iif(
       () => commit,
       defer(() => this.api.create(importFileModel, this.audioEventImport)),
-      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport))
+      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport)),
     ).pipe(
       first(),
       map(
         (model: AudioEventImportFile): QueuedFile =>
-          this.importFileToBufferedFile(
-            file,
-            model,
-            [],
-            queueModel.additionalTagIds
-          )
+          this.importFileToBufferedFile(file, model, [], queueModel.additionalTagIds),
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
@@ -469,14 +415,9 @@ class AddAnnotationsComponent
           return throwError(() => new Error("Expected a single model"));
         }
 
-        const result = this.importFileToBufferedFile(
-          file,
-          error.data,
-          errors,
-          queueModel.additionalTagIds
-        );
+        const result = this.importFileToBufferedFile(file, error.data, errors, queueModel.additionalTagIds);
         return of(result);
-      })
+      }),
     );
   }
 
@@ -497,7 +438,7 @@ class AddAnnotationsComponent
     file: File,
     model: AudioEventImportFile,
     errors: EventImportError[],
-    additionalTagIds: Id[]
+    additionalTagIds: Id[],
   ): QueuedFile {
     return {
       additionalTagIds,
@@ -514,22 +455,15 @@ class AddAnnotationsComponent
     return new AudioEventImportFile({ file, additionalTagIds }, this.injector);
   }
 
-  private extractFileErrors(
-    file: File,
-    error: BawApiError<AudioEventImportFile>
-  ): EventImportError[] {
+  private extractFileErrors(file: File, error: BawApiError<AudioEventImportFile>): EventImportError[] {
     if (error.status === INTERNAL_SERVER_ERROR) {
-      return [
-        { [file.name]: "An unrecoverable internal server error occurred." },
-      ];
+      return [{ [file.name]: "An unrecoverable internal server error occurred." }];
     }
 
     // because we are mutating the error object (for nicer error message), I
     // create a new object so that I don't accidentally mutate the original
     // error by reference
-    const newErrors: EventImportError[] = Array.isArray(error.info)
-      ? error.info
-      : [error.info];
+    const newErrors: EventImportError[] = Array.isArray(error.info) ? error.info : [error.info];
 
     return newErrors;
   }

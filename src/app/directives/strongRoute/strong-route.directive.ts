@@ -1,12 +1,6 @@
 import { LocationStrategy } from "@angular/common";
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from "@angular/core";
-import {
-  ActivatedRoute,
-  Params,
-  Router,
-  RouterLink,
-  UrlTree,
-} from "@angular/router";
+import { ActivatedRoute, Params, Router, RouterLink, UrlTree } from "@angular/router";
 import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { isIPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -14,13 +8,11 @@ import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil, tap } from "rxjs/operators";
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: "a[strongRoute]" })
-export class StrongRouteDirective
-  extends withUnsubscribe(RouterLink)
-  implements OnInit
-{
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: "a[strongRoute]",
+})
+export class StrongRouteDirective extends withUnsubscribe(RouterLink) implements OnInit {
   @Input() public strongRoute: StrongRoute;
   /**
    * Additional route parameters to apply to the StrongRoute. By default, all
@@ -46,7 +38,7 @@ export class StrongRouteDirective
     _renderer: Renderer2,
     _route: ActivatedRoute,
     private sharedRoute: SharedActivatedRouteService,
-    _locationStrategy: LocationStrategy
+    _locationStrategy: LocationStrategy,
   ) {
     // the `null` value in this constructor is used for the tabIndexAttribute
     // since this is a generic directive, tab indexes should be set by the parent anchor element
@@ -80,7 +72,7 @@ export class StrongRouteDirective
             this.routeState.resolvedModels = resolvedModels;
           }
         }),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: () => {
@@ -108,7 +100,7 @@ export class StrongRouteDirective
           ...this.routeParams,
           ...this.queryParams,
         },
-        this.routeState.resolvedModels
+        this.routeState.resolvedModels,
       ) ?? {};
 
     // Normalize query parameters into string values which can be handled by

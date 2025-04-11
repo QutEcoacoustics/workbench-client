@@ -1,13 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  IdOr,
-  IdParamOptional,
-  StandardApi,
-  emptyParam,
-  filterParam,
-  id,
-  option,
-} from "@baw-api/api-common";
+import { IdOr, IdParamOptional, StandardApi, emptyParam, filterParam, id, option } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -29,14 +21,8 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
     return this.api.list(AudioEventImport, endpoint(emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<AudioEventImport>
-  ): Observable<AudioEventImport[]> {
-    return this.api.filter(
-      AudioEventImport,
-      endpoint(emptyParam, filterParam),
-      filters
-    );
+  public filter(filters: Filters<AudioEventImport>): Observable<AudioEventImport[]> {
+    return this.api.filter(AudioEventImport, endpoint(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<AudioEventImport>): Observable<AudioEventImport> {
@@ -48,26 +34,20 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
       AudioEventImport,
       endpoint(emptyParam, emptyParam),
       (event) => endpoint(event, emptyParam),
-      model
+      model,
     );
   }
 
   public update(model: AudioEventImport): Observable<AudioEventImport> {
-    return this.api.update(
-      AudioEventImport,
-      endpoint(model, emptyParam),
-      model
-    );
+    return this.api.update(AudioEventImport, endpoint(model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<AudioEventImport>
-  ): Observable<AudioEventImport | void> {
+  public destroy(model: IdOr<AudioEventImport>): Observable<AudioEventImport | void> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }
 
 export const audioEventImportResolvers = new Resolvers<AudioEventImport, []>(
   [AudioEventImportService],
-  "annotationId"
+  "annotationId",
 ).create("AudioEventImport");

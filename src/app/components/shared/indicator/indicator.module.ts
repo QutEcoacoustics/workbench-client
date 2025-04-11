@@ -4,7 +4,7 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { IndicatorComponent } from "./indicator.component";
 
 @NgModule({
-    imports: [CommonModule, IconsModule, IndicatorComponent],
-    exports: [IndicatorComponent],
+  imports: [CommonModule, IconsModule, IndicatorComponent],
+  exports: [IndicatorComponent],
 })
 export class IndicatorModule {}

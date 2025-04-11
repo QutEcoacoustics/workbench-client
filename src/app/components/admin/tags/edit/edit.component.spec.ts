@@ -26,33 +26,25 @@ describe("AdminTagsEditComponent", () => {
   let notifications: ToastService;
   let router: Router;
 
-  function configureTestingModule(
-    tag: Tag,
-    tagError?: BawApiError,
-    tagTypes?: TagType[],
-    tagTypesError?: BawApiError
-  ) {
+  function configureTestingModule(tag: Tag, tagError?: BawApiError, tagTypes?: TagType[], tagTypesError?: BawApiError) {
     TestBed.configureTestingModule({
-    imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-        AdminTagsEditComponent,
-    ],
-    providers: [
+      imports: [...appLibraryImports, SharedModule, RouterTestingModule, MockBawApiModule, AdminTagsEditComponent],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute({
-                tag: tagResolvers.show,
-                typeOfTags: tagResolvers.tagTypes,
-            }, {
-                tag: { model: tag, error: tagError },
-                tagTypes: { model: tagTypes, error: tagTypesError },
-            }),
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute(
+            {
+              tag: tagResolvers.show,
+              typeOfTags: tagResolvers.tagTypes,
+            },
+            {
+              tag: { model: tag, error: tagError },
+              tagTypes: { model: tagTypes, error: tagTypesError },
+            },
+          ),
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagsEditComponent);
     api = TestBed.inject(TagsService) as SpyObject<TagsService>;
@@ -87,22 +79,12 @@ describe("AdminTagsEditComponent", () => {
     });
 
     it("should handle tag error", () => {
-      configureTestingModule(
-        undefined,
-        generateBawApiError(),
-        defaultTagTypes,
-        undefined
-      );
+      configureTestingModule(undefined, generateBawApiError(), defaultTagTypes, undefined);
       assertErrorHandler(fixture);
     });
 
     it("should handle tag types error", () => {
-      configureTestingModule(
-        defaultTag,
-        undefined,
-        undefined,
-        generateBawApiError()
-      );
+      configureTestingModule(defaultTag, undefined, undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
 

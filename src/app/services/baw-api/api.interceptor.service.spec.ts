@@ -2,19 +2,11 @@ import { HttpClient, HttpContext, HttpParams, provideHttpClient, withInterceptor
 import { provideHttpClientTesting, TestRequest } from "@angular/common/http/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
-import {
-  createHttpFactory,
-  HttpMethod,
-  SpectatorHttp,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createHttpFactory, HttpMethod, SpectatorHttp, SpyObject } from "@ngneat/spectator";
 import { noop } from "rxjs";
 import { generateUser } from "@test/fakes/User";
 import { API_ROOT } from "@services/config/config.tokens";
-import {
-  ApiErrorDetails,
-  BawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { ApiErrorDetails, BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { NOT_FOUND, UNPROCESSABLE_ENTITY } from "http-status";
 import { NgHttpCachingService } from "ng-http-caching";
@@ -31,10 +23,7 @@ describe("BawApiInterceptor", () => {
   const createService = createHttpFactory({
     service: BawSessionService,
     imports: [MockBawApiModule],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
   });
 
   function getPath(path: string) {
@@ -43,17 +32,13 @@ describe("BawApiInterceptor", () => {
 
   function setLoggedOut() {
     spyOnProperty(spec.service, "isLoggedIn", "get").and.returnValue(false);
-    spyOnProperty(spec.service, "loggedInUser", "get").and.returnValue(
-      undefined
-    );
+    spyOnProperty(spec.service, "loggedInUser", "get").and.returnValue(undefined);
   }
 
   function setLoggedIn(authToken?: string) {
     spyOnProperty(spec.service, "isLoggedIn", "get").and.returnValue(true);
     spyOnProperty(spec.service, "authToken", "get").and.returnValue(authToken);
-    spyOnProperty(spec.service, "loggedInUser", "get").and.returnValue(
-      new User(generateUser())
-    );
+    spyOnProperty(spec.service, "loggedInUser", "get").and.returnValue(new User(generateUser()));
   }
 
   beforeEach(() => {
@@ -69,9 +54,7 @@ describe("BawApiInterceptor", () => {
   });
 
   describe("error handling", () => {
-    function convertErrorResponseToDetails(
-      response: BawApiError
-    ): ApiErrorDetails {
+    function convertErrorResponseToDetails(response: BawApiError): ApiErrorDetails {
       return {
         status: response.status,
         message: response.message,
@@ -84,7 +67,7 @@ describe("BawApiInterceptor", () => {
     it("should handle api error response", () => {
       const error = generateBawApiError(
         NOT_FOUND,
-        "The following action does not exist, if you believe this is an error please report a problem."
+        "The following action does not exist, if you believe this is an error please report a problem.",
       );
 
       http.get(getPath("/brokenapiroute")).subscribe({
@@ -94,9 +77,7 @@ describe("BawApiInterceptor", () => {
         },
       });
 
-      spec
-        .expectOne(getPath("/brokenapiroute"), HttpMethod.GET)
-        .flush({}, { status: 404, statusText: "" });
+      spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET).flush({}, { status: 404, statusText: "" });
     });
 
     xit("should handle api error response with info", () => {
@@ -161,10 +142,7 @@ describe("BawApiInterceptor", () => {
           })
           .subscribe(noop);
         expect(
-          spec.expectOne(
-            "https://brokenlink/brokenapiroute?shouldNotConvert=true",
-            HttpMethod.GET
-          )
+          spec.expectOne("https://brokenlink/brokenapiroute?shouldNotConvert=true", HttpMethod.GET),
         ).toBeInstanceOf(TestRequest);
       });
 
@@ -176,10 +154,7 @@ describe("BawApiInterceptor", () => {
           })
           .subscribe(noop);
 
-        const req = spec.expectOne(
-          "https://brokenlink/brokenapiroute",
-          HttpMethod.POST
-        );
+        const req = spec.expectOne("https://brokenlink/brokenapiroute", HttpMethod.POST);
         expect(req.request.body).toEqual({ shouldNotConvert: true });
       });
     });
@@ -189,24 +164,18 @@ describe("BawApiInterceptor", () => {
 
       it("should not convert into camel case for GET requests", () => {
         http.get("https://brokenlink/brokenapiroute").subscribe({
-          next: (response) =>
-            expect(response).toEqual({ dummy_response: true }),
+          next: (response) => expect(response).toEqual({ dummy_response: true }),
           error: shouldNotFail,
         });
-        spec
-          .expectOne("https://brokenlink/brokenapiroute", HttpMethod.GET)
-          .flush({ dummy_response: true });
+        spec.expectOne("https://brokenlink/brokenapiroute", HttpMethod.GET).flush({ dummy_response: true });
       });
 
       it("should not convert into camel case for POST requests", () => {
         http.post("https://brokenlink/brokenapiroute", {}).subscribe({
-          next: (response) =>
-            expect(response).toEqual({ dummy_response: true }),
+          next: (response) => expect(response).toEqual({ dummy_response: true }),
           error: shouldNotFail,
         });
-        spec
-          .expectOne("https://brokenlink/brokenapiroute", HttpMethod.POST)
-          .flush({ dummy_response: true });
+        spec.expectOne("https://brokenlink/brokenapiroute", HttpMethod.POST).flush({ dummy_response: true });
       });
     });
   });
@@ -228,19 +197,14 @@ describe("BawApiInterceptor", () => {
           })
           .subscribe(noop);
 
-        expect(
-          spec.expectOne(
-            getPath("/brokenapiroute?should_convert=true"),
-            HttpMethod.GET
-          )
-        ).toBeInstanceOf(TestRequest);
+        expect(spec.expectOne(getPath("/brokenapiroute?should_convert=true"), HttpMethod.GET)).toBeInstanceOf(
+          TestRequest,
+        );
       });
 
       it("should convert into snake case for POST requests", () => {
         setLoggedOut();
-        http
-          .post(getPath("/brokenapiroute"), { shouldConvert: true })
-          .subscribe(noop);
+        http.post(getPath("/brokenapiroute"), { shouldConvert: true }).subscribe(noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.POST);
         expect(req.request.body).toEqual({ should_convert: true });
       });
@@ -271,9 +235,7 @@ describe("BawApiInterceptor", () => {
         setLoggedIn("xxxxxxxxxxxxxxxxxxxx");
         http.get(getPath("/brokenapiroute")).subscribe(noop);
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
-        expect(req.request.headers.get("Authorization")).toBe(
-          'Token token="xxxxxxxxxxxxxxxxxxxx"'
-        );
+        expect(req.request.headers.get("Authorization")).toBe('Token token="xxxxxxxxxxxxxxxxxxxx"');
       });
 
       it("should not attach Authorization when the credentials context has set to false", () => {
@@ -305,9 +267,7 @@ describe("BawApiInterceptor", () => {
 
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
 
-        expect(req.request.headers.get("Authorization")).toBe(
-          'Token token="xxxxxxxxxxxxxxxxxxxx"'
-        );
+        expect(req.request.headers.get("Authorization")).toBe('Token token="xxxxxxxxxxxxxxxxxxxx"');
       });
 
       it("should default to attaching Authorization when the credentials context is not set", () => {
@@ -317,9 +277,7 @@ describe("BawApiInterceptor", () => {
 
         const req = spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET);
 
-        expect(req.request.headers.get("Authorization")).toBe(
-          'Token token="xxxxxxxxxxxxxxxxxxxx"'
-        );
+        expect(req.request.headers.get("Authorization")).toBe('Token token="xxxxxxxxxxxxxxxxxxxx"');
       });
     });
 
@@ -332,9 +290,7 @@ describe("BawApiInterceptor", () => {
           error: shouldNotFail,
         });
 
-        spec
-          .expectOne(getPath("/brokenapiroute"), HttpMethod.GET)
-          .flush({ dummy_response: true });
+        spec.expectOne(getPath("/brokenapiroute"), HttpMethod.GET).flush({ dummy_response: true });
       });
 
       it("should convert incoming data from baw api into camel case for POST requests", () => {
@@ -343,9 +299,7 @@ describe("BawApiInterceptor", () => {
           error: shouldNotFail,
         });
 
-        spec
-          .expectOne(getPath("/brokenapiroute"), HttpMethod.POST)
-          .flush({ dummy_response: true });
+        spec.expectOne(getPath("/brokenapiroute"), HttpMethod.POST).flush({ dummy_response: true });
       });
     });
   });

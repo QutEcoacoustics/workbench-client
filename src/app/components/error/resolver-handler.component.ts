@@ -8,18 +8,15 @@ import { takeUntil } from "rxjs/operators";
 import { ErrorHandlerComponent } from "../shared/error-handler/error-handler.component";
 
 @Component({
-    selector: "baw-resolver-handler",
-    template: `
+  selector: "baw-resolver-handler",
+  template: `
     @if (error) {
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-    imports: [ErrorHandlerComponent]
+  imports: [ErrorHandlerComponent],
 })
-export class ResolverHandlerComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class ResolverHandlerComponent extends withUnsubscribe() implements OnInit {
   public error: BawApiError;
 
   public constructor(private sharedRoute: SharedActivatedRouteService) {
@@ -28,9 +25,7 @@ export class ResolverHandlerComponent
 
   public ngOnInit() {
     // Detect any page errors
-    this.sharedRoute.data
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((data: IPageInfo) => this.handleResolvers(data));
+    this.sharedRoute.data.pipe(takeUntil(this.unsubscribe)).subscribe((data: IPageInfo) => this.handleResolvers(data));
   }
 
   private handleResolvers(data: IPageInfo) {

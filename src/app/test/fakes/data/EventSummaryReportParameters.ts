@@ -9,7 +9,7 @@ import { faker } from "@faker-js/faker";
 import { modelData } from "@test/helpers/faker";
 
 export function generateEventSummaryReportParameters(
-  data?: Partial<IEventSummaryReportParameters>
+  data?: Partial<IEventSummaryReportParameters>,
 ): Required<IEventSummaryReportParameters> {
   return {
     sites: modelData.ids(),
@@ -56,12 +56,14 @@ export function generateEventSummaryReportUrlParameters(data?: Params): Params {
     daylightSavings: faker.datatype.boolean(),
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
-    charts: faker.helpers.shuffle([
-      Chart.speciesAccumulationCurve,
-      Chart.speciesCompositionCurve,
-      Chart.falseColorSpectrograms,
-      Chart.none,
-    ]).join(","),
+    charts: faker.helpers
+      .shuffle([
+        Chart.speciesAccumulationCurve,
+        Chart.speciesCompositionCurve,
+        Chart.falseColorSpectrograms,
+        Chart.none,
+      ])
+      .join(","),
     ...data,
   };
 }

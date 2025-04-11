@@ -6,11 +6,7 @@ import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
@@ -38,7 +34,7 @@ describe("DownloadTableComponent", () => {
     recordings.forEach((recording) =>
       recording.addMetadata({
         paging: { total: recordings.length, items: recordings.length },
-      })
+      }),
     );
 
     const subject = new Subject<AudioRecording[]>();
@@ -130,7 +126,7 @@ describe("DownloadTableComponent", () => {
           recordedDate: "2017-08-14T09:33:24.000Z",
           recordedDateTimezone: "Australia/Brisbane",
         }),
-        injector
+        injector,
       );
       await loadRows([recording], defaultSite);
       // Brisbane time (+10:00)
@@ -140,10 +136,7 @@ describe("DownloadTableComponent", () => {
 
   it("should show formatted duration in table row", async () => {
     setup(new BehaviorSubject({}));
-    const recording = new AudioRecording(
-      generateAudioRecording({ durationSeconds: 5580 }),
-      injector
-    );
+    const recording = new AudioRecording(generateAudioRecording({ durationSeconds: 5580 }), injector);
     await loadRows([recording], defaultSite);
     expect(getRowItem(3)).toContainText("1 hour 33 minutes");
   });

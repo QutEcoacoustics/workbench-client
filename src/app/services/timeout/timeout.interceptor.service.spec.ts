@@ -1,18 +1,11 @@
 import { HttpClient, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  createHttpFactory,
-  HttpMethod,
-  SpectatorHttp,
-} from "@ngneat/spectator";
+import { createHttpFactory, HttpMethod, SpectatorHttp } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
 import { REQUEST_TIMEOUT } from "http-status";
 import { first, firstValueFrom, Observable, timer } from "rxjs";
-import {
-  TimeoutInterceptor,
-  TIMEOUT_OPTIONS,
-} from "./timeout.interceptor.service";
+import { TimeoutInterceptor, TIMEOUT_OPTIONS } from "./timeout.interceptor.service";
 
 @Injectable()
 class MockService {
@@ -73,12 +66,10 @@ describe("TimeoutInterceptor", () => {
           REQUEST_TIMEOUT,
           "Resource request took too long to complete. " +
             "This may be an issue with your connection to us, or a temporary issue with our services.",
-            null
+          null,
         );
 
-        const response = firstValueFrom<Promise<BawApiError>>(
-          callService().pipe(first())
-        ).catch((res) => res);
+        const response = firstValueFrom<Promise<BawApiError>>(callService().pipe(first())).catch((res) => res);
         spec.expectOne("/api/v1/getResources", test.type);
         await firstValueFrom(timer(timeoutInterval * 1.5));
         expect(await response).toEqual(expectation);

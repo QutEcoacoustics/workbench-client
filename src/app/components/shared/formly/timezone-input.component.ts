@@ -6,12 +6,7 @@ import { NgbTypeahead, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { merge, Observable, Subject } from "rxjs";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-} from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map } from "rxjs/operators";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { asFormControl } from "./helper";
@@ -20,8 +15,8 @@ import { asFormControl } from "./helper";
  * Timezone Input
  */
 @Component({
-    selector: "baw-timezone-input",
-    template: `
+  selector: "baw-timezone-input",
+  template: `
     <div class="form-group">
       @if (props.label) {
         <label [for]="field.id">
@@ -30,10 +25,7 @@ import { asFormControl } from "./helper";
       }
 
       <ng-template #resultTemplate let-r="result" let-t="term">
-        <ngb-highlight
-          [result]="r.currentTimeFormat"
-          [term]="t"
-        ></ngb-highlight>
+        <ngb-highlight [result]="r.currentTimeFormat" [term]="t"></ngb-highlight>
       </ng-template>
 
       <div class="input-group">
@@ -70,14 +62,10 @@ import { asFormControl } from "./helper";
         {{ error }}
       </div>
 
-      <input
-        type="hidden"
-        [id]="field.id"
-        [formControl]="asFormControl(formControl)"
-      />
+      <input type="hidden" [id]="field.id" [formControl]="asFormControl(formControl)" />
     </div>
   `,
-    imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
+  imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule],
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
@@ -125,18 +113,11 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
    * @param text$ Search event
    */
   public search = (text$: Observable<string>): Observable<TimeZone[]> => {
-    const debouncedText$ = text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged()
-    );
-    const clicksWithClosedPopup$ = this.click$.pipe(
-      filter(() => !this.instance.isPopupOpen())
-    );
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
     const inputFocus$ = this.focus$;
 
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      map((term) => this.searchTimezones(term))
-    );
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(map((term) => this.searchTimezones(term)));
   };
 
   /**
@@ -161,17 +142,12 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
    *
    * @param term Term to search for
    */
-  private searchTimezones(
-    term: string,
-    timezoneKey: keyof TimeZone = "currentTimeFormat"
-  ): TimeZone[] {
+  private searchTimezones(term: string, timezoneKey: keyof TimeZone = "currentTimeFormat"): TimeZone[] {
     let zones = this.timezones;
 
     if (term?.length > 0) {
       zones = zones.filter((zone) =>
-        (zone[timezoneKey] as string)
-          .toLocaleLowerCase()
-          .includes(term.toLocaleLowerCase())
+        (zone[timezoneKey] as string).toLocaleLowerCase().includes(term.toLocaleLowerCase()),
       );
     }
 

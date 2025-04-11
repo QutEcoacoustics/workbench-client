@@ -1,12 +1,5 @@
-import {
-  SpectatorService,
-  SpyObject,
-  createServiceFactory,
-} from "@ngneat/spectator";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-} from "@test/helpers/api-common";
+import { SpectatorService, SpyObject, createServiceFactory } from "@ngneat/spectator";
+import { mockServiceImports, mockServiceProviders } from "@test/helpers/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { of } from "rxjs";
@@ -56,8 +49,7 @@ describe("WebsiteStatusService", () => {
 
     spec.service["show"]().subscribe();
 
-    const [realizedUrl, realizedHeaders, realizedOptions] =
-      mockApi.httpGet.calls.mostRecent().args;
+    const [realizedUrl, realizedHeaders, realizedOptions] = mockApi.httpGet.calls.mostRecent().args;
 
     expect(realizedUrl).toBe("/status");
     expect(realizedHeaders).toEqual(expectedHeaders);

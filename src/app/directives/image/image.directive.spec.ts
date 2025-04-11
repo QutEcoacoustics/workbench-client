@@ -18,10 +18,7 @@ describe("ImageDirective", () => {
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
     imports: [MockBawApiModule],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
   });
 
   function getImage() {
@@ -29,9 +26,7 @@ describe("ImageDirective", () => {
   }
 
   function getDirective(image: HTMLImageElement): AuthenticatedImageDirective {
-    return ng
-      .getDirectives(image)
-      .find((directive) => directive instanceof AuthenticatedImageDirective);
+    return ng.getDirectives(image).find((directive) => directive instanceof AuthenticatedImageDirective);
   }
 
   function createDefaultDirective(src: ImageUrl[]) {
@@ -41,9 +36,7 @@ describe("ImageDirective", () => {
   }
 
   function createDisabledDirective(src: string) {
-    return createDirective(
-      `<img alt="alt" src="${src}" [disableAuth]="true" />`
-    );
+    return createDirective(`<img alt="alt" src="${src}" [disableAuth]="true" />`);
   }
 
   function createImgErrorEvent(image: HTMLImageElement) {
@@ -92,9 +85,7 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(imageUrls);
 
       const image = getImage();
-      imageUrls
-        .slice(0, imageUrls.length - 1)
-        .forEach(() => createImgErrorEvent(image));
+      imageUrls.slice(0, imageUrls.length - 1).forEach(() => createImgErrorEvent(image));
       expect(image).toHaveImage(imageUrls[0].url);
     });
 
@@ -120,10 +111,7 @@ describe("ImageDirective", () => {
     it("given bad 404 image, it stops attempting to load images", () => {
       const imageUrls = [modelData.imageUrls()[0]];
       spectator = createDefaultDirective(imageUrls);
-      const spy = spyOn<any>(
-        spectator.directive,
-        "setImageSrc"
-      ).and.callThrough();
+      const spy = spyOn<any>(spectator.directive, "setImageSrc").and.callThrough();
 
       const image = getImage();
       // Spam errors
@@ -145,17 +133,11 @@ describe("ImageDirective", () => {
   describe("api links", () => {
     let session: BawSessionService;
 
-    function createApiDirective(
-      src: ImageUrl[],
-      ignoreAuthToken: boolean = false
-    ) {
-      const spec = createDirective(
-        '<img alt="alt" [src]="src" [ignoreAuthToken]="ignoreAuthToken" />',
-        {
-          hostProps: { src, ignoreAuthToken },
-          detectChanges: false,
-        }
-      );
+    function createApiDirective(src: ImageUrl[], ignoreAuthToken: boolean = false) {
+      const spec = createDirective('<img alt="alt" [src]="src" [ignoreAuthToken]="ignoreAuthToken" />', {
+        hostProps: { src, ignoreAuthToken },
+        detectChanges: false,
+      });
       session = spec.inject(BawSessionService);
       return spec;
     }
@@ -179,9 +161,7 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?authToken=${authToken}`
-      );
+      expect(getImage()).toHaveImage(`${getApiRoot()}/image.png?authToken=${authToken}`);
     });
 
     it("should not double append authToken to url", () => {
@@ -192,9 +172,7 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?authToken=${authToken}`
-      );
+      expect(getImage()).toHaveImage(`${getApiRoot()}/image.png?authToken=${authToken}`);
     });
 
     it("should not append authToken to url if disableAuth set", () => {
@@ -225,9 +203,7 @@ describe("ImageDirective", () => {
       setLoggedIn(authToken);
       spectator.detectChanges();
 
-      expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`
-      );
+      expect(getImage()).toHaveImage(`${getApiRoot()}/image.png?testing=value&authToken=${authToken}`);
     });
   });
 

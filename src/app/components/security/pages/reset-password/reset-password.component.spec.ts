@@ -31,9 +31,9 @@ describe("ResetPasswordComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-    imports: [...testFormImports, MockBawApiModule, ResetPasswordComponent, FormComponent],
-    providers: testFormProviders,
-}).compileComponents();
+        imports: [...testFormImports, MockBawApiModule, ResetPasswordComponent, FormComponent],
+        providers: testFormProviders,
+      }).compileComponents();
 
       fixture = TestBed.createComponent(ResetPasswordComponent);
       component = fixture.componentInstance;

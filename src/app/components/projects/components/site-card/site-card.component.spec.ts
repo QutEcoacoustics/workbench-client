@@ -35,10 +35,7 @@ describe("SiteCardComponent", () => {
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
 
-  function setup(
-    model?: Site | Region,
-    recordings?: Errorable<AudioRecording[]>
-  ): Promise<void> {
+  function setup(model?: Site | Region, recordings?: Errorable<AudioRecording[]>): Promise<void> {
     spec = createComponent({
       detectChanges: false,
       props: {
@@ -107,10 +104,7 @@ describe("SiteCardComponent", () => {
           setup(model);
           spec.detectChanges();
 
-          expect(getImage()).toHaveImage(
-            `${websiteHttpUrl}${model.imageUrls[0].url}`,
-            { alt: `${model.name} alt` }
-          );
+          expect(getImage()).toHaveImage(`${websiteHttpUrl}${model.imageUrls[0].url}`, { alt: `${model.name} alt` });
         });
 
         it("should display custom model image", () => {

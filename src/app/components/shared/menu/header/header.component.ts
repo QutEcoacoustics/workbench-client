@@ -12,8 +12,8 @@ import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/web
  * Header Component
  */
 @Component({
-    selector: "baw-header",
-    template: `
+  selector: "baw-header",
+  template: `
     <nav id="navbar" class="fixed-top navbar navbar-expand navbar-dark">
       <!--
         Toggle button for secondary/action menus on large displays. Hide if menu
@@ -23,11 +23,7 @@ import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/web
 
       <div class="container">
         <!-- Brand Logo -->
-        <a
-          class="navbar-brand"
-          strongRouteActive="active"
-          [strongRoute]="homeMenuItem.route"
-        >
+        <a class="navbar-brand" strongRouteActive="active" [strongRoute]="homeMenuItem.route">
           {{ config.settings.brand.short }}
         </a>
 
@@ -40,24 +36,33 @@ import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/web
           We therefore add another indicator when in mobile view so that there is always a warning indicator
           for a bad website status.
         -->
-        <baw-website-status-indicator
-          class="d-block d-lg-none"
-        ></baw-website-status-indicator>
+        <baw-website-status-indicator class="d-block d-lg-none"></baw-website-status-indicator>
       </div>
     </nav>
 
     <!-- Displace header section of webpage -->
     <div style="height: 3.5rem"></div>
   `,
-    styles: [`
-    #navbar {
-      background-color: var(--baw-header);
-    }
-  `],
-    imports: [MenuToggleComponent, StrongRouteActiveDirective, StrongRouteDirective, PrimaryMenuComponent, WebsiteStatusIndicatorComponent]
+  styles: [
+    `
+      #navbar {
+        background-color: var(--baw-header);
+      }
+    `,
+  ],
+  imports: [
+    MenuToggleComponent,
+    StrongRouteActiveDirective,
+    StrongRouteDirective,
+    PrimaryMenuComponent,
+    WebsiteStatusIndicatorComponent,
+  ],
 })
 export class HeaderComponent {
   public homeMenuItem = homeMenuItem;
 
-  public constructor(public menu: MenuService, public config: ConfigService) {}
+  public constructor(
+    public menu: MenuService,
+    public config: ConfigService,
+  ) {}
 }

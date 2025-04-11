@@ -1,8 +1,5 @@
 import { assetRoot } from "@services/config/config.service";
-import {
-  myAccountMenuItem,
-  theirProfileMenuItem,
-} from "../components/profile/profile.menus";
+import { myAccountMenuItem, theirProfileMenuItem } from "../components/profile/profile.menus";
 import {
   AuthToken,
   UserConcent,
@@ -63,7 +60,7 @@ export class User extends AbstractModel<IUser> implements IUser {
         email: "deleted-user@noreply.com.au",
         userName: "Deleted User",
       },
-      injector
+      injector,
     );
   }
   /**
@@ -77,7 +74,7 @@ export class User extends AbstractModel<IUser> implements IUser {
         email: "unknown-user@noreply.com.au",
         userName: "Unknown User",
       },
-      injector
+      injector,
     );
   }
 
@@ -176,10 +173,7 @@ export interface ISession {
 /**
  * A user model for the website user
  */
-export class Session
-  extends AbstractModelWithoutId<ISession>
-  implements ISession
-{
+export class Session extends AbstractModelWithoutId<ISession> implements ISession {
   public readonly kind = "Session User";
   public readonly authToken?: AuthToken;
   public readonly userName?: UserName;

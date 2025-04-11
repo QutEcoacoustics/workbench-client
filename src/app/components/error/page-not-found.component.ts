@@ -6,16 +6,15 @@ import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.
 import { pageNotFoundMenuItem } from "./error.menus";
 
 @Component({
-    selector: "baw-page-not-found",
-    template: `
+  selector: "baw-page-not-found",
+  template: `
     <h1>Not Found</h1>
     <div>
-      This page doesn't seem to exist, if you believe this is an error please go
-      to the <a [strongRoute]="reportProblem">Report Problems</a> page and
-      report the issue.
+      This page doesn't seem to exist, if you believe this is an error please go to the
+      <a [strongRoute]="reportProblem">Report Problems</a> page and report the issue.
     </div>
   `,
-    imports: [StrongRouteDirective]
+  imports: [StrongRouteDirective],
 })
 class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;

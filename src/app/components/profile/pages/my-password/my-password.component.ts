@@ -2,14 +2,8 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
-import {
-  myAccountCategory,
-  myPasswordMenuItem,
-} from "@components/profile/profile.menus";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { myAccountCategory, myPasswordMenuItem } from "@components/profile/profile.menus";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -20,8 +14,8 @@ import schema from "./my-password.schema.json";
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-password",
-    template: `
+  selector: "baw-my-password",
+  template: `
     @if (!failure) {
       <baw-form
         title="Update my password"
@@ -34,7 +28,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class MyPasswordComponent extends FormTemplate<User> {
   public fields = schema.fields;
@@ -44,7 +38,7 @@ class MyPasswordComponent extends FormTemplate<User> {
     private api: AccountsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[userKey] as User,

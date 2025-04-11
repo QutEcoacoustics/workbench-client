@@ -7,17 +7,10 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
-import {
-  BawApiError,
-  isBawApiError,
-} from "@helpers/custom-errors/baw-api-error";
+import { BawApiError, isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -29,23 +22,13 @@ import { PagedTableTemplate, TablePage } from "./pagedTableTemplate";
 
 @Component({
   selector: "baw-test-component",
-  template: `
-    <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
-  `,
-  
+  template: ` <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable> `,
 })
-class MockComponent extends PagedTableTemplate<
-  { id: Id; name: string },
-  Project
-> {
+class MockComponent extends PagedTableTemplate<{ id: Id; name: string }, Project> {
   public columns = [{ prop: "id" }];
 
   public constructor(api: ProjectsService, route: ActivatedRoute) {
-    super(
-      api,
-      (models) => models.map((model) => ({ id: model.id, name: model.name })),
-      route
-    );
+    super(api, (models) => models.map((model) => ({ id: model.id, name: model.name })), route);
   }
 }
 
@@ -71,7 +54,7 @@ describe("PagedTableTemplate", () => {
               obj[resolver] = "resolver";
               return obj;
             }, {}),
-            data
+            data,
           ),
         },
       ],
@@ -127,9 +110,7 @@ describe("PagedTableTemplate", () => {
       }
     }
 
-    function assertModels(
-      models: { modelName: string; expectation: MockModel }[]
-    ) {
+    function assertModels(models: { modelName: string; expectation: MockModel }[]) {
       models.forEach(({ modelName, expectation }) => {
         expect(component.models[modelName]).toEqual(expectation);
       });
@@ -194,13 +175,8 @@ describe("PagedTableTemplate", () => {
     });
 
     it("should handle multiple model total", async () => {
-      const projects = [
-        new Project(generateProject()),
-        new Project(generateProject()),
-      ];
-      projects.forEach((project) =>
-        project.addMetadata(generateMetaData(1, 25))
-      );
+      const projects = [new Project(generateProject()), new Project(generateProject())];
+      projects.forEach((project) => project.addMetadata(generateMetaData(1, 25)));
 
       await setProjects(projects);
       assertRows(projects.map(({ id, name }) => ({ id, name })));
@@ -302,11 +278,7 @@ describe("PagedTableTemplate", () => {
       return document.createElement("input");
     }
 
-    function createFilterEvent(
-      filterKey: string,
-      value: string,
-      mockInput: HTMLInputElement
-    ) {
+    function createFilterEvent(filterKey: string, value: string, mockInput: HTMLInputElement) {
       component.filterKey = filterKey as any;
       mockInput.value = value;
       component.onFilter(value);
@@ -386,11 +358,7 @@ describe("PagedTableTemplate", () => {
       await setProjects([]);
     });
 
-    function createSortEvent(
-      sortKeys: { [key: string]: string },
-      value: "asc" | "desc",
-      prop: string
-    ) {
+    function createSortEvent(sortKeys: { [key: string]: string }, value: "asc" | "desc", prop: string) {
       component.sortKeys = sortKeys;
       component.onSort({
         newValue: value,
@@ -442,11 +410,7 @@ describe("PagedTableTemplate", () => {
     }));
 
     it("should handle multiple sortKeys", fakeAsync(() => {
-      createSortEvent(
-        { testing: "customKey", testing2: "extraCustomKey" },
-        "asc",
-        "testing"
-      );
+      createSortEvent({ testing: "customKey", testing2: "extraCustomKey" }, "asc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);

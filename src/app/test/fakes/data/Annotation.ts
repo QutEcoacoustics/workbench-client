@@ -6,11 +6,8 @@ import { generateAudioEvent } from "../AudioEvent";
 import { generateTag } from "../Tag";
 import { generateAudioRecording } from "../AudioRecording";
 
-export function generateAnnotation(
-  data?: Partial<IAnnotation>
-): Required<IAnnotation> {
-  const audioRecording =
-    data?.audioRecording ?? new AudioRecording(generateAudioRecording());
+export function generateAnnotation(data?: Partial<IAnnotation>): Required<IAnnotation> {
+  const audioRecording = data?.audioRecording ?? new AudioRecording(generateAudioRecording());
 
   const audioEvent = generateAudioEvent({
     audioRecordingId: audioRecording.id,

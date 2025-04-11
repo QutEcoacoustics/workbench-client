@@ -1,8 +1,4 @@
-import {
-  Spectator,
-  createRoutingFactory,
-  mockProvider,
-} from "@ngneat/spectator";
+import { Spectator, createRoutingFactory, mockProvider } from "@ngneat/spectator";
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -41,9 +37,7 @@ describe("AudioRecordingsFilter", () => {
       detectChanges: false,
     });
 
-    spectator.component.constructedFilters = new BehaviorSubject<
-      Filters<AudioRecording>
-    >({});
+    spectator.component.constructedFilters = new BehaviorSubject<Filters<AudioRecording>>({});
     filterChangeSpy = spyOn(spectator.component.constructedFilters, "next");
     updateForm();
   }
@@ -66,29 +60,19 @@ describe("AudioRecordingsFilter", () => {
   }
 
   function getElementByInnerText(innerText: string): HTMLElement {
-    return spectator.debugElement.query(
-      (el) => el.nativeElement.innerText === innerText
-    )?.nativeElement as HTMLButtonElement;
+    return spectator.debugElement.query((el) => el.nativeElement.innerText === innerText)
+      ?.nativeElement as HTMLButtonElement;
   }
 
-  const getDateToggleInput = () =>
-    spectator.query<HTMLInputElement>("#date-filtering");
-  const getDateInputWrapper = () =>
-    spectator.query<HTMLDivElement>("#date-filters-wrapper");
-  const getDateStartedAfterInput = () =>
-    spectator.query<HTMLInputElement>("#date-started-after");
-  const getDateFinishedBeforeInput = () =>
-    spectator.query<HTMLInputElement>("#date-finished-before");
-  const getTimeOfDayInputWrapper = () =>
-    spectator.query<HTMLDivElement>("#time-filters-wrapper");
-  const getTimeOfDayToggleInput = () =>
-    spectator.query<HTMLInputElement>("#time-filtering");
-  const getIgnoreDaylightSavingsInput = () =>
-    spectator.query<HTMLInputElement>("#ignore-daylight-savings");
-  const getTimeOfDayStartedAfterInput = () =>
-    spectator.query<HTMLInputElement>("#time-started-after input");
-  const getTimeOfDayFinishedBeforeInput = () =>
-    spectator.query<HTMLInputElement>("#time-finished-before input");
+  const getDateToggleInput = () => spectator.query<HTMLInputElement>("#date-filtering");
+  const getDateInputWrapper = () => spectator.query<HTMLDivElement>("#date-filters-wrapper");
+  const getDateStartedAfterInput = () => spectator.query<HTMLInputElement>("#date-started-after");
+  const getDateFinishedBeforeInput = () => spectator.query<HTMLInputElement>("#date-finished-before");
+  const getTimeOfDayInputWrapper = () => spectator.query<HTMLDivElement>("#time-filters-wrapper");
+  const getTimeOfDayToggleInput = () => spectator.query<HTMLInputElement>("#time-filtering");
+  const getIgnoreDaylightSavingsInput = () => spectator.query<HTMLInputElement>("#ignore-daylight-savings");
+  const getTimeOfDayStartedAfterInput = () => spectator.query<HTMLInputElement>("#time-started-after input");
+  const getTimeOfDayFinishedBeforeInput = () => spectator.query<HTMLInputElement>("#time-finished-before input");
 
   function typeInElement(element: HTMLInputElement, value: string): void {
     spectator.typeInElement(value, element);
@@ -179,8 +163,7 @@ describe("AudioRecordingsFilter", () => {
   });
 
   describe("date format validation", () => {
-    const invalidDateErrorMessage =
-      "The date should follow the format yyyy-mm-dd, e.g. 2022-12-01";
+    const invalidDateErrorMessage = "The date should follow the format yyyy-mm-dd, e.g. 2022-12-01";
 
     beforeEach(fakeAsync(() => toggleDateFilters()));
 
@@ -279,12 +262,8 @@ describe("AudioRecordingsFilter", () => {
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
       // is-invalid is a bootstrap validation class that will be added to an invalid time input (added by time.component.ts)
-      expect(getTimeOfDayStartedAfterInput()).not.toHaveClass(
-        invalidInputClass
-      );
-      expect(getTimeOfDayFinishedBeforeInput()).not.toHaveClass(
-        invalidInputClass
-      );
+      expect(getTimeOfDayStartedAfterInput()).not.toHaveClass(invalidInputClass);
+      expect(getTimeOfDayFinishedBeforeInput()).not.toHaveClass(invalidInputClass);
     }));
 
     it("should allow a user to input an end time less than the start time without displaying an error", fakeAsync(() => {
@@ -295,29 +274,19 @@ describe("AudioRecordingsFilter", () => {
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
-      expect(getTimeOfDayStartedAfterInput()).not.toHaveClass(
-        invalidInputClass
-      );
-      expect(getTimeOfDayFinishedBeforeInput()).not.toHaveClass(
-        invalidInputClass
-      );
+      expect(getTimeOfDayStartedAfterInput()).not.toHaveClass(invalidInputClass);
+      expect(getTimeOfDayFinishedBeforeInput()).not.toHaveClass(invalidInputClass);
     }));
   });
 
   describe("filters events", () => {
-    function assertLastFilterUpdate(
-      expectedFilter: Filters<AudioRecording>
-    ): void {
+    function assertLastFilterUpdate(expectedFilter: Filters<AudioRecording>): void {
       const mostRecentFilterUpdate = filterChangeSpy.calls.mostRecent().args[0];
 
       const expectedFilterSerialized = JSON.stringify(expectedFilter);
-      const mostRecentFilterUpdateSerialized = JSON.stringify(
-        mostRecentFilterUpdate
-      );
+      const mostRecentFilterUpdateSerialized = JSON.stringify(mostRecentFilterUpdate);
 
-      expect(mostRecentFilterUpdateSerialized).toEqual(
-        expectedFilterSerialized
-      );
+      expect(mostRecentFilterUpdateSerialized).toEqual(expectedFilterSerialized);
     }
 
     // date events where a filter update should not be emitted
@@ -519,9 +488,7 @@ describe("AudioRecordingsFilter", () => {
 
     // time filters depend on daylight savings, therefore, it is required that all time assertions are tested against dst settings
     [false, true].forEach((ignoreDayLightSavings: boolean) => {
-      const expectedOffsetExpression = ignoreDayLightSavings
-        ? "local_tz"
-        : "local_offset";
+      const expectedOffsetExpression = ignoreDayLightSavings ? "local_tz" : "local_offset";
       const expressions = [expectedOffsetExpression, "time_of_day"];
 
       it(`can filter recordings past a day boundary with a composition of filters, 10PM to 1 AM with ignore day light savings ${

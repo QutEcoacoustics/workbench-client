@@ -11,9 +11,9 @@ import { DurationComponent } from "../../shared/datetime-formats/duration/durati
 import { TimeSinceComponent } from "../../shared/datetime-formats/time-since/time-since.component";
 
 @Component({
-    selector: "baw-admin-datetime-templates",
-    templateUrl: "datetime-example.component.html",
-    imports: [FormsModule, DatetimeComponent, ZonedDateTimeComponent, DurationComponent, TimeSinceComponent]
+  selector: "baw-admin-datetime-templates",
+  templateUrl: "datetime-example.component.html",
+  imports: [FormsModule, DatetimeComponent, ZonedDateTimeComponent, DurationComponent, TimeSinceComponent],
 })
 class DateTimeExampleComponent extends PageComponent {
   public constructor() {

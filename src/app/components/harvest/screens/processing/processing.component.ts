@@ -7,18 +7,15 @@ import { ProgressComponent } from "../../../shared/progress/progress/progress.co
 import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component";
 
 @Component({
-    selector: "baw-harvest-processing",
-    template: `
+  selector: "baw-harvest-processing",
+  template: `
     <h3>Saving...</h3>
 
     <p>We are adding in all those files!</p>
 
     <baw-harvest-can-close-dialog></baw-harvest-can-close-dialog>
 
-    <baw-harvest-eta
-      [harvest]="harvest"
-      [progress]="successProgress + errorProgress"
-    ></baw-harvest-eta>
+    <baw-harvest-eta [harvest]="harvest" [progress]="successProgress + errorProgress"></baw-harvest-eta>
 
     <baw-progress [showZero]="zeroProgress">
       <baw-progress-bar
@@ -34,7 +31,7 @@ import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component
       ></baw-progress-bar>
     </baw-progress>
   `,
-    imports: [CanCloseDialogComponent, EtaComponent, ProgressComponent, ProgressBarComponent]
+  imports: [CanCloseDialogComponent, EtaComponent, ProgressComponent, ProgressBarComponent],
 })
 export class ProcessingComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}
@@ -52,9 +49,7 @@ export class ProcessingComponent implements OnInit {
   }
 
   public get errorProgress(): number {
-    return this.stages.calculateProgress(
-      this.report.itemsFailed + this.report.itemsErrored
-    );
+    return this.stages.calculateProgress(this.report.itemsFailed + this.report.itemsErrored);
   }
 
   public get harvest(): Harvest {

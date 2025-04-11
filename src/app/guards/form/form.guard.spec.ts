@@ -3,11 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
 import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  FormCheckingComponent,
-  FormTouchedGuard,
-  withFormCheck,
-} from "./form.guard";
+import { FormCheckingComponent, FormTouchedGuard, withFormCheck } from "./form.guard";
 
 describe("FormTouchedGuard", () => {
   let guard: FormTouchedGuard;
@@ -71,17 +67,14 @@ describe("WithFormCheck", () => {
   @Component({
     selector: "baw-testing",
     template: `
-        <div>
-          @for (schema of schemas; track schema) {
-            <baw-form
-              [model]="schema.model"
-              [fields]="schema.fields"
-            ></baw-form>
-          }
-        </div>
-        `,
-    imports: [...appLibraryImports, SharedModule]
-})
+      <div>
+        @for (schema of schemas; track schema) {
+          <baw-form [model]="schema.model" [fields]="schema.fields"></baw-form>
+        }
+      </div>
+    `,
+    imports: [...appLibraryImports, SharedModule],
+  })
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];
     public numForms = 0;
@@ -117,8 +110,8 @@ describe("WithFormCheck", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [...appLibraryImports, SharedModule, MockComponent],
-}).compileComponents();
+      imports: [...appLibraryImports, SharedModule, MockComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     mockComponent = fixture.componentInstance;

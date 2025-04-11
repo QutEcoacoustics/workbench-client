@@ -2,15 +2,7 @@ import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { SavedSearch } from "@models/SavedSearch";
 import { Observable } from "rxjs";
-import {
-  emptyParam,
-  filterParam,
-  id,
-  IdOr,
-  IdParamOptional,
-  ImmutableApi,
-  option,
-} from "../api-common";
+import { emptyParam, filterParam, id, IdOr, IdParamOptional, ImmutableApi, option } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
@@ -26,11 +18,7 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
   }
 
   public filter(filters: Filters<SavedSearch>): Observable<SavedSearch[]> {
-    return this.api.filter(
-      SavedSearch,
-      endpoint(emptyParam, filterParam),
-      filters
-    );
+    return this.api.filter(SavedSearch, endpoint(emptyParam, filterParam), filters);
   }
 
   public show(model: IdOr<SavedSearch>): Observable<SavedSearch> {
@@ -42,7 +30,7 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
       SavedSearch,
       endpoint(emptyParam, emptyParam),
       (savedSearch) => endpoint(savedSearch, emptyParam),
-      model
+      model,
     );
   }
 
@@ -51,7 +39,6 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
   }
 }
 
-export const savedSearchResolvers = new Resolvers<SavedSearch, []>(
-  [SavedSearchesService],
-  "savedSearchId"
-).create("SavedSearch");
+export const savedSearchResolvers = new Resolvers<SavedSearch, []>([SavedSearchesService], "savedSearchId").create(
+  "SavedSearch",
+);

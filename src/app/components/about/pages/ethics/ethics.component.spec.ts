@@ -12,10 +12,7 @@ describe("AboutEthicsComponent", () => {
   const createComponent = createComponentFactory({
     component: EthicsComponent,
     imports: [SharedModule, MockBawApiModule],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

@@ -14,10 +14,7 @@ export class WithLoadingPipe implements PipeTransform {
     return obj.pipe(
       map((value): LoadingResult<T> => ({ loading: false, value })),
       startWith({ loading: true }),
-      catchError(
-        (error: BawApiError): Observable<LoadingResult<T>> =>
-          of({ loading: false, error })
-      )
+      catchError((error: BawApiError): Observable<LoadingResult<T>> => of({ loading: false, error })),
     );
   }
 }

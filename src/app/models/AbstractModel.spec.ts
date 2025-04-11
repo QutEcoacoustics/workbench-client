@@ -2,11 +2,7 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { Injector } from "@angular/core";
 import { AbstractModel, getUnknownViewUrl } from "./AbstractModel";
-import {
-  BawAttributeMeta,
-  bawPersistAttr,
-  bawReadonlyConvertCase,
-} from "./AttributeDecorators";
+import { BawAttributeMeta, bawPersistAttr, bawReadonlyConvertCase } from "./AttributeDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
 
 export class MockModel extends AbstractModel {
@@ -14,7 +10,7 @@ export class MockModel extends AbstractModel {
 
   public constructor(
     raw: Record<string, any>,
-    protected injector?: AssociationInjector
+    protected injector?: AssociationInjector,
   ) {
     super(raw, injector);
   }
@@ -26,14 +22,10 @@ export class MockModel extends AbstractModel {
 
 describe("AbstractModel", () => {
   describe("toJSON", () => {
-    const assertToJsonWithCreate = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) => expect(model.getJsonAttributesForCreate()).toEqual(result);
-    const assertToJsonWithUpdate = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) => expect(model.getJsonAttributesForUpdate()).toEqual(result);
+    const assertToJsonWithCreate = (model: AbstractModel, result: Record<string, any>) =>
+      expect(model.getJsonAttributesForCreate()).toEqual(result);
+    const assertToJsonWithUpdate = (model: AbstractModel, result: Record<string, any>) =>
+      expect(model.getJsonAttributesForUpdate()).toEqual(result);
 
     [
       { type: "undefined", value: undefined, output: undefined },
@@ -100,12 +92,8 @@ describe("AbstractModel", () => {
       const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(
-        Object.keys(model.getJsonAttributesForCreate())
-      ).not.toContain("injector");
-      expect<any>(
-        Object.keys(model.getJsonAttributesForUpdate())
-      ).not.toContain("injector");
+      expect<any>(Object.keys(model.getJsonAttributesForCreate())).not.toContain("injector");
+      expect<any>(Object.keys(model.getJsonAttributesForUpdate())).not.toContain("injector");
     });
 
     it("should handle multiple on toJSON({create: true}) request", () => {
@@ -147,7 +135,7 @@ describe("AbstractModel", () => {
       expect(actual).toEqual(
         jasmine.objectContaining({
           image: null,
-        })
+        }),
       );
     });
 
@@ -279,9 +267,7 @@ describe("AbstractModel", () => {
     ].forEach((test) => {
       describe(test.label, () => {
         function hasFormDataOnlyAttributes(model: AbstractModel) {
-          return test.create
-            ? model.hasFormDataOnlyAttributesForCreate()
-            : model.hasFormDataOnlyAttributesForUpdate();
+          return test.create ? model.hasFormDataOnlyAttributesForCreate() : model.hasFormDataOnlyAttributesForUpdate();
         }
 
         it("should return true if form data exists", () => {
@@ -352,20 +338,10 @@ describe("AbstractModel", () => {
   });
 
   describe("toFormData", () => {
-    const assertToFormDataWithCreate = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) =>
-      expect(model.getFormDataOnlyAttributesForCreate()).toEqual(
-        createFormData(result)
-      );
-    const assertToFormDataWithUpdate = (
-      model: AbstractModel,
-      result: Record<string, any>
-    ) =>
-      expect(model.getFormDataOnlyAttributesForUpdate()).toEqual(
-        createFormData(result)
-      );
+    const assertToFormDataWithCreate = (model: AbstractModel, result: Record<string, any>) =>
+      expect(model.getFormDataOnlyAttributesForCreate()).toEqual(createFormData(result));
+    const assertToFormDataWithUpdate = (model: AbstractModel, result: Record<string, any>) =>
+      expect(model.getFormDataOnlyAttributesForUpdate()).toEqual(createFormData(result));
     const createFormData = (obj: Record<string, any>) => {
       const data = new FormData();
       for (const key of Object.keys(obj)) {
@@ -439,12 +415,8 @@ describe("AbstractModel", () => {
       const mockInjector = new MockInjector() as AssociationInjector;
       const model = new MockModel(defaultData, mockInjector);
       expect(model["injector"]).toEqual(mockInjector);
-      expect<any>(Object.keys(model.getFormDataOnlyAttributesForCreate())).not.toContain(
-        "injector"
-      );
-      expect<any>(Object.keys(model.getFormDataOnlyAttributesForUpdate())).not.toContain(
-        "injector"
-      );
+      expect<any>(Object.keys(model.getFormDataOnlyAttributesForCreate())).not.toContain("injector");
+      expect<any>(Object.keys(model.getFormDataOnlyAttributesForUpdate())).not.toContain("injector");
     });
 
     it("should handle multiple on toFormData({create: true}) request", () => {

@@ -15,10 +15,7 @@ export const buttonClickEvents = {
 };
 
 /** Simulate element click. Defaults to mouse left-button click event. */
-export function click(
-  el: DebugElement | HTMLElement,
-  eventObj: any = buttonClickEvents.left
-): void {
+export function click(el: DebugElement | HTMLElement, eventObj: any = buttonClickEvents.left): void {
   if (el instanceof HTMLElement) {
     el.click();
   } else {
@@ -41,10 +38,7 @@ describe("FormComponent", () => {
     return spec.query<HTMLButtonElement>("button");
   }
 
-  function findInput(
-    selector: string = "input",
-    position: number = 0
-  ): HTMLElement {
+  function findInput(selector: string = "input", position: number = 0): HTMLElement {
     return spec.queryAll<HTMLElement>("form " + selector)[position];
   }
 
@@ -57,11 +51,7 @@ describe("FormComponent", () => {
     }
   }
 
-  function createInputField(
-    type?: string,
-    required?: boolean,
-    opts?: { key?: string; label?: string }
-  ) {
+  function createInputField(type?: string, required?: boolean, opts?: { key?: string; label?: string }) {
     return {
       key: opts?.key ?? "input",
       type: "input",
@@ -187,11 +177,7 @@ describe("FormComponent", () => {
 
     it("should create multi form", () => {
       setup({
-        fields: [
-          createInputField("text"),
-          createInputField("password"),
-          createInputField("email"),
-        ],
+        fields: [createInputField("text"), createInputField("password"), createInputField("email")],
       });
       spec.detectChanges();
       assertInput(findInput(undefined, 0), "text");
@@ -201,11 +187,7 @@ describe("FormComponent", () => {
 
     it("should create required multi input form", () => {
       setup({
-        fields: [
-          createInputField("text", true),
-          createInputField("password", true),
-          createInputField("email", true),
-        ],
+        fields: [createInputField("text", true), createInputField("password", true), createInputField("email", true)],
       });
       spec.detectChanges();
       assertInput(findInput(undefined, 0), "text", true);
@@ -284,9 +266,7 @@ describe("FormComponent", () => {
       submit();
       click(getSubmitButton());
       spec.detectChanges();
-      expect(toastr.error).toHaveBeenCalledWith(
-        "Please fill all required fields."
-      );
+      expect(toastr.error).toHaveBeenCalledWith("Please fill all required fields.");
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {

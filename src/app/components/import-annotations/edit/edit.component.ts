@@ -6,10 +6,7 @@ import {
 } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventImport } from "@models/AudioEventImport";
-import {
-  FormTemplate,
-  defaultSuccessMsg,
-} from "@helpers/formTemplate/formTemplate";
+import { FormTemplate, defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
@@ -19,8 +16,8 @@ import { FormComponent } from "../../shared/form/form.component";
 const audioEventImportKey = "audioEventImport";
 
 @Component({
-    selector: "baw-edit-annotation-import",
-    template: `
+  selector: "baw-edit-annotation-import",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -32,17 +29,14 @@ const audioEventImportKey = "audioEventImport";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
-class EditAnnotationsComponent
-  extends FormTemplate<AudioEventImport>
-  implements OnInit
-{
+class EditAnnotationsComponent extends FormTemplate<AudioEventImport> implements OnInit {
   public constructor(
     private api: AudioEventImportService,
     protected route: ActivatedRoute,
     protected notifications: ToastService,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       getModel: (models) => models[audioEventImportKey] as AudioEventImport,

@@ -1,27 +1,21 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ScriptsService } from "@baw-api/script/scripts.service";
-import {
-  defaultSuccessMsg,
-  FormTemplate,
-} from "@helpers/formTemplate/formTemplate";
+import { defaultSuccessMsg, FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import schema from "../script.base.schema.json";
-import {
-  newScriptMenuItem,
-  adminScriptsCategory,
-} from "../scripts.menus";
+import { newScriptMenuItem, adminScriptsCategory } from "../scripts.menus";
 import { FormComponent } from "../../shared/form/form.component";
 
 /**
  * New Scripts Component
  */
 @Component({
-    selector: "baw-admin-scripts-new",
-    template: `
+  selector: "baw-admin-scripts-new",
+  template: `
     @if (!failure) {
       <baw-form
         title="New Script"
@@ -33,14 +27,14 @@ import { FormComponent } from "../../shared/form/form.component";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(
     private api: ScriptsService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),

@@ -20,13 +20,11 @@ const pipes = [
   DateTimePipe,
 ];
 
-const providers = [
-  DatePipe,
-];
+const providers = [DatePipe];
 
 @NgModule({
-    imports: [...pipes],
-    exports: pipes,
-    providers,
+  imports: [...pipes],
+  exports: pipes,
+  providers,
 })
 export class PipesModule {}

@@ -11,11 +11,7 @@ import {
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
-import {
-  editProjectPermissionsRoute,
-  projectRoute,
-  projectsRoute,
-} from "./projects.routes";
+import { editProjectPermissionsRoute, projectRoute, projectsRoute } from "./projects.routes";
 
 /*
   Projects Category
@@ -70,8 +66,7 @@ export const projectMenuItem = menuRoute({
   parent: projectsMenuItem,
   route: projectRoute,
   tooltip: () => "The current project",
-  breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, Project)?.name,
+  breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Project)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel?.project?.model?.name ?? "Unknown";

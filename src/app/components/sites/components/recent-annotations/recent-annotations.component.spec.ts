@@ -53,7 +53,7 @@ describe("RecentAnnotationsComponent", () => {
   function setAudioEvents(
     audioEvents: Errorable<AudioEvent[]>,
     creator: Errorable<User> = null,
-    tag: Errorable<Tag> = null
+    tag: Errorable<Tag> = null,
   ) {
     const subjects = {
       audioEvents: new Subject<AudioEvent[]>(),
@@ -61,15 +61,13 @@ describe("RecentAnnotationsComponent", () => {
       tag: new Subject<Tag>(),
     };
 
-    spec
-      .inject(ShallowAudioEventsService)
-      .filterBySite.and.callFake((filter: Filters<AudioEvent>, site: Site) => {
-        expect(filter).toEqual({
-          sorting: { orderBy: "updatedAt", direction: "desc" },
-        });
-        expect(site).toEqual(defaultSite);
-        return subjects.audioEvents;
+    spec.inject(ShallowAudioEventsService).filterBySite.and.callFake((filter: Filters<AudioEvent>, site: Site) => {
+      expect(filter).toEqual({
+        sorting: { orderBy: "updatedAt", direction: "desc" },
       });
+      expect(site).toEqual(defaultSite);
+      return subjects.audioEvents;
+    });
     spec.inject(ACCOUNT.token).show.and.callFake(() => subjects.creator);
     spec.inject(TAG.token).show.and.callFake(() => subjects.tag);
 
@@ -84,7 +82,7 @@ describe("RecentAnnotationsComponent", () => {
         subjects.audioEvents,
         () => audioEvents,
         isBawApiError(audioEvents),
-        Object.keys(promises).length
+        Object.keys(promises).length,
       );
       promises.events = promise;
     }
@@ -93,17 +91,12 @@ describe("RecentAnnotationsComponent", () => {
         subjects.creator,
         () => creator,
         isBawApiError(creator),
-        Object.keys(promises).length
+        Object.keys(promises).length,
       );
       promises.creator = promise;
     }
     if (tag) {
-      const promise = nStepObservable(
-        subjects.tag,
-        () => tag,
-        isBawApiError(tag),
-        Object.keys(promises).length
-      );
+      const promise = nStepObservable(subjects.tag, () => tag, isBawApiError(tag), Object.keys(promises).length);
       promises.tag = promise;
     }
 
@@ -144,10 +137,7 @@ describe("RecentAnnotationsComponent", () => {
   describe("taggings", () => {
     describe("not tagged", () => {
       it("should show baw-loader while retrieving creator", async () => {
-        const audioEvent = new AudioEvent(
-          generateAudioEvent({ taggings: [] }),
-          injector
-        );
+        const audioEvent = new AudioEvent(generateAudioEvent({ taggings: [] }), injector);
         const promises = setAudioEvents([audioEvent]);
         spec.detectChanges();
         await promises.events;
@@ -156,36 +146,24 @@ describe("RecentAnnotationsComponent", () => {
       });
 
       it("should show (not tagged) with creator userName", async () => {
-        const audioEvent = new AudioEvent(
-          generateAudioEvent({ taggings: [] }),
-          injector
-        );
+        const audioEvent = new AudioEvent(generateAudioEvent({ taggings: [] }), injector);
         const promises = setAudioEvents([audioEvent], defaultUser);
         spec.detectChanges();
         await promises.events;
         spec.detectChanges();
         await promises.creator;
         spec.detectChanges();
-        assertNavLink(
-          getNavLinks()[0],
-          `(not tagged) by ${defaultUser.userName}`
-        );
+        assertNavLink(getNavLinks()[0], `(not tagged) by ${defaultUser.userName}`);
       });
     });
 
     describe("tagged", () => {
       function getTaggings(numTaggings: number) {
-        return Array.from(
-          { length: numTaggings },
-          () => new Tagging(generateTagging(), injector)
-        );
+        return Array.from({ length: numTaggings }, () => new Tagging(generateTagging(), injector));
       }
 
       it("should show baw-loader while retrieving tag", async () => {
-        const audioEvent = new AudioEvent(
-          generateAudioEvent({ taggings: [defaultTagging] }),
-          injector
-        );
+        const audioEvent = new AudioEvent(generateAudioEvent({ taggings: [defaultTagging] }), injector);
         const promises = setAudioEvents([audioEvent], defaultUser);
         spec.detectChanges();
         await promises.events;
@@ -196,10 +174,7 @@ describe("RecentAnnotationsComponent", () => {
       });
 
       it("should show baw-loader while retrieving creator", async () => {
-        const audioEvent = new AudioEvent(
-          generateAudioEvent({ taggings: [defaultTagging] }),
-          injector
-        );
+        const audioEvent = new AudioEvent(generateAudioEvent({ taggings: [defaultTagging] }), injector);
         const promises = setAudioEvents([audioEvent], null, defaultTag);
         spec.detectChanges();
         await promises.events;
@@ -210,10 +185,7 @@ describe("RecentAnnotationsComponent", () => {
       });
 
       it("should show tag text and creator userName", async () => {
-        const audioEvent = new AudioEvent(
-          generateAudioEvent({ taggings: [defaultTagging] }),
-          injector
-        );
+        const audioEvent = new AudioEvent(generateAudioEvent({ taggings: [defaultTagging] }), injector);
         const promises = setAudioEvents([audioEvent], defaultUser, defaultTag);
         spec.detectChanges();
         await promises.events;
@@ -221,26 +193,13 @@ describe("RecentAnnotationsComponent", () => {
         await promises.creator;
         await promises.tag;
         spec.detectChanges();
-        assertNavLink(
-          getNavLinks()[0],
-          `"${defaultTag.text}" by ${defaultUser.userName}`
-        );
+        assertNavLink(getNavLinks()[0], `"${defaultTag.text}" by ${defaultUser.userName}`);
       });
 
       it("should show multiple taggings", async () => {
-        const audioEvent1 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(3) }),
-          injector
-        );
-        const audioEvent2 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(2) }),
-          injector
-        );
-        const promises = setAudioEvents(
-          [audioEvent1, audioEvent2],
-          defaultUser,
-          defaultTag
-        );
+        const audioEvent1 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(3) }), injector);
+        const audioEvent2 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(2) }), injector);
+        const promises = setAudioEvents([audioEvent1, audioEvent2], defaultUser, defaultTag);
         spec.detectChanges();
         await promises.events;
         spec.detectChanges();
@@ -254,30 +213,14 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should limit number of shown tags to around 10", async () => {
         // 6 Tags
-        const audioEvent1 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(6) }),
-          injector
-        );
+        const audioEvent1 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(6) }), injector);
         // 1 Empty tag
-        const audioEvent2 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(0) }),
-          injector
-        );
+        const audioEvent2 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(0) }), injector);
         // 5 Tags
-        const audioEvent3 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(5) }),
-          injector
-        );
+        const audioEvent3 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(5) }), injector);
         // Past the 10 tag limit, should not appear
-        const audioEvent4 = new AudioEvent(
-          generateAudioEvent({ taggings: getTaggings(5) }),
-          injector
-        );
-        const promises = setAudioEvents(
-          [audioEvent1, audioEvent2, audioEvent3, audioEvent4],
-          defaultUser,
-          defaultTag
-        );
+        const audioEvent4 = new AudioEvent(generateAudioEvent({ taggings: getTaggings(5) }), injector);
+        const promises = setAudioEvents([audioEvent1, audioEvent2, audioEvent3, audioEvent4], defaultUser, defaultTag);
         spec.detectChanges();
         await promises.events;
         spec.detectChanges();

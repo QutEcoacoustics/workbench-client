@@ -1,8 +1,4 @@
-import {
-  SpectatorRouting,
-  SpyObject,
-  createRoutingFactory,
-} from "@ngneat/spectator";
+import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormsModule } from "@angular/forms";
@@ -42,7 +38,7 @@ describe("EditAnnotationsComponent", () => {
       generateAudioEventImport({
         name: modelData.name.jobTitle(),
         description: modelData.description(),
-      })
+      }),
     );
 
     spectator = createComponent({

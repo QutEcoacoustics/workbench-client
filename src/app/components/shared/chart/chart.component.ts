@@ -1,20 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from "@angular/core";
 import { Data } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import embed, {
-  EmbedOptions,
-  ExpressionFunction,
-  Result,
-  VisualizationSpec,
-  vega,
-} from "vega-embed";
+import embed, { EmbedOptions, ExpressionFunction, Result, VisualizationSpec, vega } from "vega-embed";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
 const customFormatterName = "customFormatter";
@@ -23,11 +10,9 @@ const customFormatterName = "customFormatter";
 // and use the same schema to render multiple charts with different data
 // and provide a unified error message format. All of the above cannot be done with vega-lite alone
 @Component({
-    selector: "baw-chart",
-    template: `
-    <div #chartContainer class="chartContainer marks">Chart loading</div>
-  `,
-    styleUrls: ["chart.component.scss"]
+  selector: "baw-chart",
+  template: ` <div #chartContainer class="chartContainer marks">Chart loading</div> `,
+  styleUrls: ["chart.component.scss"],
 })
 export class ChartComponent implements AfterViewInit, OnDestroy {
   public constructor() {}
@@ -72,11 +57,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   public async ngAfterViewInit() {
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
-    this.fullSpec = this.addDataToSpec(
-      this.spec.toObject(),
-      this.datasets,
-      this.data
-    );
+    this.fullSpec = this.addDataToSpec(this.spec.toObject(), this.datasets, this.data);
 
     this.vegaView = await this.generateChart(this.fullSpec);
 
@@ -84,9 +65,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
     // to the window namespace & a resize observer implementation
     if (!isInstantiated(ChartComponent.resizeObserver)) {
-      ChartComponent.resizeObserver = new ResizeObserver(
-        () => ChartComponent.resizeEvent()
-      );
+      ChartComponent.resizeObserver = new ResizeObserver(() => ChartComponent.resizeEvent());
     }
 
     // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
@@ -139,23 +118,18 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     };
 
     if (this.formatter) {
-      this.vegaFormatterFunction = vega.expressionFunction(
-        customFormatterName,
-        (datum: unknown) => this.formatter(datum)
+      this.vegaFormatterFunction = vega.expressionFunction(customFormatterName, (datum: unknown) =>
+        this.formatter(datum),
       );
     }
 
-    const vegaChart: Result = await embed(
-      this.chartContainer.nativeElement,
-      fullSpec,
-      {
-        ...defaultOptions,
-        ...this.options,
-        expressionFunctions: {
-          [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
-        },
-      }
-    );
+    const vegaChart: Result = await embed(this.chartContainer.nativeElement, fullSpec, {
+      ...defaultOptions,
+      ...this.options,
+      expressionFunctions: {
+        [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
+      },
+    });
 
     return vegaChart;
   }
@@ -163,11 +137,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // because data is inherently a field on the vega lite spec, but is separated in our component
   // we have to retroactively add the data to the spec as part of this component
   // we keep the data and the spec separate so that we can create multiple graphs with different data from the same spec
-  private addDataToSpec(
-    spec,
-    datasets?: Datasets | object,
-    data?: Data
-  ): VisualizationSpec {
+  private addDataToSpec(spec, datasets?: Datasets | object, data?: Data): VisualizationSpec {
     if (this.datasets) {
       return {
         ...spec,

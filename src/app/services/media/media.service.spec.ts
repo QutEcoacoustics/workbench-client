@@ -49,28 +49,18 @@ describe("MediaService", () => {
       // test tests are not in the test matrix because they depend on the
       // instance of the audio recording for their start/end times
       it("should throw an error if the start time is greater than the duration of the audio recording", () => {
-        const expectedError =
-          "Start time is greater than the duration of the audio recording";
+        const expectedError = "Start time is greater than the duration of the audio recording";
         const test = () => {
-          spec.service.createMediaUrl(
-            mockAudio,
-            mockAudio.durationSeconds + 0.01,
-            mockAudio.durationSeconds + 10
-          );
+          spec.service.createMediaUrl(mockAudio, mockAudio.durationSeconds + 0.01, mockAudio.durationSeconds + 10);
         };
 
         expect(test).toThrowError(expectedError);
       });
 
       it("should throw an error if the end time is greater than the duration of the audio recording", () => {
-        const expectedError =
-          "End time is greater than the duration of the audio recording";
+        const expectedError = "End time is greater than the duration of the audio recording";
         const test = () => {
-          spec.service.createMediaUrl(
-            mockAudio,
-            0,
-            mockAudio.durationSeconds + 0.01
-          );
+          spec.service.createMediaUrl(mockAudio, 0, mockAudio.durationSeconds + 0.01);
         };
 
         expect(test).toThrowError(expectedError);
