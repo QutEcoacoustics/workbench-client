@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   Inject,
   OnInit,
@@ -73,6 +74,7 @@ const confirmedMapping = {
     ProgressWarningComponent,
     SearchFiltersModalComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 class VerificationComponent
   extends PageComponent
