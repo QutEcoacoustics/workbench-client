@@ -18,7 +18,6 @@ import { DurationComponent } from "../../datetime-formats/duration/duration.comp
 import { ZonedDateTimeComponent } from "../../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";
 import { DatetimeComponent } from "../../datetime-formats/datetime/datetime/datetime.component";
-import { DetailViewModule } from "../detail-view.module";
 
 @Component({
   selector: "baw-render-field",
@@ -116,7 +115,6 @@ import { DetailViewModule } from "../detail-view.module";
     ZonedDateTimeComponent,
     TimeSinceComponent,
     DatetimeComponent,
-    DetailViewModule,
   ],
 })
 export class RenderFieldComponent

@@ -5,7 +5,7 @@ import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../../loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { UserLinkComponent } from "../../user-link/user-link/user-link.component";
+import { UserLinkComponent } from "../../user-link/user-link.component";
 import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";
 import { IsGhostUserPipe } from "../../../../pipes/is-ghost-user/is-ghost-user.pipe";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";

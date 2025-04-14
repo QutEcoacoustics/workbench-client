@@ -17,7 +17,7 @@ import {
 import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
 import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
-import { UserLinkComponent } from "../../shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "../../shared/user-link/user-link.component";
 import { UrlDirective } from "../../../directives/url/url.directive";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];

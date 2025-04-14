@@ -32,7 +32,7 @@ import { DateTimeFilterComponent } from "../../../shared/date-time-filter/date-t
 import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
 import { ZonedDateTimeComponent } from "../../../shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DurationComponent } from "../../../shared/datetime-formats/duration/duration.component";
-import { UserLinkComponent } from "../../../shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "../../../shared/user-link/user-link.component";
 import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";

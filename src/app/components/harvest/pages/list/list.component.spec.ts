@@ -15,7 +15,7 @@ import { DateTime } from "luxon";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
