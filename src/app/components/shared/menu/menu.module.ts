@@ -1,7 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { DirectivesModule } from "@directives/directives.module";
 import { DefaultMenu, DEFAULT_MENU } from "@helpers/page/defaultMenus";
 import { AllowsOriginalDownloadComponent } from "@menu/allows-original-download/allows-original-download.component";
 import { PermissionsShieldComponent } from "@menu/permissions-shield/permissions-shield.component";
@@ -63,7 +62,6 @@ const publicComponents = [
     NgbTooltipModule,
     NgbDropdownModule,
     IconsModule,
-    DirectivesModule,
     UserLinkComponent,
     TimeSinceComponent,
     ...privateComponents,

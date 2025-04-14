@@ -6,7 +6,6 @@ import { FormlyModule } from "@ngx-formly/core";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
-import { DirectivesModule } from "src/app/directives/directives.module";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
@@ -90,7 +89,6 @@ export const sharedModules = [
   IndicatorComponent,
   IconsModule,
   HiddenCopyComponent,
-  DirectivesModule,
   RenderFieldComponent,
   DetailViewComponent,
   CustomInputsModule,
