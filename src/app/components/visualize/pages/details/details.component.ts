@@ -4,7 +4,7 @@ import {
   visualizeMenuItem,
 } from "@components/visualize/visualize.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { BawClientComponent } from "../../../shared/baw-client/baw-client.component";
+import { BawClientComponent } from "@shared/baw-client/baw-client.component";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({

@@ -17,9 +17,9 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { regionsMenuItemActions } from "../list/list.component";
 import schema from "../../region.base.json";
-import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 

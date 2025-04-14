@@ -11,10 +11,10 @@ import {
   defaultSuccessMsg,
 } from "@helpers/formTemplate/formTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
 import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
-import { FormComponent } from "../../shared/form/form.component";
 
 const audioEventImportKey = "audioEventImport";
 

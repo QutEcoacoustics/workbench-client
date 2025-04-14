@@ -13,7 +13,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
-import { SharedModule } from "../shared.module";
+import { SharedModule } from "@shared.module";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {

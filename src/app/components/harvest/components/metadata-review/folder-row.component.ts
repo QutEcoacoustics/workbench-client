@@ -16,10 +16,10 @@ import { Project } from "@models/Project";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { FaLayersComponent, FaIconComponent, FaLayersCounterComponent } from "@fortawesome/angular-fontawesome";
 import { DecimalPipe } from "@angular/common";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { SiteSelectorComponent } from "../inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "../inputs/utc-offset-selector.component";
-import { CheckboxComponent } from "../../../shared/checkbox/checkbox.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { WhitespaceComponent } from "./whitespace.component";
 

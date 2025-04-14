@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { CMS } from "@baw-api/cms/cms.service";
 import { aboutCategory, ethicsMenuItem } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { CmsComponent } from "../../../shared/cms/cms.component";
+import { CmsComponent } from "@shared/cms/cms.component";
 
 @Component({
   selector: "baw-about-ethics",

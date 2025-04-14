@@ -3,11 +3,11 @@ import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 import { AnalysisJobComponent } from "@components/audio-analysis/pages/details/details.component";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import {
   adminAnalysisJobMenuItem,
   adminAnalysisJobsCategory,
 } from "../analysis-jobs.menus";
-import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const analysisJobKey = "analysisJob";
 

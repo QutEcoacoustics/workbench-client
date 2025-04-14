@@ -26,7 +26,7 @@ import {
 import { defaultDebounceTime } from "src/app/app.helper";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
-import { UrlDirective } from "../../../../directives/url/url.directive";
+import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-harvest-site-selector",

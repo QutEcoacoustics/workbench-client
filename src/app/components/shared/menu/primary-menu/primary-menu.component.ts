@@ -26,13 +26,13 @@ import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { NgTemplateOutlet } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { HeaderItemComponent } from "../header-item/header-item.component";
-import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlActiveDirective } from "@directives/url/url-active.directive";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/website-status-indicator.component";
-import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { UrlActiveDirective } from "../../../../directives/url/url-active.directive";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
+import { HeaderItemComponent } from "../header-item/header-item.component";
 
 export type HeaderItem = PartialWith<MenuLink, "label" | "uri">;
 

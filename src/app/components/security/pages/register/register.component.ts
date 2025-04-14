@@ -12,13 +12,12 @@ import {
   IRegisterDetails,
   RegisterDetails,
 } from "@models/data/RegisterDetails";
-import { RecaptchaState } from "@shared/form/form.component";
+import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
-import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./register.schema.json";
 
 @Component({

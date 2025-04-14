@@ -12,9 +12,9 @@ import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTempla
 import { Project } from "@models/Project";
 import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
-import { CardsComponent } from "../../../shared/model-cards/cards/cards.component";
-import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { CardsComponent } from "@shared/model-cards/cards/cards.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,

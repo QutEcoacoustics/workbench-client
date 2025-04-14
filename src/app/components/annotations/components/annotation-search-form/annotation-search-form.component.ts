@@ -19,7 +19,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbDate, NgbCollapse, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
   createSearchCallback,
@@ -27,9 +27,7 @@ import {
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
-import { DateTimeFilterComponent } from "../../../shared/date-time-filter/date-time-filter.component";
-import { TypeaheadInputComponent as TypeaheadInputComponent_1 } from "../../../shared/typeahead-input/typeahead-input.component";
-import { WIPComponent } from "../../../shared/wip/wip.component";
+import { WIPComponent } from "@shared/wip/wip.component";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -38,7 +36,7 @@ import { WIPComponent } from "../../../shared/wip/wip.component";
   imports: [
     FormsModule,
     DateTimeFilterComponent,
-    TypeaheadInputComponent_1,
+    TypeaheadInputComponent,
     WIPComponent,
     NgbCollapse,
     NgbHighlight,

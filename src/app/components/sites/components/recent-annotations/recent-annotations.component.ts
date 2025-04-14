@@ -10,8 +10,8 @@ import { AudioEvent } from "@models/AudioEvent";
 import { Site } from "@models/Site";
 import { takeUntil } from "rxjs";
 import { NgTemplateOutlet } from "@angular/common";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { UrlDirective } from "../../../../directives/url/url.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({

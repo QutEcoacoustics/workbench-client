@@ -4,7 +4,7 @@ import { websiteStatusMenuItem } from "@components/website-status/website-status
 import { KeysOfType } from "@helpers/advancedTypes";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { AsyncPipe } from "@angular/common";
-import { StrongRouteDirective } from "../../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 @Component({
   selector: "baw-website-status-warning",

@@ -8,13 +8,13 @@ import {
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { adminScriptsMenuItemActions } from "../list/list.component";
 import schema from "../script.base.schema.json";
 import {
   newScriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
-import { FormComponent } from "../../shared/form/form.component";
 
 /**
  * New Scripts Component

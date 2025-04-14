@@ -42,12 +42,12 @@ import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { HiddenCopyComponent } from "../../../shared/hidden-copy/hidden-copy.component";
-import { ItemsComponent } from "../../../shared/items/items/items.component";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { UrlDirective } from "../../../../directives/url/url.directive";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
+import { ItemsComponent } from "@shared/items/items/items.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
 
 export const myAccountActions = [
   myEditMenuItem,

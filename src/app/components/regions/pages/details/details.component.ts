@@ -34,8 +34,8 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SiteMapComponent } from "../../../projects/components/site-map/site-map.component";
 import { SiteCardComponent } from "../../../projects/components/site-card/site-card.component";
 

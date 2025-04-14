@@ -34,11 +34,11 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { IfLoggedInComponent } from "@shared/can/can.component";
+import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
-import { IfLoggedInComponent } from "../../../shared/can/can.component";
-import { AnnotationEventCardComponent } from "../../../shared/audio-event-card/annotation-event-card.component";
-import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
+import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";

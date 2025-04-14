@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestReport } from "@models/Harvest";
+import { ProgressComponent } from "@shared/progress/progress/progress.component";
+import { ProgressBarComponent } from "@shared/progress/bar/bar.component";
 import { CanCloseDialogComponent } from "../../components/shared/can-close-dialog.component";
 import { EtaComponent } from "../../components/shared/eta.component";
-import { ProgressComponent } from "../../../shared/progress/progress/progress.component";
-import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component";
 
 @Component({
   selector: "baw-harvest-scanning",

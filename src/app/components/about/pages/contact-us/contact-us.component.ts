@@ -9,11 +9,10 @@ import { dataRequestMenuItem } from "@components/data-request/data-request.menus
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ContactUs, IContactUs } from "@models/data/ContactUs";
-import { RecaptchaState } from "@shared/form/form.component";
+import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs/operators";
-import { FormComponent } from "../../../shared/form/form.component";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import schema from "./contact-us.schema.json";
 
 @Component({

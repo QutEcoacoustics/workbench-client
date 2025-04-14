@@ -6,11 +6,10 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
 import { MapMarkerOptions } from "@services/maps/maps.service";
-import { sanitizeMapMarkers } from "@shared/map/map.component";
+import { sanitizeMapMarkers , MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { merge, Observable } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
-import { MapComponent } from "../../../shared/map/map.component";
 
 @Component({
   selector: "baw-site-map",

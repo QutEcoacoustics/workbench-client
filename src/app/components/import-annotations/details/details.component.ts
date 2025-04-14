@@ -27,7 +27,12 @@ import {
   NgbNavOutlet,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { deleteAnnotationImportModal } from "../import-annotations.modals";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
@@ -35,12 +40,7 @@ import {
   annotationImportMenuItem,
   addAnnotationImportMenuItem,
 } from "../import-annotations.menu";
-import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
-import { LoadingComponent } from "../../shared/loading/loading.component";
-import { UrlDirective } from "../../../directives/url/url.directive";
-import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
-import { InlineListComponent } from "../../shared/inline-list/inline-list.component";
+import { deleteAnnotationImportModal } from "../import-annotations.modals";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
 export const annotationMenuActions = [

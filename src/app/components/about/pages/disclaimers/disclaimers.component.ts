@@ -5,7 +5,7 @@ import {
   disclaimersMenuItem,
 } from "@components/about/about.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { CmsComponent } from "../../../shared/cms/cms.component";
+import { CmsComponent } from "@shared/cms/cms.component";
 
 @Component({
   selector: "baw-about-disclaimers",

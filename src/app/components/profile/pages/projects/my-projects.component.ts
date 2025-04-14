@@ -12,10 +12,10 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TitleCasePipe } from "@angular/common";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { myAccountActions } from "../profile/my-profile.component";
-import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
-import { UrlDirective } from "../../../../directives/url/url.directive";
-import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 
 const userKey = "user";
 

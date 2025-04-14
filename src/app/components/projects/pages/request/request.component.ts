@@ -10,10 +10,10 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
+import { WIPComponent } from "@shared/wip/wip.component";
+import { FormComponent } from "@shared/form/form.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { projectsMenuItemActions } from "../list/list.component";
-import { WIPComponent } from "../../../shared/wip/wip.component";
-import { FormComponent } from "../../../shared/form/form.component";
-import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 import schema from "./request.schema.json";
 
 @Component({

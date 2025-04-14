@@ -11,6 +11,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Script } from "@models/Script";
 import { List } from "immutable";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import baseSchema from "../script.base.schema.json";
 import extendedSchema from "../script.extended.schema.json";
 import {
@@ -18,7 +19,6 @@ import {
   scriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
-import { DetailViewComponent } from "../../shared/detail-view/detail-view.component";
 
 export const adminScriptActions = [adminEditScriptMenuItem];
 const scriptKey = "script";

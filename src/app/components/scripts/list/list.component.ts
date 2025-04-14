@@ -7,17 +7,17 @@ import { List } from "immutable";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { User } from "@models/User";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { IfLoggedInComponent } from "@shared/can/can.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import {
   adminEditScriptMenuItem,
   newScriptMenuItem,
   adminScriptsCategory,
   scriptsMenuItem,
 } from "../scripts.menus";
-import { DebounceInputComponent } from "../../shared/debounce-input/debounce-input.component";
-import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
-import { IfLoggedInComponent } from "../../shared/can/can.component";
-import { UrlDirective } from "../../../directives/url/url.directive";
-import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.component";
 
 export const adminScriptsMenuItemActions = [newScriptMenuItem];
 

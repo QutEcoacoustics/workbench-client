@@ -8,13 +8,13 @@ import {
 import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagGroupsMenuItemActions } from "../list/list.component";
 import {
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
-import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
   selector: "baw-admin-tag-groups-new",

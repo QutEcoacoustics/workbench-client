@@ -12,8 +12,8 @@ import {
 } from "@models/data/ConfirmPassword";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { loginMenuItemActions } from "../login/login.component";
-import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./confirm-account.schema.json";
 
 @Component({

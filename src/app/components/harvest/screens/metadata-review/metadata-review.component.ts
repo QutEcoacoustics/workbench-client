@@ -18,7 +18,7 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { concatMap, Subject, takeUntil, tap } from "rxjs";
 import { NgStyle, DecimalPipe } from "@angular/common";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { StatisticsComponent } from "../../components/shared/statistics/statistics.component";
 import { FolderRowComponent } from "../../components/metadata-review/folder-row.component";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";

@@ -17,8 +17,8 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import schema from "../../analysis-job.schema.json";
-import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const analysisJobKey = "analysisJob";
 const projectKey = "project";

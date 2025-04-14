@@ -8,7 +8,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { NgTemplateOutlet } from "@angular/common";
-import { UrlDirective } from "../../../../directives/url/url.directive";
+import { UrlDirective } from "@directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 // TODO Pass model to content through context

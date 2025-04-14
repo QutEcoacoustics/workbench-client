@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { homeCategory } from "@components/home/home.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { StrongRouteDirective } from "../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { pageNotFoundMenuItem } from "./error.menus";
 
 @Component({
