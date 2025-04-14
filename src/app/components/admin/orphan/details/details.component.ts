@@ -13,8 +13,8 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";
-import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const siteKey = "site";
 

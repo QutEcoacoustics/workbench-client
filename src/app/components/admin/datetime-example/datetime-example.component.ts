@@ -3,12 +3,12 @@ import { List } from "immutable";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { DateTime, Duration } from "luxon";
 import { FormsModule } from "@angular/forms";
-import { adminCategory, adminDateTimeTemplateMenuItem } from "../admin.menus";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
-import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
-import { ZonedDateTimeComponent } from "../../shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
-import { DurationComponent } from "../../shared/datetime-formats/duration/duration.component";
-import { TimeSinceComponent } from "../../shared/datetime-formats/time-since/time-since.component";
+import { adminCategory, adminDateTimeTemplateMenuItem } from "../admin.menus";
 
 @Component({
   selector: "baw-admin-datetime-templates",

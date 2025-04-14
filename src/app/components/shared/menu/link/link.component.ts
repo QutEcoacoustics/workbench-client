@@ -12,8 +12,8 @@ import { Observable } from "rxjs";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { StrongRouteActiveDirective } from "../../../../directives/strongRoute/strong-route-active.directive";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 /**
  * Menu Link Component

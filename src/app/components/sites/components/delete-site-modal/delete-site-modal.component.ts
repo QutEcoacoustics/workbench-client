@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 @Component({
   selector: "baw-delete-site-modal",

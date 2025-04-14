@@ -19,7 +19,7 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Permission } from "@models/Permission";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
-import { ISelectableItem } from "@shared/items/selectable-items/selectable-items.component";
+import { ISelectableItem , SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import {
@@ -37,14 +37,13 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { ModelSelectorComponent } from "@shared/model-selector/model-selector.component";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
 import { projectMenuItemActions } from "../details/details.component";
-import { SelectableItemsComponent } from "../../../shared/items/selectable-items/selectable-items.component";
-import { ModelSelectorComponent } from "../../../shared/model-selector/model-selector.component";
-import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
-import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "../../../../directives/datatable/pagination/pagination.directive";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 const projectKey = "project";

@@ -7,8 +7,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { map, Observable } from "rxjs";
 import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
-import { UrlDirective } from "../../../../directives/url/url.directive";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { LoadingComponent } from "../../loading/loading.component";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 

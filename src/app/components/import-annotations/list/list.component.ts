@@ -9,16 +9,16 @@ import { Id } from "@interfaces/apiInterfaces";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
+import { UrlDirective } from "@directives/url/url.directive";
 import {
   annotationsImportCategory,
   annotationsImportMenuItem,
   newAnnotationImportMenuItem,
 } from "../import-annotations.menu";
-import { DatatableDefaultsDirective } from "../../../directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "../../../directives/datatable/pagination/pagination.directive";
-import { DatetimeComponent } from "../../shared/datetime-formats/datetime/datetime/datetime.component";
-import { UserLinkComponent } from "../../shared/user-link/user-link.component";
-import { UrlDirective } from "../../../directives/url/url.directive";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 

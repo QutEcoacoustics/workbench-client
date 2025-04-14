@@ -13,6 +13,7 @@ import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminEditTagGroupMenuItem,
@@ -20,7 +21,6 @@ import {
   adminTagGroupsRoute,
 } from "../tag-group.menus";
 import schema from "../tag-group.schema.json";
-import { FormComponent } from "../../../shared/form/form.component";
 
 const tagGroupKey = "tagGroup";
 

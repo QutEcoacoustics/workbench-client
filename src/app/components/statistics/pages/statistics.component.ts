@@ -9,8 +9,8 @@ import { filesize } from "filesize";
 import { List, Map } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
+import { ItemsComponent } from "@shared/items/items/items.component";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
-import { ItemsComponent } from "../../shared/items/items/items.component";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 

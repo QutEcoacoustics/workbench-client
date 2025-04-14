@@ -8,7 +8,7 @@ import { ConfigService } from "@services/config/config.service";
 import { takeUntil } from "rxjs";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 @Component({
   selector: "baw-website-status-indicator",

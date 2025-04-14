@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 @Component({
   selector: "baw-harvest-error",

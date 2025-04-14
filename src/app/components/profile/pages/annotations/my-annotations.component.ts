@@ -14,12 +14,12 @@ import { User } from "@models/User";
 import { List } from "immutable";
 import { DateTimeTimezone } from "@interfaces/apiInterfaces";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { myAccountActions } from "../profile/my-profile.component";
-import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { TimeSinceComponent } from "../../../shared/datetime-formats/time-since/time-since.component";
-import { UrlDirective } from "../../../../directives/url/url.directive";
-import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 const userKey = "user";

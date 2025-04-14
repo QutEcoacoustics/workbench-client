@@ -11,13 +11,13 @@ import {
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { adminScriptActions } from "../details/details.component";
 import schema from "../script.base.schema.json";
 import {
   adminEditScriptMenuItem,
   adminScriptsCategory,
 } from "../scripts.menus";
-import { FormComponent } from "../../shared/form/form.component";
 
 const scriptKey = "script";
 

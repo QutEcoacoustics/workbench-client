@@ -16,9 +16,9 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { projectMenuItemActions } from "../details/details.component";
 import schema from "../../project.schema.json";
-import { FormComponent } from "../../../shared/form/form.component";
 
 const projectKey = "project";
 

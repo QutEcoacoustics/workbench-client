@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -10,8 +12,6 @@ import {
   ethicsMenuItem,
 } from "../../about/about.menus";
 import { statisticsMenuItem } from "../../statistics/statistics.menus";
-import { StrongRouteActiveDirective } from "../../../directives/strongRoute/strong-route-active.directive";
-import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
 
 /**
  * Footer Component

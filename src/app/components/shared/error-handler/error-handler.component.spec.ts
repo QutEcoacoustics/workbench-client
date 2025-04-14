@@ -12,7 +12,7 @@ import {
   REQUEST_TIMEOUT,
   UNAUTHORIZED,
 } from "http-status";
-import { SharedModule } from "../shared.module";
+import { SharedModule } from "@shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({

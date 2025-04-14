@@ -8,10 +8,10 @@ import {
 import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import { adminNewTagMenuItem, adminTagsCategory } from "../tags.menus";
-import { FormComponent } from "../../../shared/form/form.component";
 
 const typeOfTagsKey = "typeOfTags";
 

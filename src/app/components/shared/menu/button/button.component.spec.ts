@@ -3,7 +3,7 @@ import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { generateMenuAction } from "@test/fakes/MenuItem";
-import { SharedModule } from "../../shared.module";
+import { SharedModule } from "@shared.module";
 import { MenuButtonComponent } from "./button.component";
 
 describe("MenuButtonComponent", () => {

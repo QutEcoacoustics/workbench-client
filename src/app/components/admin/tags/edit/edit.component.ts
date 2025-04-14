@@ -10,6 +10,7 @@ import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import {
@@ -18,7 +19,6 @@ import {
   adminTagsMenuItem,
 } from "../tags.menus";
 import { adminDeleteTagModal } from "../tags.modals";
-import { FormComponent } from "../../../shared/form/form.component";
 
 const tagKey = "tag";
 const tagTypesKey = "tagTypes";

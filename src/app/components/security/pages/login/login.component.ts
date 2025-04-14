@@ -17,12 +17,11 @@ import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
-import { ToastComponent } from "@shared/toast/toast.component";
+import { ToastComponent , ToastComponent as ToastComponent_1 } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
-import { FormComponent } from "../../../shared/form/form.component";
-import { ToastComponent as ToastComponent_1 } from "../../../shared/toast/toast.component";
+import { FormComponent } from "@shared/form/form.component";
 import schema from "./login.schema.json";
 
 export const loginMenuItemActions = [

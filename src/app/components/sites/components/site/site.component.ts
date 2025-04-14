@@ -8,16 +8,15 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { MapMarkerOptions } from "@services/maps/maps.service";
-import { sanitizeMapMarkers } from "@shared/map/map.component";
+import { sanitizeMapMarkers , MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { ZonedDateTimeComponent } from "../../../shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
-import { WIPComponent } from "../../../shared/wip/wip.component";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { WIPComponent } from "@shared/wip/wip.component";
 import { RecentAnnotationsComponent } from "../recent-annotations/recent-annotations.component";
-import { MapComponent } from "../../../shared/map/map.component";
 
 /**
  * Site Details Component

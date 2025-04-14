@@ -38,8 +38,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { merge, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { analysesMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
-import { AuthenticatedImageDirective } from "../../../../directives/image/image.directive";
-import { DebounceInputComponent } from "../../../shared/debounce-input/debounce-input.component";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { SiteMapComponent } from "../../components/site-map/site-map.component";
 import { SiteCardComponent } from "../../components/site-card/site-card.component";
 

@@ -39,15 +39,15 @@ import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { ChartComponent } from "@shared/chart/chart.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import { DatetimeComponent } from "../../../../shared/datetime-formats/datetime/datetime/datetime.component";
-import { InlineListComponent } from "../../../../shared/inline-list/inline-list.component";
-import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
-import { ChartComponent } from "../../../../shared/chart/chart.component";
-import { DurationComponent } from "../../../../shared/datetime-formats/duration/duration.component";
 import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { TimePipe } from "../../../../../pipes/time/time.pipe";
 import { DateTimePipe } from "../../../../../pipes/date/date.pipe";

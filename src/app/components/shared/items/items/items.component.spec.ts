@@ -3,7 +3,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
-import { SharedModule } from "../../shared.module";
+import { SharedModule } from "@shared.module";
 import { IItem, ItemComponent } from "../item/item.component";
 import { ItemsComponent } from "./items.component";
 

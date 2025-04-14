@@ -12,7 +12,7 @@ import {
   UNAUTHORIZED,
 } from "http-status";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 /**
  * Error Handler Wrapper

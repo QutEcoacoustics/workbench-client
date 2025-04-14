@@ -4,13 +4,13 @@ import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode, NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { BehaviorSubject } from "rxjs";
-import { DatatableDefaultsDirective } from "../../../../directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "../../../../directives/datatable/pagination/pagination.directive";
-import { DatatableSortKeyDirective } from "../../../../directives/datatable/sort-key/sort-key.directive";
-import { LoadingComponent } from "../../../shared/loading/loading.component";
-import { UrlDirective } from "../../../../directives/url/url.directive";
-import { ZonedDateTimeComponent } from "../../../shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
-import { DurationComponent } from "../../../shared/datetime-formats/duration/duration.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DatatableSortKeyDirective } from "@directives/datatable/sort-key/sort-key.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({

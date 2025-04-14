@@ -27,11 +27,11 @@ import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { BehaviorSubject, takeUntil } from "rxjs";
 import { loginMenuItem } from "src/app/components/security/security.menus";
-import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
-import { DateTimeFilterComponent } from "../../../shared/date-time-filter/date-time-filter.component";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
-import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
-import { HiddenCopyComponent } from "../../../shared/hidden-copy/hidden-copy.component";
+import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 
 const projectKey = "project";
 const regionKey = "region";

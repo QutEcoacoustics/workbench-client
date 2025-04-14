@@ -15,10 +15,10 @@ import {
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import { theirProfileActions } from "../profile/their-profile.component";
 import schema from "../../profile.schema.json";
-import { FormComponent } from "../../../shared/form/form.component";
-import { DetailViewComponent } from "../../../shared/detail-view/detail-view.component";
 
 const accountKey = "account";
 

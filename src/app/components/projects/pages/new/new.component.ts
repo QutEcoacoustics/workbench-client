@@ -12,9 +12,9 @@ import {
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { projectsMenuItemActions } from "../list/list.component";
 import schema from "../../project.schema.json";
-import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
   selector: "baw-projects-new",

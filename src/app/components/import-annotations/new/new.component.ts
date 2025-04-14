@@ -8,13 +8,13 @@ import {
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import schema from "../audio-event-import.schema.json";
 import {
   annotationsImportMenuItem,
   newAnnotationImportMenuItem,
   annotationsImportCategory,
 } from "../import-annotations.menu";
-import { FormComponent } from "../../shared/form/form.component";
 
 export const newAnnotationMenuItemActions = [
   annotationsImportMenuItem,
