@@ -4,7 +4,6 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UserLinkComponent } from "@shared/user-link/user-link.component";
@@ -13,6 +12,8 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
 import { humanizedDuration } from "@test/helpers/dateTime";
+import { IsGhostUserPipe } from "@pipes/is-ghost-user/is-ghost-user.pipe";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {
@@ -26,9 +27,10 @@ describe("UserBadgeComponent", () => {
     imports: [
     RouterTestingModule,
     MockBawApiModule,
-    PipesModule,
     TimeSinceComponent,
     LoadingComponent,
+    IsGhostUserPipe,
+    IsUnresolvedPipe,
 ],
   });
 

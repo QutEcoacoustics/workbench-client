@@ -5,7 +5,6 @@ import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service"
 
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import {
   interceptShowApiRequest,
   nStepObservable,
@@ -32,9 +31,6 @@ describe("DetailViewComponent", () => {
     imports: [
       MockBawApiModule,
       RouterTestingModule,
-      PipesModule,
-
-      // standalone components
       CheckboxComponent,
       LoadingComponent,
     ],

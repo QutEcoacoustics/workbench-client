@@ -11,7 +11,6 @@ import {
   NgbModalModule,
   NgbTooltipModule,
 } from "@ng-bootstrap/ng-bootstrap";
-import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -64,7 +63,6 @@ const publicComponents = [
     NgbTooltipModule,
     NgbDropdownModule,
     IconsModule,
-    PipesModule,
     DirectivesModule,
     UserLinkComponent,
     TimeSinceComponent,
