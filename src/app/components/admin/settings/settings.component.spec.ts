@@ -1,6 +1,5 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { CACHE_SETTINGS, CacheSettings } from "@services/cache/cache-settings";
 import { AdminSettingsComponent } from "./settings.component";
@@ -10,7 +9,7 @@ describe("AdminSettingsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AdminSettingsComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     providers: [
       { provide: CACHE_SETTINGS, useValue: new CacheSettings(true, false) },
     ],

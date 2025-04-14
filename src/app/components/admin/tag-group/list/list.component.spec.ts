@@ -6,7 +6,6 @@ import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -27,7 +26,6 @@ describe("AdminTagGroupsComponent", () => {
   beforeEach(function () {
     TestBed.configureTestingModule({
     imports: [
-        SharedModule,
         RouterTestingModule,
         ...appLibraryImports,
         MockBawApiModule,

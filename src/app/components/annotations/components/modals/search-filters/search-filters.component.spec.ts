@@ -1,6 +1,5 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
@@ -9,7 +8,7 @@ describe("SearchFiltersModalComponent", () => {
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(): void {

@@ -11,7 +11,6 @@ import { Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
@@ -32,9 +31,10 @@ describe("RecentAnnotationsComponent", () => {
   let defaultTag: Tag;
   let injector: AssociationInjector;
   let spec: Spectator<RecentAnnotationsComponent>;
+
   const createComponent = createComponentFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
     providers: [
       MockProvider(ToastService, {
         error: jasmine.createSpy("error").and.stub(),

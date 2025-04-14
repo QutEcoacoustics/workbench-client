@@ -6,7 +6,6 @@ import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -36,7 +35,7 @@ describe("ListComponent", () => {
       WebsiteStatusWarningComponent,
     ],
     component: ListComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

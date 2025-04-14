@@ -3,16 +3,16 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
-import { SharedModule } from "@shared.module";
 import { IItem, ItemComponent } from "../item/item.component";
 import { ItemsComponent } from "./items.component";
 
 describe("ItemsComponent", () => {
   let defaultIcon: IconProp;
   let spec: Spectator<ItemsComponent>;
+
   const createComponent = createComponentFactory({
     component: ItemsComponent,
-    imports: [SharedModule, RouterTestingModule],
+    imports: [RouterTestingModule],
     declarations: [MockComponent(ItemComponent)],
   });
 

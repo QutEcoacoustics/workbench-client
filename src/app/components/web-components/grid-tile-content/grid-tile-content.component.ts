@@ -28,7 +28,6 @@ export const gridTileContentSelector = "baw-grid-tile-content";
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  standalone: true,
 })
 export class GridTileContentComponent implements WithContext {
   public constructor(

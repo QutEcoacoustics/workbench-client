@@ -14,7 +14,6 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
@@ -45,7 +44,7 @@ describe("DetailsComponent", () => {
       TitleComponent,
     ],
     providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

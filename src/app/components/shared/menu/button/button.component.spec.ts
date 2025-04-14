@@ -3,16 +3,15 @@ import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { generateMenuAction } from "@test/fakes/MenuItem";
-import { SharedModule } from "@shared.module";
 import { MenuButtonComponent } from "./button.component";
 
 describe("MenuButtonComponent", () => {
   let defaultLink: MenuAction;
   let spec: SpectatorHost<MenuButtonComponent>;
   let component: MenuButtonComponent;
+
   const createHost = createHostFactory({
     component: MenuButtonComponent,
-    imports: [SharedModule],
   });
 
   function retrieveButton() {

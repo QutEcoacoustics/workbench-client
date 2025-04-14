@@ -1,6 +1,5 @@
 import { fakeAsync } from "@angular/core/testing";
 import { Spectator, createComponentFactory, typeInElement } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { Duration } from "luxon";
 import { TimeComponent } from "./time.component";
 
@@ -9,7 +8,6 @@ describe("TimeComponent", () => {
 
   const createComponent = createComponentFactory({
     component: TimeComponent,
-    imports: [SharedModule],
   });
 
   function setup(): void {

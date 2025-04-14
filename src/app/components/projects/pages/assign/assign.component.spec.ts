@@ -1,7 +1,6 @@
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
@@ -23,7 +22,7 @@ describe("AssignComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AssignComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

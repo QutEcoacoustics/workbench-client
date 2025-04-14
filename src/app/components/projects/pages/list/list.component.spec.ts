@@ -13,8 +13,6 @@ import {
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -34,7 +32,7 @@ describe("ProjectsListComponent", () => {
     component: ListComponent,
     overrideModules: [
       [
-        ModelCardsModule,
+        CardsComponent,
         {
           set: {
             declarations: [mockCardsComponent],
@@ -43,7 +41,7 @@ describe("ProjectsListComponent", () => {
         },
       ],
     ],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   function generateProjects(

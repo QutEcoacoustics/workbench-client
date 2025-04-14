@@ -4,7 +4,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -103,7 +102,7 @@ describe("VerificationComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
     declarations: [
       SearchFiltersModalComponent,
       ProgressWarningComponent,

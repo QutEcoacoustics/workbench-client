@@ -3,7 +3,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
@@ -54,7 +53,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
   });
 

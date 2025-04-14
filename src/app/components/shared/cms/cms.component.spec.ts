@@ -13,15 +13,15 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
-import { SharedModule } from "@shared.module";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
   let cmsService: SpyObject<CmsService>;
   let spectator: Spectator<CmsComponent>;
+
   const createComponent = createComponentFactory({
     component: CmsComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   async function interceptApiRequest(

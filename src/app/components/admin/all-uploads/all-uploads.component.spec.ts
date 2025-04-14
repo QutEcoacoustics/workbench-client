@@ -1,7 +1,6 @@
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
@@ -29,7 +28,7 @@ describe("AllUploadsComponent", () => {
   const createComponent = createRoutingFactory({
     declarations: [LoadingComponent, ConfirmationComponent, UserLinkComponent],
     component: AllUploadsComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

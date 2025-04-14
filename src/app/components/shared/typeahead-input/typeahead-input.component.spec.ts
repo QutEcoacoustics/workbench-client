@@ -3,7 +3,6 @@ import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
@@ -18,7 +17,7 @@ describe("TypeaheadInputComponent", () => {
 
   const createComponent = createHostFactory({
     component: TypeaheadInputComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(): void {

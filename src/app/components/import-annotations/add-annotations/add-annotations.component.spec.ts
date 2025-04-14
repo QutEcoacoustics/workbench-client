@@ -3,7 +3,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
@@ -62,7 +61,7 @@ describe("AddAnnotationsComponent", () => {
       TypeaheadInputComponent,
       LoadingComponent,
     ],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
     data: {
       resolvers: {

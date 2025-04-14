@@ -1,6 +1,5 @@
 import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { ActivatedRoute, Params } from "@angular/router";
 import { Project } from "@models/Project";
@@ -30,7 +29,7 @@ describe("NewEventReportComponent", () => {
   const createComponent = createRoutingFactory({
     component: NewEventReportComponent,
     declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(): void {

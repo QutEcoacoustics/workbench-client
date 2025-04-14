@@ -11,7 +11,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
@@ -28,9 +27,10 @@ describe("DownloadTableComponent", () => {
   let siteApi: SpyObject<ShallowSitesService>;
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<DownloadTableComponent>;
+
   const createComponent = createComponentFactory({
     component: DownloadTableComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
   });
 
   function interceptRecordingsApi(recordings: AudioRecording[]) {

@@ -4,7 +4,6 @@ import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
-import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -20,7 +19,6 @@ describe("AdminOrphansComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminOrphansComponent,

@@ -14,7 +14,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -43,8 +42,9 @@ describe("RegionDetailsComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
   let spectator: SpectatorRouting<DetailsComponent>;
+
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     declarations: [mock.map, mock.card],
     mocks: [ToastService],
     component: DetailsComponent,

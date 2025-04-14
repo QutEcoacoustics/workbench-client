@@ -12,7 +12,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -43,7 +42,7 @@ describe("BatchUploadingComponent", () => {
         transition: (_stage: HarvestStatus) => {},
       }),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

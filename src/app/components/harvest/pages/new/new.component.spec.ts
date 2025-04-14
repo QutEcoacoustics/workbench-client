@@ -6,7 +6,6 @@ import {
   mockProvider,
   Spectator,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { NewComponent } from "./new.component";
@@ -20,7 +19,7 @@ describe("newHarvestComponent", () => {
     providers: [
       mockProvider(HarvestsService),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

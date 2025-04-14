@@ -4,7 +4,6 @@ import { defaultApiPageSize, InnerFilter } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -30,7 +29,7 @@ describe("AnalysesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnalysesComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   beforeEach(function () {

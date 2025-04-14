@@ -13,7 +13,6 @@ import {
 } from "@test/helpers/googleMaps";
 import { modelData } from "@test/helpers/faker";
 import { MockConfigModule } from "@services/config/configMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -30,7 +29,6 @@ describe("MapComponent", () => {
     imports: [
       MockBawApiModule,
       MockConfigModule,
-      SharedModule,
       MockModule(GoogleMapsModule),
     ],
   });

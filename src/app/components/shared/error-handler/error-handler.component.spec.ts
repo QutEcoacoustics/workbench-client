@@ -12,12 +12,11 @@ import {
   REQUEST_TIMEOUT,
   UNAUTHORIZED,
 } from "http-status";
-import { SharedModule } from "@shared.module";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
-  imports: [SharedModule, RouterTestingModule, MockConfigModule],
+  imports: [ErrorHandlerComponent, RouterTestingModule, MockConfigModule],
 })
 class MockComponent implements OnInit {
   public error: BawApiError;
@@ -78,7 +77,6 @@ describe("ErrorHandlerComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        SharedModule,
         RouterTestingModule,
         MockConfigModule,
         ErrorHandlerComponent,

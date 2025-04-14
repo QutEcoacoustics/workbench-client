@@ -17,7 +17,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -44,7 +43,7 @@ describe("MySitesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MySitesComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
     stubsEnabled: false,
   });
 

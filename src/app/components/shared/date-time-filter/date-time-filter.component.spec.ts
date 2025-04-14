@@ -6,7 +6,6 @@ import {
 import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
 import { Project } from "@models/Project";
@@ -24,7 +23,7 @@ describe("AudioRecordingsFilter", () => {
 
   const createComponent = createRoutingFactory({
     component: DateTimeFilterComponent,
-    imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule],
+    imports: [NgbCollapseModule, MockConfigModule, CacheModule],
     declarations: [TimeComponent],
     providers: [mockProvider(ToastService)],
   });

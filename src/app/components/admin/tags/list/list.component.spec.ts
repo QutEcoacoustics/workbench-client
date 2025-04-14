@@ -6,7 +6,6 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateTag } from "@test/fakes/Tag";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -27,7 +26,6 @@ describe("AdminTagsComponent", () => {
     TestBed.configureTestingModule({
     imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminTagsComponent,

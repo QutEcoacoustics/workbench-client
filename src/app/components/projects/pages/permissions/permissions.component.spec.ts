@@ -7,7 +7,6 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { mockProvider } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -24,7 +23,6 @@ describe("PermissionsComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         PermissionsComponent,

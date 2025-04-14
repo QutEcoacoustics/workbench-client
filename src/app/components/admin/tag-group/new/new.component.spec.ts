@@ -4,7 +4,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -28,7 +27,6 @@ describe("AdminTagGroupsNewComponent", () => {
       TestBed.configureTestingModule({
         imports: [
           ...appLibraryImports,
-          SharedModule,
           RouterTestingModule,
           MockBawApiModule,
           AdminTagGroupsNewComponent,

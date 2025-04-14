@@ -1,9 +1,14 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { DatatableDefaultsDirective } from "./defaults.directive";
 
 describe("DatatableDefaultsDirective", () => {
+  let spectator: SpectatorDirective<DatatableDefaultsDirective>;
+
+  const createDirective = createDirectiveFactory({
+    directive: DatatableDefaultsDirective,
+  });
+
   function assertAttribute(
     selector: string,
     attribute: string,
@@ -14,12 +19,6 @@ describe("DatatableDefaultsDirective", () => {
       expectedValue
     );
   }
-
-  let spectator: SpectatorDirective<DatatableDefaultsDirective>;
-  const createDirective = createDirectiveFactory({
-    directive: DatatableDefaultsDirective,
-    imports: [SharedModule],
-  });
 
   describe("Defaults", () => {
     beforeEach(() => {

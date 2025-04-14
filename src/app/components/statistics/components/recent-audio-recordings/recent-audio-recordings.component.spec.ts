@@ -12,7 +12,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import {
   DataTableBodyCellComponent,
   DatatableComponent,
@@ -32,9 +31,10 @@ describe("RecentAudioRecordingsComponent", () => {
   let defaultRecording: AudioRecording;
   let injector: AssociationInjector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
+
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
     providers: [mockProvider(ToastService)],
   });
 

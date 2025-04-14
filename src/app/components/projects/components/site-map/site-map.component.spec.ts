@@ -11,7 +11,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { MapComponent } from "@shared/map/map.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -27,10 +26,11 @@ describe("SiteMapComponent", () => {
   let defaultRegion: Region;
   let api: SpyObject<SitesService>;
   let spec: Spectator<SiteMapComponent>;
+
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
     declarations: [mockMap],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   beforeEach(() => {

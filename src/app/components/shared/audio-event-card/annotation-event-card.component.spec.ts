@@ -4,7 +4,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -47,7 +46,7 @@ describe("AudioEventCardComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationEventCardComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(): void {

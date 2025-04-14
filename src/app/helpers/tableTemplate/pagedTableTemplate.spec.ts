@@ -18,7 +18,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -54,9 +53,10 @@ describe("PagedTableTemplate", () => {
   let api: SpyObject<ProjectsService>;
   let component: MockComponent;
   let spec: Spectator<MockComponent>;
+
   const createComponent = createComponentFactory({
     component: MockComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   function setup(resolvers: string[] = [], data: MockData = {}) {

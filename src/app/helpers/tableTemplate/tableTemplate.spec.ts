@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { SharedModule } from "@shared/shared.module";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TableTemplate } from "./tableTemplate";
 
 @Component({
@@ -8,7 +8,7 @@ import { TableTemplate } from "./tableTemplate";
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-  imports: [SharedModule],
+  imports: [NgxDatatableModule],
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
@@ -42,7 +42,7 @@ describe("TableTemplate", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, MockComponent],
+      imports: [MockComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
