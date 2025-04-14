@@ -3,7 +3,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
-import { PipesModule } from "@pipes/pipes.module";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { NgxCaptchaModule } from "ngx-captcha";
@@ -85,7 +84,6 @@ export const sharedModules = [
   StepperComponent,
   ProgressComponent,
   ProgressBarComponent,
-  PipesModule,
   AnnotationEventCardComponent,
   CardsComponent,
   MenuModule,

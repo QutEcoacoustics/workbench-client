@@ -14,7 +14,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
@@ -28,6 +27,8 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from "@angular/common/http";
+import { AsyncPipe } from "@angular/common";
+import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -36,7 +37,12 @@ describe("CardComponent", () => {
 
   const createComponent = createComponentFactory({
     component: CardComponent,
-    imports: [RouterTestingModule, MockBawApiModule, PipesModule],
+    imports: [
+      RouterTestingModule,
+      MockBawApiModule,
+      AsyncPipe,
+      WithLoadingPipe,
+    ],
     providers: [
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),

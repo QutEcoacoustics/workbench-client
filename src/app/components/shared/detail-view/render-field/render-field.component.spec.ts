@@ -4,7 +4,6 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { modelData } from "@test/helpers/faker";
@@ -29,7 +28,6 @@ describe("RenderFieldComponent", () => {
     imports: [
       MockBawApiModule,
       RouterTestingModule,
-      PipesModule,
       DatetimeComponent,
       ZonedDateTimeComponent,
       DurationComponent,

@@ -14,7 +14,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
@@ -29,6 +28,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -46,8 +47,11 @@ describe("HomeComponent", () => {
       MockConfigModule,
       IconsModule,
       RouterTestingModule,
-      PipesModule,
       LoadingComponent,
+      AsyncPipe,
+      UpperCasePipe,
+      TitleCasePipe,
+      WithLoadingPipe,
     ],
   });
 
