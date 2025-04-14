@@ -23,8 +23,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
  * Displays a header link.
  */
 @Component({
-    selector: "baw-header-item",
-    template: `
+  selector: "baw-header-item",
+  template: `
     <!-- Internal link template -->
     <ng-template #internalRoute>
       <a
@@ -52,8 +52,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       }
     </li>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet],
 })
 export class HeaderItemComponent implements OnInit {
   @Input() public link: NavigableMenuItem | HeaderItem;

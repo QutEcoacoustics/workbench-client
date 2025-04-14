@@ -16,20 +16,20 @@ import { FormComponent } from "../../../shared/form/form.component";
 const typeOfTagsKey = "typeOfTags";
 
 @Component({
-    selector: "baw-admin-tags-new",
-    template: `
+  selector: "baw-admin-tags-new",
+  template: `
     @if (!failure) {
-      <baw-form
-        title="New Tag"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      title="New Tag"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

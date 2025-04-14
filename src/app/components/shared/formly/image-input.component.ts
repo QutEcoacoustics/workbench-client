@@ -10,8 +10,8 @@ import { FileValueAccessorDirective } from "./file-input.directive";
  * ! Warning, test manually after changes
  */
 @Component({
-    selector: "baw-image-input",
-    template: `
+  selector: "baw-image-input",
+  template: `
     <div class="form-group mb-3">
       @if (props.label) {
         <label [for]="field.id">
@@ -43,7 +43,12 @@ import { FileValueAccessorDirective } from "./file-input.directive";
       </div>
     </div>
   `,
-    imports: [FileValueAccessorDirective, FormsModule, ReactiveFormsModule, FormlyModule]
+  imports: [
+    FileValueAccessorDirective,
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule,
+  ],
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")

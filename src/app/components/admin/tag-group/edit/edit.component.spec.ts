@@ -30,20 +30,23 @@ describe("AdminTagGroupsEditComponent", () => {
 
   function configureTestingModule(model: TagGroup, error?: BawApiError) {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminTagGroupsEditComponent,
-    ],
-    providers: [
+      ],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute({ tagGroup: tagGroupResolvers.show }, { tagGroup: { model, error } }),
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute(
+            { tagGroup: tagGroupResolvers.show },
+            { tagGroup: { model, error } }
+          ),
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTagGroupsEditComponent);
     api = TestBed.inject(TagGroupsService) as SpyObject<TagGroupsService>;
@@ -104,5 +107,6 @@ describe("AdminTagGroupsEditComponent", () => {
 
         expect(router.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
       });
-    });  });
+    });
+  });
 });

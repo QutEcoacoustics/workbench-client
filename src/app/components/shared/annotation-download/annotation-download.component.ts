@@ -25,8 +25,8 @@ interface TimezoneModel {
 
 // TODO This will be expanded to download user annotations as well
 @Component({
-    selector: "baw-annotation-download",
-    template: `
+  selector: "baw-annotation-download",
+  template: `
     <div class="modal-header">
       <h4 class="modal-title">Annotations Download</h4>
       <button
@@ -73,13 +73,13 @@ interface TimezoneModel {
       </a>
     </div>
   `,
-    styles: [`
+  styles: [`
     /* Otherwise timezone selector cannot be seen on firefox */
     .modal-body {
       overflow-y: unset;
     }
   `],
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 export class AnnotationDownloadComponent
   extends withUnsubscribe()

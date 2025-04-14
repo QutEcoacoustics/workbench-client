@@ -25,7 +25,12 @@ const routes = Object.values(audioRecordingsRoutes)
   .flat();
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components, internalComponents],
-    exports: [RouterModule, ...components],
+  imports: [
+    SharedModule,
+    RouterModule.forChild(routes),
+    ...components,
+    internalComponents,
+  ],
+  exports: [RouterModule, ...components],
 })
 export class AudioRecordingModule {}

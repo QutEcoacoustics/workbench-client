@@ -32,9 +32,9 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-    selector: "baw-sites-edit",
-    templateUrl: "./edit.component.html",
-    imports: [FormComponent]
+  selector: "baw-sites-edit",
+  templateUrl: "./edit.component.html",
+  imports: [FormComponent],
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;

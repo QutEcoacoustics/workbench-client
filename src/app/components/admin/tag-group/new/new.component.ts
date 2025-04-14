@@ -17,20 +17,20 @@ import schema from "../tag-group.schema.json";
 import { FormComponent } from "../../../shared/form/form.component";
 
 @Component({
-    selector: "baw-admin-tag-groups-new",
-    template: `
+  selector: "baw-admin-tag-groups-new",
+  template: `
     @if (!failure) {
-      <baw-form
-        title="New Tag Group"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      title="New Tag Group"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
   public fields = schema.fields;

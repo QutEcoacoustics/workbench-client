@@ -28,8 +28,8 @@ import { defaultDebounceTime } from "src/app/app.helper";
 import { FormsModule } from "@angular/forms";
 
 @Component({
-    selector: "baw-model-selector",
-    template: `
+  selector: "baw-model-selector",
+  template: `
     <div class="input-group">
       @if (label) {
         <div class="input-group-prepend input-group-text">
@@ -54,7 +54,7 @@ import { FormsModule } from "@angular/forms";
       />
     </div>
   `,
-    imports: [NgbTypeahead, FormsModule]
+  imports: [NgbTypeahead, FormsModule],
 })
 export class ModelSelectorComponent<Model extends AbstractModel>
   implements OnInit

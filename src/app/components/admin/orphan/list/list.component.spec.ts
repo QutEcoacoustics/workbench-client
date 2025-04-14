@@ -18,14 +18,14 @@ describe("AdminOrphansComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminOrphansComponent,
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AdminOrphansComponent);
     api = TestBed.inject(ShallowSitesService);

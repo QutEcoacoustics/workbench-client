@@ -16,9 +16,9 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
  * Card Image Component
  */
 @Component({
-    selector: "baw-card",
-    styleUrls: ["./card.component.scss"],
-    template: `
+  selector: "baw-card",
+  styleUrls: ["./card.component.scss"],
+  template: `
     <div class="card h-100">
       <!-- Image -->
       <div class="card-image position-relative">
@@ -75,8 +75,15 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
         }
       }
     </ng-template>
-    `,
-    imports: [UrlDirective, AuthenticatedImageDirective, NgTemplateOutlet, LoadingComponent, AsyncPipe, WithLoadingPipe]
+  `,
+  imports: [
+    UrlDirective,
+    AuthenticatedImageDirective,
+    NgTemplateOutlet,
+    LoadingComponent,
+    AsyncPipe,
+    WithLoadingPipe,
+  ],
 })
 export class CardComponent implements OnInit {
   @Input() public model: Project | Region;

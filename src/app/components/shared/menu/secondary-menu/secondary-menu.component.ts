@@ -13,8 +13,8 @@ import { MenuComponent } from "../menu/menu.component";
  * links. It also acts as a breadcrumb showing the user their current location.
  */
 @Component({
-    selector: "baw-secondary-menu",
-    template: `
+  selector: "baw-secondary-menu",
+  template: `
     <baw-menu
       menuType="secondary"
       [links]="links"
@@ -22,7 +22,7 @@ import { MenuComponent } from "../menu/menu.component";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
-    imports: [MenuComponent]
+  imports: [MenuComponent],
 })
 export class SecondaryMenuComponent
   extends withUnsubscribe()

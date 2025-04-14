@@ -8,10 +8,10 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { CmsComponent } from "../../../shared/cms/cms.component";
 
 @Component({
-    selector: "baw-about-disclaimers",
-    template: '<baw-cms [page]="page"></baw-cms>',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CmsComponent]
+  selector: "baw-about-disclaimers",
+  template: '<baw-cms [page]="page"></baw-cms>',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CmsComponent],
 })
 class DisclaimersComponent extends PageComponent {
   public page = CMS.privacy;

@@ -20,8 +20,8 @@ import { asFormControl } from "./helper";
  * Timezone Input
  */
 @Component({
-    selector: "baw-timezone-input",
-    template: `
+  selector: "baw-timezone-input",
+  template: `
     <div class="form-group">
       @if (props.label) {
         <label [for]="field.id">
@@ -77,7 +77,7 @@ import { asFormControl } from "./helper";
       />
     </div>
   `,
-    imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
+  imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
   @ViewChild("instance", { static: true }) public instance: NgbTypeahead;

@@ -7,7 +7,13 @@ import {
   OnInit,
 } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { NavigationEnd, Router, RouterStateSnapshot, TitleStrategy, RouterOutlet } from "@angular/router";
+import {
+  NavigationEnd,
+  Router,
+  RouterStateSnapshot,
+  TitleStrategy,
+  RouterOutlet,
+} from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -44,10 +50,21 @@ declare const gtag: Gtag.Gtag;
  * App Root Component
  */
 @Component({
-    selector: "baw-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
-    imports: [HeaderComponent, LoadingBarModule, ToastProviderComponent, SideNavComponent, PrimaryMenuComponent, SecondaryMenuComponent, ActionMenuComponent, BreadcrumbComponent, RouterOutlet, FooterComponent]
+  selector: "baw-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss", "./print-styles.component.scss"],
+  imports: [
+    HeaderComponent,
+    LoadingBarModule,
+    ToastProviderComponent,
+    SideNavComponent,
+    PrimaryMenuComponent,
+    SecondaryMenuComponent,
+    ActionMenuComponent,
+    BreadcrumbComponent,
+    RouterOutlet,
+    FooterComponent,
+  ],
 })
 export class AppComponent extends withUnsubscribe() implements OnInit {
   public fullscreen: boolean;

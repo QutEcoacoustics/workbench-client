@@ -48,9 +48,23 @@ const siteKey = "site";
  * /audio_recordings
  */
 @Component({
-    selector: "baw-audio-recordings",
-    templateUrl: "./list.component.html",
-    imports: [DateTimeFilterComponent, NgxDatatableModule, DatatableDefaultsDirective, ZonedDateTimeComponent, DurationComponent, UserLinkComponent, LoadingComponent, NgTemplateOutlet, UrlDirective, NgbTooltip, FaIconComponent, ErrorHandlerComponent, IsUnresolvedPipe]
+  selector: "baw-audio-recordings",
+  templateUrl: "./list.component.html",
+  imports: [
+    DateTimeFilterComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    UserLinkComponent,
+    LoadingComponent,
+    NgTemplateOutlet,
+    UrlDirective,
+    NgbTooltip,
+    FaIconComponent,
+    ErrorHandlerComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>

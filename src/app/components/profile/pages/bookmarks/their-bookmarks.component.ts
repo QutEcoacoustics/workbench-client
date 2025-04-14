@@ -23,9 +23,14 @@ const accountKey = "account";
  * TODO List of bookmarks is filtered incorrectly
  */
 @Component({
-    selector: "baw-their-bookmarks",
-    templateUrl: "./bookmarks.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-their-bookmarks",
+  templateUrl: "./bookmarks.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
   public constructor(api: BookmarksService, route: ActivatedRoute) {

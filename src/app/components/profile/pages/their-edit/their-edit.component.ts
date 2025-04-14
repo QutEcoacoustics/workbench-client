@@ -23,8 +23,8 @@ import { DetailViewComponent } from "../../../shared/detail-view/detail-view.com
 const accountKey = "account";
 
 @Component({
-    selector: "baw-their-edit",
-    template: `
+  selector: "baw-their-edit",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -44,7 +44,7 @@ const accountKey = "account";
       ></baw-detail-view>
     }
   `,
-    imports: [FormComponent, DetailViewComponent]
+  imports: [FormComponent, DetailViewComponent]
 })
 class TheirEditComponent extends FormTemplate<User> implements OnInit {
   public fields = schema.fields;

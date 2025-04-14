@@ -7,8 +7,8 @@ import { ProgressComponent } from "../../../shared/progress/progress/progress.co
 import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component";
 
 @Component({
-    selector: "baw-harvest-metadata-extraction",
-    template: `
+  selector: "baw-harvest-metadata-extraction",
+  template: `
     <h3>Checking Files</h3>
 
     <p>We are checking the files you uploaded!</p>
@@ -60,7 +60,12 @@ import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component
       ></baw-progress-bar>
     </baw-progress>
   `,
-    imports: [CanCloseDialogComponent, EtaComponent, ProgressComponent, ProgressBarComponent]
+  imports: [
+    CanCloseDialogComponent,
+    EtaComponent,
+    ProgressComponent,
+    ProgressBarComponent,
+  ],
 })
 export class MetadataExtractionComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}

@@ -52,9 +52,9 @@ const regionKey = "region";
 const siteKey = "site";
 
 @Component({
-    selector: "baw-new-summary-report",
-    templateUrl: "./new.component.html",
-    imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
+  selector: "baw-new-summary-report",
+  templateUrl: "./new.component.html",
+  imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

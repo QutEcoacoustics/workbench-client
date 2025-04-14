@@ -46,8 +46,6 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
-import { ProgressWarningComponent as ProgressWarningComponent_1 } from "../../components/modals/progress-warning/progress-warning.component";
-import { SearchFiltersModalComponent as SearchFiltersModalComponent_1 } from "../../components/modals/search-filters/search-filters.component";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -66,10 +64,15 @@ const confirmedMapping = {
 } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
 @Component({
-    selector: "baw-verification",
-    templateUrl: "verification.component.html",
-    styleUrl: "verification.component.scss",
-    imports: [FaIconComponent, NgbTooltip, ProgressWarningComponent_1, SearchFiltersModalComponent_1]
+  selector: "baw-verification",
+  templateUrl: "verification.component.html",
+  styleUrl: "verification.component.scss",
+  imports: [
+    FaIconComponent,
+    NgbTooltip,
+    ProgressWarningComponent,
+    SearchFiltersModalComponent,
+  ],
 })
 class VerificationComponent
   extends PageComponent

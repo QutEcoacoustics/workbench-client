@@ -19,13 +19,13 @@ import { NewComponent } from "../../../regions/pages/new/new.component";
 const projectKey = "project";
 
 @Component({
-    selector: "baw-wizard",
-    styles: [`
+  selector: "baw-wizard",
+  styles: [`
     button {
       width: 100px;
     }
   `],
-    template: `
+  template: `
     @if (!error) {
       <h2 class="text-center">New Site</h2>
 
@@ -59,7 +59,7 @@ const projectKey = "project";
       }
     }
   `,
-    imports: [NgClass, SiteNewComponent, NewComponent]
+  imports: [NgClass, SiteNewComponent, NewComponent],
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;

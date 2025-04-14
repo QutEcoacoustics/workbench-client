@@ -13,9 +13,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import {
-  permissionsWidgetMenuItem,
-} from "@menu/widget.menus";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
@@ -36,9 +34,21 @@ const projectKey = "project";
 const harvestKey = "harvest";
 
 @Component({
-    selector: "baw-harvest",
-    templateUrl: "./details.component.html",
-    imports: [TitleComponent, StepperComponent, ErrorComponent, LoadingComponent, StreamUploadingComponent, BatchUploadingComponent, ScanningComponent, MetadataExtractionComponent, MetadataReviewComponent, ProcessingComponent, CompleteComponent]
+  selector: "baw-harvest",
+  templateUrl: "./details.component.html",
+  imports: [
+    TitleComponent,
+    StepperComponent,
+    ErrorComponent,
+    LoadingComponent,
+    StreamUploadingComponent,
+    BatchUploadingComponent,
+    ScanningComponent,
+    MetadataExtractionComponent,
+    MetadataReviewComponent,
+    ProcessingComponent,
+    CompleteComponent,
+  ],
 })
 class DetailsComponent
   extends withUnsubscribe(PageComponent)

@@ -5,8 +5,8 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 
 @Component({
-    selector: "baw-delete-site-modal",
-    template: `
+  selector: "baw-delete-site-modal",
+  template: `
     <div class="modal-header">
       <h4 class="modal-title">Delete {{ isPoint ? "Point" : "Site" }}</h4>
       <button
@@ -39,7 +39,7 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       <a class="btn btn-danger text-white" (click)="deleteModel()">Delete</a>
     </div>
   `,
-    imports: [StrongRouteDirective]
+  imports: [StrongRouteDirective],
 })
 export class DeleteSiteModalComponent extends DeleteModalComponent {
   public constructor() {

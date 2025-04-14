@@ -23,10 +23,17 @@ import { MapComponent } from "../../../shared/map/map.component";
  * Site Details Component
  */
 @Component({
-    selector: "baw-site",
-    templateUrl: "./site.component.html",
-    styleUrl: "./site.component.scss",
-    imports: [AuthenticatedImageDirective, LoadingComponent, ZonedDateTimeComponent, WIPComponent, RecentAnnotationsComponent, MapComponent]
+  selector: "baw-site",
+  templateUrl: "./site.component.html",
+  styleUrl: "./site.component.scss",
+  imports: [
+    AuthenticatedImageDirective,
+    LoadingComponent,
+    ZonedDateTimeComponent,
+    WIPComponent,
+    RecentAnnotationsComponent,
+    MapComponent,
+  ],
 })
 class SiteComponent extends PageComponent implements OnInit {
   @Input() public project: Project;

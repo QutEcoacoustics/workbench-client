@@ -12,8 +12,8 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
  * Menu Link Component
  */
 @Component({
-    selector: "baw-breadcrumbs",
-    template: `
+  selector: "baw-breadcrumbs",
+  template: `
     @if ({
       breadcrumbs: breadcrumbs$ | async,
       queryParams: queryParams$ | async,
@@ -42,8 +42,8 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
       }
     }
   `,
-    styleUrls: ["breadcrumb.component.scss"],
-    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe]
+  styleUrls: ["breadcrumb.component.scss"],
+  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe],
 })
 export class BreadcrumbComponent implements OnInit {
   public queryParams$: Observable<Params>;

@@ -125,8 +125,8 @@ const audioEventImportKey = "audioEventImport";
 
 @Component({
   selector: "baw-add-annotations",
-  templateUrl: "add-annotations.component.html",
-  styleUrl: "add-annotations.component.scss",
+  templateUrl: "./add-annotations.component.html",
+  styleUrl: "./add-annotations.component.scss",
   imports: [
     FormsModule,
     FileValueAccessorDirective,

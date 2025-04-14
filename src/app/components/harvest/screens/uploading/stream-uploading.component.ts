@@ -18,7 +18,7 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 @Component({
   selector: "baw-harvest-stream-uploading",
-  templateUrl: "stream-uploading.component.html",
+  templateUrl: "./stream-uploading.component.html",
   imports: [
     UploadUrlComponent,
     StrongRouteDirective,

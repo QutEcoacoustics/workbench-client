@@ -26,10 +26,7 @@ describe("CardsComponent", () => {
   const factoryOptions: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
-    imports: [
-    RouterTestingModule,
-    MockBawApiModule,
-],
+    imports: [RouterTestingModule, MockBawApiModule],
     providers: [provideHttpClientTesting()],
   };
 

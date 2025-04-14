@@ -11,7 +11,15 @@ import { SelectableItemsComponent } from "./selectable-items/selectable-items.co
  * Items Module
  */
 @NgModule({
-    imports: [CommonModule, RouterModule, IconsModule, NgbTooltipModule, ItemsComponent, ItemComponent, SelectableItemsComponent],
-    exports: [ItemsComponent, ItemComponent, SelectableItemsComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    IconsModule,
+    NgbTooltipModule,
+    ItemsComponent,
+    ItemComponent,
+    SelectableItemsComponent,
+  ],
+  exports: [ItemsComponent, ItemComponent, SelectableItemsComponent],
 })
 export class ItemsModule {}

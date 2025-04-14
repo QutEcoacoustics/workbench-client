@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 @Component({
-    selector: "baw-meta-review-whitespace",
-    template: `
+  selector: "baw-meta-review-whitespace",
+  template: `
     @for (indent of indentation; track indent) {
       <span class="vertical-line"></span>
       <div class="whitespace-block"></div>
@@ -12,7 +12,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
       <span class="vertical-half-line"></span>
     }
   `,
-    styles: [`
+  styles: [`
     .vertical-half-line {
       position: relative;
     }
@@ -48,7 +48,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
       width: 1rem;
     }
   `],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WhitespaceComponent {
   @Input() public indentation: void[];

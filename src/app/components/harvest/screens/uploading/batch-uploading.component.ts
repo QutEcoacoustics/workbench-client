@@ -25,7 +25,7 @@ export type UploadingInstructionTab = "Windows" | "Mac" | "Linux" | "RClone";
 
 @Component({
   selector: "baw-harvest-batch-uploading",
-  templateUrl: "batch-uploading.component.html",
+  templateUrl: "./batch-uploading.component.html",
   styleUrls: ["batch-uploading.component.scss"],
   imports: [
     NgbNav,

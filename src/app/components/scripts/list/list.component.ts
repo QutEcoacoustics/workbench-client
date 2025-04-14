@@ -22,9 +22,16 @@ import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.
 export const adminScriptsMenuItemActions = [newScriptMenuItem];
 
 @Component({
-    selector: "baw-scripts",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, IfLoggedInComponent, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-scripts",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    IfLoggedInComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminScriptsComponent
   extends PagedTableTemplate<TableRow, Script>

@@ -24,19 +24,19 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<CardComponent>;
+
   const createComponent = createComponentFactory({
     component: CardComponent,
-    imports: [
-    RouterTestingModule,
-    MockBawApiModule,
-    PipesModule,
-],
+    imports: [RouterTestingModule, MockBawApiModule, PipesModule],
     providers: [
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),

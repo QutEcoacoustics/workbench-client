@@ -20,8 +20,8 @@ import schema from "./my-password.schema.json";
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-password",
-    template: `
+  selector: "baw-my-password",
+  template: `
     @if (!failure) {
       <baw-form
         title="Update my password"
@@ -34,7 +34,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class MyPasswordComponent extends FormTemplate<User> {
   public fields = schema.fields;

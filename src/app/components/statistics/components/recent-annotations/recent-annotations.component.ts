@@ -10,8 +10,8 @@ import { TimeSinceComponent } from "../../../shared/datetime-formats/time-since/
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-recent-annotations",
-    template: `
+  selector: "baw-recent-annotations",
+  template: `
     <h2>Recent Annotations</h2>
 
     <ngx-datatable
@@ -126,7 +126,15 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, FaIconComponent, LoadingComponent, UrlDirective, TimeSinceComponent, IsUnresolvedPipe]
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FaIconComponent,
+    LoadingComponent,
+    UrlDirective,
+    TimeSinceComponent,
+    IsUnresolvedPipe,
+  ],
 })
 export class RecentAnnotationsComponent implements OnChanges {
   @Input() public annotations!: AudioEvent[] | undefined;

@@ -7,8 +7,8 @@ import { Site } from "@models/Site";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 
 @Component({
-    selector: "baw-sites-without-timezones",
-    template: `
+  selector: "baw-sites-without-timezones",
+  template: `
     <!-- Warn users about limitations of time of day filter -->
     @if (
         sitesWithoutTimezones(
@@ -40,7 +40,7 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
       }
     }
   `,
-    imports: [UrlDirective]
+  imports: [UrlDirective]
 })
 export class SitesWithoutTimezonesComponent {
   @Input() public site?: Site;

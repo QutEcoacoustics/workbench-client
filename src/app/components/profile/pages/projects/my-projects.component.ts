@@ -20,9 +20,15 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-projects",
-    templateUrl: "./projects.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe]
+  selector: "baw-my-projects",
+  templateUrl: "./projects.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+    TitleCasePipe,
+  ],
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   protected api: ProjectsService;

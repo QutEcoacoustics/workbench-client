@@ -25,9 +25,9 @@ const projectKey = "project";
 const regionKey = "region";
 
 @Component({
-    selector: "baw-sites-new",
-    templateUrl: "./new.component.html",
-    imports: [FormComponent]
+  selector: "baw-sites-new",
+  templateUrl: "./new.component.html",
+  imports: [FormComponent],
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public title = "";

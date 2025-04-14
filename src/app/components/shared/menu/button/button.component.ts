@@ -13,8 +13,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
  * Menu Button Component
  */
 @Component({
-    selector: "baw-menu-button",
-    template: `
+  selector: "baw-menu-button",
+  template: `
     <div
       placement="auto"
       [ngbTooltip]="tooltipContent"
@@ -38,10 +38,10 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       {{ tooltip }}
     </ng-template>
   `,
-    styleUrls: ["./button.component.scss"],
-    // This will be recreated every time the page loads
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgbTooltip, FaIconComponent]
+  styleUrls: ["./button.component.scss"],
+  // This will be recreated every time the page loads
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgbTooltip, FaIconComponent],
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;

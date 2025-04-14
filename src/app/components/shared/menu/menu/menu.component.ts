@@ -40,10 +40,16 @@ import { MenuLinkComponent } from "../link/link.component";
  * Used to display menu links, routes, and actions.
  */
 @Component({
-    selector: "baw-menu",
-    templateUrl: "./menu.component.html",
-    styleUrls: ["./menu.component.scss"],
-    imports: [FaIconComponent, MenuButtonComponent, MenuLinkComponent, WidgetDirective, UpperCasePipe]
+  selector: "baw-menu",
+  templateUrl: "./menu.component.html",
+  styleUrls: ["./menu.component.scss"],
+  imports: [
+    FaIconComponent,
+    MenuButtonComponent,
+    MenuLinkComponent,
+    WidgetDirective,
+    UpperCasePipe,
+  ],
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;

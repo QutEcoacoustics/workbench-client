@@ -25,20 +25,23 @@ describe("ProjectsRequestComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         ...appLibraryImports,
         SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         RequestComponent,
-    ],
-    providers: [
+      ],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute({ project: projectResolvers.show }, { project: { model, error } }),
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute(
+            { project: projectResolvers.show },
+            { project: { model, error } }
+          ),
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RequestComponent);
     component = fixture.componentInstance;

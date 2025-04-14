@@ -31,9 +31,14 @@ describe("ConfirmPasswordComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-    imports: [...testFormImports, MockBawApiModule, ConfirmPasswordComponent, FormComponent],
-    providers: testFormProviders,
-}).compileComponents();
+        imports: [
+          ...testFormImports,
+          MockBawApiModule,
+          ConfirmPasswordComponent,
+          FormComponent,
+        ],
+        providers: testFormProviders,
+      }).compileComponents();
 
       fixture = TestBed.createComponent(ConfirmPasswordComponent);
       component = fixture.componentInstance;

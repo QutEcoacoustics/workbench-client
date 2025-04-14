@@ -71,17 +71,14 @@ describe("WithFormCheck", () => {
   @Component({
     selector: "baw-testing",
     template: `
-        <div>
-          @for (schema of schemas; track schema) {
-            <baw-form
-              [model]="schema.model"
-              [fields]="schema.fields"
-            ></baw-form>
-          }
-        </div>
-        `,
-    imports: [...appLibraryImports, SharedModule]
-})
+      <div>
+        @for (schema of schemas; track schema) {
+        <baw-form [model]="schema.model" [fields]="schema.fields"></baw-form>
+        }
+      </div>
+    `,
+    imports: [...appLibraryImports, SharedModule],
+  })
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];
     public numForms = 0;
@@ -117,8 +114,8 @@ describe("WithFormCheck", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [...appLibraryImports, SharedModule, MockComponent],
-}).compileComponents();
+      imports: [...appLibraryImports, SharedModule, MockComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     mockComponent = fixture.componentInstance;

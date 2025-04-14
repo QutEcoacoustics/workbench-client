@@ -32,10 +32,17 @@ import { TypeaheadInputComponent as TypeaheadInputComponent_1 } from "../../../s
 import { WIPComponent } from "../../../shared/wip/wip.component";
 
 @Component({
-    selector: "baw-annotation-search-form",
-    templateUrl: "annotation-search-form.component.html",
-    styleUrl: "annotation-search-form.component.scss",
-    imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent_1, WIPComponent, NgbCollapse, NgbHighlight]
+  selector: "baw-annotation-search-form",
+  templateUrl: "annotation-search-form.component.html",
+  styleUrl: "annotation-search-form.component.scss",
+  imports: [
+    FormsModule,
+    DateTimeFilterComponent,
+    TypeaheadInputComponent_1,
+    WIPComponent,
+    NgbCollapse,
+    NgbHighlight,
+  ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(

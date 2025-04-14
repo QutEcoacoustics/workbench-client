@@ -19,12 +19,12 @@ import { NgClass } from "@angular/common";
  * Formly Form Wrapper
  */
 @Component({
-    selector: "baw-form",
-    templateUrl: "./form.component.html",
-    styleUrls: ["./form.component.scss"],
-    // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-    encapsulation: ViewEncapsulation.None,
-    imports: [NgClass, FormsModule, ReactiveFormsModule, FormlyModule]
+  selector: "baw-form",
+  templateUrl: "./form.component.html",
+  styleUrls: ["./form.component.scss"],
+  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
+  encapsulation: ViewEncapsulation.None,
+  imports: [NgClass, FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";

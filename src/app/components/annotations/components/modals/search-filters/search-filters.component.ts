@@ -9,8 +9,8 @@ import { NgClass } from "@angular/common";
 import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
 
 @Component({
-    selector: "baw-search-filters-modal",
-    template: `
+  selector: "baw-search-filters-modal",
+  template: `
     <div class="modal-header">
       <h4 class="modal-title">Change Search Filters</h4>
     </div>
@@ -27,12 +27,12 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     <div class="modal-footer justify-content-start">
       <div>
         @if (isDirty) {
-          <p>
-            <strong>
-              You have unapplied search filters. If you update the verification
-              grid, your progress will be lost.
-            </strong>
-          </p>
+        <p>
+          <strong>
+            You have unapplied search filters. If you update the verification
+            grid, your progress will be lost.
+          </strong>
+        </p>
         }
 
         <div class="mt-2">
@@ -59,12 +59,14 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
       </div>
     </div>
   `,
-    imports: [AnnotationSearchFormComponent, NgClass]
+  imports: [AnnotationSearchFormComponent, NgClass],
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
   @Input() public formValue: AnnotationSearchParameters;
-  @Input() public successCallback: (newModel: AnnotationSearchParameters) => void;
+  @Input() public successCallback: (
+    newModel: AnnotationSearchParameters
+  ) => void;
 
   @Input() public project: Project;
   @Input() public region: Region;

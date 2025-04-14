@@ -24,8 +24,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 import { WhitespaceComponent } from "./whitespace.component";
 
 @Component({
-    selector: "baw-meta-review-folder-row",
-    template: `
+  selector: "baw-meta-review-folder-row",
+  template: `
     <!-- Icon and Path -->
     <div class="grid-table-item pointer" (click)="toggleFolder.emit()">
       <!-- Whitespace -->
@@ -38,10 +38,10 @@ import { WhitespaceComponent } from "./whitespace.component";
           [icon]="row.isOpen ? icons.folderOpen : icons.folderClosed"
         ></fa-icon>
         @if (!row.isRoot) {
-          <fa-layers-counter
-            class="text-light fa-custom-counter"
-            [content]="report.itemsTotal ?? 0 | number"
-          ></fa-layers-counter>
+        <fa-layers-counter
+          class="text-light fa-custom-counter"
+          [content]="report.itemsTotal ?? 0 | number"
+        ></fa-layers-counter>
         }
       </fa-layers>
       <span>
@@ -51,96 +51,97 @@ import { WhitespaceComponent } from "./whitespace.component";
 
     <!-- Create Mapping -->
     @if (!mapping) {
-      <div class="grid-table-item create-mapping">
-        <button
-          class="btn btn-sm btn-outline-primary"
-          (click)="createMapping(row)"
-          >
-          Change Site or UTC for folder
-        </button>
-      </div>
-    }
+    <div class="grid-table-item create-mapping">
+      <button
+        class="btn btn-sm btn-outline-primary"
+        (click)="createMapping(row)"
+      >
+        Change Site or UTC for folder
+      </button>
+    </div>
+    } @if (mapping) {
+    <!-- Site Selector -->
+    <div class="grid-table-item">
+      @if (mapping.site | isUnresolved) {
+      <baw-loading size="sm"></baw-loading>
+      } @else {
+      <baw-harvest-site-selector
+        class="w-100"
+        [project]="project"
+        [site]="mapping.site"
+        (siteIdChange)="setSite(mapping, $event)"
+      ></baw-harvest-site-selector>
+      }
+    </div>
 
-    @if (mapping) {
-      <!-- Site Selector -->
-      <div class="grid-table-item">
-        @if (mapping.site | isUnresolved) {
-          <baw-loading
-            size="sm"
-          ></baw-loading>
-        } @else {
-          <baw-harvest-site-selector
-            class="w-100"
-            [project]="project"
-            [site]="mapping.site"
-            (siteIdChange)="setSite(mapping, $event)"
-          ></baw-harvest-site-selector>
-        }
-      </div>
+    <!-- UTC Offset -->
+    <div class="grid-table-item">
+      <baw-harvest-utc-offset-selector
+        class="w-100"
+        [offset]="mapping.utcOffset"
+        (offsetChange)="setOffset(mapping, $event)"
+      ></baw-harvest-utc-offset-selector>
+    </div>
 
-      <!-- UTC Offset -->
-      <div class="grid-table-item">
-        <baw-harvest-utc-offset-selector
-          class="w-100"
-          [offset]="mapping.utcOffset"
-          (offsetChange)="setOffset(mapping, $event)"
-        ></baw-harvest-utc-offset-selector>
-      </div>
-
-      <!-- Recursive -->
-      <div class="grid-table-item">
-        <baw-checkbox
-          class="w-100"
-          [checked]="mapping.recursive"
-          (checkedChange)="setIsRecursive(mapping, $event)"
-        ></baw-checkbox>
-      </div>
+    <!-- Recursive -->
+    <div class="grid-table-item">
+      <baw-checkbox
+        class="w-100"
+        [checked]="mapping.recursive"
+        (checkedChange)="setIsRecursive(mapping, $event)"
+      ></baw-checkbox>
+    </div>
     }
 
     <!-- Issue Icons -->
     <div class="grid-table-item">
       @if (!row.isRoot) {
-        <div class="icon-wrapper">
-          @if (harvestItem.hasItemsInvalidFixable) {
-            <span
-              class="badge text-bg-warning pointer"
-              (click)="toggleFolder.emit()"
-            >
-              <fa-icon [icon]="icons.warning"></fa-icon>
-              {{ report.itemsInvalidFixable | number }}
-            </span>
-          }
-          @if (harvestItem.hasItemsInvalidNotFixable) {
-            <span
-              class="badge text-bg-danger text-light pointer"
-              (click)="toggleFolder.emit()"
-            >
-              <fa-icon [icon]="icons.failure"></fa-icon>
-              {{ report.itemsInvalidNotFixable | number }}
-            </span>
-          }
-          @if (harvestItem.hasItemsErrored) {
-            <span
-              class="badge text-bg-dark pointer"
-              (click)="toggleFolder.emit()"
-            >
-              <fa-icon [icon]="icons.errorCircle"></fa-icon>
-              {{ report.itemsErrored | number }}
-            </span>
-          }
-          @if (!row.harvestItem.hasItemsInvalid) {
-            <fa-icon
-              class="text-success pointer"
-              [icon]="['fas', 'circle-check']"
-              (click)="toggleFolder.emit()"
-            ></fa-icon>
-          }
-        </div>
+      <div class="icon-wrapper">
+        @if (harvestItem.hasItemsInvalidFixable) {
+        <span
+          class="badge text-bg-warning pointer"
+          (click)="toggleFolder.emit()"
+        >
+          <fa-icon [icon]="icons.warning"></fa-icon>
+          {{ report.itemsInvalidFixable | number }}
+        </span>
+        } @if (harvestItem.hasItemsInvalidNotFixable) {
+        <span
+          class="badge text-bg-danger text-light pointer"
+          (click)="toggleFolder.emit()"
+        >
+          <fa-icon [icon]="icons.failure"></fa-icon>
+          {{ report.itemsInvalidNotFixable | number }}
+        </span>
+        } @if (harvestItem.hasItemsErrored) {
+        <span class="badge text-bg-dark pointer" (click)="toggleFolder.emit()">
+          <fa-icon [icon]="icons.errorCircle"></fa-icon>
+          {{ report.itemsErrored | number }}
+        </span>
+        } @if (!row.harvestItem.hasItemsInvalid) {
+        <fa-icon
+          class="text-success pointer"
+          [icon]="['fas', 'circle-check']"
+          (click)="toggleFolder.emit()"
+        ></fa-icon>
+        }
+      </div>
       }
     </div>
   `,
-    styleUrls: ["folder-row.component.scss"],
-    imports: [WhitespaceComponent, FaLayersComponent, FaIconComponent, FaLayersCounterComponent, LoadingComponent, SiteSelectorComponent, UTCOffsetSelectorComponent, CheckboxComponent, DecimalPipe, IsUnresolvedPipe]
+  styleUrls: ["folder-row.component.scss"],
+  imports: [
+    WhitespaceComponent,
+    FaLayersComponent,
+    FaIconComponent,
+    FaLayersCounterComponent,
+    LoadingComponent,
+    SiteSelectorComponent,
+    UTCOffsetSelectorComponent,
+    CheckboxComponent,
+    DecimalPipe,
+    IsUnresolvedPipe,
+  ],
 })
 export class FolderRowComponent {
   @Input() public harvest: Harvest;
@@ -165,7 +166,7 @@ export class FolderRowComponent {
   }
 
   public constructor(
-    @Inject(ASSOCIATION_INJECTOR) protected injector: AssociationInjector,
+    @Inject(ASSOCIATION_INJECTOR) protected injector: AssociationInjector
   ) {}
 
   public createMapping(row: MetaReviewFolder): void {

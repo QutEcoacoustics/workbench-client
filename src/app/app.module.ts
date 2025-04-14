@@ -1,9 +1,4 @@
-import {
-  APP_ID,
-  ApplicationRef,
-  DoBootstrap,
-  NgModule,
-} from "@angular/core";
+import { APP_ID, ApplicationRef, DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -95,27 +90,27 @@ export const appImports = [
 ];
 
 @NgModule({
-    imports: [
-        // Timeout API requests after set period
-        BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
-        AppRoutingModule,
-        ConfigModule,
-        BawApiModule,
-        // Rehydrate data from SSR. This must be set after BawApiModule so that the
-        // interceptor runs after the API interceptor
-        RehydrationModule,
-        GuardModule,
-        ...appLibraryImports,
-        ...appImports,
-        AppComponent,
-    ],
-    providers: [
-        { provide: TitleStrategy, useClass: PageTitleStrategy },
-        // Show loading animation after 3 seconds
-        { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
-        { provide: APP_ID, useValue: "workbench-client" },
-    ],
-    exports: [],
+  imports: [
+    // Timeout API requests after set period
+    BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
+    AppRoutingModule,
+    ConfigModule,
+    BawApiModule,
+    // Rehydrate data from SSR. This must be set after BawApiModule so that the
+    // interceptor runs after the API interceptor
+    RehydrationModule,
+    GuardModule,
+    ...appLibraryImports,
+    ...appImports,
+    AppComponent,
+  ],
+  providers: [
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
+    // Show loading animation after 3 seconds
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    { provide: APP_ID, useValue: "workbench-client" },
+  ],
+  exports: [],
 })
 export class AppModule implements DoBootstrap {
   public ngDoBootstrap(app: ApplicationRef): void {

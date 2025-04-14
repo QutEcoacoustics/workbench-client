@@ -22,8 +22,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./register.schema.json";
 
 @Component({
-    selector: "baw-authentication-register",
-    template: `
+  selector: "baw-authentication-register",
+  template: `
     <baw-form
       title="Register"
       size="small"
@@ -35,7 +35,7 @@ import schema from "./register.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class RegisterComponent
   extends FormTemplate<RegisterDetails>

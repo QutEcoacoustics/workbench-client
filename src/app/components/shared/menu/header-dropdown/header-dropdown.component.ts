@@ -9,8 +9,8 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
  * Displays a dropdown list of items for the user to choose from.
  */
 @Component({
-    selector: "baw-header-dropdown",
-    template: `
+  selector: "baw-header-dropdown",
+  template: `
     <li class="nav-item dropdown" ngbDropdown>
       <button
         ngbDropdownToggle
@@ -27,8 +27,8 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
       </div>
     </li>
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
 })
 export class HeaderDropdownComponent {
   @Input() public label: string;

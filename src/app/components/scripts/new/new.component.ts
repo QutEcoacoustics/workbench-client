@@ -20,8 +20,8 @@ import { FormComponent } from "../../shared/form/form.component";
  * New Scripts Component
  */
 @Component({
-    selector: "baw-admin-scripts-new",
-    template: `
+  selector: "baw-admin-scripts-new",
+  template: `
     @if (!failure) {
       <baw-form
         title="New Script"
@@ -33,7 +33,7 @@ import { FormComponent } from "../../shared/form/form.component";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class AdminScriptsNewComponent extends FormTemplate<Script> {
   public constructor(

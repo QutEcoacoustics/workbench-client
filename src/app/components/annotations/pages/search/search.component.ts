@@ -16,7 +16,11 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/modals/filters-warning/filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { NgbModal, NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbModal,
+  NgbPaginationConfig,
+  NgbPagination,
+} from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
@@ -35,7 +39,6 @@ import { AnnotationSearchFormComponent } from "../../components/annotation-searc
 import { IfLoggedInComponent } from "../../../shared/can/can.component";
 import { AnnotationEventCardComponent } from "../../../shared/audio-event-card/annotation-event-card.component";
 import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handler.component";
-import { FiltersWarningModalComponent as FiltersWarningModalComponent_1 } from "../../components/modals/filters-warning/filters-warning.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -43,10 +46,17 @@ const siteKey = "site";
 const annotationsKey = "annotations";
 
 @Component({
-    selector: "baw-annotations-search",
-    templateUrl: "search.component.html",
-    styleUrl: "search.component.scss",
-    imports: [AnnotationSearchFormComponent, IfLoggedInComponent, AnnotationEventCardComponent, NgbPagination, ErrorHandlerComponent, FiltersWarningModalComponent_1]
+  selector: "baw-annotations-search",
+  templateUrl: "search.component.html",
+  styleUrl: "search.component.scss",
+  imports: [
+    AnnotationSearchFormComponent,
+    IfLoggedInComponent,
+    AnnotationEventCardComponent,
+    NgbPagination,
+    ErrorHandlerComponent,
+    FiltersWarningModalComponent,
+  ],
 })
 class AnnotationSearchComponent
   extends PaginationTemplate<AudioEvent>

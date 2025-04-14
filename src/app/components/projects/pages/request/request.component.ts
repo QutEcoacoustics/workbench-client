@@ -17,8 +17,8 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 import schema from "./request.schema.json";
 
 @Component({
-    selector: "baw-projects-request",
-    template: `
+  selector: "baw-projects-request",
+  template: `
     <baw-wip>
       @if (projects) {
         <baw-form
@@ -36,7 +36,7 @@ import schema from "./request.schema.json";
       }
     </baw-wip>
   `,
-    imports: [WIPComponent, FormComponent, ErrorHandlerComponent]
+  imports: [WIPComponent, FormComponent, ErrorHandlerComponent],
 })
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   public error: BawApiError;

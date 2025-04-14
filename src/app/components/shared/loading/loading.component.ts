@@ -17,7 +17,7 @@ import { NgClass } from "@angular/common";
       </div>
     </div>
   `,
-  imports: [NgClass]
+  imports: [NgClass],
 })
 export class LoadingComponent implements OnInit {
   @Input() public color: BootstrapColorTypes = "info";

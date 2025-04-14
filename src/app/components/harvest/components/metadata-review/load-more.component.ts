@@ -10,8 +10,8 @@ import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { WhitespaceComponent } from "./whitespace.component";
 
 @Component({
-    selector: "baw-meta-review-load-more-row",
-    template: `
+  selector: "baw-meta-review-load-more-row",
+  template: `
     <div class="grid-table-item load-more">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
@@ -33,7 +33,7 @@ import { WhitespaceComponent } from "./whitespace.component";
       }
     </div>
   `,
-    styles: [`
+  styles: [`
     .load-more {
       grid-column: 1 / 6;
     }
@@ -42,9 +42,9 @@ import { WhitespaceComponent } from "./whitespace.component";
       display: contents;
     }
   `],
-    // Nothing in this component can change without a change in the row
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [WhitespaceComponent, LoadingComponent]
+  // Nothing in this component can change without a change in the row
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [WhitespaceComponent, LoadingComponent]
 })
 export class LoadMoreComponent {
   @Input() public row: MetaReviewLoadMore;

@@ -16,6 +16,7 @@ describe("HeaderItemComponent", () => {
   let defaultLink: MenuLink;
   let defaultRoute: MenuRoute;
   let spec: Spectator<HeaderItemComponent>;
+
   const createComponent = createComponentFactory({
     component: HeaderItemComponent,
     imports: [RouterTestingModule, MockConfigModule],

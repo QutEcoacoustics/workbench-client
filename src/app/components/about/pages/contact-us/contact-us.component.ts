@@ -17,8 +17,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
 import schema from "./contact-us.schema.json";
 
 @Component({
-    selector: "baw-about-contact-us",
-    template: `
+  selector: "baw-about-contact-us",
+  template: `
     <baw-form
       title="Contact Us"
       [model]="model"
@@ -35,7 +35,7 @@ import schema from "./contact-us.schema.json";
       </span>
     </baw-form>
   `,
-    imports: [FormComponent, StrongRouteDirective]
+  imports: [FormComponent, StrongRouteDirective],
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = schema.fields;

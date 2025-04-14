@@ -6,7 +6,8 @@ import { adminCategory } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 import { adminSettingsMenuItem } from "./settings.menus";
 
-@Component({ template: `
+@Component({
+  template: `
     <h1>Client Settings</h1>
 
     <p class="subTitle">
@@ -43,7 +44,8 @@ import { adminSettingsMenuItem } from "./settings.menus";
         Enable cache logging in the console
       </label>
     </div>
-  ` })
+  `,
+})
 class AdminSettingsComponent extends PageComponent {
   public constructor(
     @Inject(CACHE_SETTINGS) public cacheSettings: CacheSettings

@@ -10,8 +10,8 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { AsyncPipe } from "@angular/common";
 
 @Component({
-    selector: "baw-allows-original-download",
-    template: `
+  selector: "baw-allows-original-download",
+  template: `
     <!-- ng-container needed because otherwise ExpressionChangedAfterItHasBeenCheckedError is thrown -->
     @if (project$) {
       @if (project$ | async; as project) {
@@ -28,7 +28,7 @@ import { AsyncPipe } from "@angular/common";
       }
     }
   `,
-    imports: [NgbTooltip, AsyncPipe]
+  imports: [NgbTooltip, AsyncPipe],
 })
 export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent

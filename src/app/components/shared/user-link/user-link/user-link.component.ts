@@ -8,8 +8,8 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-user-link",
-    template: `
+  selector: "baw-user-link",
+  template: `
     <!-- Loading text -->
     @if (user | isUnresolved) {
       <baw-loading size="sm"></baw-loading>
@@ -31,8 +31,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       <!-- Show ghost user -->
     }
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [LoadingComponent, UrlDirective, FaIconComponent, NgbTooltip, IsUnresolvedPipe]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LoadingComponent, UrlDirective, FaIconComponent, NgbTooltip, IsUnresolvedPipe]
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card

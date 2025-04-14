@@ -31,7 +31,12 @@ const components = [
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...modules, ...components],
-    exports: [RouterModule, ...components, ...modules],
+  imports: [
+    SharedModule,
+    RouterModule.forChild(routes),
+    ...modules,
+    ...components,
+  ],
+  exports: [RouterModule, ...components, ...modules],
 })
 export class AdminModule {}

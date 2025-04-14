@@ -37,17 +37,18 @@ describe("HomeComponent", () => {
   let cmsService: SpyObject<CmsService>;
   let config: ConfigService;
   let spec: Spectator<HomeComponent>;
+
   const createComponent = createComponentFactory({
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
-    MockBawApiModule,
-    MockConfigModule,
-    IconsModule,
-    RouterTestingModule,
-    PipesModule,
-    LoadingComponent,
-],
+      MockBawApiModule,
+      MockConfigModule,
+      IconsModule,
+      RouterTestingModule,
+      PipesModule,
+      LoadingComponent,
+    ],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

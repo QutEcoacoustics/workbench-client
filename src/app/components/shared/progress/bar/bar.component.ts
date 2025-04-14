@@ -4,8 +4,8 @@ import { NgClass, NgStyle } from "@angular/common";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-    selector: "baw-progress-bar",
-    template: `
+  selector: "baw-progress-bar",
+  template: `
     <div
       class="progress-bar"
       role="progressbar"
@@ -20,12 +20,12 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
       {{ progress + "%" }}
     </div>
   `,
-    styles: [`
+  styles: [`
     div {
       cursor: help;
     }
   `],
-    imports: [NgClass, NgStyle, NgbTooltip]
+  imports: [NgClass, NgStyle, NgbTooltip]
 })
 export class ProgressBarComponent {
   @Input() public progress: number;

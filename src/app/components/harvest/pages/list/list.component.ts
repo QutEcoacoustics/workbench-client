@@ -34,9 +34,20 @@ export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
 
 @Component({
-    selector: "baw-harvests",
-    templateUrl: "list.component.html",
-    imports: [StrongRouteDirective, NgxDatatableModule, DatatableDefaultsDirective, DatatablePaginationDirective, DatetimeComponent, UserLinkComponent, LoadingComponent, UrlDirective, ConfirmationComponent, IsUnresolvedPipe]
+  selector: "baw-harvests",
+  templateUrl: "list.component.html",
+  imports: [
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatetimeComponent,
+    UserLinkComponent,
+    LoadingComponent,
+    UrlDirective,
+    ConfirmationComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class ListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;

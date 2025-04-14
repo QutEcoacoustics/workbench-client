@@ -1,8 +1,8 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core";
 
 @Component({
-    selector: "baw-progress",
-    template: `
+  selector: "baw-progress",
+  template: `
     <div class="progress">
       @if (showZero) {
         <div class="progress-bar zero w-100">0%</div>
@@ -12,7 +12,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
       }
     </div>
   `,
-    styles: [`
+  styles: [`
     .progress > baw-progress-bar {
       display: contents;
     }
@@ -22,8 +22,8 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
       color: black;
     }
   `],
-    // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-    encapsulation: ViewEncapsulation.None
+  // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
+  encapsulation: ViewEncapsulation.None
 })
 export class ProgressComponent {
   @Input() public showZero: boolean;

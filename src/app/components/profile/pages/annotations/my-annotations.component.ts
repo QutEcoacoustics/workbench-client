@@ -25,9 +25,17 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-annotations",
-    templateUrl: "./annotations.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, LoadingComponent, TimeSinceComponent, UrlDirective, ErrorHandlerComponent, IsUnresolvedPipe]
+  selector: "baw-my-annotations",
+  templateUrl: "./annotations.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    LoadingComponent,
+    TimeSinceComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];

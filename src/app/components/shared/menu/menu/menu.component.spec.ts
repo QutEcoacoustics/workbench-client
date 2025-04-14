@@ -49,7 +49,6 @@ import { MenuComponent } from "./menu.component";
 @Component({
   selector: "baw-test-widget",
   template: "<div>Widget working</div>",
-  
 })
 export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
@@ -62,7 +61,6 @@ export class MockWidgetComponent implements WidgetComponent {
 @Component({
   selector: "baw-test-modal",
   template: '<div class="modal-body">Modal working</div>',
-  
 })
 export class MockModalComponent implements ModalComponent {
   public pageData!: any;
@@ -108,7 +106,9 @@ describe("MenuComponent", () => {
   }
 
   function getMenuLinks(): MenuLinkComponent[] {
-    return spec.queryAll(MenuLinkComponent).filter((item) => isExternalLink(item.link));
+    return spec
+      .queryAll(MenuLinkComponent)
+      .filter((item) => isExternalLink(item.link));
   }
 
   function getMenuRoutes(): MenuLinkComponent[] {
@@ -280,7 +280,9 @@ describe("MenuComponent", () => {
       it("should set the widget data using the options provided", () => {
         setup({
           widgets: OrderedSet([
-            new WidgetMenuItem(MockWidgetComponent, undefined, { testProperty: "test" }),
+            new WidgetMenuItem(MockWidgetComponent, undefined, {
+              testProperty: "test",
+            }),
           ]),
         });
         spec.detectChanges();

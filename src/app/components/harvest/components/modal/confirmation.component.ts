@@ -3,8 +3,8 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 
 @Component({
-    selector: "baw-harvest-confirmation-modal",
-    template: `
+  selector: "baw-harvest-confirmation-modal",
+  template: `
     <div class="modal-header">
       <h4 class="modal-title">Confirm</h4>
       <button
@@ -33,7 +33,7 @@ import { NgClass } from "@angular/common";
       </div>
     </div>
   `,
-    imports: [NgClass]
+  imports: [NgClass]
 })
 export class ConfirmationComponent {
   @Input() public nextLabel: string;

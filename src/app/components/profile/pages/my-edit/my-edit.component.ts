@@ -20,8 +20,8 @@ import schema from "./my-edit.schema.json";
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-edit",
-    template: `
+  selector: "baw-my-edit",
+  template: `
     @if (!failure) {
       <baw-form
         title="Profile Settings"
@@ -34,7 +34,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class MyEditComponent extends FormTemplate<User> {
   public fields = schema.fields;

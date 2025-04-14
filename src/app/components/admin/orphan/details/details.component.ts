@@ -19,16 +19,16 @@ import { DetailViewComponent } from "../../../shared/detail-view/detail-view.com
 const siteKey = "site";
 
 @Component({
-    selector: "baw-admin-orphan",
-    template: `
+  selector: "baw-admin-orphan",
+  template: `
     @if (!failure) {
-      <div>
-        <h1>Orphan Site Details</h1>
-        <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
-      </div>
+    <div>
+      <h1>Orphan Site Details</h1>
+      <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
+    </div>
     }
   `,
-    imports: [DetailViewComponent]
+  imports: [DetailViewComponent],
 })
 class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)

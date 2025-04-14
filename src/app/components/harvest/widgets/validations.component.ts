@@ -13,18 +13,20 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
 import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
-    selector: "baw-harvest-issue-widget",
-    templateUrl: "validations.component.html",
-    styles: [`
-    hr {
-      margin: 1rem -1rem;
-    }
+  selector: "baw-harvest-issue-widget",
+  templateUrl: "validations.component.html",
+  styles: [
+    `
+      hr {
+        margin: 1rem -1rem;
+      }
 
-    p {
-      font-size: 0.85em;
-    }
-  `],
-    imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe]
+      p {
+        font-size: 0.85em;
+      }
+    `,
+  ],
+  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe],
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;

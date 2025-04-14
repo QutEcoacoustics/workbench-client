@@ -13,9 +13,9 @@ import { switchMap, takeUntil } from "rxjs/operators";
 import { MapComponent } from "../../../shared/map/map.component";
 
 @Component({
-    selector: "baw-site-map",
-    template: '<baw-map [markers]="markers"></baw-map>',
-    imports: [MapComponent]
+  selector: "baw-site-map",
+  template: '<baw-map [markers]="markers"></baw-map>',
+  imports: [MapComponent],
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // TODO Implement system to change colour of selected sites

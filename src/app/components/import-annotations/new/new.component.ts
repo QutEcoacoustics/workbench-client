@@ -22,8 +22,8 @@ export const newAnnotationMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-new-annotation-import",
-    template: `
+  selector: "baw-new-annotation-import",
+  template: `
     @if (!failure) {
       <baw-form
         title="New Annotation Import"
@@ -35,7 +35,7 @@ export const newAnnotationMenuItemActions = [
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   public constructor(
