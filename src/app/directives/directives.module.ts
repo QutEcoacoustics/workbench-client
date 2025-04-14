@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { BawDatatableModule } from "./datatable/datatable.module";
 import { AuthenticatedImageDirective } from "./image/image.directive";
 import { StrongRouteActiveDirective } from "./strongRoute/strong-route-active.directive";
 import { StrongRouteDirective } from "./strongRoute/strong-route.directive";
@@ -21,6 +20,6 @@ const directives = [
  */
 @NgModule({
   imports: [RouterModule.forChild([]), ...directives],
-  exports: [...directives, BawDatatableModule],
+  exports: [...directives],
 })
 export class DirectivesModule {}
