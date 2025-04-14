@@ -19,8 +19,8 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
  * Menu Link Component
  */
 @Component({
-    selector: "baw-menu-link",
-    template: `
+  selector: "baw-menu-link",
+  template: `
     <div
       placement="auto"
       [ngbTooltip]="tooltipContent"
@@ -67,8 +67,15 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       {{ tooltip }}
     </ng-template>
   `,
-    styleUrls: ["./link.component.scss"],
-    imports: [NgbTooltip, StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet, FaIconComponent, AsyncPipe]
+  styleUrls: ["./link.component.scss"],
+  imports: [
+    NgbTooltip,
+    StrongRouteActiveDirective,
+    StrongRouteDirective,
+    NgTemplateOutlet,
+    FaIconComponent,
+    AsyncPipe,
+  ],
 })
 export class MenuLinkComponent
   extends withUnsubscribe()

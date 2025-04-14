@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
-    selector: "baw-indicator",
-    template: `
+  selector: "baw-indicator",
+  template: `
     <div>
       @switch (status) {
         <!-- Success Status -->
@@ -29,9 +29,9 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
         }
       }
     </div>
-    `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FaIconComponent]
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FaIconComponent]
 })
 export class IndicatorComponent {
   @Input() public status: Status = Status.success;

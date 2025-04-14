@@ -29,8 +29,8 @@ const regionKey = "region";
  * Edit Region Component
  */
 @Component({
-    selector: "baw-regions-edit",
-    template: `
+  selector: "baw-regions-edit",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -42,7 +42,7 @@ const regionKey = "region";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class EditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;

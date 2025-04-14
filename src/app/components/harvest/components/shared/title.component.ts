@@ -10,10 +10,10 @@ import { takeUntil, throwError } from "rxjs";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
-    selector: "baw-harvest-title",
-    templateUrl: "./title.component.html",
-    styleUrls: ["./title.component.scss"],
-    imports: [FormsModule, FaIconComponent]
+  selector: "baw-harvest-title",
+  templateUrl: "./title.component.html",
+  styleUrls: ["./title.component.scss"],
+  imports: [FormsModule, FaIconComponent]
 })
 export class TitleComponent extends withUnsubscribe()  {
   @Input() public project: Project;

@@ -20,12 +20,12 @@ const routes = regionsRoute.compileRoutes(getRouteConfigForPage);
 const shallowRoutes = shallowRegionsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [
-        SharedModule,
-        ProjectsModule,
-        RouterModule.forChild([...routes, ...shallowRoutes]),
-        ...components,
-    ],
-    exports: [RouterModule, ...components],
+  imports: [
+    SharedModule,
+    ProjectsModule,
+    RouterModule.forChild([...routes, ...shallowRoutes]),
+    ...components,
+  ],
+  exports: [RouterModule, ...components],
 })
 export class RegionsModule {}

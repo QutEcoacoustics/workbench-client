@@ -30,8 +30,8 @@ interface CanPredicate {
  * ```
  */
 @Component({
-    selector: "baw-can",
-    template: `
+  selector: "baw-can",
+  template: `
     <span
       #contentWrapper
       [ngbTooltip]="session.isLoggedIn ? null : 'You must be logged in'"
@@ -39,7 +39,7 @@ interface CanPredicate {
       <ng-content></ng-content>
     </span>
   `,
-    imports: [NgbTooltip]
+  imports: [NgbTooltip]
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
   public constructor(

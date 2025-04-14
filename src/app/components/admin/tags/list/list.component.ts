@@ -25,9 +25,17 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 export const adminTagsMenuItemActions = [adminNewTagMenuItem];
 
 @Component({
-    selector: "baw-admin-tags",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, CheckboxComponent, StrongRouteDirective, DeleteModalComponent, ErrorHandlerComponent]
+  selector: "baw-admin-tags",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    CheckboxComponent,
+    StrongRouteDirective,
+    DeleteModalComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   public columns = [

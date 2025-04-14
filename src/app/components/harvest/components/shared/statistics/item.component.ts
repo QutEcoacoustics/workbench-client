@@ -5,8 +5,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { Statistic } from "./statistics.component";
 
 @Component({
-    selector: "baw-harvest-statistic-item",
-    template: `
+  selector: "baw-harvest-statistic-item",
+  template: `
     <div class="card-body" [ngbTooltip]="statistic.tooltip">
       <div class="icon" [ngClass]="'text-bg-' + statistic.bgColor">
         <fa-icon
@@ -25,7 +25,7 @@ import { Statistic } from "./statistics.component";
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .card-body {
       text-align: center;
       min-width: 7.5rem;
@@ -45,7 +45,7 @@ import { Statistic } from "./statistics.component";
       font-weight: bold;
     }
   `],
-    imports: [NgbTooltip, NgClass, FaIconComponent]
+  imports: [NgbTooltip, NgClass, FaIconComponent]
 })
 export class StatisticItemComponent {
   @Input() public statistic: Statistic;

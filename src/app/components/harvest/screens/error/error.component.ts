@@ -3,8 +3,8 @@ import { reportProblemMenuItem } from "@components/report-problem/report-problem
 import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-route.directive";
 
 @Component({
-    selector: "baw-harvest-error",
-    template: `
+  selector: "baw-harvest-error",
+  template: `
     <h3>Uploading Error</h3>
 
     <p>
@@ -13,7 +13,7 @@ import { StrongRouteDirective } from "../../../../directives/strongRoute/strong-
       and report the issue so it can be resolved.
     </p>
   `,
-    imports: [StrongRouteDirective]
+  imports: [StrongRouteDirective],
 })
 export class ErrorComponent {
   public reportProblem = reportProblemMenuItem;

@@ -19,9 +19,14 @@ import { ErrorHandlerComponent } from "../../../shared/error-handler/error-handl
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-bookmarks",
-    templateUrl: "./bookmarks.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-my-bookmarks",
+  templateUrl: "./bookmarks.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
   public api: BookmarksService;

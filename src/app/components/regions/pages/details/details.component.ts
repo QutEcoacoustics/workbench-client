@@ -57,9 +57,9 @@ const regionKey = "region";
  * Region Details Component
  */
 @Component({
-    selector: "baw-region",
-    styleUrls: ["./details.component.scss"],
-    template: `
+  selector: "baw-region",
+  styleUrls: ["./details.component.scss"],
+  template: `
     @if (region) {
       <!-- Region Details -->
       <h1>{{ region.name }}</h1>
@@ -118,13 +118,13 @@ const regionKey = "region";
       }
     }
   `,
-    imports: [
-        AuthenticatedImageDirective,
-        DebounceInputComponent,
-        SiteMapComponent,
-        SiteCardComponent,
-        NgbPagination,
-    ],
+  imports: [
+      AuthenticatedImageDirective,
+      DebounceInputComponent,
+      SiteMapComponent,
+      SiteCardComponent,
+      NgbPagination,
+  ],
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public defaultDescription = "<i>No description found</i>";

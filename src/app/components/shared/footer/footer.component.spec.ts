@@ -17,6 +17,7 @@ import { FooterComponent } from "./footer.component";
 describe("FooterComponent", () => {
   let configService: ConfigService;
   let spec: Spectator<FooterComponent>;
+
   const createComponent = createComponentFactory({
     component: FooterComponent,
     imports: [RouterTestingModule, MockConfigModule],

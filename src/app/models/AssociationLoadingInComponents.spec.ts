@@ -43,8 +43,8 @@ class MockModel extends AbstractModel {
 export { MockModel as MockModelWithDecorators };
 
 @Component({
-    selector: "baw-test",
-    template: `
+  selector: "baw-test",
+  template: `
     @if (hasMany && model.childModels) {
       @for (item of model.childModels; track item) {
         <li>{{ item }}</li>
@@ -59,7 +59,7 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     }
   `,
-    imports: [RouterTestingModule, MockBawApiModule]
+  imports: [RouterTestingModule, MockBawApiModule]
 })
 class MockComponent {
   @Input() public model: MockModel;

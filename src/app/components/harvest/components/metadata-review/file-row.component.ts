@@ -21,8 +21,8 @@ interface ValidationMessage {
 }
 
 @Component({
-    selector: "baw-meta-review-file-row",
-    template: `
+  selector: "baw-meta-review-file-row",
+  template: `
     <!-- Icon and Path -->
     <div class="grid-table-item">
       <!-- Whitespace -->
@@ -84,10 +84,16 @@ interface ValidationMessage {
       </div>
     </div>
   `,
-    styleUrls: ["file-row.component.scss"],
-    // Nothing in this component can change without a change in the row
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [WhitespaceComponent, FaIconComponent, NgbTooltip, NgClass, DecimalPipe]
+  styleUrls: ["file-row.component.scss"],
+  // Nothing in this component can change without a change in the row
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    WhitespaceComponent,
+    FaIconComponent,
+    NgbTooltip,
+    NgClass,
+    DecimalPipe,
+  ]
 })
 export class FileRowComponent implements OnInit {
   @Input() public row: MetaReviewFile;

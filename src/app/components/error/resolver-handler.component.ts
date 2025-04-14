@@ -8,13 +8,13 @@ import { takeUntil } from "rxjs/operators";
 import { ErrorHandlerComponent } from "../shared/error-handler/error-handler.component";
 
 @Component({
-    selector: "baw-resolver-handler",
-    template: `
+  selector: "baw-resolver-handler",
+  template: `
     @if (error) {
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-    imports: [ErrorHandlerComponent]
+  imports: [ErrorHandlerComponent],
 })
 export class ResolverHandlerComponent
   extends withUnsubscribe()

@@ -20,8 +20,8 @@ import { ErrorHandlerComponent } from "../error-handler/error-handler.component"
  * CMS Wrapper
  */
 @Component({
-    selector: "baw-cms",
-    template: `
+  selector: "baw-cms",
+  template: `
     @if (loading) {
       <h4 class="text-center">Loading</h4>
       <baw-loading></baw-loading>
@@ -31,7 +31,7 @@ import { ErrorHandlerComponent } from "../error-handler/error-handler.component"
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-    imports: [LoadingComponent, ErrorHandlerComponent]
+  imports: [LoadingComponent, ErrorHandlerComponent]
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
   @Input() public page: CMS;

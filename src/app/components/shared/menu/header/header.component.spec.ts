@@ -16,6 +16,7 @@ describe("HeaderComponent", () => {
   let config: ConfigService;
   let menu: MenuService;
   let spec: Spectator<HeaderComponent>;
+
   const createComponent = createComponentFactory({
     component: HeaderComponent,
     providers: [

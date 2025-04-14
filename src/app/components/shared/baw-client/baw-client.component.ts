@@ -22,8 +22,8 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
-    selector: "baw-client",
-    template: `
+  selector: "baw-client",
+  template: `
     @if (url) {
       <iframe #content [src]="url">
         <!-- This warning only shows on browsers which don't support iframes -->
@@ -35,13 +35,13 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       </iframe>
     }
   `,
-    styles: [`
+  styles: [`
     iframe {
       border: 0px;
       min-height: 100%;
       width: 100%;
     }
-  `]
+  `],
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;

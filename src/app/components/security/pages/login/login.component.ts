@@ -32,8 +32,8 @@ export const loginMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-authentication-login",
-    template: `
+  selector: "baw-authentication-login",
+  template: `
     <baw-form
       title="Log in"
       size="small"
@@ -68,7 +68,7 @@ export const loginMenuItemActions = [
       </ng-template>
     </baw-toast>
   `,
-    imports: [FormComponent, ToastComponent_1]
+  imports: [FormComponent, ToastComponent_1],
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = schema.fields;

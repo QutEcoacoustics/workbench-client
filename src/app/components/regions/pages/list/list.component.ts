@@ -22,8 +22,8 @@ export const regionsMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-regions",
-    template: `
+  selector: "baw-regions",
+  template: `
     @if (!error) {
       <baw-debounce-input
         label="Filter"
@@ -52,8 +52,8 @@ export const regionsMenuItemActions = [
       }
     }
     <baw-error-handler [error]="error"></baw-error-handler>
-    `,
-    imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
+  `,
+  imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
 })
 class ListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);

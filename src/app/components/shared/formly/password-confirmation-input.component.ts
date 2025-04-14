@@ -7,8 +7,8 @@ import { asFormControl } from "./helper";
  * Location Input
  */
 @Component({
-    selector: "baw-password-confirmation-input",
-    template: `
+  selector: "baw-password-confirmation-input",
+  template: `
     <div class="form-group mb-3">
       <label for="password">Password {{ props.required ? " *" : "" }}</label>
       <input
@@ -60,7 +60,7 @@ import { asFormControl } from "./helper";
       [formControl]="asFormControl(formControl)"
     />
   `,
-    imports: [FormsModule, FormlyModule, ReactiveFormsModule]
+  imports: [FormsModule, FormlyModule, ReactiveFormsModule]
 })
 export class PasswordConfirmationInputComponent
   extends FieldType

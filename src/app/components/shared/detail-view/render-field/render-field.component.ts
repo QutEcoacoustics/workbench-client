@@ -21,8 +21,8 @@ import { DatetimeComponent } from "../../datetime-formats/datetime/datetime/date
 import { DetailViewModule } from "../detail-view.module";
 
 @Component({
-    selector: "baw-render-field",
-    template: `
+  selector: "baw-render-field",
+  template: `
     <!-- Display plain text -->
     @if (styling === fieldStyling.plain) {
       <dl>
@@ -95,7 +95,7 @@ import { DetailViewModule } from "../detail-view.module";
       }
     }
   `,
-    styles: [`
+  styles: [`
     p {
       word-wrap: break-word;
     }
@@ -108,7 +108,16 @@ import { DetailViewModule } from "../detail-view.module";
       margin-right: auto;
     }
   `],
-    imports: [CheckboxComponent, ModelLinkComponent, AuthenticatedImageDirective, DurationComponent, ZonedDateTimeComponent, TimeSinceComponent, DatetimeComponent, DetailViewModule]
+  imports: [
+    CheckboxComponent,
+    ModelLinkComponent,
+    AuthenticatedImageDirective,
+    DurationComponent,
+    ZonedDateTimeComponent,
+    TimeSinceComponent,
+    DatetimeComponent,
+    DetailViewModule,
+  ],
 })
 export class RenderFieldComponent
   extends withUnsubscribe()

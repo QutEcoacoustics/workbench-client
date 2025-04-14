@@ -26,14 +26,15 @@ describe("MenuLinkComponent", () => {
   let config: ConfigService;
   let spec: SpectatorHost<MenuLinkComponent>;
   let component: MenuLinkComponent;
+
   const createHost = createHostFactory({
     component: MenuLinkComponent,
     imports: [
-    MockConfigModule,
-    RouterTestingModule,
-    NgbTooltipModule,
-    IconsModule,
-],
+      MockConfigModule,
+      RouterTestingModule,
+      NgbTooltipModule,
+      IconsModule,
+    ],
   });
 
   function getWrapper(): HTMLSpanElement {

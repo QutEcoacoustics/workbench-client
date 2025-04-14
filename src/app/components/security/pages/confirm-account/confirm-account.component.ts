@@ -17,8 +17,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./confirm-account.schema.json";
 
 @Component({
-    selector: "baw-confirm-account",
-    template: `
+  selector: "baw-confirm-account",
+  template: `
     <baw-form
       title="Resend confirmation instructions?"
       [model]="model"
@@ -28,7 +28,7 @@ import schema from "./confirm-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   public fields = schema.fields;

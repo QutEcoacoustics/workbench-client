@@ -1,12 +1,18 @@
 import { Component, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
-import { analysisCategory, analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
+import {
+  analysisCategory,
+  analysisJobMenuItem,
+} from "@components/audio-analysis/analysis-jobs.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
+import {
+  retrieveResolvers,
+  hasResolvedSuccessfully,
+} from "@baw-api/resolver-common";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -18,9 +24,9 @@ const analysisJobKey = "analysisJob";
 const projectKey = "project";
 
 @Component({
-    selector: "baw-analysis",
-    templateUrl: "details.component.html",
-    imports: [DetailViewComponent]
+  selector: "baw-analysis",
+  templateUrl: "details.component.html",
+  imports: [DetailViewComponent],
 })
 class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)

@@ -13,8 +13,8 @@ import { MenuComponent } from "../menu/menu.component";
  * actions available
  */
 @Component({
-    selector: "baw-action-menu",
-    template: `
+  selector: "baw-action-menu",
+  template: `
     <baw-menu
       menuType="action"
       [title]="title"
@@ -23,7 +23,7 @@ import { MenuComponent } from "../menu/menu.component";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
-    imports: [MenuComponent]
+  imports: [MenuComponent],
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

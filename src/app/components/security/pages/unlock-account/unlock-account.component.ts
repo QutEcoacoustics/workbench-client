@@ -14,8 +14,8 @@ import { FormComponent } from "../../../shared/form/form.component";
 import schema from "./unlock-account.schema.json";
 
 @Component({
-    selector: "baw-confirm-account",
-    template: `
+  selector: "baw-confirm-account",
+  template: `
     <baw-form
       title="Resend unlock instructions"
       [model]="model"
@@ -25,7 +25,7 @@ import schema from "./unlock-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class UnlockAccountComponent extends FormTemplate<UnlockAccount> {
   public fields = schema.fields;

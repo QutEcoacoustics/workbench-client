@@ -24,9 +24,15 @@ const accountKey = "account";
  * TODO List of projects is filtered incorrectly
  */
 @Component({
-    selector: "baw-their-projects",
-    templateUrl: "./projects.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, ErrorHandlerComponent, TitleCasePipe]
+  selector: "baw-their-projects",
+  templateUrl: "./projects.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+    TitleCasePipe,
+  ],
 })
 class TheirProjectsComponent extends MyProjectsComponent {
   public constructor(api: ProjectsService, route: ActivatedRoute) {

@@ -20,9 +20,16 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
 import { ErrorHandlerComponent } from "../../shared/error-handler/error-handler.component";
 
 @Component({
-    selector: "baw-admin-users",
-    templateUrl: "./user.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, StrongRouteDirective, ErrorHandlerComponent]
+  selector: "baw-admin-users",
+  templateUrl: "./user.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    StrongRouteDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public userIcon = theirProfileMenuItem.icon;

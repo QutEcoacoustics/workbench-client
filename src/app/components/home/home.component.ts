@@ -24,10 +24,20 @@ import { WithLoadingPipe } from "../../pipes/with-loading/with-loading.pipe";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
 @Component({
-    selector: "baw-home",
-    styleUrls: ["./home.component.scss"],
-    templateUrl: "./home.component.html",
-    imports: [FaIconComponent, LoadingComponent, CardsComponent, StrongRouteDirective, AuthenticatedImageDirective, AsyncPipe, UpperCasePipe, TitleCasePipe, WithLoadingPipe]
+  selector: "baw-home",
+  styleUrls: ["./home.component.scss"],
+  templateUrl: "./home.component.html",
+  imports: [
+    FaIconComponent,
+    LoadingComponent,
+    CardsComponent,
+    StrongRouteDirective,
+    AuthenticatedImageDirective,
+    AsyncPipe,
+    UpperCasePipe,
+    TitleCasePipe,
+    WithLoadingPipe,
+  ],
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;

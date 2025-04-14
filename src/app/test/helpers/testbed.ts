@@ -31,9 +31,7 @@ export const testFormImports = [
   LoadingComponent,
 ];
 
-export const testFormProviders = [
-  provideHttpClientTesting(),
-];
+export const testFormProviders = [provideHttpClientTesting()];
 
 export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
   const module = builder.build();

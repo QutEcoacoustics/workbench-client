@@ -30,10 +30,16 @@ const projectKey = "project";
  * of how this page works
  */
 @Component({
-    selector: "baw-assign",
-    templateUrl: "./assign.component.html",
-    styleUrls: ["./assign.component.scss"],
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, FormComponent, ErrorHandlerComponent]
+  selector: "baw-assign",
+  templateUrl: "./assign.component.html",
+  styleUrls: ["./assign.component.scss"],
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FormComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AssignComponent
   extends PagedTableTemplate<TableRow, Site>
@@ -102,8 +108,7 @@ class AssignComponent
 
     // this is not related to baw-server/issues/502 because baw-api.service always emits the model kind
     // in the request body. Meaning that project_ids is retained in the request body.
-    const createFilter = (site: Site) =>
-      this.api.update(site);
+    const createFilter = (site: Site) => this.api.update(site);
 
     // Workaround required because API ignores changes to project ids
     forkJoin<Site[]>([

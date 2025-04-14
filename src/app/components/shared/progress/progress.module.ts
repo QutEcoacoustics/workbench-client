@@ -7,7 +7,7 @@ import { ProgressComponent } from "./progress/progress.component";
 const components = [ProgressComponent, ProgressBarComponent];
 
 @NgModule({
-    exports: components,
-    imports: [CommonModule, NgbTooltipModule, ...components],
+  exports: components,
+  imports: [CommonModule, NgbTooltipModule, ...components],
 })
 export class ProgressModule {}

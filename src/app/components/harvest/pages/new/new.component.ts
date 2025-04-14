@@ -19,9 +19,9 @@ import { TitleComponent } from "../../components/shared/title.component";
 const projectKey = "project";
 
 @Component({
-    selector: "baw-harvest-new",
-    templateUrl: "new.component.html",
-    imports: [TitleComponent]
+  selector: "baw-harvest-new",
+  templateUrl: "new.component.html",
+  imports: [TitleComponent],
 })
 class NewComponent extends PageComponent implements OnInit {
   public loading: boolean;

@@ -17,11 +17,12 @@ export const notFoundImage: ImageUrl = {
   size: ImageSizes.fallback,
 };
 
-@Directive({ 
-    // Directive applies directly to all image tags instead of being
-    // explicitly called
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: "img" })
+@Directive({
+  // Directive applies directly to all image tags instead of being
+  // explicitly called
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: "img",
+})
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
   @Input() public src: ImageUrl[] | string;

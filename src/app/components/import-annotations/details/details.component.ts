@@ -69,7 +69,7 @@ interface ImportGroup {
 
 @Component({
   selector: "baw-annotation-import",
-  templateUrl: "details.component.html",
+  templateUrl: "./details.component.html",
   imports: [
     NgbNav,
     NgbNavItem,

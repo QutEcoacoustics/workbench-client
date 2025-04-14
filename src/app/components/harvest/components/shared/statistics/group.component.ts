@@ -3,8 +3,8 @@ import { Statistic } from "./statistics.component";
 import { StatisticItemComponent } from "./item.component";
 
 @Component({
-    selector: "baw-harvest-statistic-group",
-    template: `
+  selector: "baw-harvest-statistic-group",
+  template: `
     <div class="card shadow">
       @for (stat of statisticGroup; track stat) {
         <baw-harvest-statistic-item
@@ -14,8 +14,8 @@ import { StatisticItemComponent } from "./item.component";
       }
       <ng-content></ng-content>
     </div>
-    `,
-    styles: [`
+  `,
+  styles: [`
     .card {
       display: flex;
       flex-direction: row;
@@ -23,7 +23,7 @@ import { StatisticItemComponent } from "./item.component";
       margin-bottom: 1rem;
     }
   `],
-    imports: [StatisticItemComponent]
+  imports: [StatisticItemComponent]
 })
 export class StatisticGroupComponent {
   @Input() public statisticGroup: Statistic[];

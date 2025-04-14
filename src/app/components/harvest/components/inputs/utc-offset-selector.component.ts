@@ -4,8 +4,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
 
 @Component({
-    selector: "baw-harvest-utc-offset-selector",
-    template: `
+  selector: "baw-harvest-utc-offset-selector",
+  template: `
     @if (offset) {
       <div class="utc-label">
         <span>{{ offset }}</span>
@@ -47,7 +47,7 @@ import { FormsModule } from "@angular/forms";
       width: 100%;
     }
   `],
-    imports: [NgbTooltip, FaIconComponent, FormsModule]
+  imports: [NgbTooltip, FaIconComponent, FormsModule]
 })
 export class UTCOffsetSelectorComponent {
   @Input() public offset: string;

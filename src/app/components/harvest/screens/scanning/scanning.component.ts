@@ -7,8 +7,8 @@ import { ProgressComponent } from "../../../shared/progress/progress/progress.co
 import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component";
 
 @Component({
-    selector: "baw-harvest-scanning",
-    template: `
+  selector: "baw-harvest-scanning",
+  template: `
     <h3>Scanning</h3>
 
     <p>We are searching through our files to find all the files you uploaded</p>
@@ -36,7 +36,12 @@ import { ProgressBarComponent } from "../../../shared/progress/bar/bar.component
       ></baw-progress-bar>
     </baw-progress>
   `,
-    imports: [CanCloseDialogComponent, EtaComponent, ProgressComponent, ProgressBarComponent]
+  imports: [
+    CanCloseDialogComponent,
+    EtaComponent,
+    ProgressComponent,
+    ProgressBarComponent,
+  ],
 })
 export class ScanningComponent implements OnInit {
   public constructor(private stages: HarvestStagesService) {}

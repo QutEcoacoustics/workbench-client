@@ -22,8 +22,8 @@ import { FormComponent } from "../../shared/form/form.component";
 const scriptKey = "script";
 
 @Component({
-    selector: "baw-admin-scripts-edit",
-    template: `
+  selector: "baw-admin-scripts-edit",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -35,7 +35,7 @@ const scriptKey = "script";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public constructor(

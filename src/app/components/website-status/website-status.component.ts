@@ -16,8 +16,8 @@ import {
 } from "./website-status.menu";
 
 @Component({
-    selector: "baw-website-status",
-    template: `
+  selector: "baw-website-status",
+  template: `
     <h2>Website Status</h2>
     <baw-items [items]="statusItems()"></baw-items>
 
@@ -27,7 +27,7 @@ import {
       investigate.
     </p>
   `,
-    imports: [ItemsComponent, StrongRouteDirective]
+  imports: [ItemsComponent, StrongRouteDirective],
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(

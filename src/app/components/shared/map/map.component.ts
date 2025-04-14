@@ -7,7 +7,12 @@ import {
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
-import { GoogleMap, MapAnchorPoint, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import {
+  GoogleMap,
+  MapAnchorPoint,
+  MapInfoWindow,
+  MapMarker,
+} from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   MapMarkerOptions,
@@ -21,10 +26,10 @@ import { LoadingComponent } from "../loading/loading.component";
  * Google Maps Wrapper Component
  */
 @Component({
-    selector: "baw-map",
-    templateUrl: "./map.component.html",
-    styleUrl: "./map.component.scss",
-    imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent]
+  selector: "baw-map",
+  templateUrl: "./map.component.html",
+  styleUrl: "./map.component.scss",
+  imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   public constructor(private mapService: MapsService) {

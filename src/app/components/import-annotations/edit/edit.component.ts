@@ -19,8 +19,8 @@ import { FormComponent } from "../../shared/form/form.component";
 const audioEventImportKey = "audioEventImport";
 
 @Component({
-    selector: "baw-edit-annotation-import",
-    template: `
+  selector: "baw-edit-annotation-import",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="title"
@@ -32,7 +32,7 @@ const audioEventImportKey = "audioEventImport";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class EditAnnotationsComponent
   extends FormTemplate<AudioEventImport>

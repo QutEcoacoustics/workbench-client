@@ -17,8 +17,8 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
  * Footer Component
  */
 @Component({
-    selector: "baw-footer",
-    template: `
+  selector: "baw-footer",
+  template: `
     <footer class="container-fluid text-bg-light">
       <nav class="container navbar navbar-expand-lg navbar-light text-bg-light">
         <ul class="nav me-auto align-items-center m-auto">
@@ -45,9 +45,9 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
         </ul>
       </nav>
     </footer>
-    `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [StrongRouteActiveDirective, StrongRouteDirective]
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [StrongRouteActiveDirective, StrongRouteDirective]
 })
 export class FooterComponent implements OnInit {
   public version: string;

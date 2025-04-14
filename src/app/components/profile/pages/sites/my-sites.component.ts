@@ -26,9 +26,19 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 const userKey = "user";
 
 @Component({
-    selector: "baw-my-sites",
-    templateUrl: "./sites.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, UrlDirective, TimeSinceComponent, LoadingComponent, StrongRouteDirective, ErrorHandlerComponent, TitleCasePipe, IsUnresolvedPipe]
+  selector: "baw-my-sites",
+  templateUrl: "./sites.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    TimeSinceComponent,
+    LoadingComponent,
+    StrongRouteDirective,
+    ErrorHandlerComponent,
+    TitleCasePipe,
+    IsUnresolvedPipe,
+  ],
 })
 class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public columns = [

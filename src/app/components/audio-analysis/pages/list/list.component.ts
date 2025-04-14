@@ -34,9 +34,17 @@ interface TableRow {
 const projectKey = "project";
 
 @Component({
-    selector: "baw-analyses",
-    templateUrl: "list.component.html",
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, InlineListComponent, UserLinkComponent, DatetimeComponent, UrlDirective, ErrorHandlerComponent]
+  selector: "baw-analyses",
+  templateUrl: "list.component.html",
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    InlineListComponent,
+    UserLinkComponent,
+    DatetimeComponent,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
   public constructor(

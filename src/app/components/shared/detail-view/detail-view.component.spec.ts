@@ -6,7 +6,11 @@ import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service"
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
-import { interceptShowApiRequest, nStepObservable, viewports } from "@test/helpers/general";
+import {
+  interceptShowApiRequest,
+  nStepObservable,
+  viewports,
+} from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -26,14 +30,14 @@ describe("DetailViewComponent", () => {
     component: DetailViewComponent,
     declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
-    MockBawApiModule,
-    RouterTestingModule,
-    PipesModule,
+      MockBawApiModule,
+      RouterTestingModule,
+      PipesModule,
 
-    // standalone components
-    CheckboxComponent,
-    LoadingComponent,
-],
+      // standalone components
+      CheckboxComponent,
+      LoadingComponent,
+    ],
     providers: [
       MockStandardApiService,
       { provide: MOCK.token, useExisting: MockStandardApiService },
@@ -212,7 +216,7 @@ describe("DetailViewComponent", () => {
           api as any,
           injector,
           (id: Id) => mockApiResponses.get(id),
-          AssociatedModel,
+          AssociatedModel
         );
 
         setupComponent("childModels");

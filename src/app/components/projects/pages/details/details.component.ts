@@ -62,8 +62,8 @@ export const projectMenuItemActions = [
 const projectKey = "project";
 
 @Component({
-    selector: "baw-project",
-    template: `
+  selector: "baw-project",
+  template: `
     @if (project) {
       <h1>{{ project.name }}</h1>
       <div class="row mb-3">
@@ -138,8 +138,14 @@ const projectKey = "project";
 
     <div class="mb-3"></div>
   `,
-    styleUrls: ["./details.component.scss"],
-    imports: [AuthenticatedImageDirective, DebounceInputComponent, SiteMapComponent, SiteCardComponent, NgbPagination]
+  styleUrls: ["./details.component.scss"],
+  imports: [
+    AuthenticatedImageDirective,
+    DebounceInputComponent,
+    SiteMapComponent,
+    SiteCardComponent,
+    NgbPagination,
+  ]
 })
 class DetailsComponent
   extends PaginationTemplate<Site | Region>

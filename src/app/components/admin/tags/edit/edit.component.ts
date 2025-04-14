@@ -24,20 +24,20 @@ const tagKey = "tag";
 const tagTypesKey = "tagTypes";
 
 @Component({
-    selector: "baw-admin-tags-edit",
-    template: `
+  selector: "baw-admin-tags-edit",
+  template: `
     @if (!failure) {
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

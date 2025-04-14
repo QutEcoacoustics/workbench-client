@@ -10,8 +10,8 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
-    selector: "baw-recent-audio-recordings",
-    template: `
+  selector: "baw-recent-audio-recordings",
+  template: `
     <h2>Recent Audio Recordings</h2>
 
     <ngx-datatable
@@ -82,7 +82,16 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-    imports: [NgxDatatableModule, DatatableDefaultsDirective, FaIconComponent, LoadingComponent, DurationComponent, TimeSinceComponent, UrlDirective, IsUnresolvedPipe]
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FaIconComponent,
+    LoadingComponent,
+    DurationComponent,
+    TimeSinceComponent,
+    UrlDirective,
+    IsUnresolvedPipe,
+  ],
 })
 export class RecentAudioRecordingsComponent implements OnChanges {
   @Input() public audioRecordings!: AudioRecording[] | undefined;

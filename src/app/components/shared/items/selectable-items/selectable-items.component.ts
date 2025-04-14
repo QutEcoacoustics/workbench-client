@@ -6,9 +6,9 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
  * This creates a list of items for a user to choose from.
  */
 @Component({
-    selector: "baw-selectable-items",
-    templateUrl: "./selectable-items.component.html",
-    styles: [`
+  selector: "baw-selectable-items",
+  templateUrl: "./selectable-items.component.html",
+  styles: [`
     button {
       height: 100%;
     }
@@ -17,7 +17,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       cursor: not-allowed;
     }
   `],
-    imports: [FaIconComponent]
+  imports: [FaIconComponent],
 })
 export class SelectableItemsComponent {
   @Input() public title: string;

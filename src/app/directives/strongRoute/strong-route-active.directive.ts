@@ -17,9 +17,10 @@ import { StrongRouteDirective } from "./strong-route.directive";
 
 export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
 
-@Directive({ 
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: "a[strongRouteActive]" })
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: "a[strongRouteActive]",
+})
 export class StrongRouteActiveDirective extends RouterLinkActive {
   @ContentChildren(StrongRouteDirective, { descendants: true })
   public linksWithHrefs!: QueryList<StrongRouteDirective>;

@@ -18,7 +18,7 @@ const routes = statisticsRoute.compileRoutes(getRouteConfigForPage);
  * Statistics module
  */
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components],
-    exports: [RouterModule, ...components],
+  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  exports: [RouterModule, ...components],
 })
 export class StatisticsModule {}

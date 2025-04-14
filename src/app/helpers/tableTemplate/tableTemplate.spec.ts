@@ -4,11 +4,11 @@ import { SharedModule } from "@shared/shared.module";
 import { TableTemplate } from "./tableTemplate";
 
 @Component({
-    selector: "baw-test-component",
-    template: `
+  selector: "baw-test-component",
+  template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-    imports: [SharedModule]
+  imports: [SharedModule],
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
@@ -35,16 +35,15 @@ describe("TableTemplate", () => {
   }
 
   function checkMatch(filterMatch: (filter: string, cell: any) => boolean) {
-    spyOn(
-      component as any,
-      "filterMatch"
-    ).and.callFake((val: string, row: any) => filterMatch(val, row));
+    spyOn(component as any, "filterMatch").and.callFake(
+      (val: string, row: any) => filterMatch(val, row)
+    );
   }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [SharedModule, MockComponent],
-}).compileComponents();
+      imports: [SharedModule, MockComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     component = fixture.componentInstance;

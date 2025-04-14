@@ -14,8 +14,8 @@ import { asFormControl } from "./helper";
  * Modifying the location through map clicks and drag are not fully tested through the unit tests and should be tested manually
  */
 @Component({
-    selector: "baw-location-input",
-    template: `
+  selector: "baw-location-input",
+  template: `
     <div class="form-group">
       <label for="latitude"> Latitude {{ props.required ? " *" : "" }} </label>
       <input
@@ -70,7 +70,7 @@ import { asFormControl } from "./helper";
       ></baw-map>
     </div>
   `,
-    imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
+  imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;

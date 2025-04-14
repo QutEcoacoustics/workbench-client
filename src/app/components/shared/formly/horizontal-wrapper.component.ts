@@ -6,8 +6,8 @@ import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
  * ! Warning, test manually after changes
  */
 @Component({
-    selector: "baw-horizontal-wrapper",
-    template: `
+  selector: "baw-horizontal-wrapper",
+  template: `
     <div class="form-group row">
       @if (props.label) {
         <label
@@ -29,6 +29,6 @@ import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
       }
     </div>
   `,
-    imports: [FormlyModule]
+  imports: [FormlyModule]
 })
 export class HorizontalWrapperComponent extends FieldWrapper {}

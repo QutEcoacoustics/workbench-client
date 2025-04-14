@@ -24,9 +24,7 @@ import { DirectivesModule } from "src/app/directives/directives.module";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { AnnotationDownloadComponent } from "./annotation-download/annotation-download.component";
-
 import { BreadcrumbModule } from "./breadcrumb/breadcrumb.module";
-
 import { CmsComponent } from "./cms/cms.component";
 import { DebounceInputComponent } from "./debounce-input/debounce-input.component";
 import { DeleteModalComponent } from "./delete-modal/delete-modal.component";
@@ -40,7 +38,6 @@ import { IconsModule } from "./icons/icons.module";
 import { IndicatorModule } from "./indicator/indicator.module";
 import { InputModule } from "./input/input.module";
 import { ItemsModule } from "./items/items.module";
-
 import { MenuModule } from "./menu/menu.module";
 import { ModelCardsModule } from "./model-cards/model-cards.module";
 import { ModelSelectorComponent } from "./model-selector/model-selector.component";
@@ -58,7 +55,6 @@ import { ZonedDateTimeComponent } from "./datetime-formats/datetime/zoned-dateti
 import { DatetimeComponent } from "./datetime-formats/datetime/datetime/datetime.component";
 import { AudioEventCardModule } from "./audio-event-card/annotation-event-card.module";
 import { IfLoggedInComponent } from "./can/can.component";
-
 import { ErrorCardComponent } from "./error-card/error-card.component";
 import { ToastComponent } from "./toast/toast.component";
 
@@ -87,48 +83,49 @@ export const sharedComponents = [
 export const internalComponents = [];
 
 export const sharedModules = [
-    BrowserAnimationsModule,
-    CommonModule,
-    DateValueAccessorModule,
-    FontAwesomeModule,
-    FormlyBootstrapModule,
-    FormlyModule,
-    FormsModule,
-    LoadingBarHttpClientModule,
-    NgbCollapseModule,
-    NgbDatepickerModule,
-    NgbNavModule,
-    NgbPaginationModule,
-    NgbProgressbarModule,
-    NgbTooltipModule,
-    NgbTypeaheadModule,
-    NgxDatatableModule,
-    ReactiveFormsModule,
-    RouterModule,
-    NgbToast,
-    BreadcrumbModule,
-    CustomInputsModule,
-    DetailViewModule,
-    DirectivesModule,
-    HiddenCopyModule,
-    IconsModule,
-    IndicatorModule,
-    InputModule,
-    ItemsModule,
-    MenuModule,
-    ModelCardsModule,
-    AudioEventCardModule,
-    PipesModule,
-    ProgressModule,
-    StepperModule,
-    UserLinkModule,
-    // date time components
-    // because they are standalone components, they get imported/exported as modules
-    TimeSinceComponent,
-    DurationComponent,
-    ZonedDateTimeComponent,
-    DatetimeComponent,
-    ToastComponent,
+  BrowserAnimationsModule,
+  CommonModule,
+  DateValueAccessorModule,
+  FontAwesomeModule,
+  FormlyBootstrapModule,
+  FormlyModule,
+  FormsModule,
+  LoadingBarHttpClientModule,
+  NgbCollapseModule,
+  NgbDatepickerModule,
+  NgbNavModule,
+  NgbPaginationModule,
+  NgbProgressbarModule,
+  NgbTooltipModule,
+  NgbTypeaheadModule,
+  NgxDatatableModule,
+  ReactiveFormsModule,
+  RouterModule,
+  NgbToast,
+  BreadcrumbModule,
+  CustomInputsModule,
+  DetailViewModule,
+  DirectivesModule,
+  HiddenCopyModule,
+  IconsModule,
+  IndicatorModule,
+  InputModule,
+  ItemsModule,
+  MenuModule,
+  ModelCardsModule,
+  AudioEventCardModule,
+  PipesModule,
+  ProgressModule,
+  StepperModule,
+  UserLinkModule,
+
+  // date time components
+  // because they are standalone components, they get imported/exported as modules
+  TimeSinceComponent,
+  DurationComponent,
+  ZonedDateTimeComponent,
+  DatetimeComponent,
+  ToastComponent,
 ];
 
 export const internalModules = [...sharedModules, NgxCaptchaModule];

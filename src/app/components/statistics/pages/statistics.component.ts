@@ -24,8 +24,8 @@ function item(data: IItem): Map<keyof IItem, any> {
  * TODO Change statistics based on if config hideProjects property is set
  */
 @Component({
-    selector: "baw-statistics",
-    template: `
+  selector: "baw-statistics",
+  template: `
     <h1>Statistics</h1>
 
     <baw-items [items]="getGroupOne()"></baw-items>
@@ -41,7 +41,11 @@ function item(data: IItem): Map<keyof IItem, any> {
       [audioRecordings]="recent?.audioRecordings"
     ></baw-recent-audio-recordings>
   `,
-    imports: [ItemsComponent, RecentAnnotationsComponent, RecentAudioRecordingsComponent]
+  imports: [
+    ItemsComponent,
+    RecentAnnotationsComponent,
+    RecentAudioRecordingsComponent,
+  ]
 })
 class StatisticsComponent
   extends withUnsubscribe(PageComponent)

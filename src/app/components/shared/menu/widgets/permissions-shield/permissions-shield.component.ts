@@ -25,8 +25,8 @@ import { UserBadgeComponent } from "../../user-badge/user-badge.component";
  * TODO Let page decide which model to display permissions for
  */
 @Component({
-    selector: "baw-permissions-shield-widget",
-    template: `
+  selector: "baw-permissions-shield-widget",
+  template: `
     @if (model) {
       <section class="pb-3">
         @for (badge of badges; track badge) {
@@ -47,7 +47,7 @@ import { UserBadgeComponent } from "../../user-badge/user-badge.component";
       </section>
     }
   `,
-    imports: [UserBadgeComponent, TitleCasePipe]
+  imports: [UserBadgeComponent, TitleCasePipe],
 })
 export class PermissionsShieldComponent
   extends withUnsubscribe()

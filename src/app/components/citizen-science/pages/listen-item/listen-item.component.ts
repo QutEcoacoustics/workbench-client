@@ -7,9 +7,9 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { BawClientComponent } from "../../../shared/baw-client/baw-client.component";
 
 @Component({
-    selector: "baw-citsci-listen-item",
-    template: "<baw-client></baw-client>",
-    imports: [BawClientComponent]
+  selector: "baw-citsci-listen-item",
+  template: "<baw-client></baw-client>",
+  imports: [BawClientComponent],
 })
 class CitSciListenItemComponent extends PageComponent {}
 

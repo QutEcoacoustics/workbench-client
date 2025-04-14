@@ -17,7 +17,7 @@ const components = [
 const routes = scriptsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-    imports: [SharedModule, RouterModule.forChild(routes), ...components],
-    exports: [RouterModule, ...components],
+  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  exports: [RouterModule, ...components],
 })
 export class ScriptsModule {}

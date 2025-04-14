@@ -22,20 +22,21 @@ import { ModelView, RenderFieldComponent } from "./render-field.component";
 
 describe("RenderFieldComponent", () => {
   let spec: SpectatorHost<RenderFieldComponent>;
+
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
     declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-    MockBawApiModule,
-    RouterTestingModule,
-    PipesModule,
-    DatetimeComponent,
-    ZonedDateTimeComponent,
-    DurationComponent,
-    TimeSinceComponent,
-    LoadingComponent,
-    CheckboxComponent,
-],
+      MockBawApiModule,
+      RouterTestingModule,
+      PipesModule,
+      DatetimeComponent,
+      ZonedDateTimeComponent,
+      DurationComponent,
+      TimeSinceComponent,
+      LoadingComponent,
+      CheckboxComponent,
+    ],
   });
 
   const getElement = {

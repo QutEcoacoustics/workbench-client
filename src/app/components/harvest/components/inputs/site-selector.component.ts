@@ -29,8 +29,8 @@ import { FormsModule } from "@angular/forms";
 import { UrlDirective } from "../../../../directives/url/url.directive";
 
 @Component({
-    selector: "baw-harvest-site-selector",
-    template: `
+  selector: "baw-harvest-site-selector",
+  template: `
     <!-- Show site name and link if exists -->
     @if (site) {
       <div class="site-label">
@@ -65,7 +65,7 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
       />
     </div>
   `,
-    styles: [`
+  styles: [`
     .site-label {
       display: flex;
       justify-content: space-between;
@@ -77,7 +77,7 @@ import { UrlDirective } from "../../../../directives/url/url.directive";
       width: 100%;
     }
   `],
-    imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
+  imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;

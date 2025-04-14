@@ -44,10 +44,16 @@ export interface DateTimeFilterModel {
 }
 
 @Component({
-    selector: "baw-date-time-filter",
-    templateUrl: "date-time-filter.component.html",
-    styleUrls: ["date-time-filter.component.scss"],
-    imports: [FormsModule, NgbCollapse, NgbInputDatepicker, FaIconComponent, TimeComponent]
+  selector: "baw-date-time-filter",
+  templateUrl: "date-time-filter.component.html",
+  styleUrls: ["date-time-filter.component.scss"],
+  imports: [
+    FormsModule,
+    NgbCollapse,
+    NgbInputDatepicker,
+    FaIconComponent,
+    TimeComponent,
+  ],
 })
 export class DateTimeFilterComponent
   extends withUnsubscribe()

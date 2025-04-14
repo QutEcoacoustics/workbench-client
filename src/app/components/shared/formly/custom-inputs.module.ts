@@ -14,7 +14,7 @@ import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
-export const formlyConfig= {
+export const formlyConfig = {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
@@ -64,7 +64,7 @@ const components = [
 ];
 
 @NgModule({
-    imports: [
+  imports: [
     CommonModule,
     NgbTypeaheadModule,
     FormsModule,
@@ -73,7 +73,7 @@ const components = [
     FormlyBootstrapModule,
     IconsModule,
     ...components,
-],
-    exports: components,
+  ],
+  exports: components,
 })
 export class CustomInputsModule {}

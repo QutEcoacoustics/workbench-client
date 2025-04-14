@@ -27,8 +27,8 @@ const projectKey = "project";
  * New Region Component
  */
 @Component({
-    selector: "baw-regions-new",
-    template: `
+  selector: "baw-regions-new",
+  template: `
     @if (!failure) {
       <baw-form
         [title]="hideTitle ? '' : 'New Site'"
@@ -40,7 +40,7 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class NewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;

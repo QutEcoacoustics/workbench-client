@@ -10,7 +10,6 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 @Component({
   selector: "baw-dummy",
   template: '<a [routerLink]="link" [queryParams]="params"></a>',
-  
 })
 class DummyComponent {
   @Input() public link: string | string[];
@@ -18,8 +17,8 @@ class DummyComponent {
 }
 
 @Component({
-  selector: "baw-other", template: "",
-  
+  selector: "baw-other",
+  template: "",
 })
 class OtherComponent {}
 

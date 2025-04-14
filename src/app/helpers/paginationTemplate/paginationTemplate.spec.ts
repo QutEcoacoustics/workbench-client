@@ -24,7 +24,6 @@ const pageKey = "page";
 @Component({
   selector: "baw-test",
   template: "",
-  
 })
 class MockComponent extends PaginationTemplate<Project> {
   public constructor(

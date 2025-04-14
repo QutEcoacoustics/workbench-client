@@ -25,20 +25,20 @@ import { FormComponent } from "../../../shared/form/form.component";
 const tagGroupKey = "tagGroup";
 
 @Component({
-    selector: "baw-admin-tag-groups-edit",
-    template: `
+  selector: "baw-admin-tag-groups-edit",
+  template: `
     @if (!failure) {
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-    imports: [FormComponent]
+  imports: [FormComponent],
 })
 class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>

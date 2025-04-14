@@ -15,8 +15,8 @@ import {
 import schema from "./report-problem.schema.json";
 
 @Component({
-    selector: "baw-report-problem",
-    template: `
+  selector: "baw-report-problem",
+  template: `
     <baw-form
       title="Report Problem"
       submitLabel="Submit"
@@ -32,7 +32,7 @@ import schema from "./report-problem.schema.json";
       </span>
     </baw-form>
   `,
-    imports: [FormComponent]
+  imports: [FormComponent]
 })
 class ReportProblemComponent
   extends FormTemplate<ReportProblem>

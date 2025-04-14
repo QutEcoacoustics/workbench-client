@@ -6,8 +6,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ClipboardModule } from "ngx-clipboard";
 
 @Component({
-    selector: "baw-hidden-copy",
-    template: `
+  selector: "baw-hidden-copy",
+  template: `
     <div id="auth-token" class="input-group">
       <button
         id="visibility-btn"
@@ -55,7 +55,7 @@ import { ClipboardModule } from "ngx-clipboard";
       </span>
     </div>
   `,
-    styles: [`
+  styles: [`
     #auth-token pre {
       margin: 0;
       white-space: pre-wrap;
@@ -76,7 +76,7 @@ import { ClipboardModule } from "ngx-clipboard";
       border-bottom-left-radius: 0;
     }
   `],
-    imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule]
+  imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule],
 })
 export class HiddenCopyComponent {
   @Input() public color: BootstrapColorTypes = "secondary";

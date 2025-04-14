@@ -13,8 +13,8 @@ import { LoadingComponent } from "../../../shared/loading/loading.component";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
 @Component({
-    selector: "baw-site-card",
-    template: `
+  selector: "baw-site-card",
+  template: `
     <li class="list-group-item p-2">
       <div class="body">
         <div class="heading m-0 mb-1">
@@ -63,8 +63,15 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
       }
     </ng-template>
   `,
-    styleUrls: ["./site-card.component.scss"],
-    imports: [UrlDirective, AuthenticatedImageDirective, NgTemplateOutlet, LoadingComponent, AsyncPipe, WithLoadingPipe]
+  styleUrls: ["./site-card.component.scss"],
+  imports: [
+    UrlDirective,
+    AuthenticatedImageDirective,
+    NgTemplateOutlet,
+    LoadingComponent,
+    AsyncPipe,
+    WithLoadingPipe,
+  ]
 })
 export class SiteCardComponent implements OnInit {
   @Input() public project: Project;

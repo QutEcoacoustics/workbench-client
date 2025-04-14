@@ -8,9 +8,9 @@ import { BawClientComponent } from "../../../shared/baw-client/baw-client.compon
 
 //TODO: OLD-CLIENT REMOVE
 @Component({
-    selector: "baw-listen",
-    template: "<baw-client></baw-client>",
-    imports: [BawClientComponent]
+  selector: "baw-listen",
+  template: "<baw-client></baw-client>",
+  imports: [BawClientComponent],
 })
 class ListenComponent extends PageComponent {}
 

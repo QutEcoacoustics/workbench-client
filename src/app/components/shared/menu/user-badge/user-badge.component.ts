@@ -15,8 +15,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
  * A single menu widget displaying a user account and its relationship to the model
  */
 @Component({
-    selector: "baw-user-badge",
-    template: `
+  selector: "baw-user-badge",
+  template: `
     @for (user of models; track user) {
       <div>
         <!-- Spinner -->
@@ -74,8 +74,17 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       </div>
     }
   `,
-    styleUrls: ["./user-badge.component.scss"],
-    imports: [LoadingComponent, UrlDirective, NgTemplateOutlet, AuthenticatedImageDirective, UserLinkComponent, TimeSinceComponent, IsGhostUserPipe, IsUnresolvedPipe]
+  styleUrls: ["./user-badge.component.scss"],
+  imports: [
+    LoadingComponent,
+    UrlDirective,
+    NgTemplateOutlet,
+    AuthenticatedImageDirective,
+    UserLinkComponent,
+    TimeSinceComponent,
+    IsGhostUserPipe,
+    IsUnresolvedPipe,
+  ],
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

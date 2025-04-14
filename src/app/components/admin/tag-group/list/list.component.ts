@@ -31,9 +31,16 @@ export const adminTagGroupMenuItemActions = [
 ];
 
 @Component({
-    selector: "baw-admin-tag-groups-list",
-    templateUrl: "./list.component.html",
-    imports: [DebounceInputComponent, NgxDatatableModule, DatatableDefaultsDirective, StrongRouteDirective, DeleteModalComponent, ErrorHandlerComponent]
+  selector: "baw-admin-tag-groups-list",
+  templateUrl: "./list.component.html",
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    StrongRouteDirective,
+    DeleteModalComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];

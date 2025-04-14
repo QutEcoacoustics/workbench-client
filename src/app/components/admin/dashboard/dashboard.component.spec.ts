@@ -7,8 +7,8 @@ describe("AdminDashboardComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AdminDashboardComponent],
-}).compileComponents();
+      imports: [AdminDashboardComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;

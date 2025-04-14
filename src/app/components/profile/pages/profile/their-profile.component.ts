@@ -41,10 +41,19 @@ export const theirProfileActions = [
 const accountKey = "account";
 
 @Component({
-    selector: "baw-their-profile",
-    templateUrl: "./profile.component.html",
-    styleUrls: ["./profile.component.scss"],
-    imports: [AuthenticatedImageDirective, FaIconComponent, NgbTooltip, StrongRouteDirective, HiddenCopyComponent, ItemsComponent, LoadingComponent, UrlDirective]
+  selector: "baw-their-profile",
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.scss"],
+  imports: [
+    AuthenticatedImageDirective,
+    FaIconComponent,
+    NgbTooltip,
+    StrongRouteDirective,
+    HiddenCopyComponent,
+    ItemsComponent,
+    LoadingComponent,
+    UrlDirective,
+  ],
 })
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;

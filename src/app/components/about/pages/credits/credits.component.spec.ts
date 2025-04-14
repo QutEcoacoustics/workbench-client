@@ -4,7 +4,10 @@ import { CMS } from "@baw-api/cms/cms.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { SharedModule } from "@shared/shared.module";
 import { assertCms } from "@test/helpers/api-common";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { CreditsComponent } from "./credits.component";
 
 describe("AboutCreditsComponent", () => {
