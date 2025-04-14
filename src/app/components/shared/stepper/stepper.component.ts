@@ -46,7 +46,7 @@ export interface Step {
         }
       </div>
     </div>
-    `,
+  `,
   imports: [FaIconComponent],
 })
 export class StepperComponent

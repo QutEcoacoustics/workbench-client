@@ -12,7 +12,7 @@ import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { of } from "rxjs";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { Filters } from "@baw-api/baw-api.service";

@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   Input,
   OnInit,
@@ -17,6 +18,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   templateUrl: "annotation-event-card.component.html",
   styleUrl: "annotation-event-card.component.scss",
   imports: [FaIconComponent, ZonedDateTimeComponent, IsUnresolvedPipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
   @Input({ required: true })

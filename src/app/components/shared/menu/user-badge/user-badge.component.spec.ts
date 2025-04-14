@@ -7,7 +7,7 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { generateUser } from "@test/fakes/User";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";

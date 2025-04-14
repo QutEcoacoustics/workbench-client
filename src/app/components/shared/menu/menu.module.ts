@@ -15,9 +15,8 @@ import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { UserLinkModule } from "@shared/user-link/user-link.module";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
-
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { ActionMenuComponent } from "./action-menu/action-menu.component";
 import { MenuButtonComponent } from "./button/button.component";
 import { HeaderDropdownComponent } from "./header-dropdown/header-dropdown.component";
@@ -67,7 +66,7 @@ const publicComponents = [
     IconsModule,
     PipesModule,
     DirectivesModule,
-    UserLinkModule,
+    UserLinkComponent,
     TimeSinceComponent,
     ...privateComponents,
     ...publicComponents,

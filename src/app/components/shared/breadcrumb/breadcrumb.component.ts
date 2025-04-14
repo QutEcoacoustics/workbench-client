@@ -6,7 +6,7 @@ import { SharedActivatedRouteService } from "@services/shared-activated-route/sh
 import { map, Observable } from "rxjs";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AsyncPipe } from "@angular/common";
-import { StrongRouteDirective } from "../../../directives/strongRoute/strong-route.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 /**
  * Menu Link Component
@@ -43,7 +43,11 @@ import { StrongRouteDirective } from "../../../directives/strongRoute/strong-rou
     }
   `,
   styleUrls: ["breadcrumb.component.scss"],
-  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe],
+  imports: [
+    FaIconComponent,
+    StrongRouteDirective,
+    AsyncPipe,
+  ],
 })
 export class BreadcrumbComponent implements OnInit {
   public queryParams$: Observable<Params>;
