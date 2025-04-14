@@ -18,7 +18,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import {
   generateProject,
@@ -66,7 +65,7 @@ describe("MetadataReviewComponent", () => {
         transition: (_stage: HarvestStatus) => {}
       }),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

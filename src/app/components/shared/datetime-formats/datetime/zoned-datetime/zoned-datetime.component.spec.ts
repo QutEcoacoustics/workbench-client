@@ -1,4 +1,3 @@
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { DateTime, FixedOffsetZone, IANAZone } from "luxon";
 import { modelData } from "@test/helpers/faker";
@@ -60,7 +59,7 @@ describe("ZonedDateTimeComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, MockBawApiModule],
+      imports: [MockBawApiModule],
     });
 
     fixture = TestBed.createComponent(ZonedDateTimeComponent);

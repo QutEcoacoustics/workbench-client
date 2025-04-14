@@ -1,5 +1,4 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
@@ -23,7 +22,7 @@ describe("WebsiteStatusComponent", () => {
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     providers: [
       {
         provide: ActivatedRoute,

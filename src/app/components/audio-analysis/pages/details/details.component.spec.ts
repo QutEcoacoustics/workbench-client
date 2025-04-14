@@ -7,7 +7,6 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
@@ -28,7 +27,7 @@ describe("AnalysisJobComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnalysisJobComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
   });
 
   assertPageInfo<AnalysisJob>(AnalysisJobComponent, "Test Analysis Job", {

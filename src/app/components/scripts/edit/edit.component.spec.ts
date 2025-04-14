@@ -9,7 +9,6 @@ import {
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -35,7 +34,6 @@ describe("AdminScriptsEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminScriptsEditComponent,

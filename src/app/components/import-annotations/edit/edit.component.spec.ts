@@ -3,7 +3,6 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormsModule } from "@angular/forms";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -28,7 +27,7 @@ describe("EditAnnotationsComponent", () => {
   const createComponent = createRoutingFactory({
     component: EditAnnotationsComponent,
     declarations: [],
-    imports: [FormsModule, SharedModule, MockBawApiModule],
+    imports: [FormsModule, MockBawApiModule],
     mocks: [ToastService],
     data: {
       resolvers: {

@@ -8,7 +8,6 @@ import {
   SpectatorRouting,
   SpectatorRoutingOverrides,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
@@ -60,7 +59,7 @@ describe("formTemplate", () => {
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   const createComponent = createRoutingFactory({
     component: MockComponent,
-    imports: [SharedModule, ...appLibraryImports],
+    imports: appLibraryImports,
     mocks: [ToastService],
   });
 

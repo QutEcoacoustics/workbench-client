@@ -6,7 +6,6 @@ import { theirEditMenuItem } from "@components/profile/profile.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
 import {
   assertPagination,
@@ -23,7 +22,7 @@ describe("AdminUserListComponent", () => {
   let spec: Spectator<AdminUserListComponent>;
   const createComponent = createComponentFactory({
     component: AdminUserListComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   beforeEach(function () {

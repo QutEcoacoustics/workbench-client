@@ -5,7 +5,6 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { BawClientComponent } from "@shared/baw-client/baw-client.component";
-import { SharedModule } from "@shared/shared.module";
 
 //TODO: OLD-CLIENT REMOVE
 export function validateBawClientPage<Component extends Type<any>>(
@@ -22,7 +21,7 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   const createComponent = createRoutingFactory({
     component,
-    imports: [SharedModule, MockBawApiModule, ...modules],
+    imports: [MockBawApiModule, ...modules],
     routes: compiledRoutes,
     stubsEnabled: false,
   });

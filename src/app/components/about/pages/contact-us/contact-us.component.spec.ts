@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { appLibraryImports } from "src/app/app.module";
 import { ContactUsComponent } from "./contact-us.component";
 
@@ -15,7 +14,6 @@ xdescribe("ContactUsComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         MockBawApiModule,
         RouterTestingModule,
         ContactUsComponent,

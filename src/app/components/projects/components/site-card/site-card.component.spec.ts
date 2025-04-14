@@ -7,7 +7,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -24,8 +23,9 @@ describe("SiteCardComponent", () => {
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
   let spec: Spectator<SiteCardComponent>;
+
   const createComponent = createComponentFactory({
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
     component: SiteCardComponent,
   });
 

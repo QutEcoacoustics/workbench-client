@@ -11,7 +11,6 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -35,7 +34,6 @@ describe("AdminOrphanComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
       ],

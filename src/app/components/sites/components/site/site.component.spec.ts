@@ -2,7 +2,6 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@components/shared/shared.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioEvent } from "@models/AudioEvent";
@@ -40,8 +39,9 @@ describe("SiteComponent", () => {
   let eventsApi: SpyObject<ShallowAudioEventsService>;
   let recordingsApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<SiteComponent>;
+
   const createComponent = createComponentFactory({
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
     declarations: [mockMapComponent],
     component: SiteComponent,
   });

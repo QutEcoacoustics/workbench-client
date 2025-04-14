@@ -1,12 +1,11 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { IndicatorComponent, Status } from "./indicator.component";
 
 describe("IndicatorComponent", () => {
   let spectator: Spectator<IndicatorComponent>;
+
   const createComponent = createComponentFactory({
     component: IndicatorComponent,
-    imports: [SharedModule],
   });
 
   beforeEach(() => (spectator = createComponent()));

@@ -23,7 +23,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import {
   DataTableBodyCellComponent,
   DatatableComponent,
@@ -66,7 +65,7 @@ describe("RecentAnnotationsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: RecentAnnotationsComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule],
   });
 
   function interceptSiteRequest(data: Errorable<Site>): Promise<any> {

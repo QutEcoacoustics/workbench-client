@@ -4,7 +4,6 @@ import { NewComponent } from "@components/regions/pages/new/new.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -21,8 +20,9 @@ const mock = {
 describe("WizardComponent", () => {
   let defaultProject: Project;
   let spectator: SpectatorRouting<WizardComponent>;
+
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     declarations: [mock.newRegion, mock.newSite],
     component: WizardComponent,
   });

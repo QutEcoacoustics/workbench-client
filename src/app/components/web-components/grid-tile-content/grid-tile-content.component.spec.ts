@@ -4,7 +4,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { getElementByInnerText } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
@@ -30,7 +29,7 @@ describe("GridTileContentComponent", () => {
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(): void {

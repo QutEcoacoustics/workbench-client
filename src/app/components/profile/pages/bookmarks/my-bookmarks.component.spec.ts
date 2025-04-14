@@ -10,7 +10,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
@@ -26,7 +25,7 @@ describe("MyBookmarksComponent", () => {
   let spec: SpectatorRouting<MyBookmarksComponent>;
   const createComponent = createRoutingFactory({
     component: MyBookmarksComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
     stubsEnabled: false,
   });
 

@@ -18,7 +18,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateStatistics } from "@test/fakes/Statistics";
@@ -51,7 +50,7 @@ describe("StatisticsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     declarations: [
       mock.recentAnnotationsComponent,
       mock.recentAudioRecordingsComponent,

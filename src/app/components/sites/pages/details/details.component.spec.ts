@@ -17,7 +17,6 @@ import {
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -39,7 +38,7 @@ describe("SiteDetailsComponent", () => {
   let spec: SpectatorRouting<SiteDetailsComponent>;
 
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     providers: [PageTitleStrategy],
     declarations: [mockSiteComponent],
     mocks: [ToastService],

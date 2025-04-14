@@ -9,7 +9,6 @@ import {
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagGroup } from "@models/TagGroup";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -32,7 +31,6 @@ describe("AdminTagGroupsEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
         RouterTestingModule,
         MockBawApiModule,
         AdminTagGroupsEditComponent,

@@ -19,7 +19,6 @@ import {
 } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -45,7 +44,6 @@ describe("DownloadAudioRecordingsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
-      SharedModule,
       NgbCollapseModule,
       MockConfigModule,
       CacheModule,

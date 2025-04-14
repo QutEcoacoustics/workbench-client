@@ -13,8 +13,6 @@ import {
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateRegion } from "@test/fakes/Region";
 import { nStepObservable } from "@test/helpers/general";
@@ -33,7 +31,7 @@ describe("RegionsListComponent", () => {
     component: ListComponent,
     overrideModules: [
       [
-        ModelCardsModule,
+        CardsComponent,
         {
           set: {
             declarations: [mockCardsComponent],
@@ -42,7 +40,7 @@ describe("RegionsListComponent", () => {
         },
       ],
     ],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   function generateRegions(

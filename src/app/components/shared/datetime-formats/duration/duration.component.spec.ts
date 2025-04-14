@@ -1,5 +1,4 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { Duration, DurationLikeObject } from "luxon";
 import { modelData } from "@test/helpers/faker";
 import { assertTooltip } from "@test/helpers/html";
@@ -83,7 +82,7 @@ describe("DurationComponent", () => {
   // TODO: replace with ngNeat/spectator once https://github.com/ngneat/spectator/issues/637 is resolved
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, MockBawApiModule],
+      imports: [MockBawApiModule],
     });
 
     fixture = TestBed.createComponent(DurationComponent);

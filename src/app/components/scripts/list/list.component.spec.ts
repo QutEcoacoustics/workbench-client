@@ -4,7 +4,6 @@ import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
-import { SharedModule } from "@shared/shared.module";
 import { generateScript } from "@test/fakes/Script";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -19,7 +18,6 @@ describe("AdminScriptsComponent", () => {
   beforeEach(function () {
     TestBed.configureTestingModule({
       imports: [
-        SharedModule,
         RouterTestingModule,
         ...appLibraryImports,
         MockBawApiModule,

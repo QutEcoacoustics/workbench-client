@@ -1,6 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { AudioRecordingsListComponent } from "./list.component";
@@ -10,7 +9,7 @@ describe("AudioRecordingsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AudioRecordingsListComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     declarations: [WebsiteStatusWarningComponent],
   });
 

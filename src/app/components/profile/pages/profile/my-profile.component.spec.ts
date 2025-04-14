@@ -24,7 +24,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
@@ -50,9 +49,10 @@ describe("MyProfileComponent", () => {
 
   let defaultUser: User;
   let spec: SpectatorRouting<MyProfileComponent>;
+
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule],
     mocks: [ToastService],
     stubsEnabled: false,
   });
