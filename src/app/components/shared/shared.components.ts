@@ -18,7 +18,6 @@ import { FooterComponent } from "./footer/footer.component";
 import { FormComponent } from "./form/form.component";
 import { CustomInputsModule } from "./formly/custom-inputs.module";
 import { IconsModule } from "./icons/icons.module";
-import { ItemsModule } from "./items/items.module";
 import { MenuModule } from "./menu/menu.module";
 import { ModelSelectorComponent } from "./model-selector/model-selector.component";
 import { WIPComponent } from "./wip/wip.component";
@@ -87,7 +86,6 @@ export const sharedModules = [
   AnnotationEventCardComponent,
   CardsComponent,
   MenuModule,
-  ItemsModule,
   TimeComponent,
   IndicatorComponent,
   IconsModule,
