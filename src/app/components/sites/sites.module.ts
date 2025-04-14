@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { RegionsModule } from "@components/regions/regions.module";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { RecentAnnotationsComponent } from "./components/recent-annotations/recent-annotations.component";
 import { SiteComponent } from "./components/site/site.component";
 import { SiteDetailsComponent } from "./pages/details/details.component";
@@ -32,7 +31,6 @@ const pointRoutes = pointsRoute.compileRoutes(getRouteConfigForPage);
 @NgModule({
   imports: [
     RegionsModule,
-    SharedModule,
     RouterModule.forChild([...siteRoutes, ...pointRoutes]),
     ...components,
   ],

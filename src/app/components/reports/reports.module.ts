@@ -1,6 +1,5 @@
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { NgModule } from "@angular/core";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ProjectsModule } from "../projects/projects.module";
@@ -17,7 +16,6 @@ const routes = Object.values(reportsRoute)
 @NgModule({
   exports: [RouterModule, ...components],
   imports: [
-    SharedModule,
     RouterModule.forChild(routes),
     ProjectsModule,
     ...components,

@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { ConfirmPasswordComponent } from "./pages/confirm-account/confirm-account.component";
 import { LoginComponent } from "./pages/login/login.component";
 import { RegisterComponent } from "./pages/register/register.component";
@@ -20,7 +19,7 @@ const components = [
 const routes = securityRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  imports: [RouterModule.forChild(routes), ...components],
   exports: [RouterModule, ...components],
 })
 export class SecurityModule {}

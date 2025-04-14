@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { aboutRoute } from "./about.menus";
 import { ContactUsComponent } from "./pages/contact-us/contact-us.component";
 import { CreditsComponent } from "./pages/credits/credits.component";
@@ -20,7 +19,7 @@ const components = [
 const routes = aboutRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  imports: [RouterModule.forChild(routes), ...components],
   exports: [RouterModule, ...components],
 })
 export class AboutModule {}

@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { AdminScriptComponent } from "./details/details.component";
 import { AdminScriptsEditComponent } from "./edit/edit.component";
 import { AdminScriptsComponent } from "./list/list.component";
@@ -17,7 +16,7 @@ const components = [
 const routes = scriptsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  imports: [RouterModule.forChild(routes), ...components],
   exports: [RouterModule, ...components],
 })
 export class ScriptsModule {}

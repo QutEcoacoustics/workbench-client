@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { adminRoute } from "./admin.menus";
 import { AnalysisJobsModule } from "./analysis-jobs/analysis-jobs.module";
 import { AdminDashboardComponent } from "./dashboard/dashboard.component";
@@ -31,12 +30,7 @@ const components = [
 const routes = adminRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes),
-    ...modules,
-    ...components,
-  ],
+  imports: [RouterModule.forChild(routes), ...modules, ...components],
   exports: [RouterModule, ...components, ...modules],
 })
 export class AdminModule {}

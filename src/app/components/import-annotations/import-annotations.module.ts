@@ -1,6 +1,5 @@
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { NgModule } from "@angular/core";
-import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { annotationsImportRoute } from "./import-annotations.routes";
 import { AnnotationsListComponent } from "./list/list.component";
@@ -21,7 +20,7 @@ const components = [
 const routes = annotationsImportRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  imports: [RouterModule.forChild(routes), ...components],
   exports: [RouterModule, ...components],
 })
 export class AnnotationsImportModule {}

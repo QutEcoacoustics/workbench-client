@@ -1,6 +1,5 @@
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { verificationRoute } from "./annotation.routes";
@@ -28,7 +27,6 @@ const routes = Object.values(verificationRoute)
 
 @NgModule({
   imports: [
-    SharedModule,
     RouterModule.forChild(routes),
     ...internalModules,
     ...internalComponents,
