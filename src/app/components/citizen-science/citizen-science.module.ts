@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { citSciRoute } from "./citizen-science.menus";
 import { CitSciAboutComponent } from "./pages/about/about.component";
 import { CitSciListenItemComponent } from "./pages/listen-item/listen-item.component";
@@ -18,7 +17,7 @@ const components = [
 const routes = citSciRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild(routes), ...components],
+  imports: [RouterModule.forChild(routes), ...components],
   exports: [RouterModule, ...components],
 })
 export class CitizenScienceModule {}

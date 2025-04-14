@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { audioRecordingsRoutes } from "./audio-recording.routes";
 import { DownloadTableComponent } from "./components/download-table/download-table.component";
 import { AudioRecordingsDetailsComponent } from "./pages/details/details.component";
@@ -25,12 +24,7 @@ const routes = Object.values(audioRecordingsRoutes)
   .flat();
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes),
-    ...components,
-    internalComponents,
-  ],
+  imports: [RouterModule.forChild(routes), ...components, internalComponents],
   exports: [RouterModule, ...components],
 })
 export class AudioRecordingModule {}

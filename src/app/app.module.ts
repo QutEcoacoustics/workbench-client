@@ -26,6 +26,8 @@ import { AnnotationModule } from "@components/annotations/annotation.module";
 import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
+import { DateValueAccessorModule } from "angular-date-value-accessor";
+import { MenuModule } from "@menu/menu.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { AboutModule } from "./components/about/about.module";
@@ -42,7 +44,6 @@ import { ProjectsModule } from "./components/projects/projects.module";
 import { ReportProblemsModule } from "./components/report-problem/report-problem.module";
 import { SecurityModule } from "./components/security/security.module";
 import { SendAudioModule } from "./components/send-audio/send-audio.module";
-import { SharedModule } from "./components/shared/shared.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
@@ -52,10 +53,12 @@ export const appLibraryImports = [
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
+
+  DateValueAccessorModule,
+  MenuModule,
 ];
 
 export const appImports = [
-  SharedModule,
   AboutModule,
   AdminModule,
   AnalysisModule,
