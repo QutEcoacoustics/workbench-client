@@ -78,21 +78,21 @@ describe("MenuComponent", () => {
   let defaultMenuLink: MenuLink;
   let defaultMenuRoute: MenuRoute;
   let spec: SpectatorRouting<MenuComponent>;
+
   const createComponent = createRoutingFactory({
     component: MenuComponent,
-    declarations: [
-      MenuButtonComponent,
-      MenuLinkComponent,
-      WidgetDirective,
-      MockWidgetComponent,
-      MockModalComponent,
-    ],
     imports: [
       IconsModule,
       RouterTestingModule,
       MockBawApiModule,
       NgbModalModule,
       NgbTooltipModule,
+      MenuButtonComponent,
+      MenuLinkComponent,
+
+      WidgetDirective,
+      MockWidgetComponent,
+      MockModalComponent,
     ],
   });
   const menuTypes: MenuType[] = ["action", "secondary"];

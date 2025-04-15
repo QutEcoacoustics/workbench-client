@@ -31,9 +31,12 @@ describe("RegisterComponent", () => {
 
   const createComponent = createComponentFactory({
     component: RegisterComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [
+      ...testFormImports,
+      FormComponent,
+      MockBawApiModule,
+    ],
     providers: testFormProviders,
-    declarations: [FormComponent],
   });
 
   function isSignedIn(signedIn: boolean = true) {

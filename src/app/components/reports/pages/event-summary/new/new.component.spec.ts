@@ -13,6 +13,7 @@ import { DateTime, Duration } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
 import {
   BucketSize,
   Chart,
@@ -28,8 +29,12 @@ describe("NewEventReportComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: NewEventReportComponent,
-    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
-    imports: [MockBawApiModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      DateTimeFilterComponent,
+      TypeaheadInputComponent,
+    ],
   });
 
   function setup(): void {

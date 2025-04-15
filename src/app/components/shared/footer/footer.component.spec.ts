@@ -12,6 +12,8 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { MockDirective } from "ng-mocks";
 import { FooterComponent } from "./footer.component";
 
 describe("FooterComponent", () => {
@@ -20,7 +22,11 @@ describe("FooterComponent", () => {
 
   const createComponent = createComponentFactory({
     component: FooterComponent,
-    imports: [RouterTestingModule, MockConfigModule],
+    imports: [
+      RouterTestingModule,
+      MockConfigModule,
+      MockDirective(StrongRouteActiveDirective),
+    ],
   });
 
   beforeEach(() => {

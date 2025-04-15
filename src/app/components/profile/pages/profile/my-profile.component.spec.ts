@@ -37,6 +37,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { IconsModule } from "@shared/icons/icons.module";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -52,7 +53,11 @@ describe("MyProfileComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [
+      RouterTestingModule,
+      MockBawApiModule,
+      IconsModule,
+    ],
     mocks: [ToastService],
     stubsEnabled: false,
   });

@@ -27,12 +27,13 @@ describe("DetailViewComponent", () => {
 
   const createComponent = createComponentFactory({
     component: DetailViewComponent,
-    declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
       MockBawApiModule,
       RouterTestingModule,
       CheckboxComponent,
       LoadingComponent,
+      RenderFieldComponent,
+      ModelLinkComponent,
     ],
     providers: [
       MockStandardApiService,

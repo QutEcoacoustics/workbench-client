@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { HttpHeaders } from "@angular/common/http";
+import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -31,7 +31,10 @@ export const testFormImports = [
   LoadingComponent,
 ];
 
-export const testFormProviders = [provideHttpClientTesting()];
+export const testFormProviders = [
+  provideHttpClient(withInterceptorsFromDi()),
+  provideHttpClientTesting(),
+];
 
 export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
   const module = builder.build();
