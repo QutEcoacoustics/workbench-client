@@ -14,7 +14,7 @@ describe("SearchFiltersModalComponent", () => {
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
 
-    successSpy = spectator.component.successCallback = jasmine.createSpy();
+    successSpy = spectator.component.successCallback = jasmine.createSpy("successCallback");
     successSpy.and.stub();
 
     spectator.detectChanges();

@@ -1,7 +1,5 @@
 import { APP_ID, ApplicationRef, DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioRecordingModule } from "@components/audio-recordings/audio-recording.module";
 import { ReportsModule } from "@components/reports/reports.module";
@@ -28,6 +26,7 @@ import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module"
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { MenuModule } from "@menu/menu.module";
+import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { AboutModule } from "./components/about/about.module";
@@ -49,7 +48,6 @@ import { StatisticsModule } from "./components/statistics/statistics.module";
 
 export const appLibraryImports = [
   BrowserModule,
-  BrowserAnimationsModule,
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,

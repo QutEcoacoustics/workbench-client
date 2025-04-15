@@ -37,12 +37,12 @@ describe("MenuLinkComponent", () => {
     ],
   });
 
-  function getWrapper(): HTMLSpanElement {
-    return spec.query("div");
+  function getWrapper() {
+    return spec.query<HTMLSpanElement>("div");
   }
 
-  function getLink(): HTMLAnchorElement {
-    return spec.query("a");
+  function getLink() {
+    return spec.query<HTMLAnchorElement>("a");
   }
 
   function getTooltip() {

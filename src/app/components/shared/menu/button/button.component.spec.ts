@@ -3,6 +3,7 @@ import { MenuAction, menuAction } from "@interfaces/menusInterfaces";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { generateMenuAction } from "@test/fakes/MenuItem";
+import { IconsModule } from "@shared/icons/icons.module";
 import { MenuButtonComponent } from "./button.component";
 
 describe("MenuButtonComponent", () => {
@@ -12,6 +13,7 @@ describe("MenuButtonComponent", () => {
 
   const createHost = createHostFactory({
     component: MenuButtonComponent,
+    imports: [IconsModule],
   });
 
   function retrieveButton() {
