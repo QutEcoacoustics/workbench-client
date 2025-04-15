@@ -17,6 +17,7 @@ import { StrongRouteDirective } from "./strong-route.directive";
       Link
     </a>
   `,
+  imports: [StrongRouteDirective, StrongRouteActiveDirective],
 })
 class MockComponent {
   @Input() public route: StrongRoute;

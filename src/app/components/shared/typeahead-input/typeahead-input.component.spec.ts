@@ -9,6 +9,7 @@ import { of } from "rxjs";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { IconsModule } from "@shared/icons/icons.module";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {
@@ -18,7 +19,7 @@ describe("TypeaheadInputComponent", () => {
 
   const createComponent = createHostFactory({
     component: TypeaheadInputComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [MockBawApiModule, IconsModule, NgbHighlight],
   });
 
   function setup(): void {
@@ -45,13 +46,11 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
   }
 
-  const inputBox = (): HTMLInputElement =>
-    spectator.query<HTMLInputElement>("input");
-  const itemPills = (): HTMLSpanElement[] =>
-    spectator.queryAll<HTMLSpanElement>("span");
-  const dropdownOptions = (): HTMLButtonElement[] =>
+  const inputBox = () => spectator.query<HTMLInputElement>("input");
+  const itemPills = () => spectator.queryAll<HTMLSpanElement>("span");
+  const dropdownOptions = () =>
     spectator.queryAll<HTMLButtonElement>(".dropdown-item");
-  const selectedDropdownOption = (): HTMLButtonElement =>
+  const selectedDropdownOption = () =>
     spectator.query<HTMLButtonElement>("button.dropdown-item.active");
 
   function typeInInput(text: string): void {

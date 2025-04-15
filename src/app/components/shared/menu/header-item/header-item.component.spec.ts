@@ -10,6 +10,9 @@ import {
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { MockDirective } from "ng-mocks";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {
@@ -19,7 +22,12 @@ describe("HeaderItemComponent", () => {
 
   const createComponent = createComponentFactory({
     component: HeaderItemComponent,
-    imports: [RouterTestingModule, MockConfigModule],
+    imports: [
+      RouterTestingModule,
+      MockConfigModule,
+      MockDirective(StrongRouteActiveDirective),
+      MockDirective(StrongRouteDirective),
+    ],
   });
 
   function getLink() {

@@ -10,6 +10,7 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 @Component({
   selector: "baw-dummy",
   template: '<a [routerLink]="link" [queryParams]="params"></a>',
+  imports: [RouterTestingModule],
 })
 class DummyComponent {
   @Input() public link: string | string[];

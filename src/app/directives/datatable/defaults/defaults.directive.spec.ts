@@ -1,5 +1,6 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "./defaults.directive";
 
 describe("DatatableDefaultsDirective", () => {
@@ -7,6 +8,7 @@ describe("DatatableDefaultsDirective", () => {
 
   const createDirective = createDirectiveFactory({
     directive: DatatableDefaultsDirective,
+    imports: [NgxDatatableModule],
   });
 
   function assertAttribute(

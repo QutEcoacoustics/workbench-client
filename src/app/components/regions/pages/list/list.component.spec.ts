@@ -22,24 +22,13 @@ import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
-const mockCardsComponent = MockComponent(CardsComponent);
-
 describe("RegionsListComponent", () => {
   let api: SpyObject<ShallowRegionsService>;
   let spec: Spectator<ListComponent>;
+
   const createComponent = createComponentFactory({
     component: ListComponent,
-    overrideModules: [
-      [
-        CardsComponent,
-        {
-          set: {
-            declarations: [mockCardsComponent],
-            exports: [mockCardsComponent],
-          },
-        },
-      ],
-    ],
+    declarations: [MockComponent(CardsComponent)],
     imports: [RouterTestingModule, MockBawApiModule],
   });
 

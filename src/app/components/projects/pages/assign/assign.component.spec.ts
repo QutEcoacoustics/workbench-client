@@ -10,6 +10,7 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
+import { appLibraryImports } from "src/app/app.module";
 import { AssignComponent } from "./assign.component";
 
 // some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
@@ -22,7 +23,7 @@ describe("AssignComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AssignComponent,
-    imports: [MockBawApiModule],
+    imports: [...appLibraryImports, MockBawApiModule],
     mocks: [ToastService],
   });
 
