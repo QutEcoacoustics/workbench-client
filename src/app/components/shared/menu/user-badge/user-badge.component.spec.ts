@@ -14,6 +14,7 @@ import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-sin
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { IsGhostUserPipe } from "@pipes/is-ghost-user/is-ghost-user.pipe";
 import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { IconsModule } from "@shared/icons/icons.module";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {
@@ -26,12 +27,13 @@ describe("UserBadgeComponent", () => {
     imports: [
       RouterTestingModule,
       MockBawApiModule,
+      IconsModule,
       TimeSinceComponent,
       LoadingComponent,
       IsGhostUserPipe,
       IsUnresolvedPipe,
       UserLinkComponent,
-  ],
+    ],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>

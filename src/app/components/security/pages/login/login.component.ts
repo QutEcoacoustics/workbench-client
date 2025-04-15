@@ -17,7 +17,7 @@ import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
-import { ToastComponent , ToastComponent as ToastComponent_1 } from "@shared/toast/toast.component";
+import { ToastComponent } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
@@ -67,7 +67,7 @@ export const loginMenuItemActions = [
       </ng-template>
     </baw-toast>
   `,
-  imports: [FormComponent, ToastComponent_1],
+  imports: [FormComponent, ToastComponent],
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   public fields = schema.fields;

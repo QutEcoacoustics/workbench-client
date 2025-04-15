@@ -19,6 +19,8 @@ import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { OrderedSet } from "immutable";
 import { Subject } from "rxjs";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { MockDirective } from "ng-mocks";
 import { BreadcrumbComponent } from "./breadcrumb.component";
 
 describe("BreadcrumbComponent", () => {
@@ -31,7 +33,11 @@ describe("BreadcrumbComponent", () => {
 
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
-    imports: [IconsModule, RouterTestingModule],
+    imports: [
+      IconsModule,
+      RouterTestingModule,
+      MockDirective(StrongRouteDirective),
+    ],
   });
 
   function triggerQueryParams(params: Params) {

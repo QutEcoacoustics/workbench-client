@@ -18,12 +18,10 @@ import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { MockComponent } from "ng-mocks";
 import { ListComponent } from "./list.component";
-
-const mockCardsComponent = MockComponent(CardsComponent);
 
 describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
@@ -31,18 +29,11 @@ describe("ProjectsListComponent", () => {
 
   const createComponent = createComponentFactory({
     component: ListComponent,
-    overrideModules: [
-      [
-        CardsComponent,
-        {
-          set: {
-            declarations: [mockCardsComponent],
-            exports: [mockCardsComponent],
-          },
-        },
-      ],
+    imports: [
+      RouterTestingModule,
+      MockBawApiModule,
+      MockComponent(CardsComponent),
     ],
-    imports: [RouterTestingModule, MockBawApiModule],
   });
 
   function generateProjects(

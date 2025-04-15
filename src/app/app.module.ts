@@ -9,13 +9,10 @@ import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { ConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
-import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
@@ -26,7 +23,7 @@ import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module"
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { MenuModule } from "@menu/menu.module";
-import { BrowserModule } from "@angular/platform-browser";
+import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { AboutModule } from "./components/about/about.module";
@@ -46,15 +43,7 @@ import { SendAudioModule } from "./components/send-audio/send-audio.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
-export const appLibraryImports = [
-  BrowserModule,
-  ReactiveFormsModule,
-  FormlyModule.forRoot(formlyConfig),
-  FormlyBootstrapModule,
-
-  DateValueAccessorModule,
-  MenuModule,
-];
+export const appLibraryImports = [ReactiveFormsModule, CustomInputsModule];
 
 export const appImports = [
   AboutModule,
@@ -81,6 +70,9 @@ export const appImports = [
   StatisticsModule,
   WebsiteStatusModule,
   VisualizeModule,
+
+  DateValueAccessorModule,
+  MenuModule,
 
   // standalone components
   ToastProviderComponent,
