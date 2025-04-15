@@ -13,6 +13,7 @@ import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
@@ -22,7 +23,7 @@ describe("titleComponent", () => {
 
   const createComponent = createComponentFactory({
     component: TitleComponent,
-    imports: [FormsModule],
+    imports: [FormsModule, IconsModule],
     mocks: [ToastService],
   });
 

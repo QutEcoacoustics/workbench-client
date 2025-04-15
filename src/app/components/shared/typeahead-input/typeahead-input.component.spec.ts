@@ -8,6 +8,7 @@ import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { IconsModule } from "@shared/icons/icons.module";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {
@@ -17,7 +18,7 @@ describe("TypeaheadInputComponent", () => {
 
   const createComponent = createHostFactory({
     component: TypeaheadInputComponent,
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule],
   });
 
   function setup(): void {

@@ -8,6 +8,7 @@ import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
+import { IconsModule } from "@shared/icons/icons.module";
 import { WebsiteStatusComponent } from "./website-status.component";
 
 interface GridItem {
@@ -22,7 +23,7 @@ describe("WebsiteStatusComponent", () => {
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusComponent,
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule],
     providers: [
       {
         provide: ActivatedRoute,

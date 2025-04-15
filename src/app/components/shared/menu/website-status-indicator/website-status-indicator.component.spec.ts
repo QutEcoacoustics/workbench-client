@@ -8,6 +8,7 @@ import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
 import { WebsiteStatusIndicatorComponent } from "./website-status-indicator.component";
 
 describe("WebsiteStatusIndicatorComponent", () => {
@@ -20,7 +21,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusIndicatorComponent,
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule],
     providers: [
       { provide: ActivatedRoute, useValue: mockActivatedRoute() },
       MockProvider(WebsiteStatusService),

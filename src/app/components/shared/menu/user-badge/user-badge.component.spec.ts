@@ -23,15 +23,15 @@ describe("UserBadgeComponent", () => {
 
   const createComponent = createComponentFactory({
     component: UserBadgeComponent,
-    declarations: [UserLinkComponent],
     imports: [
-    RouterTestingModule,
-    MockBawApiModule,
-    TimeSinceComponent,
-    LoadingComponent,
-    IsGhostUserPipe,
-    IsUnresolvedPipe,
-],
+      RouterTestingModule,
+      MockBawApiModule,
+      TimeSinceComponent,
+      LoadingComponent,
+      IsGhostUserPipe,
+      IsUnresolvedPipe,
+      UserLinkComponent,
+  ],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>

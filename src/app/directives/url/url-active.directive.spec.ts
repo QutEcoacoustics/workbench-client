@@ -26,10 +26,12 @@ describe("UrlActiveDirective", () => {
   let router: Router;
   let spec: Spectator<MockComponent>;
   const specialRoute = "home";
+
   const createDirective = createComponentFactory({
     component: MockComponent,
-    declarations: [UrlDirective, UrlActiveDirective],
     imports: [
+      UrlDirective,
+      UrlActiveDirective,
       RouterTestingModule.withRoutes([
         { path: "", pathMatch: "full", component: MockComponent },
         { path: specialRoute, component: MockComponent },
