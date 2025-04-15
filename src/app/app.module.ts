@@ -24,6 +24,7 @@ import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.co
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { MenuModule } from "@menu/menu.module";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
+import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { AboutModule } from "./components/about/about.module";
@@ -86,6 +87,7 @@ export const appImports = [
   imports: [
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
+    BrowserModule,
     AppRoutingModule,
     ConfigModule,
     BawApiModule,
