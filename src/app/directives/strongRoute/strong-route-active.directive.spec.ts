@@ -29,11 +29,13 @@ describe("StrongRouteActiveDirective", () => {
   let spec: Spectator<MockComponent>;
   const baseRoute = StrongRoute.newRoot();
   const defaultRoute = baseRoute.add("home");
+
   const createDirective = createComponentFactory({
     component: MockComponent,
-    declarations: [StrongRouteDirective, StrongRouteActiveDirective],
     imports: [
       MockConfigModule,
+      StrongRouteDirective,
+      StrongRouteActiveDirective,
       RouterTestingModule.withRoutes([
         {
           path: baseRoute.toRouteCompilePath(),

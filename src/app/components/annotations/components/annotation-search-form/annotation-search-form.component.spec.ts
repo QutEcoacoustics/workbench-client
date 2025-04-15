@@ -53,8 +53,11 @@ describe("AnnotationSearchFormComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
-    imports: [MockBawApiModule],
-    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
+    imports: [
+      MockBawApiModule,
+      DateTimeFilterComponent,
+      TypeaheadInputComponent,
+    ],
   });
 
   function setup(params: Params = {}): Promise<any> {

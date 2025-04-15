@@ -42,6 +42,7 @@ describe("DownloadAudioRecordingsComponent", () => {
   let api: AudioRecordingsService;
   let apiFilter: Subject<AudioRecording[]>;
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
+
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
