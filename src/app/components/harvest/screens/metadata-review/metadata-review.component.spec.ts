@@ -47,6 +47,7 @@ describe("MetadataReviewComponent", () => {
   let defaultHarvest: Harvest;
 
   const createComponent = createRoutingFactory({
+    component: MetadataReviewComponent,
     declarations: [
       ConfirmationComponent,
       StatisticsComponent,
@@ -57,7 +58,6 @@ describe("MetadataReviewComponent", () => {
       UTCOffsetSelectorComponent,
       FolderRowComponent
     ],
-    component: MetadataReviewComponent,
     providers: [
       MockProvider(HarvestStagesService, {
         project: defaultProject,

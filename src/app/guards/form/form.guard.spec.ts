@@ -2,6 +2,8 @@ import { Component, OnInit, QueryList } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
 import { appLibraryImports } from "src/app/app.module";
+import { FormlyModule } from "@ngx-formly/core";
+import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import {
   FormCheckingComponent,
   FormTouchedGuard,
@@ -71,11 +73,11 @@ describe("WithFormCheck", () => {
     template: `
       <div>
         @for (schema of schemas; track schema) {
-        <baw-form [model]="schema.model" [fields]="schema.fields"></baw-form>
+          <baw-form [model]="schema.model" [fields]="schema.fields"></baw-form>
         }
       </div>
     `,
-    imports: appLibraryImports as any,
+    imports: [...appLibraryImports, FormComponent],
   })
   class MockComponent extends withFormCheck() implements OnInit {
     public schemas = [];

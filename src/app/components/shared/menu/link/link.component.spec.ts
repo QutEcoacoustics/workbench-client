@@ -16,8 +16,9 @@ import { ConfigService } from "@services/config/config.service";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { MockProvider } from "ng-mocks";
+import { MockDirective, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { MenuLinkComponent } from "./link.component";
 
 describe("MenuLinkComponent", () => {
@@ -34,6 +35,8 @@ describe("MenuLinkComponent", () => {
       RouterTestingModule,
       NgbTooltipModule,
       IconsModule,
+      MockDirective(StrongRouteDirective),
+      MockDirective(StrongRouteActiveDirective),
     ],
   });
 
