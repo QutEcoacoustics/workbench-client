@@ -25,6 +25,7 @@ import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
 import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);
@@ -41,9 +42,13 @@ describe("SiteComponent", () => {
   let spec: Spectator<SiteComponent>;
 
   const createComponent = createComponentFactory({
-    imports: [MockBawApiModule, RouterTestingModule],
-    declarations: [mockMapComponent],
     component: SiteComponent,
+    imports: [
+      MockBawApiModule,
+      RouterTestingModule,
+      IconsModule,
+      mockMapComponent,
+    ],
   });
 
   function setup(project: Project, site: Site, region?: Region) {

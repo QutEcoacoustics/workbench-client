@@ -1,4 +1,5 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { IconsModule } from "@shared/icons/icons.module";
 import { IndicatorComponent, Status } from "./indicator.component";
 
 describe("IndicatorComponent", () => {
@@ -6,6 +7,7 @@ describe("IndicatorComponent", () => {
 
   const createComponent = createComponentFactory({
     component: IndicatorComponent,
+    imports: [IconsModule],
   });
 
   beforeEach(() => (spectator = createComponent()));

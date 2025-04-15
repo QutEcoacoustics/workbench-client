@@ -23,6 +23,7 @@ import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { getElementByInnerText } from "@test/helpers/html";
+import { IconsModule } from "@shared/icons/icons.module";
 import { DetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
@@ -32,7 +33,11 @@ describe("DetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: DetailsComponent,
-    declarations: [
+    providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+
       ScanningComponent,
       StreamUploadingComponent,
       BatchUploadingComponent,
@@ -43,8 +48,6 @@ describe("DetailsComponent", () => {
       WebsiteStatusWarningComponent,
       TitleComponent,
     ],
-    providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
-    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 

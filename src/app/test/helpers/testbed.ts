@@ -3,8 +3,6 @@ import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ResolvedModel } from "@baw-api/resolver-common";
@@ -19,8 +17,6 @@ import { BehaviorSubject } from "rxjs";
 
 export const testFormImports = [
   CommonModule,
-  BrowserModule,
-  BrowserAnimationsModule,
   NgbModule,
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
