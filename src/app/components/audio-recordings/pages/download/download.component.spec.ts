@@ -11,7 +11,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   mockProvider,
@@ -30,6 +30,7 @@ import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { IconsModule } from "@shared/icons/icons.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -44,16 +45,16 @@ describe("DownloadAudioRecordingsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
-      NgbCollapseModule,
       MockConfigModule,
       CacheModule,
       MockBawApiModule,
-    ],
-    declarations: [
+      IconsModule,
+
+      NgbCollapse,
+      DateTimeFilterComponent,
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
       MockComponent(WebsiteStatusWarningComponent),
-      DateTimeFilterComponent,
     ],
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls

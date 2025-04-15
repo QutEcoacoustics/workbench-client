@@ -31,8 +31,7 @@ describe("AnnotationsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationsListComponent,
-    declarations: [UserLinkComponent],
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, UserLinkComponent],
     mocks: [ToastService],
   });
 

@@ -21,6 +21,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -32,7 +33,6 @@ describe("BatchUploadingComponent", () => {
   let injector: AssociationInjector;
 
   const createComponent = createRoutingFactory({
-    declarations: [MockComponent(UploadUrlComponent), ConfirmationComponent],
     component: BatchUploadingComponent,
     providers: [
       MockProvider(HarvestStagesService, {
@@ -43,7 +43,12 @@ describe("BatchUploadingComponent", () => {
         transition: (_stage: HarvestStatus) => {},
       }),
     ],
-    imports: [MockBawApiModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      ConfirmationComponent,
+      MockComponent(UploadUrlComponent),
+    ],
     mocks: [ToastService],
   });
 

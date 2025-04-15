@@ -36,6 +36,7 @@ import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -60,7 +61,7 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, RouterTestingModule, IconsModule],
     providers: [
       {
         provide: AnnotationService,
