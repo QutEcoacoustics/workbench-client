@@ -22,12 +22,13 @@ import { Subject } from "rxjs";
 import { BreadcrumbComponent } from "./breadcrumb.component";
 
 describe("BreadcrumbComponent", () => {
+  let spec: Spectator<BreadcrumbComponent>;
   let subjects: {
     queryParams: Subject<Params>;
     routeParams: Subject<Params>;
     menuUpdate: Subject<MenuServiceData>;
   };
-  let spec: Spectator<BreadcrumbComponent>;
+
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
     imports: [IconsModule, RouterTestingModule],

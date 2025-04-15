@@ -29,13 +29,13 @@ describe("ListComponent", () => {
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    declarations: [
+    component: ListComponent,
+    imports: [
+      MockBawApiModule,
       ConfirmationComponent,
       UserLinkComponent,
       WebsiteStatusWarningComponent,
     ],
-    component: ListComponent,
-    imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 
@@ -65,8 +65,12 @@ describe("ListComponent", () => {
     // since the harvest creator is a resolved model, we need to mock the creator property
     spyOnProperty(mockHarvest, "creator").and.callFake(() => defaultUser);
 
-    const mockHarvestProject: Project = project ? project : new Project(generateProject());
-    spyOnProperty(mockHarvest, "project").and.callFake(() => mockHarvestProject);
+    const mockHarvestProject: Project = project
+      ? project
+      : new Project(generateProject());
+    spyOnProperty(mockHarvest, "project").and.callFake(
+      () => mockHarvestProject
+    );
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test

@@ -31,9 +31,8 @@ describe("RegionsEditComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: EditComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [...testFormImports, FormComponent, MockBawApiModule],
     providers: testFormProviders,
-    declarations: [FormComponent],
     mocks: [ToastService],
     stubsEnabled: true,
   });

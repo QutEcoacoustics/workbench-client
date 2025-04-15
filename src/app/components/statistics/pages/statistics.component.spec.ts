@@ -31,6 +31,7 @@ import { MockComponent } from "ng-mocks";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -50,7 +51,7 @@ describe("StatisticsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule],
     declarations: [
       mock.recentAnnotationsComponent,
       mock.recentAudioRecordingsComponent,

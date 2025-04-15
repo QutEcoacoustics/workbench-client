@@ -27,10 +27,10 @@ describe("StrongRoute", () => {
   let location: Location;
   let ngZone: NgZone;
   let spec: SpectatorRouting<DummyComponent>;
+
   const createComponent = createRoutingFactory({
     component: DummyComponent,
-    declarations: [OtherComponent],
-    imports: [RouterTestingModule],
+    imports: [RouterTestingModule, OtherComponent],
     stubsEnabled: false,
     routes: [
       { path: "", component: DummyComponent },

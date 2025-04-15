@@ -30,6 +30,7 @@ describe("BatchUploadingComponent", () => {
   let defaultSite: Site;
   let stages: SpyObject<HarvestStagesService>;
   let injector: AssociationInjector;
+
   const createComponent = createRoutingFactory({
     declarations: [MockComponent(UploadUrlComponent), ConfirmationComponent],
     component: BatchUploadingComponent,

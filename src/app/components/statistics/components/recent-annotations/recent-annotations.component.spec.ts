@@ -43,6 +43,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
 import { generateUser } from "@test/fakes/User";
+import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -65,14 +66,14 @@ describe("RecentAnnotationsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule, RouterTestingModule],
+    imports: [MockBawApiModule, IconsModule, RouterTestingModule],
   });
 
-  function interceptSiteRequest(data: Errorable<Site>): Promise<any> {
+  function interceptSiteRequest(data: Errorable<Site>) {
     return interceptShowApiRequest(api.sites, injector, data, Site);
   }
 
-  function interceptUserRequest(data: Errorable<User>): Promise<any> {
+  function interceptUserRequest(data: Errorable<User>) {
     return interceptShowApiRequest(api.users, injector, data, User);
   }
 
