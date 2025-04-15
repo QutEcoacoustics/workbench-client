@@ -35,6 +35,7 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -55,6 +56,7 @@ describe("AnnotationSearchFormComponent", () => {
     component: AnnotationSearchFormComponent,
     imports: [
       MockBawApiModule,
+      IconsModule,
       DateTimeFilterComponent,
       TypeaheadInputComponent,
     ],

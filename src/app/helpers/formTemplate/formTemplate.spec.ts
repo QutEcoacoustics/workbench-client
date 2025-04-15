@@ -12,6 +12,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.module";
+import { FormComponent } from "@shared/form/form.component";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
 class MockModel extends AbstractModel {
@@ -33,6 +34,7 @@ class MockModel extends AbstractModel {
 @Component({
   selector: "baw-test-component",
   template: "<div><baw-form></baw-form></div>",
+  imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
