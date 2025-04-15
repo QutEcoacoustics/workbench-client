@@ -29,8 +29,7 @@ describe("StrongRouteDirective", () => {
 
   const createRouterLink = createDirectiveFactory({
     directive: RouterLink,
-    declarations: [StrongRouteDirective],
-    imports: [RouterTestingModule],
+    imports: [RouterTestingModule, StrongRouteDirective],
   });
 
   function updateSnapshot(opts?: {

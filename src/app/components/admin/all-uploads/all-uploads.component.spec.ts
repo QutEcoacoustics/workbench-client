@@ -26,9 +26,13 @@ describe("AllUploadsComponent", () => {
   let fakeHarvestApi: SpyObject<ShallowHarvestsService>;
 
   const createComponent = createRoutingFactory({
-    declarations: [LoadingComponent, ConfirmationComponent, UserLinkComponent],
     component: AllUploadsComponent,
-    imports: [MockBawApiModule],
+    imports: [
+      MockBawApiModule,
+      LoadingComponent,
+      ConfirmationComponent,
+      UserLinkComponent,
+    ],
     mocks: [ToastService],
   });
 
@@ -65,7 +69,10 @@ describe("AllUploadsComponent", () => {
 
   beforeEach(() => setup());
 
-  assertPageInfo(AllUploadsComponent, ["Recording Uploads", "All Recording Uploads"]);
+  assertPageInfo(AllUploadsComponent, [
+    "Recording Uploads",
+    "All Recording Uploads",
+  ]);
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AllUploadsComponent);
@@ -105,7 +112,7 @@ describe("AllUploadsComponent", () => {
             "status",
           ],
         },
-      }),
+      })
     );
   });
 });

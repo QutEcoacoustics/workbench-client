@@ -28,6 +28,7 @@ const mockCardsComponent = MockComponent(CardsComponent);
 describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: Spectator<ListComponent>;
+
   const createComponent = createComponentFactory({
     component: ListComponent,
     overrideModules: [

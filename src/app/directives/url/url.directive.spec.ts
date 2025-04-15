@@ -22,8 +22,7 @@ describe("UrlDirective", () => {
 
   const createRouterLink = createDirectiveFactory({
     directive: RouterLink,
-    declarations: [StrongRouteDirective],
-    imports: [RouterTestingModule],
+    imports: [RouterTestingModule, StrongRouteDirective],
   });
 
   function assertUrlTree(url: string, queryParams?: Params) {

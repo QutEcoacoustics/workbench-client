@@ -36,6 +36,7 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { fakeAsync } from "@angular/core/testing";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -56,12 +57,14 @@ describe("AddAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
-    declarations: [
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+
       InlineListComponent,
       TypeaheadInputComponent,
       LoadingComponent,
     ],
-    imports: [MockBawApiModule],
     mocks: [ToastService],
     data: {
       resolvers: {
@@ -427,7 +430,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
           jasmine.objectContaining({
-             additionalTagIds: [testedTag.id],
+            additionalTagIds: [testedTag.id],
           }),
           audioEventImport
         );

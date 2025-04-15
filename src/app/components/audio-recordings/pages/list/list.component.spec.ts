@@ -9,8 +9,7 @@ describe("AudioRecordingsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AudioRecordingsListComponent,
-    imports: [MockBawApiModule],
-    declarations: [WebsiteStatusWarningComponent],
+    imports: [MockBawApiModule, WebsiteStatusWarningComponent],
   });
 
   function setup(): void {
