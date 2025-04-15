@@ -2,8 +2,6 @@ import { Component, OnInit, QueryList } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
 import { appLibraryImports } from "src/app/app.module";
-import { FormlyModule } from "@ngx-formly/core";
-import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import {
   FormCheckingComponent,
   FormTouchedGuard,
