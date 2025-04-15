@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -45,7 +44,6 @@ describe("SiteComponent", () => {
     component: SiteComponent,
     imports: [
       MockBawApiModule,
-      RouterTestingModule,
       IconsModule,
       mockMapComponent,
     ],

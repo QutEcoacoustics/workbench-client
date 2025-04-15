@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Writeable } from "@helpers/advancedTypes";
 import { DEFAULT_MENU } from "@helpers/page/defaultMenus";
@@ -49,7 +48,6 @@ describe("AppComponent", () => {
       PageTitleStrategy,
     ],
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
 
       ...MockComponents(

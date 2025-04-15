@@ -1,6 +1,5 @@
 import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -83,7 +82,6 @@ describe("MenuComponent", () => {
     component: MenuComponent,
     imports: [
       IconsModule,
-      RouterTestingModule,
       MockBawApiModule,
       NgbModalModule,
       NgbTooltipModule,

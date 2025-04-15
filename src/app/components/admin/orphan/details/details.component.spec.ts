@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -34,7 +33,6 @@ describe("AdminOrphanComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        RouterTestingModule,
         MockBawApiModule,
       ],
       providers: [

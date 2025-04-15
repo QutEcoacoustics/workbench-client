@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
@@ -23,9 +22,10 @@ describe("MyBookmarksComponent", () => {
   let defaultUser: User;
   let defaultBookmark: Bookmark;
   let spec: SpectatorRouting<MyBookmarksComponent>;
+
   const createComponent = createRoutingFactory({
     component: MyBookmarksComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     stubsEnabled: false,
   });
 

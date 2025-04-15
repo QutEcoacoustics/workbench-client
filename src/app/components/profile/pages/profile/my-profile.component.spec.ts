@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -54,7 +53,6 @@ describe("MyProfileComponent", () => {
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
       IconsModule,
     ],

@@ -1,6 +1,4 @@
 import { Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   createComponentFactory,
@@ -35,7 +33,6 @@ describe("BreadcrumbComponent", () => {
     component: BreadcrumbComponent,
     imports: [
       IconsModule,
-      RouterTestingModule,
       MockDirective(StrongRouteDirective),
     ],
   });

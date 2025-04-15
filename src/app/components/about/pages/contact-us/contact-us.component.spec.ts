@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { appLibraryImports } from "src/app/app.module";
 import { ContactUsComponent } from "./contact-us.component";
@@ -15,7 +14,6 @@ xdescribe("ContactUsComponent", () => {
       imports: [
         ...appLibraryImports,
         MockBawApiModule,
-        RouterTestingModule,
         ContactUsComponent,
       ],
     }).compileComponents();

@@ -1,7 +1,5 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -26,7 +24,7 @@ describe("CardsComponent", () => {
   const factoryOptions: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     providers: [provideHttpClientTesting()],
   };
 

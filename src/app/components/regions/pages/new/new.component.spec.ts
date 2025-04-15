@@ -1,6 +1,5 @@
 import { fakeAsync, tick } from "@angular/core/testing";
-import { Router, RouterOutlet } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { Router, RouterModule, RouterOutlet } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   projectResolvers,
@@ -36,6 +35,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
+import { FormComponent } from "@shared/form/form.component";
 import schema from "../../region.base.json";
 import { NewComponent } from "./new.component";
 
@@ -45,7 +45,7 @@ describe("RegionsNewComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: NewComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [...testFormImports, MockBawApiModule, FormComponent],
     providers: testFormProviders,
     mocks: [ToastService],
     stubsEnabled: true,
@@ -145,17 +145,17 @@ describe("routing and resolvers", () => {
     defaultProject = new Project(generateProject());
 
     // stub both api methods that the two resolvers use
-    const api = createSpyObject(ProjectsService);
-    api.show.and.callFake(() => of(project));
-    api.filter.and.callFake(() => of([defaultProject]));
+    const projectsService = createSpyObject(ProjectsService);
+    projectsService.show.and.callFake(() => of(project));
+    projectsService.filter.and.callFake(() => of([defaultProject]));
 
     // set up ngMocks according to https://ng-mocks.sudo.eu/guides/routing-resolver
     const builder = MockBuilder([
       NewComponent,
-      RouterTestingModule.withRoutes([...nestedRoutes, ...shallowRoutes]),
+      RouterModule.forRoot([...nestedRoutes, ...shallowRoutes]),
     ])
       .keep(MockBawApiModule, { export: true })
-      .provide({ provide: ProjectsService, useValue: api });
+      .provide({ provide: ProjectsService, useValue: projectsService });
 
     // augment builder with out app level module imports
     return addStandardFormImportsToMockBuilder(builder);

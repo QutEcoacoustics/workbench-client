@@ -1,5 +1,4 @@
-import { ActivatedRoute, Params, Router, RouterLink } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute, Params, provideRouter, Router, RouterLink } from "@angular/router";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -24,12 +23,13 @@ describe("StrongRouteDirective", () => {
 
   const createDirective = createDirectiveFactory({
     directive: StrongRouteDirective,
-    imports: [RouterTestingModule],
+    providers: [provideRouter([])],
   });
 
   const createRouterLink = createDirectiveFactory({
     directive: RouterLink,
-    imports: [RouterTestingModule, StrongRouteDirective],
+    imports: [StrongRouteDirective],
+    providers: [provideRouter([])],
   });
 
   function updateSnapshot(opts?: {

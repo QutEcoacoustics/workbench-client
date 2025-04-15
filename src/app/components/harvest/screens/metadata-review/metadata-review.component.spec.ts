@@ -35,6 +35,8 @@ import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { Inject } from "@angular/core";
+import { IconsModule } from "@shared/icons/icons.module";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
@@ -48,16 +50,6 @@ describe("MetadataReviewComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MetadataReviewComponent,
-    declarations: [
-      ConfirmationComponent,
-      StatisticsComponent,
-      StatisticGroupComponent,
-      StatisticItemComponent,
-      WhitespaceComponent,
-      SiteSelectorComponent,
-      UTCOffsetSelectorComponent,
-      FolderRowComponent
-    ],
     providers: [
       MockProvider(HarvestStagesService, {
         project: defaultProject,
@@ -65,7 +57,19 @@ describe("MetadataReviewComponent", () => {
         transition: (_stage: HarvestStatus) => {}
       }),
     ],
-    imports: [MockBawApiModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      ConfirmationComponent,
+      StatisticsComponent,
+      StatisticGroupComponent,
+      StatisticItemComponent,
+      WhitespaceComponent,
+      SiteSelectorComponent,
+      UTCOffsetSelectorComponent,
+      FolderRowComponent,
+      StrongRouteDirective,
+    ],
     mocks: [ToastService],
   });
 

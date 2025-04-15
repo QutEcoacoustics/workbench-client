@@ -1,10 +1,10 @@
 import {
   ActivatedRoute,
   Params,
+  provideRouter,
   Router,
   RouterLink,
 } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
@@ -17,12 +17,13 @@ describe("UrlDirective", () => {
 
   const createDirective = createDirectiveFactory({
     directive: UrlDirective,
-    imports: [RouterTestingModule],
+    providers: [provideRouter([])],
   });
 
   const createRouterLink = createDirectiveFactory({
     directive: RouterLink,
-    imports: [RouterTestingModule, StrongRouteDirective],
+    imports: [StrongRouteDirective],
+    providers: [provideRouter([])],
   });
 
   function assertUrlTree(url: string, queryParams?: Params) {

@@ -1,19 +1,13 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
@@ -35,10 +29,9 @@ describe("CardComponent", () => {
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<CardComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: CardComponent,
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
       AsyncPipe,
       WithLoadingPipe,

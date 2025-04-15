@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -6,11 +5,7 @@ import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import {
   DataTableBodyCellComponent,
   DatatableComponent,
@@ -32,9 +27,9 @@ describe("RecentAudioRecordingsComponent", () => {
   let injector: AssociationInjector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: RecentAudioRecordingsComponent,
-    imports: [MockBawApiModule, RouterTestingModule, IconsModule],
+    imports: [MockBawApiModule, IconsModule],
     mocks: [ToastService],
   });
 

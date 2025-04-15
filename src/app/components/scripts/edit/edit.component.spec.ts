@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
@@ -34,7 +33,6 @@ describe("AdminScriptsEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        RouterTestingModule,
         MockBawApiModule,
         AdminScriptsEditComponent,
       ],

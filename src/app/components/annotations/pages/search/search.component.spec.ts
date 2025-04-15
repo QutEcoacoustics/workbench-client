@@ -9,7 +9,6 @@ import {
   SHALLOW_SITE,
 } from "@baw-api/ServiceTokens";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -61,7 +60,7 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [MockBawApiModule, RouterTestingModule, IconsModule],
+    imports: [MockBawApiModule, IconsModule],
     providers: [
       {
         provide: AnnotationService,

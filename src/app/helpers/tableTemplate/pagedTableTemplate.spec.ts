@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
@@ -56,7 +55,7 @@ describe("PagedTableTemplate", () => {
 
   const createComponent = createComponentFactory({
     component: MockComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(resolvers: string[] = [], data: MockData = {}) {

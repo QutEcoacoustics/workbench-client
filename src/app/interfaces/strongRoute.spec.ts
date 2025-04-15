@@ -31,7 +31,7 @@ describe("StrongRoute", () => {
 
   const createComponent = createRoutingFactory({
     component: DummyComponent,
-    imports: [RouterTestingModule, OtherComponent],
+    imports: [OtherComponent],
     stubsEnabled: false,
     routes: [
       { path: "", component: DummyComponent },

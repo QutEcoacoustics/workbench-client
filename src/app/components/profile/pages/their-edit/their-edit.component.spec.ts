@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -19,7 +18,6 @@ describe("TheirProfileEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        RouterTestingModule,
         MockBawApiModule,
         TheirEditComponent,
       ],

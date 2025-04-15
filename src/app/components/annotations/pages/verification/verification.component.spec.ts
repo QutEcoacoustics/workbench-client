@@ -30,7 +30,6 @@ import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
-import { RouterTestingModule } from "@angular/router/testing";
 import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
@@ -101,7 +100,6 @@ describe("VerificationComponent", () => {
     component: VerificationComponent,
     imports: [
       MockBawApiModule,
-      RouterTestingModule,
       IconsModule,
 
       SearchFiltersModalComponent,

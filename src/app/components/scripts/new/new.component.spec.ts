@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter, Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { SpyObject } from "@ngneat/spectator";
@@ -23,10 +22,10 @@ describe("AdminScriptsNewComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        RouterTestingModule,
         MockBawApiModule,
         AdminScriptsNewComponent,
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsNewComponent);
