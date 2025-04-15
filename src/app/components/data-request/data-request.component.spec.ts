@@ -1,12 +1,6 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { appLibraryImports } from "src/app/app.module";
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from "@angular/common/http";
 import { DataRequestComponent } from "./data-request.component";
 
 xdescribe("DataRequestComponent", () => {
@@ -15,17 +9,12 @@ xdescribe("DataRequestComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         ...appLibraryImports,
-        RouterTestingModule,
         MockConfigModule,
         DataRequestComponent,
-    ],
-    providers: [
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DataRequestComponent);
     component = fixture.componentInstance;

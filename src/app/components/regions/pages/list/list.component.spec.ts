@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -7,7 +6,7 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IRegion, Region } from "@models/Region";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -26,10 +25,10 @@ describe("RegionsListComponent", () => {
   let api: SpyObject<ShallowRegionsService>;
   let spec: Spectator<ListComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: ListComponent,
     declarations: [MockComponent(CardsComponent)],
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   function generateRegions(

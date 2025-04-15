@@ -1,9 +1,7 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UserLinkComponent } from "@shared/user-link/user-link.component";
@@ -22,10 +20,9 @@ describe("UserBadgeComponent", () => {
   let defaultUser: User;
   let unresolvedUser: User;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: UserBadgeComponent,
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
       IconsModule,
       TimeSinceComponent,

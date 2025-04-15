@@ -3,8 +3,7 @@ import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { Data, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { Data, Params, provideRouter } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -22,7 +21,6 @@ export const testFormImports = [
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
   NgxCaptchaModule,
-  RouterTestingModule,
 
   LoadingComponent,
 ];
@@ -30,6 +28,7 @@ export const testFormImports = [
 export const testFormProviders = [
   provideHttpClient(withInterceptorsFromDi()),
   provideHttpClientTesting(),
+  provideRouter([]),
 ];
 
 export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {

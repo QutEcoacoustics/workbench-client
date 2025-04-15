@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { List } from "immutable";
@@ -12,7 +11,6 @@ describe("ItemsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: ItemsComponent,
-    imports: [RouterTestingModule],
     declarations: [MockComponent(ItemComponent)],
   });
 

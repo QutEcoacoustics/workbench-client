@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter, Router } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -37,7 +36,9 @@ describe("StrongRouteActiveDirective", () => {
       MockConfigModule,
       StrongRouteDirective,
       StrongRouteActiveDirective,
-      RouterTestingModule.withRoutes([
+    ],
+    providers: [
+      provideRouter([
         {
           path: baseRoute.toRouteCompilePath(),
           pathMatch: "full",

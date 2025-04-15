@@ -1,8 +1,7 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MenuLink, menuLink } from "@interfaces/menusInterfaces";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
 import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
 import { HeaderDropdownComponent } from "./header-dropdown.component";
 
@@ -10,9 +9,10 @@ describe("HeaderDropdownComponent", () => {
   let defaultUri: string;
   let defaultLink: MenuLink;
   let spec: Spectator<HeaderDropdownComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: HeaderDropdownComponent,
-    imports: [NgbDropdownModule, RouterTestingModule],
+    imports: [NgbDropdownModule],
   });
 
   function setup(links: HeaderItem[], label = "Label") {

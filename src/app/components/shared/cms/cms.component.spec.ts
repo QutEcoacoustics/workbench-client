@@ -1,10 +1,9 @@
 import { SafeHtml } from "@angular/platform-browser";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -19,9 +18,9 @@ describe("CmsComponent", () => {
   let cmsService: SpyObject<CmsService>;
   let spectator: Spectator<CmsComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: CmsComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   async function interceptApiRequest(

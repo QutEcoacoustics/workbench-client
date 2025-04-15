@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { defaultApiPageSize, InnerFilter } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -29,7 +28,7 @@ describe("AnalysesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnalysesComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   beforeEach(function () {

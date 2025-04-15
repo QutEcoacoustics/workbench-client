@@ -1,10 +1,9 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import {
   interceptShowApiRequest,
   nStepObservable,
@@ -25,11 +24,10 @@ describe("DetailViewComponent", () => {
   let api: MockStandardApiService;
   let spec: Spectator<DetailViewComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: DetailViewComponent,
     imports: [
       MockBawApiModule,
-      RouterTestingModule,
       CheckboxComponent,
       LoadingComponent,
       RenderFieldComponent,

@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -7,7 +6,7 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -27,10 +26,9 @@ describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: Spectator<ListComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: ListComponent,
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
       MockComponent(CardsComponent),
     ],

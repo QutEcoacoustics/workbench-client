@@ -1,6 +1,5 @@
 import { fakeAsync } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter, Router } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   AuthTriggerData,
@@ -61,14 +60,16 @@ describe("PrimaryMenuComponent", () => {
 
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
-    providers: [MockProvider(ToastService)],
+    providers: [
+      MockProvider(ToastService),
+      provideRouter([]),
+    ],
     declarations: [
       MockComponent(WebsiteStatusIndicatorComponent),
       HeaderItemComponent,
       HeaderDropdownComponent,
     ],
     imports: [
-      RouterTestingModule,
       MockBawApiModule,
       IconsModule,
       MockDirective(StrongRouteActiveDirective),

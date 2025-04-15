@@ -32,17 +32,17 @@ enum RowType {
 }
 
 export const metaReviewIcons = {
-  folderOpen: ["fas", "folder-open"] as IconProp,
-  folderClosed: ["fas", "folder-closed"] as IconProp,
-  successCircle: ["fas", "circle-check"] as IconProp,
-  success: ["fas", "check"] as IconProp,
-  warningCircle: ["fas", "circle-exclamation"] as IconProp,
-  warning: ["fas", "triangle-exclamation"] as IconProp,
-  failureCircle: ["fas", "xmark-circle"] as IconProp,
-  failure: ["fas", "xmark"] as IconProp,
-  errorCircle: ["fas", "xmark-circle"] as IconProp,
-  error: ["fas", "xmark"] as IconProp,
-};
+  folderOpen: ["fas", "folder-open"],
+  folderClosed: ["fas", "folder-closed"],
+  successCircle: ["fas", "circle-check"],
+  success: ["fas", "check"],
+  warningCircle: ["fas", "circle-exclamation"],
+  warning: ["fas", "triangle-exclamation"],
+  failureCircle: ["fas", "xmark-circle"],
+  failure: ["fas", "xmark"],
+  errorCircle: ["fas", "xmark-circle"],
+  error: ["fas", "xmark"],
+} as const satisfies Record<string, IconProp>;
 
 export interface MetaReviewBase {
   rowType: RowType;
@@ -98,15 +98,15 @@ const rootMappingPath = "";
   templateUrl: "metadata-review.component.html",
   styleUrls: ["metadata-review.component.scss"],
   imports: [
-    StrongRouteDirective,
-    StatisticsComponent,
+    NgStyle,
     NgbTooltip,
     FolderRowComponent,
-    NgStyle,
     FileRowComponent,
     LoadMoreComponent,
     ConfirmationComponent,
+    StatisticsComponent,
     DecimalPipe,
+    StrongRouteDirective,
   ],
 })
 export class MetadataReviewComponent

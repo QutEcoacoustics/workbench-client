@@ -1,6 +1,4 @@
 import { ActivatedRouteSnapshot, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -32,7 +30,6 @@ describe("MenuLinkComponent", () => {
     component: MenuLinkComponent,
     imports: [
       MockConfigModule,
-      RouterTestingModule,
       NgbTooltipModule,
       IconsModule,
       MockDirective(StrongRouteDirective),

@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -19,7 +18,7 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -64,9 +63,9 @@ describe("RecentAnnotationsComponent", () => {
   let defaultRecording: AudioRecording;
   let defaultTags: Tag[];
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule, IconsModule, RouterTestingModule],
+    imports: [MockBawApiModule, IconsModule],
   });
 
   function interceptSiteRequest(data: Errorable<Site>) {

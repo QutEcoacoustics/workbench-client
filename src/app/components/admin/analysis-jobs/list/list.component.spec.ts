@@ -1,9 +1,8 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
@@ -25,9 +24,9 @@ describe("AnalysisJobComponent", () => {
 
   let injector: SpyObject<AssociationInjector>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: AdminAnalysisJobsComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   beforeEach(function () {

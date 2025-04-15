@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -10,7 +9,7 @@ import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -39,14 +38,13 @@ describe("HomeComponent", () => {
   let config: ConfigService;
   let spec: Spectator<HomeComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
       MockBawApiModule,
       MockConfigModule,
       IconsModule,
-      RouterTestingModule,
       LoadingComponent,
       AsyncPipe,
       UpperCasePipe,

@@ -1,6 +1,5 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -23,7 +22,7 @@ describe("BawClientComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: BawClientComponent,
-    imports: [RouterTestingModule, MockConfigModule, LoadingComponent],
+    imports: [MockConfigModule, LoadingComponent],
   });
 
   function bawClientSource(route: string) {

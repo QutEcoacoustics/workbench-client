@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -43,7 +42,7 @@ describe("MySitesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MySitesComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     stubsEnabled: false,
   });
 
