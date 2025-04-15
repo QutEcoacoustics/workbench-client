@@ -22,6 +22,7 @@ describe("ProjectsEditComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: SpectatorRouting<EditComponent>;
   let defaultProject: Project;
+
   const createComponent = createRoutingFactory({
     component: EditComponent,
     declarations: [MockComponent(FormComponent)],

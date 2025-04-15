@@ -33,6 +33,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
 import { TheirProfileComponent } from "./their-profile.component";
 
 describe("TheirProfileComponent", () => {
@@ -47,7 +48,7 @@ describe("TheirProfileComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TheirProfileComponent,
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [RouterTestingModule, MockBawApiModule, IconsModule],
     stubsEnabled: false,
   });
 

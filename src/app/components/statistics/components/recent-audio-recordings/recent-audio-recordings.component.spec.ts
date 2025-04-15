@@ -8,7 +8,6 @@ import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
 import {
   createComponentFactory,
-  mockProvider,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -24,6 +23,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
@@ -34,8 +34,8 @@ describe("RecentAudioRecordingsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: RecentAudioRecordingsComponent,
-    imports: [MockBawApiModule, RouterTestingModule],
-    providers: [mockProvider(ToastService)],
+    imports: [MockBawApiModule, RouterTestingModule, IconsModule],
+    mocks: [ToastService],
   });
 
   function interceptSiteRequest(

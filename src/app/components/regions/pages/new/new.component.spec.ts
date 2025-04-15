@@ -21,7 +21,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -48,7 +47,6 @@ describe("RegionsNewComponent", () => {
     component: NewComponent,
     imports: [...testFormImports, MockBawApiModule],
     providers: testFormProviders,
-    declarations: [FormComponent],
     mocks: [ToastService],
     stubsEnabled: true,
   });

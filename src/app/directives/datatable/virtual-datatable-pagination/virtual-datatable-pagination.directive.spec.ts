@@ -23,17 +23,15 @@ describe("bawVirtualDatatablePagination", () => {
   let spec: SpectatorDirective<VirtualDatatablePaginationDirective<MockModel>>;
   let mockedModels: any[];
 
-  const createDirective = createDirectiveFactory<
-    VirtualDatatablePaginationDirective<MockModel>
-  >({
-    directive: VirtualDatatablePaginationDirective,
-    declarations: [
+  const createDirective = createDirectiveFactory({
+    directive: VirtualDatatablePaginationDirective<MockModel>,
+    declarations: [DataTableColumnDirective],
+    imports: [
+      NgxDatatableModule,
       DatatablePaginationDirective,
-      DataTableColumnDirective,
       DatatableDefaultsDirective,
       DatatableSortKeyDirective,
     ],
-    imports: [NgxDatatableModule],
   });
 
   function createModels(

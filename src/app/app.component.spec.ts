@@ -24,38 +24,45 @@ import { HeaderComponent } from "@shared/menu/header/header.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfo } from "@test/fakes/PageInfo";
 import { generatePageInfoResolvers } from "@test/helpers/general";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
 import { RouterStateSnapshot } from "@angular/router";
 import { modelData } from "@test/helpers/faker";
 import { generateMenuRoute } from "@test/fakes/MenuItem";
 import { MenuRoute } from "@interfaces/menusInterfaces";
+import { MenuButtonComponent } from "@menu/button/button.component";
+import { MockComponents } from "ng-mocks";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { CommonRouteTitles } from "./stringConstants";
 
 describe("AppComponent", () => {
   const eventSubject = new Subject<IPageInfo>();
   let spec: SpectatorRouting<AppComponent>;
+
   const createComponent = createRoutingFactory({
     component: AppComponent,
-    declarations: [
-      MockComponent(HeaderComponent),
-      MockComponent(FooterComponent),
-      MockComponent(LoadingBarComponent),
-      MockComponent(SideNavComponent),
-      MockComponent(PrimaryMenuComponent),
-      MockComponent(SecondaryMenuComponent),
-      MockComponent(ActionMenuComponent),
-      MockComponent(BreadcrumbComponent),
-    ],
+    componentMocks: [LoadingBarComponent],
     providers: [
       { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
       mockProvider(LoadingBarService, { value$: new Subject() }),
       Title,
       PageTitleStrategy,
     ],
-    imports: [RouterTestingModule, MockBawApiModule],
+    imports: [
+      RouterTestingModule,
+      MockBawApiModule,
+
+      ...MockComponents(
+        HeaderComponent,
+        FooterComponent,
+        SideNavComponent,
+        PrimaryMenuComponent,
+        SecondaryMenuComponent,
+        ActionMenuComponent,
+        BreadcrumbComponent,
+        MenuButtonComponent
+      ),
+    ],
   });
 
   function setPageInfo(pageInfo: IPageInfo) {

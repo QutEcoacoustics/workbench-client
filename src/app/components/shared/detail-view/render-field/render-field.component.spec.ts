@@ -24,7 +24,6 @@ describe("RenderFieldComponent", () => {
 
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
-    declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
       MockBawApiModule,
       RouterTestingModule,
@@ -34,6 +33,7 @@ describe("RenderFieldComponent", () => {
       TimeSinceComponent,
       LoadingComponent,
       CheckboxComponent,
+      ModelLinkComponent,
     ],
   });
 

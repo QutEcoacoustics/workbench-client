@@ -14,6 +14,7 @@ describe("UrlDirective", () => {
   let router: Router;
   let route: ActivatedRoute;
   let spec: SpectatorDirective<UrlDirective>;
+
   const createDirective = createDirectiveFactory({
     directive: UrlDirective,
     imports: [RouterTestingModule],

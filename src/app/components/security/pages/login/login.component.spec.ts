@@ -60,9 +60,9 @@ describe("LoginComponent", () => {
       MockBawApiModule,
       ToastComponent,
       ToastProviderComponent,
+      FormComponent,
     ],
     providers: testFormProviders,
-    declarations: [FormComponent],
   });
 
   const component = () => spec.query(LoginComponent);
