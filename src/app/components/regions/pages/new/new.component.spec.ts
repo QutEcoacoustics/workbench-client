@@ -1,4 +1,4 @@
-import { fakeAsync, tick } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Router, RouterModule, RouterOutlet } from "@angular/router";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
@@ -25,11 +25,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
-import {
-  addStandardFormImportsToMockBuilder,
-  testFormImports,
-  testFormProviders,
-} from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -158,7 +154,8 @@ describe("routing and resolvers", () => {
       .provide({ provide: ProjectsService, useValue: projectsService });
 
     // augment builder with out app level module imports
-    return addStandardFormImportsToMockBuilder(builder);
+    const module = builder.build();
+    return TestBed.configureTestingModule(module).compileComponents();
   });
 
   function setup(path) {
