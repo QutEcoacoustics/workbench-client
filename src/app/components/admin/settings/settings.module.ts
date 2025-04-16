@@ -4,11 +4,11 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { AdminSettingsComponent } from "./settings.component";
 import { adminSettingsRoute } from "./settings.menus";
 
-const components = [AdminSettingsComponent];
+const pages = [AdminSettingsComponent];
 const routes = adminSettingsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class SettingsModule {}

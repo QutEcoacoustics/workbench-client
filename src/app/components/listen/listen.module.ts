@@ -5,12 +5,11 @@ import { listenRoute } from "./listen.menus";
 import { ListenComponent } from "./pages/list/list.component";
 import { ListenRecordingComponent } from "./pages/details/details.component";
 
-const components = [ListenComponent, ListenRecordingComponent];
-
+const pages = [ListenComponent, ListenRecordingComponent];
 const routes = listenRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class ListenModule {}

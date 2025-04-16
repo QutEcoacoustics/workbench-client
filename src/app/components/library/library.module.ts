@@ -5,12 +5,11 @@ import { libraryRoute } from "./library.menus";
 import { AnnotationComponent } from "./pages/details/details.component";
 import { LibraryComponent } from "./pages/list/list.component";
 
-const components = [LibraryComponent, AnnotationComponent];
-
+const pages = [LibraryComponent, AnnotationComponent];
 const routes = libraryRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class LibraryModule {}

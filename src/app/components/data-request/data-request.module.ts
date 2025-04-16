@@ -4,11 +4,11 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { DataRequestComponent } from "./data-request.component";
 import { dataRequestRoute } from "./data-request.menus";
 
-const components = [DataRequestComponent];
+const pages = [DataRequestComponent];
 const routes = dataRequestRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class DataRequestModule {}

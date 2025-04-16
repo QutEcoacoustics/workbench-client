@@ -20,7 +20,6 @@ import { WebsiteStatusModule } from "@components/website-status/website-status.m
 import { AnnotationModule } from "@components/annotations/annotation.module";
 import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
-import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { MenuModule } from "@menu/menu.module";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
@@ -74,9 +73,6 @@ export const appImports = [
 
   DateValueAccessorModule,
   MenuModule,
-
-  // standalone components
-  ToastProviderComponent,
 
   // these last two must be last!
   HomeModule,
