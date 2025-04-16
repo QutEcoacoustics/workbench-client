@@ -70,6 +70,7 @@ import {
   viewports,
 } from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
+import { setViewport } from "@web/test-runner-commands";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -235,7 +236,7 @@ describe("VerificationComponent", () => {
 
     // I explicitly set the viewport size so that the grid size is always
     // consistent no matter what size the karma browser window is
-    viewport.set(viewports.extraLarge);
+    await setViewport(viewports.extraLarge);
 
     await detectChanges(spec);
 

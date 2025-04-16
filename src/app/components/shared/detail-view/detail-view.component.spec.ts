@@ -13,6 +13,7 @@ import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { setViewport } from "@web/test-runner-commands";
 import { DetailViewComponent } from "./detail-view.component";
 import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -61,8 +62,8 @@ describe("DetailViewComponent", () => {
     spec.detectChanges();
   });
 
-  afterAll(() => {
-    viewport.reset();
+  afterAll(async() => {
+    await setViewport(viewports.large);
   });
 
   describe("fields", () => {
@@ -247,13 +248,13 @@ describe("DetailViewComponent", () => {
       expect(rightCol).toHaveClass("col-sm-9");
     });
 
-    it("should right align field on small screen", () => {
-      viewport.set(viewports.small);
+    it("should right align field on small screen", async () => {
+      await setViewport(viewports.small);
       expect(getFields()[0]).toHaveComputedStyle({ textAlign: "right" });
     });
 
-    it("should left align field on smallest screen", () => {
-      viewport.set(viewports.extraSmall);
+    it("should left align field on smallest screen", async () => {
+      await setViewport(viewports.extraSmall);
       expect(getFields()[0]).toHaveComputedStyle({ textAlign: "left" });
     });
   });

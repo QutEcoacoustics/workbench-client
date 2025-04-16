@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { viewports } from "@test/helpers/general";
+import { setViewport } from "@web/test-runner-commands";
 import { CheckboxComponent } from "./checkbox.component";
 
 describe("CheckboxComponent", () => {
@@ -15,8 +16,8 @@ describe("CheckboxComponent", () => {
     component = fixture.componentInstance;
   });
 
-  afterAll(() => {
-    viewport.reset();
+  afterAll(async () => {
+    await setViewport(viewports.large);
   });
 
   it("should create", () => {
@@ -24,8 +25,8 @@ describe("CheckboxComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should be centered", () => {
-    viewport.set(viewports.large);
+  it("should be centered", async () => {
+    await setViewport(viewports.large);
 
     component.isCentered = true;
     fixture.detectChanges();
@@ -40,8 +41,8 @@ describe("CheckboxComponent", () => {
     expect(marginLeft === marginRight).toBeTrue();
   });
 
-  it("should not be centered", () => {
-    viewport.set(viewports.large);
+  it("should not be centered", async () => {
+    await setViewport(viewports.large);
 
     component.isCentered = false;
     fixture.detectChanges();

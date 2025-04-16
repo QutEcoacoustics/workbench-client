@@ -12,6 +12,7 @@ import { modelData } from "@test/helpers/faker";
 import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
+import { setViewport } from "@web/test-runner-commands";
 
 // TODO Add tests for components page input if/when used
 describe("BawClientComponent", () => {
@@ -119,14 +120,14 @@ describe("BawClientComponent", () => {
   });
 
   describe("bundle error handling", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setup();
-      viewport.set(viewports.small);
+      await setViewport(viewports.small);
       preventLoadingBawClient();
       spec.detectChanges();
     });
 
-    afterEach(() => viewport.reset());
+    afterEach(async () => setViewport(viewports.large));
 
     function assertIframeUnchanged() {
       // 100 is the default size on a small viewport

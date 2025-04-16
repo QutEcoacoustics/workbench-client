@@ -10,6 +10,7 @@ import { viewports } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
+import { setViewport } from "@web/test-runner-commands";
 import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
@@ -36,8 +37,8 @@ describe("HeaderComponent", () => {
     config = spec.inject(ConfigService);
   });
 
-  afterEach(() => {
-    viewport.reset();
+  afterEach(async () => {
+    await setViewport(viewports.large);
   });
 
   describe("menu toggle", () => {
@@ -72,8 +73,8 @@ describe("HeaderComponent", () => {
       return spec.query("baw-primary-menu");
     }
 
-    it("should fill remaining room in header", () => {
-      viewport.set(viewports.large);
+    it("should fill remaining room in header", async () => {
+      await setViewport(viewports.large);
       expect(getPrimaryMenu()).toHaveComputedStyle({
         flexGrow: "1",
       });
@@ -84,13 +85,13 @@ describe("HeaderComponent", () => {
     const statusIndicatorElement = (): HTMLElement =>
       spec.query("baw-website-status-indicator");
 
-    it("should show when in mobile view", () => {
-      viewport.set(viewports.small);
+    it("should show when in mobile view", async () => {
+      await setViewport(viewports.small);
       expect(statusIndicatorElement()).toBeVisible();
     });
 
-    it("should hide when in desktop view", () => {
-      viewport.set(viewports.large);
+    it("should hide when in desktop view", async () => {
+      await setViewport(viewports.large);
       expect(statusIndicatorElement()).toBeHidden();
     });
   });

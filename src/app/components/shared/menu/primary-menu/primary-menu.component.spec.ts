@@ -41,6 +41,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
+import { setViewport } from "@web/test-runner-commands";
 import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
 import { HeaderItemComponent } from "../header-item/header-item.component";
 import { PrimaryMenuComponent } from "./primary-menu.component";
@@ -112,8 +113,8 @@ describe("PrimaryMenuComponent", () => {
     return `#${camelCase(item.label)}-header-link`;
   }
 
-  afterEach(() => {
-    viewport.reset();
+  afterEach(async () => {
+    await setViewport(viewports.large);
   });
 
   describe("links", () => {
@@ -404,13 +405,13 @@ describe("PrimaryMenuComponent", () => {
 
     // the functionality of the status indicator is tested within the website-status-indicator component
     // therefore, we only need to assert that the indicator is shown under the correct conditions
-    it("should show the status indicator when not in the sidebar and on desktop", () => {
+    it("should show the status indicator when not in the sidebar and on desktop", async () => {
       setup({
         user: null,
         isFullscreen: false,
         isSideNav: false,
       });
-      viewport.set(viewports.large);
+      await setViewport(viewports.large);
 
       spec.detectChanges();
 
@@ -512,8 +513,8 @@ describe("PrimaryMenuComponent", () => {
       describe(layout, () => {
         describe(position, () => {
           describe(viewportSize, () => {
-            it(`should ${location}`, () => {
-              viewport.set(width);
+            it(`should ${location}`, async () => {
+              await setViewport(width);
               setup({
                 user: null,
                 isFullscreen: fullscreen,

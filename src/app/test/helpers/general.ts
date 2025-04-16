@@ -11,30 +11,26 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { CompatibleSpy, SpyObject } from "@ngneat/spectator";
+import { Viewport } from "@web/test-runner-commands";
 import { Subject } from "rxjs";
 
 /**
  * An object which keeps track of the various breakpoints set for the
  * viewport in karma.conf.js. This can be used in conjunction with
- * `viewport.set()` to change the size of the browser during unit tests
+ * `setViewport()` to change the size of the browser during unit tests
  */
 export const viewports = {
   /** Bootstrap xs (w:500, h:480) */
-  extraSmall: "extra-small",
-  extraSmallDimensions: { width: 500, height: 480 },
+  extraSmall: { width: 500, height: 480 },
   /** Bootstrap s (w:700, h:720) */
-  small: "small",
-  smallDimensions: { width: 700, height: 720 },
+  small: { width: 700, height: 720 },
   /** Bootstrap m (w:900, h:1024) */
-  medium: "medium",
-  mediumDimensions: { width: 900, height: 1024 },
+  medium: { width: 900, height: 1024 },
   /** Bootstrap l (w:1100, h:1300) */
-  large: "large",
-  largeDimensions: { width: 1100, height: 1300 },
+  large: { width: 1100, height: 1300 },
   /** Bootstrap xl (w:1200, h:1500) */
-  extraLarge: "extra-large",
-  extraLargeDimensions: { width: 1200, height: 1500 },
-};
+  extraLarge: { width: 1200, height: 1500 },
+} as const satisfies Record<string, Viewport>;
 
 /**
  * Default step size for timeouts
