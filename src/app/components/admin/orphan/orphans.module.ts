@@ -5,11 +5,11 @@ import { AdminOrphanComponent } from "./details/details.component";
 import { AdminOrphansComponent } from "./list/list.component";
 import { adminOrphansRoute } from "./orphans.menus";
 
-const components = [AdminOrphansComponent, AdminOrphanComponent];
+const pages = [AdminOrphansComponent, AdminOrphanComponent];
 const routes = adminOrphansRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class OrphanSitesModule {}

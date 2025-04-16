@@ -4,11 +4,11 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { ReportProblemComponent } from "./report-problem.component";
 import { reportProblemsRoute } from "./report-problem.menus";
 
-const components = [ReportProblemComponent];
+const pages = [ReportProblemComponent];
 const routes = reportProblemsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class ReportProblemsModule {}

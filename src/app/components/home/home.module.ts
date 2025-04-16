@@ -4,11 +4,11 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { HomeComponent } from "./home.component";
 import { homeRoute } from "./home.menus";
 
-const components = [HomeComponent];
+const pages = [HomeComponent];
 const routes = homeRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class HomeModule {}

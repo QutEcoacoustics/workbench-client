@@ -5,12 +5,11 @@ import { AnalysisJobComponent } from "./pages/details/details.component";
 import { AnalysesComponent } from "./pages/list/list.component";
 import { analysesRoute } from "./analysis-jobs.routes";
 
-const components = [AnalysesComponent, AnalysisJobComponent];
-
+const pages = [AnalysesComponent, AnalysisJobComponent];
 const routes = analysesRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class AnalysisModule {}

@@ -8,7 +8,7 @@ import { DisclaimersComponent } from "./pages/disclaimers/disclaimers.component"
 import { EthicsComponent } from "./pages/ethics/ethics.component";
 import { DataSharingPolicyComponent } from "./pages/data-sharing-policy/data-sharing-policy.component";
 
-const components = [
+const pages = [
   ContactUsComponent,
   CreditsComponent,
   DisclaimersComponent,
@@ -19,7 +19,7 @@ const components = [
 const routes = aboutRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class AboutModule {}

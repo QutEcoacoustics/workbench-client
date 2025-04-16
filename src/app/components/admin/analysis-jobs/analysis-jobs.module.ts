@@ -5,11 +5,11 @@ import { adminAnalysisJobsRoute } from "./analysis-jobs.menus";
 import { AdminAnalysisJobComponent } from "./details/details.component";
 import { AdminAnalysisJobsComponent } from "./list/list.component";
 
-const components = [AdminAnalysisJobComponent, AdminAnalysisJobsComponent];
+const pages = [AdminAnalysisJobComponent, AdminAnalysisJobsComponent];
 const routes = adminAnalysisJobsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class AnalysisJobsModule {}

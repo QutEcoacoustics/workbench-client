@@ -1,8 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SiteCardComponent } from "./components/site-card/site-card.component";
-import { SiteMapComponent } from "./components/site-map/site-map.component";
 import { AssignComponent } from "./pages/assign/assign.component";
 import { DetailsComponent } from "./pages/details/details.component";
 import { EditComponent } from "./pages/edit/edit.component";
@@ -12,7 +10,7 @@ import { PermissionsComponent } from "./pages/permissions/permissions.component"
 import { RequestComponent } from "./pages/request/request.component";
 import { projectsRoute } from "./projects.routes";
 
-const components = [
+const pages = [
   AssignComponent,
   DetailsComponent,
   EditComponent,
@@ -20,14 +18,12 @@ const components = [
   NewComponent,
   PermissionsComponent,
   RequestComponent,
-  SiteCardComponent,
-  SiteMapComponent,
 ];
 
 const routes = projectsRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class ProjectsModule {}

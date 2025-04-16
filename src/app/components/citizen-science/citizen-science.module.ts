@@ -7,7 +7,7 @@ import { CitSciListenItemComponent } from "./pages/listen-item/listen-item.compo
 import { CitSciListenComponent } from "./pages/listen/listen.component";
 import { CitSciResponsesComponent } from "./pages/responses/responses.component";
 
-const components = [
+const pages = [
   CitSciAboutComponent,
   CitSciListenComponent,
   CitSciListenItemComponent,
@@ -17,7 +17,7 @@ const components = [
 const routes = citSciRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class CitizenScienceModule {}

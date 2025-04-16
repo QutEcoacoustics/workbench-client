@@ -8,8 +8,7 @@ import { NewAnnotationsComponent } from "./new/new.component";
 import { EditAnnotationsComponent } from "./edit/edit.component";
 import { AddAnnotationsComponent } from "./add-annotations/add-annotations.component";
 
-const components = [
-  // Pages
+const pages = [
   AnnotationsListComponent,
   AnnotationImportDetailsComponent,
   NewAnnotationsComponent,
@@ -20,7 +19,7 @@ const components = [
 const routes = annotationsImportRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class AnnotationsImportModule {}

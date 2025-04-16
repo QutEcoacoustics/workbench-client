@@ -4,11 +4,11 @@ import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { websiteStatusRoute } from "./website-status.routes";
 import { WebsiteStatusComponent } from "./website-status.component";
 
-const components = [WebsiteStatusComponent];
+const pages = [WebsiteStatusComponent];
 const routes = websiteStatusRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), ...components],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class WebsiteStatusModule {}
