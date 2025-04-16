@@ -14,6 +14,7 @@ describe("FormlyCheckboxInput", () => {
   let model: any;
   let formGroup: FormGroup;
   let spectator: SpectatorHost<CheckboxInputComponent>;
+
   const createHost = createHostFactory({
     component: CheckboxInputComponent,
     imports: [
