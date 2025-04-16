@@ -16,13 +16,6 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     </div>
 
     <div class="filters-modal-body modal-body modal-large">
-      <!-- <baw-annotation-search-form
-        [(searchParameters)]="formValue"
-        [project]="project"
-        [region]="region"
-        [site]="site"
-      ></baw-annotation-search-form> -->
-
       <baw-annotation-search-form
         [(searchParameters)]="formValue"
       ></baw-annotation-search-form>
