@@ -24,6 +24,7 @@ import { Site } from "@models/Site";
 import { List } from "immutable";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import schema from "./audio-recording.schema.json";
 
 const audioRecordingKey = "audioRecording";
@@ -38,7 +39,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
-  standalone: false
+  imports: [DetailViewComponent],
 })
 class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
   public failure: boolean;

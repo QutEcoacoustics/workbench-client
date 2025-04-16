@@ -1,4 +1,8 @@
-import { SpectatorRouting, SpyObject, createRoutingFactory } from "@ngneat/spectator";
+import {
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
+} from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";

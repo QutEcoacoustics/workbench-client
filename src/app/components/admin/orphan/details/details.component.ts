@@ -13,6 +13,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import { adminOrphanMenuItem, adminOrphansCategory } from "../orphans.menus";
 
 const siteKey = "site";
@@ -21,13 +22,13 @@ const siteKey = "site";
   selector: "baw-admin-orphan",
   template: `
     @if (!failure) {
-      <div>
-        <h1>Orphan Site Details</h1>
-        <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
-      </div>
+    <div>
+      <h1>Orphan Site Details</h1>
+      <baw-detail-view [fields]="fields" [model]="site"></baw-detail-view>
+    </div>
     }
   `,
-  standalone: false
+  imports: [DetailViewComponent],
 })
 class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)

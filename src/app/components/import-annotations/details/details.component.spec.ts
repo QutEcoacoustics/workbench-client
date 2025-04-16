@@ -3,7 +3,6 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -62,8 +61,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
-    declarations: [InlineListComponent, LoadingComponent],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule, InlineListComponent, LoadingComponent],
     mocks: [ToastService],
   });
 

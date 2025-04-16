@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -43,9 +45,9 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
         </ul>
       </nav>
     </footer>
-    `,
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [StrongRouteActiveDirective, StrongRouteDirective]
 })
 export class FooterComponent implements OnInit {
   public version: string;

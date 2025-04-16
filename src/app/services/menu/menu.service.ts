@@ -55,7 +55,7 @@ export interface Breadcrumb {
 export type BreadcrumbsData = OrderedSet<Breadcrumb>;
 
 // TODO Make outputs observables, and expose a snapshot of the current state. Similar to activated route
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class MenuService extends withUnsubscribe() {
   private _actionMenu: ActionMenuData;
   private _breadcrumbs: BreadcrumbsData;

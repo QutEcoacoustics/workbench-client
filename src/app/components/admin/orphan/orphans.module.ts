@@ -1,17 +1,15 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { AdminOrphanComponent } from "./details/details.component";
 import { AdminOrphansComponent } from "./list/list.component";
 import { adminOrphansRoute } from "./orphans.menus";
 
-const components = [AdminOrphansComponent, AdminOrphanComponent];
+const pages = [AdminOrphansComponent, AdminOrphanComponent];
 const routes = adminOrphansRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: components,
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class OrphanSitesModule {}

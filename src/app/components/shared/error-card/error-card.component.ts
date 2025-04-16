@@ -1,5 +1,6 @@
 import { Component, ContentChild, input, TemplateRef } from "@angular/core";
 import { BawErrorData } from "@interfaces/apiInterfaces";
+import { NgTemplateOutlet } from "@angular/common";
 
 export enum ErrorCardStyle {
   /** Styles the error card to fit inside a table cell */
@@ -42,7 +43,7 @@ interface ErrorTemplate {
     }
  `,
   styleUrl: "error-card.component.scss",
-  standalone: false
+  imports: [NgTemplateOutlet]
 })
 export class ErrorCardComponent {
   public errors = input.required<ReadonlyArray<BawErrorData>>();

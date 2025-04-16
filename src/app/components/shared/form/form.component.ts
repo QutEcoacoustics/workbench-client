@@ -6,13 +6,14 @@ import {
   Output,
   ViewEncapsulation,
 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
 import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastService } from "@services/toasts/toasts.service";
+import { NgClass } from "@angular/common";
 
 /**
  * Formly Form Wrapper
@@ -23,7 +24,7 @@ import { ToastService } from "@services/toasts/toasts.service";
   styleUrls: ["./form.component.scss"],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
-  standalone: false
+  imports: [NgClass, FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Input() public btnColor: BootstrapColorTypes = "primary";

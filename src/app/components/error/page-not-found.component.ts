@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { homeCategory } from "@components/home/home.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { pageNotFoundMenuItem } from "./error.menus";
 
 @Component({
@@ -14,7 +15,7 @@ import { pageNotFoundMenuItem } from "./error.menus";
       report the issue.
     </div>
   `,
-  standalone: false
+  imports: [StrongRouteDirective],
 })
 class PageNotFoundComponent extends PageComponent {
   public reportProblem = reportProblemMenuItem.route;

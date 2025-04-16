@@ -7,7 +7,6 @@ import { Component } from "@angular/core";
       You can leave this page and come back later. The process won't be
       interrupted.
     </p>
-  `,
-  standalone: false
+  `
 })
 export class CanCloseDialogComponent {}

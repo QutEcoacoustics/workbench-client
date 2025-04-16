@@ -11,7 +11,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   mockProvider,
@@ -19,7 +19,6 @@ import {
 } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -31,6 +30,7 @@ import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { IconsModule } from "@shared/icons/icons.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -42,20 +42,20 @@ describe("DownloadAudioRecordingsComponent", () => {
   let api: AudioRecordingsService;
   let apiFilter: Subject<AudioRecording[]>;
   let spec: SpectatorRouting<DownloadAudioRecordingsComponent>;
+
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
-      SharedModule,
-      NgbCollapseModule,
       MockConfigModule,
       CacheModule,
       MockBawApiModule,
-    ],
-    declarations: [
+      IconsModule,
+
+      NgbCollapse,
+      DateTimeFilterComponent,
       MockComponent(SitesWithoutTimezonesComponent),
       MockComponent(DownloadTableComponent),
       MockComponent(WebsiteStatusWarningComponent),
-      DateTimeFilterComponent,
     ],
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls

@@ -9,8 +9,6 @@ import {
   SHALLOW_SITE,
 } from "@baw-api/ServiceTokens";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -37,6 +35,7 @@ import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -61,7 +60,7 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [MockBawApiModule, IconsModule],
     providers: [
       {
         provide: AnnotationService,

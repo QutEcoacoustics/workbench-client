@@ -17,7 +17,22 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { deleteAnnotationImportModal } from "../import-annotations.modals";
+import {
+  NgbNav,
+  NgbNavItem,
+  NgbNavItemRole,
+  NgbNavLink,
+  NgbNavLinkBase,
+  NgbNavContent,
+  NgbNavOutlet,
+} from "@ng-bootstrap/ng-bootstrap";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
@@ -25,6 +40,8 @@ import {
   annotationImportMenuItem,
   addAnnotationImportMenuItem,
 } from "../import-annotations.menu";
+import { deleteAnnotationImportModal } from "../import-annotations.modals";
+import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
 export const annotationMenuActions = [
   addAnnotationImportMenuItem,
@@ -52,8 +69,24 @@ interface ImportGroup {
 
 @Component({
   selector: "baw-annotation-import",
-  templateUrl: "details.component.html",
-  standalone: false
+  templateUrl: "./details.component.html",
+  imports: [
+    NgbNav,
+    NgbNavItem,
+    NgbNavItemRole,
+    NgbNavLink,
+    NgbNavLinkBase,
+    NgbNavContent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    LoadingComponent,
+    UrlDirective,
+    DatetimeComponent,
+    InlineListComponent,
+    NgbNavOutlet,
+    IsUnresolvedPipe,
+  ],
 })
 class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   public constructor(
@@ -130,10 +163,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   protected getFileModels = (
     filters: Filters<AudioEventImportFile>
   ): Observable<AudioEventImportFile[]> => {
-    return this.eventImportFileApi.filter(
-      filters,
-      this.audioEventImport
-    );
+    return this.eventImportFileApi.filter(filters, this.audioEventImport);
   };
 
   protected deleteModel(): void {

@@ -10,6 +10,7 @@ import { Tag, TagType } from "@models/Tag";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagsMenuItemActions } from "../list/list.component";
 import schema from "../tag.schema.json";
 import {
@@ -26,17 +27,17 @@ const tagTypesKey = "tagTypes";
   selector: "baw-admin-tags-edit",
   template: `
     @if (!failure) {
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   public fields = schema.fields;

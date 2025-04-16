@@ -1,10 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 
-@Pipe({
-  name: "timezone",
-  standalone: false
-})
+@Pipe({ name: "timezone" })
 export class TimezonePipe implements PipeTransform {
   public transform(
     model: AbstractModel & { tzinfoTz?: string },

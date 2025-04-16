@@ -5,22 +5,28 @@ import { WidgetMenuItem } from "@menu/widgetItem";
 import { ValidationName } from "@models/HarvestItem";
 import { ConfigService } from "@services/config/config.service";
 import { map, Observable, startWith } from "rxjs";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AsyncPipe } from "@angular/common";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
+import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
   selector: "baw-harvest-issue-widget",
   templateUrl: "validations.component.html",
-  styles: [`
-    hr {
-      margin: 1rem -1rem;
-    }
+  styles: [
+    `
+      hr {
+        margin: 1rem -1rem;
+      }
 
-    p {
-      font-size: 0.85em;
-    }
-  `],
-  standalone: false
+      p {
+        font-size: 0.85em;
+      }
+    `,
+  ],
+  imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe],
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
   public contactUs = contactUsMenuItem;

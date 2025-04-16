@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ConfigService } from "@services/config/config.service";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgTemplateOutlet } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Work In Progress Component
@@ -43,7 +46,7 @@ import { ConfigService } from "@services/config/config.service";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgbTooltip, NgTemplateOutlet, FaIconComponent]
 })
 export class WIPComponent implements OnInit {
   public production: boolean;

@@ -5,6 +5,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { UNAUTHORIZED } from "http-status";
 import { takeUntil } from "rxjs/operators";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 
 @Component({
   selector: "baw-resolver-handler",
@@ -13,7 +14,7 @@ import { takeUntil } from "rxjs/operators";
       <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-  standalone: false
+  imports: [ErrorHandlerComponent],
 })
 export class ResolverHandlerComponent
   extends withUnsubscribe()

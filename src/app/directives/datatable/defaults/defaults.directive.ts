@@ -14,10 +14,7 @@ import {
  * are not required, set them to false, otherwise ngx-datatable will not
  * display your data
  */
-@Directive({
-  selector: "[bawDatatableDefaults]",
-  standalone: false
-})
+@Directive({ selector: "[bawDatatableDefaults]" })
 export class DatatableDefaultsDirective implements OnInit {
   @Input() public externalPaging = true;
   @Input() public externalSorting = true;

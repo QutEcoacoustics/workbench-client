@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -12,12 +11,12 @@ import {
   REQUEST_TIMEOUT,
   UNAUTHORIZED,
 } from "http-status";
-import { SharedModule } from "../shared.module";
+import { provideRouter } from "@angular/router";
 import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
-  standalone: false
+  imports: [ErrorHandlerComponent, MockConfigModule],
 })
 class MockComponent implements OnInit {
   public error: BawApiError;
@@ -77,8 +76,12 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, MockConfigModule],
-      declarations: [ErrorHandlerComponent, MockComponent],
+      imports: [
+        MockConfigModule,
+        ErrorHandlerComponent,
+        MockComponent,
+      ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);

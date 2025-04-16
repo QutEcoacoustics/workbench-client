@@ -11,6 +11,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Script } from "@models/Script";
 import { List } from "immutable";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import baseSchema from "../script.base.schema.json";
 import extendedSchema from "../script.extended.schema.json";
 import {
@@ -32,7 +33,7 @@ const scriptKey = "script";
       </div>
     }
   `,
-  standalone: false
+  imports: [DetailViewComponent],
 })
 class AdminScriptComponent
   extends withUnsubscribe(PageComponent)

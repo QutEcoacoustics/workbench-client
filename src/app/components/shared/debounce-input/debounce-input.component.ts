@@ -22,7 +22,6 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
-  standalone: false
 })
 export class DebounceInputComponent
   extends withUnsubscribe()

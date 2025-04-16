@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter, Router } from "@angular/router";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { UrlActiveDirective } from "./url-active.directive";
 import { UrlDirective } from "./url.directive";
@@ -15,7 +14,7 @@ import { UrlDirective } from "./url.directive";
       Link
     </a>
   `,
-  standalone: false
+  imports: [UrlDirective, UrlActiveDirective],
 })
 class MockComponent {
   @Input() public url: string;
@@ -27,11 +26,15 @@ describe("UrlActiveDirective", () => {
   let router: Router;
   let spec: Spectator<MockComponent>;
   const specialRoute = "home";
+
   const createDirective = createComponentFactory({
     component: MockComponent,
-    declarations: [UrlDirective, UrlActiveDirective],
     imports: [
-      RouterTestingModule.withRoutes([
+      UrlDirective,
+      UrlActiveDirective,
+    ],
+    providers: [
+      provideRouter([
         { path: "", pathMatch: "full", component: MockComponent },
         { path: specialRoute, component: MockComponent },
       ]),

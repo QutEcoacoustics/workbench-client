@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgClass } from "@angular/common";
 
 /**
  * Item Component
  */
 @Component({
-  selector: "baw-items-item",
-  template: `
+    selector: "baw-items-item",
+    template: `
     <div class="clearfix" style="font-size: 0.925rem;">
       <!-- Item icon -->
       <fa-icon
@@ -29,9 +32,9 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
       </span>
     </div>
   `,
-  // Pure Component
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    // Pure Component
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FaIconComponent, NgbTooltip, NgClass]
 })
 export class ItemComponent {
   @Input() public icon: IconProp;

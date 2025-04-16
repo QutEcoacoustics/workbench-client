@@ -5,6 +5,7 @@ import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
 import { takeUntil } from "rxjs";
+import { MenuComponent } from "../menu/menu.component";
 
 /**
  * Action Menu Component.
@@ -22,7 +23,7 @@ import { takeUntil } from "rxjs";
       [isSideNav]="isSideNav"
     ></baw-menu>
   `,
-  standalone: false
+  imports: [MenuComponent],
 })
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   @Input() public isSideNav: boolean;

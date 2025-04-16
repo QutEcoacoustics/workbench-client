@@ -10,6 +10,10 @@ import {
 import { IBookmark } from "@models/Bookmark";
 import { User } from "@models/User";
 import { List } from "immutable";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { theirProfileActions } from "../profile/their-profile.component";
 import { MyBookmarksComponent } from "./my-bookmarks.component";
 
@@ -21,7 +25,12 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-bookmarks",
   templateUrl: "./bookmarks.component.html",
-  standalone: false
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
   public constructor(api: BookmarksService, route: ActivatedRoute) {

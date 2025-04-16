@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -12,7 +11,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
@@ -26,9 +24,10 @@ describe("MyProjectsComponent", () => {
   let defaultUser: User;
   let defaultProject: Project;
   let spec: SpectatorRouting<MyProjectsComponent>;
+
   const createComponent = createRoutingFactory({
     component: MyProjectsComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [MockBawApiModule],
     stubsEnabled: false,
   });
 

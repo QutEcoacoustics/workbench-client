@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -7,43 +6,32 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { MockComponent } from "ng-mocks";
 import { ListComponent } from "./list.component";
-
-const mockCardsComponent = MockComponent(CardsComponent);
 
 describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
   let spec: Spectator<ListComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: ListComponent,
-    overrideModules: [
-      [
-        ModelCardsModule,
-        {
-          set: {
-            declarations: [mockCardsComponent],
-            exports: [mockCardsComponent],
-          },
-        },
-      ],
+    imports: [
+      MockBawApiModule,
+      MockComponent(CardsComponent),
     ],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
   });
 
   function generateProjects(

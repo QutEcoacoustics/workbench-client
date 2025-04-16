@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -7,14 +6,12 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IRegion, Region } from "@models/Region";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateRegion } from "@test/fakes/Region";
 import { nStepObservable } from "@test/helpers/general";
@@ -24,25 +21,14 @@ import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { ListComponent } from "./list.component";
 
-const mockCardsComponent = MockComponent(CardsComponent);
-
 describe("RegionsListComponent", () => {
   let api: SpyObject<ShallowRegionsService>;
   let spec: Spectator<ListComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: ListComponent,
-    overrideModules: [
-      [
-        ModelCardsModule,
-        {
-          set: {
-            declarations: [mockCardsComponent],
-            exports: [mockCardsComponent],
-          },
-        },
-      ],
-    ],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    declarations: [MockComponent(CardsComponent)],
+    imports: [MockBawApiModule],
   });
 
   function generateRegions(

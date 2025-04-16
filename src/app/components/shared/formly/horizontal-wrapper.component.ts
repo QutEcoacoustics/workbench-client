@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FieldWrapper } from "@ngx-formly/core";
+import { FieldWrapper, FormlyModule } from "@ngx-formly/core";
 
 /**
  * Horizontal wrapper for formly components so they can be center aligned
@@ -29,6 +29,6 @@ import { FieldWrapper } from "@ngx-formly/core";
       }
     </div>
   `,
-  standalone: false
+  imports: [FormlyModule]
 })
 export class HorizontalWrapperComponent extends FieldWrapper {}

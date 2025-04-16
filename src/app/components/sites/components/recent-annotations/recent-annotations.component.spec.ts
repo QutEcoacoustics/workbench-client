@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
@@ -10,8 +9,7 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
 import { User } from "@models/User";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
@@ -32,9 +30,10 @@ describe("RecentAnnotationsComponent", () => {
   let defaultTag: Tag;
   let injector: AssociationInjector;
   let spec: Spectator<RecentAnnotationsComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [MockBawApiModule],
     providers: [
       MockProvider(ToastService, {
         error: jasmine.createSpy("error").and.stub(),

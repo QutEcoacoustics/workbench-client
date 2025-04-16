@@ -1,13 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { PermissionsService } from "@baw-api/permissions/permissions.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { mockProvider } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
@@ -24,11 +22,9 @@ describe("PermissionsComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
         MockBawApiModule,
+        PermissionsComponent,
       ],
-      declarations: [PermissionsComponent],
       providers: [
         mockProvider(PermissionsService),
         {

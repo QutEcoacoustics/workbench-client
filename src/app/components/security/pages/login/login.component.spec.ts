@@ -26,6 +26,7 @@ import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.co
 import { modelData } from "@test/helpers/faker";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { IconsModule } from "@shared/icons/icons.module";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
 
@@ -39,7 +40,7 @@ import schema from "./login.schema.json";
     <baw-toast-provider></baw-toast-provider>
     <baw-authentication-login></baw-authentication-login>
   `,
-  standalone: false
+  imports: [LoginComponent, ToastProviderComponent],
 })
 class TestHostComponent {}
 
@@ -57,13 +58,14 @@ describe("LoginComponent", () => {
     component: TestHostComponent,
     imports: [
       ...testFormImports,
-      SecurityModule,
       MockBawApiModule,
+      SecurityModule,
+      IconsModule,
+
       ToastComponent,
-      ToastProviderComponent,
+      FormComponent,
     ],
     providers: testFormProviders,
-    declarations: [FormComponent],
   });
 
   const component = () => spec.query(LoginComponent);

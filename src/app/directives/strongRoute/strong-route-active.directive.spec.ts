@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { provideRouter, Router } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockConfigModule } from "@services/config/configMock.module";
@@ -17,7 +16,7 @@ import { StrongRouteDirective } from "./strong-route.directive";
       Link
     </a>
   `,
-  standalone: false
+  imports: [StrongRouteDirective, StrongRouteActiveDirective],
 })
 class MockComponent {
   @Input() public route: StrongRoute;
@@ -30,12 +29,16 @@ describe("StrongRouteActiveDirective", () => {
   let spec: Spectator<MockComponent>;
   const baseRoute = StrongRoute.newRoot();
   const defaultRoute = baseRoute.add("home");
+
   const createDirective = createComponentFactory({
     component: MockComponent,
-    declarations: [StrongRouteDirective, StrongRouteActiveDirective],
     imports: [
       MockConfigModule,
-      RouterTestingModule.withRoutes([
+      StrongRouteDirective,
+      StrongRouteActiveDirective,
+    ],
+    providers: [
+      provideRouter([
         {
           path: baseRoute.toRouteCompilePath(),
           pathMatch: "full",

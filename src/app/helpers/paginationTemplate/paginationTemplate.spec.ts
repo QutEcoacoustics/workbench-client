@@ -11,7 +11,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -24,7 +23,6 @@ const pageKey = "page";
 @Component({
   selector: "baw-test",
   template: "",
-  standalone: false
 })
 class MockComponent extends PaginationTemplate<Project> {
   public constructor(
@@ -51,7 +49,7 @@ describe("PaginationTemplate", () => {
   let component: MockComponent;
   const createComponent = createRoutingFactory({
     component: MockComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule],
   });
 
   function setup(queryParams: Params = {}) {

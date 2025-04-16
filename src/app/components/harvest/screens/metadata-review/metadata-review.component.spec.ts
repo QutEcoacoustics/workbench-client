@@ -18,7 +18,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import {
   generateProject,
@@ -36,6 +35,8 @@ import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { Inject } from "@angular/core";
+import { IconsModule } from "@shared/icons/icons.module";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
@@ -48,16 +49,6 @@ describe("MetadataReviewComponent", () => {
   let defaultHarvest: Harvest;
 
   const createComponent = createRoutingFactory({
-    declarations: [
-      ConfirmationComponent,
-      StatisticsComponent,
-      StatisticGroupComponent,
-      StatisticItemComponent,
-      WhitespaceComponent,
-      SiteSelectorComponent,
-      UTCOffsetSelectorComponent,
-      FolderRowComponent
-    ],
     component: MetadataReviewComponent,
     providers: [
       MockProvider(HarvestStagesService, {
@@ -66,7 +57,19 @@ describe("MetadataReviewComponent", () => {
         transition: (_stage: HarvestStatus) => {}
       }),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      ConfirmationComponent,
+      StatisticsComponent,
+      StatisticGroupComponent,
+      StatisticItemComponent,
+      WhitespaceComponent,
+      SiteSelectorComponent,
+      UTCOffsetSelectorComponent,
+      FolderRowComponent,
+      StrongRouteDirective,
+    ],
     mocks: [ToastService],
   });
 

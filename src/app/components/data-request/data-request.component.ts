@@ -6,6 +6,7 @@ import { DataRequest, IDataRequest } from "@models/data/DataRequest";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { dataRequestCategory, dataRequestMenuItem } from "./data-request.menus";
 import schema from "./data-request.schema.json";
 
@@ -46,7 +47,7 @@ import schema from "./data-request.schema.json";
       </span>
     </baw-form>
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
   public fields = schema.fields;

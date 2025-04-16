@@ -1,4 +1,4 @@
-import { NgIfContext } from "@angular/common";
+import { NgIfContext, NgTemplateOutlet } from "@angular/common";
 import { Component, Input, TemplateRef } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
@@ -17,7 +17,7 @@ import { AbstractModel } from "@models/AbstractModel";
       <ng-template [ngTemplateOutlet]="emptyTemplate"></ng-template>
     }
   `,
-  standalone: false
+  imports: [NgTemplateOutlet]
 })
 export class InlineListComponent {
   @Input() public items: AbstractModel[];

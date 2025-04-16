@@ -12,6 +12,7 @@ import {
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { projectsMenuItemActions } from "../list/list.component";
 import schema from "../../project.schema.json";
 
@@ -19,17 +20,17 @@ import schema from "../../project.schema.json";
   selector: "baw-projects-new",
   template: `
     @if (!failure) {
-      <baw-form
-        title="New Project"
-        [model]="model"
-        [fields]="fields"
-        submitLabel="Submit"
-        [submitLoading]="loading"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      title="New Project"
+      [model]="model"
+      [fields]="fields"
+      submitLabel="Submit"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class NewComponent extends FormTemplate<Project> {
   public fields = schema.fields;

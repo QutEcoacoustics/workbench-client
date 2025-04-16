@@ -18,20 +18,29 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
-import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { NgbDate, NgbCollapse, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
   createSearchCallback,
 } from "@shared/typeahead-input/typeahead-callbacks";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
+import { FormsModule } from "@angular/forms";
+import { WIPComponent } from "@shared/wip/wip.component";
 
 @Component({
   selector: "baw-annotation-search-form",
   templateUrl: "annotation-search-form.component.html",
   styleUrl: "annotation-search-form.component.scss",
-  standalone: false
+  imports: [
+    FormsModule,
+    DateTimeFilterComponent,
+    TypeaheadInputComponent,
+    WIPComponent,
+    NgbCollapse,
+    NgbHighlight,
+  ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(

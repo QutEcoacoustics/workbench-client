@@ -13,13 +13,22 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
-import {
-  permissionsWidgetMenuItem,
-} from "@menu/widget.menus";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { StepperComponent } from "@shared/stepper/stepper.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { HarvestStagesService } from "../../services/harvest-stages.service";
 import { harvestsMenuItemActions } from "../list/list.component";
+import { TitleComponent } from "../../components/shared/title.component";
+import { ErrorComponent } from "../../screens/error/error.component";
+import { StreamUploadingComponent } from "../../screens/uploading/stream-uploading.component";
+import { BatchUploadingComponent } from "../../screens/uploading/batch-uploading.component";
+import { ScanningComponent } from "../../screens/scanning/scanning.component";
+import { MetadataExtractionComponent } from "../../screens/metadata-extraction/metadata-extraction.component";
+import { MetadataReviewComponent } from "../../screens/metadata-review/metadata-review.component";
+import { ProcessingComponent } from "../../screens/processing/processing.component";
+import { CompleteComponent } from "../../screens/complete/complete.component";
 
 const projectKey = "project";
 const harvestKey = "harvest";
@@ -27,7 +36,19 @@ const harvestKey = "harvest";
 @Component({
   selector: "baw-harvest",
   templateUrl: "./details.component.html",
-  standalone: false
+  imports: [
+    TitleComponent,
+    StepperComponent,
+    ErrorComponent,
+    LoadingComponent,
+    StreamUploadingComponent,
+    BatchUploadingComponent,
+    ScanningComponent,
+    MetadataExtractionComponent,
+    MetadataReviewComponent,
+    ProcessingComponent,
+    CompleteComponent,
+  ],
 })
 class DetailsComponent
   extends withUnsubscribe(PageComponent)

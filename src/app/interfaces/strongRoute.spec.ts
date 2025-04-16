@@ -1,7 +1,6 @@
 import { Location } from "@angular/common";
 import { Component, Input, NgZone } from "@angular/core";
-import { Params, Route, Routes } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { Params, Route, RouterModule, Routes } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { modelData } from "@test/helpers/faker";
@@ -10,7 +9,7 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 @Component({
   selector: "baw-dummy",
   template: '<a [routerLink]="link" [queryParams]="params"></a>',
-  standalone: false
+  imports: [RouterModule],
 })
 class DummyComponent {
   @Input() public link: string | string[];
@@ -18,8 +17,8 @@ class DummyComponent {
 }
 
 @Component({
-  selector: "baw-other", template: "",
-  standalone: false
+  selector: "baw-other",
+  template: "",
 })
 class OtherComponent {}
 
@@ -28,10 +27,10 @@ describe("StrongRoute", () => {
   let location: Location;
   let ngZone: NgZone;
   let spec: SpectatorRouting<DummyComponent>;
+
   const createComponent = createRoutingFactory({
     component: DummyComponent,
-    declarations: [OtherComponent],
-    imports: [RouterTestingModule],
+    imports: [OtherComponent],
     stubsEnabled: false,
     routes: [
       { path: "", component: DummyComponent },

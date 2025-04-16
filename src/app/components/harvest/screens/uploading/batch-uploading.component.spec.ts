@@ -12,7 +12,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -22,6 +21,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -31,8 +31,8 @@ describe("BatchUploadingComponent", () => {
   let defaultSite: Site;
   let stages: SpyObject<HarvestStagesService>;
   let injector: AssociationInjector;
+
   const createComponent = createRoutingFactory({
-    declarations: [MockComponent(UploadUrlComponent), ConfirmationComponent],
     component: BatchUploadingComponent,
     providers: [
       MockProvider(HarvestStagesService, {
@@ -43,7 +43,12 @@ describe("BatchUploadingComponent", () => {
         transition: (_stage: HarvestStatus) => {},
       }),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      ConfirmationComponent,
+      MockComponent(UploadUrlComponent),
+    ],
     mocks: [ToastService],
   });
 

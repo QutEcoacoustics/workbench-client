@@ -7,7 +7,16 @@ import {
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
 import { List } from "immutable";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { TitleCasePipe } from "@angular/common";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { theirProfileActions } from "../profile/their-profile.component";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { MySitesComponent } from "./my-sites.component";
 
 const accountKey = "account";
@@ -18,7 +27,17 @@ const accountKey = "account";
 @Component({
   selector: "baw-their-sites",
   templateUrl: "./sites.component.html",
-  standalone: false
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    TimeSinceComponent,
+    LoadingComponent,
+    StrongRouteDirective,
+    ErrorHandlerComponent,
+    TitleCasePipe,
+    IsUnresolvedPipe,
+  ],
 })
 class TheirSitesComponent extends MySitesComponent {
   public get account(): User {

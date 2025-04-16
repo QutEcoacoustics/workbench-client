@@ -19,16 +19,14 @@ describe("DatatablePaginationDirective", () => {
   let defaultModels: MockModel[];
   let spec: SpectatorDirective<DatatablePaginationDirective<MockModel>>;
 
-  const createDirective = createDirectiveFactory<
-    DatatablePaginationDirective<MockModel>
-  >({
-    directive: DatatablePaginationDirective,
-    declarations: [
-      DataTableColumnDirective,
+  const createDirective = createDirectiveFactory({
+    directive: DatatablePaginationDirective<MockModel>,
+    declarations: [DataTableColumnDirective],
+    imports: [
+      NgxDatatableModule,
       DatatableDefaultsDirective,
       DatatableSortKeyDirective,
     ],
-    imports: [NgxDatatableModule],
   });
 
   function generateModels(

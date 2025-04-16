@@ -8,7 +8,7 @@ xdescribe("ModelLinkComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ModelLinkComponent],
+      imports: [ModelLinkComponent],
     }).compileComponents();
   });
 

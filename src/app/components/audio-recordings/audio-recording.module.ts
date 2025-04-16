@@ -1,20 +1,12 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { audioRecordingsRoutes } from "./audio-recording.routes";
-import { DownloadTableComponent } from "./components/download-table/download-table.component";
 import { AudioRecordingsDetailsComponent } from "./pages/details/details.component";
 import { DownloadAudioRecordingsComponent } from "./pages/download/download.component";
 import { AudioRecordingsListComponent } from "./pages/list/list.component";
-import { SitesWithoutTimezonesComponent } from "./components/sites-without-timezones/sites-without-timezones.component";
 
-const internalComponents = [
-  SitesWithoutTimezonesComponent,
-  DownloadTableComponent,
-];
-
-const components = [
+const pages = [
   AudioRecordingsListComponent,
   AudioRecordingsDetailsComponent,
   DownloadAudioRecordingsComponent,
@@ -25,8 +17,7 @@ const routes = Object.values(audioRecordingsRoutes)
   .flat();
 
 @NgModule({
-  declarations: [...components, internalComponents],
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class AudioRecordingModule {}

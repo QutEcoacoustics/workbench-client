@@ -1,17 +1,14 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
-import { SharedModule } from "@shared/shared.module";
 import { VisualizeComponent } from "./pages/details/details.component";
 import { visualizeRoute } from "./visualize.routes";
 
-const components = [VisualizeComponent];
-
+const pages = [VisualizeComponent];
 const routes = visualizeRoute.compileRoutes(getRouteConfigForPage);
 
 @NgModule({
-  declarations: components,
-  imports: [SharedModule, RouterModule.forChild(routes)],
-  exports: [RouterModule, ...components],
+  imports: [RouterModule.forChild(routes), ...pages],
+  exports: [RouterModule, ...pages],
 })
 export class VisualizeModule {}

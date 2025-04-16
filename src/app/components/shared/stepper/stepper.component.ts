@@ -11,6 +11,7 @@ import {
   ViewChildren,
 } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 export interface Step {
   label: string;
@@ -45,8 +46,8 @@ export interface Step {
         }
       </div>
     </div>
-    `,
-  standalone: false
+  `,
+  imports: [FaIconComponent],
 })
 export class StepperComponent
   implements OnChanges, AfterViewChecked, OnDestroy

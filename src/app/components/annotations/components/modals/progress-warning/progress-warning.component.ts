@@ -51,7 +51,6 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
-  standalone: false
 })
 export class ProgressWarningComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;

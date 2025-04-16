@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { Statistic } from "./statistics.component";
+import { StatisticItemComponent } from "./item.component";
 
 @Component({
   selector: "baw-harvest-statistic-group",
@@ -13,7 +14,7 @@ import { Statistic } from "./statistics.component";
       }
       <ng-content></ng-content>
     </div>
-    `,
+  `,
   styles: [`
     .card {
       display: flex;
@@ -22,7 +23,7 @@ import { Statistic } from "./statistics.component";
       margin-bottom: 1rem;
     }
   `],
-  standalone: false
+  imports: [StatisticItemComponent]
 })
 export class StatisticGroupComponent {
   @Input() public statisticGroup: Statistic[];

@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
@@ -59,7 +58,7 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     }
   `,
-  standalone: false
+  imports: [MockBawApiModule]
 })
 class MockComponent {
   @Input() public model: MockModel;
@@ -74,13 +73,12 @@ describe("Association Decorators Loading In Components", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MockComponent],
-      imports: [RouterTestingModule, MockBawApiModule],
-      providers: [
+    imports: [MockBawApiModule, MockComponent],
+    providers: [
         MockStandardApiService,
         { provide: MOCK.token, useExisting: MockStandardApiService },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);

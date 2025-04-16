@@ -1,6 +1,5 @@
 import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { MockComponent } from "ng-mocks";
 import { EventSummaryReport } from "@models/EventSummaryReport";
@@ -29,7 +28,7 @@ describe("ViewEventReportComponent", () => {
 
   const createComponent = createRoutingFactory({
     declarations: [mockSiteMap],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [MockBawApiModule],
     component: ViewEventReportComponent,
   });
 

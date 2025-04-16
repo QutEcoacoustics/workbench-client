@@ -1,6 +1,5 @@
 import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { ActivatedRoute, Params } from "@angular/router";
 import { Project } from "@models/Project";
@@ -14,6 +13,7 @@ import { DateTime, Duration } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
 import {
   BucketSize,
   Chart,
@@ -29,8 +29,12 @@ describe("NewEventReportComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: NewEventReportComponent,
-    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [
+      MockBawApiModule,
+      IconsModule,
+      DateTimeFilterComponent,
+      TypeaheadInputComponent,
+    ],
   });
 
   function setup(): void {

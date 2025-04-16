@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { User } from "@models/User";
-import { Placement } from "@ng-bootstrap/ng-bootstrap";
+import { Placement, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UrlDirective } from "@directives/url/url.directive";
+import { LoadingComponent } from "../loading/loading.component";
+import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
   selector: "baw-user-link",
@@ -28,7 +32,13 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [
+    LoadingComponent,
+    UrlDirective,
+    FaIconComponent,
+    NgbTooltip,
+    IsUnresolvedPipe,
+  ],
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card

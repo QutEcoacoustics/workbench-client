@@ -1,12 +1,5 @@
-import {
-  APP_ID,
-  ApplicationRef,
-  DoBootstrap,
-  NgModule,
-} from "@angular/core";
+import { APP_ID, ApplicationRef, DoBootstrap, NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { AudioRecordingModule } from "@components/audio-recordings/audio-recording.module";
 import { ReportsModule } from "@components/reports/reports.module";
@@ -16,13 +9,10 @@ import { LibraryModule } from "@components/library/library.module";
 import { RegionsModule } from "@components/regions/regions.module";
 import { VisualizeModule } from "@components/visualize/visualize.module";
 import { GuardModule } from "@guards/guards.module";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { ConfigModule } from "@services/config/config.module";
 import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
-import { formlyConfig } from "@shared/formly/custom-inputs.module";
 import { environment } from "src/environments/environment";
 import { TitleStrategy } from "@angular/router";
 import { AnnotationsImportModule } from "@components/import-annotations/import-annotations.module";
@@ -30,7 +20,10 @@ import { WebsiteStatusModule } from "@components/website-status/website-status.m
 import { AnnotationModule } from "@components/annotations/annotation.module";
 import { ScriptsModule } from "@components/scripts/scripts.module";
 import { AnalysisModule } from "@components/audio-analysis/analysis-jobs.module";
-import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
+import { DateValueAccessorModule } from "angular-date-value-accessor";
+import { MenuModule } from "@menu/menu.module";
+import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
+import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent, PageTitleStrategy } from "./app.component";
 import { AboutModule } from "./components/about/about.module";
@@ -47,20 +40,12 @@ import { ProjectsModule } from "./components/projects/projects.module";
 import { ReportProblemsModule } from "./components/report-problem/report-problem.module";
 import { SecurityModule } from "./components/security/security.module";
 import { SendAudioModule } from "./components/send-audio/send-audio.module";
-import { SharedModule } from "./components/shared/shared.module";
 import { SitesModule } from "./components/sites/sites.module";
 import { StatisticsModule } from "./components/statistics/statistics.module";
 
-export const appLibraryImports = [
-  BrowserModule,
-  BrowserAnimationsModule,
-  ReactiveFormsModule,
-  FormlyModule.forRoot(formlyConfig),
-  FormlyBootstrapModule,
-];
+export const appLibraryImports = [ReactiveFormsModule, CustomInputsModule];
 
 export const appImports = [
-  SharedModule,
   AboutModule,
   AdminModule,
   AnalysisModule,
@@ -86,8 +71,8 @@ export const appImports = [
   WebsiteStatusModule,
   VisualizeModule,
 
-  // standalone components
-  ToastProviderComponent,
+  DateValueAccessorModule,
+  MenuModule,
 
   // these last two must be last!
   HomeModule,
@@ -95,10 +80,10 @@ export const appImports = [
 ];
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     // Timeout API requests after set period
     BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
+    BrowserModule,
     AppRoutingModule,
     ConfigModule,
     BawApiModule,
@@ -108,6 +93,7 @@ export const appImports = [
     GuardModule,
     ...appLibraryImports,
     ...appImports,
+    AppComponent,
   ],
   providers: [
     { provide: TitleStrategy, useClass: PageTitleStrategy },

@@ -11,10 +11,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import {
-  NgbTypeahead,
-  NgbTypeaheadSelectItemEvent,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbTypeahead, NgbTypeaheadSelectItemEvent, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import {
   debounceTime,
@@ -27,6 +24,9 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { FormsModule } from "@angular/forms";
+import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-harvest-site-selector",
@@ -77,7 +77,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       width: 100%;
     }
   `],
-  standalone: false
+  imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;

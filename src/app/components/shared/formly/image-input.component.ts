@@ -1,7 +1,9 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "./helper";
+import { FileValueAccessorDirective } from "./file-input.directive";
 
 /**
  * Image Input
@@ -41,7 +43,12 @@ import { asFormControl } from "./helper";
       </div>
     </div>
   `,
-  standalone: false
+  imports: [
+    FileValueAccessorDirective,
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule,
+  ],
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")

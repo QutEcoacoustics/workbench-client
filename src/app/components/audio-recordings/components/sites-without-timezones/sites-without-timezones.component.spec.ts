@@ -8,7 +8,7 @@ xdescribe("SitesWithoutTimezonesComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SitesWithoutTimezonesComponent],
+      imports: [SitesWithoutTimezonesComponent],
     }).compileComponents();
   });
 

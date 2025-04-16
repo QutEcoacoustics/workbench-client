@@ -12,7 +12,7 @@ import {
   IRegisterDetails,
   RegisterDetails,
 } from "@models/data/RegisterDetails";
-import { RecaptchaState } from "@shared/form/form.component";
+import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
@@ -34,7 +34,7 @@ import schema from "./register.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class RegisterComponent
   extends FormTemplate<RegisterDetails>

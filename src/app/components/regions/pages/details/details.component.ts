@@ -28,12 +28,16 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { SiteMapComponent } from "../../../projects/components/site-map/site-map.component";
+import { SiteCardComponent } from "../../../projects/components/site-card/site-card.component";
 
 export const regionMenuItemActions = [
   deleteRegionModal,
@@ -114,7 +118,13 @@ const regionKey = "region";
       }
     }
   `,
-  standalone: false,
+  imports: [
+      AuthenticatedImageDirective,
+      DebounceInputComponent,
+      SiteMapComponent,
+      SiteCardComponent,
+      NgbPagination,
+  ],
 })
 class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public defaultDescription = "<i>No description found</i>";

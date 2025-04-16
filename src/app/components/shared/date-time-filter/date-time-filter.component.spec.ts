@@ -3,10 +3,8 @@ import {
   createRoutingFactory,
   mockProvider,
 } from "@ngneat/spectator";
-import { NgbCollapseModule } from "@ng-bootstrap/ng-bootstrap";
 import { CacheModule } from "@services/cache/cache.module";
 import { MockConfigModule } from "@services/config/configMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
 import { Project } from "@models/Project";
@@ -15,6 +13,7 @@ import { TimeComponent } from "@shared/input/time/time.component";
 import { BehaviorSubject } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
+import { IconsModule } from "@shared/icons/icons.module";
 import { DateTimeFilterComponent } from "./date-time-filter.component";
 
 describe("AudioRecordingsFilter", () => {
@@ -24,8 +23,12 @@ describe("AudioRecordingsFilter", () => {
 
   const createComponent = createRoutingFactory({
     component: DateTimeFilterComponent,
-    imports: [SharedModule, NgbCollapseModule, MockConfigModule, CacheModule],
-    declarations: [TimeComponent],
+    imports: [
+      MockConfigModule,
+      IconsModule,
+      CacheModule,
+      TimeComponent,
+    ],
     providers: [mockProvider(ToastService)],
   });
 

@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Errorable } from "@helpers/advancedTypes";
@@ -6,8 +5,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -24,8 +22,9 @@ describe("SiteCardComponent", () => {
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
   let spec: Spectator<SiteCardComponent>;
-  const createComponent = createComponentFactory({
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+
+  const createComponent = createRoutingFactory({
+    imports: [MockBawApiModule],
     component: SiteCardComponent,
   });
 

@@ -30,12 +30,16 @@ import {
   filterModel,
   contains,
 } from "@helpers/filters/filters";
-import { DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { DateTime } from "luxon";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
-import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import { TypeaheadSearchCallback , TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { StandardApi } from "@baw-api/api-common";
+import { FormsModule } from "@angular/forms";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { TitleCasePipe } from "@angular/common";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   BucketSize,
   EventSummaryReportParameters,
@@ -47,8 +51,8 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-new-summary-report",
-    templateUrl: "./new.component.html",
-    standalone: false
+  templateUrl: "./new.component.html",
+  imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

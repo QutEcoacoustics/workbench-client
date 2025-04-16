@@ -16,6 +16,11 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { forkJoin } from "rxjs";
 import { mergeMap, takeUntil } from "rxjs/operators";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { FormComponent } from "@shared/form/form.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -28,7 +33,13 @@ const projectKey = "project";
   selector: "baw-assign",
   templateUrl: "./assign.component.html",
   styleUrls: ["./assign.component.scss"],
-  standalone: false
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FormComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AssignComponent
   extends PagedTableTemplate<TableRow, Site>
@@ -97,8 +108,7 @@ class AssignComponent
 
     // this is not related to baw-server/issues/502 because baw-api.service always emits the model kind
     // in the request body. Meaning that project_ids is retained in the request body.
-    const createFilter = (site: Site) =>
-      this.api.update(site);
+    const createFilter = (site: Site) => this.api.update(site);
 
     // Workaround required because API ignores changes to project ids
     forkJoin<Site[]>([

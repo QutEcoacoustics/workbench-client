@@ -1,18 +1,20 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import { MockModelWithDecorators as MockModel } from "@models/AssociationLoadingInComponents.spec";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
-import { CheckboxModule } from "@shared/checkbox/checkbox.module";
-import { LoadingModule } from "@shared/loading/loading.module";
-import { interceptShowApiRequest, nStepObservable, viewports } from "@test/helpers/general";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
+import {
+  interceptShowApiRequest,
+  nStepObservable,
+  viewports,
+} from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { DetailViewComponent } from "./detail-view.component";
 import { ModelLinkComponent } from "./model-link/model-link.component";
 import { RenderFieldComponent } from "./render-field/render-field.component";
@@ -22,17 +24,14 @@ describe("DetailViewComponent", () => {
   let api: MockStandardApiService;
   let spec: Spectator<DetailViewComponent>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: DetailViewComponent,
-    declarations: [RenderFieldComponent, ModelLinkComponent],
     imports: [
-      CheckboxModule,
-      MockDirectivesModule,
-      LoadingModule,
       MockBawApiModule,
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
+      CheckboxComponent,
+      LoadingComponent,
+      RenderFieldComponent,
+      ModelLinkComponent,
     ],
     providers: [
       MockStandardApiService,
@@ -212,7 +211,7 @@ describe("DetailViewComponent", () => {
           api as any,
           injector,
           (id: Id) => mockApiResponses.get(id),
-          AssociatedModel,
+          AssociatedModel
         );
 
         setupComponent("childModels");

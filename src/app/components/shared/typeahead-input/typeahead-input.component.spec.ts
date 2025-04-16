@@ -3,12 +3,13 @@ import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { IconsModule } from "@shared/icons/icons.module";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {
@@ -18,7 +19,7 @@ describe("TypeaheadInputComponent", () => {
 
   const createComponent = createHostFactory({
     component: TypeaheadInputComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule, NgbHighlight],
   });
 
   function setup(): void {
@@ -45,13 +46,11 @@ describe("TypeaheadInputComponent", () => {
     spectator.detectChanges();
   }
 
-  const inputBox = (): HTMLInputElement =>
-    spectator.query<HTMLInputElement>("input");
-  const itemPills = (): HTMLSpanElement[] =>
-    spectator.queryAll<HTMLSpanElement>("span");
-  const dropdownOptions = (): HTMLButtonElement[] =>
+  const inputBox = () => spectator.query<HTMLInputElement>("input");
+  const itemPills = () => spectator.queryAll<HTMLSpanElement>("span");
+  const dropdownOptions = () =>
     spectator.queryAll<HTMLButtonElement>(".dropdown-item");
-  const selectedDropdownOption = (): HTMLButtonElement =>
+  const selectedDropdownOption = () =>
     spectator.query<HTMLButtonElement>("button.dropdown-item.active");
 
   function typeInInput(text: string): void {

@@ -11,6 +11,7 @@ import {
   defaultSuccessMsg,
 } from "@helpers/formTemplate/formTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { annotationMenuActions } from "../details/details.component";
 import schema from "../audio-event-import.schema.json";
 import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
@@ -31,7 +32,7 @@ const audioEventImportKey = "audioEventImport";
       ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent]
 })
 class EditAnnotationsComponent
   extends FormTemplate<AudioEventImport>

@@ -8,6 +8,8 @@ import { PageComponent } from "@helpers/page/pageComponent";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { ItemsComponent } from "@shared/items/items/items.component";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   websiteStatusCategory,
   websiteStatusMenuItem,
@@ -25,7 +27,7 @@ import {
       investigate.
     </p>
   `,
-  standalone: false
+  imports: [ItemsComponent, StrongRouteDirective],
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(

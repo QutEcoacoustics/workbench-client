@@ -1,11 +1,10 @@
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
@@ -27,9 +26,13 @@ describe("AllUploadsComponent", () => {
   let fakeHarvestApi: SpyObject<ShallowHarvestsService>;
 
   const createComponent = createRoutingFactory({
-    declarations: [LoadingComponent, ConfirmationComponent, UserLinkComponent],
     component: AllUploadsComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: [
+      MockBawApiModule,
+      LoadingComponent,
+      ConfirmationComponent,
+      UserLinkComponent,
+    ],
     mocks: [ToastService],
   });
 
@@ -66,7 +69,10 @@ describe("AllUploadsComponent", () => {
 
   beforeEach(() => setup());
 
-  assertPageInfo(AllUploadsComponent, ["Recording Uploads", "All Recording Uploads"]);
+  assertPageInfo(AllUploadsComponent, [
+    "Recording Uploads",
+    "All Recording Uploads",
+  ]);
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AllUploadsComponent);
@@ -106,7 +112,7 @@ describe("AllUploadsComponent", () => {
             "status",
           ],
         },
-      }),
+      })
     );
   });
 });

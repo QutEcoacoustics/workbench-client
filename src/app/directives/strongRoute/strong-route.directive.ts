@@ -15,9 +15,8 @@ import { SharedActivatedRouteService } from "@services/shared-activated-route/sh
 import { map, takeUntil, tap } from "rxjs/operators";
 
 @Directive({
-    // eslint-disable-next-line @angular-eslint/directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRoute]",
-  standalone: false
 })
 export class StrongRouteDirective
   extends withUnsubscribe(RouterLink)
