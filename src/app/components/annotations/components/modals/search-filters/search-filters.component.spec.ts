@@ -1,21 +1,37 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { IconsModule } from "@shared/icons/icons.module";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
   let spectator: Spectator<SearchFiltersModalComponent>;
+  let injector: AssociationInjector;
   let successSpy: jasmine.Spy;
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
-    imports: [MockBawApiModule],
+    imports: [MockBawApiModule, IconsModule],
   });
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
 
-    successSpy = spectator.component.successCallback = jasmine.createSpy("successCallback");
+    injector = spectator.inject(ASSOCIATION_INJECTOR);
+
+    successSpy = spectator.component.successCallback =
+      jasmine.createSpy("successCallback");
     successSpy.and.stub();
+
+    const searchParameters = new AnnotationSearchParameters(
+      generateAnnotationSearchUrlParameters(),
+      injector,
+    );
+
+    spectator.setInput("formValue", searchParameters);
 
     spectator.detectChanges();
   }
