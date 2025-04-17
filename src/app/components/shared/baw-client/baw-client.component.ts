@@ -14,7 +14,6 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ConfigService } from "@services/config/config.service";
 import { filter, takeUntil } from "rxjs/operators";
@@ -84,7 +83,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data as IPageInfo);
+    const models = retrieveResolvers(data);
 
     // Don't load client on SSR or if error occurs
     if (!hasResolvedSuccessfully(models) || this.isSsr) {

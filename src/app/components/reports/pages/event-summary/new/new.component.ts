@@ -83,7 +83,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
 
     // each report is mounted/scoped from at least the project level
     this.project = models[projectKey] as Project;

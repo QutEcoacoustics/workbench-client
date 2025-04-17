@@ -94,7 +94,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

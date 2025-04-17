@@ -7,7 +7,6 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 import { ActivatedRoute } from "@angular/router";
 import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
@@ -36,7 +35,7 @@ class AnalysisJobComponent
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;
-    const models = retrieveResolvers(data as IPageInfo);
+    const models = retrieveResolvers(data);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

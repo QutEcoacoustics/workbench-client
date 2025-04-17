@@ -6,7 +6,6 @@ import {
 } from "@baw-api/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Script } from "@models/Script";
@@ -45,7 +44,7 @@ class AdminScriptComponent
   public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

@@ -19,7 +19,6 @@ import { newPointMenuItem } from "@components/sites/points.menus";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
@@ -135,7 +134,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
     if (!hasResolvedSuccessfully(models)) {
       return;
     }

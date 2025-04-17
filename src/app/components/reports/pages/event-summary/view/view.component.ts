@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers, ResolvedModelList } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   reportCategories,
@@ -89,9 +89,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
-    const models: ResolvedModelList = retrieveResolvers(
-      this.route.snapshot.data as IPageInfo
-    );
+    const models = retrieveResolvers(this.route.snapshot.data);
 
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;

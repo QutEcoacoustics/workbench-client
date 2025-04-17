@@ -35,7 +35,6 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -184,7 +183,7 @@ class AddAnnotationsComponent
   }
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
 
     if (!hasResolvedSuccessfully(models)) {
       this.failure = true;

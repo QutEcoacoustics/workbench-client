@@ -106,7 +106,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     }
 
     // Retrieve models from router
-    const data = this.route.snapshot.data as IPageInfo;
+    const data: IPageInfo = this.route.snapshot.data;
 
     // Retrieve models and handle potential failure
     const models = retrieveResolvers(data);

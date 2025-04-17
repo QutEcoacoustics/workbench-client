@@ -23,7 +23,6 @@ import { newSiteMenuItem } from "@components/sites/sites.menus";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import {
   allowsOriginalDownloadWidgetMenuItem,
@@ -189,7 +188,7 @@ class DetailsComponent
   }
 
   public ngOnInit() {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
     if (!hasResolvedSuccessfully(models)) {
       return;
     }

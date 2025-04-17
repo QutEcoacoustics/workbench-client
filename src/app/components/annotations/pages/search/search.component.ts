@@ -91,7 +91,7 @@ class AnnotationSearchComponent
   protected verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
-    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    const models = retrieveResolvers(this.route.snapshot.data);
     this.searchParameters ??= models[
       annotationsKey
     ] as AnnotationSearchParameters;
