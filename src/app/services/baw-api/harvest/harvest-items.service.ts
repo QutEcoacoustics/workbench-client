@@ -10,7 +10,7 @@ import {
   ReadonlyApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { ListResolver } from "@baw-api/resolver-common";
+import { ListResolver } from "@baw-api/resolvers/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Harvest } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";

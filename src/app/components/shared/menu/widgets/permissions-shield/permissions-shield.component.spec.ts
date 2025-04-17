@@ -1,6 +1,6 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { PermissionLevel } from "@interfaces/apiInterfaces";

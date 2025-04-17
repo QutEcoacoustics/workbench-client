@@ -38,7 +38,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ErrorCardStyle } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";

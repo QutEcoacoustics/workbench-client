@@ -9,7 +9,7 @@ import {
   option,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { Resolvers } from "@baw-api/resolver-common";
+import { Resolvers } from "@baw-api/resolvers/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { Observable } from "rxjs";

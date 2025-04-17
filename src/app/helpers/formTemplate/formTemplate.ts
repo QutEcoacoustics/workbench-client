@@ -4,7 +4,7 @@ import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { withFormCheck } from "@guards/form/form.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";

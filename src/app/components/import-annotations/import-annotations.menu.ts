@@ -2,7 +2,7 @@ import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { defaultEditIcon, isLoggedInPredicate } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { AudioEventImport } from "@models/AudioEventImport";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
 import {
   addAnnotationImportRoute,

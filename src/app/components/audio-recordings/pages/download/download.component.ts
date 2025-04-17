@@ -6,7 +6,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import {

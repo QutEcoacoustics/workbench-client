@@ -17,7 +17,7 @@ import {
   ReadonlyApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const audioRecordingId: IdParamOptional<AudioRecording> = id;
 const fileExtension = param;

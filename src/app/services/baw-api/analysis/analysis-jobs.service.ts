@@ -12,7 +12,7 @@ import {
   ReadAndUpdateApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}${option}`;

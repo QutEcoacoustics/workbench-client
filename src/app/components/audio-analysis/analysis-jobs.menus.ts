@@ -1,7 +1,7 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { AnalysisJob } from "@models/AnalysisJob";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
 import { analysesRoute, analysisJobRoute } from "./analysis-jobs.routes";
 

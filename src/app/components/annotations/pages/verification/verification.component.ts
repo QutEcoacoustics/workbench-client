@@ -11,7 +11,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";

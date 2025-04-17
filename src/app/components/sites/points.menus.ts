@@ -1,4 +1,4 @@
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";

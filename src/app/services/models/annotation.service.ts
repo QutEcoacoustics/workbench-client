@@ -7,7 +7,7 @@ import {
   BawProvider,
   BawResolver,
   ResolvedModel,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";

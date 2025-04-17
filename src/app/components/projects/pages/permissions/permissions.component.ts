@@ -4,7 +4,7 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { PermissionsService } from "@baw-api/permissions/permissions.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { theirProfileMenuItem } from "@components/profile/profile.menus";
 import {
   editProjectPermissionsMenuItem,

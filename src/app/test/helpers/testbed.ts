@@ -7,7 +7,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { Data, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";

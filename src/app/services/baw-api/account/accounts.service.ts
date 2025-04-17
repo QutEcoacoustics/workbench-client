@@ -18,7 +18,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const userId: IdParamOptional<User> = id;
 const endpoint = stringTemplate`/user_accounts/${userId}${option}`;

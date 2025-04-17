@@ -7,7 +7,7 @@ import {
   RouterLink,
   UrlTree,
 } from "@angular/router";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { isIPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { RouteParams, StrongRoute } from "@interfaces/strongRoute";

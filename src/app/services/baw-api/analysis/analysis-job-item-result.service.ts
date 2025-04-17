@@ -15,7 +15,7 @@ import { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Observable } from "rxjs";
 import { AudioRecording } from "@models/AudioRecording";
-import { Resolvers } from "@baw-api/resolver-common";
+import { Resolvers } from "@baw-api/resolvers/resolver-common";
 
 const analysisJobId: IdParamOptional<AnalysisJob> = id;
 const audioRecordingId: IdParamOptional<AudioRecording> = id;

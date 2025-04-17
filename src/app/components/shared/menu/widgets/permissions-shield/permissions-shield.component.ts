@@ -3,7 +3,7 @@ import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";

@@ -13,7 +13,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const bookmarkId: IdParamOptional<Bookmark> = id;
 const endpoint = stringTemplate`/bookmarks/${bookmarkId}${option}`;

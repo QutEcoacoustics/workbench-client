@@ -14,7 +14,7 @@ import {
   option,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const datasetId: IdParam<Dataset> = id;
 const datasetItemId: IdParamOptional<DatasetItem> = id;

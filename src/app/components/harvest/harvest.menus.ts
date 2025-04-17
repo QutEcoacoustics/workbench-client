@@ -1,5 +1,5 @@
 import { RouterStateSnapshot } from "@angular/router";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";

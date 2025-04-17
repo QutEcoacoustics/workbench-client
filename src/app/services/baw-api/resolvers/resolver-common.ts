@@ -24,8 +24,8 @@ import {
   ApiShow,
   ApiUpdate,
   IdOr,
-} from "./api-common";
-import { BawApiService, unknownErrorCode } from "./baw-api.service";
+} from "../api-common";
+import { BawApiService, unknownErrorCode } from "../baw-api.service";
 
 /**
  * Baw Resolver Wrapper Class

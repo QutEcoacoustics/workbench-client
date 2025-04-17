@@ -1,5 +1,5 @@
 import { RouterStateSnapshot } from "@angular/router";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { Category, menuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 import { Project } from "@models/Project";
 import {

@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { Params, Route, Routes } from "@angular/router";
-import { ResolvedModelList } from "@baw-api/resolver-common";
+import { ResolvedModelList } from "@baw-api/resolvers/resolver-common";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";

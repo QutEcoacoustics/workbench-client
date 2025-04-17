@@ -14,7 +14,7 @@ import {
   ReadonlyApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const analysisJobId: IdParam<AnalysisJob> = id;
 const analysisJobItemId: IdParamOptional<AnalysisJobItem> = id;

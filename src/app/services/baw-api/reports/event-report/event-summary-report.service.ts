@@ -13,7 +13,7 @@ import {
   BawProvider,
   BawResolver,
   ResolvedModel,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import {

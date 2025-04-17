@@ -14,7 +14,7 @@ import {
   regionResolvers,
   ShallowRegionsService,
 } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
 import {

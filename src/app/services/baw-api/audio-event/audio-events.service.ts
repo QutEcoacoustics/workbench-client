@@ -17,7 +17,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParamOptional<AudioEvent> = id;

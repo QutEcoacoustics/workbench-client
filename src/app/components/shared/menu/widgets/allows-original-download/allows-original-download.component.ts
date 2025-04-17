@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { hasRequiredAccessLevelOrHigher } from "@interfaces/apiInterfaces";
 import { WidgetComponent } from "@menu/widget.component";

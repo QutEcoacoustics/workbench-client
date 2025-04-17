@@ -6,7 +6,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { SecurityService } from "@baw-api/security/security.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";

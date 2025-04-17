@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel, getUnknownViewUrl } from "@models/AbstractModel";
 import {

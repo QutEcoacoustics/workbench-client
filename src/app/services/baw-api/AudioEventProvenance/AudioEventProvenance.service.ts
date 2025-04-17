@@ -10,7 +10,7 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { Observable, of } from "rxjs";
-import { Resolvers } from "@baw-api/resolver-common";
+import { Resolvers } from "@baw-api/resolvers/resolver-common";
 
 const audioEventProvenanceId: IdParamOptional<AudioEventProvenance> = id;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

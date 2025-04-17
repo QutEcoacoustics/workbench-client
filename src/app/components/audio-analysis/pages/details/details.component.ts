@@ -6,7 +6,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { List } from "immutable";
 import { ActivatedRoute } from "@angular/router";
-import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolver-common";
+import { retrieveResolvers, hasResolvedSuccessfully } from "@baw-api/resolvers/resolver-common";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";

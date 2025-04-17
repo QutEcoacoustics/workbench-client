@@ -4,7 +4,7 @@ import {
   hasResolvedSuccessfully,
   retrieveResolvedModel,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";

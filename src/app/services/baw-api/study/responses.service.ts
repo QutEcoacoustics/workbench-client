@@ -14,7 +14,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const studyId: IdParam<Study> = id;
 const responseId: IdParamOptional<Response> = id;

@@ -1,4 +1,4 @@
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";

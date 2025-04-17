@@ -6,7 +6,7 @@ import {
   hasResolvedSuccessfully,
   ResolvedModelList,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AbstractModel } from "@models/AbstractModel";
 import {

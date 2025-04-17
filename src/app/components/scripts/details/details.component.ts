@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { scriptResolvers } from "@baw-api/script/scripts.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";

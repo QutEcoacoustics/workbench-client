@@ -16,7 +16,7 @@ import {
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";

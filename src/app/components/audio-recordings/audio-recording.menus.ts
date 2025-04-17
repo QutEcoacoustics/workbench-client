@@ -1,6 +1,6 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { audioRecordingOriginalEndpoint } from "@baw-api/audio-recording/audio-recordings.service";
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { pointMenuItem } from "@components/sites/points.menus";

@@ -1,5 +1,5 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";

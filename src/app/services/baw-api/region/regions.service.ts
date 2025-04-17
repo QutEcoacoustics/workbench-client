@@ -14,7 +14,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const projectId: IdParam<Project> = id;
 const regionId: IdParamOptional<Region> = id;

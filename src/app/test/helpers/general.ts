@@ -1,6 +1,6 @@
 import { ApiFilter, ApiShow } from "@baw-api/api-common";
 import { Filters } from "@baw-api/baw-api.service";
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { homeMenuItem } from "@components/home/home.menus";
 import { Errorable } from "@helpers/advancedTypes";
 import {

@@ -6,7 +6,7 @@ import { RegionsService } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { harvestsMenuItem } from "@components/harvest/harvest.menus";

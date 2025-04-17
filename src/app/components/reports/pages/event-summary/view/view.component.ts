@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   reportCategories,

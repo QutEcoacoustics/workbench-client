@@ -3,7 +3,7 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { environment } from "src/environments/environment";
 import { Project } from "./models/Project";
 import { User } from "./models/User";
-import { retrieveResolvedModel } from "./services/baw-api/resolver-common";
+import { retrieveResolvedModel } from "./services/baw-api/resolvers/resolver-common";
 
 export const defaultAudioIcon: IconProp = ["fas", "file-audio"];
 export const defaultDeleteIcon: IconProp = ["fas", "trash"];

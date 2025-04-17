@@ -9,7 +9,7 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { IPageInfo } from "@helpers/page/pageInfo";
-import { retrieveResolvers } from "@baw-api/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";

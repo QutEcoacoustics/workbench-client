@@ -4,22 +4,20 @@ import { MonoTuple } from "@helpers/advancedTypes";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { map } from "rxjs";
-import { ApiFilter } from "./api-common";
-import { Filters } from "./baw-api.service";
-import { BawResolver, ResolvedModel } from "./resolver-common";
-
+import { ApiFilter } from "../api-common";
+import { Filters } from "../baw-api.service";
+import { BawResolver, ResolvedModel } from "../resolvers/resolver-common";
 
 /**
  * Default Resolver Class.
- * This handles generating the resolver required for fetching a the first model returned by a filter query.
+ * This handles generating the resolver required for fetching a the first model
+ * returned by a filter query.
  */
 export class ShowDefaultResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiFilter<Model, Params> = ApiFilter<
-    Model, Params
-  >
-  > extends BawResolver<Model, Model, Params, Service, { showDefault: string; }> {
+  Service extends ApiFilter<Model, Params> = ApiFilter<Model, Params>
+> extends BawResolver<Model, Model, Params, Service, { showDefault: string }> {
   public constructor(
     deps: Type<Service>[],
     uniqueId?: string,
@@ -31,13 +29,15 @@ export class ShowDefaultResolver<
   public createProviders(
     name: string,
     resolver: Type<{
-    resolve: ResolveFn<ResolvedModel<Model>>;
-}>,
+      resolve: ResolveFn<ResolvedModel<Model>>;
+    }>,
     deps: Type<Service>[]
   ) {
     return {
       showDefault: name + "DefaultShowResolver",
-      providers: [{ provide: name + "DefaultShowResolver", useClass: resolver, deps }],
+      providers: [
+        { provide: name + "DefaultShowResolver", useClass: resolver, deps },
+      ],
     };
   }
 

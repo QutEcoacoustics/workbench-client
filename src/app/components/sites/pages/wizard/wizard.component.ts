@@ -4,7 +4,7 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { projectMenuItemActions } from "@components/projects/pages/details/details.component";
 import { projectCategory } from "@components/projects/projects.menus";
 import { PageComponent } from "@helpers/page/pageComponent";

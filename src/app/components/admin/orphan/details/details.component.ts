@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
 import baseSchema from "@components/sites/site.base.json";
 import extendedSchema from "@components/sites/site.extended.json";

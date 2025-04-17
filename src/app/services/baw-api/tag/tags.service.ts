@@ -22,7 +22,7 @@ import {
   BawResolver,
   ResolvedModel,
   Resolvers,
-} from "../resolver-common";
+} from "../resolvers/resolver-common";
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;

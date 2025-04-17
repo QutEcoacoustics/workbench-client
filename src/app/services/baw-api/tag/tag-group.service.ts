@@ -12,7 +12,7 @@ import {
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const tagGroupId: IdParamOptional<TagGroup> = id;
 const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;

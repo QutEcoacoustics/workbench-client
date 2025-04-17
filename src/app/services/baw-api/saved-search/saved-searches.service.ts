@@ -12,7 +12,7 @@ import {
   option,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
-import { Resolvers } from "../resolver-common";
+import { Resolvers } from "../resolvers/resolver-common";
 
 const savedSearchId: IdParamOptional<SavedSearch> = id;
 const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;

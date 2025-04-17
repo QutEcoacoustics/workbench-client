@@ -14,7 +14,7 @@ import {
   option,
   param,
 } from "../api-common";
-import { ShowResolver } from "../resolver-common";
+import { ShowResolver } from "../resolvers/resolver-common";
 
 const confirmationParam = "confirmation/" as const;
 const passwordParam = "password/" as const;

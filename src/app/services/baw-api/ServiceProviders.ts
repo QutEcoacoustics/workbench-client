@@ -73,7 +73,7 @@ import {
 } from "./region/regions.service";
 import { ContactUsService } from "./report/contact-us.service";
 import { ReportProblemService } from "./report/report-problem.service";
-import { BawProvider } from "./resolver-common";
+import { BawProvider } from "./resolvers/resolver-common";
 import {
   SavedSearchesService,
   savedSearchResolvers,

@@ -1,4 +1,4 @@
-import { ResolvedModel } from "@baw-api/resolver-common";
+import { ResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { SiteComponent } from "@components/sites/components/site/site.component";
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";

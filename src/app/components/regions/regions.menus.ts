@@ -1,4 +1,4 @@
-import { retrieveResolvedModel } from "@baw-api/resolver-common";
+import { retrieveResolvedModel } from "@baw-api/resolvers/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
