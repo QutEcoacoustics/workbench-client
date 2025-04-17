@@ -62,7 +62,7 @@ export class PermissionsShieldComponent
   public ngOnInit(): void {
     this.sharedRoute.pageInfo
       .pipe(
-        map((page): ResolvedModelList => retrieveResolvers(page)),
+        map((page) => retrieveResolvers(page)),
         takeUntil(this.unsubscribe)
       )
       .subscribe((models): void => {
@@ -90,7 +90,7 @@ export class PermissionsShieldComponent
       region: 2,
       project: 3,
       anyModel: 4,
-    };
+    } as const satisfies Record<string, number>;
 
     let outputModel: AbstractModel;
     let priority: number;

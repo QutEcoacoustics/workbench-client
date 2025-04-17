@@ -5,9 +5,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import {
   hasResolvedSuccessfully,
-  ResolvedModelList,
   retrieveResolvers,
-} from "@baw-api/resolver-common";
+} from "@baw-api/resolvers/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   audioRecordingMenuItems,
@@ -38,12 +37,16 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recording",
   templateUrl: "./details.component.html",
-  standalone: false
+  standalone: false,
 })
 class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
-  public failure: boolean;
-  private models: ResolvedModelList;
   public fields = schema.fields;
+  public failure: boolean;
+
+  public recording?: AudioRecording;
+  public project?: Project;
+  public region?: Region;
+  public site?: Site;
 
   public constructor(private route: ActivatedRoute) {
     super();
@@ -56,23 +59,10 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
       return;
     }
 
-    this.models = models;
-  }
-
-  public get recording(): AudioRecording | undefined {
-    return this.models[audioRecordingKey] as AudioRecording;
-  }
-
-  public get project(): Project | undefined {
-    return this.models[projectKey] as Project;
-  }
-
-  public get region(): Region | undefined {
-    return this.models[regionKey] as Region;
-  }
-
-  public get site(): Site | undefined {
-    return this.models[siteKey] as Site;
+    this.recording = this.models[audioRecordingKey] as AudioRecording;
+    this.project = this.models[projectKey] as Project;
+    this.region = this.models[regionKey] as Region;
+    this.site = this.models[siteKey] as Site;
   }
 }
 
@@ -83,7 +73,10 @@ function getPageInfo(
     pageRoute: audioRecordingMenuItems.details[subRoute],
     category: audioRecordingsCategory,
     menus: {
-      actions: List([downloadAudioRecordingMenuItem, downloadAudioRecordingAnalysesMenuItem]),
+      actions: List([
+        downloadAudioRecordingMenuItem,
+        downloadAudioRecordingAnalysesMenuItem,
+      ]),
       actionWidgets: List([
         new WidgetMenuItem(WebsiteStatusWarningComponent, undefined, {
           message: `

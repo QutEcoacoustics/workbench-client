@@ -6,7 +6,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { ResolvedModelList, retrieveResolvers } from "@baw-api/resolvers/resolver-common";
+import { retrieveResolvers } from "@baw-api/resolvers/resolver-common";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import {
@@ -35,7 +35,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-download",
   templateUrl: "download.component.html",
-  standalone: false
+  standalone: false,
 })
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   @ViewChild(NgForm) public form: NgForm;
@@ -45,9 +45,12 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
 
   public contactUs = contactUsMenuItem;
   public href = "";
-  public models: ResolvedModelList;
   public profile = myAccountMenuItem;
   public hoveredDate: NgbDate;
+
+  public project?: Project;
+  public region?: Region;
+  public site?: Site;
 
   public errors: {
     todBoundaryError?: boolean;
@@ -62,25 +65,17 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.models = retrieveResolvers(this.route.snapshot.data);
-
     this.filters$
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(
-        (filters: Filters<AudioRecording>) => this.href = this.recordingsApi.batchDownloadUrl(filters)
-      );
-  }
+      .subscribe((filters: Filters<AudioRecording>) => {
+        this.href = this.recordingsApi.batchDownloadUrl(filters);
+      });
 
-  public get project(): Project | undefined {
-    return this.models[projectKey] as Project;
-  }
+    const models = retrieveResolvers(this.route.snapshot.data);
 
-  public get region(): Region | undefined {
-    return this.models[regionKey] as Region;
-  }
-
-  public get site(): Site | undefined {
-    return this.models[siteKey] as Site;
+    this.project = models[projectKey] as Project;
+    this.region = models[regionKey] as Region;
+    this.site = models[siteKey] as Site;
   }
 
   public get runScriptCommand(): string {

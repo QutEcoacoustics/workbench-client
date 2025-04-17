@@ -14,6 +14,13 @@ import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil, tap } from "rxjs/operators";
 
+interface StrongRouteState {
+  resolvedModels: ResolvedModelList;
+  routeParams: Params;
+  queryParams: Params;
+  activatedRoute: ActivatedRoute | null;
+}
+
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRoute]",
@@ -35,11 +42,11 @@ export class StrongRouteDirective
    */
   @Input() public queryParams: Params;
 
-  private routeState = {
-    resolvedModels: {} as ResolvedModelList,
-    routeParams: {} as Params,
-    queryParams: {} as Params,
-    activatedRoute: null as ActivatedRoute,
+  private routeState: StrongRouteState = {
+    resolvedModels: {},
+    routeParams: {},
+    queryParams: {},
+    activatedRoute: null,
   };
 
   public constructor(
