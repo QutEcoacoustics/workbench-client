@@ -55,6 +55,7 @@ class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
       this.failure = true;
       return;
     }
+
     this.models = models;
   }
 

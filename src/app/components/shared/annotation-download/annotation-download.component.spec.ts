@@ -2,7 +2,6 @@ import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -72,7 +71,7 @@ describe("AnnotationDownloadComponent", () => {
           pageInfo: new BehaviorSubject({
             resolvers,
             ...resolvedModels,
-          } as IPageInfo),
+          }),
         }),
       ],
     });

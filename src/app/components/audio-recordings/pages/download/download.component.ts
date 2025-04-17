@@ -71,15 +71,15 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
       );
   }
 
-  public get project(): Project {
+  public get project(): Project | undefined {
     return this.models[projectKey] as Project;
   }
 
-  public get region(): Region {
+  public get region(): Region | undefined {
     return this.models[regionKey] as Region;
   }
 
-  public get site(): Site {
+  public get site(): Site | undefined {
     return this.models[siteKey] as Site;
   }
 

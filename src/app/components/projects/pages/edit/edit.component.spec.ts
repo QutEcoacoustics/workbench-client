@@ -32,12 +32,15 @@ describe("ProjectsEditComponent", () => {
   assertPageInfo(EditComponent, "Edit");
 
   function setup(project: Project): void {
+    const pageInfo: IPageInfo = {
+      resolvers: { project: "resolver" },
+      project: { model: project },
+    };
+
     spec = createComponent({
-      data: {
-        resolvers: { project: "resolver" },
-        project: { model: project },
-      } as IPageInfo,
+      data: pageInfo,
     });
+
     api = spec.inject(ProjectsService);
     spec.detectChanges();
   }
