@@ -13,7 +13,7 @@ import { BawAttributeMeta } from "./AttributeDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
 
 export type AbstractModelConstructor<Model> = new (
-  _: Record<string, any>,
+  _: Record<string, unknown>,
   _injector?: AssociationInjector
 ) => Model;
 
@@ -29,7 +29,7 @@ type ModelSerializationOptions = SerializationTargets &
 /**
  * BAW Server Abstract Model
  */
-export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
+export abstract class AbstractModelWithoutId<Model = Record<string, unknown>> {
   public constructor(
     raw: Readonly<Model>,
     protected injector?: AssociationInjector

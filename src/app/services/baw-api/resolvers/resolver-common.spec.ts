@@ -1,7 +1,7 @@
 import { PageInfo } from "@helpers/page/pageInfo";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generatePageInfoResolvers } from "@test/helpers/general";
-import { MockModel } from "./mock/baseApiMock.service";
+import { MockModel } from "../mock/baseApiMock.service";
 import { hasResolvedSuccessfully, retrieveResolvers } from "./resolver-common";
 
 // TODO Write unit tests

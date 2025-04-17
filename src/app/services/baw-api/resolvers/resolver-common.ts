@@ -11,6 +11,7 @@ import type { AbstractData } from "@models/AbstractData";
 import type {
   AbstractModel,
   AbstractModelConstructor,
+  AbstractModelWithoutId,
 } from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
@@ -351,7 +352,7 @@ export class ShowOptionalResolver<
 export interface BawProvider {
   provide: string;
   useClass: Type<{
-    resolve: ResolveFn<any>
+    resolve: ResolveFn<any>;
   }>;
   deps: Type<any>[];
 }
@@ -440,17 +441,20 @@ export function retrieveResolvedModel<T extends AbstractModel>(
   const resolvedModels = retrieveResolvers(data);
   for (const value of Object.values(resolvedModels)) {
     if (value instanceof model) {
-      return value as T;
+      return value;
     }
   }
+
+  // Although we do not need to explicitly return undefined here, it exists so
+  // that its clearer where the functions "undefined" return signature comes
+  // from.
+  // We will only ever his this condition if there is no model that has the
+  // "model"s constructor in its prototype chain.
   return undefined;
 }
 
-export interface ResolvedModelList {
-  [key: string]:
-    | AbstractModel
-    | AbstractModel[]
-    | AbstractData
-    | AbstractData[]
-    | BawApiError;
+export interface ResolvedModelList<
+  T extends AbstractModel | AbstractData = AbstractModel | AbstractData
+> {
+  [key: string]: T | T[] | BawApiError;
 }
