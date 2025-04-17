@@ -11,7 +11,6 @@ import type { AbstractData } from "@models/AbstractData";
 import type {
   AbstractModel,
   AbstractModelConstructor,
-  AbstractModelWithoutId,
 } from "@models/AbstractModel";
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";

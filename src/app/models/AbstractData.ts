@@ -1,4 +1,4 @@
-export abstract class AbstractData<T = Record<PropertyKey, unknown>> {
+export abstract class AbstractData<T = Record<PropertyKey, any>> {
   public constructor(raw: T) {
     return Object.assign(this, raw);
   }

@@ -15,7 +15,7 @@ import {
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolvers/resolver-common";
-import { ShowDefaultResolver } from "../ShowDefaultResolver";
+import { ShowDefaultResolver } from "../resolvers/ShowDefaultResolver";
 
 const projectId: IdParamOptional<Project> = id;
 const endpoint = stringTemplate`/projects/${projectId}${option}`;
