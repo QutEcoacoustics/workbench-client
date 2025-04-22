@@ -4,24 +4,24 @@ import { TitleComponent } from "@components/harvest/components/shared/title.comp
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
-import { NewComponent } from "./new.component";
+import { HarvestNewComponent } from "./new.component";
 
 describe("newHarvestComponent", () => {
-  let spectator: Spectator<NewComponent>;
+  let spectator: Spectator<HarvestNewComponent>;
 
   const createComponent = createRoutingFactory({
-    component: NewComponent,
+    component: HarvestNewComponent,
     imports: [MockBawApiModule, TitleComponent],
     mocks: [ToastService, HarvestsService],
   });
 
-  assertPageInfo(NewComponent, "New Upload");
+  assertPageInfo(HarvestNewComponent, "New Upload");
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(NewComponent);
+    expect(spectator.component).toBeInstanceOf(HarvestNewComponent);
   });
 });

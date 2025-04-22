@@ -32,7 +32,7 @@ import schema from "../../project.schema.json";
   `,
   imports: [FormComponent],
 })
-class NewComponent extends FormTemplate<Project> {
+class ProjectNewComponent extends FormTemplate<Project> {
   public fields = schema.fields;
 
   public constructor(
@@ -58,10 +58,10 @@ class NewComponent extends FormTemplate<Project> {
   }
 }
 
-NewComponent.linkToRoute({
+ProjectNewComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: newProjectMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
 });
 
-export { NewComponent };
+export { ProjectNewComponent };

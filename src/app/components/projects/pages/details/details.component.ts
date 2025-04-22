@@ -147,7 +147,7 @@ const projectKey = "project";
     NgbPagination,
   ]
 })
-class DetailsComponent
+class ProjectDetailsComponent
   extends PaginationTemplate<Site | Region>
   implements OnInit {
   public collectionSize = 0;
@@ -246,7 +246,7 @@ class DetailsComponent
   }
 }
 
-DetailsComponent.linkToRoute({
+ProjectDetailsComponent.linkToRoute({
   category: projectCategory,
   pageRoute: projectMenuItem,
   menus: {
@@ -259,4 +259,4 @@ DetailsComponent.linkToRoute({
   resolvers: { [projectKey]: projectResolvers.show },
 });
 
-export { DetailsComponent };
+export { ProjectDetailsComponent };

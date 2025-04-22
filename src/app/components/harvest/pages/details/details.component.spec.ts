@@ -24,15 +24,15 @@ import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/webs
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { getElementByInnerText } from "@test/helpers/html";
 import { IconsModule } from "@shared/icons/icons.module";
-import { DetailsComponent } from "./details.component";
+import { HarvestDetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
-  let spec: SpectatorRouting<DetailsComponent>;
+  let spec: SpectatorRouting<HarvestDetailsComponent>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
 
   const createComponent = createRoutingFactory({
-    component: DetailsComponent,
+    component: HarvestDetailsComponent,
     providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
     imports: [
       MockBawApiModule,
@@ -51,7 +51,7 @@ describe("DetailsComponent", () => {
     mocks: [ToastService],
   });
 
-  assertPageInfo<Harvest>(DetailsComponent, "test name", {
+  assertPageInfo<Harvest>(HarvestDetailsComponent, "test name", {
     harvest: {
       model: new Harvest(generateHarvest({ name: "test name" })),
     },
@@ -73,7 +73,7 @@ describe("DetailsComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spec.component).toBeInstanceOf(DetailsComponent);
+    expect(spec.component).toBeInstanceOf(HarvestDetailsComponent);
   });
 
   it("should show project name", () => {

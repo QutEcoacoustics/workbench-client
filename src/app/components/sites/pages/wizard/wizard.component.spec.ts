@@ -1,6 +1,6 @@
 import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { NewComponent } from "@components/regions/pages/new/new.component";
+import { RegionNewComponent } from "@components/regions/pages/new/new.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -13,7 +13,7 @@ import { SiteNewComponent } from "../new/new.component";
 import { WizardComponent } from "./wizard.component";
 
 const mock = {
-  newRegion: MockComponent(NewComponent),
+  newRegion: MockComponent(RegionNewComponent),
   newSite: MockComponent(SiteNewComponent),
 };
 
@@ -46,7 +46,7 @@ describe("WizardComponent", () => {
   }
 
   function getNewRegionsForm() {
-    return spectator.query(NewComponent);
+    return spectator.query(RegionNewComponent);
   }
 
   beforeEach(() => {

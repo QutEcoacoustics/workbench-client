@@ -33,7 +33,7 @@ import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { PageTitleStrategy } from "src/app/app.component";
-import { DetailsComponent } from "./details.component";
+import { ProjectDetailsComponent } from "./details.component";
 
 const mock = {
   map: MockComponent(SiteMapComponent),
@@ -46,19 +46,19 @@ describe("ProjectDetailsComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let routerSpy: SpyObject<Router>;
   let defaultProject: Project;
-  let spectator: SpectatorRouting<DetailsComponent>;
-  let component: DetailsComponent;
+  let spectator: SpectatorRouting<ProjectDetailsComponent>;
+  let component: ProjectDetailsComponent;
 
   const createComponent = createRoutingFactory({
     imports: [MockBawApiModule],
     declarations: [mock.map, mock.card],
     mocks: [ToastService],
-    component: DetailsComponent,
+    component: ProjectDetailsComponent,
     providers: [PageTitleStrategy],
   });
   const emptyResponse = [[]];
 
-  assertPageInfo<Project>(DetailsComponent, "test name", {
+  assertPageInfo<Project>(ProjectDetailsComponent, "test name", {
     project: {
       model: new Project(generateProject({ name: "test name" })),
     },
@@ -220,7 +220,7 @@ describe("ProjectDetailsComponent", () => {
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
   });
 
-  assertPaginationTemplate<Site | Region, DetailsComponent>(() => {
+  assertPaginationTemplate<Site | Region, ProjectDetailsComponent>(() => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();

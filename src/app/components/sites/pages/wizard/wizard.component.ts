@@ -14,7 +14,7 @@ import { List } from "immutable";
 import { NgClass } from "@angular/common";
 import { newSiteMenuItem } from "../../sites.menus";
 import { SiteNewComponent } from "../new/new.component";
-import { NewComponent } from "../../../regions/pages/new/new.component";
+import { RegionNewComponent } from "../../../regions/pages/new/new.component";
 
 const projectKey = "project";
 
@@ -59,7 +59,7 @@ const projectKey = "project";
       }
     }
   `,
-  imports: [NgClass, SiteNewComponent, NewComponent],
+  imports: [NgClass, SiteNewComponent, RegionNewComponent],
 })
 class WizardComponent extends PageComponent implements OnInit {
   public error: boolean;

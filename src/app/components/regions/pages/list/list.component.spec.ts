@@ -19,14 +19,14 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
-import { ListComponent } from "./list.component";
+import { RegionListComponent } from "./list.component";
 
 describe("RegionsListComponent", () => {
   let api: SpyObject<ShallowRegionsService>;
-  let spec: Spectator<ListComponent>;
+  let spec: Spectator<RegionListComponent>;
 
   const createComponent = createRoutingFactory({
-    component: ListComponent,
+    component: RegionListComponent,
     declarations: [MockComponent(CardsComponent)],
     imports: [MockBawApiModule],
   });
@@ -81,7 +81,7 @@ describe("RegionsListComponent", () => {
     api = spec.inject(ShallowRegionsService);
   });
 
-  assertPageInfo(ListComponent, "Sites");
+  assertPageInfo(RegionListComponent, "Sites");
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => expect(filter.paging.page).toBe(1));

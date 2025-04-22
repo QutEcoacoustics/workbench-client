@@ -50,7 +50,7 @@ const harvestKey = "harvest";
     CompleteComponent,
   ],
 })
-class DetailsComponent
+class HarvestDetailsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit, OnDestroy
 {
@@ -76,7 +76,7 @@ class DetailsComponent
   }
 }
 
-DetailsComponent.linkToRoute({
+HarvestDetailsComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List([...harvestsMenuItemActions, newSiteMenuItem]),
@@ -99,4 +99,4 @@ DetailsComponent.linkToRoute({
   },
 });
 
-export { DetailsComponent };
+export { HarvestDetailsComponent };

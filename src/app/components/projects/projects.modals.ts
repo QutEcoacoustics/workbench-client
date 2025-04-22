@@ -3,7 +3,7 @@ import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.componen
 import { defaultAnnotationDownloadIcon, defaultDeleteIcon, isProjectEditorPredicate } from "src/app/app.menus";
 import { AnnotationDownloadComponent } from "@shared/annotation-download/annotation-download.component";
 import { projectMenuItem } from "./projects.menus";
-import { DetailsComponent } from "./pages/details/details.component";
+import { ProjectDetailsComponent } from "./pages/details/details.component";
 
 export const projectAnnotationsModal = menuModal({
   icon: defaultAnnotationDownloadIcon,
@@ -20,5 +20,5 @@ export const deleteProjectModal = menuModal({
   tooltip: () => "Delete this project",
   predicate: isProjectEditorPredicate,
   component: DeleteModalComponent,
-  successCallback: (pageComponentInstance?: DetailsComponent) => pageComponentInstance.deleteModel(),
+  successCallback: (pageComponentInstance?: ProjectDetailsComponent) => pageComponentInstance.deleteModel(),
 });

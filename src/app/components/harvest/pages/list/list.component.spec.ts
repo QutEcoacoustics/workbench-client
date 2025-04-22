@@ -18,10 +18,10 @@ import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ListComponent } from "./list.component";
+import { HarvestListComponent } from "./list.component";
 
 describe("ListComponent", () => {
-  let spec: SpectatorRouting<ListComponent>;
+  let spec: SpectatorRouting<HarvestListComponent>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
   let defaultUser: User;
@@ -29,7 +29,7 @@ describe("ListComponent", () => {
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    component: ListComponent,
+    component: HarvestListComponent,
     imports: [
       MockBawApiModule,
       ConfirmationComponent,
@@ -135,11 +135,11 @@ describe("ListComponent", () => {
     modalService?.dismissAll();
   });
 
-  assertPageInfo(ListComponent, ["Recording Uploads", "All Recording Uploads"]);
+  assertPageInfo(HarvestListComponent, ["Recording Uploads", "All Recording Uploads"]);
 
   it("should create", () => {
     setup(defaultProject, defaultHarvest);
-    expect(spec.component).toBeInstanceOf(ListComponent);
+    expect(spec.component).toBeInstanceOf(HarvestListComponent);
   });
 
   it("should not show abort button when harvest cannot be aborted", () => {

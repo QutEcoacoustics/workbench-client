@@ -23,21 +23,21 @@ import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import schema from "../../region.base.json";
-import { EditComponent } from "./edit.component";
+import { RegionEditComponent } from "./edit.component";
 
 describe("RegionsEditComponent", () => {
-  let spectator: SpectatorRouting<EditComponent>;
+  let spectator: SpectatorRouting<RegionEditComponent>;
   const { fields } = schema;
 
   const createComponent = createRoutingFactory({
-    component: EditComponent,
+    component: RegionEditComponent,
     imports: [...testFormImports, FormComponent, MockBawApiModule],
     providers: testFormProviders,
     mocks: [ToastService],
     stubsEnabled: true,
   });
 
-  assertPageInfo(EditComponent, "Edit");
+  assertPageInfo(RegionEditComponent, "Edit");
 
   describe("form", () => {
     testFormlyFields([

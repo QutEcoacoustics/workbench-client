@@ -38,7 +38,7 @@ const projectKey = "project";
   `,
   imports: [FormComponent]
 })
-class EditComponent extends FormTemplate<Project> implements OnInit {
+class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
   public fields = schema.fields;
   public title: string;
 
@@ -76,7 +76,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   }
 }
 
-EditComponent.linkToRoute({
+ProjectEditComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectMenuItem,
   menus: {
@@ -86,4 +86,4 @@ EditComponent.linkToRoute({
   resolvers: { [projectKey]: projectResolvers.show },
 });
 
-export { EditComponent };
+export { ProjectEditComponent };

@@ -126,7 +126,7 @@ const regionKey = "region";
       NgbPagination,
   ],
 })
-class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
+class RegionDetailsComponent extends PaginationTemplate<Site> implements OnInit {
   public defaultDescription = "<i>No description found</i>";
   public project: Project;
   public region: Region;
@@ -187,7 +187,7 @@ class DetailsComponent extends PaginationTemplate<Site> implements OnInit {
   }
 }
 
-DetailsComponent.linkToRoute({
+RegionDetailsComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: regionMenuItem,
   menus: {
@@ -200,4 +200,4 @@ DetailsComponent.linkToRoute({
   },
 });
 
-export { DetailsComponent };
+export { RegionDetailsComponent };

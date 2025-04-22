@@ -49,7 +49,7 @@ const projectKey = "project";
     IsUnresolvedPipe,
   ],
 })
-class ListComponent extends PageComponent implements OnInit {
+class HarvestListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;
   public filters$: BehaviorSubject<Filters<Harvest>>;
   public canCreateHarvestCapability: boolean;
@@ -134,7 +134,7 @@ class ListComponent extends PageComponent implements OnInit {
   }
 }
 
-ListComponent.linkToRoute({
+HarvestListComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List(harvestsMenuItemActions),
@@ -154,4 +154,4 @@ ListComponent.linkToRoute({
   },
 });
 
-export { ListComponent };
+export { HarvestListComponent };

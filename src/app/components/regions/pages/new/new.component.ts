@@ -42,7 +42,7 @@ const projectKey = "project";
   `,
   imports: [FormComponent]
 })
-class NewComponent extends FormTemplate<Region> {
+class RegionNewComponent extends FormTemplate<Region> {
   @Input() public hideTitle: boolean;
   public fields = schema.fields;
 
@@ -67,7 +67,7 @@ class NewComponent extends FormTemplate<Region> {
   }
 }
 
-NewComponent.linkToRoute({
+RegionNewComponent.linkToRoute({
   category: projectCategory,
   pageRoute: newRegionMenuItem,
   menus: { actions: List(projectMenuItemActions) },
@@ -83,4 +83,4 @@ NewComponent.linkToRoute({
   },
 });
 
-export { NewComponent };
+export { RegionNewComponent };

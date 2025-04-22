@@ -33,14 +33,14 @@ import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
 import { FormComponent } from "@shared/form/form.component";
 import schema from "../../region.base.json";
-import { NewComponent } from "./new.component";
+import { RegionNewComponent } from "./new.component";
 
 describe("RegionsNewComponent", () => {
-  let spectator: SpectatorRouting<NewComponent>;
+  let spectator: SpectatorRouting<RegionNewComponent>;
   const { fields } = schema;
 
   const createComponent = createRoutingFactory({
-    component: NewComponent,
+    component: RegionNewComponent,
     imports: [...testFormImports, MockBawApiModule, FormComponent],
     providers: testFormProviders,
     mocks: [ToastService],
@@ -90,7 +90,7 @@ describe("RegionsNewComponent", () => {
       defaultProject = new Project(generateProject());
     });
 
-    assertPageInfo(NewComponent, "New Site");
+    assertPageInfo(RegionNewComponent, "New Site");
 
     it("should create", () => {
       setup();
@@ -147,7 +147,7 @@ describe("routing and resolvers", () => {
 
     // set up ngMocks according to https://ng-mocks.sudo.eu/guides/routing-resolver
     const builder = MockBuilder([
-      NewComponent,
+      RegionNewComponent,
       RouterModule.forRoot([...nestedRoutes, ...shallowRoutes]),
     ])
       .keep(MockBawApiModule, { export: true })
@@ -171,7 +171,7 @@ describe("routing and resolvers", () => {
 
     expect(location.path()).toBe(path);
 
-    const component = ngMocks.find(fixture, NewComponent);
+    const component = ngMocks.find(fixture, RegionNewComponent);
     fixture.detectChanges();
 
     return component;

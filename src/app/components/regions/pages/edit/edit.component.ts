@@ -44,7 +44,7 @@ const regionKey = "region";
   `,
   imports: [FormComponent]
 })
-class EditComponent extends FormTemplate<Region> implements OnInit {
+class RegionEditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;
   public title: string;
 
@@ -78,7 +78,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
   }
 }
 
-EditComponent.linkToRoute({
+RegionEditComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: editRegionMenuItem,
   menus: {
@@ -91,4 +91,4 @@ EditComponent.linkToRoute({
   },
 });
 
-export { EditComponent };
+export { RegionEditComponent };

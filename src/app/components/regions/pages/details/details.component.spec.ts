@@ -27,7 +27,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
 import { PageTitleStrategy } from "src/app/app.component";
-import { DetailsComponent } from "./details.component";
+import { RegionDetailsComponent } from "./details.component";
 
 const mock = {
   map: MockComponent(SiteMapComponent),
@@ -41,17 +41,17 @@ describe("RegionDetailsComponent", () => {
   let configService: SpyObject<ConfigService>;
   let defaultProject: Project;
   let defaultRegion: Region;
-  let spectator: SpectatorRouting<DetailsComponent>;
+  let spectator: SpectatorRouting<RegionDetailsComponent>;
 
   const createComponent = createRoutingFactory({
     imports: [MockBawApiModule],
     declarations: [mock.map, mock.card],
     mocks: [ToastService],
-    component: DetailsComponent,
+    component: RegionDetailsComponent,
     providers: [PageTitleStrategy],
   });
 
-  assertPageInfo(DetailsComponent, "test name", {
+  assertPageInfo(RegionDetailsComponent, "test name", {
     region: {
       model: new Region(generateRegion({ name: "test name" }))
     },
@@ -144,7 +144,7 @@ describe("RegionDetailsComponent", () => {
     });
   });
 
-  assertPaginationTemplate<Site, DetailsComponent>(() => {
+  assertPaginationTemplate<Site, RegionDetailsComponent>(() => {
     setup(defaultProject, defaultRegion);
     interceptApiRequest([]);
     spectator.detectChanges();

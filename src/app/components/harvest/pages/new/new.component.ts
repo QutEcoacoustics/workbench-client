@@ -23,7 +23,7 @@ const projectKey = "project";
   templateUrl: "new.component.html",
   imports: [TitleComponent],
 })
-class NewComponent extends PageComponent implements OnInit {
+class HarvestNewComponent extends PageComponent implements OnInit {
   public loading: boolean;
   public project: Project;
 
@@ -77,7 +77,7 @@ class NewComponent extends PageComponent implements OnInit {
   }
 }
 
-NewComponent.linkToRoute({
+HarvestNewComponent.linkToRoute({
   category: harvestsCategory,
   menus: { actions: List(projectMenuItemActions) },
   pageRoute: newHarvestMenuItem,
@@ -86,4 +86,4 @@ NewComponent.linkToRoute({
   },
 });
 
-export { NewComponent };
+export { HarvestNewComponent };

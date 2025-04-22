@@ -15,22 +15,22 @@ import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import schema from "../../project.schema.json";
-import { EditComponent } from "./edit.component";
+import { ProjectEditComponent } from "./edit.component";
 
 describe("ProjectsEditComponent", () => {
   const { fields } = schema;
   let api: SpyObject<ProjectsService>;
-  let spec: SpectatorRouting<EditComponent>;
+  let spec: SpectatorRouting<ProjectEditComponent>;
   let defaultProject: Project;
 
   const createComponent = createRoutingFactory({
-    component: EditComponent,
+    component: ProjectEditComponent,
     declarations: [MockComponent(FormComponent)],
     imports: [MockBawApiModule],
     mocks: [ToastService],
   });
 
-  assertPageInfo(EditComponent, "Edit");
+  assertPageInfo(ProjectEditComponent, "Edit");
 
   function setup(project: Project): void {
     spec = createComponent({
@@ -131,7 +131,7 @@ describe("ProjectsEditComponent", () => {
   describe("component", () => {
     it("should create", () => {
       setup(defaultProject);
-      expect(spec.component).toBeInstanceOf(EditComponent);
+      expect(spec.component).toBeInstanceOf(ProjectEditComponent);
     });
 
     it("should call api", () => {

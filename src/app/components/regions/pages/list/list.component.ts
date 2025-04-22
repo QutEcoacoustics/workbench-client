@@ -55,7 +55,7 @@ export const regionsMenuItemActions = [
   `,
   imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
 })
-class ListComponent extends PaginationTemplate<Region> implements OnInit {
+class RegionListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);
 
   public constructor(
@@ -78,10 +78,10 @@ class ListComponent extends PaginationTemplate<Region> implements OnInit {
   }
 }
 
-ListComponent.linkToRoute({
+RegionListComponent.linkToRoute({
   category: shallowRegionsCategory,
   pageRoute: shallowRegionsMenuItem,
   menus: { actions: List(regionsMenuItemActions) },
 });
 
-export { ListComponent };
+export { RegionListComponent };

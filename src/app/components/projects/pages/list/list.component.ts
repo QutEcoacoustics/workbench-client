@@ -62,7 +62,7 @@ export const projectsMenuItemActions = [
     ErrorHandlerComponent,
   ]
 })
-class ListComponent extends PaginationTemplate<Project> {
+class ProjectListComponent extends PaginationTemplate<Project> {
   public models: List<Project> = List([]);
 
   public constructor(
@@ -85,10 +85,10 @@ class ListComponent extends PaginationTemplate<Project> {
   }
 }
 
-ListComponent.linkToRoute({
+ProjectListComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: projectsMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
 });
 
-export { ListComponent };
+export { ProjectListComponent };

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { List } from "immutable";
-import { ListComponent } from "@components/harvest/pages/list/list.component";
+import { HarvestListComponent } from "@components/harvest/pages/list/list.component";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
@@ -30,7 +30,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     IsUnresolvedPipe,
   ],
 })
-class AllUploadsComponent extends ListComponent {
+class AllUploadsComponent extends HarvestListComponent {
   public override get project() {
     return null;
   }
