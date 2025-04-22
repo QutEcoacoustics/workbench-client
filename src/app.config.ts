@@ -232,31 +232,30 @@ export const appLibraryImports = [
   MenuModule,
 ];
 
-
 export const appConfig: ApplicationConfig = {
-    providers: [
-      ...pageComponents,
-      provideRouter(routes),
+  providers: [
+    ...pageComponents,
+    provideRouter(routes),
 
-      importProvidersFrom(
-        // Timeout API requests after set period
-        BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
-        BrowserModule,
-        AppRoutingModule,
-        ConfigModule,
-        BawApiModule,
-        // Rehydrate data from SSR. This must be set after BawApiModule so that the
-        // interceptor runs after the API interceptor
-        RehydrationModule,
-        GuardModule,
-        ...appLibraryImports,
-        HomeModule,
-        ErrorModule,
-      ),
+    importProvidersFrom(
+      // Timeout API requests after set period
+      BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
+      BrowserModule,
+      AppRoutingModule,
+      ConfigModule,
+      BawApiModule,
+      // Rehydrate data from SSR. This must be set after BawApiModule so that the
+      // interceptor runs after the API interceptor
+      RehydrationModule,
+      GuardModule,
+      ...appLibraryImports,
+      HomeModule,
+      ErrorModule
+    ),
 
-      { provide: TitleStrategy, useClass: PageTitleStrategy },
-      // Show loading animation after 3 seconds
-      { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
-      { provide: APP_ID, useValue: "workbench-client" },
-    ],
-  }
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
+    // Show loading animation after 3 seconds
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    { provide: APP_ID, useValue: "workbench-client" },
+  ],
+};

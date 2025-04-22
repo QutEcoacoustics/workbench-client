@@ -22,30 +22,19 @@ import { sitesRoute } from "@components/sites/sites.routes";
 import { statisticsRoute } from "@components/statistics/statistics.menus";
 import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
-import { getRouteConfigForPage } from "@helpers/page/pageRouting";
+import { getRouteConfigForIndexed, getRouteConfigForPage } from "@helpers/page/pageRouting";
 
 export const routes = [
   aboutRoute.compileRoutes(getRouteConfigForPage),
   adminRoute.compileRoutes(getRouteConfigForPage),
   analysesRoute.compileRoutes(getRouteConfigForPage),
   scriptsRoute.compileRoutes(getRouteConfigForPage),
-
-  Object.values(audioRecordingsRoutes)
-    .map((route) => route.compileRoutes(getRouteConfigForPage))
-    .flat(),
-
+  getRouteConfigForIndexed(audioRecordingsRoutes),
   citSciRoute.compileRoutes(getRouteConfigForPage),
   dataRequestRoute.compileRoutes(getRouteConfigForPage),
   harvestsRoute.compileRoutes(getRouteConfigForPage),
-
-  Object.values(reportsRoute)
-    .map((route) => route.compileRoutes(getRouteConfigForPage))
-    .flat(),
-
-  Object.values(verificationRoute)
-    .map((route) => route.compileRoutes(getRouteConfigForPage))
-    .flat(),
-
+  getRouteConfigForIndexed(reportsRoute),
+  getRouteConfigForIndexed(verificationRoute),
   annotationsImportRoute.compileRoutes(getRouteConfigForPage),
   libraryRoute.compileRoutes(getRouteConfigForPage),
   listenRoute.compileRoutes(getRouteConfigForPage),
