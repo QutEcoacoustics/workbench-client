@@ -139,7 +139,6 @@
         "no-multiple-empty-lines": "error",
         "no-shadow": "off",
         "no-underscore-dangle": "off",
-        "prefer-arrow/prefer-arrow-functions": "off",
         "quotes": [
           "error",
           "double",
