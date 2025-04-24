@@ -11,7 +11,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { MockDirective, MockProvider } from "ng-mocks";

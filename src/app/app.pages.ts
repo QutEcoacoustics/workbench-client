@@ -26,7 +26,7 @@ import { visualizePageComponents } from "@components/visualize/visualize.pages";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Type } from "@angular/core";
 import { homePageComponents } from "@components/home/home.pages";
-import { errorPageComponents } from "@components/error/error.module";
+import { errorPageComponents } from "@components/error/error.pages";
 
 // For some reason, if we use the spread operator here instead of .flat(), the
 // imported components will be tree shaken away and will not be included in the
@@ -56,7 +56,12 @@ export const appPageComponents: Type<PageComponent>[] = [
   websiteStatusPageComponents,
   visualizePageComponents,
 
-  // these two must be last
+  // There was previously a comment here saying that these two must be last, but
+  // didn't provide any explanation as to why they must be last.
+  // We should investigate if these two components still need to be last and
+  // document why.
+  // I suspect that the order is no longer relevant since we migrated from
+  // ng-modules to standalone
   homePageComponents,
   errorPageComponents,
 ].flat();

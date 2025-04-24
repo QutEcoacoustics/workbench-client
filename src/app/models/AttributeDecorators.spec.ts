@@ -6,7 +6,7 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { INJECTOR } from "@angular/core";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { AbstractModel } from "./AbstractModel";
 import {
   BawAttributeMeta,

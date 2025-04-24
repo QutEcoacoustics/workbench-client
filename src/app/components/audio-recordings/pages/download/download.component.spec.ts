@@ -17,7 +17,7 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";

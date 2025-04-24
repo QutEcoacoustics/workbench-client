@@ -7,7 +7,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";

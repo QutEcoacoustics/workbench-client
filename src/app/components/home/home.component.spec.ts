@@ -27,7 +27,7 @@ import { BehaviorSubject } from "rxjs";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HomeComponent } from "./home.component";
 

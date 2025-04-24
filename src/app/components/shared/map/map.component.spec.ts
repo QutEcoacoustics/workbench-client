@@ -16,7 +16,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModule } from "ng-mocks";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests

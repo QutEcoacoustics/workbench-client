@@ -6,7 +6,7 @@ import {
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
 import { provideCaching } from "@services/cache/provide-caching";
-import { provideConfig } from "../config/config.module";
+import { provideConfig } from "../config/provide-config";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
 import { BawFormApiService } from "./baw-form-api.service";

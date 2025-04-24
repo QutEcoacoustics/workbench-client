@@ -1,6 +1,6 @@
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { IconsModule } from "@shared/icons/icons.module";
 import { WIPComponent } from "./wip.component";
 

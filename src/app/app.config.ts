@@ -6,9 +6,9 @@ import {
   withDisabledInitialNavigation,
   withInMemoryScrolling,
 } from "@angular/router";
-import { MenuModule } from "@menu/menu.module";
+import { menuProviders } from "@menu/provide-menu";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
-import { provideConfig } from "@services/config/config.module";
+import { provideConfig } from "@services/config/provide-config";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
@@ -24,7 +24,6 @@ export const appLibraryImports = [
   ReactiveFormsModule,
   CustomInputsModule,
   DateValueAccessorModule,
-  MenuModule,
 ];
 
 export const appConfig: ApplicationConfig = {
@@ -44,6 +43,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     importProvidersFrom(appLibraryImports),
+    menuProviders,
 
     provideBawApi(),
     appLibraryImports,

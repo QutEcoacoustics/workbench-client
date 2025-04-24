@@ -1,6 +1,11 @@
 import { Routes } from "@angular/router";
 import { aboutRoute } from "@components/about/about.menus";
 import { adminRoute } from "@components/admin/admin.menus";
+import { adminAnalysisJobsRoute } from "@components/admin/analysis-jobs/analysis-jobs.menus";
+import { adminOrphansRoute } from "@components/admin/orphan/orphans.menus";
+import { adminSettingsRoute } from "@components/admin/settings/settings.menus";
+import { adminTagGroupsRoute } from "@components/admin/tag-group/tag-group.menus";
+import { adminTagsRoute } from "@components/admin/tags/tags.menus";
 import { verificationRoute } from "@components/annotations/annotation.routes";
 import { analysesRoute } from "@components/audio-analysis/analysis-jobs.routes";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
@@ -89,8 +94,12 @@ export const routes: Routes = [
   statisticsRoute.compileRoutes(getRouteConfigForPage),
   websiteStatusRoute.compileRoutes(getRouteConfigForPage),
   visualizeRoute.compileRoutes(getRouteConfigForPage),
+  adminTagsRoute.compileRoutes(getRouteConfigForPage),
+  adminOrphansRoute.compileRoutes(getRouteConfigForPage),
+  adminSettingsRoute.compileRoutes(getRouteConfigForPage),
+  adminTagGroupsRoute.compileRoutes(getRouteConfigForPage),
+  adminAnalysisJobsRoute.compileRoutes(getRouteConfigForPage),
 
-  // these two must be last
   homeRoute.compileRoutes(getRouteConfigForPage),
   pageNotFoundRoute.compileRoutes(getRouteConfigForPage),
 
