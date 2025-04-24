@@ -16,7 +16,7 @@ import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
 import { API_CONFIG } from "@services/config/config.tokens";
-import { AppServerModule } from "./src/main.server";
+import bootstrap from "src/main.server";
 import { REQUEST, RESPONSE } from "./src/express.tokens";
 import angularConfig from "./angular.json";
 
@@ -43,7 +43,6 @@ export function app(path: string): express.Express {
   const apiConfig = { provide: API_CONFIG, useValue: config };
 
   const commonEngine = new CommonEngine({
-    bootstrap: AppServerModule,
     providers: [apiConfig],
   });
 
@@ -96,7 +95,7 @@ export function app(path: string): express.Express {
 
     commonEngine
       .render({
-        bootstrap: AppServerModule,
+        bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,
@@ -139,4 +138,4 @@ if (moduleFilename === __filename || moduleFilename.includes("iisnode")) {
   run(process.argv[2]);
 }
 
-export * from "./src/main.server";
+export default app;
