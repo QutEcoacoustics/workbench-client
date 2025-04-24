@@ -10,7 +10,7 @@ export interface UnsavedInputCheckingComponent {
  * This stops the user from leaving a page where an input has been
  * modified by the user in any way which has not been saved
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class UnsavedInputGuard implements CanDeactivate<UnsavedInputCheckingComponent> {
   public canDeactivate(component: UnsavedInputCheckingComponent): boolean {
     // canDeactivate guards can be called with null components: https://github.com/angular/angular/issues/40545

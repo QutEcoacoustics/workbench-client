@@ -6,7 +6,9 @@ import { analysesRoute } from "@components/audio-analysis/analysis-jobs.routes";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
 import { citSciRoute } from "@components/citizen-science/citizen-science.menus";
 import { dataRequestRoute } from "@components/data-request/data-request.menus";
+import { pageNotFoundRoute } from "@components/error/error.menus";
 import { harvestsRoute } from "@components/harvest/harvest.routes";
+import { homeRoute } from "@components/home/home.menus";
 import { annotationsImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { libraryRoute } from "@components/library/library.menus";
 import { listenRoute } from "@components/listen/listen.menus";
@@ -87,6 +89,10 @@ export const routes: Routes = [
   statisticsRoute.compileRoutes(getRouteConfigForPage),
   websiteStatusRoute.compileRoutes(getRouteConfigForPage),
   visualizeRoute.compileRoutes(getRouteConfigForPage),
+
+  // these two must be last
+  homeRoute.compileRoutes(getRouteConfigForPage),
+  pageNotFoundRoute.compileRoutes(getRouteConfigForPage),
 
   ...staticRoutes,
 ].flat();

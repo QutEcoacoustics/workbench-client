@@ -25,6 +25,8 @@ import { websiteStatusPageComponents } from "@components/website-status/website-
 import { visualizePageComponents } from "@components/visualize/visualize.pages";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Type } from "@angular/core";
+import { homePageComponents } from "@components/home/home.pages";
+import { errorPageComponents } from "@components/error/error.module";
 
 // For some reason, if we use the spread operator here instead of .flat(), the
 // imported components will be tree shaken away and will not be included in the
@@ -53,4 +55,8 @@ export const appPageComponents: Type<PageComponent>[] = [
   sitePageComponents,
   websiteStatusPageComponents,
   visualizePageComponents,
+
+  // these two must be last
+  homePageComponents,
+  errorPageComponents,
 ].flat();
