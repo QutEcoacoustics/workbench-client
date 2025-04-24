@@ -1,6 +1,6 @@
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ACCOUNT, TAG } from "@baw-api/ServiceTokens";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -33,8 +33,8 @@ describe("RecentAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule],
     providers: [
+      provideMockBawApi(),
       MockProvider(ToastService, {
         error: jasmine.createSpy("error").and.stub(),
       }),

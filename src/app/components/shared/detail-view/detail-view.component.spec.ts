@@ -1,4 +1,4 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 
@@ -27,7 +27,6 @@ describe("DetailViewComponent", () => {
   const createComponent = createRoutingFactory({
     component: DetailViewComponent,
     imports: [
-      MockBawApiModule,
       CheckboxComponent,
       LoadingComponent,
       RenderFieldComponent,
@@ -35,6 +34,7 @@ describe("DetailViewComponent", () => {
     ],
     providers: [
       MockStandardApiService,
+      provideMockBawApi(),
       { provide: MOCK.token, useExisting: MockStandardApiService },
     ],
   });

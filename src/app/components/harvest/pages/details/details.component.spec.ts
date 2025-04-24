@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CompleteComponent } from "@components/harvest/screens/complete/complete.component";
 import { MetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
 import { MetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
@@ -19,11 +18,12 @@ import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
-import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { getElementByInnerText } from "@test/helpers/html";
 import { IconsModule } from "@shared/icons/icons.module";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { HarvestDetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
@@ -33,9 +33,12 @@ describe("DetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: HarvestDetailsComponent,
-    providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
+    providers: [
+      mockProvider(HarvestStagesService),
+      provideMockBawApi(),
+      PageTitleStrategy,
+    ],
     imports: [
-      MockBawApiModule,
       IconsModule,
 
       ScanningComponent,

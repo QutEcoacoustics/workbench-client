@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -37,7 +36,7 @@ describe("AnnotationDownloadComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationDownloadComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: testFormImports,
     providers: testFormProviders,
   });
 

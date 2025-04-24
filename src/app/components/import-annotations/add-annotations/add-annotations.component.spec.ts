@@ -3,7 +3,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
@@ -37,6 +36,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { fakeAsync } from "@angular/core/testing";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -58,13 +58,13 @@ describe("AddAnnotationsComponent", () => {
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
     imports: [
-      MockBawApiModule,
       IconsModule,
 
       InlineListComponent,
       TypeaheadInputComponent,
       LoadingComponent,
     ],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
     data: {
       resolvers: {

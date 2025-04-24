@@ -1,6 +1,6 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import {
@@ -65,7 +65,8 @@ describe("RecentAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: RecentAnnotationsComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
   function interceptSiteRequest(data: Errorable<Site>) {

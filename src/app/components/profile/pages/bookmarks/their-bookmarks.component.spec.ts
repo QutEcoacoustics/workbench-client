@@ -1,5 +1,5 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
@@ -25,7 +25,7 @@ describe("TheirBookmarksComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TheirBookmarksComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

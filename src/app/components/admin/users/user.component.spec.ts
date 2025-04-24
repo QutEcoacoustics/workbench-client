@@ -1,6 +1,6 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { theirEditMenuItem } from "@components/profile/profile.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { User } from "@models/User";
@@ -22,7 +22,7 @@ describe("AdminUserListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AdminUserListComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(function () {

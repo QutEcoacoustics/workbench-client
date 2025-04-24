@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
@@ -18,9 +17,10 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {
@@ -30,12 +30,9 @@ describe("ScriptComponent", () => {
 
   function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockBawApiModule,
-        AdminScriptComponent,
-      ],
+      imports: [...appLibraryImports, AdminScriptComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

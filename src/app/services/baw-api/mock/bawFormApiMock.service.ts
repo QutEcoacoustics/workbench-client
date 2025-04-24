@@ -7,7 +7,7 @@ export class MockForm extends AbstractForm {
   }
 }
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class MockBawFormApiService {
   public constructor() {}
 

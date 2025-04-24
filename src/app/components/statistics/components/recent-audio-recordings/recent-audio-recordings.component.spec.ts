@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -19,6 +18,7 @@ import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
@@ -29,7 +29,8 @@ describe("RecentAudioRecordingsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: RecentAudioRecordingsComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

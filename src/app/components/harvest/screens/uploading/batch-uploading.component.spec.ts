@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { UploadUrlComponent } from "@components/harvest/components/shared/upload-url.component";
@@ -22,6 +21,7 @@ import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -35,6 +35,7 @@ describe("BatchUploadingComponent", () => {
   const createComponent = createRoutingFactory({
     component: BatchUploadingComponent,
     providers: [
+      provideMockBawApi(),
       MockProvider(HarvestStagesService, {
         project: undefined,
         harvest: undefined,
@@ -44,7 +45,6 @@ describe("BatchUploadingComponent", () => {
       }),
     ],
     imports: [
-      MockBawApiModule,
       IconsModule,
       ConfirmationComponent,
       MockComponent(UploadUrlComponent),

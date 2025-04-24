@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -31,12 +30,7 @@ describe("UnlockAccountComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          ...testFormImports,
-          MockBawApiModule,
-          UnlockAccountComponent,
-          FormComponent,
-        ],
+        imports: [...testFormImports, UnlockAccountComponent, FormComponent],
         providers: testFormProviders,
       }).compileComponents();
 

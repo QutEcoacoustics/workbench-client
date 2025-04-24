@@ -50,7 +50,7 @@ import {
   enableCache,
 } from "@services/cache/ngHttpCachingConfig";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import {
   BawSessionService,
   guestAuthToken,

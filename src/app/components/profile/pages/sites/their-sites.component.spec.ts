@@ -1,5 +1,5 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -44,7 +44,7 @@ describe("TheirSitesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TheirSitesComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

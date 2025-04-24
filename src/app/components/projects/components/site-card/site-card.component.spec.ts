@@ -1,5 +1,4 @@
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -15,6 +14,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -24,8 +24,8 @@ describe("SiteCardComponent", () => {
   let spec: Spectator<SiteCardComponent>;
 
   const createComponent = createRoutingFactory({
-    imports: [MockBawApiModule],
     component: SiteCardComponent,
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(() => {

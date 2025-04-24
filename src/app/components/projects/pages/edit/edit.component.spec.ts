@@ -1,4 +1,4 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { Project } from "@models/Project";
@@ -26,7 +26,7 @@ describe("ProjectsEditComponent", () => {
   const createComponent = createRoutingFactory({
     component: ProjectEditComponent,
     declarations: [MockComponent(FormComponent)],
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

@@ -14,7 +14,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import {
   ApiCreate,
   ApiDestroy,

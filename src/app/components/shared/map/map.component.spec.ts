@@ -14,9 +14,9 @@ import {
 import { modelData } from "@test/helpers/faker";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModule } from "ng-mocks";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
@@ -26,8 +26,8 @@ describe("MapComponent", () => {
 
   const createComponent = createComponentFactory({
     component: MapComponent,
-    imports: [MockBawApiModule, MockModule(GoogleMapsModule)],
-    providers: [provideMockConfig()],
+    imports: [MockModule(GoogleMapsModule)],
+    providers: [provideMockConfig(), provideMockBawApi()],
   });
 
   function getMap() {

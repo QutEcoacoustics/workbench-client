@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -12,7 +12,7 @@ import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import { RequestComponent } from "./request.component";
 
 describe("ProjectsRequestComponent", () => {
@@ -23,12 +23,9 @@ describe("ProjectsRequestComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockBawApiModule,
-        RequestComponent,
-      ],
+      imports: [...appLibraryImports, RequestComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

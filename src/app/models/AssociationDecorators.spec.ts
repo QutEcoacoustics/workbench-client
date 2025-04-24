@@ -1,6 +1,6 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -47,13 +47,13 @@ describe("Association Decorators", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MockBawApiModule],
       providers: [
         MockStandardApiService,
-        { provide: MOCK.token, useExisting: MockStandardApiService },
         mockProvider(ToastService),
+        provideMockBawApi(),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        { provide: MOCK.token, useExisting: MockStandardApiService },
       ]
     });
 

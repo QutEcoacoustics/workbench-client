@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
@@ -47,9 +47,10 @@ describe("PaginationTemplate", () => {
   let api: SpyObject<ProjectsService>;
   let spectator: SpectatorRouting<MockComponent>;
   let component: MockComponent;
+
   const createComponent = createRoutingFactory({
     component: MockComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(queryParams: Params = {}) {

@@ -1,4 +1,4 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionNewComponent } from "@components/regions/pages/new/new.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -22,9 +22,9 @@ describe("WizardComponent", () => {
   let spectator: SpectatorRouting<WizardComponent>;
 
   const createComponent = createRoutingFactory({
-    imports: [MockBawApiModule],
-    declarations: [mock.newRegion, mock.newSite],
     component: WizardComponent,
+    declarations: [mock.newRegion, mock.newSite],
+    providers: [provideMockBawApi()],
   });
 
   function setup(project: Project, error?: BawApiError) {

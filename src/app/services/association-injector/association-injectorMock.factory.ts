@@ -1,7 +1,7 @@
 import { Injector, Provider } from "@angular/core";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { BAW_SERVICE_OPTIONS } from "@baw-api/api-common";
-import { mockProviders } from "@baw-api/baw-apiMock.module";
+import { mockProviders } from "@baw-api/provide-baw-ApiMock";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 import { associationApiOptions } from "./association-injector.factory";
 

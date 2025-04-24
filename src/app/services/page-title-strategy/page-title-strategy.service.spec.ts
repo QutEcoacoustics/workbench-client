@@ -7,13 +7,16 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { modelData } from "@test/helpers/faker";
 import { generateMenuRoute } from "@test/fakes/MenuItem";
 import { CommonRouteTitles } from "src/app/stringConstants";
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { AppComponent } from "src/app/app.component";
 import { LoadingBarComponent, LoadingBarService } from "@ngx-loading-bar/core";
 import { DEFAULT_MENU } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
 import { Subject } from "rxjs";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { HeaderComponent } from "@menu/header/header.component";
 import { MockComponents } from "ng-mocks";
 import { FooterComponent } from "@shared/footer/footer.component";
@@ -26,6 +29,7 @@ import { MenuButtonComponent } from "@menu/button/button.component";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { Writeable } from "@helpers/advancedTypes";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { PageTitleStrategy } from "./page-title-strategy.service";
 
 describe("PageTitleStrategy", () => {
@@ -39,15 +43,7 @@ describe("PageTitleStrategy", () => {
   const createComponent = createRoutingFactory({
     component: AppComponent,
     componentMocks: [LoadingBarComponent],
-    providers: [
-      { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
-      mockProvider(LoadingBarService, { value$: new Subject() }),
-      Title,
-      PageTitleStrategy,
-    ],
     imports: [
-      MockBawApiModule,
-
       ...MockComponents(
         HeaderComponent,
         FooterComponent,
@@ -58,6 +54,13 @@ describe("PageTitleStrategy", () => {
         BreadcrumbComponent,
         MenuButtonComponent
       ),
+    ],
+    providers: [
+      Title,
+      PageTitleStrategy,
+      provideMockBawApi(),
+      mockProvider(LoadingBarService, { value$: new Subject() }),
+      { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
     ],
   });
 

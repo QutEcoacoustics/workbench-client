@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -26,9 +25,10 @@ import { SiteNewComponent } from "./new.component";
 
 describe("SiteNewComponent", () => {
   let spec: SpectatorRouting<SiteNewComponent>;
+
   const createComponent = createRoutingFactory({
     component: SiteNewComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: testFormImports,
     providers: testFormProviders,
     declarations: [FormComponent, MockComponent(MapComponent)],
     mocks: [ToastService],

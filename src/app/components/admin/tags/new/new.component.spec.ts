@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagType } from "@models/Tag";
@@ -11,7 +11,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminTagsNewComponent } from "./new.component";
 
 describe("AdminTagsNewComponent", () => {
@@ -24,12 +24,9 @@ describe("AdminTagsNewComponent", () => {
 
   function configureTestingModule(model: TagType[], error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockBawApiModule,
-        AdminTagsNewComponent,
-      ],
+      imports: [...appLibraryImports, AdminTagsNewComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

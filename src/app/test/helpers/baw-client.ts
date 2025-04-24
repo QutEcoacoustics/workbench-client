@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -21,7 +21,8 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   const createComponent = createRoutingFactory({
     component,
-    imports: [MockBawApiModule, ...modules],
+    imports: modules,
+    providers: [provideMockBawApi()],
     routes: compiledRoutes,
     stubsEnabled: false,
   });

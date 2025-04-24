@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import {
   tagGroupResolvers,
   TagGroupsService,
@@ -15,7 +15,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminTagGroupsEditComponent } from "./edit.component";
 
 describe("AdminTagGroupsEditComponent", () => {
@@ -30,10 +30,10 @@ describe("AdminTagGroupsEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        MockBawApiModule,
         AdminTagGroupsEditComponent,
       ],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

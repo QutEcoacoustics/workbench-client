@@ -1,5 +1,4 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -13,6 +12,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { CardComponent } from "../card/card.component";
 import { CardsComponent } from "./cards.component";
 
@@ -24,8 +24,7 @@ describe("CardsComponent", () => {
   const factoryOptions: SpectatorOptions<CardsComponent> = {
     component: CardsComponent,
     declarations: [MockComponent(CardComponent)],
-    imports: [MockBawApiModule],
-    providers: [provideHttpClientTesting()],
+    providers: [provideMockBawApi(), provideHttpClientTesting()],
   };
 
   const createComponent = createComponentFactory(factoryOptions);

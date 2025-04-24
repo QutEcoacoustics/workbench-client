@@ -1,5 +1,4 @@
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -19,6 +18,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { RegionListComponent } from "./list.component";
 
 describe("RegionsListComponent", () => {
@@ -28,7 +28,7 @@ describe("RegionsListComponent", () => {
   const createComponent = createRoutingFactory({
     component: RegionListComponent,
     declarations: [MockComponent(CardsComponent)],
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   function generateRegions(

@@ -8,7 +8,6 @@ import {
   SHALLOW_AUDIO_EVENT,
   SHALLOW_SITE,
 } from "@baw-api/ServiceTokens";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -36,6 +35,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -60,8 +60,9 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [IconsModule],
     providers: [
+      provideMockBawApi(),
       {
         provide: AnnotationService,
         useValue: { show: () => mockAnnotationResponse },

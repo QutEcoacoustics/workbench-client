@@ -3,9 +3,9 @@ import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { GlobalsService } from "@services/globals/globals.service";
 import { TestBed } from "@angular/core/testing";
 import { AssociationInjector } from "@models/ImplementsInjector";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { mockProvider } from "@ngneat/spectator";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 import { associationInjectorProvider } from "./association-injector.factory";
 
@@ -14,8 +14,11 @@ describe("AssociationInjectorService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MockBawApiModule],
-      providers: [associationInjectorProvider, mockProvider(ToastService)],
+      providers: [
+        associationInjectorProvider,
+        mockProvider(ToastService),
+        provideMockBawApi(),
+      ],
     });
 
     injector = TestBed.inject(ASSOCIATION_INJECTOR);

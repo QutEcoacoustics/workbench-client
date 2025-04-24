@@ -1,6 +1,6 @@
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
@@ -26,7 +26,7 @@ describe("AnalysisJobComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AdminAnalysisJobsComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi(0)],
   });
 
   beforeEach(function () {

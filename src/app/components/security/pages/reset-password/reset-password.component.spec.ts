@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -33,7 +32,6 @@ describe("ResetPasswordComponent", () => {
       TestBed.configureTestingModule({
         imports: [
           ...testFormImports,
-          MockBawApiModule,
           ResetPasswordComponent,
           FormComponent,
         ],

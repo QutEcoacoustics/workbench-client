@@ -5,7 +5,6 @@ import {
   tick,
 } from "@angular/core/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -15,8 +14,9 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminTagsComponent } from "./list.component";
 
 describe("AdminTagsComponent", () => {
@@ -29,12 +29,8 @@ describe("AdminTagsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockBawApiModule,
-        AdminTagsComponent,
-      ],
-      providers: [provideRouter([])],
+      imports: [...appLibraryImports, AdminTagsComponent],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
     TestBed.inject(ToastService);

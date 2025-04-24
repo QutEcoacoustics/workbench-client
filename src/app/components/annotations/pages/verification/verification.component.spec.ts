@@ -3,7 +3,7 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -99,7 +99,6 @@ describe("VerificationComponent", () => {
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
     imports: [
-      MockBawApiModule,
       IconsModule,
 
       SearchFiltersModalComponent,
@@ -109,6 +108,7 @@ describe("VerificationComponent", () => {
       DateTimeFilterComponent,
       WIPComponent,
     ],
+    providers: [provideMockBawApi()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 

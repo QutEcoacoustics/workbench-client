@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
 import schema from "./confirm-account.schema.json";
 
@@ -33,11 +33,10 @@ describe("ConfirmPasswordComponent", () => {
       TestBed.configureTestingModule({
         imports: [
           ...testFormImports,
-          MockBawApiModule,
           ConfirmPasswordComponent,
           FormComponent,
         ],
-        providers: testFormProviders,
+        providers: [...testFormProviders, provideMockBawApi()],
       }).compileComponents();
 
       fixture = TestBed.createComponent(ConfirmPasswordComponent);

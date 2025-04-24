@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { Harvest } from "@models/Harvest";
@@ -31,11 +31,11 @@ describe("ListComponent", () => {
   const createComponent = createRoutingFactory({
     component: HarvestListComponent,
     imports: [
-      MockBawApiModule,
       ConfirmationComponent,
       UserLinkComponent,
       WebsiteStatusWarningComponent,
     ],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

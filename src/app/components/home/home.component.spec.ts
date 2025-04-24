@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -28,7 +27,8 @@ import { BehaviorSubject } from "rxjs";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -42,7 +42,6 @@ describe("HomeComponent", () => {
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
-      MockBawApiModule,
       IconsModule,
       LoadingComponent,
       AsyncPipe,
@@ -50,7 +49,7 @@ describe("HomeComponent", () => {
       TitleCasePipe,
       WithLoadingPipe,
     ],
-    providers: [provideMockConfig()],
+    providers: [provideMockConfig(), provideMockBawApi()],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

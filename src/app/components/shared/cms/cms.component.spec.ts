@@ -1,5 +1,4 @@
 import { SafeHtml } from "@angular/platform-browser";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
@@ -12,6 +11,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
@@ -20,7 +20,7 @@ describe("CmsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: CmsComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   async function interceptApiRequest(

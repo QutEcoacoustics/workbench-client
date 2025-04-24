@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { SpyObject } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AdminScriptsNewComponent } from "./new.component";
 
 describe("AdminScriptsNewComponent", () => {
@@ -22,10 +22,10 @@ describe("AdminScriptsNewComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        MockBawApiModule,
+
         AdminScriptsNewComponent,
       ],
-      providers: [provideRouter([])],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsNewComponent);

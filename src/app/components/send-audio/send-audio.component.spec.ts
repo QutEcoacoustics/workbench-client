@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { CMS } from "@baw-api/cms/cms.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assertCms } from "@test/helpers/api-common";
@@ -9,10 +9,11 @@ import { SendAudioComponent } from "./send-audio.component";
 
 describe("SendAudioComponent", () => {
   let spectator: Spectator<SendAudioComponent>;
+
   const createComponent = createComponentFactory({
     component: SendAudioComponent,
-    imports: [MockBawApiModule],
     providers: [
+      provideMockBawApi(),
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
     ],

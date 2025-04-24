@@ -4,7 +4,7 @@ import {
   mockProvider,
 } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
 import { Project } from "@models/Project";

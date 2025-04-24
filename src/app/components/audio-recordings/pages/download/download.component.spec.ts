@@ -17,7 +17,7 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -29,7 +29,7 @@ import { Subject } from "rxjs";
 import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { IconsModule } from "@shared/icons/icons.module";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
@@ -47,7 +47,6 @@ describe("DownloadAudioRecordingsComponent", () => {
     component: DownloadAudioRecordingsComponent,
     imports: [
       CacheModule,
-      MockBawApiModule,
       IconsModule,
 
       NgbCollapse,
@@ -59,6 +58,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     // We are relying on AudioRecordingsService's batchDownloadUrl so we will
     // mock out any API calls
     providers: [
+      provideMockBawApi(),
       mockProvider(ToastService),
       provideMockConfig(),
       BawSessionService,

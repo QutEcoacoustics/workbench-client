@@ -1,6 +1,5 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -37,6 +36,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -52,10 +52,8 @@ describe("MyProfileComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MyProfileComponent,
-    imports: [
-      MockBawApiModule,
-      IconsModule,
-    ],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
     stubsEnabled: false,
   });

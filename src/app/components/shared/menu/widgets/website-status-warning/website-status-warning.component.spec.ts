@@ -1,5 +1,4 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { MockProvider } from "ng-mocks";
 import { of } from "rxjs";
@@ -8,6 +7,7 @@ import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ActivatedRoute } from "@angular/router";
 import { KeysOfType } from "@helpers/advancedTypes";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { WebsiteStatusWarningComponent } from "./website-status-warning.component";
 
 describe("WebsiteCapabilityWarningComponent", () => {
@@ -16,10 +16,10 @@ describe("WebsiteCapabilityWarningComponent", () => {
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusWarningComponent,
-    imports: [MockBawApiModule],
     providers: [
-      { provide: ActivatedRoute, useValue: mockActivatedRoute() },
       MockProvider(WebsiteStatusService),
+      provideMockBawApi(),
+      { provide: ActivatedRoute, useValue: mockActivatedRoute() },
     ],
   });
 

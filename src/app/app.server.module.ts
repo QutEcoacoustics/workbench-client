@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { ServerModule } from "@angular/platform-server";
-import { providerTimeoutInterceptor } from "@services/timeout/provideTimeout";
+import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { environment } from "src/environments/environment";

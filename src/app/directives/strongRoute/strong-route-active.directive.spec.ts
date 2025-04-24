@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { provideRouter, Router } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { StrongRouteActiveDirective } from "./strong-route-active.directive";
 import { StrongRouteDirective } from "./strong-route.directive";
 

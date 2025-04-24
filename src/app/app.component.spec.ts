@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Writeable } from "@helpers/advancedTypes";
 import { DEFAULT_MENU } from "@helpers/page/defaultMenus";
 import { mockDefaultMenu } from "@helpers/page/defaultMenus.spec";
@@ -26,6 +25,7 @@ import { generatePageInfoResolvers } from "@test/helpers/general";
 import { Subject } from "rxjs";
 import { MenuButtonComponent } from "@menu/button/button.component";
 import { MockComponents } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AppComponent } from "./app.component";
 
 describe("AppComponent", () => {
@@ -37,12 +37,11 @@ describe("AppComponent", () => {
     componentMocks: [LoadingBarComponent],
     providers: [
       { provide: DEFAULT_MENU, useValue: mockDefaultMenu },
+      provideMockBawApi(),
       mockProvider(LoadingBarService, { value$: new Subject() }),
       Title,
     ],
     imports: [
-      MockBawApiModule,
-
       ...MockComponents(
         HeaderComponent,
         FooterComponent,

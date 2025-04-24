@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -26,7 +26,7 @@ import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
-import { PageTitleStrategy } from "src/app/app.component";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { RegionDetailsComponent } from "./details.component";
 
 const mock = {
@@ -44,11 +44,10 @@ describe("RegionDetailsComponent", () => {
   let spectator: SpectatorRouting<RegionDetailsComponent>;
 
   const createComponent = createRoutingFactory({
-    imports: [MockBawApiModule],
-    declarations: [mock.map, mock.card],
-    mocks: [ToastService],
     component: RegionDetailsComponent,
-    providers: [PageTitleStrategy],
+    declarations: [mock.map, mock.card],
+    providers: [PageTitleStrategy, provideMockBawApi()],
+    mocks: [ToastService],
   });
 
   assertPageInfo(RegionDetailsComponent, "test name", {

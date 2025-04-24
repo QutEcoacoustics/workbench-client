@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import {
   FORBIDDEN,

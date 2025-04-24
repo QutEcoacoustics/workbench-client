@@ -1,5 +1,5 @@
 import { ActivatedRoute } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AnalysisJob } from "@models/AnalysisJob";
@@ -26,7 +26,7 @@ describe("AnalysisJobComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnalysisJobComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   assertPageInfo<AnalysisJob>(AnalysisJobComponent, "Test Analysis Job", {

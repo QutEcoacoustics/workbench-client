@@ -1,5 +1,4 @@
 import { fakeAsync, flush, tick } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FolderRowComponent } from "@components/harvest/components/metadata-review/folder-row.component";
 import { WhitespaceComponent } from "@components/harvest/components/metadata-review/whitespace.component";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
@@ -37,6 +36,7 @@ import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { Inject } from "@angular/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
@@ -51,6 +51,7 @@ describe("MetadataReviewComponent", () => {
   const createComponent = createRoutingFactory({
     component: MetadataReviewComponent,
     providers: [
+      provideMockBawApi(),
       MockProvider(HarvestStagesService, {
         project: defaultProject,
         harvest: defaultHarvest,
@@ -58,7 +59,6 @@ describe("MetadataReviewComponent", () => {
       }),
     ],
     imports: [
-      MockBawApiModule,
       IconsModule,
       ConfirmationComponent,
       StatisticsComponent,

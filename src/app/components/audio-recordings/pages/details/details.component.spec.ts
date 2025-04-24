@@ -1,9 +1,9 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AudioRecording } from "@models/AudioRecording";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { PageTitleStrategy } from "src/app/app.component";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { AudioRecordingsDetailsComponent } from "./details.component";
 
 describe("AudioRecordingsDetailsComponent", () => {
@@ -12,8 +12,7 @@ describe("AudioRecordingsDetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AudioRecordingsDetailsComponent,
-    providers: [PageTitleStrategy],
-    imports: [MockBawApiModule],
+    providers: [PageTitleStrategy, provideMockBawApi()],
   });
 
   assertPageInfo<AudioRecording>(AudioRecordingsDetailsComponent, "11", {

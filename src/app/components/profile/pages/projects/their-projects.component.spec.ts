@@ -1,5 +1,5 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -27,7 +27,7 @@ describe("TheirProjectsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TheirProjectsComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

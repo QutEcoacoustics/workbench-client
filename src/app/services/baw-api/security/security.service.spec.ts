@@ -37,7 +37,7 @@ import { CookieService } from "ngx-cookie-service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { noop, Subject, throwError } from "rxjs";
 import { NgHttpCachingService } from "ng-http-caching";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";

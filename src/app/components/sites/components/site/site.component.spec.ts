@@ -1,6 +1,5 @@
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioEvent } from "@models/AudioEvent";
@@ -25,6 +24,7 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);
@@ -42,11 +42,8 @@ describe("SiteComponent", () => {
 
   const createComponent = createComponentFactory({
     component: SiteComponent,
-    imports: [
-      MockBawApiModule,
-      IconsModule,
-      mockMapComponent,
-    ],
+    imports: [IconsModule, mockMapComponent],
+    providers: [provideMockBawApi()],
   });
 
   function setup(project: Project, site: Site, region?: Region) {

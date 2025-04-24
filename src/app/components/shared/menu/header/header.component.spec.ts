@@ -1,4 +1,4 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MenuToggleComponent } from "@menu/menu-toggle/menu-toggle.component";
 import { PrimaryMenuComponent } from "@menu/primary-menu/primary-menu.component";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -20,13 +20,13 @@ describe("HeaderComponent", () => {
     providers: [
       MockProvider(ToastService),
       MockProvider(MenuService, { isFullscreen: false }),
+      provideMockBawApi(),
     ],
     declarations: [
       MockComponent(MenuToggleComponent),
       MockComponent(PrimaryMenuComponent),
       MockComponent(WebsiteStatusIndicatorComponent),
     ],
-    imports: [MockBawApiModule],
   });
 
   beforeEach(() => {

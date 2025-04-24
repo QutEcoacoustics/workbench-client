@@ -4,11 +4,10 @@ import {
   withInterceptorsFromDi,
 } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { NgModule, Provider } from "@angular/core";
+import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
-import { CacheModule } from "@services/cache/cache.module";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -104,9 +103,8 @@ export const mockProviders: Provider[] = [
   mockProvider(AudioEventImportFileService),
 ];
 
-@NgModule({
-  imports: [CacheModule],
-  providers: [
+export function provideMockBawApi(): (EnvironmentProviders | Provider)[] {
+  return [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: BawApiInterceptor,
@@ -121,6 +119,5 @@ export const mockProviders: Provider[] = [
     provideMockConfig(),
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
-  ],
-})
-export class MockBawApiModule {}
+  ];
+}

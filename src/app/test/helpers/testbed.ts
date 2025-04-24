@@ -4,6 +4,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Data, Params, provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -26,6 +27,7 @@ export const testFormImports = [
 ];
 
 export const testFormProviders = [
+  provideMockBawApi(),
   provideHttpClient(withInterceptorsFromDi()),
   provideHttpClientTesting(),
   provideRouter([]),

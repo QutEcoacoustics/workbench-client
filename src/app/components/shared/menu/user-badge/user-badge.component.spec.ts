@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
@@ -13,6 +12,7 @@ import { humanizedDuration } from "@test/helpers/dateTime";
 import { IsGhostUserPipe } from "@pipes/is-ghost-user/is-ghost-user.pipe";
 import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {
@@ -23,7 +23,6 @@ describe("UserBadgeComponent", () => {
   const createComponent = createRoutingFactory({
     component: UserBadgeComponent,
     imports: [
-      MockBawApiModule,
       IconsModule,
       TimeSinceComponent,
       LoadingComponent,
@@ -31,6 +30,7 @@ describe("UserBadgeComponent", () => {
       IsUnresolvedPipe,
       UserLinkComponent,
     ],
+    providers: [provideMockBawApi()],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>

@@ -6,16 +6,16 @@ import {
   withDisabledInitialNavigation,
   withInMemoryScrolling,
 } from "@angular/router";
-import { BawApiModule } from "@baw-api/baw-api.module";
 import { MenuModule } from "@menu/menu.module";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { provideConfig } from "@services/config/config.module";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
-import { providerTimeoutInterceptor } from "@services/timeout/provideTimeout";
+import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { RehydrationInterceptorService } from "@services/rehydration/rehydration.interceptor.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { provideBawApi } from "@baw-api/provide-baw-api";
 import { environment } from "../environments/environment";
 import { appPageComponents } from "./app.pages";
 import { routes } from "./app.routes";
@@ -43,7 +43,10 @@ export const appConfig: ApplicationConfig = {
       })
     ),
 
-    importProvidersFrom(BawApiModule, ...appLibraryImports),
+    importProvidersFrom(appLibraryImports),
+
+    provideBawApi(),
+    appLibraryImports,
 
     provideConfig(),
 

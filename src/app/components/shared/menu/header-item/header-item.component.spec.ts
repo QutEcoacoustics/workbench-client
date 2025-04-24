@@ -6,7 +6,7 @@ import {
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";
 import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";

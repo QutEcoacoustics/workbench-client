@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
@@ -15,9 +14,10 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
@@ -31,12 +31,9 @@ describe("AdminScriptsEditComponent", () => {
 
   function configureTestingModule(model?: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockBawApiModule,
-        AdminScriptsEditComponent,
-      ],
+      imports: [...appLibraryImports, AdminScriptsEditComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

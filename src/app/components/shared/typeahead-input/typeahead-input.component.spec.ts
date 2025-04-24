@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
@@ -10,6 +9,7 @@ import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { IconsModule } from "@shared/icons/icons.module";
 import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {
@@ -19,7 +19,8 @@ describe("TypeaheadInputComponent", () => {
 
   const createComponent = createHostFactory({
     component: TypeaheadInputComponent,
-    imports: [MockBawApiModule, IconsModule, NgbHighlight],
+    imports: [IconsModule, NgbHighlight],
+    providers: [provideMockBawApi()],
   });
 
   function setup(): void {

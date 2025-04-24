@@ -1,5 +1,4 @@
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -20,6 +19,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ProjectListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
@@ -28,10 +28,8 @@ describe("ProjectsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: ProjectListComponent,
-    imports: [
-      MockBawApiModule,
-      MockComponent(CardsComponent),
-    ],
+    imports: [MockComponent(CardsComponent)],
+    providers: [provideMockBawApi()],
   });
 
   function generateProjects(

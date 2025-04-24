@@ -1,6 +1,6 @@
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -29,7 +29,7 @@ describe("DownloadTableComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: DownloadTableComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   function interceptRecordingsApi(recordings: AudioRecording[]) {

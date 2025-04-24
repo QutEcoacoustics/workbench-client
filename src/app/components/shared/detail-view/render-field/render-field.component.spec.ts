@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
@@ -15,6 +14,7 @@ import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/da
 import { withDefaultZone } from "@test/helpers/mocks";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
@@ -24,7 +24,6 @@ describe("RenderFieldComponent", () => {
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
     imports: [
-      MockBawApiModule,
       DatetimeComponent,
       ZonedDateTimeComponent,
       DurationComponent,
@@ -33,7 +32,7 @@ describe("RenderFieldComponent", () => {
       CheckboxComponent,
       ModelLinkComponent,
     ],
-    providers: [provideRouter([])],
+    providers: [provideMockBawApi(), provideRouter([])],
   });
 
   const getElement = {

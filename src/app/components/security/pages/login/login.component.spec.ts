@@ -1,6 +1,6 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { LoginDetails } from "@models/data/LoginDetails";
@@ -21,7 +21,6 @@ import { clickButton, getElementByInnerText } from "@test/helpers/html";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Component } from "@angular/core";
-import { SecurityModule } from "@components/security/security.module";
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { modelData } from "@test/helpers/faker";
 import { User } from "@models/User";
@@ -58,14 +57,12 @@ describe("LoginComponent", () => {
     component: TestHostComponent,
     imports: [
       ...testFormImports,
-      MockBawApiModule,
-      SecurityModule,
       IconsModule,
 
       ToastComponent,
       FormComponent,
     ],
-    providers: testFormProviders,
+    providers: [...testFormProviders, provideMockBawApi()],
   });
 
   const component = () => spec.query(LoginComponent);

@@ -1,6 +1,5 @@
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
@@ -15,6 +14,7 @@ import { generateUser } from "@test/fakes/User";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AllUploadsComponent } from "./all-uploads.component";
 
 // the functionality that the project names are shown in the harvest list
@@ -28,11 +28,11 @@ describe("AllUploadsComponent", () => {
   const createComponent = createRoutingFactory({
     component: AllUploadsComponent,
     imports: [
-      MockBawApiModule,
       LoadingComponent,
       ConfirmationComponent,
       UserLinkComponent,
     ],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

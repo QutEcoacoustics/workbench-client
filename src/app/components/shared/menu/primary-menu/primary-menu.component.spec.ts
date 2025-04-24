@@ -1,6 +1,6 @@
 import { fakeAsync } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import {
   AuthTriggerData,
   BawSessionService,
@@ -62,6 +62,7 @@ describe("PrimaryMenuComponent", () => {
     component: PrimaryMenuComponent,
     providers: [
       MockProvider(ToastService),
+      provideMockBawApi(),
       provideRouter([]),
     ],
     declarations: [
@@ -70,7 +71,6 @@ describe("PrimaryMenuComponent", () => {
       HeaderDropdownComponent,
     ],
     imports: [
-      MockBawApiModule,
       IconsModule,
       MockDirective(StrongRouteActiveDirective),
       MockDirective(StrongRouteDirective),

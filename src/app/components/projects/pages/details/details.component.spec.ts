@@ -1,6 +1,6 @@
 import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -32,7 +32,6 @@ import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
-import { PageTitleStrategy } from "src/app/app.component";
 import { ProjectDetailsComponent } from "./details.component";
 
 const mock = {
@@ -50,11 +49,10 @@ describe("ProjectDetailsComponent", () => {
   let component: ProjectDetailsComponent;
 
   const createComponent = createRoutingFactory({
-    imports: [MockBawApiModule],
-    declarations: [mock.map, mock.card],
-    mocks: [ToastService],
     component: ProjectDetailsComponent,
-    providers: [PageTitleStrategy],
+    declarations: [mock.map, mock.card],
+    providers: [provideMockBawApi()],
+    mocks: [ToastService],
   });
   const emptyResponse = [[]];
 

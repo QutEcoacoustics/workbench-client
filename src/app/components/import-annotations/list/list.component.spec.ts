@@ -3,7 +3,7 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -31,7 +31,8 @@ describe("AnnotationsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationsListComponent,
-    imports: [MockBawApiModule, UserLinkComponent],
+    imports: [UserLinkComponent],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

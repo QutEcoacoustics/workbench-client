@@ -3,7 +3,6 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -13,6 +12,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { Subject } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { modelData } from "@test/helpers/faker";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import schema from "../audio-event-import.schema.json";
 import { NewAnnotationsComponent } from "./new.component";
 
@@ -25,7 +25,7 @@ describe("NewAnnotationsComponent", () => {
   const createComponent = createRoutingFactory({
     component: NewAnnotationsComponent,
     declarations: [MockComponent(FormComponent)],
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

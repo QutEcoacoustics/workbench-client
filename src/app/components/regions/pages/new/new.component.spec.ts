@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Router, RouterModule, RouterOutlet } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -41,8 +41,8 @@ describe("RegionsNewComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: RegionNewComponent,
-    imports: [...testFormImports, MockBawApiModule, FormComponent],
-    providers: testFormProviders,
+    imports: [...testFormImports, FormComponent],
+    providers: [...testFormProviders, provideMockBawApi()],
     mocks: [ToastService],
     stubsEnabled: true,
   });
@@ -150,7 +150,7 @@ describe("routing and resolvers", () => {
       RegionNewComponent,
       RouterModule.forRoot([...nestedRoutes, ...shallowRoutes]),
     ])
-      .keep(MockBawApiModule, { export: true })
+      .provide(provideMockBawApi())
       .provide({ provide: ProjectsService, useValue: projectsService });
 
     // augment builder with out app level module imports

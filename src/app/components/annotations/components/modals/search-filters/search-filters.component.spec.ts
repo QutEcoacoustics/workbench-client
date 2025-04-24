@@ -1,10 +1,10 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
@@ -14,7 +14,8 @@ describe("SearchFiltersModalComponent", () => {
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(): void {

@@ -1,6 +1,5 @@
 import { HttpClient, HttpContext, HttpParams, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { provideHttpClientTesting, TestRequest } from "@angular/common/http/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { User } from "@models/User";
 import {
   createHttpFactory,
@@ -21,6 +20,7 @@ import { NgHttpCachingService } from "ng-http-caching";
 import { BawSessionService } from "./baw-session.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
+import { provideBawApi } from "./provide-baw-api";
 
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
@@ -30,8 +30,8 @@ describe("BawApiInterceptor", () => {
 
   const createService = createHttpFactory({
     service: BawSessionService,
-    imports: [MockBawApiModule],
     providers: [
+      provideBawApi(),
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
     ],

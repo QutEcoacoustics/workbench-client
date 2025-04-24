@@ -1,4 +1,4 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
@@ -11,7 +11,8 @@ describe("newHarvestComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: HarvestNewComponent,
-    imports: [MockBawApiModule, TitleComponent],
+    imports: [TitleComponent],
+    providers: [provideMockBawApi()],
     mocks: [ToastService, HarvestsService],
   });
 

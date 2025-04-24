@@ -3,7 +3,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -29,6 +28,7 @@ import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
@@ -47,7 +47,8 @@ describe("AudioEventCardComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationEventCardComponent,
-    imports: [MockBawApiModule, IconsModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(): void {

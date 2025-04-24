@@ -5,7 +5,7 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provideMockConfig";
+import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { testApiConfig } from "@services/config/configMock.service";
 import { assertOk } from "@test/helpers/general";
 import { noop } from "rxjs";

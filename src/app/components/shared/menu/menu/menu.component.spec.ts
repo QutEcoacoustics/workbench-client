@@ -1,6 +1,5 @@
 import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuType } from "@helpers/generalTypes";
@@ -41,6 +40,7 @@ import {
 import { generateUser } from "@test/fakes/User";
 import { OrderedSet } from "immutable";
 import { MockProvider } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 import { MenuComponent } from "./menu.component";
@@ -82,7 +82,6 @@ describe("MenuComponent", () => {
     component: MenuComponent,
     imports: [
       IconsModule,
-      MockBawApiModule,
       NgbModalModule,
       NgbTooltipModule,
       MenuButtonComponent,
@@ -92,6 +91,7 @@ describe("MenuComponent", () => {
       MockWidgetComponent,
       MockModalComponent,
     ],
+    providers: [provideMockBawApi()],
   });
   const menuTypes: MenuType[] = ["action", "secondary"];
 

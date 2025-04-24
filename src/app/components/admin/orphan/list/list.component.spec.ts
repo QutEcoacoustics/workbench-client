@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { appLibraryImports } from "src/app/app.module";
 import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminOrphansComponent } from "./list.component";
 
 describe("AdminOrphansComponent", () => {
@@ -19,10 +19,9 @@ describe("AdminOrphansComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        MockBawApiModule,
         AdminOrphansComponent,
       ],
-      providers: [provideRouter([])],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminOrphansComponent);

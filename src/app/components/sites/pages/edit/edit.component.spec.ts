@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -31,9 +30,10 @@ import { SiteEditComponent } from "./edit.component";
 
 describe("SiteEditComponent", () => {
   let spec: SpectatorRouting<SiteEditComponent>;
+
   const createComponent = createRoutingFactory({
     component: SiteEditComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: testFormImports,
     providers: testFormProviders,
     declarations: [FormComponent, MockComponent(MapComponent)],
     mocks: [ToastService],

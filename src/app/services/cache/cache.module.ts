@@ -1,13 +1,13 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { NgHttpCachingModule } from "ng-http-caching";
+import { provideNgHttpCaching } from "ng-http-caching";
 import { CacheLoggingService } from "./cache-logging.service";
 import { cacheSettings, CACHE_SETTINGS } from "./cache-settings";
 import { defaultCachingConfig } from "./ngHttpCachingConfig";
 
 @NgModule({
-  imports: [NgHttpCachingModule.forRoot(defaultCachingConfig)],
   providers: [
+    provideNgHttpCaching(defaultCachingConfig),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CacheLoggingService,
