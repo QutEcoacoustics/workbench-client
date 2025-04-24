@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockConfigModule } from "@services/config/configMock.module";
-import { appLibraryImports } from "src/app/app.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
+import { appLibraryImports } from "src/app/app.config";
 import { DataRequestComponent } from "./data-request.component";
 
 xdescribe("DataRequestComponent", () => {
@@ -9,11 +9,8 @@ xdescribe("DataRequestComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        MockConfigModule,
-        DataRequestComponent,
-      ],
+      imports: [...appLibraryImports, DataRequestComponent],
+      providers: [provideMockConfig()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataRequestComponent);

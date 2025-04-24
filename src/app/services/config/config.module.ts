@@ -1,6 +1,7 @@
 import { HttpBackend } from "@angular/common/http";
 import {
-  NgModule,
+  EnvironmentProviders,
+  Provider,
   inject,
   provideAppInitializer,
 } from "@angular/core";
@@ -10,8 +11,8 @@ import { ImportsService } from "@services/import/import.service";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
 
-@NgModule({
-  providers: [
+export function provideConfig(): (EnvironmentProviders | Provider)[] {
+  return [
     provideAppInitializer(() => {
       const initializerCallback = AppInitializer.initializerFactory(
         inject(API_CONFIG, { optional: true }),
@@ -28,8 +29,5 @@ import { API_CONFIG, API_ROOT } from "./config.tokens";
       useFactory: AppInitializer.apiRootFactory,
       deps: [ConfigService],
     },
-    ConfigService,
-    ImportsService,
-  ],
-})
-export class ConfigModule {}
+  ];
+}

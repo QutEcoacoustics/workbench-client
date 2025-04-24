@@ -1,7 +1,7 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { destroyGoogleMaps } from "@test/helpers/googleMaps";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { GoogleMapsState, MapsService } from "./maps.service";
 
 describe("MapsService", () => {
@@ -9,7 +9,7 @@ describe("MapsService", () => {
 
   const createService = createServiceFactory({
     service: MapsService,
-    imports: [MockConfigModule],
+    providers: [provideMockConfig()],
   });
 
   function scriptUrl(): string {

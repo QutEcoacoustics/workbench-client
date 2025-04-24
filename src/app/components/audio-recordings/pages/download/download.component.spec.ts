@@ -17,7 +17,7 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -46,7 +46,6 @@ describe("DownloadAudioRecordingsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
-      MockConfigModule,
       CacheModule,
       MockBawApiModule,
       IconsModule,
@@ -61,6 +60,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     // mock out any API calls
     providers: [
       mockProvider(ToastService),
+      provideMockConfig(),
       BawSessionService,
       BawApiService,
       AudioRecordingsService,

@@ -11,7 +11,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { MockDirective, MockProvider } from "ng-mocks";
@@ -29,12 +29,12 @@ describe("MenuLinkComponent", () => {
   const createHost = createHostFactory({
     component: MenuLinkComponent,
     imports: [
-      MockConfigModule,
       NgbTooltipModule,
       IconsModule,
       MockDirective(StrongRouteDirective),
       MockDirective(StrongRouteActiveDirective),
     ],
+    providers: [provideMockConfig()],
   });
 
   function getWrapper() {

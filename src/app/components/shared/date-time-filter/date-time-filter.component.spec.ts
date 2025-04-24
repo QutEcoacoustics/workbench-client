@@ -4,7 +4,7 @@ import {
   mockProvider,
 } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
 import { Project } from "@models/Project";
@@ -24,12 +24,11 @@ describe("AudioRecordingsFilter", () => {
   const createComponent = createRoutingFactory({
     component: DateTimeFilterComponent,
     imports: [
-      MockConfigModule,
       IconsModule,
       CacheModule,
       TimeComponent,
     ],
-    providers: [mockProvider(ToastService)],
+    providers: [mockProvider(ToastService), provideMockConfig()],
   });
 
   function setup(project: Project): void {

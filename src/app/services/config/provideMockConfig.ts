@@ -1,11 +1,10 @@
-import { NgModule } from "@angular/core";
+import { Provider } from "@angular/core";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { ConfigService } from "./config.service";
 import { API_ROOT, API_CONFIG } from "./config.tokens";
-import { ConfigMockService, testApiConfig } from "./configMock.service";
+import { testApiConfig } from "./configMock.service";
 
-@NgModule({
-  providers: [
+export function provideMockConfig(): Provider[] {
+  return [
     {
       provide: API_ROOT,
       useValue: testApiConfig.endpoints.apiRoot,
@@ -16,10 +15,5 @@ import { ConfigMockService, testApiConfig } from "./configMock.service";
         resolve(testApiConfig);
       }),
     },
-    {
-      provide: ConfigService,
-      useClass: ConfigMockService,
-    },
-  ],
-})
-export class MockConfigModule {}
+  ];
+}

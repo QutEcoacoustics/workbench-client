@@ -8,7 +8,7 @@ import { NgModule, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { CacheModule } from "@services/cache/cache.module";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import { MockConfigModule } from "../config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -105,7 +105,7 @@ export const mockProviders: Provider[] = [
 ];
 
 @NgModule({
-  imports: [MockConfigModule, CacheModule],
+  imports: [CacheModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -118,6 +118,7 @@ export const mockProviders: Provider[] = [
     ...serviceTokens,
     ...serviceResolvers,
     ...mockProviders,
+    provideMockConfig(),
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
   ],

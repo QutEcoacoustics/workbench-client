@@ -14,7 +14,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
 import { CardComponent } from "@shared/model-cards/card/card.component";
@@ -29,6 +28,7 @@ import { BehaviorSubject } from "rxjs";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -43,7 +43,6 @@ describe("HomeComponent", () => {
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
       MockBawApiModule,
-      MockConfigModule,
       IconsModule,
       LoadingComponent,
       AsyncPipe,
@@ -51,6 +50,7 @@ describe("HomeComponent", () => {
       TitleCasePipe,
       WithLoadingPipe,
     ],
+    providers: [provideMockConfig()],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

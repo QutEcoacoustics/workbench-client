@@ -2,11 +2,11 @@ import { TestBed } from "@angular/core/testing";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
 import { API_ROOT } from "@services/config/config.tokens";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { INJECTOR } from "@angular/core";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { AbstractModel } from "./AbstractModel";
 import {
   BawAttributeMeta,
@@ -346,8 +346,10 @@ describe("Attribute Decorators", () => {
 
       beforeEach(() => {
         TestBed.configureTestingModule({
-          imports: [MockConfigModule],
-          providers: [{ provide: ASSOCIATION_INJECTOR, useExisting: INJECTOR }],
+          providers: [
+            { provide: ASSOCIATION_INJECTOR, useExisting: INJECTOR },
+            provideMockConfig(),
+          ],
         }).compileComponents();
         injector = TestBed.inject(ASSOCIATION_INJECTOR);
         apiRoot = TestBed.inject(API_ROOT);

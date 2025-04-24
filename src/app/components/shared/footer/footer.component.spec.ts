@@ -8,7 +8,7 @@ import {
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { MockDirective } from "ng-mocks";
@@ -20,10 +20,8 @@ describe("FooterComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: FooterComponent,
-    imports: [
-      MockConfigModule,
-      MockDirective(StrongRouteActiveDirective),
-    ],
+    imports :[MockDirective(StrongRouteActiveDirective)],
+    providers: [provideMockConfig()],
   });
 
   beforeEach(() => {

@@ -1,6 +1,5 @@
 import { APP_ID, ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
 import {
   provideRouter,
   TitleStrategy,
@@ -10,7 +9,7 @@ import {
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { MenuModule } from "@menu/menu.module";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
-import { ConfigModule } from "@services/config/config.module";
+import { provideConfig } from "@services/config/config.module";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { providerTimeoutInterceptor } from "@services/timeout/provideTimeout";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
@@ -41,16 +40,12 @@ export const appConfig: ApplicationConfig = {
       withDisabledInitialNavigation(),
       withInMemoryScrolling({
         scrollPositionRestoration: "enabled",
-      }),
+      })
     ),
 
-    importProvidersFrom(
-      BrowserModule,
-      ConfigModule,
-      BawApiModule,
+    importProvidersFrom(BawApiModule, ...appLibraryImports),
 
-      ...appLibraryImports,
-    ),
+    provideConfig(),
 
     // Timeout API requests after set period
     providerTimeoutInterceptor({ timeout: environment.browserTimeout }),

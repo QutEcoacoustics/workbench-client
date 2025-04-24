@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provideMockConfig";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import {
   FORBIDDEN,
@@ -16,7 +16,8 @@ import { ErrorHandlerComponent } from "./error-handler.component";
 
 @Component({
   template: "<baw-error-handler [error]='error'></baw-error-handler>",
-  imports: [ErrorHandlerComponent, MockConfigModule],
+  imports: [ErrorHandlerComponent],
+  providers: [provideMockConfig()],
 })
 class MockComponent implements OnInit {
   public error: BawApiError;
@@ -76,12 +77,8 @@ describe("ErrorHandlerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MockConfigModule,
-        ErrorHandlerComponent,
-        MockComponent,
-      ],
-      providers: [provideRouter([])],
+      imports: [ErrorHandlerComponent, MockComponent],
+      providers: [provideRouter([]), provideMockConfig()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorHandlerComponent);
