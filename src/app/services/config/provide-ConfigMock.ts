@@ -1,7 +1,8 @@
 import { Provider } from "@angular/core";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { API_ROOT, API_CONFIG } from "./config.tokens";
-import { testApiConfig } from "./configMock.service";
+import { ConfigMockService, testApiConfig } from "./configMock.service";
+import { ConfigService } from "./config.service";
 
 export function provideMockConfig(): Provider[] {
   return [
@@ -14,6 +15,10 @@ export function provideMockConfig(): Provider[] {
       useValue: new Promise<Configuration>((resolve) => {
         resolve(testApiConfig);
       }),
+    },
+    {
+      provide: ConfigService,
+      useClass: ConfigMockService,
     },
   ];
 }
