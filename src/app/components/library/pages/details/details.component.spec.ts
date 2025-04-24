@@ -1,7 +1,6 @@
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { libraryRoute } from "@components/library/library.menus";
-import { LibraryModule } from "@components/library/library.module";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -15,7 +14,6 @@ describe("AnnotationComponent", () => {
   validateBawClientPage(
     libraryRoute,
     AnnotationComponent,
-    [LibraryModule],
     "/library/123/audio_events/123",
     "Annotation",
     (spec) => {

@@ -5,7 +5,7 @@ import { TestBed } from "@angular/core/testing";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ToastService } from "@services/toasts/toasts.service";
 import { mockProvider } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 import { associationInjectorProvider } from "./association-injector.factory";
 

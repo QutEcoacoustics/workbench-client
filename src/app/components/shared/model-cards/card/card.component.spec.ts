@@ -22,7 +22,7 @@ import {
 } from "@angular/common/http";
 import { AsyncPipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {

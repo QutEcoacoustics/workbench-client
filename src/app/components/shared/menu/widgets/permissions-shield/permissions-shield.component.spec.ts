@@ -26,7 +26,7 @@ import { of, Subject } from "rxjs";
 import { Harvest } from "@models/Harvest";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { PermissionsShieldComponent } from "./permissions-shield.component";
 
 const mockUserBadge = MockComponent(UserBadgeComponent);

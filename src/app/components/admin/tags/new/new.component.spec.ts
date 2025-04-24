@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { TagType } from "@models/Tag";

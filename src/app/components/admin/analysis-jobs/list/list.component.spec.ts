@@ -26,7 +26,7 @@ describe("AnalysisJobComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AdminAnalysisJobsComponent,
-    providers: [provideMockBawApi(0)],
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(function () {

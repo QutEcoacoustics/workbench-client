@@ -6,7 +6,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptsNewComponent } from "./new.component";
 
 describe("AdminScriptsNewComponent", () => {

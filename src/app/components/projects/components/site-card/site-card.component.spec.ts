@@ -14,7 +14,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {

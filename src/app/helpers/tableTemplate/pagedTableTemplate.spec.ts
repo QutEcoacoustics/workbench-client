@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";

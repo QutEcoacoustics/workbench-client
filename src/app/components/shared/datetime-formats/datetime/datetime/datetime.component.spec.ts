@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { DateTime } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";

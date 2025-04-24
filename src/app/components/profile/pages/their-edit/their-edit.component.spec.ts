@@ -6,7 +6,7 @@ import { User } from "@models/User";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TheirEditComponent } from "./their-edit.component";
 
 describe("TheirProfileEditComponent", () => {

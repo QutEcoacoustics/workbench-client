@@ -12,7 +12,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { Subject } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { modelData } from "@test/helpers/faker";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import schema from "../audio-event-import.schema.json";
 import { NewAnnotationsComponent } from "./new.component";
 

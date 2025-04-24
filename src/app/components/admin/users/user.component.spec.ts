@@ -1,6 +1,6 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { theirEditMenuItem } from "@components/profile/profile.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { User } from "@models/User";

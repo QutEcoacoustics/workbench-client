@@ -36,7 +36,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {

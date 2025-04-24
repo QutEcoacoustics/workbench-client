@@ -1,5 +1,5 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";

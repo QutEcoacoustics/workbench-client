@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";

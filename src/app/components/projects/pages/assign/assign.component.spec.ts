@@ -6,7 +6,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ToastService } from "@services/toasts/toasts.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";

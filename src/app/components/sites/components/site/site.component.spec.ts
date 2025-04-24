@@ -24,7 +24,7 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);

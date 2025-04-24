@@ -1,7 +1,7 @@
 import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { IfLoggedInComponent } from "./can.component";
 

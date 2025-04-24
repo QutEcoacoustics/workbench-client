@@ -15,7 +15,7 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnalysesComponent } from "./list.component";
 
 describe("AnalysesComponent", () => {

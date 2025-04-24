@@ -7,7 +7,7 @@ import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ActivatedRoute } from "@angular/router";
 import { KeysOfType } from "@helpers/advancedTypes";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { WebsiteStatusWarningComponent } from "./website-status-warning.component";
 
 describe("WebsiteCapabilityWarningComponent", () => {

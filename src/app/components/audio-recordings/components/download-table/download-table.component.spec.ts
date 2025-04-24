@@ -1,6 +1,6 @@
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";

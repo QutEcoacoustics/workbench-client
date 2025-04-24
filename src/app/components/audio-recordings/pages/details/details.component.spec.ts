@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AudioRecording } from "@models/AudioRecording";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";

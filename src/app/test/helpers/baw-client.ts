@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -10,7 +10,6 @@ import { BawClientComponent } from "@shared/baw-client/baw-client.component";
 export function validateBawClientPage<Component extends Type<any>>(
   routes: StrongRoute,
   component: Component,
-  modules: any[],
   route: string,
   validatePageLoaded: string | string[] | ((text: string) => boolean),
   interceptApiRequests?: (spec: SpectatorRouting<Component>) => void
@@ -21,7 +20,6 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   const createComponent = createRoutingFactory({
     component,
-    imports: modules,
     providers: [provideMockBawApi()],
     routes: compiledRoutes,
     stubsEnabled: false,

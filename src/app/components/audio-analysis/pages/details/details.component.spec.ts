@@ -1,5 +1,5 @@
 import { ActivatedRoute } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AnalysisJob } from "@models/AnalysisJob";

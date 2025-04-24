@@ -9,7 +9,7 @@ import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { PermissionsComponent } from "./permissions.component";
 
 // TODO Implement tests

@@ -19,7 +19,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { MockComponent } from "ng-mocks";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ProjectListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {

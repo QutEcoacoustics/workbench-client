@@ -15,7 +15,7 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateTag } from "@test/fakes/Tag";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {

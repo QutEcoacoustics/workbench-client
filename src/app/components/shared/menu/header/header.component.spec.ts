@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuToggleComponent } from "@menu/menu-toggle/menu-toggle.component";
 import { PrimaryMenuComponent } from "@menu/primary-menu/primary-menu.component";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";

@@ -1,6 +1,6 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AuthToken, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";

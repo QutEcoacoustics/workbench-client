@@ -12,7 +12,7 @@ import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {

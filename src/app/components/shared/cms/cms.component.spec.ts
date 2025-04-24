@@ -11,7 +11,7 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {

@@ -11,7 +11,7 @@ import {
 } from "@ngneat/spectator";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuState, MenuToggleComponent } from "./menu-toggle.component";
 
 describe("MenuToggleComponent", () => {

@@ -4,7 +4,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {

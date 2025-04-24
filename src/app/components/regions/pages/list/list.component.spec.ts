@@ -18,7 +18,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { RegionListComponent } from "./list.component";
 
 describe("RegionsListComponent", () => {

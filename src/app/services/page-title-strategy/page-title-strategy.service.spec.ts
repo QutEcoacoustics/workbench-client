@@ -29,7 +29,7 @@ import { MenuButtonComponent } from "@menu/button/button.component";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { Writeable } from "@helpers/advancedTypes";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { PageTitleStrategy } from "./page-title-strategy.service";
 
 describe("PageTitleStrategy", () => {

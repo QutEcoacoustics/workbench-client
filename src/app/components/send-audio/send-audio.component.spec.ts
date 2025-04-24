@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CMS } from "@baw-api/cms/cms.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assertCms } from "@test/helpers/api-common";

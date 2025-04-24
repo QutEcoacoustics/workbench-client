@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Duration, DurationLikeObject } from "luxon";
 import { modelData } from "@test/helpers/faker";
 import { assertTooltip } from "@test/helpers/html";

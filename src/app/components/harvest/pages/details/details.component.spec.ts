@@ -23,7 +23,7 @@ import { TitleComponent } from "@components/harvest/components/shared/title.comp
 import { getElementByInnerText } from "@test/helpers/html";
 import { IconsModule } from "@shared/icons/icons.module";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HarvestDetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {

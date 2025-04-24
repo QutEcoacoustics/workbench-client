@@ -36,7 +36,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { fakeAsync } from "@angular/core/testing";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {

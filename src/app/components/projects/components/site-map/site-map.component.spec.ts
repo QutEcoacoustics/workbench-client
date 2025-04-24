@@ -16,7 +16,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteMapComponent } from "./site-map.component";
 
 const mockMap = MockComponent(MapComponent);

@@ -1,5 +1,5 @@
 import { Spectator, createRoutingFactory, SpyObject } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";

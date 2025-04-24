@@ -4,7 +4,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ConfirmPasswordComponent } from "./confirm-account.component";
 import schema from "./confirm-account.schema.json";
 

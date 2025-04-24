@@ -3,7 +3,7 @@ import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { ServerTimeout, WebsiteStatus } from "@models/WebsiteStatus";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { assertTooltip } from "@test/helpers/html";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { MockProvider } from "ng-mocks";

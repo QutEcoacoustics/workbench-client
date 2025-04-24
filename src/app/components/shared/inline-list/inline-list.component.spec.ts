@@ -1,5 +1,5 @@
 import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { modelData } from "@test/helpers/faker";
 import { InlineListComponent } from "./inline-list.component";
 

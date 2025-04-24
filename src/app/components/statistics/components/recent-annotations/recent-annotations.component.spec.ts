@@ -1,6 +1,6 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import {

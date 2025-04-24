@@ -1,7 +1,7 @@
 import { Component, OnInit, QueryList } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormComponent } from "@shared/form/form.component";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import {
   FormCheckingComponent,
   FormTouchedGuard,

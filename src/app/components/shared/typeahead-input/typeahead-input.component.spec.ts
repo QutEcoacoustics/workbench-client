@@ -9,7 +9,7 @@ import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { IconsModule } from "@shared/icons/icons.module";
 import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {

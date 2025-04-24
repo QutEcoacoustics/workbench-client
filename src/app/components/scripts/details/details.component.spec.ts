@@ -20,7 +20,7 @@ import { Subject } from "rxjs";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {

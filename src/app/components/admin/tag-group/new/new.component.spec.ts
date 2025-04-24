@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SpyObject } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";

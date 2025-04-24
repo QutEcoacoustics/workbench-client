@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as AssociatedModel } from "@baw-api/mock/baseApiMock.service";
 

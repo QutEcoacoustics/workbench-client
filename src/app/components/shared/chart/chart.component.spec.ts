@@ -4,7 +4,7 @@ import { Data } from "vega-lite/build/src/data";
 import { Map } from "immutable";
 import { fakeAsync } from "@angular/core/testing";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ChartComponent } from "./chart.component";
 
 //! this component could not be tested with print styles. Manually test this

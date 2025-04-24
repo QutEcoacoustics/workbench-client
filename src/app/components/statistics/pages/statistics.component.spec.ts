@@ -1,6 +1,6 @@
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { Errorable } from "@helpers/advancedTypes";

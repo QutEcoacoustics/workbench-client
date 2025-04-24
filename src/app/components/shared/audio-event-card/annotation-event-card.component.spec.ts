@@ -28,7 +28,7 @@ import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {

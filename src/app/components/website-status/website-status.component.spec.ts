@@ -1,5 +1,5 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";

@@ -1,5 +1,5 @@
 import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { MockComponent } from "ng-mocks";
 import { EventSummaryReport } from "@models/EventSummaryReport";

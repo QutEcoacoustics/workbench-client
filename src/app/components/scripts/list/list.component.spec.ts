@@ -7,7 +7,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { appLibraryImports } from "src/app/app.config";
 import { provideRouter } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptsComponent } from "./list.component";
 
 describe("AdminScriptsComponent", () => {

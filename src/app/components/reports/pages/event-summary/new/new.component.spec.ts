@@ -13,7 +13,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   BucketSize,
   Chart,

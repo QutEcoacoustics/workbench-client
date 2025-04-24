@@ -3,7 +3,7 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";

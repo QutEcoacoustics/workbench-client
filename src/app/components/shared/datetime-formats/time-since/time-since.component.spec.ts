@@ -3,7 +3,7 @@ import { DateTime, Duration } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TimeSinceComponent } from "./time-since.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion

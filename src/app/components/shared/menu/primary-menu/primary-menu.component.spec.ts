@@ -1,6 +1,6 @@
 import { fakeAsync } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AuthTriggerData,
   BawSessionService,

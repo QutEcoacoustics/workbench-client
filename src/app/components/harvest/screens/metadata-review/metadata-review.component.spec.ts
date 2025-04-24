@@ -36,7 +36,7 @@ import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { Inject } from "@angular/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {

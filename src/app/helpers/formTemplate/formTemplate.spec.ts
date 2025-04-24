@@ -11,8 +11,8 @@ import {
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { FormComponent } from "@shared/form/form.component";
+import { appLibraryImports } from "src/app/app.config";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
 class MockModel extends AbstractModel {
@@ -59,6 +59,7 @@ describe("formTemplate", () => {
   let spec: SpectatorRouting<MockComponent>;
   let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
+
   const createComponent = createRoutingFactory({
     component: MockComponent,
     imports: appLibraryImports,

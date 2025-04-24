@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";

@@ -22,7 +22,7 @@ import { SitesService } from "@baw-api/site/sites.service";
 import { ConfigService } from "@services/config/config.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);

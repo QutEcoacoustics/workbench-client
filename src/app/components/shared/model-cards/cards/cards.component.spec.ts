@@ -12,7 +12,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { List } from "immutable";
 import { MockComponent } from "ng-mocks";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CardComponent } from "../card/card.component";
 import { CardsComponent } from "./cards.component";
 

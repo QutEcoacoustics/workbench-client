@@ -12,7 +12,7 @@ import { humanizedDuration } from "@test/helpers/dateTime";
 import { IsGhostUserPipe } from "@pipes/is-ghost-user/is-ghost-user.pipe";
 import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {

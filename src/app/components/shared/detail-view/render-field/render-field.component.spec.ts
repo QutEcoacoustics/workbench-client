@@ -14,7 +14,7 @@ import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/da
 import { withDefaultZone } from "@test/helpers/mocks";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { provideRouter } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 

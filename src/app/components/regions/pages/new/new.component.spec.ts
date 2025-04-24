@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { Router, RouterModule, RouterOutlet } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   projectResolvers,
   ProjectsService,

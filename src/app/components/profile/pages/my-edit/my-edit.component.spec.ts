@@ -7,7 +7,7 @@ import { generateUser } from "@test/fakes/User";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MyEditComponent } from "./my-edit.component";
 
 describe("MyProfileEditComponent", () => {

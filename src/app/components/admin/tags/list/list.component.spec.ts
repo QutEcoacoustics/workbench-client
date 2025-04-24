@@ -15,7 +15,7 @@ import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { provideRouter } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { appLibraryImports } from "src/app/app.config";
 import { AdminTagsComponent } from "./list.component";
 

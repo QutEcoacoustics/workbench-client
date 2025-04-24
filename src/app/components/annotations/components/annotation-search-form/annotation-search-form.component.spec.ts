@@ -3,7 +3,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";

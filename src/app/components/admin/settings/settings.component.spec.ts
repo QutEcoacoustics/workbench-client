@@ -1,7 +1,7 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { CACHE_SETTINGS, CacheSettings } from "@services/cache/cache-settings";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminSettingsComponent } from "./settings.component";
 
 describe("AdminSettingsComponent", () => {

@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionNewComponent } from "@components/regions/pages/new/new.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";

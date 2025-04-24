@@ -32,7 +32,7 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TheirProfileComponent } from "./their-profile.component";
 
 describe("TheirProfileComponent", () => {

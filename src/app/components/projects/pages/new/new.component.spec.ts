@@ -1,4 +1,4 @@
-import { provideMockBawApi } from "@baw-api/provide-bawApiMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   createRoutingFactory,
