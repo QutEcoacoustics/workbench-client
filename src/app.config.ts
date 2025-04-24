@@ -1,7 +1,11 @@
 import { APP_ID, ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
-import { provideRouter, TitleStrategy } from "@angular/router";
+import {
+  provideRouter,
+  TitleStrategy,
+  withInMemoryScrolling,
+} from "@angular/router";
 import { BawApiModule } from "@baw-api/baw-api.module";
 import { ErrorModule } from "@components/error/error.module";
 import { HomeModule } from "@components/home/home.module";
@@ -14,10 +18,9 @@ import { RehydrationModule } from "@services/rehydration/rehydration.module";
 import { BawTimeoutModule } from "@services/timeout/timeout.module";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
-import { AppRoutingModule } from "./app/app-routing.module";
-import { environment } from "./environments/environment";
-import { routes } from "./app.routes";
 import { appPageComponents } from "./app.pages";
+import { routes } from "./app.routes";
+import { environment } from "./environments/environment";
 
 export const appLibraryImports = [
   ReactiveFormsModule,
@@ -29,13 +32,23 @@ export const appLibraryImports = [
 export const appConfig: ApplicationConfig = {
   providers: [
     ...appPageComponents,
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        /*
+         * Initial navigation triggers resolvers before APP_INITIALIZER which
+         * means that the config has not been loaded. Disabling this fixes the
+         * problem. https://github.com/angular/angular/issues/14588
+         */
+        // initialNavigation: "disabled",
+        scrollPositionRestoration: "enabled",
+      })
+    ),
 
     importProvidersFrom(
       // Timeout API requests after set period
       BawTimeoutModule.forRoot({ timeout: environment.browserTimeout }),
       BrowserModule,
-      AppRoutingModule,
       ConfigModule,
       BawApiModule,
       // Rehydrate data from SSR. This must be set after BawApiModule so that the

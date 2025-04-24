@@ -1,3 +1,4 @@
+import { Routes } from "@angular/router";
 import { aboutRoute } from "@components/about/about.menus";
 import { adminRoute } from "@components/admin/admin.menus";
 import { verificationRoute } from "@components/annotations/annotation.routes";
@@ -9,9 +10,15 @@ import { harvestsRoute } from "@components/harvest/harvest.routes";
 import { annotationsImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { libraryRoute } from "@components/library/library.menus";
 import { listenRoute } from "@components/listen/listen.menus";
-import { myAccountRoute, theirProfileRoute } from "@components/profile/profile.menus";
+import {
+  myAccountRoute,
+  theirProfileRoute,
+} from "@components/profile/profile.menus";
 import { projectsRoute } from "@components/projects/projects.routes";
-import { regionsRoute, shallowRegionsRoute } from "@components/regions/regions.routes";
+import {
+  regionsRoute,
+  shallowRegionsRoute,
+} from "@components/regions/regions.routes";
 import { reportProblemsRoute } from "@components/report-problem/report-problem.menus";
 import { reportsRoute } from "@components/reports/reports.routes";
 import { scriptsRoute } from "@components/scripts/scripts.routes";
@@ -22,9 +29,38 @@ import { sitesRoute } from "@components/sites/sites.routes";
 import { statisticsRoute } from "@components/statistics/statistics.menus";
 import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
-import { getRouteConfigForIndexed, getRouteConfigForPage } from "@helpers/page/pageRouting";
+import {
+  getRouteConfigForIndexed,
+  getRouteConfigForPage,
+} from "@helpers/page/pageRouting";
 
-export const routes = [
+const staticRoutes = [
+  {
+    path: "research",
+    children: [
+      { path: "about", redirectTo: "https://research.ecosounds.org/" },
+      {
+        path: "articles",
+        redirectTo: "https://research.ecosounds.org/articles.html",
+      },
+      {
+        path: "resources",
+        redirectTo: "https://research.ecosounds.org/resources.html",
+      },
+      {
+        path: "people",
+        redirectTo: "https://research.ecosounds.org/people/people.html",
+      },
+      {
+        path: "publications",
+        redirectTo:
+          "https://research.ecosounds.org/publications/publications.html",
+      },
+    ],
+  },
+] as const satisfies Routes;
+
+export const routes: Routes = [
   aboutRoute.compileRoutes(getRouteConfigForPage),
   adminRoute.compileRoutes(getRouteConfigForPage),
   analysesRoute.compileRoutes(getRouteConfigForPage),
@@ -51,5 +87,6 @@ export const routes = [
   statisticsRoute.compileRoutes(getRouteConfigForPage),
   websiteStatusRoute.compileRoutes(getRouteConfigForPage),
   visualizeRoute.compileRoutes(getRouteConfigForPage),
-].flat();
 
+  ...staticRoutes,
+].flat();

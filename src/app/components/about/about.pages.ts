@@ -4,7 +4,7 @@ import { DataSharingPolicyComponent } from "./pages/data-sharing-policy/data-sha
 import { DisclaimersComponent } from "./pages/disclaimers/disclaimers.component";
 import { EthicsComponent } from "./pages/ethics/ethics.component";
 
-export const aboutPageComponent = [
+export const aboutPageComponents = [
   ContactUsComponent,
   CreditsComponent,
   DisclaimersComponent,
