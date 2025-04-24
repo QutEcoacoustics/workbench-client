@@ -45,10 +45,9 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(appLibraryImports),
     menuProviders,
 
+    provideConfig(),
     provideBawApi(),
     appLibraryImports,
-
-    provideConfig(),
 
     // Timeout API requests after set period
     providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
