@@ -24,12 +24,12 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     <div class="modal-footer justify-content-start">
       <div>
         @if (isDirty) {
-        <p>
-          <strong>
-            You have unapplied search filters. If you update the verification
-            grid, your progress will be lost.
-          </strong>
-        </p>
+          <p>
+            <strong>
+              You have unapplied search filters. If you update the verification
+              grid, your progress will be lost.
+            </strong>
+          </p>
         }
 
         <div class="mt-2">
@@ -47,7 +47,7 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
             (click)="success()"
             [ngClass]="{
               'btn-primary': !isDirty,
-              'btn-warning': isDirty
+              'btn-warning': isDirty,
             }"
           >
             Update search filters
@@ -62,7 +62,7 @@ export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
   @Input() public formValue: AnnotationSearchParameters;
   @Input() public successCallback: (
-    newModel: AnnotationSearchParameters
+    newModel: AnnotationSearchParameters,
   ) => void;
 
   @Input() public project: Project;

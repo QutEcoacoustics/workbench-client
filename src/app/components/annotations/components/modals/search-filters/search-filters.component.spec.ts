@@ -33,7 +33,6 @@ describe("SearchFiltersModalComponent", () => {
     );
 
     spectator.setInput("formValue", searchParameters);
-
     spectator.detectChanges();
   }
 
