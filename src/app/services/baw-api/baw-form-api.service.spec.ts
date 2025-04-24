@@ -20,7 +20,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { noop, Subject } from "rxjs";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { NgHttpCachingService } from "ng-http-caching";
-import { provideMockConfig } from "@services/config/provide-aconfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideCaching } from "@services/cache/provide-caching";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";

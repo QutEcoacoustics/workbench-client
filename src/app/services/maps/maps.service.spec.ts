@@ -1,7 +1,7 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { destroyGoogleMaps } from "@test/helpers/googleMaps";
-import { provideMockConfig } from "@services/config/provide-aconfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { GoogleMapsState, MapsService } from "./maps.service";
 
 describe("MapsService", () => {

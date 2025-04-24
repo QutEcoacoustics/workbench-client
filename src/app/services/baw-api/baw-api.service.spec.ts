@@ -49,7 +49,7 @@ import {
   enableCache,
 } from "@services/cache/ngHttpCachingConfig";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
-import { provideMockConfig } from "@services/config/provide-aconfigMock";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideCaching } from "@services/cache/provide-caching";
 import {
   BawSessionService,
