@@ -1,6 +1,5 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { LoginDetails } from "@models/data/LoginDetails";
@@ -62,7 +61,7 @@ describe("LoginComponent", () => {
       ToastComponent,
       FormComponent,
     ],
-    providers: [...testFormProviders, provideMockBawApi()],
+    providers: testFormProviders,
   });
 
   const component = () => spec.query(LoginComponent);

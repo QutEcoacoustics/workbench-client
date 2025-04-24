@@ -1,4 +1,3 @@
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   regionResolvers,
@@ -32,7 +31,7 @@ describe("RegionsEditComponent", () => {
   const createComponent = createRoutingFactory({
     component: RegionEditComponent,
     imports: [...testFormImports, FormComponent],
-    providers: [...testFormProviders, provideMockBawApi()],
+    providers: testFormProviders,
     mocks: [ToastService],
     stubsEnabled: true,
   });

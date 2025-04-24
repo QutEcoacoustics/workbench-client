@@ -42,7 +42,7 @@ describe("RegionsNewComponent", () => {
   const createComponent = createRoutingFactory({
     component: RegionNewComponent,
     imports: [...testFormImports, FormComponent],
-    providers: [...testFormProviders, provideMockBawApi()],
+    providers: testFormProviders,
     mocks: [ToastService],
     stubsEnabled: true,
   });

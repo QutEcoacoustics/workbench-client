@@ -7,6 +7,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockProvider } from "@ngneat/spectator";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
+import { provideCaching } from "@services/cache/provide-caching";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
@@ -117,6 +118,7 @@ export function provideMockBawApi(): (EnvironmentProviders | Provider)[] {
     ...serviceResolvers,
     ...mockProviders,
     provideMockConfig(),
+    provideCaching(),
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
   ];
