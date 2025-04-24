@@ -8,7 +8,7 @@ import {
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideMockConfig } from "@services/config/provide-aconfigMock";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { MockDirective } from "ng-mocks";

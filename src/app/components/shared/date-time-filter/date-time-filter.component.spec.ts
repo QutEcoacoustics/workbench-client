@@ -3,7 +3,7 @@ import {
   createRoutingFactory,
   mockProvider,
 } from "@ngneat/spectator";
-import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideMockConfig } from "@services/config/provide-aconfigMock";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
 import { Project } from "@models/Project";

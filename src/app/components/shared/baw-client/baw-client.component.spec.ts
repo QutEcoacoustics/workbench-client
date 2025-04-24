@@ -4,7 +4,7 @@ import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideMockConfig } from "@services/config/provide-aconfigMock";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
