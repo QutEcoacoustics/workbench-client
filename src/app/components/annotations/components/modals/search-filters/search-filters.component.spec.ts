@@ -1,16 +1,25 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { ShallowRegionsService } from "@baw-api/region/regions.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import { of } from "rxjs";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
-  let spectator: Spectator<SearchFiltersModalComponent>;
+  let spec: Spectator<SearchFiltersModalComponent>;
   let injector: AssociationInjector;
-  let successSpy: jasmine.Spy;
+  let successSpy: jasmine.Spy<SearchFiltersModalComponent["successCallback"]>;
+
+  let mockSitesApi: SpyObject<ShallowSitesService>;
+  let mockRegionsApi: SpyObject<ShallowRegionsService>;
+  let mockTagsApi: SpyObject<TagsService>;
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
@@ -19,11 +28,11 @@ describe("SearchFiltersModalComponent", () => {
   });
 
   function setup(): void {
-    spectator = createComponent({ detectChanges: false });
+    spec = createComponent({ detectChanges: false });
 
-    injector = spectator.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    successSpy = spectator.component.successCallback =
+    successSpy = spec.component.successCallback =
       jasmine.createSpy("successCallback");
     successSpy.and.stub();
 
@@ -32,20 +41,36 @@ describe("SearchFiltersModalComponent", () => {
       injector,
     );
 
-    spectator.setInput("formValue", searchParameters);
-    spectator.detectChanges();
+    mockSitesApi = spec.inject(SHALLOW_SITE.token);
+    mockSitesApi.show.andReturn(of());
+
+    mockRegionsApi = spec.inject(SHALLOW_REGION.token);
+    mockRegionsApi.show.andReturn(of())
+
+    mockTagsApi = spec.inject(TAG.token);
+    mockTagsApi.show.andReturn(of())
+
+    const mockModal = {
+      close: () => undefined,
+    };
+
+    spec.setInput({
+      formValue: searchParameters,
+      modal: mockModal,
+    });
+    spec.detectChanges();
   }
 
-  const exitButton = () => spectator.query<HTMLButtonElement>("#exit-btn");
+  const exitButton = () => spec.query<HTMLButtonElement>("#exit-btn");
   const updateButton = () =>
-    spectator.query<HTMLButtonElement>("#update-filters-btn");
+    spec.query<HTMLButtonElement>("#update-filters-btn");
 
   beforeEach(() => {
     setup();
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(SearchFiltersModalComponent);
+    expect(spec.component).toBeInstanceOf(SearchFiltersModalComponent);
   });
 
   it("should not use the success callback if the cancel button is clicked", () => {
@@ -59,12 +84,12 @@ describe("SearchFiltersModalComponent", () => {
   });
 
   it("should have a warning button if the host has decisions", () => {
-    spectator.setInput("hasDecisions", true);
+    spec.setInput("hasDecisions", true);
     expect(updateButton()).toHaveClass("btn-warning");
   });
 
   it("should have a primary button if the host does not have decisions", () => {
-    spectator.setInput("hasDecisions", false);
+    spec.setInput("hasDecisions", false);
     expect(updateButton()).toHaveClass("btn-primary");
   });
 });
