@@ -3,7 +3,7 @@ import { bootstrapApplication } from "@angular/platform-browser";
 import { environment } from "./environments/environment";
 import { applyMonkeyPatches } from "./patches/patches";
 import { AppComponent } from "./app/app.component";
-import { appConfig } from "./app.config";
+import { appConfig } from "./app/app.config";
 
 applyMonkeyPatches();
 
