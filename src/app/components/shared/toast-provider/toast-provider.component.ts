@@ -1,4 +1,4 @@
-import { NgClass } from "@angular/common";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import { ChangeDetectionStrategy, Component, TemplateRef } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
@@ -8,7 +8,7 @@ import { ToastService } from "@services/toasts/toasts.service";
   selector: "baw-toast-provider",
   templateUrl: "toast-provider.component.html",
   styleUrl: "toast-provider.component.scss",
-  imports: [NgbToast, FontAwesomeModule, NgClass],
+  imports: [NgbToast, FontAwesomeModule, NgClass, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastProviderComponent {
