@@ -5,6 +5,7 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit"
     },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "cSpell.words": [
       "ecosounds",
       "ecoacoustics",
@@ -67,10 +68,7 @@
       "statusBarItem.remoteBackground": "#2b7489",
       "statusBarItem.remoteForeground": "#e7e7e7"
     },
-    "angularKarmaTestExplorer.debugMode": true,
-    "explorer.compactFolders": false,
-    "files.eol": "\n",
-    "prettier.trailingComma": "all"
+    "files.eol": "\n"
   },
   "extensions": {
     "recommendations": [
@@ -78,7 +76,9 @@
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
       "xabikos.jasminesnippets",
-      "aaron-bond.better-comments"
+      "aaron-bond.better-comments",
+      "esbenp.prettier-vscode",
+      "editorconfig.editorconfig"
     ]
   }
 }

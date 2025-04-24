@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { HttpHeaders } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -15,7 +14,6 @@ import { NgxCaptchaModule } from "ngx-captcha";
 import { BehaviorSubject } from "rxjs";
 
 export const testFormImports = [
-  CommonModule,
   NgbModule,
   ReactiveFormsModule,
   FormlyModule.forRoot(formlyConfig),
