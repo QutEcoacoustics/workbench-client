@@ -4,7 +4,6 @@ import { Project } from "@models/Project";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generatePermission } from "@test/fakes/Permission";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -15,9 +14,9 @@ describe("PermissionsService", (): void => {
   const listUrl = "/projects/5/permissions/";
   const showUrl = listUrl + "10";
   let spec: SpectatorService<PermissionsService>;
+
   const createService = createServiceFactory({
     service: PermissionsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

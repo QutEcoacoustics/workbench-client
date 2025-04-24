@@ -1,5 +1,8 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { mockServiceImports, mockServiceProviders, validateStandardApi } from "@test/helpers/api-common";
+import {
+  mockServiceProviders,
+  validateStandardApi,
+} from "@test/helpers/api-common";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { modelData } from "@test/helpers/faker";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
@@ -15,13 +18,11 @@ describe("AudioEventImportService", () => {
   const mockModelId = modelData.id();
   const baseUrl = "/audio_event_imports/";
   const updateUrl = baseUrl + mockModelId;
-  const createModel = () => new AudioEventImport(
-    generateAudioEventImport({ id: mockModelId })
-  );
+  const createModel = () =>
+    new AudioEventImport(generateAudioEventImport({ id: mockModelId }));
 
   const createService = createServiceFactory({
     service: AudioEventImportService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 
@@ -39,4 +40,3 @@ describe("AudioEventImportService", () => {
     mockModelId
   );
 });
-

@@ -3,7 +3,6 @@ import {
   createRoutingFactory,
   mockProvider,
 } from "@ngneat/spectator";
-import { CacheModule } from "@services/cache/cache.module";
 import { provideMockConfig } from "@services/config/provide-ConfigMock";
 import { ToastService } from "@services/toasts/toasts.service";
 import { fakeAsync } from "@angular/core/testing";
@@ -14,6 +13,7 @@ import { BehaviorSubject } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideCaching } from "@services/cache/provide-caching";
 import { DateTimeFilterComponent } from "./date-time-filter.component";
 
 describe("AudioRecordingsFilter", () => {
@@ -23,12 +23,12 @@ describe("AudioRecordingsFilter", () => {
 
   const createComponent = createRoutingFactory({
     component: DateTimeFilterComponent,
-    imports: [
-      IconsModule,
-      CacheModule,
-      TimeComponent,
+    imports: [IconsModule, TimeComponent],
+    providers: [
+      mockProvider(ToastService),
+      provideCaching(),
+      provideMockConfig(),
     ],
-    providers: [mockProvider(ToastService), provideMockConfig()],
   });
 
   function setup(project: Project): void {

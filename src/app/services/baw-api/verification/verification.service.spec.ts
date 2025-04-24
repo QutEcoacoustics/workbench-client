@@ -3,7 +3,6 @@ import { generateVerification } from "@test/fakes/Verification";
 import { modelData } from "@test/helpers/faker";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateReadonlyApi,
   validateStandardApi,
@@ -49,7 +48,6 @@ describe("VerificationService", () => {
 
   const createService = createServiceFactory({
     service: VerificationService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 
@@ -80,7 +78,6 @@ describe("ShallowVerificationService", () => {
 
   const createService = createServiceFactory({
     service: ShallowVerificationService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

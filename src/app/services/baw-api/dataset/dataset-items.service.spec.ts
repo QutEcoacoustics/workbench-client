@@ -4,7 +4,6 @@ import { DatasetItem } from "@models/DatasetItem";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateDatasetItem } from "@test/fakes/DatasetItem";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateImmutableApi,
 } from "@test/helpers/api-common";
@@ -19,9 +18,9 @@ describe("DatasetItemsService", (): void => {
   const baseUrl = "/datasets/5/items/";
   const updateUrl = baseUrl + "10";
   let spec: SpectatorService<DatasetItemsService>;
+
   const createService = createServiceFactory({
     service: DatasetItemsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

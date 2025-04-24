@@ -26,11 +26,11 @@ import { modelData } from "@test/helpers/faker";
 import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { CacheModule } from "@services/cache/cache.module";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideCaching } from "@services/cache/provide-caching";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { DownloadAudioRecordingsComponent } from "./download.component";
@@ -46,7 +46,6 @@ describe("DownloadAudioRecordingsComponent", () => {
   const createComponent = createRoutingFactory({
     component: DownloadAudioRecordingsComponent,
     imports: [
-      CacheModule,
       IconsModule,
 
       NgbCollapse,
@@ -59,6 +58,7 @@ describe("DownloadAudioRecordingsComponent", () => {
     // mock out any API calls
     providers: [
       provideMockBawApi(),
+      provideCaching(),
       mockProvider(ToastService),
       provideMockConfig(),
       BawSessionService,

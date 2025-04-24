@@ -9,7 +9,6 @@ import {
 } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -25,7 +24,6 @@ describe("AccountsService", () => {
 
   const createService = createServiceFactory({
     service: AccountsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

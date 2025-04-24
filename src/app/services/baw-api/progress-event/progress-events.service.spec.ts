@@ -2,7 +2,6 @@ import { ProgressEvent } from "@models/ProgressEvent";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateProgressEvent } from "@test/fakes/ProgressEvent";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateReadAndCreateApi,
 } from "@test/helpers/api-common";
@@ -13,9 +12,9 @@ describe("ProgressEventsService", (): void => {
   const baseUrl = "/progress_events/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<ProgressEventsService>;
+
   const createService = createServiceFactory({
     service: ProgressEventsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

@@ -2,7 +2,6 @@ import { HarvestItem } from "@models/HarvestItem";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateReadonlyApi,
 } from "@test/helpers/api-common";
@@ -16,9 +15,9 @@ describe("ShallowHarvestItemsService", () => {
     new HarvestItem(generateHarvestItem({ path: harvestItemPath }));
   const baseUrl = "/harvests/5/items/";
   let spec: SpectatorService<ShallowHarvestItemsService>;
+
   const createService = createServiceFactory({
     service: ShallowHarvestItemsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

@@ -4,7 +4,6 @@ import { User } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateTag } from "@test/fakes/Tag";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateCustomApiFilter,
   validateStandardApi,
@@ -16,9 +15,9 @@ describe("TagsService", (): void => {
   const baseUrl = "/tags/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<TagsService>;
+
   const createService = createServiceFactory({
     service: TagsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

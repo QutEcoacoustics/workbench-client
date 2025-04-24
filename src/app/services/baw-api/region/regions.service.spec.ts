@@ -4,7 +4,6 @@ import { Region } from "@models/Region";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateRegion } from "@test/fakes/Region";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -19,9 +18,9 @@ describe("RegionsService", (): void => {
   const baseUrl = "/projects/5/regions/";
   const updateUrl = baseUrl + "10";
   let spec: SpectatorService<RegionsService>;
+
   const createService = createServiceFactory({
     service: RegionsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

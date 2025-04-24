@@ -2,7 +2,6 @@ import { SavedSearch } from "@models/SavedSearch";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateSavedSearch } from "@test/fakes/SavedSearch";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateImmutableApi,
 } from "@test/helpers/api-common";
@@ -13,9 +12,9 @@ describe("SavedSearchesService", (): void => {
   const baseUrl = "/saved_searches/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<SavedSearchesService>;
+
   const createService = createServiceFactory({
     service: SavedSearchesService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

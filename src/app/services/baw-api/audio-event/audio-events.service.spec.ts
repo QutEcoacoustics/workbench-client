@@ -4,7 +4,6 @@ import { AudioRecording } from "@models/AudioRecording";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -22,7 +21,6 @@ describe("AudioEventsService", () => {
 
   const createService = createServiceFactory({
     service: AudioEventsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

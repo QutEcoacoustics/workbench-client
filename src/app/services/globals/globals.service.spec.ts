@@ -1,16 +1,17 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
-import { CacheModule } from "@services/cache/cache.module";
 import { getCallArgs } from "@test/helpers/general";
+import { provideCaching } from "@services/cache/provide-caching";
 import { GlobalsService } from "./globals.service";
 
 describe("GlobalsService", () => {
   let consoleSpy: jasmine.Spy;
   let cacheSettings: CacheSettings;
   let spec: SpectatorService<GlobalsService>;
+
   const createService = createServiceFactory({
     service: GlobalsService,
-    imports: [CacheModule],
+    providers: [provideCaching()],
   });
 
   function stubConsoleLogs() {

@@ -12,7 +12,6 @@ import {
 } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateCustomApiFilter,
   validateReadonlyApi,
@@ -29,9 +28,9 @@ describe("AudioRecordingsService", () => {
   const baseUrl = "/audio_recordings/";
   let session: SpyObject<BawSessionService>;
   let spec: SpectatorService<AudioRecordingsService>;
+
   const createService = createServiceFactory({
     service: AudioRecordingsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

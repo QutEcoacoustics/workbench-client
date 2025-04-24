@@ -28,7 +28,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
-import { CacheModule } from "@services/cache/cache.module";
 import { API_ROOT } from "@services/config/config.tokens";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
@@ -51,6 +50,7 @@ import {
 } from "@services/cache/ngHttpCachingConfig";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { provideMockConfig } from "@services/config/provide-ConfigMock";
+import { provideCaching } from "@services/cache/provide-caching";
 import {
   BawSessionService,
   guestAuthToken,
@@ -144,11 +144,11 @@ describe("BawApiService", () => {
 
   const createService = createHttpFactory<BawApiService<MockModel>>({
     service: BawApiService,
-    imports: [CacheModule],
     providers: [
       BawSessionService,
       mockProvider(ToastService),
       provideMockConfig(),
+      provideCaching(),
       { provide: SecurityService, useClass: MockSecurityService },
       { provide: UserService, useClass: MockShowApiService },
       {

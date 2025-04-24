@@ -3,7 +3,6 @@ import { TagGroup } from "@models/TagGroup";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -13,9 +12,9 @@ describe("TagGroupService", (): void => {
   const baseUrl = "/tag_groups/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<TagGroupsService>;
+
   const createService = createServiceFactory({
     service: TagGroupsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

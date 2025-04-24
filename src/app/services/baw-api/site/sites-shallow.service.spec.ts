@@ -5,7 +5,6 @@ import { User } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateCustomApiFilter,
   validateCustomApiList,
@@ -21,9 +20,9 @@ describe("ShallowSitesService", (): void => {
   const baseUrl = "/sites/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<ShallowSitesService>;
+
   const createService = createServiceFactory({
     service: ShallowSitesService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

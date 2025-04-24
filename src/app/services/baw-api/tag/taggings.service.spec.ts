@@ -5,7 +5,6 @@ import { Tagging } from "@models/Tagging";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateTagging } from "@test/fakes/Tagging";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -23,7 +22,6 @@ describe("TaggingsService", (): void => {
 
   const createService = createServiceFactory({
     service: TaggingsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 
