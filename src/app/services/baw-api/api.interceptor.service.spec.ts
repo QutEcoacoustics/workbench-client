@@ -20,7 +20,7 @@ import { NgHttpCachingService } from "ng-http-caching";
 import { BawSessionService } from "./baw-session.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
 import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
-import { provideBawApi } from "./provide-baw-api";
+import { provideMockBawApi } from "./provide-baw-ApiMock";
 
 describe("BawApiInterceptor", () => {
   let apiRoot: string;
@@ -30,11 +30,7 @@ describe("BawApiInterceptor", () => {
 
   const createService = createHttpFactory({
     service: BawSessionService,
-    providers: [
-      provideBawApi(),
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideMockBawApi()],
   });
 
   function getPath(path: string) {

@@ -58,7 +58,6 @@ export { MockModel as MockModelWithDecorators };
       <p>Error</p>
     }
   `,
-  providers: [provideMockBawApi()],
 })
 class MockComponent {
   @Input() public model: MockModel;
@@ -73,13 +72,13 @@ describe("Association Decorators Loading In Components", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [MockComponent],
-    providers: [
-        MockStandardApiService,
-        provideMockBawApi(),
-        { provide: MOCK.token, useExisting: MockStandardApiService },
-    ],
-}).compileComponents();
+      imports: [MockComponent],
+      providers: [
+          MockStandardApiService,
+          provideMockBawApi(),
+          { provide: MOCK.token, useExisting: MockStandardApiService },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);
     api = TestBed.inject(MockStandardApiService);

@@ -1,4 +1,3 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
@@ -14,7 +13,6 @@ import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
 import { Errorable } from "@helpers/advancedTypes";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -51,8 +49,6 @@ describe("Association Decorators", () => {
         MockStandardApiService,
         mockProvider(ToastService),
         provideMockBawApi(),
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
         { provide: MOCK.token, useExisting: MockStandardApiService },
       ]
     });

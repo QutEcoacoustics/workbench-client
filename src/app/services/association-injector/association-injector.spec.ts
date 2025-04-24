@@ -15,9 +15,9 @@ describe("AssociationInjectorService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideMockBawApi(),
         associationInjectorProvider,
         mockProvider(ToastService),
-        provideMockBawApi(),
       ],
     });
 

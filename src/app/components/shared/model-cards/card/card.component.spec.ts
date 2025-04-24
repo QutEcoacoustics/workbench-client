@@ -1,4 +1,3 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -16,10 +15,6 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from "@angular/common/http";
 import { AsyncPipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
@@ -32,11 +27,7 @@ describe("CardComponent", () => {
   const createComponent = createRoutingFactory({
     component: CardComponent,
     imports: [AsyncPipe, WithLoadingPipe],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-      provideMockBawApi(),
-    ],
+    providers: [provideMockBawApi()],
   });
 
   function setup(

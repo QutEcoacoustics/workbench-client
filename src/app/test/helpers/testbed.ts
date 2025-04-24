@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpHeaders } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Data, Params, provideRouter } from "@angular/router";
@@ -28,8 +27,6 @@ export const testFormImports = [
 
 export const testFormProviders = [
   provideMockBawApi(),
-  provideHttpClient(withInterceptorsFromDi()),
-  provideHttpClientTesting(),
   provideRouter([]),
 ];
 

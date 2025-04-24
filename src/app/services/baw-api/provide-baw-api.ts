@@ -6,6 +6,7 @@ import {
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { associationInjectorProvider } from "@services/association-injector/association-injector.factory";
 import { provideCaching } from "@services/cache/provide-caching";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideConfig } from "../config/provide-config";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
@@ -34,5 +35,6 @@ export function provideBawApi(): (EnvironmentProviders | Provider)[] {
     ...serviceTokens,
     ...serviceResolvers,
     provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClientTesting(),
   ];
 }

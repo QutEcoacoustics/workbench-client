@@ -1,4 +1,3 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { SimpleChange } from "@angular/core";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -7,7 +6,6 @@ import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
 import { modelData } from "@test/helpers/faker";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AuthenticatedImageDirective, notFoundImage } from "./image.directive";
 
 declare const ng: any;
@@ -18,11 +16,7 @@ describe("ImageDirective", () => {
 
   const createDirective = createDirectiveFactory({
     directive: AuthenticatedImageDirective,
-    providers: [
-      provideMockBawApi(),
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideMockBawApi()],
   });
 
   function getImage() {
