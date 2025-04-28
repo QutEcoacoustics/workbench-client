@@ -22,8 +22,6 @@ import {
 } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -54,7 +52,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
-    imports: [IconsModule, DateTimeFilterComponent, TypeaheadInputComponent],
+    imports: [IconsModule],
     providers: [provideMockBawApi()],
   });
 
@@ -168,7 +166,7 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of a typeahead input that does not use a property backing
-    xit("should pre-populate the tags typeahead input if provided in the search parameters model", async () => {
+    it("should pre-populate the tags typeahead input if provided in the search parameters model", async () => {
       const testedTag = mockTagsResponse[0];
 
       const response = setup({ tags: testedTag.id.toString() });
@@ -177,7 +175,7 @@ describe("AnnotationSearchFormComponent", () => {
       spec.detectChanges();
 
       const realizedTagPills = tagPills();
-      expect(realizedTagPills[0].innerText).toEqual(`${testedTag.text}`);
+      expect(realizedTagPills[0].innerText).toEqual(testedTag.text);
     });
 
     // check the population of an external component that is not a typeahead input
@@ -219,7 +217,8 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check the population of a checkbox boolean input
-    // TODO: enable this test once we have the endpoint avaliable to filter by verified status
+    // TODO: enable this test once we have the endpoint available to filter by
+    // verified status
     xit("should pre-populate the only verified checkbox if provided in the search parameters model", () => {
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
     });
