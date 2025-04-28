@@ -23,13 +23,11 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          <baw-loading
-            *ngIf="value.site | isUnresolved; else showSite"
-            size="sm"
-          ></baw-loading>
-          <ng-template #showSite>
+          @if (value.site | isUnresolved) {
+            <baw-loading size="sm"></baw-loading>
+          } @else {
             <span>{{ value.site?.name ?? "Unknown Site" }}</span>
-          </ng-template>
+          }
         </ng-template>
       </ngx-datatable-column>
 

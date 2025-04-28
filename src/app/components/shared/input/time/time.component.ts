@@ -41,9 +41,11 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
         (change)="onInput($event)"
         (blur)="onTouched()"
       />
-      <div *ngIf="showError" class="invalid-feedback">
-        {{ errors[0] }}
-      </div>
+      @if (showError) {
+        <div class="invalid-feedback">
+          {{ errors[0] }}
+        </div>
+      }
     </div>
   `,
   standalone: false

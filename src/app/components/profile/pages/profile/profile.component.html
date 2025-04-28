@@ -1,4 +1,4 @@
-<ng-container *ngIf="user">
+@if (user) {
   <!-- Username -->
   <h1>{{ user.userName }}</h1>
 
@@ -39,56 +39,57 @@
 
       <!-- TODO Extract to sub component -->
       <!-- Download annotations (Disabled in third person) -->
-      <div id="annotations-link" class="row mt-3" *ngIf="!thirdPerson">
-        <div class="col-md-12 pb-3">
-          <div class="card">
-            <!-- Header -->
-            <div class="card-header">Download</div>
-
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item text-center">
-                <!-- Link to download -->
-                <a
-                  class="mx-auto text-center"
-                  [strongRoute]="dataRequest"
-                  [queryParams]="{ userId: user.id }"
-                >
-                  Annotations you've created
-                </a>
-              </li>
-            </ul>
+      @if (!thirdPerson) {
+        <div id="annotations-link" class="row mt-3">
+          <div class="col-md-12 pb-3">
+            <div class="card">
+              <!-- Header -->
+              <div class="card-header">Download</div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item text-center">
+                  <!-- Link to download -->
+                  <a
+                    class="mx-auto text-center"
+                    [strongRoute]="dataRequest"
+                    [queryParams]="{ userId: user.id }"
+                  >
+                    Annotations you've created
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      }
 
       <!-- TODO Extract to sub component -->
       <!-- Auth token (Disabled in third person) -->
-      <div
-        id="annotations-link"
-        class="row mt-3"
-        *ngIf="!thirdPerson && session.authToken"
-      >
-        <div class="col-md-12 pb-3">
-          <div class="card">
-            <!-- Header -->
-            <div class="card-header">Authentication Token</div>
-
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item p-1">
-                <small>
-                  <p class="px-1">{{ authTokenDescription }}</p>
-                </small>
-                <!-- User auth token -->
-                <baw-hidden-copy
-                  tooltip="Show/Hide authentication token"
-                  [content]="session.authToken"
-                  [value]="session.authToken"
-                ></baw-hidden-copy>
-              </li>
-            </ul>
+      @if (!thirdPerson && session.authToken) {
+        <div
+          id="annotations-link"
+          class="row mt-3"
+        >
+          <div class="col-md-12 pb-3">
+            <div class="card">
+              <!-- Header -->
+              <div class="card-header">Authentication Token</div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item p-1">
+                  <small>
+                    <p class="px-1">{{ authTokenDescription }}</p>
+                  </small>
+                  <!-- User auth token -->
+                  <baw-hidden-copy
+                    tooltip="Show/Hide authentication token"
+                    [content]="session.authToken"
+                    [value]="session.authToken"
+                  ></baw-hidden-copy>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
 
     <!-- Right aligned content -->
@@ -107,28 +108,34 @@
             <!-- Tags -->
             <ul class="list-group list-group-flush">
               <!-- Spinner -->
-              <li *ngIf="!tags" class="list-group-item">
-                <baw-loading></baw-loading>
-              </li>
+              @if (!tags) {
+                <li class="list-group-item">
+                  <baw-loading></baw-loading>
+                </li>
+              }
 
               <!-- Placeholder if no tags -->
-              <li *ngIf="tags?.length === 0" class="list-group-item">
-                User has not created any tags yet
-              </li>
+              @if (tags?.length === 0) {
+                <li class="list-group-item">
+                  User has not created any tags yet
+                </li>
+              }
 
               <!-- Individual tag -->
-              <li *ngFor="let tag of tags" class="list-group-item">
-                <fa-icon
-                  id="icon"
-                  class="pe-2"
-                  [icon]="['fas', 'tag']"
-                ></fa-icon>
-                <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
-              </li>
+              @for (tag of tags; track tag) {
+                <li class="list-group-item">
+                  <fa-icon
+                    id="icon"
+                    class="pe-2"
+                    [icon]="['fas', 'tag']"
+                  ></fa-icon>
+                  <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
+                </li>
+              }
             </ul>
           </div>
         </div>
       </div>
     </div>
   </div>
-</ng-container>
+}

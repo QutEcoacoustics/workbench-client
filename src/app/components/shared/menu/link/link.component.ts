@@ -21,7 +21,7 @@ import { Observable } from "rxjs";
       [ngbTooltip]="tooltipContent"
       [class.disabled]="link.disabled"
     >
-      <ng-container *ngIf="isInternalLink; else external">
+      @if (isInternalLink) {
         <!-- Internal Link -->
         <a
           class="nav-link ps-3 py-2 rounded"
@@ -36,8 +36,7 @@ import { Observable } from "rxjs";
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
-      </ng-container>
-      <ng-template #external>
+      } @else {
         <!-- External Link -->
         <a
           class="nav-link ps-3 py-2 rounded"
@@ -47,7 +46,7 @@ import { Observable } from "rxjs";
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
-      </ng-template>
+      }
     </div>
 
     <!-- Link Details -->
@@ -57,9 +56,9 @@ import { Observable } from "rxjs";
     </ng-template>
 
     <ng-template #tooltipContent>
-      <ng-container *ngIf="disabledReason">
+      @if (disabledReason) {
         {{ disabledReason }}<br />
-      </ng-container>
+      }
       {{ tooltip }}
     </ng-template>
   `,

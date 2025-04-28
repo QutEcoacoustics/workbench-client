@@ -1,4 +1,4 @@
-<ng-container *ngIf="rows && !error">
+@if (rows && !error) {
   <h1>Users</h1>
 
   <p>
@@ -68,6 +68,8 @@
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
-</ng-container>
+}
 
-<baw-error-handler *ngIf="error" [error]="error"></baw-error-handler>
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
+}

@@ -37,23 +37,26 @@ interface ValidationMessage {
 
     <!-- Issues -->
     <div class="grid-table-item issues-extended">
-      <div *ngIf="harvestItem.hasItemsInvalid" class="dropdown-icon">
-        <fa-icon
-          [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
-          (click)="row.showValidations = !row.showValidations"
-        ></fa-icon>
-      </div>
+      @if (harvestItem.hasItemsInvalid) {
+        <div class="dropdown-icon">
+          <fa-icon
+            [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
+            (click)="row.showValidations = !row.showValidations"
+          ></fa-icon>
+        </div>
+      }
 
       <div class="expander-wrapper">
         <div class="expander" [class.expand]="row.showValidations">
           <div class="content">
-            <small
-              *ngFor="let validation of validationMessages"
-              class="callout"
-              [ngClass]="[getCalloutClass(validation)]"
-            >
-              {{ validation.message }}
-            </small>
+            @for (validation of validationMessages; track validation) {
+              <small
+                class="callout"
+                [ngClass]="[getCalloutClass(validation)]"
+              >
+                {{ validation.message }}
+              </small>
+            }
           </div>
         </div>
       </div>
@@ -62,26 +65,18 @@ interface ValidationMessage {
     <!-- Issue icons -->
     <div class="grid-table-item">
       <div class="icon-wrapper">
-        <fa-icon
-          *ngIf="harvestItem.hasItemsInvalidFixable"
-          class="text-warning"
-          [icon]="icons.warningCircle"
-        ></fa-icon>
-        <fa-icon
-          *ngIf="harvestItem.hasItemsInvalidNotFixable"
-          class="text-danger"
-          [icon]="icons.failureCircle"
-        ></fa-icon>
-        <fa-icon
-          *ngIf="!harvestItem.hasItemsInvalid"
-          class="text-success"
-          [icon]="icons.successCircle"
-        ></fa-icon>
-        <fa-icon
-          *ngIf="harvestItem.hasItemsErrored"
-          class="text-black"
-          [icon]="icons.errorCircle"
-        ></fa-icon>
+        @if (harvestItem.hasItemsInvalidFixable) {
+          <fa-icon class="text-warning" [icon]="icons.warningCircle"></fa-icon>
+        }
+        @if (harvestItem.hasItemsInvalidNotFixable) {
+          <fa-icon class="text-danger" [icon]="icons.failureCircle"></fa-icon>
+        }
+        @if (!harvestItem.hasItemsInvalid) {
+          <fa-icon class="text-success" [icon]="icons.successCircle"></fa-icon>
+        }
+        @if (harvestItem.hasItemsErrored) {
+          <fa-icon class="text-black" [icon]="icons.errorCircle"></fa-icon>
+        }
       </div>
     </div>
   `,

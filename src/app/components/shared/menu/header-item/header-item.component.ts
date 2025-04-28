@@ -35,18 +35,18 @@ import camelCase from "just-camel-case";
     </ng-template>
 
     <!-- External link template -->
-    <ng-template #externalLink>
-      <a class="nav-link" [id]="label + '-header-link'" [href]="href">
-        {{ link.label }}
-      </a>
-    </ng-template>
 
     <!-- Create LI with either internal or external link template -->
     <li class="nav-item">
-      <ng-container
-        *ngIf="hasStrongRoute; else externalLink"
-        [ngTemplateOutlet]="internalRoute"
-      ></ng-container>
+      @if (hasStrongRoute) {
+        <ng-container
+          [ngTemplateOutlet]="internalRoute"
+        ></ng-container>
+      } @else {
+        <a class="nav-link" [id]="label + '-header-link'" [href]="href">
+          {{ link.label }}
+        </a>
+      }
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

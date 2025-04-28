@@ -7,15 +7,16 @@
   ></baw-date-time-filter>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
-  <baw-typeahead-input
-    *ngIf="!site || site?.isPoint"
-    label="Site(s)"
-    [inputPlaceholder]="region ? region.name : 'All'"
-    [searchCallback]="createSearchCallback(regionsApi)"
-    [resultTemplate]="nameTypeaheadTemplate"
-    [inputDisabled]="!!region"
-    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
-  ></baw-typeahead-input>
+  @if (!site || site?.isPoint) {
+    <baw-typeahead-input
+      label="Site(s)"
+      [inputPlaceholder]="region ? region.name : 'All'"
+      [searchCallback]="createSearchCallback(regionsApi)"
+      [resultTemplate]="nameTypeaheadTemplate"
+      [inputDisabled]="!!region"
+      (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+    ></baw-typeahead-input>
+  }
 
   <baw-typeahead-input
     [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
@@ -50,14 +51,15 @@
     min="0"
   />
 
-  <label
-    *ngIf="provenanceCutOffInput.invalid && provenanceCutOffInput.dirty"
-    for="provenancesCutOffInput"
-    class="text-danger"
-  >
-    The recogniser score cut-off are outside the permitted boundary. Ensure that
-    the value is between 0 and 1.
-  </label>
+  @if (provenanceCutOffInput.invalid && provenanceCutOffInput.dirty) {
+    <label
+      for="provenancesCutOffInput"
+      class="text-danger"
+    >
+      The recogniser score cut-off are outside the permitted boundary. Ensure that
+      the value is between 0 and 1.
+    </label>
+  }
 
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
@@ -68,12 +70,11 @@
       [(ngModel)]="model.bucketSize"
       required
     >
-      <option
-        *ngFor="let bucketSize of availableBucketSizes"
-        [value]="bucketSize"
-      >
-        {{ bucketSize | titlecase }}
-      </option>
+      @for (bucketSize of availableBucketSizes; track bucketSize) {
+        <option [value]="bucketSize">
+          {{ bucketSize | titlecase }}
+        </option>
+      }
     </select>
   </div>
 

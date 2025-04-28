@@ -25,15 +25,16 @@ const tagTypesKey = "tagTypes";
 @Component({
   selector: "baw-admin-tags-edit",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        [title]="title"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

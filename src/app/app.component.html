@@ -10,10 +10,11 @@
   <baw-side-nav>
     <baw-primary-menu [isSideNav]="true"></baw-primary-menu>
     <baw-secondary-menu [isSideNav]="true"></baw-secondary-menu>
-    <baw-action-menu
-      *ngIf="menu.isFullscreen && resolvedSuccessfully"
-      [isSideNav]="true"
-    ></baw-action-menu>
+    @if (menu.isFullscreen && resolvedSuccessfully) {
+      <baw-action-menu
+        [isSideNav]="true"
+      ></baw-action-menu>
+    }
   </baw-side-nav>
 
   <!-- App Content-->
@@ -28,25 +29,31 @@
     <div id="page">
       <baw-breadcrumbs></baw-breadcrumbs>
 
-      <router-outlet
-        *ngIf="!resolvedSuccessfully"
-        id="error"
-        name="error"
-      ></router-outlet>
-      <router-outlet
-        *ngIf="resolvedSuccessfully"
-        id="primary"
-        (activate)="onRouterOutlet($event)"
-        (deactivate)="onRouterOutlet(null)"
-        (attach)="onRouterOutlet($event)"
-        (detach)="onRouterOutlet(null)"
-      ></router-outlet>
+      @if (!resolvedSuccessfully) {
+        <router-outlet
+          id="error"
+          name="error"
+        ></router-outlet>
+      }
+      @if (resolvedSuccessfully) {
+        <router-outlet
+          id="primary"
+          (activate)="onRouterOutlet($event)"
+          (deactivate)="onRouterOutlet(null)"
+          (attach)="onRouterOutlet($event)"
+          (detach)="onRouterOutlet(null)"
+        ></router-outlet>
+      }
     </div>
 
     <!-- Action Menu -->
-    <div *ngIf="!fullscreen" id="action">
-      <baw-action-menu *ngIf="resolvedSuccessfully"></baw-action-menu>
-    </div>
+    @if (!fullscreen) {
+      <div id="action">
+        @if (resolvedSuccessfully) {
+          <baw-action-menu></baw-action-menu>
+        }
+      </div>
+    }
   </div>
 
   <baw-footer></baw-footer>

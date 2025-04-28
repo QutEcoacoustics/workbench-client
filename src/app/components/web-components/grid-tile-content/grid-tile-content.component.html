@@ -11,42 +11,42 @@
 </div>
 
 @if (contextExpanded) {
-<div class="context-card context-anchor-item">
-  <div class="context-card-header">
-    <span class="context-card-information">
-      <span class="context-card-title">Context</span>
+  <div class="context-card context-anchor-item">
+    <div class="context-card-header">
+      <span class="context-card-information">
+        <span class="context-card-title">Context</span>
 
-      <span class="context-card-description">
-        (Showing 30 seconds around audio event)
+        <span class="context-card-description">
+          (Showing 30 seconds around audio event)
+        </span>
       </span>
-    </span>
 
-    <span class="context-card-actions">
-      <button
-        id="close-btn"
-        class="btn btn-outline-danger"
-        (click)="closeContext()"
-      >
-        Close
-      </button>
-    </span>
+      <span class="context-card-actions">
+        <button
+          id="close-btn"
+          class="btn btn-outline-danger"
+          (click)="closeContext()"
+        >
+          Close
+        </button>
+      </span>
+    </div>
+
+    <div class="context-card-elements">
+      <oe-axes>
+        <oe-indicator>
+          <oe-spectrogram
+            #contextSpectrogram
+            [id]="contextSpectrogramId"
+            [src]="contextSource"
+            (loaded)="contextSpectrogramLoaded()"
+            color-map="audacity"
+            scaling="stretch"
+          ></oe-spectrogram>
+        </oe-indicator>
+      </oe-axes>
+
+      <oe-media-controls #contextMediaControls></oe-media-controls>
+    </div>
   </div>
-
-  <div class="context-card-elements">
-    <oe-axes>
-      <oe-indicator>
-        <oe-spectrogram
-          #contextSpectrogram
-          [id]="contextSpectrogramId"
-          [src]="contextSource"
-          (loaded)="contextSpectrogramLoaded()"
-          color-map="audacity"
-          scaling="stretch"
-        ></oe-spectrogram>
-      </oe-indicator>
-    </oe-axes>
-
-    <oe-media-controls #contextMediaControls></oe-media-controls>
-  </div>
-</div>
 }

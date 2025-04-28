@@ -23,7 +23,7 @@ export const projectsMenuItemActions = [
 @Component({
   selector: "baw-projects-list",
   template: `
-    <ng-container *ngIf="!error">
+    @if (!error) {
       <baw-debounce-input
         label="Filter"
         placeholder="Filter Projects"
@@ -31,26 +31,25 @@ export const projectsMenuItemActions = [
         (filter)="onFilter($event)"
       ></baw-debounce-input>
 
-      <ng-container *ngIf="!loading">
+      @if (!loading) {
         <!-- Projects Exist -->
-        <ng-container *ngIf="models.size > 0; else empty">
+        @if (models.size > 0) {
           <baw-model-cards [models]="models"></baw-model-cards>
-        </ng-container>
-
-        <!-- Projects Don't Exist -->
-        <ng-template #empty>
+        } @else {
           <h4 class="text-center">Your list of projects is empty</h4>
-        </ng-template>
-      </ng-container>
+        }
+        <!-- Projects Don't Exist -->
+      }
 
-      <ngb-pagination
-        *ngIf="displayPagination"
-        aria-label="Pagination Buttons"
-        class="mt-2 d-flex justify-content-end"
-        [collectionSize]="collectionSize"
-        [(page)]="page"
-      ></ngb-pagination>
-    </ng-container>
+      @if (displayPagination) {
+        <ngb-pagination
+          aria-label="Pagination Buttons"
+          class="mt-2 d-flex justify-content-end"
+          [collectionSize]="collectionSize"
+          [(page)]="page"
+        ></ngb-pagination>
+      }
+    }
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
   standalone: false

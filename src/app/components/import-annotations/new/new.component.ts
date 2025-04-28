@@ -23,15 +23,16 @@ export const newAnnotationMenuItemActions = [
 @Component({
   selector: "baw-new-annotation-import",
   template: `
-    <baw-form
-      *ngIf="!failure"
-      title="New Annotation Import"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+    @if (!failure) {
+      <baw-form
+        title="New Annotation Import"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
+    }
   `,
   standalone: false
 })

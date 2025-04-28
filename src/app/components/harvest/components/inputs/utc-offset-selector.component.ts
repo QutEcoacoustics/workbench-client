@@ -3,31 +3,34 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 @Component({
   selector: "baw-harvest-utc-offset-selector",
   template: `
-    <div *ngIf="offset" class="utc-label">
-      <span>{{ offset }}</span>
-
-      <div>
-        <button
-          type="button"
-          class="btn btn-sm p-0 me-1"
-          [ngbTooltip]="editTooltip"
-          (click)="resetSite()"
-        >
-          <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
-        </button>
+    @if (offset) {
+      <div class="utc-label">
+        <span>{{ offset }}</span>
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm p-0 me-1"
+            [ngbTooltip]="editTooltip"
+            (click)="resetSite()"
+            >
+            <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
+          </button>
+        </div>
       </div>
-    </div>
-    <select
-      *ngIf="!offset"
-      class="form-select form-select-sm"
-      aria-label="UTC offset"
-      (change)="onSelection($any($event).target.value)"
-    >
-      <option selected disabled>Select offset</option>
-      <option *ngFor="let offset of offsets" [value]="offset">
-        {{ offset }}
-      </option>
-    </select>
+    } @else {
+      <select
+        class="form-select form-select-sm"
+        aria-label="UTC offset"
+        (change)="onSelection($any($event).target.value)"
+      >
+        <option selected disabled>Select offset</option>
+        @for (offset of offsets; track offset) {
+          <option [value]="offset">
+            {{ offset }}
+          </option>
+        }
+      </select>
+    }
   `,
   styles: [`
     .utc-label {

@@ -7,31 +7,25 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
   selector: "baw-user-link",
   template: `
     <!-- Loading text -->
-    <ng-container *ngIf="user | isUnresolved; else resolved">
+    @if (user | isUnresolved) {
       <baw-loading size="sm"></baw-loading>
-    </ng-container>
-
-    <ng-template #resolved>
+    } @else {
       <!-- Show username -->
-      <a
-        *ngIf="!user.isGhost; else ghostUser"
-        [bawUrl]="user.viewUrl"
-        [innerText]="user.userName"
-      ></a>
-
-      <!-- Show ghost user -->
-      <ng-template #ghostUser>
+      @if (!user.isGhost) {
+        <a [bawUrl]="user.viewUrl" [innerText]="user.userName"></a>
+      } @else {
         <span [innerText]="user.userName"></span>
-
-        <fa-icon
-          *ngIf="user?.isGhost"
-          class="ms-1"
-          [icon]="icon"
-          [placement]="tooltipPlacement"
-          [ngbTooltip]="getHint()"
-        ></fa-icon>
-      </ng-template>
-    </ng-template>
+        @if (user?.isGhost) {
+          <fa-icon
+            class="ms-1"
+            [icon]="icon"
+            [placement]="tooltipPlacement"
+            [ngbTooltip]="getHint()"
+          ></fa-icon>
+        }
+      }
+      <!-- Show ghost user -->
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
