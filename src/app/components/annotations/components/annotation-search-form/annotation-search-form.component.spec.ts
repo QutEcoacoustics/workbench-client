@@ -89,9 +89,8 @@ describe("AnnotationSearchFormComponent", () => {
       interceptShowApiRequest(
         tagsApiSpy,
         injector,
-        (tag: Tag) =>
-          mockTagsResponse.find((requestModel) => requestModel.id === tag.id),
-        Tag
+        mockTagsResponse[0],
+        Tag,
       ),
 
       interceptFilterApiRequest(
@@ -166,7 +165,7 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of a typeahead input that does not use a property backing
-    it("should pre-populate the tags typeahead input if provided in the search parameters model", async () => {
+    it("should pre-populate the tags typeahead input if provided in the search parameters model", fakeAsync(async () => {
       const testedTag = mockTagsResponse[0];
 
       const response = setup({ tags: testedTag.id.toString() });
@@ -175,8 +174,9 @@ describe("AnnotationSearchFormComponent", () => {
       spec.detectChanges();
 
       const realizedTagPills = tagPills();
-      expect(realizedTagPills[0].innerText).toEqual(testedTag.text);
-    });
+      expect(realizedTagPills).toHaveLength(1);
+      expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
+    }));
 
     // check the population of an external component that is not a typeahead input
     it("should pre-populate the date filters if provided in the search parameters model", fakeAsync(() => {

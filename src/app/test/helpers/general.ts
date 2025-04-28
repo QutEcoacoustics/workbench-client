@@ -118,10 +118,13 @@ export function interceptCustomApiRequest<
  *
  * @param service Service to intercept
  * @param injector Injector for model
- * @param models Model data
+ * @param models Model data returned from the "show" api endpoint
  * @param callback Model constructor
  */
-export function interceptShowApiRequest<Data, Model extends AbstractModel>(
+export function interceptShowApiRequest<
+  Data extends Record<PropertyKey, any>,
+  Model extends AbstractModel,
+>(
   service: SpyObject<ApiShow<Model>>,
   injector: AssociationInjector,
   model: Errorable<Data>,

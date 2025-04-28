@@ -210,7 +210,7 @@ describe("DetailViewComponent", () => {
         const response = interceptShowApiRequest(
           api as any,
           injector,
-          (id: Id) => mockApiResponses.get(id),
+          mockApiResponses[0],
           AssociatedModel
         );
 
