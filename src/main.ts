@@ -11,17 +11,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-// Await page load
-const domContentLoadedPromise = new Promise<void>((resolve) =>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.removeEventListener("DOMContentLoader", () => {});
-    resolve();
-  })
-);
-
 // Bootstrap Angular
-domContentLoadedPromise.then(() => {
-  bootstrapApplication(AppComponent, appConfig).catch((err) => {
-    console.error(err);
-  });
+bootstrapApplication(AppComponent, appConfig).catch((err) => {
+  console.error(err);
 });

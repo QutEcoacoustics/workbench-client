@@ -10,13 +10,11 @@ import { menuProviders } from "@menu/provide-menu";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { provideConfig } from "@services/config/provide-config";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
-import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { RehydrationInterceptorService } from "@services/rehydration/rehydration.interceptor.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { provideBawApi } from "@baw-api/provide-baw-api";
-import { environment } from "../environments/environment";
 import { appPageComponents } from "./app.pages";
 import { routes } from "./app.routes";
 
@@ -49,8 +47,8 @@ export const appConfig: ApplicationConfig = {
     provideBawApi(),
     appLibraryImports,
 
-    // Timeout API requests after set period
-    providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
+    // // Timeout API requests after set period
+    // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds

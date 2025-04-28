@@ -17,8 +17,8 @@ import express from "express";
 import { environment } from "src/environments/environment";
 import { API_CONFIG } from "@services/config/config.tokens";
 import bootstrap from "src/main.server";
-import { REQUEST, RESPONSE } from "./src/express.tokens";
-import angularConfig from "./angular.json";
+import angularConfig from "../angular.json";
+import { REQUEST, RESPONSE } from "./express.tokens";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
