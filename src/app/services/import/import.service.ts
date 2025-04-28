@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class ImportsService {
   public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {}
 

@@ -1,7 +1,13 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
+import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
   selector: "baw-recent-annotations",
@@ -120,7 +126,15 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-  standalone: false
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FaIconComponent,
+    LoadingComponent,
+    UrlDirective,
+    TimeSinceComponent,
+    IsUnresolvedPipe,
+  ],
 })
 export class RecentAnnotationsComponent implements OnChanges {
   @Input() public annotations!: AudioEvent[] | undefined;

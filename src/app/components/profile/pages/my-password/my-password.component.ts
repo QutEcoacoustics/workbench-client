@@ -13,6 +13,7 @@ import {
 import { User } from "@models/User";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { myAccountActions } from "../profile/my-profile.component";
 import schema from "./my-password.schema.json";
 
@@ -33,7 +34,7 @@ const userKey = "user";
       ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent]
 })
 class MyPasswordComponent extends FormTemplate<User> {
   public fields = schema.fields;

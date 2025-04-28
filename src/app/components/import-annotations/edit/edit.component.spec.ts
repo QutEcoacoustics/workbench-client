@@ -3,8 +3,6 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormsModule } from "@angular/forms";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -15,6 +13,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { modelData } from "@test/helpers/faker";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import schema from "../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
 
@@ -27,8 +26,8 @@ describe("EditAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: EditAnnotationsComponent,
-    declarations: [],
-    imports: [FormsModule, SharedModule, MockBawApiModule],
+    imports: [FormsModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
     data: {
       resolvers: {

@@ -3,10 +3,7 @@ import {
   SpyObject,
   createServiceFactory,
 } from "@ngneat/spectator";
-import {
-  mockServiceImports,
-  mockServiceProviders,
-} from "@test/helpers/api-common";
+import { mockServiceProviders } from "@test/helpers/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { of } from "rxjs";
@@ -20,7 +17,6 @@ describe("WebsiteStatusService", () => {
 
   const createService = createServiceFactory({
     service: WebsiteStatusService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

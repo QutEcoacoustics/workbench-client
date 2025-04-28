@@ -17,6 +17,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 
@@ -26,7 +27,7 @@ const regionKey = "region";
 @Component({
   selector: "baw-sites-new",
   templateUrl: "./new.component.html",
-  standalone: false
+  imports: [FormComponent],
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
   public title = "";

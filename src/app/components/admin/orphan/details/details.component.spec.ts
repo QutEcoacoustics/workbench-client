@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ACCOUNT, PROJECT } from "@baw-api/ServiceTokens";
 import { shallowSiteResolvers } from "@baw-api/site/sites.service";
@@ -11,7 +9,6 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -19,10 +16,11 @@ import { interceptMappedApiRequests, nStepObservable } from "@test/helpers/gener
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { of, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminOrphanComponent } from "./details.component";
 
 describe("AdminOrphanComponent", () => {
@@ -33,13 +31,9 @@ describe("AdminOrphanComponent", () => {
 
   function setup(model: Site, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
+      imports: appLibraryImports,
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

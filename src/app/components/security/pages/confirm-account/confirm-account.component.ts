@@ -12,6 +12,7 @@ import {
 } from "@models/data/ConfirmPassword";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { loginMenuItemActions } from "../login/login.component";
 import schema from "./confirm-account.schema.json";
 
@@ -27,7 +28,7 @@ import schema from "./confirm-account.schema.json";
       (onSubmit)="submit($event)"
     ></baw-form>
   `,
-  standalone: false
+  imports: [FormComponent]
 })
 class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
   public fields = schema.fields;

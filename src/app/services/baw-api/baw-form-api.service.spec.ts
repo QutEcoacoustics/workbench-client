@@ -12,8 +12,6 @@ import {
   SpectatorHttp,
   SpyObject,
 } from "@ngneat/spectator";
-import { CacheModule } from "@services/cache/cache.module";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
@@ -22,6 +20,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { noop, Subject } from "rxjs";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { NgHttpCachingService } from "ng-http-caching";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideCaching } from "@services/cache/provide-caching";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 import { shouldNotFail, shouldNotSucceed } from "./baw-api.service.spec";
@@ -36,11 +36,12 @@ describe("BawFormApiService", () => {
 
   const createService = createHttpFactory<BawFormApiService<MockForm>>({
     service: BawFormApiService,
-    imports: [MockConfigModule, CacheModule],
     providers: [
       BawSessionService,
       BawApiService,
       mockProvider(ToastService),
+      provideMockConfig(),
+      provideCaching(),
       mockAssociationInjector,
       {
         provide: HTTP_INTERCEPTORS,

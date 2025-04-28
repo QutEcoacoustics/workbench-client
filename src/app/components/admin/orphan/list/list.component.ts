@@ -7,12 +7,23 @@ import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { Site } from "@models/Site";
 import { List } from "immutable";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { adminOrphansCategory, adminOrphansMenuItem } from "../orphans.menus";
 
 @Component({
   selector: "baw-admin-orphans",
   templateUrl: "./list.component.html",
-  standalone: false
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    UrlDirective,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>

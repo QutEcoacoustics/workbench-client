@@ -1,6 +1,4 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -12,13 +10,13 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateUser } from "@test/fakes/User";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { BehaviorSubject } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MyProjectsComponent } from "./my-projects.component";
 
 describe("MyProjectsComponent", () => {
@@ -26,9 +24,10 @@ describe("MyProjectsComponent", () => {
   let defaultUser: User;
   let defaultProject: Project;
   let spec: SpectatorRouting<MyProjectsComponent>;
+
   const createComponent = createRoutingFactory({
     component: MyProjectsComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

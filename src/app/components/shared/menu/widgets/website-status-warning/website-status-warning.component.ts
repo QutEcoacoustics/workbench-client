@@ -3,6 +3,8 @@ import { WebsiteStatusService } from "@baw-api/website-status/website-status.ser
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { KeysOfType } from "@helpers/advancedTypes";
 import { WebsiteStatus } from "@models/WebsiteStatus";
+import { AsyncPipe } from "@angular/common";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 
 @Component({
   selector: "baw-website-status-warning",
@@ -27,7 +29,7 @@ import { WebsiteStatus } from "@models/WebsiteStatus";
       </section>
     }
   `,
-  standalone: false
+  imports: [StrongRouteDirective, AsyncPipe],
 })
 export class WebsiteStatusWarningComponent {
   public constructor(protected api: WebsiteStatusService) {}

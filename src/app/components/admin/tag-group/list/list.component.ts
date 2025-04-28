@@ -9,13 +9,19 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { adminDeleteTagGroupModal } from "../tag-group.modals";
 import {
   adminEditTagGroupMenuItem,
   adminNewTagGroupMenuItem,
   adminTagGroupsCategory,
   adminTagGroupsMenuItem,
 } from "../tag-group.menus";
-import { adminDeleteTagGroupModal } from "../tag-group.modals";
 
 export const adminTagGroupsMenuItemActions = [adminNewTagGroupMenuItem];
 export const adminTagGroupMenuItemActions = [
@@ -27,7 +33,14 @@ export const adminTagGroupMenuItemActions = [
 @Component({
   selector: "baw-admin-tag-groups-list",
   templateUrl: "./list.component.html",
-  standalone: false
+  imports: [
+    DebounceInputComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    StrongRouteDirective,
+    DeleteModalComponent,
+    ErrorHandlerComponent,
+  ],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];

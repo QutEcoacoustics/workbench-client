@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { NgForm, FormsModule } from "@angular/forms";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -7,12 +7,13 @@ import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil, throwError } from "rxjs";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: "baw-harvest-title",
   templateUrl: "./title.component.html",
   styleUrls: ["./title.component.scss"],
-  standalone: false
+  imports: [FormsModule, FaIconComponent]
 })
 export class TitleComponent extends withUnsubscribe()  {
   @Input() public project: Project;

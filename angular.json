@@ -142,7 +142,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/workbench-client/server",
-            "main": "server.ts",
+            "main": "src/server.ts",
             "tsConfig": "tsconfig.server.json",
             "stylePreprocessorOptions": {
               "includePaths": [

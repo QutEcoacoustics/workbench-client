@@ -1,6 +1,6 @@
 import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -20,7 +20,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -33,8 +32,7 @@ import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
-import { PageTitleStrategy } from "src/app/app.component";
-import { DetailsComponent } from "./details.component";
+import { ProjectDetailsComponent } from "./details.component";
 
 const mock = {
   map: MockComponent(SiteMapComponent),
@@ -47,18 +45,18 @@ describe("ProjectDetailsComponent", () => {
   let projectApi: SpyObject<ProjectsService>;
   let routerSpy: SpyObject<Router>;
   let defaultProject: Project;
-  let spectator: SpectatorRouting<DetailsComponent>;
-  let component: DetailsComponent;
+  let spectator: SpectatorRouting<ProjectDetailsComponent>;
+  let component: ProjectDetailsComponent;
+
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
+    component: ProjectDetailsComponent,
     declarations: [mock.map, mock.card],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
-    component: DetailsComponent,
-    providers: [PageTitleStrategy],
   });
   const emptyResponse = [[]];
 
-  assertPageInfo<Project>(DetailsComponent, "test name", {
+  assertPageInfo<Project>(ProjectDetailsComponent, "test name", {
     project: {
       model: new Project(generateProject({ name: "test name" })),
     },
@@ -220,7 +218,7 @@ describe("ProjectDetailsComponent", () => {
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
   });
 
-  assertPaginationTemplate<Site | Region, DetailsComponent>(() => {
+  assertPaginationTemplate<Site | Region, ProjectDetailsComponent>(() => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();

@@ -1,16 +1,16 @@
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ToastService } from "@services/toasts/toasts.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
+import { appLibraryImports } from "src/app/app.config";
 import { AssignComponent } from "./assign.component";
 
 // some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
@@ -23,7 +23,8 @@ describe("AssignComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AssignComponent,
-    imports: [MockBawApiModule, SharedModule],
+    imports: appLibraryImports,
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

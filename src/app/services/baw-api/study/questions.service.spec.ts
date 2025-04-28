@@ -4,7 +4,6 @@ import { Study } from "@models/Study";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateQuestion } from "@test/fakes/Question";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -19,9 +18,9 @@ describe("QuestionsService", (): void => {
   const baseUrl = "/studies/5/questions/";
   const updateUrl = baseUrl + "10";
   let spec: SpectatorService<QuestionsService>;
+
   const createService = createServiceFactory({
     service: QuestionsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

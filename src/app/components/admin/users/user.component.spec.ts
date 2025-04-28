@@ -1,12 +1,10 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { theirEditMenuItem } from "@components/profile/profile.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { User } from "@models/User";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateUser } from "@test/fakes/User";
 import {
   assertPagination,
@@ -21,9 +19,10 @@ describe("AdminUserListComponent", () => {
   let defaultUser: User;
   let defaultUsers: User[];
   let spec: Spectator<AdminUserListComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: AdminUserListComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(function () {

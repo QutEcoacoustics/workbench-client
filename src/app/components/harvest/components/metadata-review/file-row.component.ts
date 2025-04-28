@@ -10,6 +10,10 @@ import {
 } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgClass, DecimalPipe } from "@angular/common";
+import { WhitespaceComponent } from "./whitespace.component";
 
 interface ValidationMessage {
   type: "warning" | "danger" | "error";
@@ -83,7 +87,13 @@ interface ValidationMessage {
   styleUrls: ["file-row.component.scss"],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [
+    WhitespaceComponent,
+    FaIconComponent,
+    NgbTooltip,
+    NgClass,
+    DecimalPipe,
+  ]
 })
 export class FileRowComponent implements OnInit {
   @Input() public row: MetaReviewFile;

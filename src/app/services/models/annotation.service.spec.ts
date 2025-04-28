@@ -13,9 +13,9 @@ import { Tag } from "@models/Tag";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateTag } from "@test/fakes/Tag";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
@@ -28,11 +28,11 @@ describe("AnnotationService", () => {
 
   const createService = createServiceFactory({
     service: AnnotationService,
-    imports: [MockBawApiModule],
     providers: [
+      MediaService,
+      provideMockBawApi(),
       { provide: TagsService, useValue: mockTagsService() },
       { provide: AudioRecordingsService, useValue: mockRecordingsService() },
-      MediaService,
     ],
   });
 

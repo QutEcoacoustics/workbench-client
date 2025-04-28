@@ -1,0 +1,11 @@
+{
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.component.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
+}

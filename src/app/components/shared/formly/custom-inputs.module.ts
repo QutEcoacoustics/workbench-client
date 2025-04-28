@@ -1,11 +1,9 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbTypeaheadModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { ConfigOption, FormlyModule } from "@ngx-formly/core";
 import { IconsModule } from "@shared/icons/icons.module";
-import { MapModule } from "@shared/map/map.module";
 import { CheckboxInputComponent } from "./checkbox-input.component";
 import { FileValueAccessorDirective } from "./file-input.directive";
 import { HorizontalWrapperComponent } from "./horizontal-wrapper.component";
@@ -14,7 +12,7 @@ import { LocationInputComponent } from "./location-input.component";
 import { PasswordConfirmationInputComponent } from "./password-confirmation-input.component";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
-export const formlyConfig: ConfigOption = {
+export const formlyConfig = {
   types: [
     { name: "checkbox", component: CheckboxInputComponent },
     { name: "image", component: ImageInputComponent },
@@ -51,7 +49,7 @@ export const formlyConfig: ConfigOption = {
         `This value should be less than ${field.props.max}`,
     },
   ],
-};
+} as const satisfies ConfigOption;
 
 const components = [
   FileValueAccessorDirective,
@@ -64,16 +62,14 @@ const components = [
 ];
 
 @NgModule({
-  declarations: components,
   imports: [
-    CommonModule,
     NgbTypeaheadModule,
     FormsModule,
     ReactiveFormsModule,
-    FormlyModule,
+    FormlyModule.forRoot(formlyConfig),
     FormlyBootstrapModule,
-    MapModule,
     IconsModule,
+    ...components,
   ],
   exports: components,
 })

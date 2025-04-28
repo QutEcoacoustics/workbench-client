@@ -16,7 +16,11 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/modals/filters-warning/filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import { NgbModal, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbModal,
+  NgbPaginationConfig,
+  NgbPagination,
+} from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
@@ -30,6 +34,10 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { IfLoggedInComponent } from "@shared/can/can.component";
+import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
@@ -41,7 +49,14 @@ const annotationsKey = "annotations";
   selector: "baw-annotations-search",
   templateUrl: "search.component.html",
   styleUrl: "search.component.scss",
-  standalone: false
+  imports: [
+    AnnotationSearchFormComponent,
+    IfLoggedInComponent,
+    AnnotationEventCardComponent,
+    NgbPagination,
+    ErrorHandlerComponent,
+    FiltersWarningModalComponent,
+  ],
 })
 class AnnotationSearchComponent
   extends PaginationTemplate<AudioEvent>

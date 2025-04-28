@@ -19,6 +19,16 @@ import { BehaviorSubject, catchError, takeUntil, throwError } from "rxjs";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ConfirmationComponent } from "../../components/modal/confirmation.component";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 export const harvestsMenuItemActions = [newHarvestMenuItem];
 const projectKey = "project";
@@ -26,9 +36,20 @@ const projectKey = "project";
 @Component({
   selector: "baw-harvests",
   templateUrl: "list.component.html",
-  standalone: false
+  imports: [
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatetimeComponent,
+    UserLinkComponent,
+    LoadingComponent,
+    UrlDirective,
+    ConfirmationComponent,
+    IsUnresolvedPipe,
+  ],
 })
-class ListComponent extends PageComponent implements OnInit {
+class HarvestListComponent extends PageComponent implements OnInit {
   public contactUs = contactUsMenuItem;
   public filters$: BehaviorSubject<Filters<Harvest>>;
   public canCreateHarvestCapability: boolean;
@@ -113,7 +134,7 @@ class ListComponent extends PageComponent implements OnInit {
   }
 }
 
-ListComponent.linkToRoute({
+HarvestListComponent.linkToRoute({
   category: harvestsCategory,
   menus: {
     actions: List(harvestsMenuItemActions),
@@ -133,4 +154,4 @@ ListComponent.linkToRoute({
   },
 });
 
-export { ListComponent };
+export { HarvestListComponent };

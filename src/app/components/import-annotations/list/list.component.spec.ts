@@ -3,8 +3,7 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -12,7 +11,7 @@ import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { of } from "rxjs";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { Filters } from "@baw-api/baw-api.service";
@@ -32,8 +31,8 @@ describe("AnnotationsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationsListComponent,
-    declarations: [UserLinkComponent],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [UserLinkComponent],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

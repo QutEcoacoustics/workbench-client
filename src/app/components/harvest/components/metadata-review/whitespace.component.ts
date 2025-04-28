@@ -48,8 +48,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
       width: 1rem;
     }
   `],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WhitespaceComponent {
   @Input() public indentation: void[];

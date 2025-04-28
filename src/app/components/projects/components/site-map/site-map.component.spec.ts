@@ -1,5 +1,4 @@
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
@@ -11,13 +10,13 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { MapComponent } from "@shared/map/map.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { interceptRepeatApiRequests } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteMapComponent } from "./site-map.component";
 
 const mockMap = MockComponent(MapComponent);
@@ -27,10 +26,11 @@ describe("SiteMapComponent", () => {
   let defaultRegion: Region;
   let api: SpyObject<SitesService>;
   let spec: Spectator<SiteMapComponent>;
+
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
     declarations: [mockMap],
-    imports: [SharedModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(() => {
@@ -183,8 +183,7 @@ describe("SiteMapComponent", () => {
       await assertMapMarkers(promise, []);
     });
 
-    it("should only display markers in the markersSubset", () => {
-    });
+    it("should only display markers in the markersSubset", () => {});
   });
 
   describe("api", () => {

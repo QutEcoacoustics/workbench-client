@@ -4,6 +4,7 @@ import { isUnresolvedModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
+import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-sites-without-timezones",
@@ -39,7 +40,7 @@ import { Site } from "@models/Site";
       }
     }
   `,
-  standalone: false
+  imports: [UrlDirective]
 })
 export class SitesWithoutTimezonesComponent {
   @Input() public site?: Site;

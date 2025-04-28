@@ -1,6 +1,6 @@
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -18,7 +18,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateStatistics } from "@test/fakes/Statistics";
@@ -32,6 +31,7 @@ import { MockComponent } from "ng-mocks";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Id } from "@interfaces/apiInterfaces";
+import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
 import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 import { StatisticsComponent } from "./statistics.component";
@@ -51,11 +51,12 @@ describe("StatisticsComponent", () => {
 
   const createComponent = createComponentFactory({
     component: StatisticsComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [IconsModule],
     declarations: [
       mock.recentAnnotationsComponent,
       mock.recentAudioRecordingsComponent,
     ],
+    providers: [provideMockBawApi()],
   });
 
   assertPageInfo(StatisticsComponent, "Statistics");

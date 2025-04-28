@@ -8,14 +8,31 @@ import { Filters } from "@baw-api/baw-api.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
-import { annotationsImportCategory, annotationsImportMenuItem, newAnnotationImportMenuItem } from "../import-annotations.menu";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import {
+  annotationsImportCategory,
+  annotationsImportMenuItem,
+  newAnnotationImportMenuItem,
+} from "../import-annotations.menu";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 
 @Component({
   selector: "baw-import-list-annotation-imports",
   templateUrl: "list.component.html",
-  standalone: false
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatetimeComponent,
+    UserLinkComponent,
+    UrlDirective,
+  ],
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(
@@ -42,7 +59,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
     this.api.filter(filters);
 
   protected async deleteEventImport(
-  template: any,
+    template: any,
     model: AudioEventImport
   ): Promise<void> {
     const modelId: Id = model.id;

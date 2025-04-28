@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers, RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
@@ -14,7 +14,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -27,8 +26,8 @@ import { MockComponent } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { ConfigService } from "@services/config/config.service";
-import { PageTitleStrategy } from "src/app/app.component";
-import { DetailsComponent } from "./details.component";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
+import { RegionDetailsComponent } from "./details.component";
 
 const mock = {
   map: MockComponent(SiteMapComponent),
@@ -42,16 +41,16 @@ describe("RegionDetailsComponent", () => {
   let configService: SpyObject<ConfigService>;
   let defaultProject: Project;
   let defaultRegion: Region;
-  let spectator: SpectatorRouting<DetailsComponent>;
+  let spectator: SpectatorRouting<RegionDetailsComponent>;
+
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
+    component: RegionDetailsComponent,
     declarations: [mock.map, mock.card],
+    providers: [PageTitleStrategy, provideMockBawApi()],
     mocks: [ToastService],
-    component: DetailsComponent,
-    providers: [PageTitleStrategy],
   });
 
-  assertPageInfo(DetailsComponent, "test name", {
+  assertPageInfo(RegionDetailsComponent, "test name", {
     region: {
       model: new Region(generateRegion({ name: "test name" }))
     },
@@ -144,7 +143,7 @@ describe("RegionDetailsComponent", () => {
     });
   });
 
-  assertPaginationTemplate<Site, DetailsComponent>(() => {
+  assertPaginationTemplate<Site, RegionDetailsComponent>(() => {
     setup(defaultProject, defaultRegion);
     interceptApiRequest([]);
     spectator.detectChanges();

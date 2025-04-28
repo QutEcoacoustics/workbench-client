@@ -2,9 +2,8 @@ import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TimeSinceComponent } from "./time-since.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -39,7 +38,7 @@ describe("TimeSince", () => {
 
   const createComponent = createComponentFactory({
     component: TimeSinceComponent,
-    imports: [SharedModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   const timeElement = () => spec.query<HTMLTimeElement>("time");

@@ -21,6 +21,8 @@ import { User } from "@models/User";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MenuService } from "@services/menu/menu.service";
 import { Set } from "immutable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UpperCasePipe } from "@angular/common";
 import { ModalComponent } from "../widgets/widget.component";
 import { WidgetDirective } from "../widgets/widget.directive";
 import {
@@ -30,6 +32,8 @@ import {
   MenuModalWithoutAction,
   WidgetMenuItem,
 } from "../widgets/widgetItem";
+import { MenuButtonComponent } from "../button/button.component";
+import { MenuLinkComponent } from "../link/link.component";
 
 /**
  * Menu Component.
@@ -39,7 +43,13 @@ import {
   selector: "baw-menu",
   templateUrl: "./menu.component.html",
   styleUrls: ["./menu.component.scss"],
-  standalone: false
+  imports: [
+    FaIconComponent,
+    MenuButtonComponent,
+    MenuLinkComponent,
+    WidgetDirective,
+    UpperCasePipe,
+  ],
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
   @Input() public isSideNav: boolean;

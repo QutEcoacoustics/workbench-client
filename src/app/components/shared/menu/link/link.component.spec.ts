@@ -1,6 +1,4 @@
 import { ActivatedRouteSnapshot, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -13,11 +11,12 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbTooltip, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { MockProvider } from "ng-mocks";
+import { MockDirective, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { MenuLinkComponent } from "./link.component";
 
 describe("MenuLinkComponent", () => {
@@ -26,23 +25,24 @@ describe("MenuLinkComponent", () => {
   let config: ConfigService;
   let spec: SpectatorHost<MenuLinkComponent>;
   let component: MenuLinkComponent;
+
   const createHost = createHostFactory({
     component: MenuLinkComponent,
     imports: [
-      MockConfigModule,
-      RouterTestingModule,
-      MockDirectivesModule,
       NgbTooltipModule,
       IconsModule,
+      MockDirective(StrongRouteDirective),
+      MockDirective(StrongRouteActiveDirective),
     ],
+    providers: [provideMockConfig()],
   });
 
-  function getWrapper(): HTMLSpanElement {
-    return spec.query("div");
+  function getWrapper() {
+    return spec.query<HTMLSpanElement>("div");
   }
 
-  function getLink(): HTMLAnchorElement {
-    return spec.query("a");
+  function getLink() {
+    return spec.query<HTMLAnchorElement>("a");
   }
 
   function getTooltip() {

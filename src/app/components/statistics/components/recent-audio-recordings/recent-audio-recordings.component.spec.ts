@@ -1,18 +1,10 @@
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
-import {
-  createComponentFactory,
-  mockProvider,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import {
   DataTableBodyCellComponent,
   DatatableComponent,
@@ -25,6 +17,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { humanizedDuration } from "@test/helpers/dateTime";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
@@ -32,10 +26,12 @@ describe("RecentAudioRecordingsComponent", () => {
   let defaultRecording: AudioRecording;
   let injector: AssociationInjector;
   let spec: Spectator<RecentAudioRecordingsComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: RecentAudioRecordingsComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
-    providers: [mockProvider(ToastService)],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
+    mocks: [ToastService],
   });
 
   function interceptSiteRequest(

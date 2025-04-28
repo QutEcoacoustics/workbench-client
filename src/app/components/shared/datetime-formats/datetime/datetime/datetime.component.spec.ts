@@ -1,5 +1,4 @@
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { DateTime } from "luxon";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
@@ -49,7 +48,7 @@ describe("DatetimeComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, MockBawApiModule],
+      providers: [provideMockBawApi()],
     });
 
     fixture = TestBed.createComponent(DatetimeComponent);

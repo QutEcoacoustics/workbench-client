@@ -14,15 +14,16 @@ import { Harvest, IHarvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { TitleComponent } from "../../components/shared/title.component";
 
 const projectKey = "project";
 
 @Component({
   selector: "baw-harvest-new",
   templateUrl: "new.component.html",
-  standalone: false
+  imports: [TitleComponent],
 })
-class NewComponent extends PageComponent implements OnInit {
+class HarvestNewComponent extends PageComponent implements OnInit {
   public loading: boolean;
   public project: Project;
 
@@ -76,7 +77,7 @@ class NewComponent extends PageComponent implements OnInit {
   }
 }
 
-NewComponent.linkToRoute({
+HarvestNewComponent.linkToRoute({
   category: harvestsCategory,
   menus: { actions: List(projectMenuItemActions) },
   pageRoute: newHarvestMenuItem,
@@ -85,4 +86,4 @@ NewComponent.linkToRoute({
   },
 });
 
-export { NewComponent };
+export { HarvestNewComponent };

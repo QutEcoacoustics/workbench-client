@@ -25,7 +25,6 @@ import {
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateLoginDetails } from "@test/fakes/LoginDetails";
@@ -38,6 +37,7 @@ import { CookieService } from "ngx-cookie-service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { noop, Subject, throwError } from "rxjs";
 import { NgHttpCachingService } from "ng-http-caching";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";
@@ -67,11 +67,11 @@ describe("SecurityService", () => {
 
   const createService = createHttpFactory({
     service: SecurityService,
-    imports: [MockConfigModule],
     providers: [
       BawSessionService,
       CookieService,
       NgHttpCachingService,
+      provideMockConfig(),
       mockProvider(ToastService),
       {
         provide: HTTP_INTERCEPTORS,

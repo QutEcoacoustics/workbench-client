@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
@@ -9,7 +7,6 @@ import {
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -17,9 +14,10 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
@@ -33,14 +31,9 @@ describe("AdminScriptsEditComponent", () => {
 
   function configureTestingModule(model?: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminScriptsEditComponent],
+      imports: [...appLibraryImports, AdminScriptsEditComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

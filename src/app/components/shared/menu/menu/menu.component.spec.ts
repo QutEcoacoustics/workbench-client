@@ -1,7 +1,5 @@
 import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuType } from "@helpers/generalTypes";
@@ -42,6 +40,7 @@ import {
 import { generateUser } from "@test/fakes/User";
 import { OrderedSet } from "immutable";
 import { MockProvider } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 import { MenuComponent } from "./menu.component";
@@ -49,7 +48,6 @@ import { MenuComponent } from "./menu.component";
 @Component({
   selector: "baw-test-widget",
   template: "<div>Widget working</div>",
-  standalone: false
 })
 export class MockWidgetComponent implements WidgetComponent {
   public pageData!: any;
@@ -62,7 +60,6 @@ export class MockWidgetComponent implements WidgetComponent {
 @Component({
   selector: "baw-test-modal",
   template: '<div class="modal-body">Modal working</div>',
-  standalone: false
 })
 export class MockModalComponent implements ModalComponent {
   public pageData!: any;
@@ -80,22 +77,21 @@ describe("MenuComponent", () => {
   let defaultMenuLink: MenuLink;
   let defaultMenuRoute: MenuRoute;
   let spec: SpectatorRouting<MenuComponent>;
+
   const createComponent = createRoutingFactory({
     component: MenuComponent,
-    declarations: [
+    imports: [
+      IconsModule,
+      NgbModalModule,
+      NgbTooltipModule,
       MenuButtonComponent,
       MenuLinkComponent,
+
       WidgetDirective,
       MockWidgetComponent,
       MockModalComponent,
     ],
-    imports: [
-      IconsModule,
-      RouterTestingModule,
-      MockBawApiModule,
-      NgbModalModule,
-      NgbTooltipModule,
-    ],
+    providers: [provideMockBawApi()],
   });
   const menuTypes: MenuType[] = ["action", "secondary"];
 
@@ -108,7 +104,9 @@ describe("MenuComponent", () => {
   }
 
   function getMenuLinks(): MenuLinkComponent[] {
-    return spec.queryAll(MenuLinkComponent).filter((item) => isExternalLink(item.link));
+    return spec
+      .queryAll(MenuLinkComponent)
+      .filter((item) => isExternalLink(item.link));
   }
 
   function getMenuRoutes(): MenuLinkComponent[] {
@@ -280,7 +278,9 @@ describe("MenuComponent", () => {
       it("should set the widget data using the options provided", () => {
         setup({
           widgets: OrderedSet([
-            new WidgetMenuItem(MockWidgetComponent, undefined, { testProperty: "test" }),
+            new WidgetMenuItem(MockWidgetComponent, undefined, {
+              testProperty: "test",
+            }),
           ]),
         });
         spec.detectChanges();

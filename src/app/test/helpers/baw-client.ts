@@ -1,17 +1,15 @@
 import { Type } from "@angular/core";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { BawClientComponent } from "@shared/baw-client/baw-client.component";
-import { SharedModule } from "@shared/shared.module";
 
 //TODO: OLD-CLIENT REMOVE
 export function validateBawClientPage<Component extends Type<any>>(
   routes: StrongRoute,
   component: Component,
-  modules: any[],
   route: string,
   validatePageLoaded: string | string[] | ((text: string) => boolean),
   interceptApiRequests?: (spec: SpectatorRouting<Component>) => void
@@ -22,7 +20,7 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   const createComponent = createRoutingFactory({
     component,
-    imports: [SharedModule, MockBawApiModule, ...modules],
+    providers: [provideMockBawApi()],
     routes: compiledRoutes,
     stubsEnabled: false,
   });

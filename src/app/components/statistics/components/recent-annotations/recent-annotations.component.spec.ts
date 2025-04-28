@@ -1,7 +1,6 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import {
@@ -19,11 +18,10 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import {
   DataTableBodyCellComponent,
   DatatableComponent,
@@ -44,6 +42,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { Id } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
 import { generateUser } from "@test/fakes/User";
+import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
 
 describe("RecentAnnotationsComponent", () => {
@@ -64,16 +63,17 @@ describe("RecentAnnotationsComponent", () => {
   let defaultRecording: AudioRecording;
   let defaultTags: Tag[];
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: RecentAnnotationsComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
-  function interceptSiteRequest(data: Errorable<Site>): Promise<any> {
+  function interceptSiteRequest(data: Errorable<Site>) {
     return interceptShowApiRequest(api.sites, injector, data, Site);
   }
 
-  function interceptUserRequest(data: Errorable<User>): Promise<any> {
+  function interceptUserRequest(data: Errorable<User>) {
     return interceptShowApiRequest(api.users, injector, data, User);
   }
 

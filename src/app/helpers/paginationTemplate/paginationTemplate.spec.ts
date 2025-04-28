@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
@@ -11,7 +11,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -24,7 +23,6 @@ const pageKey = "page";
 @Component({
   selector: "baw-test",
   template: "",
-  standalone: false
 })
 class MockComponent extends PaginationTemplate<Project> {
   public constructor(
@@ -49,9 +47,10 @@ describe("PaginationTemplate", () => {
   let api: SpyObject<ProjectsService>;
   let spectator: SpectatorRouting<MockComponent>;
   let component: MockComponent;
+
   const createComponent = createRoutingFactory({
     component: MockComponent,
-    imports: [SharedModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(queryParams: Params = {}) {

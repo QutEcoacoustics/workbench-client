@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { getRoute, MenuLink } from "@interfaces/menusInterfaces";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
+import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Header Dropdown Item.
@@ -27,7 +28,7 @@ import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
     </li>
     `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
 })
 export class HeaderDropdownComponent {
   @Input() public label: string;

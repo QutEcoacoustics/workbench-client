@@ -1,20 +1,11 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
@@ -24,24 +15,19 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { AsyncPipe } from "@angular/common";
+import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<CardComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: CardComponent,
-    imports: [
-      RouterTestingModule,
-      MockBawApiModule,
-      MockDirectivesModule,
-      PipesModule,
-    ],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    imports: [AsyncPipe, WithLoadingPipe],
+    providers: [provideMockBawApi()],
   });
 
   function setup(

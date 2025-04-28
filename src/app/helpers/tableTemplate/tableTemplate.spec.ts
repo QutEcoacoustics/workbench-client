@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { SharedModule } from "@shared/shared.module";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TableTemplate } from "./tableTemplate";
 
 @Component({
@@ -8,7 +8,7 @@ import { TableTemplate } from "./tableTemplate";
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-  standalone: false
+  imports: [NgxDatatableModule],
 })
 class MockComponent extends TableTemplate<{ id: number | string }> {
   public columns = [{ prop: "id" }];
@@ -35,16 +35,14 @@ describe("TableTemplate", () => {
   }
 
   function checkMatch(filterMatch: (filter: string, cell: any) => boolean) {
-    spyOn(
-      component as any,
-      "filterMatch"
-    ).and.callFake((val: string, row: any) => filterMatch(val, row));
+    spyOn(component as any, "filterMatch").and.callFake(
+      (val: string, row: any) => filterMatch(val, row)
+    );
   }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MockComponent],
-      imports: [SharedModule],
+      imports: [MockComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockComponent);

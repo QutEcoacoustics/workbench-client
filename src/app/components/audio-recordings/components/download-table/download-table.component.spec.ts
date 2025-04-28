@@ -1,17 +1,15 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Site } from "@models/Site";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
@@ -28,9 +26,10 @@ describe("DownloadTableComponent", () => {
   let siteApi: SpyObject<ShallowSitesService>;
   let recordingApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<DownloadTableComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: DownloadTableComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    providers: [provideMockBawApi()],
   });
 
   function interceptRecordingsApi(recordings: AudioRecording[]) {

@@ -1,6 +1,5 @@
 import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { modelData } from "@test/helpers/faker";
 import { InlineListComponent } from "./inline-list.component";
 
@@ -9,8 +8,8 @@ describe("InlineListComponent", () => {
   let defaultTestItems: any[];
 
   const createComponent = createHostFactory({
-    imports: [SharedModule, MockBawApiModule],
     component: InlineListComponent,
+    providers: [provideMockBawApi()],
   });
 
   function setup(initialItems: any[], itemKey?: string): void {

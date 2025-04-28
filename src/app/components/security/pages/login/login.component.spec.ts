@@ -1,6 +1,5 @@
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { LoginDetails } from "@models/data/LoginDetails";
@@ -21,11 +20,11 @@ import { clickButton, getElementByInnerText } from "@test/helpers/html";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Component } from "@angular/core";
-import { SecurityModule } from "@components/security/security.module";
 import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
 import { modelData } from "@test/helpers/faker";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { IconsModule } from "@shared/icons/icons.module";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
 
@@ -39,7 +38,7 @@ import schema from "./login.schema.json";
     <baw-toast-provider></baw-toast-provider>
     <baw-authentication-login></baw-authentication-login>
   `,
-  standalone: false
+  imports: [LoginComponent, ToastProviderComponent],
 })
 class TestHostComponent {}
 
@@ -57,13 +56,12 @@ describe("LoginComponent", () => {
     component: TestHostComponent,
     imports: [
       ...testFormImports,
-      SecurityModule,
-      MockBawApiModule,
+      IconsModule,
+
       ToastComponent,
-      ToastProviderComponent,
+      FormComponent,
     ],
     providers: testFormProviders,
-    declarations: [FormComponent],
   });
 
   const component = () => spec.query(LoginComponent);

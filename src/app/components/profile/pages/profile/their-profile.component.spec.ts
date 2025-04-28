@@ -1,6 +1,4 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -21,7 +19,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { ItemsComponent } from "@shared/items/items/items.component";
-import { SharedModule } from "@shared/shared.module";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
@@ -34,6 +31,8 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Subject } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TheirProfileComponent } from "./their-profile.component";
 
 describe("TheirProfileComponent", () => {
@@ -45,9 +44,11 @@ describe("TheirProfileComponent", () => {
 
   let defaultUser: User;
   let spec: SpectatorRouting<TheirProfileComponent>;
+
   const createComponent = createRoutingFactory({
     component: TheirProfileComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

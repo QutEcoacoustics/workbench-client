@@ -1,12 +1,11 @@
 import { fakeAsync, tick } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -15,14 +14,14 @@ import { DateTime } from "luxon";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ListComponent } from "./list.component";
+import { HarvestListComponent } from "./list.component";
 
 describe("ListComponent", () => {
-  let spec: SpectatorRouting<ListComponent>;
+  let spec: SpectatorRouting<HarvestListComponent>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
   let defaultUser: User;
@@ -30,13 +29,13 @@ describe("ListComponent", () => {
   let modalConfigService: NgbModalConfig;
 
   const createComponent = createRoutingFactory({
-    declarations: [
+    component: HarvestListComponent,
+    imports: [
       ConfirmationComponent,
       UserLinkComponent,
       WebsiteStatusWarningComponent,
     ],
-    component: ListComponent,
-    imports: [MockBawApiModule, SharedModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 
@@ -66,8 +65,12 @@ describe("ListComponent", () => {
     // since the harvest creator is a resolved model, we need to mock the creator property
     spyOnProperty(mockHarvest, "creator").and.callFake(() => defaultUser);
 
-    const mockHarvestProject: Project = project ? project : new Project(generateProject());
-    spyOnProperty(mockHarvest, "project").and.callFake(() => mockHarvestProject);
+    const mockHarvestProject: Project = project
+      ? project
+      : new Project(generateProject());
+    spyOnProperty(mockHarvest, "project").and.callFake(
+      () => mockHarvestProject
+    );
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
@@ -132,11 +135,11 @@ describe("ListComponent", () => {
     modalService?.dismissAll();
   });
 
-  assertPageInfo(ListComponent, ["Recording Uploads", "All Recording Uploads"]);
+  assertPageInfo(HarvestListComponent, ["Recording Uploads", "All Recording Uploads"]);
 
   it("should create", () => {
     setup(defaultProject, defaultHarvest);
-    expect(spec.component).toBeInstanceOf(ListComponent);
+    expect(spec.component).toBeInstanceOf(HarvestListComponent);
   });
 
   it("should not show abort button when harvest cannot be aborted", () => {

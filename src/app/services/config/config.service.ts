@@ -21,7 +21,7 @@ export const assetRoot = "/assets";
  * Config Service.
  * Handles access to the deployment environment.
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class ConfigService {
   private _validConfig: boolean;
   private _config: Configuration;

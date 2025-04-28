@@ -1,12 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Tag, TagType } from "@models/Tag";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateTag } from "@test/fakes/Tag";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -14,7 +11,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminTagsEditComponent } from "./edit.component";
 
 describe("AdminTagsEditComponent", () => {
@@ -35,12 +33,10 @@ describe("AdminTagsEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
+        AdminTagsEditComponent,
       ],
-      declarations: [AdminTagsEditComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

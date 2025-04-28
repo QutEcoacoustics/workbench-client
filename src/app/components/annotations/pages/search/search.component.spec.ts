@@ -1,4 +1,4 @@
-import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
 import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
@@ -8,9 +8,6 @@ import {
   SHALLOW_AUDIO_EVENT,
   SHALLOW_SITE,
 } from "@baw-api/ServiceTokens";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
-import { RouterTestingModule } from "@angular/router/testing";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -37,17 +34,21 @@ import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { MockComponent } from "ng-mocks";
+import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {
   const responsePageSize = 24;
 
-  let spectator: Spectator<AnnotationSearchComponent>;
+  let spec: Spectator<AnnotationSearchComponent>;
   let injector: AssociationInjector;
 
-  let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
-  let mediaServiceSpy: SpyObject<MediaService>;
+  let audioEventsSpy: SpyObject<ShallowAudioEventsService>;
+  let mediaSpy: SpyObject<MediaService>;
   let shallowSiteSpy: SpyObject<ShallowSitesService>;
 
   let mockAudioEventsResponse: AudioEvent[] = [];
@@ -61,18 +62,18 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
+    imports: [IconsModule, MockComponent(AnnotationSearchFormComponent)],
     providers: [
-      {
-        provide: AnnotationService,
-        useValue: { show: () => mockAnnotationResponse },
-      },
+      provideMockBawApi(),
+      mockProvider(AnnotationService,{
+        show: () => mockAnnotationResponse,
+      }),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
   function setup(queryParameters: Params = {}): void {
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       params: {
         projectId: routeProject.id,
@@ -82,11 +83,11 @@ describe("AnnotationSearchComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spectator.inject(ASSOCIATION_INJECTOR);
-    mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
+    injector = spec.inject(ASSOCIATION_INJECTOR);
+    mediaSpy = spec.inject(MEDIA.token);
+    spyOn(mediaSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
 
-    spectator.component.searchParameters = mockSearchParameters;
+    spec.component.searchParameters = mockSearchParameters;
 
     mockAudioEventsResponse = modelData.randomArray(
       responsePageSize,
@@ -122,17 +123,17 @@ describe("AnnotationSearchComponent", () => {
       injector
     );
 
-    audioEventsApiSpy = spectator.inject(SHALLOW_AUDIO_EVENT.token);
-    audioEventsApiSpy.filter.andCallFake(() => of(mockAudioEventsResponse));
+    audioEventsSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    audioEventsSpy.filter.andCallFake(() => of(mockAudioEventsResponse));
 
-    shallowSiteSpy = spectator.inject(SHALLOW_SITE.token);
+    shallowSiteSpy = spec.inject(SHALLOW_SITE.token);
     shallowSiteSpy.show.andCallFake(() => of(routeSite));
 
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   const spectrogramElements = () =>
-    spectator.queryAll<SpectrogramComponent>("oe-spectrogram");
+    spec.queryAll<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(fakeAsync(() => {
     patchSharedArrayBuffer();
@@ -154,7 +155,7 @@ describe("AnnotationSearchComponent", () => {
   assertPageInfo(AnnotationSearchComponent, "Search Annotations");
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AnnotationSearchComponent);
+    expect(spec.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 
   it("should make the correct api call", () => {
@@ -179,33 +180,33 @@ describe("AnnotationSearchComponent", () => {
       },
     };
 
-    expect(audioEventsApiSpy.filter).toHaveBeenCalledWith(expectedBody);
+    expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
   });
 
   it("should display an error if there are no search results", () => {
     const expectedText = "No annotations found";
 
-    spectator.component.searchResults = [];
-    spectator.component.loading = false;
-    spectator.detectChanges();
+    spec.component.searchResults = [];
+    spec.component.loading = false;
+    spec.detectChanges();
 
-    const element = getElementByInnerText(spectator, expectedText);
+    const element = getElementByInnerText(spec, expectedText);
     expect(element).toExist();
   });
 
   it("should not display an error if the search results are still loading", () => {
     const expectedText = "No annotations found";
 
-    spectator.component.searchResults = [];
-    spectator.component.loading = true;
-    spectator.detectChanges();
+    spec.component.searchResults = [];
+    spec.component.loading = true;
+    spec.detectChanges();
 
-    const element = getElementByInnerText(spectator, expectedText);
+    const element = getElementByInnerText(spec, expectedText);
     expect(element).not.toExist();
   });
 
   it("should display a page of search results", () => {
-    spectator.detectChanges();
+    spec.detectChanges();
 
     const expectedResults = mockAudioEventsResponse.length;
     const realizedResults = spectrogramElements().length;

@@ -20,6 +20,14 @@ import {
 import { User } from "@models/User";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
+import { ItemsComponent } from "@shared/items/items/items.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
 import { MyProfileComponent } from "./my-profile.component";
 
 export const theirProfileActions = [
@@ -36,7 +44,16 @@ const accountKey = "account";
   selector: "baw-their-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
-  standalone: false
+  imports: [
+    AuthenticatedImageDirective,
+    FaIconComponent,
+    NgbTooltip,
+    StrongRouteDirective,
+    HiddenCopyComponent,
+    ItemsComponent,
+    LoadingComponent,
+    UrlDirective,
+  ],
 })
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;

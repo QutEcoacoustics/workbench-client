@@ -1,6 +1,5 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
@@ -10,7 +9,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import { generateUser } from "@test/fakes/User";
@@ -24,9 +22,10 @@ describe("TheirBookmarksComponent", () => {
   let defaultUser: User;
   let defaultBookmark: Bookmark;
   let spec: SpectatorRouting<TheirBookmarksComponent>;
+
   const createComponent = createRoutingFactory({
     component: TheirBookmarksComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

@@ -16,14 +16,13 @@ import {
 } from "@helpers/custom-errors/baw-api-error";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { SitesService } from "@baw-api/site/sites.service";
 import { ConfigService } from "@services/config/config.service";
-import { PageTitleStrategy } from "src/app/app.component";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteDetailsComponent } from "./details.component";
 
 const mockSiteComponent = MockComponent(SiteComponent);
@@ -39,11 +38,10 @@ describe("SiteDetailsComponent", () => {
   let spec: SpectatorRouting<SiteDetailsComponent>;
 
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
-    providers: [PageTitleStrategy],
-    declarations: [mockSiteComponent],
-    mocks: [ToastService],
     component: SiteDetailsComponent,
+    declarations: [mockSiteComponent],
+    providers: [provideMockBawApi(), PageTitleStrategy],
+    mocks: [ToastService],
   });
 
   function setup(

@@ -3,8 +3,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
@@ -23,8 +22,6 @@ import {
 } from "@test/helpers/html";
 import { fakeAsync } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -36,6 +33,7 @@ import {
   interceptFilterApiRequest,
   interceptShowApiRequest,
 } from "@test/helpers/general";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -54,8 +52,8 @@ describe("AnnotationSearchFormComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
-    imports: [MockBawApiModule, SharedModule],
-    declarations: [DateTimeFilterComponent, TypeaheadInputComponent],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(params: Params = {}): Promise<any> {
@@ -91,9 +89,8 @@ describe("AnnotationSearchFormComponent", () => {
       interceptShowApiRequest(
         tagsApiSpy,
         injector,
-        (tag: Tag) =>
-          mockTagsResponse.find((requestModel) => requestModel.id === tag.id),
-        Tag
+        mockTagsResponse[0],
+        Tag,
       ),
 
       interceptFilterApiRequest(
@@ -168,7 +165,7 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     // check the population of a typeahead input that does not use a property backing
-    xit("should pre-populate the tags typeahead input if provided in the search parameters model", async () => {
+    it("should pre-populate the tags typeahead input if provided in the search parameters model", fakeAsync(async () => {
       const testedTag = mockTagsResponse[0];
 
       const response = setup({ tags: testedTag.id.toString() });
@@ -177,8 +174,9 @@ describe("AnnotationSearchFormComponent", () => {
       spec.detectChanges();
 
       const realizedTagPills = tagPills();
-      expect(realizedTagPills[0].innerText).toEqual(`${testedTag.text}`);
-    });
+      expect(realizedTagPills).toHaveLength(1);
+      expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
+    }));
 
     // check the population of an external component that is not a typeahead input
     it("should pre-populate the date filters if provided in the search parameters model", fakeAsync(() => {
@@ -219,7 +217,8 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check the population of a checkbox boolean input
-    // TODO: enable this test once we have the endpoint avaliable to filter by verified status
+    // TODO: enable this test once we have the endpoint available to filter by
+    // verified status
     xit("should pre-populate the only verified checkbox if provided in the search parameters model", () => {
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
     });

@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
+import { CardComponent } from "../card/card.component";
 
 /**
  * Cards Component
@@ -20,9 +21,9 @@ import { List } from "immutable";
         <ng-content></ng-content>
       </div>
     </div>
-    `,
+  `,
   styleUrls: ["./cards.component.scss"],
-  standalone: false
+  imports: [CardComponent],
 })
 export class CardsComponent {
   @Input() public models: List<Project | Region>;

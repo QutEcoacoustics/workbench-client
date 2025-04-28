@@ -1,13 +1,10 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -17,6 +14,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -24,9 +22,10 @@ describe("SiteCardComponent", () => {
   let defaultSite: Site;
   let defaultRecording: AudioRecording;
   let spec: Spectator<SiteCardComponent>;
-  const createComponent = createComponentFactory({
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+
+  const createComponent = createRoutingFactory({
     component: SiteCardComponent,
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(() => {

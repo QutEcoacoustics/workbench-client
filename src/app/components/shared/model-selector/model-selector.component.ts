@@ -25,6 +25,7 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "baw-model-selector",
@@ -53,7 +54,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
       />
     </div>
   `,
-  standalone: false
+  imports: [NgbTypeahead, FormsModule],
 })
 export class ModelSelectorComponent<Model extends AbstractModel>
   implements OnInit

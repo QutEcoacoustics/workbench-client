@@ -24,6 +24,19 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
 import { Duration } from "luxon";
 import { BehaviorSubject, Observable, takeUntil } from "rxjs";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { NgTemplateOutlet } from "@angular/common";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -37,7 +50,21 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
-  standalone: false
+  imports: [
+    DateTimeFilterComponent,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    UserLinkComponent,
+    LoadingComponent,
+    NgTemplateOutlet,
+    UrlDirective,
+    NgbTooltip,
+    FaIconComponent,
+    ErrorHandlerComponent,
+    IsUnresolvedPipe,
+  ],
 })
 class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>

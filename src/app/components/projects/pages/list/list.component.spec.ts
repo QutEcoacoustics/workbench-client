@@ -1,49 +1,35 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { ModelCardsModule } from "@shared/model-cards/model-cards.module";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { ListComponent } from "./list.component";
-
-const mockCardsComponent = MockComponent(CardsComponent);
+import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ProjectListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
   let api: SpyObject<ProjectsService>;
-  let spec: Spectator<ListComponent>;
-  const createComponent = createComponentFactory({
-    component: ListComponent,
-    overrideModules: [
-      [
-        ModelCardsModule,
-        {
-          set: {
-            declarations: [mockCardsComponent],
-            exports: [mockCardsComponent],
-          },
-        },
-      ],
-    ],
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+  let spec: Spectator<ProjectListComponent>;
+
+  const createComponent = createRoutingFactory({
+    component: ProjectListComponent,
+    imports: [MockComponent(CardsComponent)],
+    providers: [provideMockBawApi()],
   });
 
   function generateProjects(
@@ -96,7 +82,7 @@ describe("ProjectsListComponent", () => {
     api = spec.inject(ProjectsService);
   });
 
-  assertPageInfo(ListComponent, ["Projects", shallowRegionsMenuItem.label]);
+  assertPageInfo(ProjectListComponent, ["Projects", shallowRegionsMenuItem.label]);
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => expect(filter.paging.page).toBe(1));

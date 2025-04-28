@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
-import { appLibraryImports } from "src/app/app.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { appLibraryImports } from "src/app/app.config";
 import { ContactUsComponent } from "./contact-us.component";
 
 // TODO Implement tests
@@ -13,13 +11,8 @@ xdescribe("ContactUsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        MockBawApiModule,
-        RouterTestingModule,
-      ],
-      declarations: [ContactUsComponent],
+      imports: [...appLibraryImports, ContactUsComponent],
+      providers: [provideMockBawApi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactUsComponent);

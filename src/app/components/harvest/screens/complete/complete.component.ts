@@ -10,12 +10,43 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
 import { HarvestReport } from "@models/Harvest";
 import { Project } from "@models/Project";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DatatableSortKeyDirective } from "@directives/datatable/sort-key/sort-key.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { StatisticItemComponent } from "../../components/shared/statistics/item.component";
+import { StatisticGroupComponent } from "../../components/shared/statistics/group.component";
+import { StatisticsComponent } from "../../components/shared/statistics/statistics.component";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
 @Component({
   selector: "baw-harvest-complete",
   templateUrl: "complete.component.html",
   styleUrls: ["complete.component.scss"],
-  standalone: false
+  imports: [
+    StatisticsComponent,
+    StatisticGroupComponent,
+    StatisticItemComponent,
+    StrongRouteDirective,
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    DatatablePaginationDirective,
+    DatatableSortKeyDirective,
+    LoadingComponent,
+    UrlDirective,
+    ZonedDateTimeComponent,
+    DurationComponent,
+    FaIconComponent,
+    IsUnresolvedPipe,
+    SafePipe,
+  ],
 })
 export class CompleteComponent implements OnInit {
   public projectMenuItem = projectMenuItem;

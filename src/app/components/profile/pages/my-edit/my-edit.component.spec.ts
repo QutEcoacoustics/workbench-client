@@ -1,15 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { userResolvers } from "@baw-api/user/user.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { User } from "@models/User";
-import { SharedModule } from "@shared/shared.module";
 import { generateUser } from "@test/fakes/User";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MyEditComponent } from "./my-edit.component";
 
 describe("MyProfileEditComponent", () => {
@@ -21,12 +19,10 @@ describe("MyProfileEditComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
+        MyEditComponent,
       ],
-      declarations: [MyEditComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

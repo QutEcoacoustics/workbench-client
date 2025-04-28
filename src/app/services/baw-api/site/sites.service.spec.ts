@@ -7,7 +7,6 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateCustomApiFilter,
   validateStandardApi,
@@ -25,9 +24,9 @@ describe("SitesService", (): void => {
   let service: SitesService;
   let apiRoot: string;
   let spec: SpectatorService<SitesService>;
+
   const createService = createServiceFactory({
     service: SitesService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

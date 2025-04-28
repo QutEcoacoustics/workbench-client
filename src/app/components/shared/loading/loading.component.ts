@@ -3,6 +3,7 @@ import {
   BootstrapColorTypes,
   BootstrapScreenSizes,
 } from "@helpers/bootstrapTypes";
+import { NgClass } from "@angular/common";
 
 /**
  * Loading Animation
@@ -16,7 +17,7 @@ import {
       </div>
     </div>
   `,
-  standalone: false
+  imports: [NgClass],
 })
 export class LoadingComponent implements OnInit {
   @Input() public color: BootstrapColorTypes = "info";

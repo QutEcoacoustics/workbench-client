@@ -42,7 +42,6 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
       width: 100%;
     }
   `],
-  standalone: false
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;

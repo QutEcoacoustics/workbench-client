@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -9,12 +8,11 @@ import {
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import { RequestComponent } from "./request.component";
 
 describe("ProjectsRequestComponent", () => {
@@ -25,14 +23,9 @@ describe("ProjectsRequestComponent", () => {
 
   function configureTestingModule(model: Project, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [RequestComponent],
+      imports: [...appLibraryImports, RequestComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(

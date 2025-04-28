@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import {
   contactUsMenuItem,
   creditsMenuItem,
@@ -7,19 +6,22 @@ import {
   ethicsMenuItem,
 } from "@components/about/about.menus";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { MockDirective } from "ng-mocks";
 import { FooterComponent } from "./footer.component";
 
 describe("FooterComponent", () => {
   let configService: ConfigService;
   let spec: Spectator<FooterComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: FooterComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
+    imports :[MockDirective(StrongRouteActiveDirective)],
+    providers: [provideMockConfig()],
   });
 
   beforeEach(() => {

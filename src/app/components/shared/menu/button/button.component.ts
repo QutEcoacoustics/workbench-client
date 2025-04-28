@@ -6,6 +6,8 @@ import {
 } from "@angular/core";
 import { MenuAction } from "@interfaces/menusInterfaces";
 import { MenuModal } from "@menu/widgetItem";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Menu Button Component
@@ -39,7 +41,7 @@ import { MenuModal } from "@menu/widgetItem";
   styleUrls: ["./button.component.scss"],
   // This will be recreated every time the page loads
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgbTooltip, FaIconComponent],
 })
 export class MenuButtonComponent implements OnInit {
   @Input() public link: MenuAction | MenuModal;

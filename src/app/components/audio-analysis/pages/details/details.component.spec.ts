@@ -1,13 +1,11 @@
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
@@ -28,7 +26,7 @@ describe("AnalysisJobComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnalysisJobComponent,
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
+    providers: [provideMockBawApi()],
   });
 
   assertPageInfo<AnalysisJob>(AnalysisJobComponent, "Test Analysis Job", {

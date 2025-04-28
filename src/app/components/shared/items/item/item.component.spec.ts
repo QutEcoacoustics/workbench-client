@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
@@ -9,9 +8,10 @@ import { ItemComponent } from "./item.component";
 
 describe("ItemComponent", () => {
   let spec: SpectatorRouting<ItemComponent>;
+
   const createComponent = createRoutingFactory({
     component: ItemComponent,
-    imports: [RouterTestingModule, IconsModule, NgbTooltipModule],
+    imports: [IconsModule, NgbTooltipModule],
   });
 
   function setup(

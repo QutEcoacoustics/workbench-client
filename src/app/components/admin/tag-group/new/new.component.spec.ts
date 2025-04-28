@@ -1,15 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminTagGroupsNewComponent } from "./new.component";
 
 describe("AdminTagGroupsNewComponent", () => {
@@ -19,7 +17,7 @@ describe("AdminTagGroupsNewComponent", () => {
   let notifications: ToastService;
   let router: Router;
 
-  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group")
+  assertPageInfo(AdminTagGroupsNewComponent, "New Tag Group");
 
   // xdescribe("form", () => {});
 
@@ -28,12 +26,10 @@ describe("AdminTagGroupsNewComponent", () => {
       TestBed.configureTestingModule({
         imports: [
           ...appLibraryImports,
-          SharedModule,
-          RouterTestingModule,
-          MockBawApiModule,
+          AdminTagGroupsNewComponent,
         ],
-        declarations: [AdminTagGroupsNewComponent],
         providers: [
+          provideMockBawApi(),
           {
             provide: ActivatedRoute,
             useValue: mockActivatedRoute(),

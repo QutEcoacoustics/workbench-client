@@ -1,5 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import {
   MenuLink,
   menuLink,
@@ -7,18 +5,26 @@ import {
   menuRoute,
   NavigableMenuItem,
 } from "@interfaces/menusInterfaces";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { MockConfigModule } from "@services/config/configMock.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { generateMenuLink, generateMenuRoute } from "@test/fakes/MenuItem";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { MockDirective } from "ng-mocks";
 import { HeaderItemComponent } from "./header-item.component";
 
 describe("HeaderItemComponent", () => {
   let defaultLink: MenuLink;
   let defaultRoute: MenuRoute;
   let spec: Spectator<HeaderItemComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: HeaderItemComponent,
-    imports: [RouterTestingModule, MockDirectivesModule, MockConfigModule],
+    imports: [
+      MockDirective(StrongRouteActiveDirective),
+      MockDirective(StrongRouteDirective),
+    ],
+    providers: [provideMockConfig()],
   });
 
   function getLink() {

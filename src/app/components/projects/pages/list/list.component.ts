@@ -10,8 +10,11 @@ import {
 } from "@components/projects/projects.menus";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Project } from "@models/Project";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
+import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { CardsComponent } from "@shared/model-cards/cards/cards.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -52,9 +55,14 @@ export const projectsMenuItemActions = [
     }
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
-  standalone: false
+  imports: [
+    DebounceInputComponent,
+    CardsComponent,
+    NgbPagination,
+    ErrorHandlerComponent,
+  ]
 })
-class ListComponent extends PaginationTemplate<Project> {
+class ProjectListComponent extends PaginationTemplate<Project> {
   public models: List<Project> = List([]);
 
   public constructor(
@@ -77,10 +85,10 @@ class ListComponent extends PaginationTemplate<Project> {
   }
 }
 
-ListComponent.linkToRoute({
+ProjectListComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: projectsMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
 });
 
-export { ListComponent };
+export { ProjectListComponent };

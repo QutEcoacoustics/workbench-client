@@ -18,6 +18,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { regionMenuItemActions } from "../details/details.component";
 import schema from "../../region.base.json";
 
@@ -41,9 +42,9 @@ const regionKey = "region";
       ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent]
 })
-class EditComponent extends FormTemplate<Region> implements OnInit {
+class RegionEditComponent extends FormTemplate<Region> implements OnInit {
   public fields = schema.fields;
   public title: string;
 
@@ -77,7 +78,7 @@ class EditComponent extends FormTemplate<Region> implements OnInit {
   }
 }
 
-EditComponent.linkToRoute({
+RegionEditComponent.linkToRoute({
   category: regionsCategory,
   pageRoute: editRegionMenuItem,
   menus: {
@@ -90,4 +91,4 @@ EditComponent.linkToRoute({
   },
 });
 
-export { EditComponent };
+export { RegionEditComponent };

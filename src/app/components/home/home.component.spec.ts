@@ -1,26 +1,20 @@
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CmsService } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { CardComponent } from "@shared/model-cards/card/card.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -30,6 +24,11 @@ import { interceptFilterApiRequest } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
+import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
@@ -38,18 +37,19 @@ describe("HomeComponent", () => {
   let cmsService: SpyObject<CmsService>;
   let config: ConfigService;
   let spec: Spectator<HomeComponent>;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: HomeComponent,
     declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
-      MockBawApiModule,
-      MockConfigModule,
       IconsModule,
-      MockDirectivesModule,
-      RouterTestingModule,
-      LoadingModule,
-      PipesModule,
+      LoadingComponent,
+      AsyncPipe,
+      UpperCasePipe,
+      TitleCasePipe,
+      WithLoadingPipe,
     ],
+    providers: [provideMockConfig(), provideMockBawApi()],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {

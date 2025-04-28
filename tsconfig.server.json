@@ -5,8 +5,5 @@
     "outDir": "./out-tsc/server",
     "types": ["node", "@types/gtag.js"]
   },
-  "files": ["src/main.server.ts", "server.ts"],
-  "angularCompilerOptions": {
-    "entryModule": "./src/app/app.server.module#AppServerModule"
-  }
+  "files": ["src/main.server.ts", "src/server.ts"]
 }

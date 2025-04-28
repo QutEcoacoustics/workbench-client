@@ -9,9 +9,10 @@ import { dataRequestMenuItem } from "@components/data-request/data-request.menus
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ContactUs, IContactUs } from "@models/data/ContactUs";
-import { RecaptchaState } from "@shared/form/form.component";
+import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs/operators";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import schema from "./contact-us.schema.json";
 
 @Component({
@@ -33,7 +34,7 @@ import schema from "./contact-us.schema.json";
       </span>
     </baw-form>
   `,
-  standalone: false
+  imports: [FormComponent, StrongRouteDirective],
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
   public fields = schema.fields;

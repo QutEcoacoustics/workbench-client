@@ -13,6 +13,7 @@ import { TagGroup } from "@models/TagGroup";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { FormComponent } from "@shared/form/form.component";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminEditTagGroupMenuItem,
@@ -27,17 +28,17 @@ const tagGroupKey = "tagGroup";
   selector: "baw-admin-tag-groups-edit",
   template: `
     @if (!failure) {
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
+    <baw-form
+      [title]="title"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      submitLabel="Submit"
+      (onSubmit)="submit($event)"
+    ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>

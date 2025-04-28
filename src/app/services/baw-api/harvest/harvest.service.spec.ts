@@ -3,7 +3,6 @@ import { Harvest } from "@models/Harvest";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -19,13 +18,11 @@ describe("HarvestsService", () => {
 
   const createService = createServiceFactory({
     service: HarvestsService,
-    imports: mockServiceImports,
     providers: [...mockServiceProviders, ShallowHarvestsService],
   });
 
   const createShallowService = createServiceFactory({
     service: ShallowHarvestsService,
-    imports: mockServiceImports,
     providers: [...mockServiceProviders, ShallowHarvestsService],
   });
 

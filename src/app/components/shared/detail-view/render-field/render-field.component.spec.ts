@@ -1,14 +1,8 @@
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { AbstractModel, UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
 import { assetRoot } from "@services/config/config.service";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
-import { CheckboxModule } from "@shared/checkbox/checkbox.module";
-import { LoadingModule } from "@shared/loading/loading.module";
 import { modelData } from "@test/helpers/faker";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime, Duration } from "luxon";
@@ -18,26 +12,27 @@ import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-sin
 import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { withDefaultZone } from "@test/helpers/mocks";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ModelLinkComponent } from "../model-link/model-link.component";
 import { ModelView, RenderFieldComponent } from "./render-field.component";
 
 describe("RenderFieldComponent", () => {
   let spec: SpectatorHost<RenderFieldComponent>;
+
   const createComponent = createHostFactory({
     component: RenderFieldComponent,
-    declarations: [CheckboxComponent, ModelLinkComponent],
     imports: [
-      CheckboxModule,
-      MockDirectivesModule,
-      LoadingModule,
-      MockBawApiModule,
-      RouterTestingModule,
-      PipesModule,
       DatetimeComponent,
       ZonedDateTimeComponent,
       DurationComponent,
       TimeSinceComponent,
+      LoadingComponent,
+      CheckboxComponent,
+      ModelLinkComponent,
     ],
+    providers: [provideMockBawApi(), provideRouter([])],
   });
 
   const getElement = {

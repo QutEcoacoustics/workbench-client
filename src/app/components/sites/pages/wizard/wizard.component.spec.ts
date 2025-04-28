@@ -1,10 +1,9 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { NewComponent } from "@components/regions/pages/new/new.component";
+import { RegionNewComponent } from "@components/regions/pages/new/new.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { assertErrorHandler } from "@test/helpers/html";
@@ -14,17 +13,18 @@ import { SiteNewComponent } from "../new/new.component";
 import { WizardComponent } from "./wizard.component";
 
 const mock = {
-  newRegion: MockComponent(NewComponent),
+  newRegion: MockComponent(RegionNewComponent),
   newSite: MockComponent(SiteNewComponent),
 };
 
 describe("WizardComponent", () => {
   let defaultProject: Project;
   let spectator: SpectatorRouting<WizardComponent>;
+
   const createComponent = createRoutingFactory({
-    imports: [SharedModule, MockBawApiModule],
-    declarations: [mock.newRegion, mock.newSite],
     component: WizardComponent,
+    declarations: [mock.newRegion, mock.newSite],
+    providers: [provideMockBawApi()],
   });
 
   function setup(project: Project, error?: BawApiError) {
@@ -46,7 +46,7 @@ describe("WizardComponent", () => {
   }
 
   function getNewRegionsForm() {
-    return spectator.query(NewComponent);
+    return spectator.query(RegionNewComponent);
   }
 
   beforeEach(() => {

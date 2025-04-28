@@ -4,7 +4,6 @@ import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateApiFilter,
   validateCustomApiFilter,
@@ -17,9 +16,9 @@ type Service = ShallowAudioEventsService;
 describe("Shallow AudioEventsService", (): void => {
   const baseUrl = "/audio_events/";
   let spec: SpectatorService<ShallowAudioEventsService>;
+
   const createService = createServiceFactory({
     service: ShallowAudioEventsService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

@@ -44,3 +44,9 @@ export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
     ],
   } as Route;
 }
+
+export function getRouteConfigForIndexed(routes: Record<string, StrongRoute>) {
+  return Object.values(routes)
+    .map((route) => route.compileRoutes(getRouteConfigForPage))
+    .flat();
+}

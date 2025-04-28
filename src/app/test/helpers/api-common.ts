@@ -7,14 +7,14 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
-import { CacheModule } from "@services/cache/cache.module";
-import { MockConfigModule } from "@services/config/configMock.module";
 import { CmsComponent } from "@shared/cms/cms.component";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { provideCaching } from "@services/cache/provide-caching";
 import {
   ApiCreate,
   ApiDestroy,
@@ -32,16 +32,13 @@ import {
 import { BawApiService, Filters } from "../../services/baw-api/baw-api.service";
 import { getCallArgs } from "./general";
 
-export const mockServiceImports = [
-  MockConfigModule,
-  CacheModule,
-];
-
 export const mockServiceProviders: (Provider | EnvironmentProviders)[] = [
   BawApiService,
   BawFormApiService,
   BawSessionService,
   mockAssociationInjector,
+  provideMockConfig(),
+  provideCaching(),
   mockProvider(ToastService),
   provideHttpClient(withInterceptorsFromDi()),
   provideHttpClientTesting(),

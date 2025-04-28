@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   scriptResolvers,
   ScriptsService,
@@ -12,7 +10,6 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -20,9 +17,10 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { appLibraryImports } from "src/app/app.config";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {
@@ -32,14 +30,9 @@ describe("ScriptComponent", () => {
 
   function configureTestingModule(model: Script, error?: BawApiError) {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminScriptComponent],
+      imports: [...appLibraryImports, AdminScriptComponent],
       providers: [
+        provideMockBawApi(),
         {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(
@@ -85,7 +78,7 @@ describe("ScriptComponent", () => {
   assertPageInfo<Script>(AdminScriptComponent, "Test Script", {
     script: {
       model: new Script(generateScript({ name: "Test Script" })),
-    }
+    },
   });
 
   it("should create", () => {

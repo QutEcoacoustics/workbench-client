@@ -1,17 +1,16 @@
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
-import { MockConfigModule } from "@services/config/configMock.module";
-import { LoadingModule } from "@shared/loading/loading.module";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
 import { BehaviorSubject } from "rxjs";
 import { BawClientComponent } from "./baw-client.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
 
 // TODO Add tests for components page input if/when used
 describe("BawClientComponent", () => {
@@ -20,9 +19,11 @@ describe("BawClientComponent", () => {
   let config: ConfigService;
   let sanitizer: DomSanitizer;
   let spec: SpectatorRouting<BawClientComponent>;
+
   const createComponent = createRoutingFactory({
     component: BawClientComponent,
-    imports: [LoadingModule, RouterTestingModule, MockConfigModule],
+    imports: [LoadingComponent],
+    providers: [provideMockConfig()],
   });
 
   function bawClientSource(route: string) {

@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { Observable } from "rxjs";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 
 interface CanPredicate {
   watcher: Observable<unknown>;
@@ -38,7 +39,7 @@ interface CanPredicate {
       <ng-content></ng-content>
     </span>
   `,
-  standalone: false
+  imports: [NgbTooltip]
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
   public constructor(

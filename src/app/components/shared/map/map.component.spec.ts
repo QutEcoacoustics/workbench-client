@@ -12,12 +12,11 @@ import {
   mockGoogleNamespace,
 } from "@test/helpers/googleMaps";
 import { modelData } from "@test/helpers/faker";
-import { MockConfigModule } from "@services/config/configMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModule } from "ng-mocks";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
@@ -27,12 +26,8 @@ describe("MapComponent", () => {
 
   const createComponent = createComponentFactory({
     component: MapComponent,
-    imports: [
-      MockBawApiModule,
-      MockConfigModule,
-      SharedModule,
-      MockModule(GoogleMapsModule),
-    ],
+    imports: [MockModule(GoogleMapsModule)],
+    providers: [provideMockConfig(), provideMockBawApi()],
   });
 
   function getMap() {

@@ -12,11 +12,18 @@ import { toRelative } from "@interfaces/apiInterfaces";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { Project } from "@models/Project";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { concatMap, Subject, takeUntil, tap } from "rxjs";
+import { NgStyle, DecimalPipe } from "@angular/common";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { StatisticsComponent } from "../../components/shared/statistics/statistics.component";
+import { FolderRowComponent } from "../../components/metadata-review/folder-row.component";
+import { FileRowComponent } from "../../components/metadata-review/file-row.component";
+import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
+import { ConfirmationComponent } from "../../components/modal/confirmation.component";
 
 enum RowType {
   folder,
@@ -25,17 +32,17 @@ enum RowType {
 }
 
 export const metaReviewIcons = {
-  folderOpen: ["fas", "folder-open"] as IconProp,
-  folderClosed: ["fas", "folder-closed"] as IconProp,
-  successCircle: ["fas", "circle-check"] as IconProp,
-  success: ["fas", "check"] as IconProp,
-  warningCircle: ["fas", "circle-exclamation"] as IconProp,
-  warning: ["fas", "triangle-exclamation"] as IconProp,
-  failureCircle: ["fas", "xmark-circle"] as IconProp,
-  failure: ["fas", "xmark"] as IconProp,
-  errorCircle: ["fas", "xmark-circle"] as IconProp,
-  error: ["fas", "xmark"] as IconProp,
-};
+  folderOpen: ["fas", "folder-open"],
+  folderClosed: ["fas", "folder-closed"],
+  successCircle: ["fas", "circle-check"],
+  success: ["fas", "check"],
+  warningCircle: ["fas", "circle-exclamation"],
+  warning: ["fas", "triangle-exclamation"],
+  failureCircle: ["fas", "xmark-circle"],
+  failure: ["fas", "xmark"],
+  errorCircle: ["fas", "xmark-circle"],
+  error: ["fas", "xmark"],
+} as const satisfies Record<string, IconProp>;
 
 export interface MetaReviewBase {
   rowType: RowType;
@@ -90,7 +97,17 @@ const rootMappingPath = "";
   selector: "baw-harvest-metadata-review",
   templateUrl: "metadata-review.component.html",
   styleUrls: ["metadata-review.component.scss"],
-  standalone: false
+  imports: [
+    NgStyle,
+    NgbTooltip,
+    FolderRowComponent,
+    FileRowComponent,
+    LoadMoreComponent,
+    ConfirmationComponent,
+    StatisticsComponent,
+    DecimalPipe,
+    StrongRouteDirective,
+  ],
 })
 export class MetadataReviewComponent
   extends withUnsubscribe()

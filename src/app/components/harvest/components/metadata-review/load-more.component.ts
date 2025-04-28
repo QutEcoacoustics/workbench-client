@@ -6,6 +6,8 @@ import {
   Output,
 } from "@angular/core";
 import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/metadata-review.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { WhitespaceComponent } from "./whitespace.component";
 
 @Component({
   selector: "baw-meta-review-load-more-row",
@@ -42,7 +44,7 @@ import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/
   `],
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [WhitespaceComponent, LoadingComponent]
 })
 export class LoadMoreComponent {
   @Input() public row: MetaReviewLoadMore;

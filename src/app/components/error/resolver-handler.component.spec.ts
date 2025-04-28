@@ -1,4 +1,3 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
@@ -14,10 +13,10 @@ const mockErrorHandler = MockComponent(ErrorHandlerComponent);
 
 describe("ResolverHandlerComponent", () => {
   let spec: SpectatorRouting<ResolverHandlerComponent>;
+
   const createComponent = createRoutingFactory({
     component: ResolverHandlerComponent,
     declarations: [mockErrorHandler],
-    imports: [RouterTestingModule],
   });
 
   function setup(data: Partial<IPageInfo>) {

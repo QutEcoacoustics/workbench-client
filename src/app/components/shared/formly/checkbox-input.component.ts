@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "./helper";
 
 /**
@@ -21,7 +22,7 @@ import { asFormControl } from "./helper";
     </div>
   `,
   styleUrl: "checkbox-input.component.scss",
-  standalone: false
+  imports: [FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class CheckboxInputComponent extends FieldType {
   public asFormControl = asFormControl;

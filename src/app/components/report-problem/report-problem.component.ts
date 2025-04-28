@@ -4,7 +4,7 @@ import { ReportProblemService } from "@baw-api/report/report-problem.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
 import { ReportProblem } from "@models/data/ReportProblem";
 import { ConfigService } from "@services/config/config.service";
-import { RecaptchaState } from "@shared/form/form.component";
+import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import {
@@ -31,7 +31,7 @@ import schema from "./report-problem.schema.json";
       </span>
     </baw-form>
   `,
-  standalone: false
+  imports: [FormComponent]
 })
 class ReportProblemComponent
   extends FormTemplate<ReportProblem>

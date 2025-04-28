@@ -28,19 +28,33 @@ import {
 } from "@baw-api/reports/event-report/event-summary-report.service";
 import { Duration } from "luxon";
 import { Tag } from "@models/Tag";
-import { Location } from "@angular/common";
+import {
+  Location,
+  DecimalPipe,
+  PercentPipe,
+  TitleCasePipe,
+} from "@angular/common";
 import { Map } from "immutable";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { ChartComponent } from "@shared/chart/chart.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import coveragePlotSchema from "./coveragePlot.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
-import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
+import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { TimePipe } from "../../../../../pipes/time/time.pipe";
+import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
+import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
+import confidencePlotSchema from "./confidencePlot.schema.json";
+import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -51,7 +65,22 @@ const reportKey = "report";
   selector: "baw-summary-report",
   templateUrl: "./view.component.html",
   styleUrl: "./view.component.scss",
-  standalone: false
+  imports: [
+    NgbTooltip,
+    FaIconComponent,
+    DatetimeComponent,
+    InlineListComponent,
+    SiteMapComponent,
+    ChartComponent,
+    DurationComponent,
+    NgbCollapse,
+    DecimalPipe,
+    PercentPipe,
+    TitleCasePipe,
+    IsUnresolvedPipe,
+    TimePipe,
+    DateTimePipe,
+  ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

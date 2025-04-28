@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -31,9 +30,12 @@ describe("ConfirmPasswordComponent", () => {
   describe("component", () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [...testFormImports, MockBawApiModule],
+        imports: [
+          ...testFormImports,
+          ConfirmPasswordComponent,
+          FormComponent,
+        ],
         providers: testFormProviders,
-        declarations: [ConfirmPasswordComponent, FormComponent],
       }).compileComponents();
 
       fixture = TestBed.createComponent(ConfirmPasswordComponent);

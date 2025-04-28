@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
  * Selectable Items Component.
@@ -16,7 +17,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
       cursor: not-allowed;
     }
   `],
-  standalone: false
+  imports: [FaIconComponent],
 })
 export class SelectableItemsComponent {
   @Input() public title: string;

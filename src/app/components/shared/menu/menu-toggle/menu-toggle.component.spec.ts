@@ -2,7 +2,6 @@ import {
   shouldNotComplete,
   shouldNotFail,
 } from "@baw-api/baw-api.service.spec";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import {
@@ -12,13 +11,16 @@ import {
 } from "@ngneat/spectator";
 import { MenuService } from "@services/menu/menu.service";
 import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuState, MenuToggleComponent } from "./menu-toggle.component";
 
 describe("MenuToggleComponent", () => {
   let spec: Spectator<MenuToggleComponent>;
+
   const createComponent = createComponentFactory({
     component: MenuToggleComponent,
-    imports: [IconsModule, MockBawApiModule],
+    imports: [IconsModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(

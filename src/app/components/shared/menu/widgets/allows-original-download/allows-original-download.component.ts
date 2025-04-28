@@ -6,6 +6,8 @@ import { WidgetComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, Observable } from "rxjs";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
   selector: "baw-allows-original-download",
@@ -26,7 +28,7 @@ import { map, Observable } from "rxjs";
       }
     }
   `,
-  standalone: false
+  imports: [NgbTooltip, AsyncPipe],
 })
 export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent

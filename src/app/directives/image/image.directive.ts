@@ -22,7 +22,6 @@ export const notFoundImage: ImageUrl = {
   // explicitly called
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "img",
-  standalone: false
 })
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */

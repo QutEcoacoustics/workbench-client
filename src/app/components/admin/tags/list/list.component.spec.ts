@@ -1,18 +1,22 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from "@angular/core/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateTag } from "@test/fakes/Tag";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { appLibraryImports } from "src/app/app.config";
 import { AdminTagsComponent } from "./list.component";
 
 describe("AdminTagsComponent", () => {
@@ -25,16 +29,11 @@ describe("AdminTagsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        SharedModule,
-        RouterTestingModule,
-        MockBawApiModule,
-      ],
-      declarations: [AdminTagsComponent],
+      imports: [...appLibraryImports, AdminTagsComponent],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
-    TestBed.inject(ToastService)
+    TestBed.inject(ToastService);
     fixture = TestBed.createComponent(AdminTagsComponent);
     api = TestBed.inject(TagsService);
 
@@ -43,7 +42,9 @@ describe("AdminTagsComponent", () => {
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
-    modalConfigService = TestBed.inject(NgbModalConfig) as SpyObject<NgbModalConfig>;
+    modalConfigService = TestBed.inject(
+      NgbModalConfig
+    ) as SpyObject<NgbModalConfig>;
     modalConfigService.animation = false;
 
     defaultModels = [];
@@ -82,7 +83,7 @@ describe("AdminTagsComponent", () => {
 
       // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
       spyOn(modalService, "open").and.returnValue({
-        result: new Promise((resolve) => resolve(true))
+        result: new Promise((resolve) => resolve(true)),
       });
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 

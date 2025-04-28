@@ -16,6 +16,7 @@ import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { projectMenuItemActions } from "../details/details.component";
 import schema from "../../project.schema.json";
 
@@ -35,9 +36,9 @@ const projectKey = "project";
       ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent]
 })
-class EditComponent extends FormTemplate<Project> implements OnInit {
+class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
   public fields = schema.fields;
   public title: string;
 
@@ -75,7 +76,7 @@ class EditComponent extends FormTemplate<Project> implements OnInit {
   }
 }
 
-EditComponent.linkToRoute({
+ProjectEditComponent.linkToRoute({
   category: projectCategory,
   pageRoute: editProjectMenuItem,
   menus: {
@@ -85,4 +86,4 @@ EditComponent.linkToRoute({
   resolvers: { [projectKey]: projectResolvers.show },
 });
 
-export { EditComponent };
+export { ProjectEditComponent };

@@ -11,6 +11,7 @@ import {
 import { Script } from "@models/Script";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import { adminScriptActions } from "../details/details.component";
 import schema from "../script.base.schema.json";
 import {
@@ -34,7 +35,7 @@ const scriptKey = "script";
       ></baw-form>
     }
   `,
-  standalone: false
+  imports: [FormComponent],
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   public constructor(

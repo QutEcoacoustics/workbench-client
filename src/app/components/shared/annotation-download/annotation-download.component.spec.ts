@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { SitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -14,7 +13,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
-import { SharedModule } from "@shared/shared.module";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -38,7 +36,7 @@ describe("AnnotationDownloadComponent", () => {
 
   const createComponent = createComponentFactory({
     component: AnnotationDownloadComponent,
-    imports: [...testFormImports, MockBawApiModule, SharedModule],
+    imports: testFormImports,
     providers: testFormProviders,
   });
 

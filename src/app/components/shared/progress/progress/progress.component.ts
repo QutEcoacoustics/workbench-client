@@ -23,8 +23,7 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
     }
   `],
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
-  encapsulation: ViewEncapsulation.None,
-  standalone: false
+  encapsulation: ViewEncapsulation.None
 })
 export class ProgressComponent {
   @Input() public showZero: boolean;

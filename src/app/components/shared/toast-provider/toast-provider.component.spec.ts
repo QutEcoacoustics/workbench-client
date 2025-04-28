@@ -10,9 +10,9 @@ import {
 } from "@services/toasts/toasts.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { modelData } from "@test/helpers/faker";
-import { SharedModule } from "@shared/shared.module";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { clickButton } from "@test/helpers/html";
+import { IconsModule } from "@shared/icons/icons.module";
 import { ToastProviderComponent } from "./toast-provider.component";
 
 interface ToastVariantTest {
@@ -29,7 +29,7 @@ describe("ToastProviderComponent", () => {
 
   const createComponent = createComponentFactory({
     component: ToastProviderComponent,
-    imports: [SharedModule],
+    imports: [IconsModule],
   });
 
   function setup() {

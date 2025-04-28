@@ -1,7 +1,6 @@
-import { fakeAsync, tick } from "@angular/core/testing";
-import { Router, RouterOutlet } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { Router, RouterModule, RouterOutlet } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   projectResolvers,
   ProjectsService,
@@ -21,34 +20,29 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertErrorHandler } from "@test/helpers/html";
-import {
-  addStandardFormImportsToMockBuilder,
-  testFormImports,
-  testFormProviders,
-} from "@test/helpers/testbed";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
+import { FormComponent } from "@shared/form/form.component";
 import schema from "../../region.base.json";
-import { NewComponent } from "./new.component";
+import { RegionNewComponent } from "./new.component";
 
 describe("RegionsNewComponent", () => {
-  let spectator: SpectatorRouting<NewComponent>;
+  let spectator: SpectatorRouting<RegionNewComponent>;
   const { fields } = schema;
 
   const createComponent = createRoutingFactory({
-    component: NewComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    component: RegionNewComponent,
+    imports: [...testFormImports, FormComponent],
     providers: testFormProviders,
-    declarations: [FormComponent],
     mocks: [ToastService],
     stubsEnabled: true,
   });
@@ -96,7 +90,7 @@ describe("RegionsNewComponent", () => {
       defaultProject = new Project(generateProject());
     });
 
-    assertPageInfo(NewComponent, "New Site");
+    assertPageInfo(RegionNewComponent, "New Site");
 
     it("should create", () => {
       setup();
@@ -147,20 +141,21 @@ describe("routing and resolvers", () => {
     defaultProject = new Project(generateProject());
 
     // stub both api methods that the two resolvers use
-    const api = createSpyObject(ProjectsService);
-    api.show.and.callFake(() => of(project));
-    api.filter.and.callFake(() => of([defaultProject]));
+    const projectsService = createSpyObject(ProjectsService);
+    projectsService.show.and.callFake(() => of(project));
+    projectsService.filter.and.callFake(() => of([defaultProject]));
 
     // set up ngMocks according to https://ng-mocks.sudo.eu/guides/routing-resolver
     const builder = MockBuilder([
-      NewComponent,
-      RouterTestingModule.withRoutes([...nestedRoutes, ...shallowRoutes]),
+      RegionNewComponent,
+      RouterModule.forRoot([...nestedRoutes, ...shallowRoutes]),
     ])
-      .keep(MockBawApiModule, { export: true })
-      .provide({ provide: ProjectsService, useValue: api });
+      .provide(provideMockBawApi())
+      .provide({ provide: ProjectsService, useValue: projectsService });
 
     // augment builder with out app level module imports
-    return addStandardFormImportsToMockBuilder(builder);
+    const module = builder.build();
+    return TestBed.configureTestingModule(module).compileComponents();
   });
 
   function setup(path) {
@@ -176,7 +171,7 @@ describe("routing and resolvers", () => {
 
     expect(location.path()).toBe(path);
 
-    const component = ngMocks.find(fixture, NewComponent);
+    const component = ngMocks.find(fixture, RegionNewComponent);
     fixture.detectChanges();
 
     return component;

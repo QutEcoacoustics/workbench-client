@@ -1,7 +1,6 @@
 import { fakeAsync } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideRouter, Router } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AuthTriggerData,
   BawSessionService,
@@ -21,7 +20,7 @@ import {
   loginMenuItem,
   registerMenuItem,
 } from "@components/security/security.menus";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
+
 import {
   CustomMenuItem,
   Settings,
@@ -37,10 +36,13 @@ import { modelData } from "@test/helpers/faker";
 import { viewports } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import camelCase from "just-camel-case";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockComponent, MockDirective, MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import { WebsiteStatusIndicatorComponent } from "@menu/website-status-indicator/website-status-indicator.component";
+import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlActiveDirective } from "@directives/url/url-active.directive";
 import { HeaderDropdownComponent } from "../header-dropdown/header-dropdown.component";
 import { HeaderItemComponent } from "../header-item/header-item.component";
 import { PrimaryMenuComponent } from "./primary-menu.component";
@@ -50,25 +52,31 @@ describe("PrimaryMenuComponent", () => {
   let session: BawSessionService;
   let router: Router;
   let spec: Spectator<PrimaryMenuComponent>;
+
+  const registerLinkSelector = "#register-header-link";
+  const adminLinkSelector = "#admin-header-link";
+  const profileWidgetSelector = "#profile-widget";
+  const logoutLinkSelector = "#logout-header-link";
+
   const createComponent = createComponentFactory({
     component: PrimaryMenuComponent,
-    providers: [MockProvider(ToastService)],
+    providers: [
+      MockProvider(ToastService),
+      provideMockBawApi(),
+      provideRouter([]),
+    ],
     declarations: [
       MockComponent(WebsiteStatusIndicatorComponent),
       HeaderItemComponent,
       HeaderDropdownComponent,
     ],
     imports: [
-      RouterTestingModule,
-      MockBawApiModule,
       IconsModule,
-      MockDirectivesModule,
+      MockDirective(StrongRouteActiveDirective),
+      MockDirective(StrongRouteDirective),
+      MockDirective(UrlActiveDirective),
     ],
   });
-  const registerLinkSelector = "#register-header-link";
-  const adminLinkSelector = "#admin-header-link";
-  const profileWidgetSelector = "#profile-widget";
-  const logoutLinkSelector = "#logout-header-link";
 
   /**
    * @param props.user If null or set, will intercept getLocalUser and return

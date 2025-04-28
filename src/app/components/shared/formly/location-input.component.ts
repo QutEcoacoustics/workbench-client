@@ -1,9 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
 import { MapMarkerOptions } from "@services/maps/maps.service";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MapComponent } from "../map/map.component";
 import { asFormControl } from "./helper";
 
 /**
@@ -68,7 +70,7 @@ import { asFormControl } from "./helper";
       ></baw-map>
     </div>
   `,
-  standalone: false
+  imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   public asFormControl = asFormControl;

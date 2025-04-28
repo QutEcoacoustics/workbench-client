@@ -1,9 +1,8 @@
 import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { Errorable } from "@helpers/advancedTypes";
@@ -18,7 +17,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -32,7 +30,6 @@ import { PagedTableTemplate, TablePage } from "./pagedTableTemplate";
   template: `
     <ngx-datatable #table [rows]="rows" [columns]="columns"> </ngx-datatable>
   `,
-  standalone: false
 })
 class MockComponent extends PagedTableTemplate<
   { id: Id; name: string },
@@ -55,9 +52,10 @@ describe("PagedTableTemplate", () => {
   let api: SpyObject<ProjectsService>;
   let component: MockComponent;
   let spec: Spectator<MockComponent>;
+
   const createComponent = createComponentFactory({
     component: MockComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(resolvers: string[] = [], data: MockData = {}) {

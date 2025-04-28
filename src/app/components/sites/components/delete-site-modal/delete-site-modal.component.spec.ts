@@ -1,5 +1,5 @@
 import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ToastService } from "@services/toasts/toasts.service";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -13,7 +13,7 @@ describe("DeleteSiteModalComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: DeleteSiteModalComponent,
-    imports: [MockBawApiModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService, NgbModalRef],
   });
 

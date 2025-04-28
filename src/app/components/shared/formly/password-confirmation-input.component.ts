@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { FieldType, FormlyModule } from "@ngx-formly/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "./helper";
 
 /**
@@ -59,7 +60,7 @@ import { asFormControl } from "./helper";
       [formControl]="asFormControl(formControl)"
     />
   `,
-  standalone: false
+  imports: [FormsModule, FormlyModule, ReactiveFormsModule]
 })
 export class PasswordConfirmationInputComponent
   extends FieldType

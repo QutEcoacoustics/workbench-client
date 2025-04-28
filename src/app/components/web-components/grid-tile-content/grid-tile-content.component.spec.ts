@@ -3,8 +3,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
 import { getElementByInnerText } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
@@ -17,6 +15,7 @@ import { detectChanges } from "@test/helpers/changes";
 import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
@@ -30,7 +29,7 @@ describe("GridTileContentComponent", () => {
 
   const createComponent = createComponentFactory({
     component: GridTileContentComponent,
-    imports: [MockBawApiModule, SharedModule],
+    providers: [provideMockBawApi()],
   });
 
   function setup(): void {

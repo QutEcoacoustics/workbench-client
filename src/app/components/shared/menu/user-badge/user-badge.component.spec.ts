@@ -1,36 +1,36 @@
-import { RouterTestingModule } from "@angular/router/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { MockDirectivesModule } from "@directives/directives.mock.module";
 import { UnresolvedModel } from "@models/AbstractModel";
 import { User } from "@models/User";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { PipesModule } from "@pipes/pipes.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { LoadingModule } from "@shared/loading/loading.module";
-import { UserLinkComponent } from "@shared/user-link/user-link/user-link.component";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { generateUser } from "@test/fakes/User";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { DateTime } from "luxon";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
 import { humanizedDuration } from "@test/helpers/dateTime";
+import { IsGhostUserPipe } from "@pipes/is-ghost-user/is-ghost-user.pipe";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { UserBadgeComponent } from "./user-badge.component";
 
 describe("UserBadgeComponent", () => {
   let spec: Spectator<UserBadgeComponent>;
   let defaultUser: User;
   let unresolvedUser: User;
-  const createComponent = createComponentFactory({
+
+  const createComponent = createRoutingFactory({
     component: UserBadgeComponent,
-    declarations: [UserLinkComponent],
     imports: [
-      RouterTestingModule,
-      MockDirectivesModule,
-      MockBawApiModule,
-      LoadingModule,
-      PipesModule,
+      IconsModule,
       TimeSinceComponent,
+      LoadingComponent,
+      IsGhostUserPipe,
+      IsUnresolvedPipe,
+      UserLinkComponent,
     ],
+    providers: [provideMockBawApi()],
   });
 
   const getGhostUsername = (_spec?: Spectator<any>) =>

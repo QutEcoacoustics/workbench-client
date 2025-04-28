@@ -53,8 +53,8 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
  * This stops the user from leaving a page where a form has been
  * modified by the user in any way.
  */
-@Injectable()
-export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent>  {
+@Injectable({ providedIn: "root" })
+export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
   @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
 
   public canDeactivate(component: FormCheckingComponent): boolean {

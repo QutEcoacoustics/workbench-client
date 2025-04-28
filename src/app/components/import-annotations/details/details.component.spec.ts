@@ -3,8 +3,7 @@ import {
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -62,8 +61,8 @@ describe("AnnotationsDetailsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
-    declarations: [InlineListComponent, LoadingComponent],
-    imports: [SharedModule, MockBawApiModule],
+    imports: [InlineListComponent, LoadingComponent],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 
@@ -116,9 +115,11 @@ describe("AnnotationsDetailsComponent", () => {
       () => new AudioEvent(generateAudioEvent(), injector)
     );
     mockAudioEvents.forEach((event) =>
-      event.addMetadata(modelData.model.generatePagingMetadata({
-        items: mockAudioEvents.length,
-      }))
+      event.addMetadata(
+        modelData.model.generatePagingMetadata({
+          items: mockAudioEvents.length,
+        })
+      )
     );
 
     mockAudioEventImportFiles = modelData.randomArray(
@@ -127,9 +128,11 @@ describe("AnnotationsDetailsComponent", () => {
       () => new AudioEventImportFile(generateAudioEventImportFile(), injector)
     );
     mockAudioEventImportFiles.forEach((file) =>
-      file.addMetadata(modelData.model.generatePagingMetadata({
-        items: mockAudioEventImportFiles.length,
-      }))
+      file.addMetadata(
+        modelData.model.generatePagingMetadata({
+          items: mockAudioEventImportFiles.length,
+        })
+      )
     );
 
     mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
@@ -237,7 +240,12 @@ describe("AnnotationsDetailsComponent", () => {
 
       assertDatatable(() => ({
         service: mockAudioEventFileService,
-        columns: () => ["File Name", "Date Imported", "Additional Tags", "Actions"],
+        columns: () => [
+          "File Name",
+          "Date Imported",
+          "Additional Tags",
+          "Actions",
+        ],
         rows: () => [],
         root: () => activeTabContent(),
       }));

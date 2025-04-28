@@ -1,34 +1,28 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
-import {
-  createRoutingFactory,
-  mockProvider,
-  Spectator,
-} from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
+import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
-import { NewComponent } from "./new.component";
+import { HarvestNewComponent } from "./new.component";
 
 describe("newHarvestComponent", () => {
-  let spectator: Spectator<NewComponent>;
+  let spectator: Spectator<HarvestNewComponent>;
 
   const createComponent = createRoutingFactory({
-    component: NewComponent,
-    declarations: [TitleComponent],
-    providers: [
-      mockProvider(HarvestsService),
-    ],
-    imports: [MockBawApiModule, SharedModule],
-    mocks: [ToastService],
+    component: HarvestNewComponent,
+    imports: [TitleComponent],
+    providers: [provideMockBawApi()],
+    mocks: [ToastService, HarvestsService],
   });
 
-  assertPageInfo(NewComponent, "New Upload");
+  assertPageInfo(HarvestNewComponent, "New Upload");
 
-  beforeEach(() => spectator = createComponent({ detectChanges: false }));
+  beforeEach(() => {
+    spectator = createComponent({ detectChanges: false });
+  });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(NewComponent);
+    expect(spectator.component).toBeInstanceOf(HarvestNewComponent);
   });
 });

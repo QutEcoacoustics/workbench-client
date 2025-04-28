@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   Inject,
   OnInit,
@@ -23,7 +24,7 @@ import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -44,6 +45,7 @@ import {
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -66,7 +68,13 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "verification.component.html",
   styleUrl: "verification.component.scss",
-  standalone: false
+  imports: [
+    FaIconComponent,
+    NgbTooltip,
+    ProgressWarningComponent,
+    SearchFiltersModalComponent,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 class VerificationComponent
   extends PageComponent

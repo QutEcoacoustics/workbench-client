@@ -2,7 +2,6 @@ import { EventSummaryReport } from "@models/EventSummaryReport";
 import { SpectatorService, createServiceFactory } from "@ngneat/spectator";
 import {
   defaultFilters,
-  mockServiceImports,
   mockServiceProviders,
 } from "@test/helpers/api-common";
 import { of } from "rxjs";
@@ -16,7 +15,6 @@ describe("EventSummaryReportService", () => {
 
   const createService = createServiceFactory({
     service: EventSummaryReportService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

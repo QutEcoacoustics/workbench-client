@@ -6,7 +6,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { List } from "immutable";
-import { IItem } from "../item/item.component";
+import { IItem, ItemComponent } from "../item/item.component";
 
 /**
  * Items Component.
@@ -47,10 +47,10 @@ import { IItem } from "../item/item.component";
         </ul>
       </div>
     </div>
-    `,
-    // Pure Component
+  `,
+  // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [ItemComponent],
 })
 export class ItemsComponent implements OnInit, OnChanges {
   @Input() public items: List<IItem>;

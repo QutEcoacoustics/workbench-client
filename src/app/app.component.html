@@ -11,9 +11,7 @@
     <baw-primary-menu [isSideNav]="true"></baw-primary-menu>
     <baw-secondary-menu [isSideNav]="true"></baw-secondary-menu>
     @if (menu.isFullscreen && resolvedSuccessfully) {
-      <baw-action-menu
-        [isSideNav]="true"
-      ></baw-action-menu>
+      <baw-action-menu [isSideNav]="true"></baw-action-menu>
     }
   </baw-side-nav>
 
@@ -30,10 +28,7 @@
       <baw-breadcrumbs></baw-breadcrumbs>
 
       @if (!resolvedSuccessfully) {
-        <router-outlet
-          id="error"
-          name="error"
-        ></router-outlet>
+        <router-outlet id="error" name="error"></router-outlet>
       }
       @if (resolvedSuccessfully) {
         <router-outlet

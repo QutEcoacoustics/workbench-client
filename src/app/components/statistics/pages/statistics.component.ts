@@ -9,7 +9,10 @@ import { filesize } from "filesize";
 import { List, Map } from "immutable";
 import { takeUntil } from "rxjs/operators";
 import { defaultAudioIcon, defaultUserIcon } from "src/app/app.menus";
+import { ItemsComponent } from "@shared/items/items/items.component";
 import { statisticsCategory, statisticsMenuItem } from "../statistics.menus";
+import { RecentAnnotationsComponent } from "../components/recent-annotations/recent-annotations.component";
+import { RecentAudioRecordingsComponent } from "../components/recent-audio-recordings/recent-audio-recordings.component";
 
 function item(data: IItem): Map<keyof IItem, any> {
   return Map<keyof IItem, any>(data);
@@ -38,7 +41,11 @@ function item(data: IItem): Map<keyof IItem, any> {
       [audioRecordings]="recent?.audioRecordings"
     ></baw-recent-audio-recordings>
   `,
-  standalone: false
+  imports: [
+    ItemsComponent,
+    RecentAnnotationsComponent,
+    RecentAudioRecordingsComponent,
+  ]
 })
 class StatisticsComponent
   extends withUnsubscribe(PageComponent)

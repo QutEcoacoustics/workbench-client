@@ -1,22 +1,16 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CMS } from "@baw-api/cms/cms.service";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertCms } from "@test/helpers/api-common";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { SendAudioComponent } from "./send-audio.component";
 
 describe("SendAudioComponent", () => {
   let spectator: Spectator<SendAudioComponent>;
+
   const createComponent = createComponentFactory({
     component: SendAudioComponent,
-    imports: [SharedModule, MockBawApiModule],
-    providers: [
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting(),
-    ],
+    providers: [provideMockBawApi()],
   });
 
   beforeEach(() => (spectator = createComponent({ detectChanges: false })));

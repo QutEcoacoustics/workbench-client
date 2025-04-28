@@ -1,6 +1,5 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
@@ -9,6 +8,7 @@ import { ActivatedRoute } from "@angular/router";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
+import { IconsModule } from "@shared/icons/icons.module";
 import { WebsiteStatusComponent } from "./website-status.component";
 
 interface GridItem {
@@ -23,13 +23,14 @@ describe("WebsiteStatusComponent", () => {
 
   const createComponent = createComponentFactory({
     component: WebsiteStatusComponent,
-    imports: [SharedModule, MockBawApiModule],
+    imports: [IconsModule],
     providers: [
+      MockProvider(WebsiteStatusService),
+      provideMockBawApi(),
       {
         provide: ActivatedRoute,
         useValue: mockActivatedRoute(),
       },
-      MockProvider(WebsiteStatusService),
     ],
   });
 

@@ -8,7 +8,7 @@ xdescribe("MyAnnotationsComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MyAnnotationsComponent],
+      imports: [MyAnnotationsComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyAnnotationsComponent);

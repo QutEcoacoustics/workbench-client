@@ -35,6 +35,7 @@ import {
   siteMenuItem,
   sitesCategory,
 } from "../../sites.menus";
+import { SiteComponent } from "../../components/site/site.component";
 
 export const siteMenuItemActions = [
   deleteSiteModal,
@@ -66,8 +67,8 @@ const siteKey = "site";
  * Site Details Component
  */
 @Component({
-  selector: "baw-site-details",
-  template: `
+    selector: "baw-site-details",
+    template: `
     @if (!failure) {
       <baw-site
         [project]="project"
@@ -76,7 +77,7 @@ const siteKey = "site";
       ></baw-site>
     }
   `,
-  standalone: false
+    imports: [SiteComponent]
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {
   public project: Project;

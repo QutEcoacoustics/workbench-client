@@ -5,6 +5,7 @@ import {
   Input,
   Output,
 } from "@angular/core";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: "baw-checkbox",
@@ -29,7 +30,7 @@ import {
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+  imports: [NgClass]
 })
 export class CheckboxComponent {
   @Input() public id: string;

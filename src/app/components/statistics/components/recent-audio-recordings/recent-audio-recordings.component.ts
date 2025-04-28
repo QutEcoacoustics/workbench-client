@@ -1,6 +1,13 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
-import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
+import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
   selector: "baw-recent-audio-recordings",
@@ -75,7 +82,16 @@ import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
       </ngx-datatable-column>
     </ngx-datatable>
   `,
-  standalone: false
+  imports: [
+    NgxDatatableModule,
+    DatatableDefaultsDirective,
+    FaIconComponent,
+    LoadingComponent,
+    DurationComponent,
+    TimeSinceComponent,
+    UrlDirective,
+    IsUnresolvedPipe,
+  ],
 })
 export class RecentAudioRecordingsComponent implements OnChanges {
   @Input() public audioRecordings!: AudioRecording[] | undefined;

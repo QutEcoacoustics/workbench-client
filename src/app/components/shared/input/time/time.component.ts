@@ -48,7 +48,6 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
       }
     </div>
   `,
-  standalone: false
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */

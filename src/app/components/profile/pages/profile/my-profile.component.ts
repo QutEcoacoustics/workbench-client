@@ -40,6 +40,14 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
+import { ItemsComponent } from "@shared/items/items/items.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { UrlDirective } from "@directives/url/url.directive";
 
 export const myAccountActions = [
   myEditMenuItem,
@@ -57,7 +65,16 @@ const userKey = "user";
   selector: "baw-my-profile",
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.scss"],
-  standalone: false
+  imports: [
+    AuthenticatedImageDirective,
+    FaIconComponent,
+    NgbTooltip,
+    StrongRouteDirective,
+    HiddenCopyComponent,
+    ItemsComponent,
+    LoadingComponent,
+    UrlDirective,
+  ],
 })
 class MyProfileComponent
   extends withUnsubscribe(PageComponent)
@@ -122,7 +139,7 @@ class MyProfileComponent
     public router?: Router,
     protected securityApi?: SecurityService,
     private accountsApi?: AccountsService,
-    private notifications?: ToastService,
+    private notifications?: ToastService
   ) {
     super();
   }
@@ -152,13 +169,16 @@ class MyProfileComponent
   }
 
   public cancelAccount(): void {
-    this.accountsApi.destroy(this.user)
+    this.accountsApi
+      .destroy(this.user)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.user?.userName));
+          this.notifications.success(
+            defaultSuccessMsg("destroyed", this.user?.userName)
+          );
           this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
-        }
+        },
       });
   }
 

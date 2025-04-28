@@ -3,8 +3,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { SharedModule } from "@shared/shared.module";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
@@ -37,6 +35,8 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { fakeAsync } from "@angular/core/testing";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -57,12 +57,14 @@ describe("AddAnnotationsComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AddAnnotationsComponent,
-    declarations: [
+    imports: [
+      IconsModule,
+
       InlineListComponent,
       TypeaheadInputComponent,
       LoadingComponent,
     ],
-    imports: [SharedModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
     data: {
       resolvers: {
@@ -428,7 +430,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
           jasmine.objectContaining({
-             additionalTagIds: [testedTag.id],
+            additionalTagIds: [testedTag.id],
           }),
           audioEventImport
         );

@@ -2,7 +2,7 @@ import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
-import { mockServiceImports, mockServiceProviders, validateImmutableApi } from "@test/helpers/api-common";
+import { mockServiceProviders, validateImmutableApi } from "@test/helpers/api-common";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { IdOr } from "@baw-api/api-common";
 import { AudioEventImportFileService } from "./audio-event-import-file.service";
@@ -27,7 +27,6 @@ describe("AudioEventImportFIleService", () => {
 
   const createService = createServiceFactory({
     service: AudioEventImportFileService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

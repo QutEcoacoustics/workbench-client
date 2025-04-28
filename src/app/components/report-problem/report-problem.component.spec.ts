@@ -1,11 +1,10 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import {
   createRoutingFactory,
   Spectator,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ReportProblemComponent } from "./report-problem.component";
 
 describe("ReportProblemComponent", () => {
@@ -13,7 +12,7 @@ describe("ReportProblemComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: ReportProblemComponent,
-    imports: [MockBawApiModule, SharedModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

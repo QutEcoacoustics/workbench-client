@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -31,9 +30,8 @@ describe("RegisterComponent", () => {
 
   const createComponent = createComponentFactory({
     component: RegisterComponent,
-    imports: [...testFormImports, MockBawApiModule],
+    imports: [...testFormImports, FormComponent],
     providers: testFormProviders,
-    declarations: [FormComponent],
   });
 
   function isSignedIn(signedIn: boolean = true) {

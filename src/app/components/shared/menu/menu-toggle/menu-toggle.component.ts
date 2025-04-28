@@ -4,6 +4,8 @@ import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { MenuType } from "@helpers/generalTypes";
 import { MenuService } from "@services/menu/menu.service";
 import { BehaviorSubject, Observable } from "rxjs";
+import { NgClass } from "@angular/common";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 export type LeftOrRight = "left" | "right";
 
@@ -38,7 +40,7 @@ export enum MenuState {
       justify-content: end;
     }
   `],
-  standalone: false
+  imports: [NgClass, FaIconComponent]
 })
 export class MenuToggleComponent implements OnInit {
   @Input() public menuType: MenuType;

@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { CompleteComponent } from "@components/harvest/screens/complete/complete.component";
 import { MetadataExtractionComponent } from "@components/harvest/screens/metadata-extraction/metadata-extraction.component";
 import { MetadataReviewComponent } from "@components/harvest/screens/metadata-review/metadata-review.component";
@@ -14,26 +13,34 @@ import {
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { StepperComponent } from "@shared/stepper/stepper.component";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
-import { PageTitleStrategy } from "src/app/app.component";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
 import { getElementByInnerText } from "@test/helpers/html";
-import { DetailsComponent } from "./details.component";
+import { IconsModule } from "@shared/icons/icons.module";
+import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { HarvestDetailsComponent } from "./details.component";
 
 describe("DetailsComponent", () => {
-  let spec: SpectatorRouting<DetailsComponent>;
+  let spec: SpectatorRouting<HarvestDetailsComponent>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
 
   const createComponent = createRoutingFactory({
-    component: DetailsComponent,
-    declarations: [
+    component: HarvestDetailsComponent,
+    providers: [
+      mockProvider(HarvestStagesService),
+      provideMockBawApi(),
+      PageTitleStrategy,
+    ],
+    imports: [
+      IconsModule,
+
       ScanningComponent,
       StreamUploadingComponent,
       BatchUploadingComponent,
@@ -44,12 +51,10 @@ describe("DetailsComponent", () => {
       WebsiteStatusWarningComponent,
       TitleComponent,
     ],
-    providers: [mockProvider(HarvestStagesService), PageTitleStrategy],
-    imports: [MockBawApiModule, SharedModule],
     mocks: [ToastService],
   });
 
-  assertPageInfo<Harvest>(DetailsComponent, "test name", {
+  assertPageInfo<Harvest>(HarvestDetailsComponent, "test name", {
     harvest: {
       model: new Harvest(generateHarvest({ name: "test name" })),
     },
@@ -71,7 +76,7 @@ describe("DetailsComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spec.component).toBeInstanceOf(DetailsComponent);
+    expect(spec.component).toBeInstanceOf(HarvestDetailsComponent);
   });
 
   it("should show project name", () => {

@@ -1,14 +1,14 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Data } from "vega-lite/build/src/data";
 import { Map } from "immutable";
 import { fakeAsync } from "@angular/core/testing";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ChartComponent } from "./chart.component";
 
-//! this component could not be tested with print styles. Manually test this component with print styles when making changes
+//! this component could not be tested with print styles. Manually test this
+// component with print styles when making changes
 describe("ChartComponent", () => {
   let spectator: Spectator<ChartComponent>;
   let windowSpy: jasmine.Spy;
@@ -17,7 +17,7 @@ describe("ChartComponent", () => {
 
   const createComponent = createComponentFactory({
     component: ChartComponent,
-    imports: [MockBawApiModule, SharedModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 

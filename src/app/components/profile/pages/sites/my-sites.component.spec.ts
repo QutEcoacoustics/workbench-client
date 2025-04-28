@@ -1,6 +1,5 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -17,7 +16,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -44,7 +42,7 @@ describe("MySitesComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: MySitesComponent,
-    imports: [SharedModule, RouterTestingModule, MockBawApiModule],
+    providers: [provideMockBawApi()],
     stubsEnabled: false,
   });
 

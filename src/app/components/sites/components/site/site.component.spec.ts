@@ -1,8 +1,5 @@
-import { RouterTestingModule } from "@angular/router/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@components/shared/shared.module";
 import { Errorable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioEvent } from "@models/AudioEvent";
@@ -26,6 +23,8 @@ import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteComponent } from "./site.component";
 
 const mockMapComponent = MockComponent(MapComponent);
@@ -40,10 +39,11 @@ describe("SiteComponent", () => {
   let eventsApi: SpyObject<ShallowAudioEventsService>;
   let recordingsApi: SpyObject<AudioRecordingsService>;
   let spec: Spectator<SiteComponent>;
+
   const createComponent = createComponentFactory({
-    imports: [SharedModule, MockBawApiModule, RouterTestingModule],
-    declarations: [mockMapComponent],
     component: SiteComponent,
+    imports: [IconsModule, mockMapComponent],
+    providers: [provideMockBawApi()],
   });
 
   function setup(project: Project, site: Site, region?: Region) {

@@ -8,11 +8,11 @@ import {
   SpectatorRouting,
   SpectatorRoutingOverrides,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { appLibraryImports } from "src/app/app.module";
+import { FormComponent } from "@shared/form/form.component";
+import { appLibraryImports } from "src/app/app.config";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
 class MockModel extends AbstractModel {
@@ -34,7 +34,7 @@ class MockModel extends AbstractModel {
 @Component({
   selector: "baw-test-component",
   template: "<div><baw-form></baw-form></div>",
-  standalone: false
+  imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
   public constructor(
@@ -59,9 +59,10 @@ describe("formTemplate", () => {
   let spec: SpectatorRouting<MockComponent>;
   let successResponse: (model: Partial<MockModel>) => Observable<MockModel>;
   let errorResponse: (model: Partial<MockModel>) => Observable<MockModel>;
+
   const createComponent = createRoutingFactory({
     component: MockComponent,
-    imports: [SharedModule, ...appLibraryImports],
+    imports: appLibraryImports,
     mocks: [ToastService],
   });
 

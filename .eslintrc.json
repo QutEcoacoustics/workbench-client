@@ -64,9 +64,6 @@
             "type": "element"
           }
         ],
-        // TODO: Remove this rule once we migrate to standalone components
-        // see: https://github.com/QutEcoacoustics/workbench-client/issues/2183
-        "@angular-eslint/prefer-standalone": "off",
         "@angular-eslint/directive-selector": [
           "error",
           {

@@ -1,4 +1,3 @@
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { UploadUrlComponent } from "@components/harvest/components/shared/upload-url.component";
@@ -12,7 +11,6 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { SharedModule } from "@shared/shared.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
@@ -22,6 +20,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -31,10 +31,11 @@ describe("BatchUploadingComponent", () => {
   let defaultSite: Site;
   let stages: SpyObject<HarvestStagesService>;
   let injector: AssociationInjector;
+
   const createComponent = createRoutingFactory({
-    declarations: [MockComponent(UploadUrlComponent), ConfirmationComponent],
     component: BatchUploadingComponent,
     providers: [
+      provideMockBawApi(),
       MockProvider(HarvestStagesService, {
         project: undefined,
         harvest: undefined,
@@ -43,7 +44,11 @@ describe("BatchUploadingComponent", () => {
         transition: (_stage: HarvestStatus) => {},
       }),
     ],
-    imports: [MockBawApiModule, SharedModule],
+    imports: [
+      IconsModule,
+      ConfirmationComponent,
+      MockComponent(UploadUrlComponent),
+    ],
     mocks: [ToastService],
   });
 

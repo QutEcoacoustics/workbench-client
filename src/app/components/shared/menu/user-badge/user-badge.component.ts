@@ -1,6 +1,14 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
+import { NgTemplateOutlet } from "@angular/common";
+import { UrlDirective } from "@directives/url/url.directive";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { LoadingComponent } from "../../loading/loading.component";
+import { UserLinkComponent } from "../../user-link/user-link.component";
+import { TimeSinceComponent } from "../../datetime-formats/time-since/time-since.component";
+import { IsGhostUserPipe } from "../../../../pipes/is-ghost-user/is-ghost-user.pipe";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 /**
  * App User Badge Component.
@@ -67,7 +75,16 @@ import { DateTime } from "luxon";
     }
   `,
   styleUrls: ["./user-badge.component.scss"],
-  standalone: false
+  imports: [
+    LoadingComponent,
+    UrlDirective,
+    NgTemplateOutlet,
+    AuthenticatedImageDirective,
+    UserLinkComponent,
+    TimeSinceComponent,
+    IsGhostUserPipe,
+    IsUnresolvedPipe,
+  ],
 })
 export class UserBadgeComponent implements OnChanges {
   @Input() public label: string;

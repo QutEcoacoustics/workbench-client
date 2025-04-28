@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { DecimalPipe } from "@angular/common";
 
 @Component({
   selector: "baw-filters-warning-modal",
@@ -42,7 +43,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
-  standalone: false
+  imports: [DecimalPipe],
 })
 export class FiltersWarningModalComponent implements ModalComponent {
   @Input({ required: true }) public modal: NgbActiveModal;

@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { Script } from "@models/Script";
-import { SharedModule } from "@shared/shared.module";
 import { generateScript } from "@test/fakes/Script";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { appLibraryImports } from "src/app/app.module";
+import { appLibraryImports } from "src/app/app.config";
+import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AdminScriptsComponent } from "./list.component";
 
 describe("AdminScriptsComponent", () => {
@@ -18,13 +17,8 @@ describe("AdminScriptsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      declarations: [AdminScriptsComponent],
-      imports: [
-        SharedModule,
-        RouterTestingModule,
-        ...appLibraryImports,
-        MockBawApiModule,
-      ],
+      imports: [...appLibraryImports, AdminScriptsComponent],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsComponent);

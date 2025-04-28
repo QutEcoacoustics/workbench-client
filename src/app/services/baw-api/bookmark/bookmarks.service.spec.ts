@@ -4,7 +4,6 @@ import { User } from "@models/User";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import { generateBookmark } from "@test/fakes/Bookmark";
 import {
-  mockServiceImports,
   mockServiceProviders,
   validateCustomApiFilter,
   validateStandardApi,
@@ -16,9 +15,9 @@ describe("BookmarksService", () => {
   const baseUrl = "/bookmarks/";
   const updateUrl = baseUrl + "5";
   let spec: SpectatorService<BookmarksService>;
+
   const createService = createServiceFactory({
     service: BookmarksService,
-    imports: mockServiceImports,
     providers: mockServiceProviders,
   });
 

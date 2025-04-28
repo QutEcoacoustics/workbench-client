@@ -3,8 +3,7 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
-import { SharedModule } from "@shared/shared.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -29,13 +28,8 @@ import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/c
 import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import {
-  discardPeriodicTasks,
-  fakeAsync,
-  tick,
-} from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
-import { RouterTestingModule } from "@angular/router/testing";
 import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
@@ -70,6 +64,7 @@ import {
   viewports,
 } from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
+import { IconsModule } from "@shared/icons/icons.module";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -103,8 +98,9 @@ describe("VerificationComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
-    imports: [MockBawApiModule, SharedModule, RouterTestingModule],
-    declarations: [
+    imports: [
+      IconsModule,
+
       SearchFiltersModalComponent,
       ProgressWarningComponent,
       AnnotationSearchFormComponent,
@@ -112,6 +108,7 @@ describe("VerificationComponent", () => {
       DateTimeFilterComponent,
       WIPComponent,
     ],
+    providers: [provideMockBawApi()],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
@@ -505,21 +502,9 @@ describe("VerificationComponent", () => {
           await makeDecision(0);
 
           const expectedApiCalls = [
-            [
-              jasmine.anything(),
-              jasmine.anything(),
-              jasmine.anything()
-            ],
-            [
-              jasmine.anything(),
-              jasmine.anything(),
-              jasmine.anything()
-            ],
-            [
-              jasmine.anything(),
-              jasmine.anything(),
-              jasmine.anything()
-            ],
+            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
+            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
+            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
           ];
 
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(

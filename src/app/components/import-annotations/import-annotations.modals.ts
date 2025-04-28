@@ -1,7 +1,7 @@
 import { defaultDeleteIcon, isLoggedInPredicate } from "src/app/app.menus";
 import { menuModal } from "@menu/widgetItem";
 import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
-import { DetailsComponent } from "@components/projects/pages/details/details.component";
+import { ProjectDetailsComponent } from "@components/projects/pages/details/details.component";
 import { annotationsImportMenuItem } from "./import-annotations.menu";
 
 export const deleteAnnotationImportModal = menuModal({
@@ -11,5 +11,5 @@ export const deleteAnnotationImportModal = menuModal({
   tooltip: () => "Delete this annotation import",
   predicate: isLoggedInPredicate,
   component: DeleteModalComponent,
-  successCallback: (pageComponentInstance?: DetailsComponent) => pageComponentInstance.deleteModel(),
+  successCallback: (pageComponentInstance?: ProjectDetailsComponent) => pageComponentInstance.deleteModel(),
 });

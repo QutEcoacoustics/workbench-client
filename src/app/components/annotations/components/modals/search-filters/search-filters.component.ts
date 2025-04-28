@@ -5,6 +5,8 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgClass } from "@angular/common";
+import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
 
 @Component({
   selector: "baw-search-filters-modal",
@@ -16,9 +18,6 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     <div class="filters-modal-body modal-body modal-large">
       <baw-annotation-search-form
         [(searchParameters)]="formValue"
-        [project]="project"
-        [region]="region"
-        [site]="site"
       ></baw-annotation-search-form>
     </div>
 
@@ -48,7 +47,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
             (click)="success()"
             [ngClass]="{
               'btn-primary': !isDirty,
-              'btn-warning': isDirty
+              'btn-warning': isDirty,
             }"
           >
             Update search filters
@@ -57,12 +56,14 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
       </div>
     </div>
   `,
-  standalone: false
+  imports: [AnnotationSearchFormComponent, NgClass],
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;
   @Input() public formValue: AnnotationSearchParameters;
-  @Input() public successCallback: (newModel: AnnotationSearchParameters) => void;
+  @Input() public successCallback: (
+    newModel: AnnotationSearchParameters,
+  ) => void;
 
   @Input() public project: Project;
   @Input() public region: Region;

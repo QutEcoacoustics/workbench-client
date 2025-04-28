@@ -1,6 +1,5 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { fakeAsync, TestBed } from "@angular/core/testing";
-import { MockBawApiModule } from "@baw-api/baw-apiMock.module";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MOCK, MockStandardApiService } from "@baw-api/mock/apiMocks.service";
 import { MockModel as ChildModel } from "@baw-api/mock/baseApiMock.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -14,7 +13,6 @@ import { mockProvider } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
 import { Errorable } from "@helpers/advancedTypes";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
@@ -47,13 +45,11 @@ describe("Association Decorators", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MockBawApiModule],
       providers: [
         MockStandardApiService,
-        { provide: MOCK.token, useExisting: MockStandardApiService },
         mockProvider(ToastService),
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
+        provideMockBawApi(),
+        { provide: MOCK.token, useExisting: MockStandardApiService },
       ]
     });
 

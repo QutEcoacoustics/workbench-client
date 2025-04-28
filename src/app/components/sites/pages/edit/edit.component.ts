@@ -18,6 +18,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { FormComponent } from "@shared/form/form.component";
 import pointSchema from "../../point.base.json";
 import siteSchema from "../../site.base.json";
 import { editSiteMenuItem, sitesCategory } from "../../sites.menus";
@@ -33,7 +34,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-sites-edit",
   templateUrl: "./edit.component.html",
-  standalone: false
+  imports: [FormComponent],
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   public title: string;

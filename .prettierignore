@@ -1,5 +1,5 @@
 #! this file should only be used as a last resort to exclude files from pettier
-# you should always prefer to use // prettier-ignore to exluce individual lines
+# you should always prefer to use // prettier-ignore to exclude individual lines
 
 # we ignore the service token file from pettier so that we can one-line all of
 # the service tokens
