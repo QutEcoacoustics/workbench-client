@@ -18,6 +18,7 @@ import { takeUntil } from "rxjs";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { FormComponent } from "../form/form.component";
 import schema from "./annotations-download.schema.json";
+import { RegionsService } from "@baw-api/region/regions.service";
 
 interface TimezoneModel {
   timezone?: string;
