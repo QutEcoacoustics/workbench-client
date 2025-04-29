@@ -16,9 +16,9 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { takeUntil } from "rxjs";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
 import { FormComponent } from "../form/form.component";
 import schema from "./annotations-download.schema.json";
-import { RegionsService } from "@baw-api/region/regions.service";
 
 interface TimezoneModel {
   timezone?: string;
