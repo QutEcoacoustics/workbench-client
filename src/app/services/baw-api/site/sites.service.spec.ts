@@ -21,7 +21,6 @@ describe("SitesService", (): void => {
   const createModel = () => new Site(generateSite({ id: 10 }));
   const listUrl = "/projects/5/sites/";
   const showUrl = listUrl + "10";
-  let service: SitesService;
   let apiRoot: string;
   let spec: SpectatorService<SitesService>;
 
@@ -32,7 +31,6 @@ describe("SitesService", (): void => {
 
   beforeEach((): void => {
     spec = createService();
-    service = spec.inject(SitesService);
     apiRoot = spec.inject(API_ROOT);
   });
 
@@ -69,14 +67,14 @@ describe("SitesService", (): void => {
     }
 
     it("should return url using model ids", () => {
-      expect(service.downloadAnnotations(10, 5, defaultTimezone)).toBe(
+      expect(spec.service.downloadAnnotations(10, 5, defaultTimezone)).toBe(
         getUrl()
       );
     });
 
     it("should return url using model objects", () => {
       expect(
-        service.downloadAnnotations(
+        spec.service.downloadAnnotations(
           new Site(generateSite({ id: 10 })),
           new Project(generateProject({ id: 5 })),
           defaultTimezone
@@ -85,7 +83,7 @@ describe("SitesService", (): void => {
     });
 
     it("should return url with timezone", () => {
-      expect(service.downloadAnnotations(10, 5, "Brisbane")).toBe(
+      expect(spec.service.downloadAnnotations(10, 5, "Brisbane")).toBe(
         getUrl("Brisbane")
       );
     });

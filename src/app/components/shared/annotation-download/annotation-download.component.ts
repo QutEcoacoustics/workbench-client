@@ -16,6 +16,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { takeUntil } from "rxjs";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { RegionsService } from "@baw-api/region/regions.service";
 import { FormComponent } from "../form/form.component";
 import schema from "./annotations-download.schema.json";
 
@@ -96,6 +97,7 @@ export class AnnotationDownloadComponent
 
   public constructor(
     private siteApi: SitesService,
+    private regionApi: RegionsService,
     private projectApi: ProjectsService,
     private sharedRoute: SharedActivatedRouteService
   ) {
@@ -129,9 +131,17 @@ export class AnnotationDownloadComponent
     const timezone =
       this.model.timezone === "Etc/UTC" ? "UTC" : this.model.timezone;
 
+    // we pick the most specific model available in the route, meaning that
+    // the order of these if conditions is important
     if (this.site) {
       return this.siteApi.downloadAnnotations(
         this.site,
+        this.region?.projectId ?? this.project,
+        timezone
+      );
+    } else if (this.region) {
+      return this.regionApi.downloadAnnotations(
+        this.region,
         this.region?.projectId ?? this.project,
         timezone
       );

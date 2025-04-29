@@ -16,7 +16,7 @@ import {
   regionMenuItem,
   regionsCategory,
 } from "@components/regions/regions.menus";
-import { deleteRegionModal } from "@components/regions/regions.modals";
+import { deleteRegionModal, regionAnnotationsModal } from "@components/regions/regions.modals";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { newPointMenuItem } from "@components/sites/points.menus";
 import { reportMenuItems } from "@components/reports/reports.menu";
@@ -48,6 +48,7 @@ export const regionMenuItemActions = [
   audioRecordingMenuItems.batch.region,
   reportMenuItems.new.region,
   annotationMenuItems.search.region,
+  regionAnnotationsModal,
 ];
 
 const projectKey = "project";

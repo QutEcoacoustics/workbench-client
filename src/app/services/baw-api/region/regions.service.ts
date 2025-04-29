@@ -11,6 +11,7 @@ import {
   IdParam,
   IdParamOptional,
   option,
+  param,
   StandardApi,
 } from "../api-common";
 import { BawApiService, Filters } from "../baw-api.service";
@@ -20,6 +21,7 @@ const projectId: IdParam<Project> = id;
 const regionId: IdParamOptional<Region> = id;
 const endpoint = stringTemplate`/projects/${projectId}/regions/${regionId}${option}`;
 const endpointShallow = stringTemplate`/regions/${regionId}${option}`;
+const annotationsEndpoint = stringTemplate`/projects/${projectId}/regions/${regionId}/audio_events/download?${param}`;
 
 /**
  * Regions Service.
@@ -66,6 +68,18 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
     project: IdOr<Project>
   ): Observable<Region | void> {
     return this.api.destroy(endpoint(project, model, emptyParam));
+  }
+
+  public downloadAnnotations(
+    model: IdOr<Region>,
+    project: IdOr<Project>,
+    selectedTimezone: string
+  ): string {
+    const url = new URL(
+      this.api.getPath(annotationsEndpoint(project, model, emptyParam))
+    );
+    url.searchParams.set("selected_timezone_name", selectedTimezone ?? "UTC");
+    return url.toString();
   }
 }
 
