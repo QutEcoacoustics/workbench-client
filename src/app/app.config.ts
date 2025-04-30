@@ -47,7 +47,7 @@ export const appConfig: ApplicationConfig = {
     provideBawApi(),
     appLibraryImports,
 
-    // // Timeout API requests after set period
+    // Timeout API requests after set period
     // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
     { provide: TitleStrategy, useClass: PageTitleStrategy },
