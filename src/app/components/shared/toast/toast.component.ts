@@ -24,7 +24,6 @@ import {
 @Component({
   selector: "baw-toast",
   template: "<ng-content></ng-content>",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent {
