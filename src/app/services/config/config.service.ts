@@ -49,7 +49,6 @@ export class ConfigService {
 
     if (defaultConfig) {
       this.setConfig(await defaultConfig);
-      await embedGoogleServicesIfValid();
       return;
     }
 
