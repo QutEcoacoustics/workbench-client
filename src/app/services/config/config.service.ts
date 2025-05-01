@@ -58,7 +58,6 @@ export class ConfigService {
     if (this.isServer) {
       const config = await import("../../../assets/environment.json");
       this.setConfig(new Configuration(config));
-
       return;
     }
 
