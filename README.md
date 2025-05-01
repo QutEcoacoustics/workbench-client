@@ -148,8 +148,8 @@ Server side rendering allows a server to render the first page and send it to th
 2. Run the following command (substituting in the path to your templated config file):
 
    ```bash
-   docker pull qutecoacoustics/workbench-client:latest
-   docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client:latest
+   $ docker pull qutecoacoustics/workbench-client:latest
+   $ docker run -p 4000:4000 -v "$(pwd)/environment.json:/environment.json" qutecoacoustics/workbench-client:latest
    ```
 
 3. Done!

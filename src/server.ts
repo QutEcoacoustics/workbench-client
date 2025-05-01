@@ -24,11 +24,6 @@ import { REQUEST, RESPONSE } from "./express.tokens";
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
   const server = express();
-  // const distFolder = join(process.cwd(), "dist/workbench-client/browser");
-  // const indexHtml = existsSync(join(distFolder, "index.original.html"))
-  //   ? join(distFolder, "index.original.html")
-  //   : join(distFolder, "index.html");
-
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, "../browser");
   const indexHtml = join(serverDistFolder, "index.server.html");

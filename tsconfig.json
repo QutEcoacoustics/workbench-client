@@ -3,8 +3,10 @@
   "compileOnSave": false,
   "compilerOptions": {
     "alwaysStrict": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "declaration": false,
+    "downlevelIteration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
