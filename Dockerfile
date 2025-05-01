@@ -17,14 +17,14 @@ RUN npm ci --force
 
 # copy rest of app.
 # Doing it like this prevents the container from rebuilding when just the app
-# contents change - only when depenencies change are the lower layers invalidated.
+# contents change - only when dependencies change are the lower layers invalidated.
 # Great for dev work.
 COPY --chown=node ./ ./
 
 # change environment version
 RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./src/environments/environment*.ts
 
-RUN npm run build:ssr
+RUN npm run build
 
 FROM node:20-alpine
 
@@ -57,6 +57,4 @@ COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
 EXPOSE 4000
 
-#   pre-rendering doesn't appear to work at the moment due to our config setup
-#   && npm run prerender
 CMD [ "npm", "run", "serve:ssr"]

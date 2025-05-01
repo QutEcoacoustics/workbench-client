@@ -27,9 +27,6 @@
     <div id="page">
       <baw-breadcrumbs></baw-breadcrumbs>
 
-      @if (!resolvedSuccessfully) {
-        <router-outlet id="error" name="error"></router-outlet>
-      }
       @if (resolvedSuccessfully) {
         <router-outlet
           id="primary"
@@ -38,6 +35,8 @@
           (attach)="onRouterOutlet($event)"
           (detach)="onRouterOutlet(null)"
         ></router-outlet>
+      } @else {
+        <router-outlet id="error" name="error"></router-outlet>
       }
     </div>
 

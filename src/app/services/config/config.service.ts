@@ -53,6 +53,14 @@ export class ConfigService {
       return;
     }
 
+    // if we are in ssr, we can read the file directly from the file system
+    // instead of using the http client
+    if (this.isServer) {
+      const config = await import("../../../assets/environment.json");
+      this.setConfig(new Configuration(config));
+      return;
+    }
+
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
         retry({ count: 5, delay: 250 }),
@@ -64,7 +72,7 @@ export class ConfigService {
         catchError((err: any) => {
           console.error("API_CONFIG Failed to load configuration file: ", err);
           this.setConfig(new Configuration(undefined));
-          return of();
+          return of(undefined);
         })
       )
     );

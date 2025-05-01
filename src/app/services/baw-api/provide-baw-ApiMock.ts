@@ -1,6 +1,7 @@
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
@@ -119,7 +120,7 @@ export function provideMockBawApi(): (EnvironmentProviders | Provider)[] {
     ...mockProviders,
     provideMockConfig(),
     provideCaching(),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideHttpClientTesting(),
   ];
 }

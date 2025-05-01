@@ -26,7 +26,7 @@ To install project dependencies run:
 $ npm install
 ```
 
-## To develop:
+## To develop
 
 Normal development
 
@@ -112,12 +112,6 @@ To build the application:
 $ npm run build
 ```
 
-To build the Server Side Renderer:
-
-```bash
-$ npm run build:ssr
-```
-
 Move the generated files from the `/dist` directory to the required location.
 
 ## Build Statistics
@@ -146,7 +140,7 @@ Note: this configuration is a fully static SPA and may suffer from slow loading 
 
 ### Docker
 
-Server side rendering allows a server to render the first page and send it to the browser while the rest of the application bundle downloads. To make this work you need to run our docker container which contains the web server. The docker repository for this website can be found here: https://hub.docker.com/repository/docker/qutecoacoustics/workbench-client
+Server side rendering allows a server to render the first page and send it to the browser while the rest of the application bundle downloads. To make this work you need to run our docker container which contains the web server. The docker repository for this website can be found here: <https://hub.docker.com/repository/docker/qutecoacoustics/workbench-client>
 
 #### Using a pre-built container
 

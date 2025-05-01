@@ -1,6 +1,7 @@
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from "@angular/common/http";
 import { EnvironmentProviders, Provider } from "@angular/core";
@@ -33,6 +34,6 @@ export function provideBawApi(): (EnvironmentProviders | Provider)[] {
     ...services,
     ...serviceTokens,
     ...serviceResolvers,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
   ];
 }

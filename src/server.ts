@@ -8,10 +8,11 @@ import "reflect-metadata";
 import "zone.js/node";
 
 import { existsSync, readFileSync } from "fs";
-import { join } from "path";
+import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
 import { APP_BASE_HREF } from "@angular/common";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { CommonEngine } from "@angular/ssr/node";
+import { CommonEngine, isMainModule } from "@angular/ssr/node";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
@@ -23,17 +24,16 @@ import { REQUEST, RESPONSE } from "./express.tokens";
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
   const server = express();
-  const distFolder = join(process.cwd(), "dist/workbench-client/browser");
-  const indexHtml = existsSync(join(distFolder, "index.original.html"))
-    ? join(distFolder, "index.original.html")
-    : join(distFolder, "index.html");
+  const serverDistFolder = dirname(fileURLToPath(import.meta.url));
+  const browserDistFolder = resolve(serverDistFolder, "../browser");
+  const indexHtml = join(serverDistFolder, "index.server.html");
 
   const configPath = [
     path,
     // default path for config in docker container
     "/environment.json",
     // development settings
-    join(distFolder, "assets", "environment.json"),
+    join(browserDistFolder, "assets", "environment.json"),
   ].find((x) => existsSync(x));
 
   // eslint-disable-next-line no-console
@@ -47,7 +47,7 @@ export function app(path: string): express.Express {
   });
 
   server.set("view engine", "html");
-  server.set("views", distFolder);
+  server.set("views", browserDistFolder);
 
   /*
    * This allows us to reduce the chances of click-jacking by ensuring that the
@@ -74,17 +74,15 @@ export function app(path: string): express.Express {
   })
 
   // special case rendering our settings file - we already have it loaded
-  server.get(`${assetRoot}/environment.json`, (request, response) => {
+  server.get(`${assetRoot}/environment.json`, (_request, response) => {
     response.type("application/json");
     response.send(rawConfig);
   });
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get(
     "*.*",
-    express.static(distFolder, {
+    express.static(browserDistFolder, {
       maxAge: "1y",
     })
   );
@@ -98,7 +96,7 @@ export function app(path: string): express.Express {
         bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: distFolder,
+        publicPath: browserDistFolder,
         providers: [
           { provide: APP_BASE_HREF, useValue: baseUrl },
           { provide: RESPONSE, useValue: res },
@@ -126,14 +124,11 @@ function run(configPath: string): void {
   });
 }
 
-// Webpack will replace 'require' with '__webpack_require__'
-// '__non_webpack_require__' is a proxy to Node 'require'
-// The below code is to ensure that the server is run only when not requiring the bundle.
-// eslint-disable-next-line @typescript-eslint/naming-convention
-declare const __non_webpack_require__: NodeJS.Require;
-const mainModule = __non_webpack_require__.main;
-const moduleFilename = (mainModule && mainModule.filename) || "";
-if (moduleFilename === __filename || moduleFilename.includes("iisnode")) {
+/**
+ * Start the server if this module is the main entry point.
+ * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ */
+if (isMainModule(import.meta.url)) {
   // first argument after this script's name
   run(process.argv[2]);
 }

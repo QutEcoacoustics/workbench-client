@@ -59,6 +59,7 @@
       "checkboxable",
       "clearfix",
       "Millis",
+      "prerender",
     ],
     "cSpell.flagWords": [
       "yuo",
