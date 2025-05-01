@@ -9,6 +9,7 @@ import "zone.js/node";
 
 import { existsSync, readFileSync } from "fs";
 import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
 import { APP_BASE_HREF } from "@angular/common";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { CommonEngine, isMainModule } from "@angular/ssr/node";
@@ -19,7 +20,6 @@ import { API_CONFIG } from "@services/config/config.tokens";
 import bootstrap from "src/main.server";
 import angularConfig from "../angular.json";
 import { REQUEST, RESPONSE } from "./express.tokens";
-import { fileURLToPath } from "url";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
