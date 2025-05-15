@@ -19,9 +19,7 @@ import {
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
-import { APP_BASE_HREF } from "@angular/common";
 import angularConfig from "../angular.json";
-import { REQUEST, RESPONSE } from "./express.tokens";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
@@ -43,8 +41,6 @@ export function app(path: string): express.Express {
   // eslint-disable-next-line no-console
   console.log("Using config file ", configPath);
   const rawConfig = readFileSync(configPath, "utf-8");
-  // const config = new Configuration(JSON.parse(rawConfig));
-  // const apiConfig = { provide: API_CONFIG, useValue: config };
 
   server.set("view engine", "html");
   server.set("views", browserDistFolder);
@@ -86,23 +82,7 @@ export function app(path: string): express.Express {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
 
     angularApp
-      .handle(req, {
-        // It is no longer "the Angular way" to declare providers in the express
-        // ssr server.ts. The Angular team recommends that we should declare
-        // these in the app.config.server
-        // see: https://github.com/angular/angular-cli/issues/28727#issuecomment-2441176065
-        //
-        // However, they haven't documented a reliable way to provide all of the
-        // DI tokens that we previously used.
-        // Therefore, until we have better clarify on how to provide these
-        // through the app.config.server, I will continue providing them through
-        // the express server to not risk breaking these DI tokens.
-        providers: [
-          { provide: APP_BASE_HREF, useValue: req.baseUrl },
-          { provide: RESPONSE, useValue: res },
-          { provide: REQUEST, useValue: req },
-        ],
-      })
+      .handle(req)
       .then((response) =>
         response ? writeResponseToNodeResponse(response, res) : next(),
       )
