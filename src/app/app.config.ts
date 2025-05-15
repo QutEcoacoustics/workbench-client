@@ -15,8 +15,10 @@ import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { RehydrationInterceptorService } from "@services/rehydration/rehydration.interceptor.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { provideBawApi } from "@baw-api/provide-baw-api";
+import { provideServerRouting } from "@angular/ssr";
 import { appPageComponents } from "./app.pages";
 import { routes } from "./app.routes";
+import { serverRoutes } from "./app.routes.server";
 
 export const appLibraryImports = [
   ReactiveFormsModule,
@@ -39,6 +41,7 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: "enabled",
       })
     ),
+    provideServerRouting(serverRoutes),
 
     importProvidersFrom(appLibraryImports),
     menuProviders,

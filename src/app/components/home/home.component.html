@@ -127,36 +127,40 @@
       its free and easy!
     </p>
 
-    @if (models$ | withLoading | async; as models) {
-      @if (models.loading) {
-        <baw-loading [size]="'lg'"></baw-loading>
-      }
+    @defer {
+      @if (models$ | withLoading | async; as models) {
+        @if (models.loading) {
+          <baw-loading [size]="'lg'"></baw-loading>
+        }
 
-      @if (models.error) {
-        <p id="error">
-          Unable to load {{ viewMoreLink.label | titlecase }}
-        </p>
-      }
+        @if (models.error) {
+          <p id="error">
+            Unable to load {{ viewMoreLink.label | titlecase }}
+          </p>
+        }
 
-      @if (models.value) {
-        <baw-model-cards [models]="models.value">
-          @if (models.value.size === 0) {
-            <p id="placeholder" class="m-auto">
-              No {{ viewMoreLink.label | titlecase }}s to display
-            </p>
-          }
+        @if (models.value) {
+          <baw-model-cards [models]="models.value">
+            @if (models.value.size === 0) {
+              <p id="placeholder" class="m-auto">
+                No {{ viewMoreLink.label | titlecase }}s to display
+              </p>
+            }
 
-          @if (models.value.size > 0) {
-            <a
-              id="viewMore"
-              class="m-auto btn btn-outline-highlight btn-lg"
-              [strongRoute]="viewMoreLink.link"
-            >
-              More {{ viewMoreLink.label | titlecase }}s
-            </a>
-          }
-        </baw-model-cards>
+            @if (models.value.size > 0) {
+              <a
+                id="viewMore"
+                class="m-auto btn btn-outline-highlight btn-lg"
+                [strongRoute]="viewMoreLink.link"
+              >
+                More {{ viewMoreLink.label | titlecase }}s
+              </a>
+            }
+          </baw-model-cards>
+        }
       }
+    } @placeholder {
+      <baw-loading [size]="'lg'"></baw-loading>
     }
   </div>
 </section>

@@ -10,23 +10,24 @@ import "zone.js/node";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
-import { APP_BASE_HREF } from "@angular/common";
-import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { CommonEngine, isMainModule } from "@angular/ssr/node";
+// import { Configuration } from "@helpers/app-initializer/app-initializer";
+import {
+  isMainModule,
+  AngularNodeAppEngine,
+  writeResponseToNodeResponse,
+} from "@angular/ssr/node";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
 import { environment } from "src/environments/environment";
-import { API_CONFIG } from "@services/config/config.tokens";
-import bootstrap from "src/main.server";
 import angularConfig from "../angular.json";
-import { REQUEST, RESPONSE } from "./express.tokens";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(path: string): express.Express {
-  const server = express();
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, "../browser");
-  const indexHtml = join(serverDistFolder, "index.server.html");
+
+  const server = express();
+  const angularApp = new AngularNodeAppEngine();
 
   const configPath = [
     path,
@@ -39,12 +40,8 @@ export function app(path: string): express.Express {
   // eslint-disable-next-line no-console
   console.log("Using config file ", configPath);
   const rawConfig = readFileSync(configPath, "utf-8");
-  const config = new Configuration(JSON.parse(rawConfig));
-  const apiConfig = { provide: API_CONFIG, useValue: config };
-
-  const commonEngine = new CommonEngine({
-    providers: [apiConfig],
-  });
+  // const config = new Configuration(JSON.parse(rawConfig));
+  // const apiConfig = { provide: API_CONFIG, useValue: config };
 
   server.set("view engine", "html");
   server.set("views", browserDistFolder);
@@ -65,13 +62,15 @@ export function app(path: string): express.Express {
     // we use the angular.json config as the source of truth for headers
     // so that we don't have to maintain the same headers for both the dev
     // server and the production SSR server
-    const serverHeaders = angularConfig.projects["workbench-client"].architect.serve.options.headers;
+    const serverHeaders =
+      angularConfig.projects["workbench-client"].architect.serve.options
+        .headers;
     for (const [key, value] of Object.entries(serverHeaders)) {
       res.setHeader(key, value);
     }
 
     next();
-  })
+  });
 
   // special case rendering our settings file - we already have it loaded
   server.get(`${assetRoot}/environment.json`, (_request, response) => {
@@ -80,32 +79,39 @@ export function app(path: string): express.Express {
   });
 
   // Serve static files from /browser
-  server.get(
-    "*.*",
+  server.use(
     express.static(browserDistFolder, {
       maxAge: "1y",
-    })
+      index: false,
+      redirect: false,
+    }),
   );
 
   // All regular routes use the Angular engine
-  server.get("*", (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
+  server.get("/**", (req, res, next) => {
+    angularApp
+      .handle(req)
+      .then((response) =>
+        response ? writeResponseToNodeResponse(response, res) : next(),
+      )
+      .catch(next);
+    // const { protocol, originalUrl, baseUrl, headers } = req;
 
-    commonEngine
-      .render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: browserDistFolder,
-        providers: [
-          { provide: APP_BASE_HREF, useValue: baseUrl },
-          { provide: RESPONSE, useValue: res },
-          { provide: REQUEST, useValue: req },
-          apiConfig,
-        ],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+    //   commonEngine
+    //     .render({
+    //       bootstrap,
+    //       documentFilePath: indexHtml,
+    //       url: `${protocol}://${headers.host}${originalUrl}`,
+    //       publicPath: browserDistFolder,
+    //       providers: [
+    //         { provide: APP_BASE_HREF, useValue: baseUrl },
+    //         { provide: RESPONSE, useValue: res },
+    //         { provide: REQUEST, useValue: req },
+    //         apiConfig,
+    //       ],
+    //     })
+    //     .then((html) => res.send(html))
+    //     .catch((err) => next(err));
   });
 
   return server;
