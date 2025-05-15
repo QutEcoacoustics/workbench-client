@@ -5,6 +5,7 @@ import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { UnsavedInputGuard } from "@guards/input/input.guard";
+import { RenderMode } from "@angular/ssr";
 import { getPageInfos } from "./pageComponent";
 
 /**
@@ -24,10 +25,14 @@ export function getRouteConfigForPage(strongRoute: StrongRoute): Option<Route> {
     return null;
   }
 
+  // by default, we want to render the page on the server
+  const renderMode = pageInfo.renderMode ?? RenderMode.Server;
+
   return {
     ...config, // data is inherited in child routes
     data: pageInfo,
     resolve: pageInfo.resolvers,
+    renderMode,
     children: [
       {
         path: "",

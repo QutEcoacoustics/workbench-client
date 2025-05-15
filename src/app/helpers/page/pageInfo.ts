@@ -7,6 +7,7 @@ import {
   ResolverList,
 } from "@interfaces/menusInterfaces";
 import { StrongRoute } from "@interfaces/strongRoute";
+import { RenderMode } from "@angular/ssr";
 import { PageComponent } from "./pageComponent";
 
 export function isIPageInfo(data: Data): data is IPageInfo {
@@ -18,8 +19,6 @@ export function isIPageInfo(data: Data): data is IPageInfo {
  * This stores information required to generate the various menus of the page.
  * Also stores metadata about the page, like the icon to use, and the route
  * for that page.
- *
- * @extends Data
  */
 export interface IPageInfo extends Data {
   category?: Category;
@@ -28,6 +27,12 @@ export interface IPageInfo extends Data {
   fullscreen?: boolean;
   resolvers?: ResolverList;
   menus?: Menus;
+
+  /**
+   * Describes where the page will be rendered.
+   * @default RenderMode.Server
+   */
+  renderMode?: RenderMode;
 }
 
 /**
@@ -40,6 +45,7 @@ export class PageInfo implements IPageInfo {
   public menus: Menus;
   public fullscreen: boolean;
   public resolvers: ResolverList;
+  public renderMode: RenderMode;
 
   public constructor(args: IPageInfo) {
     if (!args.pageRoute) {
