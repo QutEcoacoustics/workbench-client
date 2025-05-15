@@ -55,6 +55,7 @@ export class PageInfo implements IPageInfo {
 
     Object.assign(this, args);
     this.resolvers = args.resolvers ?? {};
+    this.renderMode = args.renderMode ?? RenderMode.Server;
   }
 
   public setComponent(target: Type<PageComponent>): void {

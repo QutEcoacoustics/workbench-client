@@ -1,11 +1,12 @@
 import { Type } from "@angular/core";
-import { Params, Route, Routes } from "@angular/router";
+import { Params, Route } from "@angular/router";
+import { ServerRoute } from "@angular/ssr";
 import { ResolvedModelList } from "@baw-api/resolver-common";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
-export type RouteConfigCallback = (strongRoute: StrongRoute) => Route;
+export type RouteConfigCallback<T extends Route | ServerRoute> = (strongRoute: StrongRoute) => T;
 
 export type RouteParams = Record<string, string | number>;
 
@@ -317,11 +318,11 @@ export class StrongRoute {
    * which allows the 'pages' to add extra route data or modifications when
    * they are set up
    */
-  public compileRoutes(callback: RouteConfigCallback): Routes {
+  public compileRoutes<T extends Route | ServerRoute>(callback: RouteConfigCallback<T>): T[] {
     const rootRoute = this.root;
-    const output: Routes = [];
+    const output: T[] = [];
 
-    const sortRoutes = (a: Route, b: Route): -1 | 0 | 1 => {
+    const sortRoutes = (a: T, b: T): -1 | 0 | 1 => {
       // Root route wins
       if (a.path === StrongRoute.rootPath || b.path === StrongRoute.rootPath) {
         // Cannot have multiple root routes
@@ -354,11 +355,11 @@ export class StrongRoute {
 
       // Ignore root route with no component
       if (
-        route &&
-        !(
-          route.path === StrongRoute.rootPath &&
-          route.children[0].component === undefined
-        )
+        route
+        // !(
+        //   route.path === StrongRoute.rootPath &&
+        //   route.children[0].component === undefined
+        // )
       ) {
         output.push(route);
       }

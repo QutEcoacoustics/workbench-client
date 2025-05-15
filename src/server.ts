@@ -15,6 +15,7 @@ import {
   isMainModule,
   AngularNodeAppEngine,
   writeResponseToNodeResponse,
+  createNodeRequestHandler,
 } from "@angular/ssr/node";
 import { assetRoot } from "@services/config/config.service";
 import express from "express";
@@ -35,6 +36,7 @@ export function app(path: string): express.Express {
     "/environment.json",
     // development settings
     join(browserDistFolder, "assets", "environment.json"),
+    "./src/assets/environment.json"
   ].find((x) => existsSync(x));
 
   // eslint-disable-next-line no-console
@@ -117,26 +119,24 @@ export function app(path: string): express.Express {
   return server;
 }
 
-function run(configPath: string): void {
-  const port = Number(process.env.PORT) || 4000;
-
-  // eslint-disable-next-line no-console
-  console.log("Is production?", environment.production);
-  // Start up the Node server
-  const server = app(configPath);
-  server.listen(port, "0.0.0.0", () => {
-    // eslint-disable-next-line no-console
-    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
-  });
-}
+// first argument after this script's name
+const configPath = process.argv[2];
+const server = app(configPath);
 
 /**
  * Start the server if this module is the main entry point.
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
 if (isMainModule(import.meta.url)) {
-  // first argument after this script's name
-  run(process.argv[2]);
+  const port = Number(process.env.PORT) || 4000;
+
+  // eslint-disable-next-line no-console
+  console.log("Is production?", environment.production);
+
+  server.listen(port, "0.0.0.0", () => {
+    // eslint-disable-next-line no-console
+    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
+  });
 }
 
-export default app;
+export const reqHandler = createNodeRequestHandler(server);

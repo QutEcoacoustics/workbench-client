@@ -37,9 +37,10 @@ import { statisticsRoute } from "@components/statistics/statistics.menus";
 import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
 import {
+  compileAndSplitRoutes,
   getRouteConfigForIndexed,
-  getRouteConfigForPage,
 } from "@helpers/page/pageRouting";
+import { StrongRoute } from "@interfaces/strongRoute";
 
 const staticRoutes = [
   {
@@ -67,41 +68,41 @@ const staticRoutes = [
   },
 ] as const satisfies Routes;
 
-export const routes: Routes = [
-  aboutRoute.compileRoutes(getRouteConfigForPage),
-  adminRoute.compileRoutes(getRouteConfigForPage),
-  analysesRoute.compileRoutes(getRouteConfigForPage),
-  scriptsRoute.compileRoutes(getRouteConfigForPage),
-  getRouteConfigForIndexed(audioRecordingsRoutes),
-  citSciRoute.compileRoutes(getRouteConfigForPage),
-  dataRequestRoute.compileRoutes(getRouteConfigForPage),
-  harvestsRoute.compileRoutes(getRouteConfigForPage),
-  getRouteConfigForIndexed(reportsRoute),
-  getRouteConfigForIndexed(verificationRoute),
-  annotationsImportRoute.compileRoutes(getRouteConfigForPage),
-  libraryRoute.compileRoutes(getRouteConfigForPage),
-  listenRoute.compileRoutes(getRouteConfigForPage),
-  myAccountRoute.compileRoutes(getRouteConfigForPage),
-  theirProfileRoute.compileRoutes(getRouteConfigForPage),
-  projectsRoute.compileRoutes(getRouteConfigForPage),
-  regionsRoute.compileRoutes(getRouteConfigForPage),
-  shallowRegionsRoute.compileRoutes(getRouteConfigForPage),
-  reportProblemsRoute.compileRoutes(getRouteConfigForPage),
-  securityRoute.compileRoutes(getRouteConfigForPage),
-  sendAudioRoute.compileRoutes(getRouteConfigForPage),
-  sitesRoute.compileRoutes(getRouteConfigForPage),
-  pointsRoute.compileRoutes(getRouteConfigForPage),
-  statisticsRoute.compileRoutes(getRouteConfigForPage),
-  websiteStatusRoute.compileRoutes(getRouteConfigForPage),
-  visualizeRoute.compileRoutes(getRouteConfigForPage),
-  adminTagsRoute.compileRoutes(getRouteConfigForPage),
-  adminOrphansRoute.compileRoutes(getRouteConfigForPage),
-  adminSettingsRoute.compileRoutes(getRouteConfigForPage),
-  adminTagGroupsRoute.compileRoutes(getRouteConfigForPage),
-  adminAnalysisJobsRoute.compileRoutes(getRouteConfigForPage),
+const routes: StrongRoute[] = [
+  aboutRoute,
+  adminRoute,
+  analysesRoute,
+  scriptsRoute,
+  ...getRouteConfigForIndexed(audioRecordingsRoutes),
+  citSciRoute,
+  dataRequestRoute,
+  harvestsRoute,
+  ...getRouteConfigForIndexed(reportsRoute),
+  ...getRouteConfigForIndexed(verificationRoute),
+  annotationsImportRoute,
+  libraryRoute,
+  listenRoute,
+  myAccountRoute,
+  theirProfileRoute,
+  projectsRoute,
+  regionsRoute,
+  shallowRegionsRoute,
+  reportProblemsRoute,
+  securityRoute,
+  sendAudioRoute,
+  sitesRoute,
+  pointsRoute,
+  statisticsRoute,
+  websiteStatusRoute,
+  visualizeRoute,
+  adminTagsRoute,
+  adminOrphansRoute,
+  adminSettingsRoute,
+  adminTagGroupsRoute,
+  adminAnalysisJobsRoute,
 
-  homeRoute.compileRoutes(getRouteConfigForPage),
-  pageNotFoundRoute.compileRoutes(getRouteConfigForPage),
+  homeRoute,
+  pageNotFoundRoute,
+];
 
-  ...staticRoutes,
-].flat();
+export const [clientRoutes, serverRoutes] = compileAndSplitRoutes(routes);

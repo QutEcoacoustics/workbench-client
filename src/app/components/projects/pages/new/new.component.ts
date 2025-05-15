@@ -13,7 +13,6 @@ import { Project } from "@models/Project";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
-import { RenderMode } from "@angular/ssr";
 import { projectsMenuItemActions } from "../list/list.component";
 import schema from "../../project.schema.json";
 
@@ -63,7 +62,6 @@ ProjectNewComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: newProjectMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
-  renderMode: RenderMode.Client,
 });
 
 export { ProjectNewComponent };
