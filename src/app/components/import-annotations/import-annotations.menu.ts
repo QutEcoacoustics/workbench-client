@@ -41,7 +41,7 @@ export const annotationImportMenuItem = menuRoute({
     retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel?.audioEventImport.model.name;
+    return componentModel?.audioEventImport.model?.name;
   },
 });
 

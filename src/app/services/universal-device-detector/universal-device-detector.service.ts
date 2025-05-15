@@ -10,6 +10,7 @@ export class UniversalDeviceDetectorService extends DeviceDetectorService {
     @Inject(PLATFORM_ID) platformId: any,
     @Optional() @Inject(REQUEST) request: Request
   ) {
+    console.log("request", request);
     super(platformId);
     if (isPlatformServer(platformId)) {
       super.setDeviceInfo((request.headers["user-agent"] as string) || "");

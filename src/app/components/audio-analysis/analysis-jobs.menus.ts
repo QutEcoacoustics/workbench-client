@@ -30,6 +30,6 @@ export const analysisJobMenuItem = menuRoute({
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel.analysisJob.model.name;
+    return componentModel.analysisJob.model?.name;
   },
 });
