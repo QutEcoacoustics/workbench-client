@@ -1,4 +1,3 @@
-import { Routes } from "@angular/router";
 import { aboutRoute } from "@components/about/about.menus";
 import { adminRoute } from "@components/admin/admin.menus";
 import { adminAnalysisJobsRoute } from "@components/admin/analysis-jobs/analysis-jobs.menus";
@@ -42,31 +41,12 @@ import {
 } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-const staticRoutes = [
-  {
-    path: "research",
-    children: [
-      { path: "about", redirectTo: "https://research.ecosounds.org/" },
-      {
-        path: "articles",
-        redirectTo: "https://research.ecosounds.org/articles.html",
-      },
-      {
-        path: "resources",
-        redirectTo: "https://research.ecosounds.org/resources.html",
-      },
-      {
-        path: "people",
-        redirectTo: "https://research.ecosounds.org/people/people.html",
-      },
-      {
-        path: "publications",
-        redirectTo:
-          "https://research.ecosounds.org/publications/publications.html",
-      },
-    ],
-  },
-] as const satisfies Routes;
+const researchRoutes = StrongRoute.newRoot().add("research");
+researchRoutes.addRedirectRoute("about", "https://research.ecosounds.org/");
+researchRoutes.addRedirectRoute("about", "https://research.ecosounds.org/articles.html");
+researchRoutes.addRedirectRoute("resources", "https://research.ecosounds.org/resources.html");
+researchRoutes.addRedirectRoute("people", "https://research.ecosounds.org/people/people.html");
+researchRoutes.addRedirectRoute("publications", "https://research.ecosounds.org/publications/publications.html");
 
 const routes: StrongRoute[] = [
   aboutRoute,
@@ -100,6 +80,8 @@ const routes: StrongRoute[] = [
   adminSettingsRoute,
   adminTagGroupsRoute,
   adminAnalysisJobsRoute,
+
+  researchRoutes,
 
   homeRoute,
   pageNotFoundRoute,

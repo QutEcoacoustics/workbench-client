@@ -177,6 +177,21 @@ export class StrongRoute {
     );
   }
 
+  public addRedirectRoute(pathFragment: string, redirectTo: string, angularRouteConfig?: Partial<Route>) {
+    const routeConfig: Route = {
+      redirectTo,
+      ...angularRouteConfig,
+    };
+
+    return new StrongRoute(
+      this,
+      pathFragment,
+      null,
+      routeConfig,
+      true
+    );
+  }
+
   /**
    * Diagnostic representation of the StrongRoute
    *

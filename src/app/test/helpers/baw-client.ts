@@ -1,6 +1,6 @@
 import { Type } from "@angular/core";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { getRouteConfigForPage } from "@helpers/page/pageRouting";
+import { compileAndSplitRoutes } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
@@ -16,12 +16,12 @@ export function validateBawClientPage<Component extends Type<any>>(
 ) {
   let spec: SpectatorRouting<Component>;
   let config: ConfigService;
-  const compiledRoutes = routes.compileRoutes(getRouteConfigForPage);
+  const [clientRoutes, _serverRoutes] = compileAndSplitRoutes([routes]);
 
   const createComponent = createRoutingFactory({
     component,
     providers: [provideMockBawApi()],
-    routes: compiledRoutes,
+    routes: clientRoutes,
     stubsEnabled: false,
   });
 
