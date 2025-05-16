@@ -7,40 +7,40 @@ import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
-import {
-  createRoutingFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { CardComponent } from "@shared/model-cards/card/card.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { interceptFilterApiRequest } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { MockComponent } from "ng-mocks";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { AsyncPipe, TitleCasePipe, UpperCasePipe } from "@angular/common";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { AUDIO_RECORDING, PROJECT, SHALLOW_REGION } from "@baw-api/ServiceTokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { HomeComponent } from "./home.component";
 
 describe("HomeComponent", () => {
   let regionApi: SpyObject<ShallowRegionsService>;
   let projectApi: SpyObject<ProjectsService>;
   let cmsService: SpyObject<CmsService>;
+  let recordingService: SpyObject<AudioRecordingsService>;
   let config: ConfigService;
+  let injector: AssociationInjector;
   let spec: Spectator<HomeComponent>;
 
   const createComponent = createRoutingFactory({
     component: HomeComponent,
-    declarations: [CardsComponent, MockComponent(CardComponent)],
     imports: [
       IconsModule,
       LoadingComponent,
@@ -53,24 +53,34 @@ describe("HomeComponent", () => {
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {
+    if (!isBawApiError(regions)) {
+      regions.forEach((model) => model["injector"] = injector);
+    }
+
     const promise = interceptFilterApiRequest<IRegion, Region>(
       regionApi,
       undefined,
       regions,
       Region
     );
+    await spec.deferBlock().renderComplete();
     spec.detectChanges();
     await promise;
     spec.detectChanges();
   }
 
   async function awaitProjects(projects: Errorable<Project[]>) {
+    if (!isBawApiError(projects)) {
+      projects.forEach((model) => model["injector"] = injector);
+    }
+
     const promise = interceptFilterApiRequest<IProject, Project>(
       projectApi,
       undefined,
       projects,
       Project
     );
+    await spec.deferBlock().renderComplete();
     spec.detectChanges();
     await promise;
     spec.detectChanges();
@@ -117,9 +127,18 @@ describe("HomeComponent", () => {
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
-    projectApi = spec.inject(ProjectsService);
-    regionApi = spec.inject(ShallowRegionsService);
+
     config = spec.inject(ConfigService);
+    projectApi = spec.inject(PROJECT.token);
+    regionApi = spec.inject(SHALLOW_REGION.token);
+    recordingService = spec.inject(AUDIO_RECORDING.token);
+
+    injector = spec.inject(ASSOCIATION_INJECTOR);
+
+    projectApi.show.andReturn(of());
+
+    recordingService.filterByRegion.andReturn(of([]));
+    recordingService.filterByProject.andReturn(of([]));
   });
 
   // TODO Re-enable once cms is setup
