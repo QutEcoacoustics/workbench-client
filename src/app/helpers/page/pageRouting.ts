@@ -8,7 +8,7 @@ import { UnsavedInputGuard } from "@guards/input/input.guard";
 import { RenderMode, ServerRoute } from "@angular/ssr";
 import { getPageInfos } from "./pageComponent";
 
-export function getRouteConfigForIndexed(
+export function splitIndexedStrongRoutes(
   routes: Record<string, StrongRoute>,
 ): StrongRoute[] {
   return Object.values(routes).flat();

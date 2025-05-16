@@ -6,7 +6,9 @@ import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 
-export type RouteConfigCallback<T extends Route | ServerRoute> = (strongRoute: StrongRoute) => T;
+export type RouteConfigCallback<T extends Route | ServerRoute> = (
+  strongRoute: StrongRoute,
+) => T;
 
 export type RouteParams = Record<string, string | number>;
 
@@ -98,7 +100,7 @@ export class StrongRoute {
     public readonly pathFragment: string = StrongRoute.rootPath,
     public readonly queryParams: QSPCallback = () => ({}),
     public readonly angularRouteConfig: Partial<Route> = {},
-    isRoot?: boolean
+    isRoot?: boolean,
   ) {
     this.#parent = parent;
 
@@ -147,7 +149,7 @@ export class StrongRoute {
   public add(
     pathFragment: string,
     queryParams?: QSPCallback,
-    angularRouteConfig?: Partial<Route>
+    angularRouteConfig?: Partial<Route>,
   ) {
     return new StrongRoute(this, pathFragment, queryParams, angularRouteConfig);
   }
@@ -166,29 +168,14 @@ export class StrongRoute {
   public addFeatureModule(
     pathFragment: string,
     queryParams?: QSPCallback,
-    angularRouteConfig?: Partial<Route>
+    angularRouteConfig?: Partial<Route>,
   ) {
     return new StrongRoute(
       this,
       pathFragment,
       queryParams,
       angularRouteConfig,
-      true
-    );
-  }
-
-  public addRedirectRoute(pathFragment: string, redirectTo: string, angularRouteConfig?: Partial<Route>) {
-    const routeConfig: Route = {
-      redirectTo,
-      ...angularRouteConfig,
-    };
-
-    return new StrongRoute(
-      this,
-      pathFragment,
-      null,
-      routeConfig,
-      true
+      true,
     );
   }
 
@@ -301,7 +288,7 @@ export class StrongRoute {
   public format(
     routeParams: RouteParams = {},
     queryParams: Params = {},
-    resolvedModels: ResolvedModelList = {}
+    resolvedModels: ResolvedModelList = {},
   ): string {
     const qsp = this.queryParams(queryParams, resolvedModels);
     const keys = Object.keys(qsp);
@@ -333,7 +320,9 @@ export class StrongRoute {
    * which allows the 'pages' to add extra route data or modifications when
    * they are set up
    */
-  public compileRoutes<T extends Route | ServerRoute>(callback: RouteConfigCallback<T>): T[] {
+  public compileRoutes<T extends Route | ServerRoute>(
+    callback: RouteConfigCallback<T>,
+  ): T[] {
     const rootRoute = this.root;
     const output: T[] = [];
 
@@ -364,22 +353,38 @@ export class StrongRoute {
       return 0;
     };
 
+    const isServerRoute = (route: Route | ServerRoute): route is ServerRoute =>
+      "renderMode" in route;
+
     const recursiveAdd = (current: StrongRoute): void => {
       const route = callback(current);
       current.children.forEach(recursiveAdd);
 
-      // Ignore root route with no component
-      if (
-        route
-        // !(
-        //   route.path === StrongRoute.rootPath &&
-        //   route.children[0].component === undefined
-        // )
-      ) {
+
+      // If a StrongRoute does not have PageInfo (it is not attached to a page)
+      // then the route will end up as "null" when compiled.
+      //
+      // TODO: The strong route should not produce "null" when compiling routes
+      // but I have retained this functionality from a previous version to until
+      // I fully understand why we originally implemented it this way.
+      if (!route) {
+        return;
+      }
+
+      if (isServerRoute(route)) {
         output.push(route);
+      } else {
+        // we only want to add a client route if it has a PageComponent attached
+        if (
+          !(
+            route.path === StrongRoute.rootPath &&
+            route.children[0].component === undefined
+          )
+        ) {
+          output.push(route);
+        }
       }
     };
-
     recursiveAdd(rootRoute);
     return output.sort(sortRoutes);
   }

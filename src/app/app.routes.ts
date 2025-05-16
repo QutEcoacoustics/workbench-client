@@ -37,28 +37,38 @@ import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
 import {
   compileAndSplitRoutes,
-  getRouteConfigForIndexed,
+  splitIndexedStrongRoutes,
 } from "@helpers/page/pageRouting";
 import { StrongRoute } from "@interfaces/strongRoute";
 
 const researchRoutes = StrongRoute.newRoot().add("research");
-researchRoutes.addRedirectRoute("about", "https://research.ecosounds.org/");
-researchRoutes.addRedirectRoute("about", "https://research.ecosounds.org/articles.html");
-researchRoutes.addRedirectRoute("resources", "https://research.ecosounds.org/resources.html");
-researchRoutes.addRedirectRoute("people", "https://research.ecosounds.org/people/people.html");
-researchRoutes.addRedirectRoute("publications", "https://research.ecosounds.org/publications/publications.html");
+researchRoutes.add("about", null, {
+  redirectTo: "https://research.ecosounds.org/",
+});
+researchRoutes.add("about", null, {
+  redirectTo: "https://research.ecosounds.org/articles.html",
+});
+researchRoutes.add("resources", null, {
+  redirectTo: "https://research.ecosounds.org/resources.html",
+});
+researchRoutes.add("people", null, {
+  redirectTo: "https://research.ecosounds.org/people/people.html",
+});
+researchRoutes.add("publications", null, {
+  redirectTo: "https://research.ecosounds.org/publications/publications.html",
+});
 
 const routes: StrongRoute[] = [
   aboutRoute,
   adminRoute,
   analysesRoute,
   scriptsRoute,
-  ...getRouteConfigForIndexed(audioRecordingsRoutes),
+  ...splitIndexedStrongRoutes(audioRecordingsRoutes),
   citSciRoute,
   dataRequestRoute,
   harvestsRoute,
-  ...getRouteConfigForIndexed(reportsRoute),
-  ...getRouteConfigForIndexed(verificationRoute),
+  ...splitIndexedStrongRoutes(reportsRoute),
+  ...splitIndexedStrongRoutes(verificationRoute),
   annotationsImportRoute,
   libraryRoute,
   listenRoute,
