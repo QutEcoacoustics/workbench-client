@@ -11,7 +11,6 @@ import {
   shallowRegionsRoute,
 } from "@components/regions/regions.routes";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { getRouteConfigForPage } from "@helpers/page/pageRouting";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import {
@@ -32,6 +31,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { Location } from "@angular/common";
 import { FormComponent } from "@shared/form/form.component";
+import { compileAndSplitRoutes } from "@helpers/page/pageRouting";
 import schema from "../../region.base.json";
 import { RegionNewComponent } from "./new.component";
 
@@ -126,10 +126,10 @@ describe("RegionsNewComponent", () => {
 });
 
 describe("routing and resolvers", () => {
-  const nestedRoutes = regionsRoute.compileRoutes(getRouteConfigForPage);
-  const shallowRoutes = shallowRegionsRoute.compileRoutes(
-    getRouteConfigForPage
-  );
+  const [clientRoutes, _serverRoutes] = compileAndSplitRoutes([
+    regionsRoute,
+    shallowRegionsRoute,
+  ]);
 
   let project: Project;
   let defaultProject: Project;
@@ -148,7 +148,7 @@ describe("routing and resolvers", () => {
     // set up ngMocks according to https://ng-mocks.sudo.eu/guides/routing-resolver
     const builder = MockBuilder([
       RegionNewComponent,
-      RouterModule.forRoot([...nestedRoutes, ...shallowRoutes]),
+      RouterModule.forRoot(clientRoutes),
     ])
       .provide(provideMockBawApi())
       .provide({ provide: ProjectsService, useValue: projectsService });

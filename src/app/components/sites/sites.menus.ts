@@ -27,7 +27,7 @@ export const siteMenuItem = menuRoute({
   breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
   title: (routeData: RouterStateSnapshot) => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel.site.model.name;
+    return componentModel.site.model?.name;
   }
 });
 

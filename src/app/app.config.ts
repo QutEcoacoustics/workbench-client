@@ -16,7 +16,7 @@ import { RehydrationInterceptorService } from "@services/rehydration/rehydration
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { provideBawApi } from "@baw-api/provide-baw-api";
 import { appPageComponents } from "./app.pages";
-import { routes } from "./app.routes";
+import { clientRoutes } from "./app.routes";
 
 export const appLibraryImports = [
   ReactiveFormsModule,
@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     ...appPageComponents,
     provideRouter(
-      routes,
+      clientRoutes,
       /*
         Initial navigation triggers resolvers before APP_INITIALIZER which
         means that the config has not been loaded. Disabling this fixes the

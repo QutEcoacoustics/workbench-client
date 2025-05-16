@@ -566,19 +566,20 @@ describe("StrongRoute", () => {
         });
 
         it("should compile StrongRoute with custom config", () => {
-          const routes = [
+          const expectedRoutes = [
             rootRoute,
             createRoute(parent.baseRef + ":id", MockComponent, {
               redirectTo: "/test",
             }),
           ];
-          const paramRoute = strongRoute.add(":id", undefined, {
+
+          const testedRoute = strongRoute.add(":id", undefined, {
             redirectTo: "/test",
           });
-          paramRoute.pageComponent = MockComponent;
+          testedRoute.pageComponent = MockComponent;
 
-          const compiledRoutes = paramRoute.compileRoutes(callback);
-          expect(compiledRoutes).toEqual(routes);
+          const compiledRoutes = testedRoute.compileRoutes(callback);
+          expect(compiledRoutes).toEqual(expectedRoutes);
         });
 
         it("should order child StrongRoute routes", () => {

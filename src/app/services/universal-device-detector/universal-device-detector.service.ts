@@ -1,8 +1,7 @@
-import { Inject, Injectable, Optional, PLATFORM_ID } from "@angular/core";
+import { Inject, Injectable, Optional, PLATFORM_ID, REQUEST } from "@angular/core";
 import { Request } from "express";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { isPlatformServer } from "@angular/common";
-import { REQUEST } from "../../../express.tokens";
 
 @Injectable()
 export class UniversalDeviceDetectorService extends DeviceDetectorService {

@@ -29,7 +29,7 @@ export const adminOrphanMenuItem = menuRoute({
   predicate: isAdminPredicate,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    const orphanSiteName = componentModel.site.model.name;
+    const orphanSiteName = componentModel.site.model?.name;
     return orphanSiteName;
   }
 });

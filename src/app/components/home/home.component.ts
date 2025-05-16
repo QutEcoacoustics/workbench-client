@@ -20,6 +20,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { RenderMode } from "@angular/ssr";
 import { WithLoadingPipe } from "../../pipes/with-loading/with-loading.pipe";
 import { homeCategory, homeMenuItem } from "./home.menus";
 
@@ -141,6 +142,7 @@ HomeComponent.linkToRoute({
   category: homeCategory,
   pageRoute: homeMenuItem,
   fullscreen: true,
+  renderMode: RenderMode.Prerender,
 });
 
 export { HomeComponent };

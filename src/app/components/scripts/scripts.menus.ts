@@ -32,7 +32,7 @@ export const scriptMenuItem = menuRoute({
   parent: scriptsMenuItem,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    const scriptName = componentModel.script.model.name;
+    const scriptName = componentModel.script.model?.name;
     return scriptName;
   }
 });

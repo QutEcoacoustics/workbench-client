@@ -9,7 +9,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
 @Component({
   selector: "baw-website-status-warning",
   template: `
-    @if (!(api.status$ | async)?.[feature]) {
+    @if ((api.status$ | async)?.[feature] === false) {
       <section>
         <div class="alert alert-danger">
           <div>
