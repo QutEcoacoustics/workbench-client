@@ -59,6 +59,8 @@ export function app(path: string): express.Express {
       res.setHeader(key, value);
     }
 
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+
     next();
   });
 
@@ -79,8 +81,6 @@ export function app(path: string): express.Express {
 
   // All regular routes use the Angular engine
   server.get("/**", (req, res, next) => {
-    res.setHeader("X-Frame-Options", "SAMEORIGIN");
-
     angularApp
       .handle(req)
       .then((response) =>
