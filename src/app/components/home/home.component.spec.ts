@@ -63,7 +63,10 @@ describe("HomeComponent", () => {
       regions,
       Region
     );
-    await spec.deferBlock().renderComplete();
+
+    // TODO: once we wrap the example project cards in a defer block, we should
+    // re-enable defer block testing here.
+    // await spec.deferBlock().renderComplete();
     spec.detectChanges();
     await promise;
     spec.detectChanges();
@@ -80,7 +83,8 @@ describe("HomeComponent", () => {
       projects,
       Project
     );
-    await spec.deferBlock().renderComplete();
+
+    // await spec.deferBlock().renderComplete();
     spec.detectChanges();
     await promise;
     spec.detectChanges();
