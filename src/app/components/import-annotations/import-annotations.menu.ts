@@ -13,7 +13,7 @@ import {
 
 export const annotationsImportCategory: Category = {
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotations",
+  label: "Import Annotations",
   route: annotationsImportRoute,
 };
 
@@ -24,7 +24,7 @@ export const annotationsImportCategory: Category = {
 // run
 export const annotationsImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotations",
+  label: "Import Annotations",
   predicate: isLoggedInPredicate,
   route: annotationsImportRoute,
   tooltip: () => "(BETA) View bulk imports for this project",

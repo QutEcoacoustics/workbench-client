@@ -109,7 +109,7 @@ describe("AnnotationsListComponent", () => {
     modalService.dismissAll();
   });
 
-  assertPageInfo(AnnotationsListComponent, "Batch Import Annotations");
+  assertPageInfo(AnnotationsListComponent, "Import Annotations");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationsListComponent);
