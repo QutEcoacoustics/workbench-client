@@ -46,6 +46,29 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
   }
 }
 
+.datatable-body {
+  @extend .fade-overflow;
+}
+
+.fade-overflow {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    /* Width of the gradient fade */
+    width: 50px;
+    height: 100%;
+
+    // background: linear-gradient(to left, rgba(255, 255, 255, 1), transparent);
+    background: linear-gradient(to left, rgba(100, 100, 100, 1), transparent);
+
+    /* Allows interaction with content beneath */
+    pointer-events: none;
+  }
+}
+
 @keyframes query {
   0% {
     opacity: 1;

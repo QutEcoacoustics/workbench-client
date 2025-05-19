@@ -1,0 +1,44 @@
+<h5>
+  <fa-icon class="pe-1" [icon]="['fas', 'circle-info']"></fa-icon>Instructions
+</h5>
+
+<p>Upload files to the database.</p>
+
+<div class="alert alert-warning">
+  <h6>
+    <fa-icon [icon]="['fas', 'triangle-exclamation']"></fa-icon>
+    Warning
+  </h6>
+
+  Your files have not been committed. Please review your uploaded files, and
+  click "import files" to continue.
+</div>
+
+<hr />
+
+<section>
+  <h5>How to handle errors</h5>
+
+  @if (true) {
+    <h6 class="callout callout-danger">File errors</h6>
+
+    <p>Event errors</p>
+  }
+
+  @if (true) {
+    <h6 class="callout callout-danger">Duplicate files</h6>
+
+    <p>You cannot upload the same file twice. Please try to</p>
+  }
+
+  @if (true) {
+    <h6 class="callout callout-danger">Missing tags</h6>
+
+    <p>Some events do not have tags associated with events.</p>
+
+    <p>
+      You will be able to import the events, but the imported events will not be
+      discoverable via their tag names.
+    </p>
+  }
+</section>
