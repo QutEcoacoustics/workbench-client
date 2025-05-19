@@ -43,6 +43,6 @@ export const harvestMenuItem = menuRoute({
   route: harvestRoute,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
-    return componentModel.harvest.model.name;
+    return componentModel.harvest.model?.name;
   },
 });

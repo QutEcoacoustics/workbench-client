@@ -1,4 +1,3 @@
-import { Routes } from "@angular/router";
 import { aboutRoute } from "@components/about/about.menus";
 import { adminRoute } from "@components/admin/admin.menus";
 import { adminAnalysisJobsRoute } from "@components/admin/analysis-jobs/analysis-jobs.menus";
@@ -37,71 +36,65 @@ import { statisticsRoute } from "@components/statistics/statistics.menus";
 import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
 import {
-  getRouteConfigForIndexed,
-  getRouteConfigForPage,
+  compileAndSplitRoutes,
+  splitIndexedStrongRoutes,
 } from "@helpers/page/pageRouting";
+import { StrongRoute } from "@interfaces/strongRoute";
 
-const staticRoutes = [
-  {
-    path: "research",
-    children: [
-      { path: "about", redirectTo: "https://research.ecosounds.org/" },
-      {
-        path: "articles",
-        redirectTo: "https://research.ecosounds.org/articles.html",
-      },
-      {
-        path: "resources",
-        redirectTo: "https://research.ecosounds.org/resources.html",
-      },
-      {
-        path: "people",
-        redirectTo: "https://research.ecosounds.org/people/people.html",
-      },
-      {
-        path: "publications",
-        redirectTo:
-          "https://research.ecosounds.org/publications/publications.html",
-      },
-    ],
-  },
-] as const satisfies Routes;
+const researchRoutes = StrongRoute.newRoot().add("research");
+researchRoutes.add("about", null, {
+  redirectTo: "https://research.ecosounds.org/",
+});
+researchRoutes.add("about", null, {
+  redirectTo: "https://research.ecosounds.org/articles.html",
+});
+researchRoutes.add("resources", null, {
+  redirectTo: "https://research.ecosounds.org/resources.html",
+});
+researchRoutes.add("people", null, {
+  redirectTo: "https://research.ecosounds.org/people/people.html",
+});
+researchRoutes.add("publications", null, {
+  redirectTo: "https://research.ecosounds.org/publications/publications.html",
+});
 
-export const routes: Routes = [
-  aboutRoute.compileRoutes(getRouteConfigForPage),
-  adminRoute.compileRoutes(getRouteConfigForPage),
-  analysesRoute.compileRoutes(getRouteConfigForPage),
-  scriptsRoute.compileRoutes(getRouteConfigForPage),
-  getRouteConfigForIndexed(audioRecordingsRoutes),
-  citSciRoute.compileRoutes(getRouteConfigForPage),
-  dataRequestRoute.compileRoutes(getRouteConfigForPage),
-  harvestsRoute.compileRoutes(getRouteConfigForPage),
-  getRouteConfigForIndexed(reportsRoute),
-  getRouteConfigForIndexed(verificationRoute),
-  annotationsImportRoute.compileRoutes(getRouteConfigForPage),
-  libraryRoute.compileRoutes(getRouteConfigForPage),
-  listenRoute.compileRoutes(getRouteConfigForPage),
-  myAccountRoute.compileRoutes(getRouteConfigForPage),
-  theirProfileRoute.compileRoutes(getRouteConfigForPage),
-  projectsRoute.compileRoutes(getRouteConfigForPage),
-  regionsRoute.compileRoutes(getRouteConfigForPage),
-  shallowRegionsRoute.compileRoutes(getRouteConfigForPage),
-  reportProblemsRoute.compileRoutes(getRouteConfigForPage),
-  securityRoute.compileRoutes(getRouteConfigForPage),
-  sendAudioRoute.compileRoutes(getRouteConfigForPage),
-  sitesRoute.compileRoutes(getRouteConfigForPage),
-  pointsRoute.compileRoutes(getRouteConfigForPage),
-  statisticsRoute.compileRoutes(getRouteConfigForPage),
-  websiteStatusRoute.compileRoutes(getRouteConfigForPage),
-  visualizeRoute.compileRoutes(getRouteConfigForPage),
-  adminTagsRoute.compileRoutes(getRouteConfigForPage),
-  adminOrphansRoute.compileRoutes(getRouteConfigForPage),
-  adminSettingsRoute.compileRoutes(getRouteConfigForPage),
-  adminTagGroupsRoute.compileRoutes(getRouteConfigForPage),
-  adminAnalysisJobsRoute.compileRoutes(getRouteConfigForPage),
+const routes: StrongRoute[] = [
+  aboutRoute,
+  adminRoute,
+  analysesRoute,
+  scriptsRoute,
+  ...splitIndexedStrongRoutes(audioRecordingsRoutes),
+  citSciRoute,
+  dataRequestRoute,
+  harvestsRoute,
+  ...splitIndexedStrongRoutes(reportsRoute),
+  ...splitIndexedStrongRoutes(verificationRoute),
+  annotationsImportRoute,
+  libraryRoute,
+  listenRoute,
+  myAccountRoute,
+  theirProfileRoute,
+  projectsRoute,
+  regionsRoute,
+  shallowRegionsRoute,
+  reportProblemsRoute,
+  securityRoute,
+  sendAudioRoute,
+  sitesRoute,
+  pointsRoute,
+  statisticsRoute,
+  websiteStatusRoute,
+  visualizeRoute,
+  adminTagsRoute,
+  adminOrphansRoute,
+  adminSettingsRoute,
+  adminTagGroupsRoute,
+  adminAnalysisJobsRoute,
 
-  homeRoute.compileRoutes(getRouteConfigForPage),
-  pageNotFoundRoute.compileRoutes(getRouteConfigForPage),
+  researchRoutes,
 
-  ...staticRoutes,
-].flat();
+  homeRoute,
+  pageNotFoundRoute,
+];
+
+export const [clientRoutes, serverRoutes] = compileAndSplitRoutes(routes);

@@ -10,7 +10,9 @@ import { DeviceDetectorService } from "ngx-device-detector";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { environment } from "src/environments/environment";
+import { provideServerRouting } from "@angular/ssr";
 import { appConfig } from "./app.config";
+import { serverRoutes } from "./app.routes";
 
 // we disable caching on the server to prevent potentially serving stale data
 // and data that requires authorization to unauthenticated users
@@ -22,6 +24,7 @@ export const serverCacheConfig = {
 const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(),
+    provideServerRouting(serverRoutes),
 
     {
       provide: DeviceDetectorService,

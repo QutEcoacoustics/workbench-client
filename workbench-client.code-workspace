@@ -60,6 +60,7 @@
       "clearfix",
       "Millis",
       "prerender",
+      "SAMEORIGIN",
     ],
     "cSpell.flagWords": [
       "yuo",
