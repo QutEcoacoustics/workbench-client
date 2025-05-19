@@ -19,7 +19,7 @@ export const annotationsImportCategory: Category = {
 
 // we cannot include a route guard predicate for "project editor"
 // as the annotation imports are mounted under the root path
-// "http://ecosounds.org/batch_annotations"
+// "http://ecosounds.org/import_annotations"
 // therefore, we validate capabilities in the import component during the dry
 // run
 export const annotationsImportMenuItem = menuRoute({

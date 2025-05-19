@@ -518,7 +518,7 @@ describe("AddAnnotationsComponent", () => {
       addFiles([modelData.file()]);
       commitImport();
       expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(
-        `/batch_annotations/${audioEventImport.id}`
+        `/import_annotations/${audioEventImport.id}`
       );
     });
 

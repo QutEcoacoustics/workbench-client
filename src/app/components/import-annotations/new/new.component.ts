@@ -46,7 +46,7 @@ class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
   ) {
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+      redirectUser: (model) => this.router.navigateByUrl(model.addAnnotationsUrl),
     });
   }
 
