@@ -22,7 +22,13 @@ export class PageComponent extends withUnsubscribe() implements IPageComponent {
     return PageComponent.pageInfos;
   }
 
-  /** Links the page info to the page component */
+  /**
+   * Links the page info to the page component.
+   * Actually stores references bidirectionally between pageInfos and
+   * components.
+   * When we compile routes, we use the page infos, and the link to their
+   * components to generate the route data.
+   */
   public static linkToRoute(info: IPageInfo): typeof PageComponent {
     const pageInfo = new PageInfo(info);
     pageInfo.setComponent(this);

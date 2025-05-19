@@ -10,11 +10,13 @@ export function generatePageInfo(data?: Partial<IPageInfo>): Required<IPageInfo>
     pageRoute: homeMenuItem,
     resolvers: {},
     menus: {},
-    renderMode: modelData.helpers.arrayElement([
-      RenderMode.Server,
-      RenderMode.Client,
-      RenderMode.Prerender,
-    ]),
+    // We hard code the RenderMode to "Client" instead of using a random value
+    // so that if (in the future) tests start using PageInfo/StrongRoute
+    // routing, they will all have the same rendering strategy.
+    //
+    // By setting a constant value, we can ensure that if a test fails due to a
+    // specific rendering strategy, they will fail consistently and predictably.
+    renderMode: RenderMode.Client,
     ...data,
   };
 }

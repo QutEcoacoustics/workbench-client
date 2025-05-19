@@ -32,6 +32,10 @@ export interface IPageInfo extends Data {
    * Describes where the page will be rendered.
    * Developers are expected to set this property on a per-page basis, using the
    * PageComponent's "linkToRoute" method on PageComponent declaration.
+   *
+   * When the StrongRoute's are compiled into page Routes and ServerRoute's
+   * using the PageInfo, this renderMode will be added to the ServerRoute.
+   *
    * @default RenderMode.Server
    */
   renderMode?: RenderMode;
