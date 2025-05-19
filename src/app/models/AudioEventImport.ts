@@ -1,6 +1,6 @@
 import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
-import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
+import { addAnnotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import { hasOne } from "./AssociationDecorators";
@@ -47,7 +47,7 @@ export class AudioEventImport
   public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
-    return annotationImportRoute.format({
+    return addAnnotationImportRoute.format({
       annotationId: this.id,
     });
   }
