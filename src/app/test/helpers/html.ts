@@ -140,7 +140,7 @@ export function waitForDropdown<T>(spectator: Spectator<T>): void {
 export function getElementByInnerText<T extends HTMLElement>(
   spectator: Spectator<unknown> | SpectatorHost<unknown>,
   text: string
-): T | null {
+): T | undefined {
   return spectator.debugElement.query(
     (element) => element.nativeElement.innerText === text
   )?.nativeElement;

@@ -2,13 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   Signal,
 } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
-import { ImportAnnotationService } from "../services/import-annotation.service";
 
 @Component({
   selector: "baw-import-instructions",

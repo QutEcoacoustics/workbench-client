@@ -2,6 +2,10 @@ import { Provider } from "@angular/core";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ImportAnnotationService } from "./services/import-annotation.service";
 
+// Because the annotation import service keeps track of the current annotation
+// import including what files have been uploaded, what errors are present, etc.
+// We attach the service to the route and recreate it every time the route loads
+// so that the risk of stale state is significantly reduced.
 const providers = [
   {
     provide: ImportAnnotationService,
