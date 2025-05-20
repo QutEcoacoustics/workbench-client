@@ -10,35 +10,53 @@
     Warning
   </h6>
 
-  Your files have not been committed. Please review your uploaded files, and
-  click "import files" to continue.
+  <strong>Your files have not been committed</strong>. Please review your
+  uploaded files, and click "Import Annotations" to continue.
 </div>
 
 <hr />
 
-<section>
-  <h5>How to handle errors</h5>
+@if (false) {
+  <section>
+    <h5>How to handle errors</h5>
 
-  @if (true) {
-    <h6 class="callout callout-danger">File errors</h6>
+    @if (true) {
+      <h6 class="callout callout-danger">Event errors</h6>
 
-    <p>Event errors</p>
-  }
+      <p>
+        Event errors are broken down per-row in the "Identified Events" table.
+      </p>
 
-  @if (true) {
-    <h6 class="callout callout-danger">Duplicate files</h6>
+      <p>
+        Errors can arise due to invalid values, incorrect data types, or
+        referencing audio recordings that you don't have permission to access.
+      </p>
+    }
 
-    <p>You cannot upload the same file twice. Please try to</p>
-  }
+    @if (true) {
+      <hr />
 
-  @if (true) {
-    <h6 class="callout callout-danger">Missing tags</h6>
+      <h6 class="callout callout-danger">Duplicate files</h6>
 
-    <p>Some events do not have tags associated with events.</p>
+      <p>Datasets that contain the same content cannot be uploaded twice.</p>
 
-    <p>
-      You will be able to import the events, but the imported events will not be
-      discoverable via their tag names.
-    </p>
-  }
-</section>
+      <p>
+        This includes other accounts uploading the same dataset. Please ensure
+        that this dataset has not previously been uploaded by another person.
+      </p>
+    }
+
+    @if (true) {
+      <hr />
+
+      <h6 class="callout callout-warning">Missing tags</h6>
+
+      <p>Some events do not have tags associated with events.</p>
+
+      <p>
+        You will be able to import the events, but the imported events will not
+        be discoverable via their tag names.
+      </p>
+    }
+  </section>
+}

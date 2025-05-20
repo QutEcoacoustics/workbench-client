@@ -1,3 +1,5 @@
+@use "line-truncation";
+
 @import "@swimlane/ngx-datatable/index";
 @import "@swimlane/ngx-datatable/themes/bootstrap";
 @import "@swimlane/ngx-datatable/assets/icons";
@@ -51,8 +53,14 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
 }
 
 .fade-overflow {
-  &::after {
-    content: '';
+  // @include line-truncation.line-truncation(
+  //   var(--line-height),
+  //   1,
+  //   var(--card-bg-color)
+  // );
+
+  &:after {
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -61,12 +69,25 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
     width: 50px;
     height: 100%;
 
-    // background: linear-gradient(to left, rgba(255, 255, 255, 1), transparent);
-    background: linear-gradient(to left, rgba(100, 100, 100, 1), transparent);
-
-    /* Allows interaction with content beneath */
-    pointer-events: none;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), white 75%);
   }
+
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   right: 0;
+
+  //   /* Width of the gradient fade */
+  //   width: 50px;
+  //   height: 100%;
+
+  //   // background: linear-gradient(to left, rgba(255, 255, 255, 1), transparent);
+  //   background: linear-gradient(to left, rgba(100, 100, 100, 1), transparent);
+
+  //   /* Allows interaction with content beneath */
+  //   pointer-events: none;
+  // }
 }
 
 @keyframes query {
