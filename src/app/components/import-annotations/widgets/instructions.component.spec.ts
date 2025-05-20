@@ -14,6 +14,7 @@ describe("ImportInstructionsWidgetComponent", () => {
   const createComponent = createComponentFactory({
     component: ImportInstructionsWidgetComponent,
     imports: [IconsModule],
+    providers: [ImportAnnotationService],
   });
 
   const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");

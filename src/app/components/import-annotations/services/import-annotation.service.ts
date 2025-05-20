@@ -9,7 +9,7 @@ export interface ImportedFileWithErrors {
   errors: ReadonlyArray<EventImportError>;
 }
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class ImportAnnotationService {
   public importFileModel = signal<ImportedFileWithErrors[]>([]);
 

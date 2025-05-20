@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   Signal,
 } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -17,7 +18,17 @@ import { ImportAnnotationService } from "../services/import-annotation.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportInstructionsWidgetComponent implements WidgetComponent {
-  public constructor(protected annotationImport: ImportAnnotationService) {}
+  // public constructor(protected annotationImport: ImportAnnotationService) {
+  public constructor() {
+  }
+
+  public annotationImport = {
+    importFileModel: () => [],
+    importErrors: () => [],
+    importWarnings: () => [],
+  };
+
+  // public annotationImport: ImportAnnotationService;
 
   protected hasUncommittedFiles = computed(
     () => this.annotationImport.importFileModel().length > 0,

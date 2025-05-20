@@ -15,4 +15,8 @@ describe("ImportAnnotationService", () => {
   it("should be created", () => {
     expect(spec.service).toBeInstanceOf(ImportAnnotationService);
   });
+
+  it("should correctly extract errors", () => {});
+
+  it("should correctly extract warnings", () => {});
 });
