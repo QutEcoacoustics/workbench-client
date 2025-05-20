@@ -76,7 +76,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
 import { importAnnotationsWidgetMenuItem } from "../../widgets/instructions.component";
 
-export interface QueuedFile {
+interface QueuedFile {
   file: Readonly<File>;
 
   /**

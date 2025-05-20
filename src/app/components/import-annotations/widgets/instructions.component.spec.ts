@@ -4,8 +4,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
-import { ImportAnnotationService } from "../services/import-annotation.service";
-import { QueuedFile } from "../pages/add-annotations/add-annotations.component";
+import { ImportAnnotationService, ImportedFileWithErrors } from "../services/import-annotation.service";
 import { ImportInstructionsWidgetComponent } from "./instructions.component";
 
 describe("ImportInstructionsWidgetComponent", () => {
@@ -20,7 +19,7 @@ describe("ImportInstructionsWidgetComponent", () => {
   const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");
   const tagsWarning = () => spec.query(".tags-warning");
 
-  function setFiles(mockFiles: QueuedFile[]): void {
+  function setFiles(mockFiles: ImportedFileWithErrors[]): void {
     annotationImportSpy.importFileModel.set(mockFiles);
     spec.detectChanges();
   }
