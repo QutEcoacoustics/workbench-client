@@ -14,49 +14,60 @@
   uploaded files, and click "Import Annotations" to continue.
 </div>
 
-<hr />
-
-@if (false) {
-  <section>
+@if (errors.length > 0) {
+  <section class="widget-section border-top">
     <h5>How to handle errors</h5>
 
-    @if (true) {
-      <h6 class="callout callout-danger">Event errors</h6>
+    <div class="error-cards">
+      @if (true) {
+        <div class="error-card">
+          <h6 class="callout callout-danger">Event errors</h6>
 
-      <p>
-        Event errors are broken down per-row in the "Identified Events" table.
-      </p>
+          <p>
+            Event errors are broken down per-row in the "Identified Events"
+            table.
+          </p>
 
-      <p>
-        Errors can arise due to invalid values, incorrect data types, or
-        referencing audio recordings that you don't have permission to access.
-      </p>
-    }
+          <p>
+            Errors can arise due to invalid values, incorrect data types, or
+            referencing audio recordings that you don't have permission to
+            access.
+          </p>
+        </div>
+      }
 
-    @if (true) {
-      <hr />
+      @if (true) {
+        <div class="error-card">
+          <h6 class="callout callout-danger">Duplicate files</h6>
 
-      <h6 class="callout callout-danger">Duplicate files</h6>
+          <p>
+            Datasets that contain the same content cannot be uploaded twice.
+          </p>
 
-      <p>Datasets that contain the same content cannot be uploaded twice.</p>
+          <p>
+            This includes other accounts uploading the same dataset. Please
+            ensure that this dataset has not previously been uploaded by another
+            person.
+          </p>
+        </div>
+      }
+    </div>
+  </section>
+}
 
-      <p>
-        This includes other accounts uploading the same dataset. Please ensure
-        that this dataset has not previously been uploaded by another person.
-      </p>
-    }
+@if (warnings.length > 0) {
+  <section class="widget-section border-top">
+    <div class="error-cards">
+      <div class="error-card">
+        <h6 class="callout callout-warning">Missing tags</h6>
 
-    @if (true) {
-      <hr />
+        <p>Some events do not have tags associated with events.</p>
 
-      <h6 class="callout callout-warning">Missing tags</h6>
-
-      <p>Some events do not have tags associated with events.</p>
-
-      <p>
-        You will be able to import the events, but the imported events will not
-        be discoverable via their tag names.
-      </p>
-    }
+        <p>
+          You will be able to import the events, but the imported events will
+          not be discoverable via their tag names.
+        </p>
+      </div>
+    </div>
   </section>
 }

@@ -66,14 +66,14 @@ import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
 import { Tag } from "@models/Tag";
 import { List } from "immutable";
-import { annotationImportRoute } from "../import-annotations.routes";
+import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
-} from "../import-annotations.menu";
-import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
-import { isInstantiatedPipe } from "../../../pipes/is-instantiated/is-instantiated.pipe";
-import { importAnnotationsWidgetMenuItem } from "../widgets/instructions.component";
+} from "../../import-annotations.menu";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
+import { importAnnotationsWidgetMenuItem } from "../../widgets/instructions.component";
 
 interface QueuedFile {
   file: Readonly<File>;

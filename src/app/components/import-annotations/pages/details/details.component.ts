@@ -33,15 +33,15 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
   annotationsImportCategory,
   annotationImportMenuItem,
   addAnnotationImportMenuItem,
-} from "../import-annotations.menu";
-import { deleteAnnotationImportModal } from "../import-annotations.modals";
-import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+} from "../../import-annotations.menu";
+import { deleteAnnotationImportModal } from "../../import-annotations.modals";
 
 export const annotationMenuActions = [
   addAnnotationImportMenuItem,

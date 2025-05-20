@@ -1,0 +1,7 @@
+.error-cards {
+  & > .error-card {
+    &:not(:first-child) {
+      border-top: 1px solid red;
+    }
+  }
+}

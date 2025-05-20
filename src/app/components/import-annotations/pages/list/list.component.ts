@@ -18,7 +18,7 @@ import {
   annotationsImportCategory,
   annotationsImportMenuItem,
   newAnnotationImportMenuItem,
-} from "../import-annotations.menu";
+} from "../../import-annotations.menu";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
 
