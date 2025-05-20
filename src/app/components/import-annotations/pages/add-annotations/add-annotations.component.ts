@@ -66,6 +66,7 @@ import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
 import { Tag } from "@models/Tag";
 import { List } from "immutable";
+import { ImportAnnotationService } from "@components/import-annotations/services/import-annotation.service";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -160,6 +161,7 @@ class AddAnnotationsComponent
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastService,
+    private annotationImport: ImportAnnotationService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
   ) {
     super();
@@ -426,6 +428,10 @@ class AddAnnotationsComponent
       .subscribe({
         next: (result: QueuedFile[]) => {
           this.importFiles$.next(result);
+
+          this.annotationImport.importFileModel.set(new Set(
+            result.map((queuedFile) => queuedFile.model),
+          ));
         },
         complete: () => {
           if (this.importState !== ImportState.FAILURE) {

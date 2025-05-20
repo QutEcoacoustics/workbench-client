@@ -2,19 +2,24 @@
   <fa-icon class="pe-1" [icon]="['fas', 'circle-info']"></fa-icon>Instructions
 </h5>
 
-<p>Upload files to the database.</p>
+<p>
+  You can use this interface to upload annotations from human or machine
+  generated datasets.
+</p>
 
-<div class="alert alert-warning">
-  <h6>
-    <fa-icon [icon]="['fas', 'triangle-exclamation']"></fa-icon>
-    Warning
-  </h6>
+@if (hasUncommittedFiles()) {
+  <div class="alert alert-warning">
+    <h6>
+      <fa-icon [icon]="['fas', 'triangle-exclamation']"></fa-icon>
+      Warning
+    </h6>
 
-  <strong>Your files have not been committed</strong>. Please review your
-  uploaded files, and click "Import Annotations" to continue.
-</div>
+    <strong>Your files have not been committed</strong>. Please review your
+    uploaded files, and click "Import Annotations" to continue.
+  </div>
+}
 
-@if (errors.length > 0) {
+@if (annotationImport.importErrors().length > 0) {
   <section class="widget-section border-top">
     <h5>How to handle errors</h5>
 
@@ -55,7 +60,7 @@
   </section>
 }
 
-@if (warnings.length > 0) {
+@if (hasUncommittedFiles()) {
   <section class="widget-section border-top">
     <div class="error-cards">
       <div class="error-card">
