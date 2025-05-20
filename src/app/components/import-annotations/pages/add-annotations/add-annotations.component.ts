@@ -76,7 +76,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
 import { importAnnotationsWidgetMenuItem } from "../../widgets/instructions.component";
 
-interface QueuedFile {
+export interface QueuedFile {
   file: Readonly<File>;
 
   /**
@@ -428,15 +428,13 @@ class AddAnnotationsComponent
       .subscribe({
         next: (result: QueuedFile[]) => {
           this.importFiles$.next(result);
-
-          this.annotationImport.importFileModel.set(new Set(
-            result.map((queuedFile) => queuedFile.model),
-          ));
         },
         complete: () => {
           if (this.importState !== ImportState.FAILURE) {
             this.importState = ImportState.SUCCESS;
           }
+
+          this.annotationImport.importFileModel.set(this.importFiles$.value);
         },
       });
   }

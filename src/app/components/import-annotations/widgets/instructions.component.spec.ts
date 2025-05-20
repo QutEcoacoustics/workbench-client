@@ -1,17 +1,36 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
+import { ImportAnnotationService } from "../services/import-annotation.service";
+import { QueuedFile } from "../pages/add-annotations/add-annotations.component";
 import { ImportInstructionsWidgetComponent } from "./instructions.component";
 
 describe("ImportInstructionsWidgetComponent", () => {
   let spec: Spectator<ImportInstructionsWidgetComponent>;
+  let annotationImportSpy: SpyObject<ImportAnnotationService>;
 
   const createComponent = createComponentFactory({
     component: ImportInstructionsWidgetComponent,
     imports: [IconsModule],
   });
 
+  const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");
+  const tagsWarning = () => spec.query(".tags-warning");
+
+  function setFiles(mockFiles: QueuedFile[]): void {
+    annotationImportSpy.importFileModel.set(mockFiles);
+    spec.detectChanges();
+  }
+
   function setup(): void {
-    spec = createComponent();
+    spec = createComponent({ detectChanges: false });
+
+    annotationImportSpy = spec.inject(ImportAnnotationService);
+
+    spec.detectChanges();
   }
 
   beforeEach(() => {
@@ -23,9 +42,19 @@ describe("ImportInstructionsWidgetComponent", () => {
   });
 
   describe("uncommitted warning", () => {
-    it("should not show a warning if there are no pending files", () => {});
+    it("should not show a warning if there are no pending files", () => {
+      expect(uncommittedFileWarning()).not.toExist();
+    });
 
-    it("should show a file warning if there are pending files", () => {});
+    it("should show a file warning if there are pending files", () => {
+      setFiles([
+        {},
+        {},
+        {},
+      ] as any);
+
+      expect(uncommittedFileWarning()).toExist();
+    });
   });
 
   describe("error helpers", () => {
@@ -39,10 +68,16 @@ describe("ImportInstructionsWidgetComponent", () => {
   });
 
   describe("tag warning", () => {
-    it("should not show any warnings if no files have been uploaded", () => {});
+    it("should not show any warnings if no files have been uploaded", () => {
+      expect(tagsWarning()).not.toExist();
+    });
 
-    it("should not show any warnings if the uploaded file has no warnings", () => {});
+    it("should not show any warnings if the uploaded file has no warnings", () => {
+      expect(tagsWarning()).not.toExist();
+    });
 
-    it("should show warnings if the uploaded file has missing tags", () => {});
+    it("should show warnings if the uploaded file has missing tags", () => {
+      expect(tagsWarning()).toExist();
+    });
   });
 });

@@ -8,9 +8,9 @@
 </p>
 
 @if (hasUncommittedFiles()) {
-  <div class="alert alert-warning">
+  <div class="uncommitted-file-warning alert alert-warning">
     <h6>
-      <fa-icon [icon]="['fas', 'triangle-exclamation']"></fa-icon>
+      <fa-icon class="pe-1" [icon]="['fas', 'triangle-exclamation']"></fa-icon>
       Warning
     </h6>
 
@@ -20,12 +20,12 @@
 }
 
 @if (annotationImport.importErrors().length > 0) {
-  <section class="widget-section border-top">
+  <section class="error-section widget-section border-top">
     <h5>How to handle errors</h5>
 
     <div class="error-cards">
-      @if (true) {
-        <div class="error-card">
+      @if (hasEventErrors()) {
+        <div class="widget-card">
           <h6 class="callout callout-danger">Event errors</h6>
 
           <p>
@@ -41,8 +41,8 @@
         </div>
       }
 
-      @if (true) {
-        <div class="error-card">
+      @if (hasDuplicateFiles()) {
+        <div class="widget-card">
           <h6 class="callout callout-danger">Duplicate files</h6>
 
           <p>
@@ -56,14 +56,27 @@
           </p>
         </div>
       }
+
+      @if (hasUnsupportedFormat()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Unknown file format</h6>
+
+          <p>
+            We support many file formats found <a href="#todo">here</a>. Please
+            ensure that your file format abides by one of these formats or
+            <a href="#todo">contact us</a> if you believe we should support this
+            format.
+          </p>
+        </div>
+      }
     </div>
   </section>
 }
 
-@if (hasUncommittedFiles()) {
-  <section class="widget-section border-top">
-    <div class="error-cards">
-      <div class="error-card">
+@if (annotationImport.importWarnings().length > 0) {
+  <section class="warning-section widget-section border-top">
+    @if (hasMissingTags()) {
+      <div class="tags-warning widget-card">
         <h6 class="callout callout-warning">Missing tags</h6>
 
         <p>Some events do not have tags associated with events.</p>
@@ -73,6 +86,6 @@
           not be discoverable via their tag names.
         </p>
       </div>
-    </div>
+    }
   </section>
 }

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  Signal,
+} from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -15,12 +20,25 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
   public constructor(protected annotationImport: ImportAnnotationService) {}
 
   protected hasUncommittedFiles = computed(
-    () => this.annotationImport.importFileModel().size > 0,
+    () => this.annotationImport.importFileModel().length > 0,
   );
 
-  protected hasError(errorQuery: string): boolean {
-    const errors = this.annotationImport.importErrors();
-    return errors.some((error) => errorQuery in error);
+  protected hasEventErrors = this.hasError("Validation failed");
+  protected hasDuplicateFiles = this.hasError("duplicate");
+  protected hasUnsupportedFormat = this.hasError("unsupported");
+
+  protected hasMissingTags = this.hasWarning("Missing tags");
+
+  protected hasError(errorQuery: string): Signal<boolean> {
+    return computed(() => {
+      return this.annotationImport
+        .importErrors()
+        .some((error) => Object.values(error).flat().includes(errorQuery));
+    });
+  }
+
+  protected hasWarning(warningQuery: string): Signal<boolean> {
+    return computed(() => false);
   }
 }
 
