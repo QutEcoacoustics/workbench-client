@@ -14,8 +14,8 @@
       Warning
     </h6>
 
-    <strong>Your files have not been committed</strong>. Please review your
-    uploaded files, and click "Import Annotations" to continue.
+    <strong>Your files have not been saved</strong>. Please review your uploaded
+    files, and click "Import Annotations" to save your annotations.
   </div>
 }
 
@@ -51,8 +51,8 @@
 
           <p>
             This includes other accounts uploading the same dataset. Please
-            ensure that this dataset has not previously been uploaded by another
-            person.
+            ensure that the conflicting dataset has not previously been uploaded
+            by another person.
           </p>
         </div>
       }
@@ -62,10 +62,10 @@
           <h6 class="callout callout-danger">Unsupported file format</h6>
 
           <p>
-            We support many file formats found <a href="#todo">here</a>. Please
-            ensure that your file format abides by one of these formats or
-            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> if you believe we should support this
-            format.
+            We were not able to understand the file format that you uploaded. If
+            this is a common annotation format, you can request support through
+            the
+            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> page.
           </p>
         </div>
       }
@@ -75,13 +75,19 @@
           <h6 class="callout callout-danger">Internal Server Error</h6>
 
           <p>
-            You have received this error because the file that was uploaded
-            could not be processed by the server.
+            We encountered an unrecoverable error while processing your file. We
+            have been notified and will investigate this failure.
           </p>
 
           <p>
-            If you continue to encounter this error, please
-            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>.
+            This error can sometime arise if the structure of your dataset is
+            invalid or corrupted.
+          </p>
+
+          <p>
+            If you have any further information, you can
+            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> to help
+            resolve this bug faster.
           </p>
         </div>
       }
