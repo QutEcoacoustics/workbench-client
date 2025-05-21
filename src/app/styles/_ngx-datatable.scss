@@ -48,9 +48,14 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
   }
 }
 
-.datatable-body {
-  @include overflow.x-fade-overflow();
+datatable-body-cell,
+datatable-header-cell {
+  padding: 0 !important;
 }
+
+// .datatable-body {
+//   @include overflow.x-fade-overflow();
+// }
 
 @keyframes query {
   0% {

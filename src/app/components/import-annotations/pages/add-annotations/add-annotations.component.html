@@ -135,7 +135,7 @@
       bawDatatableDefaults
       [bawVirtualDatatablePagination]="getEventModels"
     >
-      <ngx-datatable-column [sortable]="false" prop="">
+      <ngx-datatable-column [sortable]="false" prop="" [maxWidth]="40">
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
@@ -151,7 +151,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
@@ -177,7 +177,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
@@ -191,7 +191,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
@@ -205,7 +205,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="100">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
@@ -219,7 +219,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="100">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
@@ -233,7 +233,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="60">
         <ng-template let-column="column" ngx-datatable-header-template>
           Channel
         </ng-template>
@@ -247,7 +247,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Reference
         </ng-template>
@@ -261,7 +261,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="60">
         <ng-template let-column="column" ngx-datatable-header-template>
           Score
         </ng-template>
@@ -275,7 +275,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [maxWidth]="120">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
@@ -289,7 +289,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="event">
+      <ngx-datatable-column [sortable]="false" [minWidth]="240" [maxWidth]="240" prop="event">
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>
