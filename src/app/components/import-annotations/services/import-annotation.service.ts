@@ -21,8 +21,6 @@ export class ImportAnnotationService {
     this.importFileModel().flatMap((model) => model.errors),
   );
 
-  public importWarnings = computed<ReadonlyArray<EventImportError>>(() => []);
-
   // Resets the services import state and returns a writable signal that can be
   // used to add files to the current import.
   public newInstance() {

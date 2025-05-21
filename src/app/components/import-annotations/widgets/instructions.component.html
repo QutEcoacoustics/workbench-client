@@ -72,20 +72,3 @@
     </div>
   </section>
 }
-
-@if (annotationImport.importWarnings().length > 0) {
-  <section class="warning-section widget-section border-top">
-    @if (hasMissingTags()) {
-      <div class="tags-warning widget-card">
-        <h6 class="callout callout-warning">Missing tags</h6>
-
-        <p>Some events do not have tags associated with events.</p>
-
-        <p>
-          You will be able to import the events, but the imported events will
-          not be discoverable via their tag names.
-        </p>
-      </div>
-    }
-  </section>
-}

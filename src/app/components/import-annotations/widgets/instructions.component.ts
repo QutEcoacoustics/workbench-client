@@ -38,23 +38,10 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
     value.includes("Duplicate record"),
   );
 
-  protected hasMissingTags = this.hasWarning("Missing tags");
-
   private hasError(predicate: ErrorPredicate): Signal<boolean> {
     return computed(() => {
       const importErrors = this.annotationImport
         .importErrors()
-        .flatMap((errors) => Object.values(errors))
-        .flat();
-
-      return this.processQuery(predicate, importErrors);
-    });
-  }
-
-  private hasWarning(predicate: ErrorPredicate): Signal<boolean> {
-    return computed(() => {
-      const importErrors = this.annotationImport
-        .importWarnings()
         .flatMap((errors) => Object.values(errors))
         .flat();
 
