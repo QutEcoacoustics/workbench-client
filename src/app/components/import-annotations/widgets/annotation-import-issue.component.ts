@@ -19,7 +19,6 @@ type ErrorPredicate = string | ((value: string) => boolean);
 @Component({
   selector: "baw-annotation-import-issue-widget",
   templateUrl: "./annotation-import-issue.component.html",
-  styleUrl: "./annotation-import-issue.component.scss",
   imports: [FaIconComponent, StrongRouteDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

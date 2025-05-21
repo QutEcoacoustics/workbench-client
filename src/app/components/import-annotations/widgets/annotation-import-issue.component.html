@@ -20,7 +20,7 @@
 }
 
 @if (annotationImport.importErrors().length > 0) {
-  <section class="error-section widget-section border-top">
+  <section class="error-section widget-section p-3 border-top">
     <h5>How to handle errors</h5>
 
     <div class="error-cards">
@@ -39,6 +39,8 @@
             access.
           </p>
         </div>
+
+        <hr>
       }
 
       @if (hasDuplicateFiles()) {
@@ -55,6 +57,8 @@
             by another person.
           </p>
         </div>
+
+        <hr>
       }
 
       @if (hasUnsupportedFormat()) {
@@ -68,6 +72,8 @@
             <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> page.
           </p>
         </div>
+
+        <hr>
       }
 
       @if (hasServerError()) {
@@ -90,6 +96,8 @@
             resolve this bug faster.
           </p>
         </div>
+
+        <hr>
       }
     </div>
   </section>
