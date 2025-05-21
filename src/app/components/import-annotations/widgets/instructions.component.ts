@@ -9,6 +9,7 @@ import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { EventImportError } from "@models/AudioEventImport/ImportedAudioEvent";
 import {
   ImportAnnotationService,
   ImportedFileWithErrors,
@@ -28,9 +29,9 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
     this.importFiles = this.annotationImport.connect();
   }
 
-  protected importFiles: Signal<ImportedFileWithErrors[]>;
   protected contactUs = contactUsMenuItem;
 
+  protected importFiles: Signal<ImportedFileWithErrors[]>;
   protected hasUncommittedFiles = computed(() => this.importFiles().length > 0);
 
   protected hasEventErrors = this.hasError("Validation failed");
@@ -38,12 +39,15 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
     "is not an acceptable content type",
   );
   protected hasDuplicateFiles = this.hasError((value) =>
-    value.includes("Duplicate record"),
+    value.toLowerCase().includes("duplicate record"),
   );
   protected hasServerError = this.hasError((value) =>
-    value.includes("internal server error"),
+    value.toLowerCase().includes("internal server error"),
   );
 
+  /**
+   * Creates a new readonly computed signal that can be used to
+   */
   private hasError(predicate: ErrorPredicate): Signal<boolean> {
     return computed(() => {
       const importErrors = this.annotationImport

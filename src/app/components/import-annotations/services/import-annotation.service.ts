@@ -11,31 +11,41 @@ export interface ImportedFileWithErrors {
 
 /**
  * @description
- * Shared state for a single annotation import.
+ * Shared state for an annotation import session.
+ * Use the `newInstance()` and `connect()` methods
  */
 @Injectable({ providedIn: "root" })
 export class ImportAnnotationService {
-  private importFileModel = signal<ImportedFileWithErrors[]>([]);
+  // This signal is purposely private to prevent consumers of this service
+  // have to either create a newInstance() or connect() to an existing instance.
+  //
+  // This prevents two consumers having write access to the importFileModel.
+  private importFileModels = signal<ImportedFileWithErrors[]>([]);
 
   public importErrors = computed<ReadonlyArray<EventImportError>>(() =>
-    this.importFileModel().flatMap((model) => model.errors),
-  );
+      this.importFileModels().flatMap((model) => model.errors),
+    );
 
-  // Resets the services import state and returns a writable signal that can be
-  // used to add files to the current import.
+  /**
+   * @description
+   * Resets the services import state and returns a writable signal that can be
+   * used to add files to the current import.
+   */
   public newInstance() {
     this.resetState();
-    return this.importFileModel;
+    return this.importFileModels;
   }
 
+  /**
+   * @description
+   * Create a readonly signal that can be used to observe the queued files in
+   * the current annotation upload.
+   */
   public connect() {
-    return this.importFileModel.asReadonly();
+    return this.importFileModels.asReadonly();
   }
 
   private resetState() {
-    // We create a new signal so that all other consumers of previous signals
-    // get disconnected.
-    // this.importFileModel = signal([]);
-    this.importFileModel.set([]);
+    this.importFileModels.set([]);
   }
 }
