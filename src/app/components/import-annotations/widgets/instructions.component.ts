@@ -7,6 +7,9 @@ import {
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
+import { ImportAnnotationService, ImportedFileWithErrors } from "../services/import-annotation.service";
+
+type ErrorPredicate = string | ((value: string) => boolean);
 
 @Component({
   selector: "baw-import-instructions",
@@ -16,38 +19,52 @@ import { WidgetMenuItem } from "@menu/widgetItem";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportInstructionsWidgetComponent implements WidgetComponent {
-  // public constructor(protected annotationImport: ImportAnnotationService) {
-  public constructor() {
+  public constructor(protected annotationImport: ImportAnnotationService) {
+    this.importFiles = this.annotationImport.connect();
   }
 
-  public annotationImport = {
-    importFileModel: () => [],
-    importErrors: () => [],
-    importWarnings: () => [],
-  };
-
-  // public annotationImport: ImportAnnotationService;
+  protected importFiles: Signal<ImportedFileWithErrors[]>;
 
   protected hasUncommittedFiles = computed(
-    () => this.annotationImport.importFileModel().length > 0,
+    () => this.importFiles().length > 0,
   );
 
   protected hasEventErrors = this.hasError("Validation failed");
-  protected hasDuplicateFiles = this.hasError("duplicate");
   protected hasUnsupportedFormat = this.hasError("unsupported");
+  protected hasDuplicateFiles = this.hasError((value) =>
+    value.includes("Duplicate record"),
+  );
 
   protected hasMissingTags = this.hasWarning("Missing tags");
 
-  protected hasError(errorQuery: string): Signal<boolean> {
+  private hasError(predicate: ErrorPredicate): Signal<boolean> {
     return computed(() => {
-      return this.annotationImport
+      const importErrors = this.annotationImport
         .importErrors()
-        .some((error) => Object.values(error).flat().includes(errorQuery));
+        .flatMap((errors) => Object.values(errors))
+        .flat();
+
+      return this.processQuery(predicate, importErrors);
     });
   }
 
-  protected hasWarning(warningQuery: string): Signal<boolean> {
-    return computed(() => false);
+  private hasWarning(predicate: ErrorPredicate): Signal<boolean> {
+    return computed(() => {
+      const importErrors = this.annotationImport
+        .importWarnings()
+        .flatMap((errors) => Object.values(errors))
+        .flat();
+
+      return this.processQuery(predicate, importErrors);
+    });
+  }
+
+  private processQuery(predicate: ErrorPredicate, errors: string[]): boolean {
+    if (typeof predicate === "string") {
+      return errors.includes(predicate);
+    }
+
+    return errors.some((value) => predicate(value));
   }
 }
 
