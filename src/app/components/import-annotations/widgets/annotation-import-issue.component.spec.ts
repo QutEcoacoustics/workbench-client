@@ -12,7 +12,7 @@ import {
   ImportAnnotationService,
   ImportedFileWithErrors,
 } from "../services/import-annotation.service";
-import { ImportInstructionsWidgetComponent } from "./instructions.component";
+import { AnnotationImportIssueWidgetComponent } from "./annotation-import-issue.component";
 
 function createMockImportFile(
   errors: Record<PropertyKey, string>[] = [],
@@ -23,12 +23,12 @@ function createMockImportFile(
   };
 }
 
-describe("ImportInstructionsWidgetComponent", () => {
-  let spec: Spectator<ImportInstructionsWidgetComponent>;
+describe("AnnotationImportIssueWidgetComponent", () => {
+  let spec: Spectator<AnnotationImportIssueWidgetComponent>;
   let annotationImportSpy: SpyObject<ImportAnnotationService>;
 
   const createComponent = createRoutingFactory({
-    component: ImportInstructionsWidgetComponent,
+    component: AnnotationImportIssueWidgetComponent,
     imports: [IconsModule],
   });
 
@@ -67,7 +67,7 @@ describe("ImportInstructionsWidgetComponent", () => {
   });
 
   it("should create", () => {
-    expect(spec.component).toBeInstanceOf(ImportInstructionsWidgetComponent);
+    expect(spec.component).toBeInstanceOf(AnnotationImportIssueWidgetComponent);
   });
 
   it("should use a readonly signal to fetch data from the shared annotation state", () => {

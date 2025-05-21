@@ -17,13 +17,13 @@ import {
 type ErrorPredicate = string | ((value: string) => boolean);
 
 @Component({
-  selector: "baw-import-instructions",
-  templateUrl: "./instructions.component.html",
-  styleUrl: "./instructions.component.scss",
+  selector: "baw-annotation-import-issue-widget",
+  templateUrl: "./annotation-import-issue.component.html",
+  styleUrl: "./annotation-import-issue.component.scss",
   imports: [FaIconComponent, StrongRouteDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImportInstructionsWidgetComponent implements WidgetComponent {
+export class AnnotationImportIssueWidgetComponent implements WidgetComponent {
   public constructor(protected annotationImport: ImportAnnotationService) {
     this.importFiles = this.annotationImport.connect();
   }
@@ -68,6 +68,6 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
   }
 }
 
-export const importAnnotationsWidgetMenuItem = new WidgetMenuItem(
-  ImportInstructionsWidgetComponent,
+export const annotationImportIssueWidgetMenuItem = new WidgetMenuItem(
+  AnnotationImportIssueWidgetComponent,
 );

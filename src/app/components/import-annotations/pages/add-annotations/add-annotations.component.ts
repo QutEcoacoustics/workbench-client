@@ -81,7 +81,7 @@ import {
 } from "../../import-annotations.menu";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
-import { importAnnotationsWidgetMenuItem } from "../../widgets/instructions.component";
+import { annotationImportIssueWidgetMenuItem } from "../../widgets/annotation-import-issue.component";
 
 interface QueuedFile {
   file: Readonly<File>;
@@ -569,7 +569,7 @@ AddAnnotationsComponent.linkToRoute({
   category: annotationsImportCategory,
   pageRoute: addAnnotationImportMenuItem,
   menus: {
-    actionWidgets: List([importAnnotationsWidgetMenuItem]),
+    actionWidgets: List([annotationImportIssueWidgetMenuItem]),
   },
   resolvers: {
     [audioEventImportKey]: audioEventImportResolvers.show,
