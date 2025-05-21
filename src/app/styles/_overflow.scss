@@ -8,10 +8,12 @@
     top: 0;
     right: 0;
 
-    /* Width of the gradient fade */
     width: $fade-size;
     height: 100%;
 
+    // Use pointer-events none so that content behind the fade effect can still
+    // be interacted with.
+    pointer-events: none;
     background: linear-gradient(to right, rgba(255, 255, 255, 0), white 75%);
   }
 }
