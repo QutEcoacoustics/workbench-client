@@ -11,6 +11,7 @@ import {
 import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
+import { signalMatchers } from "@test/matchers/signals";
 import { environment } from "./environments/environment";
 import { applyMonkeyPatches } from "./patches/patches";
 
@@ -26,6 +27,7 @@ beforeEach(function () {
   jasmine.addMatchers(computedStyleMatchers);
   jasmine.addMatchers(injectableMatchers);
   jasmine.addMatchers(htmlMatchers);
+  jasmine.addMatchers(signalMatchers);
 
   if (document.visibilityState !== "visible") {
     // Browsers when minimised optimise their behaviour in a way that can cause

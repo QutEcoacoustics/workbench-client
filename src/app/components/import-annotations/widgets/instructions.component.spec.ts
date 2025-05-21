@@ -7,6 +7,7 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
 import { getElementByInnerText } from "@test/helpers/html";
+import { modelData } from "@test/helpers/faker";
 import {
   ImportAnnotationService,
   ImportedFileWithErrors,
@@ -29,25 +30,27 @@ describe("ImportInstructionsWidgetComponent", () => {
   const createComponent = createComponentFactory({
     component: ImportInstructionsWidgetComponent,
     imports: [IconsModule],
-    providers: [ImportAnnotationService],
   });
 
   // A wrapper component that contains all of the error messages.
   // You can use this selector to see if any errors are shown.
   const errorContainer = () => spec.query(".error-section");
   const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");
-  const tagsWarning = () => spec.query(".tags-warning");
 
-  function hasEventErrors(): boolean {
+  function hasEventError(): boolean {
     return !!getElementByInnerText(spec, "Event errors");
   }
 
-  function hasDuplicateFileErrors(): boolean {
+  function hasDuplicateFileError(): boolean {
     return !!getElementByInnerText(spec, "Duplicate files");
   }
 
+  function hasUnsupportedFormatError(): boolean {
+    return !!getElementByInnerText(spec, "Unsupported file format");
+  }
+
   function setFiles(mockFiles: ImportedFileWithErrors[]): void {
-    annotationImportSpy.importFileModel.set(mockFiles);
+    annotationImportSpy["importFileModel"].set(mockFiles);
     spec.detectChanges();
   }
 
@@ -106,7 +109,7 @@ describe("ImportInstructionsWidgetComponent", () => {
         createMockImportFile([{ 0: "Validation failed" }]),
       ]);
 
-      expect(hasEventErrors()).toBeTrue();
+      expect(hasEventError()).toBeTrue();
     });
 
     // We test both event errors and duplicate errors because they are returned
@@ -115,21 +118,22 @@ describe("ImportInstructionsWidgetComponent", () => {
     // message, duplicate file errors are dynamic as they contain the file id
     // of the duplicate file.
     it("should only show the duplicate file error if there is only a duplicate file", () => {
-      expect(hasDuplicateFileErrors()).toBeTrue();
-    });
-  });
+      const errorMessage = `is not unique. Duplicate record found with id: ${modelData.id()}`;
 
-  describe("tag warning", () => {
-    it("should not show any warnings if no files have been uploaded", () => {
-      expect(tagsWarning()).not.toExist();
-    });
+      // In the previous test, the errored file comes last, but in this test the
+      // errored file is put first. I did this so that if we are only reading
+      // the first/last errors, either this test, or the one above will fail.
+      setFiles([createMockImportFile([{ 0: errorMessage }]), createMockImportFile()]);
 
-    it("should not show any warnings if the uploaded file has no warnings", () => {
-      expect(tagsWarning()).not.toExist();
+      expect(hasDuplicateFileError()).toBeTrue();
     });
 
-    it("should show warnings if the uploaded file has missing tags", () => {
-      expect(tagsWarning()).toExist();
+    it("should show unsupported file formats correctly", () => {
+      setFiles([
+        createMockImportFile([{ 0: "is not an acceptable content type" }]),
+      ]);
+
+      expect(hasUnsupportedFormatError()).toBeTrue();
     });
   });
 });

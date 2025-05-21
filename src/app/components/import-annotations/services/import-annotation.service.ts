@@ -24,11 +24,18 @@ export class ImportAnnotationService {
   // Resets the services import state and returns a writable signal that can be
   // used to add files to the current import.
   public newInstance() {
-    this.importFileModel.set([]);
+    this.resetState();
     return this.importFileModel;
   }
 
   public connect() {
     return this.importFileModel.asReadonly();
+  }
+
+  private resetState() {
+    // We create a new signal so that all other consumers of previous signals
+    // get disconnected.
+    // this.importFileModel = signal([]);
+    this.importFileModel.set([]);
   }
 }
