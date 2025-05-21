@@ -1,0 +1,17 @@
+// Adds a fading effect to elements that horizontally overflow their parents.
+// This can be used as UI hint that the element is horizontally scrollable or
+// has additional information that is hidden.
+@mixin x-fade-overflow() {
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    /* Width of the gradient fade */
+    width: 50px;
+    height: 100%;
+
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), white 75%);
+  }
+}
