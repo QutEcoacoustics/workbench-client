@@ -1,5 +1,5 @@
 import {
-  createComponentFactory,
+  createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -27,7 +27,7 @@ describe("ImportInstructionsWidgetComponent", () => {
   let spec: Spectator<ImportInstructionsWidgetComponent>;
   let annotationImportSpy: SpyObject<ImportAnnotationService>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createRoutingFactory({
     component: ImportInstructionsWidgetComponent,
     imports: [IconsModule],
   });

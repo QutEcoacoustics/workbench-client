@@ -64,8 +64,24 @@
           <p>
             We support many file formats found <a href="#todo">here</a>. Please
             ensure that your file format abides by one of these formats or
-            <a href="#todo">contact us</a> if you believe we should support this
+            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> if you believe we should support this
             format.
+          </p>
+        </div>
+      }
+
+      @if (hasServerError()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Internal Server Error</h6>
+
+          <p>
+            You have received this error because the file that was uploaded
+            could not be processed by the server.
+          </p>
+
+          <p>
+            If you continue to encounter this error, please
+            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>.
           </p>
         </div>
       }

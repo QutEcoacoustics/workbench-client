@@ -7,6 +7,8 @@ import {
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
+import { contactUsMenuItem } from "@components/about/about.menus";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   ImportAnnotationService,
   ImportedFileWithErrors,
@@ -18,7 +20,7 @@ type ErrorPredicate = string | ((value: string) => boolean);
   selector: "baw-import-instructions",
   templateUrl: "./instructions.component.html",
   styleUrl: "./instructions.component.scss",
-  imports: [FaIconComponent],
+  imports: [FaIconComponent, StrongRouteDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportInstructionsWidgetComponent implements WidgetComponent {
@@ -27,6 +29,7 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
   }
 
   protected importFiles: Signal<ImportedFileWithErrors[]>;
+  protected contactUs = contactUsMenuItem;
 
   protected hasUncommittedFiles = computed(() => this.importFiles().length > 0);
 
@@ -36,6 +39,9 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
   );
   protected hasDuplicateFiles = this.hasError((value) =>
     value.includes("Duplicate record"),
+  );
+  protected hasServerError = this.hasError((value) =>
+    value.includes("internal server error"),
   );
 
   private hasError(predicate: ErrorPredicate): Signal<boolean> {
