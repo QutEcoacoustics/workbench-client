@@ -50,7 +50,7 @@ describe("ImportInstructionsWidgetComponent", () => {
   }
 
   function setFiles(mockFiles: ImportedFileWithErrors[]): void {
-    annotationImportSpy["importFileModel"].set(mockFiles);
+    annotationImportSpy["importFileModels"].set(mockFiles);
     spec.detectChanges();
   }
 
@@ -68,6 +68,10 @@ describe("ImportInstructionsWidgetComponent", () => {
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(ImportInstructionsWidgetComponent);
+  });
+
+  it("should use a readonly signal to fetch data from the shared annotation state", () => {
+    expect(spec.component["importFiles"]).not.toBeWriteableSignal();
   });
 
   describe("uncommitted warning", () => {

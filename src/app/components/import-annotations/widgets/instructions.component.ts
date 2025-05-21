@@ -9,7 +9,6 @@ import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { EventImportError } from "@models/AudioEventImport/ImportedAudioEvent";
 import {
   ImportAnnotationService,
   ImportedFileWithErrors,
@@ -46,7 +45,8 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
   );
 
   /**
-   * Creates a new readonly computed signal that can be used to
+   * Creates a new readonly computed signal that conditionally updates if the
+   * predicate returns true, or the error is equal to the predicate string.
    */
   private hasError(predicate: ErrorPredicate): Signal<boolean> {
     return computed(() => {
