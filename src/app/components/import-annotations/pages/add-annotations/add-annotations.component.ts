@@ -221,10 +221,6 @@ class AddAnnotationsComponent
     return this.importState === ImportState.UPLOADING;
   }
 
-  public get hasErrors(): boolean {
-    return this.importState === ImportState.FAILURE;
-  }
-
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
   // tooltip
