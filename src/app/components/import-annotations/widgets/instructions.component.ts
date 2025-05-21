@@ -7,7 +7,10 @@ import {
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
-import { ImportAnnotationService, ImportedFileWithErrors } from "../services/import-annotation.service";
+import {
+  ImportAnnotationService,
+  ImportedFileWithErrors,
+} from "../services/import-annotation.service";
 
 type ErrorPredicate = string | ((value: string) => boolean);
 
@@ -25,12 +28,12 @@ export class ImportInstructionsWidgetComponent implements WidgetComponent {
 
   protected importFiles: Signal<ImportedFileWithErrors[]>;
 
-  protected hasUncommittedFiles = computed(
-    () => this.importFiles().length > 0,
-  );
+  protected hasUncommittedFiles = computed(() => this.importFiles().length > 0);
 
   protected hasEventErrors = this.hasError("Validation failed");
-  protected hasUnsupportedFormat = this.hasError("unsupported");
+  protected hasUnsupportedFormat = this.hasError(
+    "is not an acceptable content type",
+  );
   protected hasDuplicateFiles = this.hasError((value) =>
     value.includes("Duplicate record"),
   );

@@ -60,7 +60,9 @@ import {
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { VirtualDatatablePaginationDirective } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
+import {
+  VirtualDatatablePaginationDirective
+} from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
