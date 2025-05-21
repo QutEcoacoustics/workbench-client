@@ -184,7 +184,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.startTimeSeconds | isInstantiated) {
-            {{ value.startTimeSeconds | number }}
+            {{ value.startTimeSeconds | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
@@ -198,7 +198,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.endTimeSeconds | isInstantiated) {
-            {{ value.endTimeSeconds | number }}
+            {{ value.endTimeSeconds | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
@@ -212,7 +212,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.lowFrequencyHertz | isInstantiated) {
-            {{ value.lowFrequencyHertz | number }}
+            {{ value.lowFrequencyHertz | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
@@ -226,7 +226,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.highFrequencyHertz | isInstantiated) {
-            {{ value.highFrequencyHertz | number }}
+            {{ value.highFrequencyHertz | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
@@ -240,7 +240,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.channel | isInstantiated) {
-            {{ value.channel | number }}
+            {{ value.channel | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }
@@ -268,7 +268,7 @@
 
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (value.score | isInstantiated) {
-            {{ value.score | number }}
+            {{ value.score | errorableNumber }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }

@@ -51,7 +51,6 @@ import {
   NgClass,
   NgTemplateOutlet,
   AsyncPipe,
-  DecimalPipe,
 } from "@angular/common";
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -65,6 +64,7 @@ import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
 import { Tag } from "@models/Tag";
+import { ErrorableNumberPipe } from "@pipes/errorable-number/errorable-number.pipe";
 import { annotationImportRoute } from "../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -143,7 +143,7 @@ const audioEventImportKey = "audioEventImport";
     InlineListComponent,
     NgbHighlight,
     AsyncPipe,
-    DecimalPipe,
+    ErrorableNumberPipe,
     IsUnresolvedPipe,
     isInstantiatedPipe,
   ],
