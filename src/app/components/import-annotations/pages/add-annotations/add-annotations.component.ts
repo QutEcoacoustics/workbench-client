@@ -3,6 +3,7 @@ import {
   ElementRef,
   Inject,
   OnInit,
+  signal,
   ViewChild,
   ViewChildren,
   WritableSignal,
@@ -194,6 +195,8 @@ class AddAnnotationsComponent
   protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
 
   protected errorCardStyles = ErrorCardStyle;
+
+  protected signalExample = signal(0);
 
   // I use an object here when I should be using a readonly map because I want
   // to use the "as const" assertion to make the object immutable, get

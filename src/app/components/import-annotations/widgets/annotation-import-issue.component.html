@@ -3,20 +3,19 @@
 </h5>
 
 <p>
-  This page allows you to import annotations from human or machine
-  generated datasets.
+  This page allows you to import annotations from human or machine generated
+  datasets.
 </p>
 
 @if (hasUncommittedFiles()) {
-  <div class="uncommitted-file-warning alert alert-warning">
+  <div class="uncommitted-file-warning alert alert-info">
     <h6>
-      <fa-icon class="pe-1" [icon]="['fas', 'triangle-exclamation']"></fa-icon>
-      Warning
+      <fa-icon class="pe-1" [icon]="['fas', 'circle-exclamation']"></fa-icon>
+      Information
     </h6>
 
-    <strong>Your files have not been imported yet</strong>. 
-    Check the preview table and make sure we've
-    correctly parsed your data.
+    <strong>Your files have not been imported yet</strong>. Check the preview
+    table and make sure we've correctly parsed your data.
   </div>
 }
 
@@ -27,19 +26,20 @@
     <div class="error-cards">
       @if (hasEventErrors()) {
         <div class="widget-card">
-          <h6 class="callout callout-danger">Event errors</h6>
+          <h6 class="callout callout-danger">Annotation errors</h6>
 
           <p>
-            Each detected annotation is shown in the preview table along with any detected errors
+            Each detected annotation is shown in the preview table along with
+            any detected errors
           </p>
 
           <p>
-            You may have to change your files to correct
-            the errors so we can understand your data.
+            You may have to change your files to correct the errors so we can
+            understand your data.
           </p>
         </div>
 
-        <hr>
+        <hr />
       }
 
       @if (hasDuplicateFiles()) {
@@ -55,9 +55,14 @@
             ensure that the conflicting dataset has not previously been uploaded
             by another person.
           </p>
+
+          <p>
+            If you are experiencing problems with duplicate detection, please
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container>.
+          </p>
         </div>
 
-        <hr>
+        <hr />
       }
 
       @if (hasUnsupportedFormat()) {
@@ -68,11 +73,12 @@
             We were not able to understand the file format that you uploaded. If
             this is a common annotation format, you can request support through
             the
-            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> page.
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container>
+            page.
           </p>
         </div>
 
-        <hr>
+        <hr />
       }
 
       @if (hasServerError()) {
@@ -80,24 +86,28 @@
           <h6 class="callout callout-danger">Internal Server Error</h6>
 
           <p>
-            We encountered an error while processing your file. We
-            have been notified and will investigate this failure.
+            We encountered an error while processing your file. We have been
+            notified and will investigate this failure.
           </p>
 
           <p>
-            This error can occur if the structure of your dataset is
-            invalid or corrupted.
+            This error can occur if the structure of your dataset is invalid or
+            corrupted.
           </p>
 
           <p>
             If you have any further information, you can
-            <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a> to help
-            resolve this bug faster.
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container> to
+            help resolve this bug faster.
           </p>
         </div>
 
-        <hr>
+        <hr />
       }
     </div>
   </section>
 }
+
+<ng-template #contactUsLink>
+  <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>
+</ng-template>

@@ -9,6 +9,7 @@ import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { NgTemplateOutlet } from "@angular/common";
 import {
   ImportAnnotationService,
   ImportedFileWithErrors,
@@ -19,7 +20,7 @@ type ErrorPredicate = string | ((value: string) => boolean);
 @Component({
   selector: "baw-annotation-import-issue-widget",
   templateUrl: "./annotation-import-issue.component.html",
-  imports: [FaIconComponent, StrongRouteDirective],
+  imports: [FaIconComponent, StrongRouteDirective, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationImportIssueWidgetComponent implements WidgetComponent {
