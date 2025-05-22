@@ -119,15 +119,15 @@
 <hr />
 
 <div class="identified-annotations mt-4">
-  <h4>Identified Events</h4>
+  <h4>Identified Annotations</h4>
   <p>
-    The following events have been identified in your dataset, but have not been
-    saved.
+    The following annotations have been identified in your dataset, but have not
+    been saved.
   </p>
 
   <p>
-    You can review these events before saving them with the "Import Annotations"
-    button.
+    You can review these annotations before saving them with the "Import
+    Annotations" button.
   </p>
 
   <div>
@@ -139,7 +139,7 @@
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
-            [ngbTooltip]="'File index and the index of the event in the file'"
+            [ngbTooltip]="'File index and the index of the annotation in the file'"
             container="body"
           >
             ID
@@ -289,7 +289,12 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [minWidth]="240" [width]="240" prop="event">
+      <ngx-datatable-column
+        [sortable]="false"
+        [minWidth]="240"
+        [width]="240"
+        prop="event"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>
