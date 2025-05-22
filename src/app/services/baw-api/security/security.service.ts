@@ -27,8 +27,8 @@ import {
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
-const signUpParam = "sign_up" as const;
-const signInParam = "sign_in" as const;
+const signUpParam = "sign_up";
+const signInParam = "sign_in";
 
 const accountEndpoint = stringTemplate`/my_account/${param}`;
 const signOutEndpoint = stringTemplate`/security/`;
@@ -38,7 +38,7 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Security Service.
  * Handles API routes pertaining to security.
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class SecurityService {
   public constructor(
     private api: BawApiService<Session>,
@@ -223,10 +223,12 @@ export class SecurityService {
       );
   }
 
-  private updateAuthToken(): void {
+  public initializeSession() {}
+
+  private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
-    this.sessionDetails()
+    return this.sessionDetails()
       .pipe(
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
