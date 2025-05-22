@@ -1,5 +1,3 @@
-@use "overflow";
-
 @import "@swimlane/ngx-datatable/index";
 @import "@swimlane/ngx-datatable/themes/bootstrap";
 @import "@swimlane/ngx-datatable/assets/icons";
@@ -48,14 +46,16 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
   }
 }
 
-datatable-body-cell,
-datatable-header-cell {
-  padding: 0 !important;
+.compact-datatable {
+  datatable-body-cell,
+  datatable-header-cell {
+    // A lot of the Bootstrap styling applied to the ngx-datatable is set
+    // with the !important priority.
+    // This means that when we want to override the padding of each cell,
+    // we have to use a hacky !important priority.
+    padding: 0 !important;
+  }
 }
-
-// .datatable-body {
-//   @include overflow.x-fade-overflow();
-// }
 
 @keyframes query {
   0% {

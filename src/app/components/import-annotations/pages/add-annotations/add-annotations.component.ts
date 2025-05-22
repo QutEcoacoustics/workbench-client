@@ -63,7 +63,6 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   VirtualDatatablePaginationDirective
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
@@ -74,6 +73,7 @@ import {
   ImportAnnotationService,
   ImportedFileWithErrors,
 } from "@components/import-annotations/services/import-annotation.service";
+import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -146,7 +146,7 @@ const audioEventImportKey = "audioEventImport";
     TypeaheadInputComponent,
     NgTemplateOutlet,
     NgxDatatableModule,
-    DatatableDefaultsDirective,
+    DatatableCompactDirective,
     VirtualDatatablePaginationDirective,
     LoadingComponent,
     UrlDirective,
