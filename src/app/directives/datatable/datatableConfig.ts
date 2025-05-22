@@ -14,8 +14,6 @@ export abstract class DatatableConfig implements OnInit {
   public abstract rowHeight: InputSignal<DatatableComponent["rowHeight"]>;
 
   public ngOnInit(): void {
-    this.datatableRef.nativeElement.classList.add("bootstrap");
-
     this.datatable.footerHeight = this.footerHeight();
     this.datatable.headerHeight = this.headerHeight();
     this.datatable.summaryHeight = this.summaryHeight();

@@ -46,6 +46,10 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
   }
 }
 
+ngx-datatable {
+  @extend .bootstrap;
+}
+
 .compact-datatable {
   datatable-body-cell,
   datatable-header-cell {
