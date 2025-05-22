@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { loginRoute } from "@components/security/security.routes";
+import { modelData } from "@test/helpers/faker";
 import { isLoggedInGuard } from "./is-logged-in.guard";
 
 describe("isLoggedInGuard", () => {
@@ -14,7 +15,7 @@ describe("isLoggedInGuard", () => {
 
   const route: ActivatedRouteSnapshot = {} as any;
   const state: RouterStateSnapshot = {
-    url: "/consent-initiation",
+    url: modelData.internet.url(),
   } as any;
 
   function setup(): void {
