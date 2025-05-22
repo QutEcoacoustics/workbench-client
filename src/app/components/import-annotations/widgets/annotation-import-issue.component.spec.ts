@@ -38,7 +38,7 @@ describe("AnnotationImportIssueWidgetComponent", () => {
   const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");
 
   function hasEventError(): boolean {
-    return !!getElementByInnerText(spec, "Event errors");
+    return !!getElementByInnerText(spec, "Annotation errors");
   }
 
   function hasDuplicateFileError(): boolean {

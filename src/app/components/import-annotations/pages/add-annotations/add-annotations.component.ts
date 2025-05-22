@@ -256,6 +256,17 @@ class AddAnnotationsComponent
       .subscribe((importFiles) => {
         this.sharedImportState.set(importFiles);
       });
+
+    setInterval(() => {
+      const currentValue = this.signalExample();
+      const maxValue = 100;
+
+      if (currentValue <= maxValue) {
+        this.signalExample.set(currentValue + 1);
+      } else {
+        this.signalExample.set(0);
+      }
+    }, 50);
   }
 
   protected getEventModels = (): Observable<TableRow[]> => {

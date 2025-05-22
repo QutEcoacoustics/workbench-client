@@ -43,7 +43,7 @@ describe("NewAnnotationsComponent", () => {
 
   beforeEach(() => setup());
 
-  assertPageInfo(NewAnnotationsComponent, "Import New Annotations");
+  assertPageInfo(NewAnnotationsComponent, "New Annotation Import");
 
   describe("form", () => {
     testFormlyFields([
