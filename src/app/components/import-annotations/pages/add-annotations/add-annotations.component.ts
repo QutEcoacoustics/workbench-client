@@ -42,10 +42,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
-import {
-  ErrorCardStyle,
-  ErrorCardComponent,
-} from "@shared/error-card/error-card.component";
+import { ErrorCardStyle, ErrorCardComponent } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -61,7 +58,7 @@ import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
-  VirtualDatatablePaginationDirective
+  VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
@@ -262,7 +259,7 @@ class AddAnnotationsComponent
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
         const instantiatedFiles = files.filter((file) =>
-          isInstantiated(file.model),
+          isInstantiated(file.model)
         );
 
         return instantiatedFiles.flatMap((file, fileIndex: number) => {
@@ -271,12 +268,12 @@ class AddAnnotationsComponent
               return new TableRow({
                 fileId: fileIndex + 1,
                 eventId: eventIndex + 1,
-                event,
+                event
               });
-            },
+            }
           );
         });
-      }),
+      })
     );
   };
 
@@ -315,7 +312,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], []),
+      this.importFileToBufferedFile(file, null, [], [])
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -331,7 +328,7 @@ class AddAnnotationsComponent
   }
 
   protected hasRecordingErrors(
-    model: ImportedAudioEvent,
+    model: ImportedAudioEvent
   ): model is ImportedAudioEvent & {
     errors: {
       audioRecordingId: Required<EventImportError["audioRecordingId"]>;
@@ -344,7 +341,7 @@ class AddAnnotationsComponent
   // ids property
   protected updateExtraTags(
     extraTags: Tag[],
-    host: TypeaheadInputComponent<Tag>,
+    host: TypeaheadInputComponent<Tag>
   ): void {
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
@@ -376,7 +373,7 @@ class AddAnnotationsComponent
     this.importFiles$.next(
       this.importFiles$.value.filter(
         (file: QueuedFile) => file.file !== model.file,
-      ),
+      )
     );
 
     const importedFiles = this.importFiles$.value.map((file) => file.file);
@@ -403,7 +400,7 @@ class AddAnnotationsComponent
     this.importState = ImportState.UPLOADING;
 
     const fileUploadObservables = this.importFiles$.value.map(
-      (model: QueuedFile) => this.commitFile(model),
+      (model: QueuedFile) => this.commitFile(model)
     );
 
     forkJoin(fileUploadObservables)
@@ -421,7 +418,7 @@ class AddAnnotationsComponent
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
               annotationId: this.audioEventImport.id,
-            }),
+            })
           );
         },
       });
@@ -432,7 +429,7 @@ class AddAnnotationsComponent
 
     const models: QueuedFile[] = this.importFiles$.value;
     const fileUploadObservables = models.map((model: QueuedFile) =>
-      this.dryRunFile(model),
+      this.dryRunFile(model)
     );
 
     forkJoin(fileUploadObservables)
@@ -459,7 +456,7 @@ class AddAnnotationsComponent
 
   private importFile(
     queueModel: QueuedFile,
-    commit: boolean,
+    commit: boolean
   ): Observable<QueuedFile> {
     const importFileModel = this.createAudioEventImportFile(queueModel);
     const file = queueModel.file;
@@ -471,7 +468,7 @@ class AddAnnotationsComponent
     return iif(
       () => commit,
       defer(() => this.api.create(importFileModel, this.audioEventImport)),
-      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport)),
+      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport))
     ).pipe(
       first(),
       map(
@@ -480,8 +477,8 @@ class AddAnnotationsComponent
             file,
             model,
             [],
-            queueModel.additionalTagIds,
-          ),
+            queueModel.additionalTagIds
+          )
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
@@ -495,10 +492,10 @@ class AddAnnotationsComponent
           file,
           error.data,
           errors,
-          queueModel.additionalTagIds,
+          queueModel.additionalTagIds
         );
         return of(result);
-      }),
+      })
     );
   }
 
@@ -519,7 +516,7 @@ class AddAnnotationsComponent
     file: File,
     model: AudioEventImportFile,
     errors: EventImportError[],
-    additionalTagIds: Id[],
+    additionalTagIds: Id[]
   ): QueuedFile {
     return {
       additionalTagIds,
@@ -538,7 +535,7 @@ class AddAnnotationsComponent
 
   private extractFileErrors(
     file: File,
-    error: BawApiError<AudioEventImportFile>,
+    error: BawApiError<AudioEventImportFile>
   ): EventImportError[] {
     if (error.status === INTERNAL_SERVER_ERROR) {
       return [

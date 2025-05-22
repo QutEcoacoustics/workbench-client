@@ -4,4 +4,4 @@ export const annotationsImportRoute = StrongRoute.newRoot().addFeatureModule("im
 export const newAnnotationImportRoute = annotationsImportRoute.add("new");
 
 export const annotationImportRoute = annotationsImportRoute.add(":annotationId");
-export const addAnnotationImportRoute = annotationImportRoute.add("add_annotations", undefined);
+export const addAnnotationImportRoute = annotationImportRoute.add("add_annotations");
