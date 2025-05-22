@@ -11,7 +11,7 @@
     "build": "ng build --configuration production",
     "lint": "ng lint",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
-    "start": "ng serve --no-hmr --ssl --host development.ecosounds.org",
+    "start": "ng serve --ssl --host development.ecosounds.org",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
     "test": "npm run test:chrome",
     "test:chrome": "ng test --code-coverage --browsers Chrome",

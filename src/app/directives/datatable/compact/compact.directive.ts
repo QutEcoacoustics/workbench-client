@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Host, input, OnInit } from "@angular/core";
+import { Directive, ElementRef, Host, OnInit } from "@angular/core";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
 
@@ -10,11 +10,6 @@ export class DatatableCompactDirective extends DatatableDefaultsDirective implem
   ) {
     super(datatable, datatableRef);
   }
-
-  public headerHeight = input(50);
-  public footerHeight = input(50);
-  public summaryHeight = input(50);
-  public rowHeight = input<DatatableComponent["rowHeight"]>("auto");
 
   public ngOnInit(): void {
     super.ngOnInit();
