@@ -4,6 +4,7 @@ import { CommonRouteTitles } from "src/app/stringConstants";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
+import { projectsMenuItem } from "@components/projects/projects.menus";
 import {
   addAnnotationImportRoute,
   annotationImportRoute,
@@ -17,26 +18,22 @@ export const annotationsImportCategory: Category = {
   route: annotationsImportRoute,
 };
 
-// we cannot include a route guard predicate for "project editor"
-// as the annotation imports are mounted under the root path
-// "http://ecosounds.org/import_annotations"
-// therefore, we validate capabilities in the import component during the dry
-// run
 export const annotationsImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
   label: "Import Annotations",
+  parent: projectsMenuItem,
   predicate: isLoggedInPredicate,
   route: annotationsImportRoute,
-  tooltip: () => "(BETA) View bulk imports for this project",
+  tooltip: () => "(BETA) View annotation imports for this project",
 });
 
 export const annotationImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotation",
+  label: "Import Annotations",
   parent: annotationsImportMenuItem,
   predicate: isLoggedInPredicate,
   route: annotationImportRoute,
-  tooltip: () => "(BETA) View bulk imports for this project",
+  tooltip: () => "(BETA) View annotation imports for this project",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
   title: (routeData: RouterStateSnapshot): string => {
@@ -47,7 +44,7 @@ export const annotationImportMenuItem = menuRoute({
 
 export const newAnnotationImportMenuItem = menuRoute({
   icon: ["fas", "upload"],
-  label: "Import New Annotations",
+  label: "New Annotation Import",
   parent: annotationsImportMenuItem,
   predicate: isLoggedInPredicate,
   route: newAnnotationImportRoute,
