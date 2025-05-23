@@ -1,10 +1,10 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { defaultEditIcon, isLoggedInPredicate } from "src/app/app.menus";
-import { CommonRouteTitles } from "src/app/stringConstants";
-import { AudioEventImport } from "@models/AudioEventImport";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
-import { projectsMenuItem } from "@components/projects/projects.menus";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import {
   addAnnotationImportRoute,
   annotationImportRoute,
@@ -21,7 +21,7 @@ export const annotationsImportCategory: Category = {
 export const annotationsImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
   label: "Import Annotations",
-  parent: projectsMenuItem,
+  parent: projectMenuItem,
   predicate: isLoggedInPredicate,
   route: annotationsImportRoute,
   tooltip: () => "(BETA) View annotation imports for this project",

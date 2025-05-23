@@ -47,14 +47,24 @@ export class AudioEventImport
   public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
-    return annotationImportRoute.format({
-      annotationId: this.id,
-    });
+    throw new Error("Not implemented. Use createViewUrl() instead.");
   }
 
   public get addAnnotationsUrl(): string {
+    throw new Error("Not implemented. Use createAddAnnotationsUrl() instead.");
+  }
+
+  public createViewUrl(projectId: Id): string {
+    return annotationImportRoute.format({
+      annotationId: this.id,
+      projectId,
+    });
+  }
+
+  public createAddAnnotationsUrl(projectId: Id): string {
     return addAnnotationImportRoute.format({
       annotationId: this.id,
+      projectId,
     });
   }
 }

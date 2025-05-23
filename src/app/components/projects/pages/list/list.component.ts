@@ -15,14 +15,12 @@ import { List } from "immutable";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
   requestProjectMenuItem,
   audioRecordingMenuItems.list.base,
   audioRecordingMenuItems.batch.base,
-  annotationsImportMenuItem,
 ];
 
 @Component({

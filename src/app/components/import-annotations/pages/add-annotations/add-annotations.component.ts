@@ -71,6 +71,8 @@ import {
   ImportedFileWithErrors,
 } from "@components/import-annotations/services/import-annotation.service";
 import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -127,6 +129,7 @@ enum ImportState {
   COMMITTED,
 }
 
+const projectKey = "project";
 const audioEventImportKey = "audioEventImport";
 
 @Component({
@@ -181,6 +184,8 @@ class AddAnnotationsComponent
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
+
+  public project?: Project;
 
   /**
    * A state machine representation that can be used to lock UI elements during
@@ -247,6 +252,7 @@ class AddAnnotationsComponent
     }
 
     this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
+    this.project = models[projectKey] as Project;
 
     this.importFiles$
       .pipe(takeUntil(this.unsubscribe))
@@ -569,6 +575,7 @@ AddAnnotationsComponent.linkToRoute({
     actionWidgets: List([annotationImportIssueWidgetMenuItem]),
   },
   resolvers: {
+    [projectKey]: projectResolvers.show,
     [audioEventImportKey]: audioEventImportResolvers.show,
   },
 });
