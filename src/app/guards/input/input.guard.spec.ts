@@ -1,4 +1,3 @@
-
 describe("UnsavedInputGuard", () => {
     function setup(): void {
     }

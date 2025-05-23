@@ -15,7 +15,7 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import {
   catchError,
   first,
@@ -26,9 +26,10 @@ import {
 } from "rxjs/operators";
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
+import { i } from "@angular/core/weak_ref.d-DOjz-6fK";
 
-const signUpParam = "sign_up" as const;
-const signInParam = "sign_in" as const;
+const signUpParam = "sign_up";
+const signInParam = "sign_in";
 
 const accountEndpoint = stringTemplate`/my_account/${param}`;
 const signOutEndpoint = stringTemplate`/security/`;
@@ -38,7 +39,7 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Security Service.
  * Handles API routes pertaining to security.
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class SecurityService {
   public constructor(
     private api: BawApiService<Session>,
@@ -50,6 +51,9 @@ export class SecurityService {
   ) {
     this.updateAuthToken();
   }
+
+  public doneFirstAuth = false;
+  public firstAuthAwait = new Subject();
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -223,7 +227,7 @@ export class SecurityService {
       );
   }
 
-  private updateAuthToken(): void {
+  private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
     this.sessionDetails()
@@ -235,8 +239,16 @@ export class SecurityService {
       .subscribe({
         next: (user) => {
           this.session.setLoggedInUser(user, authToken);
+
+          this.firstAuthAwait.next(true);
+          this.firstAuthAwait.complete();
+          this.doneFirstAuth = true;
         },
         error: () => {
+          this.firstAuthAwait.next(false);
+          this.firstAuthAwait.complete();
+          this.doneFirstAuth = true;
+
           this.clearData();
         },
       });
