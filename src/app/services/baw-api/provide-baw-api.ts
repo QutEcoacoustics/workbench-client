@@ -10,6 +10,10 @@ import { provideCaching } from "@services/cache/provide-caching";
 import { provideConfig } from "../config/provide-config";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { BawApiService } from "./baw-api.service";
+import { BawFormApiService } from "./baw-form-api.service";
+import { BawSessionService } from "./baw-session.service";
+import { CmsService } from "./cms/cms.service";
+import { SecurityService } from "./security/security.service";
 import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
 
 export function provideBawApi(): (EnvironmentProviders | Provider)[] {
@@ -23,6 +27,10 @@ export function provideBawApi(): (EnvironmentProviders | Provider)[] {
     },
     associationInjectorProvider,
     BawApiService,
+    BawFormApiService,
+    BawSessionService,
+    SecurityService,
+    CmsService,
     ...services,
     ...serviceTokens,
     ...serviceResolvers,

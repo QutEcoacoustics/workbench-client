@@ -27,7 +27,7 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  * This is useful when an official API route has not been created, and should be
  * treated as a temporary measure while the baw-server lags behind development.
  */
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public constructor(
     private api: BawApiService<Model>,

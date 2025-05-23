@@ -15,7 +15,6 @@ import { List } from "immutable";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { RenderMode } from "@angular/ssr";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -90,7 +89,6 @@ ProjectListComponent.linkToRoute({
   category: projectsCategory,
   pageRoute: projectsMenuItem,
   menus: { actions: List(projectsMenuItemActions) },
-  renderMode: RenderMode.Client,
 });
 
 export { ProjectListComponent };
