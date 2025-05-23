@@ -185,6 +185,7 @@ class AddAnnotationsComponent
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
 
+  /** The route project model that the annotation import is scoped to */
   public project?: Project;
 
   /**
@@ -424,6 +425,7 @@ class AddAnnotationsComponent
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
               annotationId: this.audioEventImport.id,
+              projectId: this.project.id,
             })
           );
         },

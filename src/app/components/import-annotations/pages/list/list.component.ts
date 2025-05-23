@@ -59,7 +59,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   };
   private models: ResolvedModelList = {};
 
-  protected get project(): Project {
+  public get project(): Project {
     return this.models.project as Project;
   }
 
