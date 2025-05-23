@@ -14,7 +14,7 @@ import { modelData } from "@test/helpers/faker";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import schema from "../audio-event-import.schema.json";
+import schema from "../../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
 
 describe("EditAnnotationsComponent", () => {

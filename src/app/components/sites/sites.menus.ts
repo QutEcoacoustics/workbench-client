@@ -6,6 +6,7 @@ import {
   defaultAnnotationDownloadIcon,
   defaultEditIcon,
   defaultNewIcon,
+  isLoggedInPredicate,
   isProjectEditorPredicate,
 } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
@@ -45,6 +46,7 @@ export const siteAnnotationsMenuItem = menuItem({
   label: "Download Annotations",
   parent: siteMenuItem,
   tooltip: () => "Download annotations for this site",
+  predicate: isLoggedInPredicate,
 });
 
 export const editSiteMenuItem = menuRoute({

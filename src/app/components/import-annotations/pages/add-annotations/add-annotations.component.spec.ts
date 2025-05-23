@@ -37,6 +37,8 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { fakeAsync } from "@angular/core/testing";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -51,6 +53,7 @@ describe("AddAnnotationsComponent", () => {
   let routerSpy: SpyObject<Router>;
 
   let audioEventImport: AudioEventImport;
+  let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
   let mockRecordingsResponse: AudioRecording;
@@ -119,8 +122,11 @@ describe("AddAnnotationsComponent", () => {
     spec = createComponent({ detectChanges: false });
     injectorSpy = spec.inject(ASSOCIATION_INJECTOR);
 
-    spec.component.audioEventImport = audioEventImport;
     audioEventImport["injector"] = injectorSpy;
+    spec.component.audioEventImport = audioEventImport;
+
+    routeProject["injector"] = injectorSpy;
+    spec.component.project = routeProject;
 
     fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
     tagServiceSpy = spec.inject(TAG.token);
@@ -136,18 +142,18 @@ describe("AddAnnotationsComponent", () => {
       generateAudioEventImportFile({
         audioEventImportId: audioEventImport.id,
       }),
-      injectorSpy
+      injectorSpy,
     );
 
     mockTagsResponse = modelData.randomArray(
       1,
       10,
-      () => new Tag(generateTag(), injectorSpy)
+      () => new Tag(generateTag(), injectorSpy),
     );
 
     mockRecordingsResponse = new AudioRecording(
       generateAudioRecording(),
-      injectorSpy
+      injectorSpy,
     );
 
     fileImportSpy.create.and.callFake(() => of(mockImportResponse));
@@ -163,12 +169,14 @@ describe("AddAnnotationsComponent", () => {
 
   beforeEach(() => {
     audioEventImport = new AudioEventImport(generateAudioEventImport());
+    routeProject = new Project(generateProject());
+
     setup();
   });
 
   assertPageInfo<AudioEventImport>(
     AddAnnotationsComponent,
-    "Add New Annotations"
+    "Add New Annotations",
   );
 
   it("should create", () => {
@@ -189,7 +197,7 @@ describe("AddAnnotationsComponent", () => {
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
-        audioEventImport
+        audioEventImport,
       );
     });
 
@@ -212,7 +220,7 @@ describe("AddAnnotationsComponent", () => {
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
-        audioEventImport
+        audioEventImport,
       );
     });
 
@@ -228,7 +236,7 @@ describe("AddAnnotationsComponent", () => {
         jasmine.objectContaining({
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
-        audioEventImport
+        audioEventImport,
       );
     });
   });
@@ -303,8 +311,12 @@ describe("AddAnnotationsComponent", () => {
       fileImportSpy.create.andCallFake(() =>
         throwError(
           () =>
-            new BawApiError(UNPROCESSABLE_ENTITY, "Internal Server Error", null)
-        )
+            new BawApiError(
+              UNPROCESSABLE_ENTITY,
+              "Internal Server Error",
+              null,
+            ),
+        ),
       );
 
       commitImport();
@@ -320,7 +332,7 @@ describe("AddAnnotationsComponent", () => {
 
       expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
-        audioEventImport
+        audioEventImport,
       );
     });
 
@@ -334,7 +346,7 @@ describe("AddAnnotationsComponent", () => {
       testedFiles.forEach((file) => {
         expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
-          audioEventImport
+          audioEventImport,
         );
       });
     });
@@ -347,7 +359,7 @@ describe("AddAnnotationsComponent", () => {
 
       const expectedRowCount = Math.min(
         mockResponse.importedEvents.length,
-        defaultApiPageSize
+        defaultApiPageSize,
       );
       expect(tableRows).toHaveLength(expectedRowCount);
 
@@ -404,12 +416,12 @@ describe("AddAnnotationsComponent", () => {
         UNPROCESSABLE_ENTITY,
         "Unprocessable Content",
         mockImportResponse as any,
-        { file: "validation failed" }
+        { file: "validation failed" },
       );
 
       fileImportSpy.dryCreate.and.callThrough();
       fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse)
+        throwError(() => mockImportResponse),
       );
 
       addFiles([modelData.file()]);
@@ -432,7 +444,7 @@ describe("AddAnnotationsComponent", () => {
           jasmine.objectContaining({
             additionalTagIds: [testedTag.id],
           }),
-          audioEventImport
+          audioEventImport,
         );
       }));
 
@@ -448,7 +460,7 @@ describe("AddAnnotationsComponent", () => {
           jasmine.objectContaining({
             additionalTagIds: [testedTag.id],
           }),
-          audioEventImport
+          audioEventImport,
         );
       }));
 
@@ -509,24 +521,25 @@ describe("AddAnnotationsComponent", () => {
       testedFiles.forEach((file) => {
         expect(fileImportSpy.create).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
-          audioEventImport
+          audioEventImport,
         );
       });
     });
 
     it("should navigate to the import details page when an import completes", () => {
+      const expectedRoute = `/projects/${routeProject.id}/import_annotations/${audioEventImport.id}`;
+
       addFiles([modelData.file()]);
       commitImport();
-      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(
-        `/batch_annotations/${audioEventImport.id}`
-      );
+
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(expectedRoute);
     });
 
     it("should display a toast notification when an import completes", () => {
       addFiles([modelData.file()]);
       commitImport();
       expect(notificationsSpy.success).toHaveBeenCalledOnceWith(
-        "Successfully imported annotations"
+        "Successfully imported annotations",
       );
     });
   });
@@ -542,12 +555,12 @@ describe("AddAnnotationsComponent", () => {
         UNPROCESSABLE_ENTITY,
         "Unprocessable Content",
         mockImportResponse as any,
-        { file: "validation failed" }
+        { file: "validation failed" },
       );
 
       fileImportSpy.dryCreate.and.callThrough();
       fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse)
+        throwError(() => mockImportResponse),
       );
 
       // by adding files, we expect that the website will perform a dry run
@@ -571,12 +584,12 @@ describe("AddAnnotationsComponent", () => {
         UNPROCESSABLE_ENTITY,
         "Unprocessable Content",
         mockImportResponse as any,
-        { file: mockErrorMessage }
+        { file: mockErrorMessage },
       );
 
       fileImportSpy.dryCreate.and.callThrough();
       fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse)
+        throwError(() => mockImportResponse),
       );
 
       const mockUploadedFile = modelData.file();
@@ -593,12 +606,12 @@ describe("AddAnnotationsComponent", () => {
         UNPROCESSABLE_ENTITY,
         "Unprocessable Content",
         mockImportResponse as any,
-        { file: mockErrorMessage }
+        { file: mockErrorMessage },
       );
 
       fileImportSpy.dryCreate.and.callThrough();
       fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse)
+        throwError(() => mockImportResponse),
       );
 
       const mockAudioFiles = [modelData.file(), modelData.file()];

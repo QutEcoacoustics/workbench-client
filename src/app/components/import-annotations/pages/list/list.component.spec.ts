@@ -19,12 +19,16 @@ import { DateTime, Settings } from "luxon";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
 import { AnnotationsListComponent } from "./list.component";
 
 describe("AnnotationsListComponent", () => {
   let spectator: SpectatorRouting<AnnotationsListComponent>;
   let fakeAnnotationImport: AudioEventImport;
   let defaultUser: User;
+  let defaultProject: Project;
+
   let mockApi: SpyObject<AudioEventImportService>;
   let modalService: SpyObject<NgbModal>;
   let modalConfigService: SpyObject<NgbModalConfig>;
@@ -38,25 +42,30 @@ describe("AnnotationsListComponent", () => {
 
   function setup(): void {
     defaultUser = new User(generateUser());
+    defaultProject = new Project(generateProject());
 
     // we set the dateTime manually so that we can make assertions in tests about localised time
     const createdAt = DateTime.fromISO("2022-11-04T20:12:31.000Z");
     fakeAnnotationImport = new AudioEventImport(
       generateAudioEventImport({
         createdAt,
-      })
+      }),
     );
 
     fakeAnnotationImport.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
     });
     spyOnProperty(fakeAnnotationImport, "creator").and.callFake(
-      () => defaultUser
+      () => defaultUser,
     );
 
     spectator = createComponent({
       detectChanges: false,
     });
+
+    spyOnProperty(spectator.component, "project").and.callFake(
+      () => defaultProject,
+    );
 
     const injector = spectator.inject(ASSOCIATION_INJECTOR);
     mockApi = spectator.inject(AUDIO_EVENT_IMPORT.token);
@@ -89,7 +98,7 @@ describe("AnnotationsListComponent", () => {
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
     return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text
+      (element) => element.nativeElement.innerText === text,
     )?.nativeElement as T;
   }
 
@@ -109,7 +118,7 @@ describe("AnnotationsListComponent", () => {
     modalService.dismissAll();
   });
 
-  assertPageInfo(AnnotationsListComponent, "Batch Import Annotations");
+  assertPageInfo(AnnotationsListComponent, "Import Annotations");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationsListComponent);

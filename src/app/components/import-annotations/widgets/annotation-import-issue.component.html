@@ -1,0 +1,112 @@
+<h5>
+  <fa-icon class="pe-1" [icon]="['fas', 'circle-info']"></fa-icon>Instructions
+</h5>
+
+<p>
+  This page allows you to import annotations from human or machine generated
+  datasets.
+</p>
+
+@if (hasUncommittedFiles()) {
+  <div class="uncommitted-file-warning alert alert-info">
+    <h6>
+      <fa-icon [icon]="['fas', 'triangle-exclamation']" class="pe-1"></fa-icon>
+      <strong>Your files have not been imported.</strong>
+    </h6>
+
+    Check the preview table and make sure we've correctly parsed your data.
+  </div>
+}
+
+@if (annotationImport.importErrors().length > 0) {
+  <section class="error-section widget-section p-3 border-top">
+    <h5>How to handle errors</h5>
+
+    <div class="error-cards">
+      @if (hasEventErrors()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Annotation errors</h6>
+
+          <p>
+            Each detected annotation is shown in the preview table along with
+            any detected errors
+          </p>
+
+          <p>
+            You may have to change your files to correct the errors so we can
+            understand your data.
+          </p>
+        </div>
+
+        <hr />
+      }
+
+      @if (hasDuplicateFiles()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Duplicate files</h6>
+
+          <p>
+            Datasets that contain the same content cannot be uploaded twice.
+          </p>
+
+          <p>
+            This includes other accounts uploading the same dataset. Please
+            ensure that the conflicting dataset has not previously been uploaded
+            by another person.
+          </p>
+
+          <p>
+            If you are experiencing problems with duplicate detection, please
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container>.
+          </p>
+        </div>
+
+        <hr />
+      }
+
+      @if (hasUnsupportedFormat()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Unsupported file format</h6>
+
+          <p>
+            We were not able to understand the file format that you uploaded. If
+            this is a common annotation format, you can request support through
+            the
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container>
+            page.
+          </p>
+        </div>
+
+        <hr />
+      }
+
+      @if (hasServerError()) {
+        <div class="widget-card">
+          <h6 class="callout callout-danger">Internal Server Error</h6>
+
+          <p>
+            We encountered an error while processing your file. We have been
+            notified and will investigate this failure.
+          </p>
+
+          <p>
+            This error can occur if the structure of your dataset is invalid or
+            corrupted.
+          </p>
+
+          <p>
+            If you have any further information, you can
+            <ng-container *ngTemplateOutlet="contactUsLink"></ng-container> to
+            help resolve this bug faster.
+          </p>
+        </div>
+
+        <hr />
+      }
+    </div>
+  </section>
+}
+
+<ng-template #contactUsLink>
+  <a [strongRoute]="contactUs.route">{{ contactUs.label }}</a>
+</ng-template>

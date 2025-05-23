@@ -46,6 +46,25 @@ $ngx-datatable-selected-active-background-hover: rgba(lightgrey, 0.5);
   }
 }
 
+ngx-datatable {
+  @extend .bootstrap;
+}
+
+.compact-datatable {
+  datatable-body-cell,
+  datatable-header-cell {
+    // A lot of the Bootstrap styling applied to the ngx-datatable is set
+    // with the !important priority.
+    // This means that when we want to override the padding of each cell,
+    // we have to use a hacky !important priority.
+    padding: 0 !important;
+
+    .datatable-body-cell-label {
+      height: 100%;
+    }
+  }
+}
+
 @keyframes query {
   0% {
     opacity: 1;

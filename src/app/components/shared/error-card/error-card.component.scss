@@ -1,3 +1,19 @@
-.error-output:not(:last-child) {
-  margin-bottom: 1em;
+:host {
+  display: block
+}
+
+.error-container {
+  display: flex block;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+}
+
+.error-output {
+  flex: 1 1;
+
+  &:not(:last-child) {
+    margin-bottom: 1em;
+  }
 }

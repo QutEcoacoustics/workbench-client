@@ -12,10 +12,13 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
 import { annotationMenuActions } from "../details/details.component";
-import schema from "../audio-event-import.schema.json";
-import { annotationsImportCategory, editAnnotationImportMenuItem } from "../import-annotations.menu";
+import schema from "../../audio-event-import.schema.json";
+import { annotationsImportCategory, editAnnotationImportMenuItem } from "../../import-annotations.menu";
 
+const projectKey = "project";
 const audioEventImportKey = "audioEventImport";
 
 @Component({
@@ -54,6 +57,10 @@ class EditAnnotationsComponent
   public fields = schema.fields;
   protected title: string;
 
+  protected get project(): Project {
+    return this.models.project as Project;
+  }
+
   public ngOnInit(): void {
     super.ngOnInit();
     this.title = `Edit ${this.model.name}`;
@@ -71,6 +78,7 @@ EditAnnotationsComponent.linkToRoute({
     actions: List(annotationMenuActions),
   },
   resolvers: {
+    [projectKey]: projectResolvers.show,
     [audioEventImportKey]: audioEventImportResolvers.show,
   },
 });

@@ -13,7 +13,7 @@ import { Subject } from "rxjs";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { modelData } from "@test/helpers/faker";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import schema from "../audio-event-import.schema.json";
+import schema from "../../audio-event-import.schema.json";
 import { NewAnnotationsComponent } from "./new.component";
 
 describe("NewAnnotationsComponent", () => {
@@ -43,7 +43,7 @@ describe("NewAnnotationsComponent", () => {
 
   beforeEach(() => setup());
 
-  assertPageInfo(NewAnnotationsComponent, "Import New Annotations");
+  assertPageInfo(NewAnnotationsComponent, "New Annotation Import");
 
   describe("form", () => {
     testFormlyFields([

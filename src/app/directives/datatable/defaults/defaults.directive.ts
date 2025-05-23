@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Host, Input, OnInit } from "@angular/core";
+import { Directive, Host } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import {
   ColumnMode,
@@ -14,39 +14,25 @@ import {
  * are not required, set them to false, otherwise ngx-datatable will not
  * display your data
  */
-@Directive({ selector: "[bawDatatableDefaults]" })
-export class DatatableDefaultsDirective implements OnInit {
-  @Input() public externalPaging = true;
-  @Input() public externalSorting = true;
-  @Input() public footerHeight = 50;
-  @Input() public headerHeight = 50;
-  @Input() public summaryHeight = 50;
-  @Input() public limit = defaultApiPageSize;
-  @Input() public reorderable = false;
-  @Input() public rowHeight: ((row: any) => number) | number | "auto" = "auto";
-  @Input() public scrollbarH = true;
-  @Input() public sortType = SortType.single;
+@Directive({ selector: "ngx-datatable[bawDatatableDefaults]" })
+export class DatatableDefaultsDirective {
+  public constructor(@Host() protected datatable: DatatableComponent) {
+    // A Component/Directive's @Input attributes are processed after the
+    // constructor and before the ngOnInit lifecycle hook is run.
+    // This means that these constructor defaults, can be overwritten if the
+    // user has explicitly overwritten any of these values in the ngx-datatable
+    // @Input attributes.
+    this.datatable.footerHeight = 50;
+    this.datatable.headerHeight = 50;
+    this.datatable.summaryHeight = 50;
+    this.datatable.rowHeight = "auto";
 
-  public constructor(
-    @Host() private datatable: DatatableComponent,
-    private datatableRef: ElementRef
-  ) {}
-
-  public ngOnInit(): void {
-    // Set class
-    this.datatableRef.nativeElement.classList.add("bootstrap");
-
-    // Set overrides
     this.datatable.columnMode = ColumnMode.force;
-    this.datatable.externalPaging = this.externalPaging;
-    this.datatable.externalSorting = this.externalSorting;
-    this.datatable.footerHeight = this.footerHeight;
-    this.datatable.headerHeight = this.headerHeight;
-    this.datatable.summaryHeight = this.summaryHeight;
-    this.datatable.limit = this.limit;
-    this.datatable.reorderable = this.reorderable;
-    this.datatable.rowHeight = this.rowHeight;
-    this.datatable.scrollbarH = this.scrollbarH;
-    this.datatable.sortType = this.sortType;
+    this.datatable.externalPaging = true;
+    this.datatable.externalSorting = true;
+    this.datatable.limit = defaultApiPageSize;
+    this.datatable.reorderable = false;
+    this.datatable.scrollbarH = true;
+    this.datatable.sortType = SortType.single;
   }
 }

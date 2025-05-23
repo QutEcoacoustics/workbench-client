@@ -17,33 +17,37 @@ interface ErrorTemplate {
 @Component({
   selector: "baw-error-card",
   template: `
-    @if (showSuccessState() && errors().length === 0) {
-      <div class="error-output {{ divStyle }} {{ divStyle }}-success">
-        No errors
-      </div>
-    }
-
-    @for (error of errors(); track error) {
-      @for (errorKey of extractErrorKeys(error); track errorKey) {
-        <div class="error-output {{ divStyle }} {{ divStyle }}-danger">
-          @if (errorTemplate) {
-            <ng-container *ngTemplateOutlet="
-              errorTemplate;
-              context: {
-                key: errorKey,
-                value: extractErrorValues(error, errorKey),
-                }
-            "></ng-container>
-          } @else {
-            {{ errorKey }}:
-            {{ extractErrorValues(error, errorKey) }}
-          }
+    <div class="error-container">
+      @if (showSuccessState() && errors().length === 0) {
+        <div class="error-output {{ divStyle }} {{ divStyle }}-success">
+          No errors
         </div>
       }
-    }
- `,
+
+      @for (error of errors(); track error) {
+        @for (errorKey of extractErrorKeys(error); track errorKey) {
+          <div class="error-output {{ divStyle }} {{ divStyle }}-danger">
+            @if (errorTemplate) {
+              <ng-container
+                *ngTemplateOutlet="
+                  errorTemplate;
+                  context: {
+                    key: errorKey,
+                    value: extractErrorValues(error, errorKey),
+                  }
+                "
+              ></ng-container>
+            } @else {
+              {{ errorKey }}:
+              {{ extractErrorValues(error, errorKey) }}
+            }
+          </div>
+        }
+      }
+    </div>
+  `,
   styleUrl: "error-card.component.scss",
-  imports: [NgTemplateOutlet]
+  imports: [NgTemplateOutlet],
 })
 export class ErrorCardComponent {
   public errors = input.required<ReadonlyArray<BawErrorData>>();
@@ -53,9 +57,7 @@ export class ErrorCardComponent {
   @ContentChild(TemplateRef) public errorTemplate?: TemplateRef<ErrorTemplate>;
 
   protected get divStyle(): string {
-    return this.errorStyle() === ErrorCardStyle.Alert
-      ? "alert"
-      : "callout";
+    return this.errorStyle() === ErrorCardStyle.Alert ? "alert" : "callout";
   }
 
   protected extractErrorKeys(error: BawErrorData) {

@@ -43,10 +43,6 @@ describe("DatatableDefaultsDirective", () => {
       );
     });
 
-    it("should set class", () => {
-      expect(spectator.element).toHaveClass("bootstrap");
-    });
-
     it("should set footer height", () => {
       assertAttribute("datatable-footer", "footer-height", "50");
     });

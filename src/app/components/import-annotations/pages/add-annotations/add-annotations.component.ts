@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
   ViewChildren,
+  WritableSignal,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -41,7 +42,7 @@ import {
   retrieveResolvers,
 } from "@baw-api/resolver-common";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { ErrorCardStyle , ErrorCardComponent } from "@shared/error-card/error-card.component";
+import { ErrorCardStyle, ErrorCardComponent } from "@shared/error-card/error-card.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -59,19 +60,27 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import {
   VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
 import { Tag } from "@models/Tag";
-import { annotationImportRoute } from "../import-annotations.routes";
+import { List } from "immutable";
+import {
+  ImportAnnotationService,
+  ImportedFileWithErrors,
+} from "@components/import-annotations/services/import-annotation.service";
+import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
-} from "../import-annotations.menu";
-import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
-import { isInstantiatedPipe } from "../../../pipes/is-instantiated/is-instantiated.pipe";
+} from "../../import-annotations.menu";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
+import { annotationImportIssueWidgetMenuItem } from "../../widgets/annotation-import-issue.component";
 
 interface QueuedFile {
   file: Readonly<File>;
@@ -120,6 +129,7 @@ enum ImportState {
   COMMITTED,
 }
 
+const projectKey = "project";
 const audioEventImportKey = "audioEventImport";
 
 @Component({
@@ -136,7 +146,7 @@ const audioEventImportKey = "audioEventImport";
     TypeaheadInputComponent,
     NgTemplateOutlet,
     NgxDatatableModule,
-    DatatableDefaultsDirective,
+    DatatableCompactDirective,
     VirtualDatatablePaginationDirective,
     LoadingComponent,
     UrlDirective,
@@ -158,9 +168,12 @@ class AddAnnotationsComponent
     private route: ActivatedRoute,
     private router: Router,
     private notifications: ToastService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    private annotationImport: ImportAnnotationService,
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
+
+    this.sharedImportState = this.annotationImport.newInstance();
   }
 
   @ViewChild("fileInput")
@@ -171,6 +184,9 @@ class AddAnnotationsComponent
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
+
+  /** The route project model that the annotation import is scoped to */
+  public project?: Project;
 
   /**
    * A state machine representation that can be used to lock UI elements during
@@ -189,6 +205,7 @@ class AddAnnotationsComponent
   // to use the "as const" assertion to make the object immutable, get
   // bundling optimizations, have stricter type checking, and auto completion.
   private extensionMappings = { csv: "text/csv" } as const;
+  private sharedImportState: WritableSignal<ImportedFileWithErrors[]>;
 
   public get hasUnsavedChanges(): boolean {
     return (
@@ -236,6 +253,13 @@ class AddAnnotationsComponent
     }
 
     this.audioEventImport = models[audioEventImportKey] as AudioEventImport;
+    this.project = models[projectKey] as Project;
+
+    this.importFiles$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((importFiles) => {
+        this.sharedImportState.set(importFiles);
+      });
   }
 
   protected getEventModels = (): Observable<TableRow[]> => {
@@ -251,7 +275,7 @@ class AddAnnotationsComponent
               return new TableRow({
                 fileId: fileIndex + 1,
                 eventId: eventIndex + 1,
-                event,
+                event
               });
             }
           );
@@ -355,7 +379,7 @@ class AddAnnotationsComponent
   protected removeBufferedFile(model: QueuedFile): void {
     this.importFiles$.next(
       this.importFiles$.value.filter(
-        (file: QueuedFile) => file.file !== model.file
+        (file: QueuedFile) => file.file !== model.file,
       )
     );
 
@@ -401,6 +425,7 @@ class AddAnnotationsComponent
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
               annotationId: this.audioEventImport.id,
+              projectId: this.project.id,
             })
           );
         },
@@ -548,7 +573,11 @@ class AddAnnotationsComponent
 AddAnnotationsComponent.linkToRoute({
   category: annotationsImportCategory,
   pageRoute: addAnnotationImportMenuItem,
+  menus: {
+    actionWidgets: List([annotationImportIssueWidgetMenuItem]),
+  },
   resolvers: {
+    [projectKey]: projectResolvers.show,
     [audioEventImportKey]: audioEventImportResolvers.show,
   },
 });

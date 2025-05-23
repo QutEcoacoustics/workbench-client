@@ -119,27 +119,27 @@
 <hr />
 
 <div class="identified-annotations mt-4">
-  <h4>Identified Events</h4>
+  <h4>Annotation Preview</h4>
   <p>
-    The following events have been identified in your dataset, but have not been
-    saved.
+    The following annotations have been identified in your dataset, but have not
+    been saved.
   </p>
 
   <p>
-    You can review these events before saving them with the "Import Annotations"
-    button.
+    You can review these annotations before saving them with the "Import
+    Annotations" button.
   </p>
 
   <div>
     <ngx-datatable
-      bawDatatableDefaults
+      bawDatatableCompact
       [bawVirtualDatatablePagination]="getEventModels"
     >
-      <ngx-datatable-column [sortable]="false" prop="">
+      <ngx-datatable-column [sortable]="false" prop="" [width]="40">
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="text-decoration-underline"
-            [ngbTooltip]="'File index and the index of the event in the file'"
+            [ngbTooltip]="'File index and the index of the annotation in the file'"
             container="body"
           >
             ID
@@ -151,7 +151,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
@@ -177,7 +177,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
@@ -191,7 +191,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
@@ -205,7 +205,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
@@ -219,7 +219,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
@@ -233,7 +233,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="60">
         <ng-template let-column="column" ngx-datatable-header-template>
           Channel
         </ng-template>
@@ -247,7 +247,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
         <ng-template let-column="column" ngx-datatable-header-template>
           Reference
         </ng-template>
@@ -261,7 +261,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="60">
         <ng-template let-column="column" ngx-datatable-header-template>
           Score
         </ng-template>
@@ -275,7 +275,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="120">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
@@ -289,7 +289,12 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" [minWidth]="300" prop="event">
+      <ngx-datatable-column
+        [sortable]="false"
+        [minWidth]="240"
+        [width]="240"
+        prop="event"
+      >
         <ng-template let-column="column" ngx-datatable-header-template>
           Errors
         </ng-template>

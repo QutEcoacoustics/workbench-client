@@ -1,9 +1,10 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
 import { defaultEditIcon, isLoggedInPredicate } from "src/app/app.menus";
-import { CommonRouteTitles } from "src/app/stringConstants";
-import { AudioEventImport } from "@models/AudioEventImport";
+import { projectMenuItem } from "@components/projects/projects.menus";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { RouterStateSnapshot } from "@angular/router";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { CommonRouteTitles } from "src/app/stringConstants";
 import {
   addAnnotationImportRoute,
   annotationImportRoute,
@@ -13,30 +14,26 @@ import {
 
 export const annotationsImportCategory: Category = {
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotations",
+  label: "Import Annotations",
   route: annotationsImportRoute,
 };
 
-// we cannot include a route guard predicate for "project editor"
-// as the annotation imports are mounted under the root path
-// "http://ecosounds.org/batch_annotations"
-// therefore, we validate capabilities in the import component during the dry
-// run
 export const annotationsImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotations",
+  label: "Import Annotations",
+  parent: projectMenuItem,
   predicate: isLoggedInPredicate,
   route: annotationsImportRoute,
-  tooltip: () => "(BETA) View bulk imports for this project",
+  tooltip: () => "(BETA) View annotation imports for this project",
 });
 
 export const annotationImportMenuItem = menuRoute({
   icon: ["fas", "file-import"],
-  label: "Batch Import Annotation",
+  label: "Import Annotations",
   parent: annotationsImportMenuItem,
   predicate: isLoggedInPredicate,
   route: annotationImportRoute,
-  tooltip: () => "(BETA) View bulk imports for this project",
+  tooltip: () => "(BETA) View annotation imports for this project",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
   title: (routeData: RouterStateSnapshot): string => {
@@ -47,7 +44,7 @@ export const annotationImportMenuItem = menuRoute({
 
 export const newAnnotationImportMenuItem = menuRoute({
   icon: ["fas", "upload"],
-  label: "Import New Annotations",
+  label: "New Annotation Import",
   parent: annotationsImportMenuItem,
   predicate: isLoggedInPredicate,
   route: newAnnotationImportRoute,

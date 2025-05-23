@@ -41,6 +41,7 @@ import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { analysesMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
 import { SiteMapComponent } from "../../components/site-map/site-map.component";
 import { SiteCardComponent } from "../../components/site-card/site-card.component";
 
@@ -58,6 +59,7 @@ export const projectMenuItemActions = [
   reportMenuItems.new.project,
   annotationMenuItems.search.project,
   analysesMenuItem,
+  annotationsImportMenuItem,
 ];
 
 const projectKey = "project";

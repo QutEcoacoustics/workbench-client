@@ -45,6 +45,7 @@ declare global {
         options?: RouterLinkActiveOptions
       ): boolean;
       toBeProvidedBy(injector: Injector): boolean;
+      toBeWriteableSignal(): boolean;
     }
   }
 }

@@ -14,13 +14,19 @@ import { DatatablePaginationDirective } from "@directives/datatable/pagination/p
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { Project } from "@models/Project";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { ActivatedRoute } from "@angular/router";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import {
   annotationsImportCategory,
   annotationsImportMenuItem,
   newAnnotationImportMenuItem,
-} from "../import-annotations.menu";
+} from "../../import-annotations.menu";
 
 export const annotationListMenuItemActions = [newAnnotationImportMenuItem];
+const projectKey = "project";
 
 @Component({
   selector: "baw-import-list-annotation-imports",
@@ -38,7 +44,8 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   public constructor(
     private api: AudioEventImportService,
     private notifications: ToastService,
-    private modals: NgbModal
+    private modals: NgbModal,
+    protected route: ActivatedRoute,
   ) {
     super();
   }
@@ -50,9 +57,21 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
       orderBy: "createdAt",
     },
   };
+  private models: ResolvedModelList = {};
+
+  public get project(): Project {
+    return this.models.project as Project;
+  }
 
   public ngOnInit(): void {
     this.filters$ = new BehaviorSubject(this.defaultFilters);
+
+    if (this.route) {
+      const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+      if (hasResolvedSuccessfully(models)) {
+        this.models = models;
+      }
+   }
   }
 
   protected getModels = (filters: Filters<AudioEventImport>) =>
@@ -87,6 +106,9 @@ AnnotationsListComponent.linkToRoute({
   pageRoute: annotationsImportMenuItem,
   menus: {
     actions: List(annotationListMenuItemActions),
+  },
+  resolvers: {
+    [projectKey]: projectResolvers.show,
   },
 });
 

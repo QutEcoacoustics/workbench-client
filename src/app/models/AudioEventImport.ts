@@ -1,6 +1,6 @@
 import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
-import { annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
+import { addAnnotationImportRoute, annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 import { hasOne } from "./AssociationDecorators";
@@ -47,8 +47,24 @@ export class AudioEventImport
   public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
+    throw new Error("Not implemented. Use createViewUrl() instead.");
+  }
+
+  public get addAnnotationsUrl(): string {
+    throw new Error("Not implemented. Use createAddAnnotationsUrl() instead.");
+  }
+
+  public createViewUrl(projectId: Id): string {
     return annotationImportRoute.format({
       annotationId: this.id,
+      projectId,
+    });
+  }
+
+  public createAddAnnotationsUrl(projectId: Id): string {
+    return addAnnotationImportRoute.format({
+      annotationId: this.id,
+      projectId,
     });
   }
 }

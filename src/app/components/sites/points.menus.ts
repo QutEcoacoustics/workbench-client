@@ -2,7 +2,7 @@ import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { Category, menuItem, menuRoute } from "@interfaces/menusInterfaces";
 import { Site } from "@models/Site";
-import { defaultAnnotationDownloadIcon } from "src/app/app.menus";
+import { defaultAnnotationDownloadIcon, isLoggedInPredicate } from "src/app/app.menus";
 import { pointRoute, pointsRoute } from "./points.routes";
 import {
   editSiteMenuItem,
@@ -39,6 +39,7 @@ export const pointAnnotationsMenuItem = menuItem({
   label: "Download Annotations",
   parent: pointMenuItem,
   tooltip: () => "Download annotations for this point",
+  predicate: isLoggedInPredicate,
 });
 
 export const editPointMenuItem = menuRoute({

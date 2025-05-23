@@ -7,18 +7,16 @@ import { LicenseWidgetComponent } from "./license-widget/license-widget.componen
 
 export const permissionsWidgetMenuItem = new WidgetMenuItem(
   PermissionsShieldComponent,
-  isLoggedInPredicate
+  isLoggedInPredicate,
 );
 
-export const licenseWidgetMenuItem = new WidgetMenuItem(
-  LicenseWidgetComponent
-);
+export const licenseWidgetMenuItem = new WidgetMenuItem(LicenseWidgetComponent);
 
 export const allowsOriginalDownloadWidgetMenuItem = new WidgetMenuItem(
-  AllowsOriginalDownloadComponent
+  AllowsOriginalDownloadComponent,
 );
 
 /** A website status warning widget that warns if any part of the website is unhealthy */
 export const websiteStatusWarningWidgetMenuItem = new WidgetMenuItem(
-  WebsiteStatusWarningComponent
+  WebsiteStatusWarningComponent,
 );

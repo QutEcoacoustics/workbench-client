@@ -33,15 +33,19 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { Project } from "@models/Project";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
   annotationsImportCategory,
   annotationImportMenuItem,
   addAnnotationImportMenuItem,
-} from "../import-annotations.menu";
-import { deleteAnnotationImportModal } from "../import-annotations.modals";
-import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+} from "../../import-annotations.menu";
+import { deleteAnnotationImportModal } from "../../import-annotations.modals";
 
 export const annotationMenuActions = [
   addAnnotationImportMenuItem,
@@ -49,6 +53,7 @@ export const annotationMenuActions = [
   deleteAnnotationImportModal,
 ];
 
+const projectKey = "project";
 const audioEventImportKey = "audioEventImport";
 
 interface ImportGroup {
@@ -56,7 +61,7 @@ interface ImportGroup {
   files: FileList;
   /** An array of errors encountered during a dry run */
   errors: string[];
-  /**
+   /**
    * List of additional tag IDs that are not found within the imported file and will be associated with every event within the import group
    * This is separate from the identified events because additional tags are typically used for grouping events eg. "testing" and "training"
    */
@@ -105,6 +110,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   protected audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
   protected uploading: boolean = false;
+  private models: ResolvedModelList = {};
 
   protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
   protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;
@@ -122,6 +128,10 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
       orderBy: "createdAt",
     },
   } as const satisfies Filters<AudioEventImportFile>;
+
+  protected get project(): Project {
+    return this.models.project as Project;
+  }
 
   // we want to create each new import group from a template by value
   // if it is done by reference, we would be modifying the same import group
@@ -142,6 +152,13 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
 
     this.eventFilters$ = new BehaviorSubject(this.defaultEventFilters);
     this.fileFilters$ = new BehaviorSubject(this.defaultFileFilters);
+
+    if (this.route) {
+      const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+      if (hasResolvedSuccessfully(models)) {
+        this.models = models;
+      }
+   }
   }
 
   // used to fetch all previously imported events for the events ngx-datatable
@@ -190,6 +207,7 @@ AnnotationImportDetailsComponent.linkToRoute({
     actions: List(annotationMenuActions),
   },
   resolvers: {
+    [projectKey]: projectResolvers.show,
     [audioEventImportKey]: audioEventImportResolvers.show,
   },
 });
