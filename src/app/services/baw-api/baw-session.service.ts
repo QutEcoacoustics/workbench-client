@@ -13,7 +13,7 @@ export interface AuthTriggerData {
   authToken?: AuthToken | GuestAuthToken;
 }
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class BawSessionService {
   private _authTrigger = new BehaviorSubject<AuthTriggerData>({
     user: guestUser,
