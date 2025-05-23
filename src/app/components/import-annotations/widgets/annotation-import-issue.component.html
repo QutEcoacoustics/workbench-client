@@ -10,12 +10,11 @@
 @if (hasUncommittedFiles()) {
   <div class="uncommitted-file-warning alert alert-info">
     <h6>
-      <fa-icon class="pe-1" [icon]="['fas', 'triangle-exclamation']"></fa-icon>
-      Warning
+      <fa-icon [icon]="['fas', 'triangle-exclamation']" class="pe-1"></fa-icon>
+      <strong>Your files have not been imported.</strong>
     </h6>
 
-    <strong>Your files have not been imported yet</strong>. Check the preview
-    table and make sure we've correctly parsed your data.
+    Check the preview table and make sure we've correctly parsed your data.
   </div>
 }
 

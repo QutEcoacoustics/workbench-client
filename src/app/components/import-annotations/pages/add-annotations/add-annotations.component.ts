@@ -3,7 +3,6 @@ import {
   ElementRef,
   Inject,
   OnInit,
-  signal,
   ViewChild,
   ViewChildren,
   WritableSignal,
@@ -196,8 +195,6 @@ class AddAnnotationsComponent
 
   protected errorCardStyles = ErrorCardStyle;
 
-  protected signalExample = signal(0);
-
   // I use an object here when I should be using a readonly map because I want
   // to use the "as const" assertion to make the object immutable, get
   // bundling optimizations, have stricter type checking, and auto completion.
@@ -256,17 +253,6 @@ class AddAnnotationsComponent
       .subscribe((importFiles) => {
         this.sharedImportState.set(importFiles);
       });
-
-    setInterval(() => {
-      const currentValue = this.signalExample();
-      const maxValue = 100;
-
-      if (currentValue <= maxValue) {
-        this.signalExample.set(currentValue + 1);
-      } else {
-        this.signalExample.set(0);
-      }
-    }, 50);
   }
 
   protected getEventModels = (): Observable<TableRow[]> => {
