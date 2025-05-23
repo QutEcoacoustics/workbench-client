@@ -228,7 +228,7 @@ export class SecurityService {
   private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
-    return this.sessionDetails()
+    this.sessionDetails()
       .pipe(
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
