@@ -1,11 +1,16 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { SecurityService } from "@baw-api/security/security.service";
 import { loginRoute } from "@components/security/security.routes";
+import { lastValueFrom } from "rxjs";
 
-export const isLoggedInGuard: CanActivateFn = () => {
+export const isLoggedInGuard: CanActivateFn = async () => {
   const sessionService = inject(BawSessionService);
+  const securityService = inject(SecurityService);
   const router = inject(Router);
+
+  await lastValueFrom(securityService.doneFirstAuth);
 
   if (sessionService.isLoggedIn) {
     return true;

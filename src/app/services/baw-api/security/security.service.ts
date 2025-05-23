@@ -15,7 +15,7 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import {
   catchError,
   first,
@@ -50,6 +50,8 @@ export class SecurityService {
   ) {
     this.updateAuthToken();
   }
+
+  public doneFirstAuth = new Subject();
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -223,8 +225,6 @@ export class SecurityService {
       );
   }
 
-  public initializeSession() {}
-
   private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
@@ -237,8 +237,12 @@ export class SecurityService {
       .subscribe({
         next: (user) => {
           this.session.setLoggedInUser(user, authToken);
+          this.doneFirstAuth.next(true);
+          this.doneFirstAuth.complete();
         },
         error: () => {
+          this.doneFirstAuth.next(false);
+          this.doneFirstAuth.complete();
           this.clearData();
         },
       });
