@@ -26,6 +26,7 @@ import {
 } from "rxjs/operators";
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
+import { i } from "@angular/core/weak_ref.d-DOjz-6fK";
 
 const signUpParam = "sign_up";
 const signInParam = "sign_in";
@@ -51,7 +52,8 @@ export class SecurityService {
     this.updateAuthToken();
   }
 
-  public doneFirstAuth = new Subject();
+  public doneFirstAuth = false;
+  public firstAuthAwait = new Subject();
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -237,12 +239,16 @@ export class SecurityService {
       .subscribe({
         next: (user) => {
           this.session.setLoggedInUser(user, authToken);
-          this.doneFirstAuth.next(true);
-          this.doneFirstAuth.complete();
+
+          this.firstAuthAwait.next(true);
+          this.firstAuthAwait.complete();
+          this.doneFirstAuth = true;
         },
         error: () => {
-          this.doneFirstAuth.next(false);
-          this.doneFirstAuth.complete();
+          this.firstAuthAwait.next(false);
+          this.firstAuthAwait.complete();
+          this.doneFirstAuth = true;
+
           this.clearData();
         },
       });

@@ -10,7 +10,11 @@ export const isLoggedInGuard: CanActivateFn = async () => {
   const securityService = inject(SecurityService);
   const router = inject(Router);
 
-  await lastValueFrom(securityService.doneFirstAuth);
+  // We use the "lastValueFrom" here so that this guard will wait until the
+  // subject has completed.
+  if (!securityService.doneFirstAuth) {
+    await lastValueFrom(securityService.firstAuthAwait);
+  }
 
   if (sessionService.isLoggedIn) {
     return true;
