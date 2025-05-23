@@ -25,7 +25,7 @@ export enum CMS {
 const page = (x?: CMS) => x;
 const endpoint = stringTemplate`/cms/${page}`;
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class CmsService {
   public constructor(
     private http: HttpClient,
