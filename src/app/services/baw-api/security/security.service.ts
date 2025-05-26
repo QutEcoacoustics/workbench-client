@@ -15,7 +15,7 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   catchError,
   first,
@@ -27,8 +27,8 @@ import {
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
-const signUpParam = "sign_up" as const;
-const signInParam = "sign_in" as const;
+const signUpParam = "sign_up";
+const signInParam = "sign_in";
 
 const accountEndpoint = stringTemplate`/my_account/${param}`;
 const signOutEndpoint = stringTemplate`/security/`;
@@ -38,7 +38,7 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Security Service.
  * Handles API routes pertaining to security.
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class SecurityService {
   public constructor(
     private api: BawApiService<Session>,
@@ -50,6 +50,14 @@ export class SecurityService {
   ) {
     this.updateAuthToken();
   }
+
+  /**
+    * A behavior subject that will complete once the security service has
+    * performed an initial check to see if the user is logged in.
+    * The value of this behavior subject is a boolean indicating if this
+    * initial fetch has been previously completed.
+    */
+  public firstAuthAwait = new BehaviorSubject(false);
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -223,7 +231,7 @@ export class SecurityService {
       );
   }
 
-  private updateAuthToken(): void {
+  private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
     this.sessionDetails()
@@ -235,9 +243,11 @@ export class SecurityService {
       .subscribe({
         next: (user) => {
           this.session.setLoggedInUser(user, authToken);
+          this.completeAuthAwait();
         },
         error: () => {
           this.clearData();
+          this.completeAuthAwait();
         },
       });
   }
@@ -252,5 +262,13 @@ export class SecurityService {
 
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
+  }
+
+  private completeAuthAwait(): void {
+    // Because the boolean value stored in the firstAuthAwait behavior subject
+    // indicates if the first auth has been completed previously, we have to
+    // emit a value before completing the behavior subject.
+    this.firstAuthAwait.next(true);
+    this.firstAuthAwait.complete();
   }
 }

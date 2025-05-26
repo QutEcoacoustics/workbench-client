@@ -46,6 +46,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { RenderMode } from "@angular/ssr";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -329,6 +330,7 @@ function getPageInfo(
       [annotationsKey]: annotationResolvers.showOptional,
     },
     fullscreen: true,
+    renderMode: RenderMode.Client,
   };
 }
 

@@ -1,8 +1,13 @@
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { defaultUserIcon, isGuestPredicate } from "src/app/app.menus";
-
-export const securityRoute = StrongRoute.newRoot().add("security");
+import {
+  confirmAccountRoute,
+  loginRoute,
+  registerRoute,
+  resetPasswordRoute,
+  securityRoute,
+  unlockAccountRoute,
+} from "./security.routes";
 
 export const securityCategory: Category = {
   icon: defaultUserIcon,
@@ -14,7 +19,7 @@ export const loginMenuItem = menuRoute({
   icon: ["fas", "sign-in-alt"],
   label: "Log in",
   tooltip: () => "Log into the website",
-  route: securityRoute.add("login"),
+  route: loginRoute,
   predicate: isGuestPredicate,
   order: 2,
 });
@@ -22,7 +27,7 @@ export const loginMenuItem = menuRoute({
 export const registerMenuItem = menuRoute({
   icon: ["fas", "user-plus"],
   label: "Register",
-  route: securityRoute.add("register"),
+  route: registerRoute,
   tooltip: () => "Create an account",
   predicate: isGuestPredicate,
   order: 3,
@@ -31,7 +36,7 @@ export const registerMenuItem = menuRoute({
 export const confirmAccountMenuItem = menuRoute({
   icon: ["fas", "envelope"],
   label: "Confirm account",
-  route: securityRoute.add("confirmation"),
+  route: confirmAccountRoute,
   tooltip: () => "Resend the email to confirm your account",
   parent: loginMenuItem,
 });
@@ -39,7 +44,7 @@ export const confirmAccountMenuItem = menuRoute({
 export const resetPasswordMenuItem = menuRoute({
   icon: ["fas", "key"],
   label: "Reset password",
-  route: securityRoute.add("reset_password"),
+  route: resetPasswordRoute,
   tooltip: () => "Send an email to reset your password",
   parent: loginMenuItem,
 });
@@ -47,7 +52,7 @@ export const resetPasswordMenuItem = menuRoute({
 export const unlockAccountMenuItem = menuRoute({
   icon: ["fas", "lock-open"],
   label: "Unlock account",
-  route: securityRoute.add("unlock_account"),
+  route: unlockAccountRoute,
   tooltip: () => "Send an email to unlock your account",
   parent: loginMenuItem,
 });
