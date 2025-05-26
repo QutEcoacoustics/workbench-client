@@ -59,7 +59,11 @@ describe("isLoggedInGuard", () => {
 
   it("should navigate to the login page if the user is not logged in", async () => {
     setLoggedIn(false);
-    const expectedRouterLocation = router.createUrlTree([loginRoute.toRouterLink()]);
+    const expectedRouterLocation = router.createUrlTree([loginRoute.toRouterLink()], {
+      queryParams: {
+        redirect: state.url,
+      },
+    });
 
     const result = await executeGuard(route, state);
 
