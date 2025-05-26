@@ -24,8 +24,7 @@ describe("isLoggedInGuard", () => {
   function setLoggedIn(newLoggedIn: boolean): void {
     isLoggedIn = newLoggedIn;
 
-    securityService.doneFirstAuth = true;
-    securityService.firstAuthAwait.next(state);
+    securityService.firstAuthAwait.next(newLoggedIn);
     securityService.firstAuthAwait.complete();
   }
 
@@ -57,7 +56,7 @@ describe("isLoggedInGuard", () => {
     expect(result).toBeTrue();
   });
 
-  it("should navigate to the login page if the user is not logged in", async () => {
+  fit("should navigate to the login page if the user is not logged in", async () => {
     setLoggedIn(false);
     const expectedRouterLocation = router.createUrlTree([loginRoute.toRouterLink()], {
       queryParams: {

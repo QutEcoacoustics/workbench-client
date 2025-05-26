@@ -15,7 +15,7 @@ import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   catchError,
   first,
@@ -51,8 +51,13 @@ export class SecurityService {
     this.updateAuthToken();
   }
 
-  public doneFirstAuth = false;
-  public firstAuthAwait = new Subject();
+  /**
+    * A behavior subject that will complete once the security service has
+    * performed an initial check to see if the user is logged in.
+    * The value of this behavior subject is a boolean indicating if this
+    * initial fetch has been previously completed.
+    */
+  public firstAuthAwait = new BehaviorSubject(false);
 
   /**
    * Returns the recaptcha seed for the registration form
@@ -238,17 +243,11 @@ export class SecurityService {
       .subscribe({
         next: (user) => {
           this.session.setLoggedInUser(user, authToken);
-
-          this.firstAuthAwait.next(true);
-          this.firstAuthAwait.complete();
-          this.doneFirstAuth = true;
+          this.completeAuthAwait();
         },
         error: () => {
-          this.firstAuthAwait.next(false);
-          this.firstAuthAwait.complete();
-          this.doneFirstAuth = true;
-
           this.clearData();
+          this.completeAuthAwait();
         },
       });
   }
@@ -263,5 +262,10 @@ export class SecurityService {
 
     this.session.clearLoggedInUser();
     this.cookies.deleteAll();
+  }
+
+  private completeAuthAwait(): void {
+    this.firstAuthAwait.next(true);
+    this.firstAuthAwait.complete();
   }
 }
