@@ -26,7 +26,6 @@ import {
 } from "rxjs/operators";
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
-import { i } from "@angular/core/weak_ref.d-DOjz-6fK";
 
 const signUpParam = "sign_up";
 const signInParam = "sign_in";
