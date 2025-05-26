@@ -91,12 +91,20 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       hasFormCheck: false,
       successMsg: () => "Successfully signed in",
       redirectUser: () => {
-        if (this.redirectBack) {
+        // The order of these if conditions is important.
+        // If the redirect url is a string, it has been passed into this
+        // component through the "redirect" url parameter, the typeof
+        // redirecturl will be a string.
+        // If the redirectUrl is a StrongRoute, it is a fallback url defined
+        // inside this component (there is no way to pass a strong route into
+        // this component).
+        // We therefore, only use the StrongRoute as a last resort.
+        if (typeof this.redirectUrl === "string" && this.redirectUrl.startsWith("/")) {
+          this.router.navigateByUrl(this.redirectUrl);
+        } else if (this.redirectBack) {
           this.location.back();
         } else if (this.redirectUrl instanceof StrongRoute) {
           this.router.navigateByUrl(this.redirectUrl.toRouterLink());
-        } else if (this.redirectUrl.startsWith("/")) {
-          this.router.navigateByUrl(this.redirectUrl);
         } else {
           this.notifications.error("Unable to redirect back to previous page");
         }

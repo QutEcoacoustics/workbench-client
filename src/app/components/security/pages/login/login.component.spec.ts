@@ -260,6 +260,24 @@ describe("LoginComponent", () => {
       expect(router.navigateByUrl).toHaveBeenCalledWith("/broken_link");
     });
 
+    it("should prioritize the redirect url over navigation history", async () => {
+      // By setting the navigationId to 2, we mock the router location being
+      // the second location in the history.
+      const navigationId = 2;
+      const testedRedirect = "/projects/2/audio_recordings";
+
+      setup(testedRedirect, navigationId);
+      isSignedIn(false);
+      const promise = setLoginError();
+      spec.detectChanges();
+      redirectUser();
+
+      await promise;
+
+      expect(router.navigateByUrl).toHaveBeenCalledOnceWith(testedRedirect);
+      expect(location.back).not.toHaveBeenCalled();
+    });
+
     it("should give error notification if external redirect", async () => {
       setup(`${testApiConfig.endpoints.apiRoot}/broken_link`);
       isSignedIn(false);
