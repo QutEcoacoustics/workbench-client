@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_RECORDING,
   PROJECT,
@@ -16,6 +16,7 @@ import {
   jsBoolean,
   jsNumber,
   jsNumberArray,
+  jsString,
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
@@ -32,6 +33,15 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
+
+export type SortingKey = string;
+
+export const sortByOptions = {
+  "score": {
+    orderBy: "id",
+    direction: "asc",
+  },
+} as const satisfies Record<string, Sorting<any>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -63,6 +73,8 @@ export interface IAnnotationSearchParameters {
   // https://github.com/QutEcoacoustics/baw-server/issues/687
   eventDate: MonoTuple<DateTime, 2>;
   eventTime: MonoTuple<Duration, 2>;
+
+  sortBy: SortingKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -82,6 +94,8 @@ const serializationTable: IQueryStringParameterSpec<
   projects: jsNumberArray,
   regions: jsNumberArray,
   sites: jsNumberArray,
+
+  sortBy: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -141,6 +155,8 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public sortBy: SortingKey;
+
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
     "audioRecordings"
@@ -186,7 +202,16 @@ export class AnnotationSearchParameters
     const dateTimeFilters = this.recordingDateTimeFilters(tagFilters);
     const routeModelFilter = filterAnd(dateTimeFilters, this.routeFilters());
     const filter = this.eventDateTimeFilters(routeModelFilter);
-    return { filter };
+
+    if (this.sortBy in sortByOptions) {
+      return {
+        filter
+      };
+    }
+
+    const sorting = sortByOptions[this.sortBy];
+
+    return { filter, sorting };
   }
 
   public toQueryParams(): Params {
