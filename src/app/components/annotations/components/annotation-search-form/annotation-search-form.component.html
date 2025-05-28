@@ -102,6 +102,19 @@
       ></baw-typeahead-input>
     </div>
   </div>
+
+  <div cclass="mt-4 mb-4">
+    <label for="sort-input">Sort by</label>
+    <select
+      id="sort-input"
+      class="form-select"
+      [value]="searchParameters.sortBy"
+      (modelChange)="updateSortBy($event)"
+    >
+      <option value="">Upload date/time</option>
+      <option value="score">Score</option>
+    </select>
+  </div>
 </form>
 
 <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">

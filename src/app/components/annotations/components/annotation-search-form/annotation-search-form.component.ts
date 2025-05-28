@@ -183,4 +183,16 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParameters.onlyUnverified = value;
     this.searchParametersChange.emit(this.searchParameters);
   }
+
+  public updateSortBy(event: Event): void {
+    if (!(event.target instanceof HTMLSelectElement)) {
+      console.warn("Attempted to update sort key through non-select element");
+      return;
+    }
+
+    this.searchParameters.sortBy = event.target.value;
+    this.searchParametersChange.emit(this.searchParameters);
+
+    console.debug(this.searchParameters.sortBy);
+  }
 }
