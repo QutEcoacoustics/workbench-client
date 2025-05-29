@@ -190,9 +190,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       return;
     }
 
-    this.searchParameters.sortBy = event.target.value;
+    this.searchParameters.sortBy = event.target.value || null;
     this.searchParametersChange.emit(this.searchParameters);
-
-    console.debug(this.searchParameters.sortBy);
   }
 }

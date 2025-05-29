@@ -300,10 +300,16 @@ class VerificationComponent
 
   private filterConditions(page: number): Filters<AudioEvent> {
     const paging: Paging = { page };
-    const filter: InnerFilter<AudioEvent> =
+    const routeFilters: InnerFilter<AudioEvent> =
       this.searchParameters.toFilter().filter;
 
-    return { filter, paging };
+    // Note that the route filters are expanded after the paging filters so that
+    // if in the future we want to route filters to override the verification
+    // grid paging, it can.
+    return {
+      paging,
+      ...routeFilters,
+    };
   }
 
   private updateUrlParameters(): void {

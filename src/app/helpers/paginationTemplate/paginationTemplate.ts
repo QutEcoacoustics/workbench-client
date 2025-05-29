@@ -5,6 +5,7 @@ import {
   defaultApiPageSize,
   Filters,
   InnerFilter,
+  Sorting,
 } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -89,7 +90,8 @@ export abstract class PaginationTemplate<M extends AbstractModel>
      * Default inner filter values
      */
     protected defaultInnerFilter: () => InnerFilter<M> = () =>
-      ({} as InnerFilter<M>)
+      ({} as InnerFilter<M>),
+    protected defaultSortingFilter?: () => Sorting<keyof M>,
   ) {
     super();
   }
@@ -193,11 +195,11 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   protected generateFilter(): Filters<M> {
     // if the template has an explicit page size set, we should add the number
     // of items to the request body
-    // if the user has not set an explit page size, we want to use the default
+    // if the user has not set an explicit page size, we want to use the default
     // returned by the api
     const pageItemFilters = this.pageSize ? { items: this.pageSize } : {};
 
-    return {
+    const filters: Filters<M> = {
       paging: {
         page: this.page,
         ...pageItemFilters,
@@ -209,5 +211,11 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           } as InnerFilter<M>)
         : this.defaultInnerFilter(),
     };
+
+    if (this.defaultSortingFilter) {
+      filters.sorting = this.defaultSortingFilter();
+    }
+
+    return filters;
   }
 }
