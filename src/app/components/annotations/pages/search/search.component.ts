@@ -89,7 +89,8 @@ class AnnotationSearchComponent
         }
         this.loading = false;
       },
-      () => this.searchParameters.toFilter().filter
+      () => this.searchParameters.toFilter().filter,
+      () => this.searchParameters.toFilter().sorting,
     );
 
     // we make the page size an even number so that the page of results is more

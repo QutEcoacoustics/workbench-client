@@ -37,11 +37,15 @@ import { DateTime, Duration } from "luxon";
 export type SortingKey = string;
 
 export const sortByOptions = {
-  "score": {
-    orderBy: "id",
+  "score-asc": {
+    orderBy: "score",
     direction: "asc",
   },
-} as const satisfies Record<string, Sorting<any>>;
+  "score-desc": {
+    orderBy: "score",
+    direction: "desc",
+  },
+} as const satisfies Record<string, Sorting<keyof AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -200,17 +204,17 @@ export class AnnotationSearchParameters
   public toFilter(): Filters<AudioEvent> {
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
     const dateTimeFilters = this.recordingDateTimeFilters(tagFilters);
-    const routeModelFilter = filterAnd(dateTimeFilters, this.routeFilters());
-    const filter = this.eventDateTimeFilters(routeModelFilter);
+    const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
+    const filter = this.eventDateTimeFilters(siteFilters);
 
-    if (this.sortBy in sortByOptions) {
+    const sorting = sortByOptions[this.sortBy];
+    if (sorting === undefined) {
       return {
         filter
       };
     }
 
-    const sorting = sortByOptions[this.sortBy];
-
+    console.debug("sorting", sorting);
     return { filter, sorting };
   }
 
@@ -240,10 +244,13 @@ export class AnnotationSearchParameters
     // e.g. audioRecordings.projects.id: { in: [1, 2, 3] }
     // however, the api doesn't currently support this functionality
     // therefore, we do a virtual join by filtering on the project/region site
-    // ids on the client
+    // ids on the client.
+    //
+    // Note that we use a !== undefined assertion here (instead of a truthy
+    // assertion) so that a site/region id of 0 is still passes this condition.
     if (this.routeSiteId) {
       siteIds = [this.routeSiteId];
-    } else if (this.routeRegionId) {
+    } else if (this.routeRegionId ) {
       siteIds = Array.from(this.routeRegionModel.siteIds);
     } else {
       siteIds = Array.from(this.routeProjectModel.siteIds);
