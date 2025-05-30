@@ -45,6 +45,14 @@ export const sortByOptions = {
     orderBy: "score",
     direction: "desc",
   },
+  "upload-date-asc": {
+    orderBy: "createdAt",
+    direction: "asc",
+  },
+  "upload-date-desc": {
+    orderBy: "createdAt",
+    direction: "desc",
+  },
 } as const satisfies Record<string, Sorting<keyof AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
@@ -207,14 +215,11 @@ export class AnnotationSearchParameters
     const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
     const filter = this.eventDateTimeFilters(siteFilters);
 
-    const sorting = sortByOptions[this.sortBy];
+    const sorting = this.sortingFilters();
     if (sorting === undefined) {
-      return {
-        filter
-      };
+      return { filter };
     }
 
-    console.debug("sorting", sorting);
     return { filter, sorting };
   }
 
@@ -235,7 +240,7 @@ export class AnnotationSearchParameters
     }
   }
 
-  public routeFilters(): InnerFilter<AudioEvent> {
+  private routeFilters(): InnerFilter<AudioEvent> {
     let siteIds: number[] = [];
 
     // because this filter is constructed for audio events, but the project
@@ -260,7 +265,7 @@ export class AnnotationSearchParameters
       "audioRecordings.siteId": {
         in: siteIds,
       },
-    } as any;
+    } as InnerFilter<AudioEvent>;
   }
 
   private recordingDateTimeFilters(
@@ -294,5 +299,14 @@ export class AnnotationSearchParameters
     initialFilter: InnerFilter<AudioEvent>
   ): InnerFilter<AudioEvent> {
     return initialFilter;
+  }
+
+  private sortingFilters(): Sorting<keyof AudioEvent> {
+    const defaultSortKey = "upload-date-asc";
+    const sortKey = this.sortBy in sortByOptions
+      ? this.sortBy
+      : defaultSortKey;
+
+    return sortByOptions[sortKey];
   }
 }

@@ -103,14 +103,18 @@
     </div>
   </div>
 
-  <div cclass="mt-4 mb-4">
+  <div class="mt-2 mb-2">
     <label for="sort-input">Sort by</label>
     <select
       id="sort-input"
       class="form-select"
+      placeholder="Upload Date (Ascending)"
       [value]="searchParameters.sortBy"
       (change)="updateSortBy($event)"
     >
+      <option value="upload-date-asc">Upload Date (Ascending)</option>
+      <option value="upload-date-desc">Upload Date (Descending)</option>
+
       <option value="score-asc">Score (Ascending)</option>
       <option value="score-desc">Score (Descending)</option>
     </select>
