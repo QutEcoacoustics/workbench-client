@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { IAnnotationSearchParameters, sortByOptions } from "@components/annotations/pages/annotationSearchParameters";
+import { IAnnotationSearchParameters, sortingOptions } from "@components/annotations/pages/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnnotationSearchParameters(
@@ -22,8 +22,8 @@ export function generateAnnotationSearchParameters(
     eventDate: [modelData.dateTime(), modelData.dateTime()],
     eventTime: [modelData.time(), modelData.time()],
     daylightSavings: modelData.bool(),
-    sortBy: modelData.helpers.arrayElement(
-      Object.keys(sortByOptions) as any,
+    sort: modelData.helpers.arrayElement(
+      Object.keys(sortingOptions) as any,
     ),
     ...data,
   };

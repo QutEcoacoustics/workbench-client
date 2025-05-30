@@ -190,7 +190,13 @@ export class AnnotationSearchFormComponent implements OnInit {
       return;
     }
 
-    this.searchParameters.sortBy = event.target.value || null;
+    const newValue = event.target.value;
+    if (newValue === "upload-date-asc") {
+      this.searchParameters.sort = null;
+    } else {
+      this.searchParameters.sort = newValue;
+    }
+
     this.searchParametersChange.emit(this.searchParameters);
   }
 }

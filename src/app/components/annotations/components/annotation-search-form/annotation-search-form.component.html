@@ -109,7 +109,7 @@
       id="sort-input"
       class="form-select"
       placeholder="Upload Date (Ascending)"
-      [value]="searchParameters.sortBy"
+      [value]="searchParameters.sort ?? 'upload-date-asc'"
       (change)="updateSortBy($event)"
     >
       <option value="upload-date-asc">Upload Date (Ascending)</option>
