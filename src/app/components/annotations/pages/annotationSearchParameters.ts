@@ -36,7 +36,7 @@ import { DateTime, Duration } from "luxon";
 
 export type SortingKey = string;
 
-export const sortByOptions = {
+export const sortingOptions = {
   "score-asc": {
     orderBy: "score",
     direction: "asc",
@@ -86,7 +86,7 @@ export interface IAnnotationSearchParameters {
   eventDate: MonoTuple<DateTime, 2>;
   eventTime: MonoTuple<Duration, 2>;
 
-  sortBy: SortingKey;
+  sort: SortingKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -107,7 +107,7 @@ const serializationTable: IQueryStringParameterSpec<
   regions: jsNumberArray,
   sites: jsNumberArray,
 
-  sortBy: jsString,
+  sort: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -167,7 +167,7 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  public sortBy: SortingKey;
+  public sort: SortingKey;
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
@@ -303,10 +303,10 @@ export class AnnotationSearchParameters
 
   private sortingFilters(): Sorting<keyof AudioEvent> {
     const defaultSortKey = "upload-date-asc";
-    const sortKey = this.sortBy in sortByOptions
-      ? this.sortBy
+    const sortingKey = this.sort in sortingOptions
+      ? this.sort
       : defaultSortKey;
 
-    return sortByOptions[sortKey];
+    return sortingOptions[sortingKey];
   }
 }

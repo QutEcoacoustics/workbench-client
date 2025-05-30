@@ -41,7 +41,7 @@ describe("annotationSearchParameters", () => {
     expect(dataModel.toFilter()).toEqual(expectedFilters);
   });
 
-  fit("should create correct filter condition when filters is set", () => {
+  it("should create correct filter condition when filters is set", () => {
     const mockQueryParameters: Params = {
       audioRecordings: "11,12,13",
       tags: "4,5,6",
