@@ -56,7 +56,7 @@ describe("isLoggedInGuard", () => {
     expect(result).toBeTrue();
   });
 
-  fit("should navigate to the login page if the user is not logged in", async () => {
+  it("should navigate to the login page if the user is not logged in", async () => {
     setLoggedIn(false);
     const expectedRouterLocation = router.createUrlTree([loginRoute.toRouterLink()], {
       queryParams: {

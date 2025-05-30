@@ -31,7 +31,7 @@ export class ConfigService {
     private notification: ToastService,
     private theme: ThemeService,
     handler: HttpBackend,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
+    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
   ) {
     // This is to bypass the interceptor and prevent circular dependencies
     // (interceptor requires API_ROOT)
@@ -50,14 +50,6 @@ export class ConfigService {
     if (defaultConfig) {
       this.setConfig(await defaultConfig);
       await embedGoogleServicesIfValid();
-      return;
-    }
-
-    // if we are in ssr, we can read the file directly from the file system
-    // instead of using the http client
-    if (this.isServer) {
-      const config = await import("../../../assets/environment.json");
-      this.setConfig(new Configuration(config));
       return;
     }
 
