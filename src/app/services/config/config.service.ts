@@ -53,14 +53,6 @@ export class ConfigService {
       return;
     }
 
-    // if we are in ssr, we can read the file directly from the file system
-    // instead of using the http client
-    if (this.isServer && global.config !== undefined) {
-      const config = global.config;
-      this.setConfig(new Configuration(config));
-      return;
-    }
-
     return firstValueFrom(
       this.http.get("assets/environment.json").pipe(
         retry({ count: 5, delay: 250 }),
