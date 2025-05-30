@@ -153,6 +153,9 @@ export class AnnotationSearchParameters
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
 
+  // These model ids are specified in the query string parameters.
+  // If the query string parameters and route parameters conflict, the route
+  // parameters will be used over these query string parameters.
   public projects: CollectionIds;
   public regions: CollectionIds;
   public sites: CollectionIds;
@@ -230,19 +233,7 @@ export class AnnotationSearchParameters
     );
   }
 
-  public modelFilters(): InnerFilter<Project | Region | Site> {
-    if (this.siteModels.length > 0) {
-      return filterModelIds("sites", this.sites);
-    } else if (this.regionModels.length > 0) {
-      return filterModelIds("regions", this.regions);
-    } else {
-      return filterModelIds("projects", this.projects);
-    }
-  }
-
   private routeFilters(): InnerFilter<AudioEvent> {
-    let siteIds: number[] = [];
-
     // because this filter is constructed for audio events, but the project
     // model is associated with the audio recording model, we need to do a
     // association of an association filter
@@ -250,22 +241,60 @@ export class AnnotationSearchParameters
     // however, the api doesn't currently support this functionality
     // therefore, we do a virtual join by filtering on the project/region site
     // ids on the client.
-    //
-    // Note that we use a !== undefined assertion here (instead of a truthy
-    // assertion) so that a site/region id of 0 is still passes this condition.
-    if (this.routeSiteId) {
-      siteIds = [this.routeSiteId];
-    } else if (this.routeRegionId ) {
-      siteIds = Array.from(this.routeRegionModel.siteIds);
-    } else {
-      siteIds = Array.from(this.routeProjectModel.siteIds);
-    }
+    const modelSiteIds = this.siteIds();
 
     return {
       "audioRecordings.siteId": {
-        in: siteIds,
+        in: modelSiteIds,
       },
     } as InnerFilter<AudioEvent>;
+  }
+
+  // This method gets all of the models in the route and query string
+  // parameters, and extracts their site ids.
+  // This is needed because the API doesn't support filtering audio events by
+  // projects or regions.
+  //
+  // This method will return the most specific list of site ids from the route
+  // and qsps models
+  //
+  // TODO: remove this method once the API supports filtering audio events by
+  // projects, and regions.
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/687
+  private siteIds(): Id[] {
+    const qspSites = this.sites ? Array.from(this.sites) : [];
+
+    // We use a !== undefined condition here instead of a truthy assertion so
+    // that a route site if of 0 also passes this condition.
+    if (this.routeSiteId || this.routeSiteId === 0) {
+      return [this.routeSiteId];
+    } else if (qspSites.length > 0) {
+      return qspSites;
+    }
+
+    // If there are no route or qsp site models, the next most specific level
+    // is the region level.
+    const qspRegions = this.regions ? Array.from(this.regions) : [];
+
+    if (this.routeRegionId || this.routeRegionId === 0) {
+      return Array.from(this.routeRegionModel.siteIds);
+    } else if (qspRegions.length > 0) {
+      return qspRegions;
+    }
+
+    const qspProjects = this.projects ? Array.from(this.projects) : [];
+
+    if (this.routeProjectId || this.routeProjectId === 0) {
+      return Array.from(this.routeProjectModel.siteIds);
+    } else if (qspProjects.length > 0) {
+      return qspProjects;
+    }
+
+    // This condition should never hit in regular use.
+    // We return an empty array here instead of throwing an error in the hope
+    // that the application can recover instead of crashing all work.
+    console.error("Failed to find any scoped route or qsps models");
+    return [];
   }
 
   private recordingDateTimeFilters(
