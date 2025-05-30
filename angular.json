@@ -58,7 +58,6 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "prerender": false,
             "outputMode": "server"
           },
           "configurations": {

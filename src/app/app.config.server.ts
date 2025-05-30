@@ -1,4 +1,5 @@
-import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
+import { existsSync, readFileSync } from "node:fs";
+import { mergeApplicationConfig, ApplicationConfig, InjectionToken } from "@angular/core";
 import { provideServerRendering } from "@angular/platform-server";
 import {
   NgHttpCachingConfig,
@@ -13,6 +14,20 @@ import { environment } from "src/environments/environment";
 import { provideServerRouting } from "@angular/ssr";
 import { appConfig } from "./app.config";
 import { serverRoutes } from "./app.routes";
+
+const ENVIRONMENT = new InjectionToken("ENVIRONMENT");
+
+function readConfig() {
+  const environmentPath = environment.production
+    ? "/environment.json"
+    : "./src/assets/environment.json";
+
+  if (existsSync(environmentPath)) {
+    const rawConfig = readFileSync(environmentPath, "utf-8").toString();
+    return JSON.parse(rawConfig);
+  }
+}
+global.config = readConfig();
 
 // we disable caching on the server to prevent potentially serving stale data
 // and data that requires authorization to unauthenticated users
