@@ -264,9 +264,9 @@ export class AnnotationSearchParameters
   private siteIds(): Id[] {
     const qspSites = this.sites ? Array.from(this.sites) : [];
 
-    // We use a !== undefined condition here instead of a truthy assertion so
-    // that a route site if of 0 also passes this condition.
-    if (this.routeSiteId || this.routeSiteId === 0) {
+    // We use a !== null condition here instead of a truthy assertion so that
+    // a route site if of 0 also passes this condition.
+    if (this.routeSiteId !== null) {
       return [this.routeSiteId];
     } else if (qspSites.length > 0) {
       return qspSites;
@@ -276,7 +276,7 @@ export class AnnotationSearchParameters
     // is the region level.
     const qspRegions = this.regions ? Array.from(this.regions) : [];
 
-    if (this.routeRegionId || this.routeRegionId === 0) {
+    if (this.routeRegionId !== null) {
       return Array.from(this.routeRegionModel.siteIds);
     } else if (qspRegions.length > 0) {
       return qspRegions;
@@ -284,7 +284,7 @@ export class AnnotationSearchParameters
 
     const qspProjects = this.projects ? Array.from(this.projects) : [];
 
-    if (this.routeProjectId || this.routeProjectId === 0) {
+    if (this.routeProjectId !== null) {
       return Array.from(this.routeProjectModel.siteIds);
     } else if (qspProjects.length > 0) {
       return qspProjects;
