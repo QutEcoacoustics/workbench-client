@@ -218,8 +218,21 @@ describe("queryStringParameters", () => {
 
       const result = deserializeParamsToObject(testInput, testSpec);
 
-      expect(result["time"][0]).toEqual(null);
+      expect(result["time"][0]).toBeNull();
       expect(result["time"][1].toFormat("hh:mm")).toEqual("12:12");
+    });
+
+    it("should emit null values if a number param is not a number", () => {
+      const testSpec: IQueryStringParameterSpec = {
+        badId: jsNumber,
+      };
+
+      const testInput: Params = {
+        badId: "this is not a number",
+      };
+
+      const result = deserializeParamsToObject(testInput, testSpec);
+      expect(result["badId"]).toBeNull();
     });
   });
 });
