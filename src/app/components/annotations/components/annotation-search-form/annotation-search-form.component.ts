@@ -28,6 +28,8 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { WIPComponent } from "@shared/wip/wip.component";
+import { filterModel } from "@helpers/filters/filters";
+import { InnerFilter } from "@baw-api/baw-api.service";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -115,6 +117,28 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
   }
 
+  /**
+    * Creates a filter condition to fetch models scoped to the current route
+    * models.
+    * This can be used in the typeaheads where you need to provide search
+    * results for site, regions, etc... under a parent model (e.g. project).
+    */
+  protected routeModelFilters(): InnerFilter<Project | Region | Site> {
+    if (this.site) {
+      return filterModel("sites", this.site);
+    } else if (this.region) {
+      return filterModel("regions", this.region);
+    } else if (this.project){
+      return filterModel("projects", this.project);
+    }
+
+    // We should never get to this condition because each annotation search
+    // should at least be scoped under a project.
+    // However, I have included this condition so that if we ever get into this
+    // unexpected state, the client doesn't completely crash and can recover.
+    return {};
+  }
+
   protected toggleAdvancedFilters(): void {
     this.hideAdvancedFilters = !this.hideAdvancedFilters;
 
@@ -181,6 +205,22 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected updateOnlyUnverified(value: boolean): void {
     this.searchParameters.onlyUnverified = value;
+    this.searchParametersChange.emit(this.searchParameters);
+  }
+
+  public updateSortBy(event: Event): void {
+    if (!(event.target instanceof HTMLSelectElement)) {
+      console.warn("Attempted to update sort key through non-select element");
+      return;
+    }
+
+    const newValue = event.target.value;
+    if (newValue === "upload-date-asc") {
+      this.searchParameters.sort = null;
+    } else {
+      this.searchParameters.sort = newValue;
+    }
+
     this.searchParametersChange.emit(this.searchParameters);
   }
 }
