@@ -6,122 +6,126 @@ import { Params } from "@angular/router";
 import { DateTime } from "luxon";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
-function addRouteModels(
-  dataModel: AnnotationSearchParameters,
-): AnnotationSearchParameters {
-  const mockProjectId = modelData.id();
-  dataModel.routeProjectId = modelData.id();
-
-  const mockSiteIds = modelData.ids();
-  dataModel.routeProjectModel = new Project({
-    id: mockProjectId,
-    siteIds: mockSiteIds,
-  });
-
-  return dataModel;
+interface SearchParamtersTest {
+  name: string;
+  inputParams: Params;
+  expectedFitlers: () => Filters<AudioEvent>;
 }
 
 describe("annotationSearchParameters", () => {
+  let routeProject: Project;
+
   it("should create", () => {
     const dataModel = new AnnotationSearchParameters();
     expect(dataModel).toBeInstanceOf(AnnotationSearchParameters);
   });
 
-  it("should create correct default filters", () => {
-    const dataModel = addRouteModels(new AnnotationSearchParameters());
+  function createParameterModel(params?: Params): AnnotationSearchParameters {
+    const dataModel = new AnnotationSearchParameters(params);
 
-    const expectedFilters = {
-      filter: {
-        "audioRecordings.siteId": {
-          in: Array.from(dataModel.routeProjectModel.siteIds),
-        },
-      },
-    } as Filters<AudioEvent>;
+    const mockProjectId = modelData.id();
+    dataModel.routeProjectId = modelData.id();
 
-    expect(dataModel.toFilter()).toEqual(expectedFilters);
-  });
+    const mockSiteIds = modelData.ids();
+    routeProject = new Project({
+      id: mockProjectId,
+      siteIds: mockSiteIds,
+    });
 
-  it("should create correct filter condition when filters is set", () => {
-    const mockQueryParameters: Params = {
-      audioRecordings: "11,12,13",
-      tags: "4,5,6",
-      recordingDate: ",2020-03-01",
+    dataModel.routeProjectModel = routeProject;
 
-      regions: "2,3,4,5",
-      sites: "6,7,8,9",
-    };
+    return dataModel;
+  }
 
-    const dataModel = addRouteModels(
-      new AnnotationSearchParameters(mockQueryParameters),
-    );
-
-    // Note that there are no sorting parameters in this expected filter.
-    // If there are sorting parameters (even empty objects) in your resulting
-    // filters, something has gone wrong.
-    const expectedFilters = {
-      filter: {
-        and: [
-          { "tags.id": { in: [4, 5, 6] } },
-          {
-            "audioRecordings.recordedDate": {
-              lessThan: DateTime.fromISO("2020-03-01T00:00:00.000Z", { zone: "utc" })
-            }
+  const testCases: SearchParamtersTest[] = [
+    {
+      name: "should create correct default filters",
+      inputParams: undefined,
+      expectedFitlers: () => ({
+        filter: {
+          "audioRecordings.siteId": {
+            in: Array.from(routeProject.siteIds),
           },
-          {
-            "audioRecordings.siteId": {
-              in: Array.from(dataModel.routeProjectModel.siteIds),
+        },
+        sorting: {
+          orderBy: "createdAt",
+          direction: "asc",
+        },
+      } as Filters<AudioEvent>),
+    },
+    {
+      name: "should create correct filter condition when filters is set",
+      inputParams: {
+        audioRecordings: "11,12,13",
+        tags: "4,5,6",
+        recordingDate: ",2020-03-01",
+
+        regions: "2,3,4,5",
+        sites: "6,7,8,9",
+      },
+      expectedFitlers: () => ({
+        filter: {
+          and: [
+            { "tags.id": { in: [4, 5, 6] } },
+            {
+              "audioRecordings.recordedDate": {
+                lessThan: DateTime.fromISO("2020-03-01T00:00:00.000Z", { zone: "utc" })
+              }
             },
-          },
-        ],
+            {
+              "audioRecordings.siteId": {
+                in: Array.from(routeProject.siteIds),
+              },
+            },
+          ],
+        },
+        sorting: {
+          orderBy: "createdAt",
+          direction: "asc",
+        },
+      }),
+    },
+    {
+      name: "should create correct filter condition when both filters and sorting is set",
+      inputParams: {
+        audioRecordings: "11,12,13",
+        tags: "4,5,6",
+        recordingDate: ",2020-03-01",
+
+        regions: "2,3,4,5",
+        sites: "6,7,8,9",
+
+        sort: "score-asc",
       },
-    } as Filters<AudioEvent>;
-
-    expect(dataModel.toFilter()).toEqual(expectedFilters);
-  });
-
-  it("should create correct filter condition when both filters and sorting is set", () => {
-    const mockQueryParameters: Params = {
-      audioRecordings: "11,12,13",
-      tags: "4,5,6",
-      recordingDate: ",2020-03-01",
-
-      regions: "2,3,4,5",
-      sites: "6,7,8,9",
-
-      sortBy: "score-asc",
-    };
-
-    const expectedFilters = {
-      filter: {
-        "audioRecordings.id": {
-          in: [11, 12, 13],
+      expectedFitlers: () => ({
+        filter: {
+          and: [
+            { "audioRecordings.id": { in: [11, 12, 13] } },
+            { "tags.id": { in: [4, 5, 6] } },
+            {
+              recordedDate: {
+                lessThan: {
+                  expressions: ["local_offset", "time_of_day"],
+                  value: "22:15",
+                },
+              },
+            },
+            { "regions.id": { in: [2, 3, 4, 5] } },
+            { "sites.id": { in: [6, 7, 8, 9] } }
+          ],
         },
-        "tags.id": {
-          in: [4, 5, 6],
+        sorting: {
+          orderBy: "score",
+          direction: "asc",
         },
-        recordedDate: {
-          lessThan: {
-            expressions: ["local_offset", "time_of_day"],
-            value: "22:15",
-          },
-        },
-        "regions.id": {
-          in: [2, 3, 4, 5],
-        },
-        "sites.id": {
-          in: [6, 7, 8, 9],
-        },
-      },
-      sorting: {
-        orderBy: "score",
-        direction: "asc",
-      },
-    } as Filters<AudioEvent>;
+      } as Filters<AudioEvent>),
+    },
+  ];
 
-    const dataModel = addRouteModels(
-      new AnnotationSearchParameters(mockQueryParameters),
-    );
-
-    expect(dataModel.toFilter()).toEqual(expectedFilters);
-  });
+  for (const test of testCases) {
+    it(test.name, () => {
+      const dataModel = createParameterModel(test.inputParams);
+      expect(dataModel.toFilter()).toEqual(test.expectedFitlers());
+    });
+  }
 });
