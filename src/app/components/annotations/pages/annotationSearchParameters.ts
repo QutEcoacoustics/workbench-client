@@ -10,6 +10,7 @@ import {
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
@@ -288,7 +289,7 @@ export class AnnotationSearchParameters
 
     // We use a !== null condition here instead of a truthy assertion so that
     // a route site if of 0 also passes this condition.
-    if (this.routeSiteId !== null) {
+    if (isInstantiated(this.routeSiteId)) {
       return [this.routeSiteId];
     } else if (qspSites.length > 0) {
       return qspSites;
@@ -298,7 +299,7 @@ export class AnnotationSearchParameters
     // is the region level.
     const qspRegions = this.regions ? Array.from(this.regions) : [];
 
-    if (this.routeRegionId !== null) {
+    if (isInstantiated(this.routeRegionId)) {
       return Array.from(this.routeRegionModel.siteIds);
     } else if (qspRegions.length > 0) {
       return qspRegions;
@@ -306,7 +307,7 @@ export class AnnotationSearchParameters
 
     const qspProjects = this.projects ? Array.from(this.projects) : [];
 
-    if (this.routeProjectId !== null) {
+    if (isInstantiated(this.routeProjectId)) {
       return Array.from(this.routeProjectModel.siteIds);
     } else if (qspProjects.length > 0) {
       return qspProjects;

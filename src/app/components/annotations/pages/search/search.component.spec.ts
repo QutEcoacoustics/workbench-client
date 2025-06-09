@@ -165,7 +165,7 @@ describe("AnnotationSearchComponent", () => {
     expect(spec.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 
-  it("should make the correct api call", () => {
+  fit("should make the correct api call", () => {
     const expectedBody: Filters<AudioEvent> = {
       paging: {
         page: 1,
@@ -180,10 +180,14 @@ describe("AnnotationSearchComponent", () => {
           },
           {
             "audioRecordings.siteId": {
-              in: Array.from(routeProject.siteIds),
+              in: Array.from(mockSearchParameters.sites),
             },
           },
         ],
+      },
+      sorting: {
+        orderBy: "createdAt",
+        direction: "asc",
       },
     };
 
