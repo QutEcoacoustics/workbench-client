@@ -64,6 +64,7 @@ export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
   onlyUnverified: boolean;
+  score: number;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
@@ -102,6 +103,7 @@ const serializationTable: IQueryStringParameterSpec<
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
+  score: jsNumber,
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
   recordingTime: luxonDurationArray,
@@ -154,6 +156,7 @@ export class AnnotationSearchParameters
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
   public onlyUnverified: boolean;
+  public score: number;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;

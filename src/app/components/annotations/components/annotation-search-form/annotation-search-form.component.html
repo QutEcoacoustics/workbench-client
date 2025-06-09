@@ -56,6 +56,20 @@
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
+  <label class="form-label w-100">
+    Minimum Score
+    <input
+      id="score-input"
+      type="number"
+      class="form-control"
+      placeholder="0.00"
+      step="0.01"
+      max="1"
+      min="0"
+      (keyup)="updateScore($event.target['value'])"
+    />
+  </label>
+
   <baw-wip>
     <div class="form-check mt-2">
       <!--

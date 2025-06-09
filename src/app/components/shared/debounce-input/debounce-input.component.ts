@@ -18,7 +18,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
         class="form-control"
         [value]="default ?? ''"
         [placeholder]="placeholder"
-        (keyup)="onFilter($event)"
+        (keyup)="inputChanged($event)"
       />
     </div>
   `,
@@ -44,7 +44,7 @@ export class DebounceInputComponent
       .subscribe((input) => this.filter.next(input));
   }
 
-  public onFilter(event: KeyboardEvent) {
+  protected inputChanged(event: KeyboardEvent) {
     this.input$.next((event.target as HTMLInputElement).value);
   }
 }

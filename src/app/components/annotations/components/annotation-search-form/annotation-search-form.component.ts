@@ -175,6 +175,11 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
+  protected updateScore(value: number) {
+    this.searchParameters.score = value;
+    this.searchParametersChange.emit(this.searchParameters);
+  }
+
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.recordingDate = [
@@ -209,7 +214,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  public updateSortBy(event: Event): void {
+  protected updateSortBy(event: Event): void {
     // We use a type guard here because event.target is typed as a HTMLElement
     // which does not have the "value" property.
     // By type narrowing the target to a HTMLSelectElement, we can ensure that

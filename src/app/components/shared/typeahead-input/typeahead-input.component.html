@@ -1,53 +1,53 @@
 <div>
-  @if (label) {
-    <label for="typeahead-input" class="form-label">
+  <label class="form-label w-100">
+    @if (label) {
       {{ label }}
-    </label>
-  }
-  <div class="typeahead-input-container form-control">
-    @if (multipleInputs) {
-      @for (item of value; track item; let i = $index) {
-        <span
-          class="item-pill badge"
-          tabindex="0"
-          (keydown.backspace)="removeItem(i)"
-          (keydown.delete)="removeItem(i)"
-        >
-          <fa-icon
-            class="remove-button text-sm"
-            (click)="removeItem(i)"
-            [icon]="['fas', 'square-xmark']"
-          ></fa-icon>
-
-          @if (resultTemplate) {
-            <ng-container
-              [ngTemplateOutletContext]="{
-                result: item,
-                term: inputModel,
-                formatter: templateFormatter,
-              }"
-              [ngTemplateOutlet]="resultTemplate"
-            ></ng-container>
-          } @else {
-            {{ item }}
-          }
-        </span>
-      }
     }
+    <div class="typeahead-input-container form-control">
+      @if (multipleInputs) {
+        @for (item of value; track item; let i = $index) {
+          <span
+            class="item-pill badge"
+            tabindex="0"
+            (keydown.backspace)="removeItem(i)"
+            (keydown.delete)="removeItem(i)"
+          >
+            <fa-icon
+              class="remove-button text-sm"
+              (click)="removeItem(i)"
+              [icon]="['fas', 'square-xmark']"
+            ></fa-icon>
 
-    <input
-      id="typeahead-input"
-      name="typeahead-input"
-      type="text"
-      class="form-control"
-      [placeholder]="value.length < 1 ? inputPlaceholder : ''"
-      [ngbTypeahead]="findOptions"
-      [resultTemplate]="resultTemplate"
-      [(ngModel)]="inputModel"
-      (focus)="focus$.next($any($event).target.value)"
-      (selectItem)="onItemSelected($event)"
-      (keydown.backspace)="removeLastItem()"
-      [disabled]="inputDisabled"
-    />
-  </div>
+            @if (resultTemplate) {
+              <ng-container
+                [ngTemplateOutletContext]="{
+                  result: item,
+                  term: inputModel,
+                  formatter: templateFormatter,
+                }"
+                [ngTemplateOutlet]="resultTemplate"
+              ></ng-container>
+            } @else {
+              {{ item }}
+            }
+          </span>
+        }
+      }
+
+      <input
+        id="typeahead-input"
+        name="typeahead-input"
+        type="text"
+        class="form-control"
+        [placeholder]="value.length < 1 ? inputPlaceholder : ''"
+        [ngbTypeahead]="findOptions"
+        [resultTemplate]="resultTemplate"
+        [(ngModel)]="inputModel"
+        (focus)="focus$.next($any($event).target.value)"
+        (selectItem)="onItemSelected($event)"
+        (keydown.backspace)="removeLastItem()"
+        [disabled]="inputDisabled"
+      />
+    </div>
+  </label>
 </div>
