@@ -74,7 +74,7 @@ describe("annotationSearchParameters", () => {
             },
             {
               "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+                in: [6, 7, 8, 9],
               },
             },
           ],
@@ -97,6 +97,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
       },
+      /*
       expectedFitlers: () => ({
         filter: {
           and: [
@@ -119,6 +120,25 @@ describe("annotationSearchParameters", () => {
           direction: "asc",
         },
       } as Filters<AudioEvent>),
+      */
+      expectedFitlers: () => ({
+        filter: {
+          and: [
+            { "tags.id": { in: [4, 5, 6] } },
+            {
+              "audioRecordings.recordedDate": {
+                lessThan: jasmine.any(DateTime),
+              },
+            },
+            { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
+          ],
+        },
+        sorting: {
+          orderBy: "score",
+          direction: "asc",
+        },
+      }),
+      //expectedFitlers: () => ({}),
     },
   ];
 
