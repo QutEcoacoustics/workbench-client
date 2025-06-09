@@ -132,10 +132,11 @@ export class AnnotationSearchFormComponent implements OnInit {
       return filterModel("projects", this.project);
     }
 
-    // We should never get to this condition because each annotation search
-    // should at least be scoped under a project.
-    // However, I have included this condition so that if we ever get into this
-    // unexpected state, the client doesn't completely crash and can recover.
+    // When an empty object is returned, annotations will not be filtered to a
+    // route model, meaning that all annotations will be returned regardless of
+    // project/region/site affinity.
+    // E.g. On the library page, we want to initially view all annotations
+    // regardless of what project/region/site they belong to.
     return {};
   }
 
@@ -209,21 +210,22 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   public updateSortBy(event: Event): void {
+    // We use a type guard here because event.target is typed as a HTMLElement
+    // which does not have the "value" property.
+    // By type narrowing the target to a HTMLSelectElement, we can ensure that
+    // the "value" property is defined.
+    //
+    // Note that this condition should never trigger, and because this method
+    // should always be called from a select element event listener, so this
+    // type guard is purely for correctness and type narrowing.
+    // Additionally, JIT should be able to optimize away this guard before the
+    // method is ever called.
     if (!(event.target instanceof HTMLSelectElement)) {
       console.warn("Attempted to update sort key through non-select element");
       return;
     }
 
-    // So that we can minimize the number of query string parameters, we use
-    // upload-date-asc as the default if there is no "sort" query string
-    // parameter.
-    const newValue = event.target.value;
-    if (newValue === "upload-date-asc") {
-      this.searchParameters.sort = null;
-    } else {
-      this.searchParameters.sort = newValue;
-    }
-
+    this.searchParameters.sort = event.target.value;
     this.searchParametersChange.emit(this.searchParameters);
   }
 }

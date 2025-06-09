@@ -38,26 +38,27 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
-export type SortingKey = keyof typeof sortingOptions;
+export type SortingKey = "score-asc" | "score-desc" | "created-asc" | "created-desc";
 
-export const sortingOptions = {
-  "score-asc": {
+// prettier-ignore
+export const sortingOptions = new Map([
+  ["score-asc", {
     orderBy: "score",
     direction: "asc",
-  },
-  "score-desc": {
+  }],
+  ["score-desc", {
     orderBy: "score",
     direction: "desc",
-  },
-  "upload-date-asc": {
+  }],
+  ["created-asc", {
     orderBy: "createdAt",
     direction: "asc",
-  },
-  "upload-date-desc": {
+  }],
+  ["created-desc", {
     orderBy: "createdAt",
     direction: "desc",
-  },
-} as const satisfies Record<string, Sorting<keyof AudioEvent>>;
+  }],
+]) satisfies Map<string, Sorting<keyof AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -186,8 +187,17 @@ export class AnnotationSearchParameters
    * underlying value.
    */
   public set sort(value: string) {
-    if (this.isSortingKey(value)) {
-      this._sort = value;
+    // We have a !isInstantiated condition here so that the sorting value can be
+    // explicitly nullified/removed after creation.
+    if (this.isSortingKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // upload-date-asc as the default if there is no "sort" query string
+      // parameter.
+      if (value === "created-asc") {
+        this._sort = null;
+      } else {
+        this._sort = value;
+      }
     } else {
       console.error(`Incorrect sorting key: "${value}"`);
     }
@@ -360,14 +370,16 @@ export class AnnotationSearchParameters
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
-    const defaultSortKey = "upload-date-asc";
-    const sortingKey = this.sort in sortingOptions ? this.sort : defaultSortKey;
+    const defaultSortKey = "created-asc" satisfies SortingKey;
+    const sortingKey = this.isSortingKey(this.sort)
+      ? this.sort
+      : defaultSortKey;
 
     // If the sortingKey does not exist in the sortingOptions, this function
     // will return "undefined".
     // This same logic applies to if the sortingKey is "null" indicating that
     // the "sort" query string parameter is not set.
-    return sortingOptions[sortingKey];
+    return sortingOptions.get(sortingKey);
   }
 
   /**
@@ -375,11 +387,11 @@ export class AnnotationSearchParameters
    * "sort" query string parameter.
    */
   private isSortingKey(key: string): key is SortingKey {
-    // We use "hasOwn" instead of "in" here because we don't want to return
+    // We use "has" instead of "in" here because we don't want to return
     // "true" if the key is in the prototype chain.
     // E.g. If we used the "in" operator here, a sorting key of hasOwnProperty
     // would return true, and would attempt to serialize a function when
     // creating the filter request body.
-    return Object.hasOwn(sortingOptions, key);
+    return sortingOptions.has(key);
   }
 }
