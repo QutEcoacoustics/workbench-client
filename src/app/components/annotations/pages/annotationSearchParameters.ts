@@ -27,14 +27,17 @@ import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
-import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
+import {
+  AssociationInjector,
+  HasAssociationInjector,
+} from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
-export type SortingKey = string;
+export type SortingKey = keyof typeof sortingOptions;
 
 export const sortingOptions = {
   "score-asc": {
@@ -129,12 +132,12 @@ export class AnnotationSearchParameters
 {
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: AssociationInjector
+    public injector?: AssociationInjector,
   ) {
     const deserializedObject: IAnnotationSearchParameters =
       deserializeParamsToObject<IAnnotationSearchParameters>(
         queryStringParameters,
-        deserializationTable
+        deserializationTable,
       );
 
     const objectData = {};
@@ -170,11 +173,28 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  public sort: SortingKey;
+  private _sort: SortingKey;
+
+  public get sort(): SortingKey {
+    return this._sort;
+  }
+
+  /**
+   * A getter/setter pair that will reject incorrect sorting values.
+   * This setter can soft reject by logging an error and not updating the
+   * underlying value.
+   */
+  public set sort(value: string) {
+    if (this.isSortingKey(value)) {
+      this._sort = value;
+    } else {
+      console.error(`Incorrect sorting key: "${value}"`);
+    }
+  }
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
-    "audioRecordings"
+    "audioRecordings",
   )
   public audioRecordingModels?: AudioRecording[];
   @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
@@ -218,6 +238,8 @@ export class AnnotationSearchParameters
     const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
     const filter = this.eventDateTimeFilters(siteFilters);
 
+    // If the "sort" query string parameter is not set, this.sortingFilters()
+    // will return undefined.
     const sorting = this.sortingFilters();
     if (sorting === undefined) {
       return { filter };
@@ -229,7 +251,7 @@ export class AnnotationSearchParameters
   public toQueryParams(): Params {
     return serializeObjectToParams<IAnnotationSearchParameters>(
       this,
-      serializationTable
+      serializationTable,
     );
   }
 
@@ -298,12 +320,12 @@ export class AnnotationSearchParameters
   }
 
   private recordingDateTimeFilters(
-    initialFilter: InnerFilter<AudioEvent>
+    initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
       initialFilter,
       this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore
+      this.recordingDateFinishedBefore,
     );
 
     // time filtering is currently disabled until we can filter on custom fields
@@ -325,17 +347,32 @@ export class AnnotationSearchParameters
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
   private eventDateTimeFilters(
-    initialFilter: InnerFilter<AudioEvent>
+    initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     return initialFilter;
   }
 
-  private sortingFilters(): Sorting<keyof AudioEvent> {
+  private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
     const defaultSortKey = "upload-date-asc";
-    const sortingKey = this.sort in sortingOptions
-      ? this.sort
-      : defaultSortKey;
+    const sortingKey = this.sort in sortingOptions ? this.sort : defaultSortKey;
 
+    // If the sortingKey does not exist in the sortingOptions, this function
+    // will return "undefined".
+    // This same logic applies to if the sortingKey is "null" indicating that
+    // the "sort" query string parameter is not set.
     return sortingOptions[sortingKey];
+  }
+
+  /**
+   * A type guard that can be used to narrow the typing of a user provided
+   * "sort" query string parameter.
+   */
+  private isSortingKey(key: string): key is SortingKey {
+    // We use "hasOwn" instead of "in" here because we don't want to return
+    // "true" if the key is in the prototype chain.
+    // E.g. If we used the "in" operator here, a sorting key of hasOwnProperty
+    // would return true, and would attempt to serialize a function when
+    // creating the filter request body.
+    return Object.hasOwn(sortingOptions, key);
   }
 }

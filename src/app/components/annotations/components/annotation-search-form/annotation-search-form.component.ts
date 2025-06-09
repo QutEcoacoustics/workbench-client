@@ -214,6 +214,9 @@ export class AnnotationSearchFormComponent implements OnInit {
       return;
     }
 
+    // So that we can minimize the number of query string parameters, we use
+    // upload-date-asc as the default if there is no "sort" query string
+    // parameter.
     const newValue = event.target.value;
     if (newValue === "upload-date-asc") {
       this.searchParameters.sort = null;

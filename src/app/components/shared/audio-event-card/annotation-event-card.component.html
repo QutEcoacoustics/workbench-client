@@ -29,21 +29,19 @@
       @for (text of annotation().tags; track text; let isLast = $last) {
         <span>
           <a [href]="text.viewUrl">{{ text.text }}</a>
-          @if (!isLast) {
-            ,
-          }
+          @if (!isLast) {, }
         </span>
       }
     </span>
 
     <span class="info-line">
       @if (annotation().audioRecording.site | isUnresolved) {
-        <baw-loading size="sm"></baw-loading>
+        <baw-loading
+          size="sm"
+        ></baw-loading>
       } @else {
         <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-        <a [href]="annotation().audioRecording.site.viewUrl">{{
-          annotation().audioRecording.site.name
-        }}</a>
+        <a [href]="annotation().audioRecording.site.viewUrl">{{ annotation().audioRecording.site.name }}</a>
       }
     </span>
 
@@ -59,9 +57,7 @@
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [href]="annotation().viewUrl"
-        >More information</a
-      >
+      <a class="more-information-link" [href]="annotation().viewUrl">More information</a>
     </span>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { IAnnotationSearchParameters, sortingOptions } from "@components/annotations/pages/annotationSearchParameters";
+import { IAnnotationSearchParameters, SortingKey, sortingOptions } from "@components/annotations/pages/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnnotationSearchParameters(
@@ -23,7 +23,10 @@ export function generateAnnotationSearchParameters(
     eventTime: [modelData.time(), modelData.time()],
     daylightSavings: modelData.bool(),
     sort: modelData.helpers.arrayElement(
-      Object.keys(sortingOptions) as any,
+      // We need to type cast Object.keys here because lib.d's implementation of
+      // Object.keys does not maintain object structural typing, and will return
+      // string[], which incorrectly broadens the type.
+      Object.keys(sortingOptions) as SortingKey[],
     ),
     ...data,
   };
