@@ -28,6 +28,8 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { WIPComponent } from "@shared/wip/wip.component";
+import { filterModel } from "@helpers/filters/filters";
+import { InnerFilter } from "@baw-api/baw-api.service";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -115,6 +117,29 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
   }
 
+  /**
+    * Creates a filter condition to fetch models scoped to the current route
+    * models.
+    * This can be used in the typeaheads where you need to provide search
+    * results for site, regions, etc... under a parent model (e.g. project).
+    */
+  protected routeModelFilters(): InnerFilter<Project | Region | Site> {
+    if (this.site) {
+      return filterModel("sites", this.site);
+    } else if (this.region) {
+      return filterModel("regions", this.region);
+    } else if (this.project){
+      return filterModel("projects", this.project);
+    }
+
+    // When an empty object is returned, annotations will not be filtered to a
+    // route model, meaning that all annotations will be returned regardless of
+    // project/region/site affinity.
+    // E.g. On the library page, we want to initially view all annotations
+    // regardless of what project/region/site they belong to.
+    return {};
+  }
+
   protected toggleAdvancedFilters(): void {
     this.hideAdvancedFilters = !this.hideAdvancedFilters;
 
@@ -181,6 +206,26 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected updateOnlyUnverified(value: boolean): void {
     this.searchParameters.onlyUnverified = value;
+    this.searchParametersChange.emit(this.searchParameters);
+  }
+
+  public updateSortBy(event: Event): void {
+    // We use a type guard here because event.target is typed as a HTMLElement
+    // which does not have the "value" property.
+    // By type narrowing the target to a HTMLSelectElement, we can ensure that
+    // the "value" property is defined.
+    //
+    // Note that this condition should never trigger, and because this method
+    // should always be called from a select element event listener, so this
+    // type guard is purely for correctness and type narrowing.
+    // Additionally, JIT should be able to optimize away this guard before the
+    // method is ever called.
+    if (!(event.target instanceof HTMLSelectElement)) {
+      console.warn("Attempted to update sort key through non-select element");
+      return;
+    }
+
+    this.searchParameters.sort = event.target.value;
     this.searchParametersChange.emit(this.searchParameters);
   }
 }

@@ -9,7 +9,7 @@
       <oe-indicator>
         <oe-spectrogram
           [id]="spectrogramId"
-          [src]="annotation.audioLink"
+          [src]="annotation().audioLink"
           scaling="stretch"
           color-map="grayscale"
           window-size="512"
@@ -26,7 +26,7 @@
   <div class="card-body">
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
-      @for (text of annotation.tags; track text; let isLast = $last) {
+      @for (text of annotation().tags; track text; let isLast = $last) {
         <span>
           <a [href]="text.viewUrl">{{ text.text }}</a>
           @if (!isLast) {, }
@@ -35,29 +35,29 @@
     </span>
 
     <span class="info-line">
-      @if (annotation.audioRecording.site | isUnresolved) {
+      @if (annotation().audioRecording.site | isUnresolved) {
         <baw-loading
           size="sm"
         ></baw-loading>
       } @else {
         <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-        <a [href]="annotation.audioRecording.site.viewUrl">{{ annotation.audioRecording.site.name }}</a>
+        <a [href]="annotation().audioRecording.site.viewUrl">{{ annotation().audioRecording.site.name }}</a>
       }
     </span>
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'record-vinyl']"></fa-icon>
-      <a [href]="annotation.listenViewUrl">
+      <a [href]="annotation().listenViewUrl">
         <baw-zoned-datetime
-          [value]="annotation.audioRecording.recordedDate"
-          [timezone]="annotation.audioRecording.recordedDateTimezone"
+          [value]="annotation().audioRecording.recordedDate"
+          [timezone]="annotation().audioRecording.recordedDateTimezone"
         ></baw-zoned-datetime>
       </a>
     </span>
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [href]="annotation.viewUrl">More information</a>
+      <a class="more-information-link" [href]="annotation().viewUrl">More information</a>
     </span>
   </div>
 </div>

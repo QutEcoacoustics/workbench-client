@@ -180,10 +180,14 @@ describe("AnnotationSearchComponent", () => {
           },
           {
             "audioRecordings.siteId": {
-              in: Array.from(routeProject.siteIds),
+              in: Array.from(mockSearchParameters.sites),
             },
           },
         ],
+      },
+      sorting: {
+        orderBy: "createdAt",
+        direction: "asc",
       },
     };
 

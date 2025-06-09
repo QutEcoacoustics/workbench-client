@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_RECORDING,
   PROJECT,
@@ -10,12 +10,14 @@ import {
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
   IQueryStringParameterSpec,
   jsBoolean,
   jsNumber,
   jsNumberArray,
+  jsString,
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
@@ -26,12 +28,37 @@ import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
-import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
+import {
+  AssociationInjector,
+  HasAssociationInjector,
+} from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
+
+export type SortingKey = "score-asc" | "score-desc" | "created-asc" | "created-desc";
+
+// prettier-ignore
+export const sortingOptions = new Map([
+  ["score-asc", {
+    orderBy: "score",
+    direction: "asc",
+  }],
+  ["score-desc", {
+    orderBy: "score",
+    direction: "desc",
+  }],
+  ["created-asc", {
+    orderBy: "createdAt",
+    direction: "asc",
+  }],
+  ["created-desc", {
+    orderBy: "createdAt",
+    direction: "desc",
+  }],
+]) satisfies Map<string, Sorting<keyof AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -63,6 +90,8 @@ export interface IAnnotationSearchParameters {
   // https://github.com/QutEcoacoustics/baw-server/issues/687
   eventDate: MonoTuple<DateTime, 2>;
   eventTime: MonoTuple<Duration, 2>;
+
+  sort: SortingKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -82,6 +111,8 @@ const serializationTable: IQueryStringParameterSpec<
   projects: jsNumberArray,
   regions: jsNumberArray,
   sites: jsNumberArray,
+
+  sort: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -103,12 +134,12 @@ export class AnnotationSearchParameters
 {
   public constructor(
     protected queryStringParameters: Params = {},
-    public injector?: AssociationInjector
+    public injector?: AssociationInjector,
   ) {
     const deserializedObject: IAnnotationSearchParameters =
       deserializeParamsToObject<IAnnotationSearchParameters>(
         queryStringParameters,
-        deserializationTable
+        deserializationTable,
       );
 
     const objectData = {};
@@ -127,6 +158,9 @@ export class AnnotationSearchParameters
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
 
+  // These model ids are specified in the query string parameters.
+  // If the query string parameters and route parameters conflict, the route
+  // parameters will be used over these query string parameters.
   public projects: CollectionIds;
   public regions: CollectionIds;
   public sites: CollectionIds;
@@ -141,9 +175,37 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  private _sort: SortingKey;
+
+  public get sort(): SortingKey {
+    return this._sort;
+  }
+
+  /**
+   * A getter/setter pair that will reject incorrect sorting values.
+   * This setter can soft reject by logging an error and not updating the
+   * underlying value.
+   */
+  public set sort(value: string) {
+    // We have a !isInstantiated condition here so that the sorting value can be
+    // explicitly nullified/removed after creation.
+    if (this.isSortingKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // upload-date-asc as the default if there is no "sort" query string
+      // parameter.
+      if (value === "created-asc") {
+        this._sort = null;
+      } else {
+        this._sort = value;
+      }
+    } else {
+      console.error(`Incorrect sorting key: "${value}"`);
+    }
+  }
+
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
-    "audioRecordings"
+    "audioRecordings",
   )
   public audioRecordingModels?: AudioRecording[];
   @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
@@ -183,61 +245,98 @@ export class AnnotationSearchParameters
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.recordingDateTimeFilters(tagFilters);
-    const routeModelFilter = filterAnd(dateTimeFilters, this.routeFilters());
-    const filter = this.eventDateTimeFilters(routeModelFilter);
-    return { filter };
+    const dateTimeFilters = this.recordingFilters(tagFilters);
+    const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
+    const filter = this.eventDateTimeFilters(siteFilters);
+
+    // If the "sort" query string parameter is not set, this.sortingFilters()
+    // will return undefined.
+    const sorting = this.sortingFilters();
+    if (sorting === undefined) {
+      return { filter };
+    }
+
+    return { filter, sorting };
   }
 
   public toQueryParams(): Params {
     return serializeObjectToParams<IAnnotationSearchParameters>(
       this,
-      serializationTable
+      serializationTable,
     );
   }
 
-  public modelFilters(): InnerFilter<Project | Region | Site> {
-    if (this.siteModels.length > 0) {
-      return filterModelIds("sites", this.sites);
-    } else if (this.regionModels.length > 0) {
-      return filterModelIds("regions", this.regions);
-    } else {
-      return filterModelIds("projects", this.projects);
-    }
-  }
-
-  public routeFilters(): InnerFilter<AudioEvent> {
-    let siteIds: number[] = [];
-
+  private routeFilters(): InnerFilter<AudioEvent> {
     // because this filter is constructed for audio events, but the project
     // model is associated with the audio recording model, we need to do a
     // association of an association filter
     // e.g. audioRecordings.projects.id: { in: [1, 2, 3] }
     // however, the api doesn't currently support this functionality
     // therefore, we do a virtual join by filtering on the project/region site
-    // ids on the client
-    if (this.routeSiteId) {
-      siteIds = [this.routeSiteId];
-    } else if (this.routeRegionId) {
-      siteIds = Array.from(this.routeRegionModel.siteIds);
-    } else {
-      siteIds = Array.from(this.routeProjectModel.siteIds);
-    }
+    // ids on the client.
+    const modelSiteIds = this.siteIds();
 
     return {
       "audioRecordings.siteId": {
-        in: siteIds,
+        in: modelSiteIds,
       },
-    } as any;
+    } as InnerFilter<AudioEvent>;
   }
 
-  private recordingDateTimeFilters(
-    initialFilter: InnerFilter<AudioEvent>
+  // This method gets all of the models in the route and query string
+  // parameters, and extracts their site ids.
+  // This is needed because the API doesn't support filtering audio events by
+  // projects or regions.
+  //
+  // This method will return the most specific list of site ids from the route
+  // and qsps models
+  //
+  // TODO: remove this method once the API supports filtering audio events by
+  // projects, and regions.
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/687
+  private siteIds(): Id[] {
+    const qspSites = this.sites ? Array.from(this.sites) : [];
+
+    // We use a !== null condition here instead of a truthy assertion so that
+    // a route site if of 0 also passes this condition.
+    if (isInstantiated(this.routeSiteId)) {
+      return [this.routeSiteId];
+    } else if (qspSites.length > 0) {
+      return qspSites;
+    }
+
+    // If there are no route or qsp site models, the next most specific level
+    // is the region level.
+    const qspRegions = this.regions ? Array.from(this.regions) : [];
+
+    if (isInstantiated(this.routeRegionId)) {
+      return Array.from(this.routeRegionModel.siteIds);
+    } else if (qspRegions.length > 0) {
+      return qspRegions;
+    }
+
+    const qspProjects = this.projects ? Array.from(this.projects) : [];
+
+    if (isInstantiated(this.routeProjectId)) {
+      return Array.from(this.routeProjectModel.siteIds);
+    } else if (qspProjects.length > 0) {
+      return qspProjects;
+    }
+
+    // This condition should never hit in regular use.
+    // We return an empty array here instead of throwing an error in the hope
+    // that the application can recover instead of crashing all work.
+    console.error("Failed to find any scoped route or qsps models");
+    return [];
+  }
+
+  private recordingFilters(
+    initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
       initialFilter,
       this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore
+      this.recordingDateFinishedBefore,
     );
 
     // time filtering is currently disabled until we can filter on custom fields
@@ -252,15 +351,47 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
-    return dateFilter;
+    const recordingFilter = filterModelIds(
+      "audioRecordings",
+      this.audioRecordings,
+      dateFilter,
+    );
+
+    return recordingFilter;
   }
 
   // TODO: this function is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
   private eventDateTimeFilters(
-    initialFilter: InnerFilter<AudioEvent>
+    initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     return initialFilter;
+  }
+
+  private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
+    const defaultSortKey = "created-asc" satisfies SortingKey;
+    const sortingKey = this.isSortingKey(this.sort)
+      ? this.sort
+      : defaultSortKey;
+
+    // If the sortingKey does not exist in the sortingOptions, this function
+    // will return "undefined".
+    // This same logic applies to if the sortingKey is "null" indicating that
+    // the "sort" query string parameter is not set.
+    return sortingOptions.get(sortingKey);
+  }
+
+  /**
+   * A type guard that can be used to narrow the typing of a user provided
+   * "sort" query string parameter.
+   */
+  private isSortingKey(key: string): key is SortingKey {
+    // We use "has" instead of "in" here because we don't want to return
+    // "true" if the key is in the prototype chain.
+    // E.g. If we used the "in" operator here, a sorting key of hasOwnProperty
+    // would return true, and would attempt to serialize a function when
+    // creating the filter request body.
+    return sortingOptions.has(key);
   }
 }

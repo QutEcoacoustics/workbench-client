@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { firstValueFrom } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters, InnerFilter, Paging } from "@baw-api/baw-api.service";
+import { Filters, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
@@ -300,10 +300,12 @@ class VerificationComponent
 
   private filterConditions(page: number): Filters<AudioEvent> {
     const paging: Paging = { page };
-    const filter: InnerFilter<AudioEvent> =
-      this.searchParameters.toFilter().filter;
+    const routeFilters = this.searchParameters.toFilter();
 
-    return { filter, paging };
+    return {
+      paging,
+      ...routeFilters,
+    };
   }
 
   private updateUrlParameters(): void {

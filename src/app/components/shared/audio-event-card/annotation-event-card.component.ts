@@ -3,7 +3,7 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
-  Input,
+  input,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -21,16 +21,15 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
-  @Input({ required: true })
-  public annotation: Annotation;
+  public annotation = input.required<Annotation>();
 
   protected spectrogramId: string;
 
-  @ViewChild("mediaControls")
+  @ViewChild("mediaControls", { static: true })
   private mediaControls: ElementRef<MediaControlsComponent>;
 
   public ngOnInit(): void {
-    this.spectrogramId = `spectrogram-${this.annotation.id}`;
+    this.spectrogramId = `spectrogram-${this.annotation().id}`;
   }
 
   public ngAfterViewInit(): void {

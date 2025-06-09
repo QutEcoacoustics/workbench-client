@@ -64,7 +64,7 @@ export const jsStringArray = {
 /** Converts an object to an Angular `Params` object with stringified values */
 export function serializeObjectToParams<T>(
   queryStringParameters: T,
-  spec: IQueryStringParameterSpec
+  spec: IQueryStringParameterSpec<Partial<T>>
 ): Params {
   const resultParameter: Params = {};
 
@@ -74,17 +74,20 @@ export function serializeObjectToParams<T>(
     return resultParameter;
   }
 
-  Object.entries(queryStringParameters).forEach(
-    ([key, value]: [string, string]) => {
+  // We iterate over the spec instead of using Object.entries on the
+  // queryStringParameter model so that the qsp model can contain getters which
+  // would not be returned by Object.entries.
+  Object.entries(spec).forEach(
+    ([key, serializationTechnique]: [string, ISerializationTechnique]) => {
+      const value = queryStringParameters[key];
+
       // null and undefined values are omitted when used on angular HTTPParams
       // therefore, we should not serialize them as they will have no effect on the query string
-      // we use isInstantiated here because we want to serialize "falsey" values such as 0 and empty strings
+      // we use isInstantiated here because we want to serialize "falsy" values such as 0 and empty strings
       // we also omit empty arrays so that we don't end up with empty query string parameters for arrays
       if (!isInstantiated(value)) {
         return;
       }
-
-      const serializationTechnique = spec[key];
 
       if (serializationTechnique) {
         resultParameter[key] = serializationTechnique.serialize(value);
@@ -124,17 +127,22 @@ function queryStringBoolean(value: string): boolean {
   return value === "true";
 }
 
-function queryStringNumber(value: string): number {
+function queryStringNumber(value: string): number | null {
   // we want to use number here so that if the user inputs a malformed number into the query string parameters
   // the condition is not applied, rather than returning incorrect results that would be returned with parseInt()
-  return Number(value);
+  const parsedNumber = Number(value);
+  if (isNaN(parsedNumber)) {
+    return null;
+  }
+
+  return parsedNumber;
 }
 
 function queryStringArray(value: string): string[] {
   return value.split(",");
 }
 
-function queryStringToNumberArray(value: string): number[] {
+function queryStringToNumberArray(value: string): (number | null)[] {
   return queryStringArray(value).map(queryStringNumber);
 }
 
@@ -142,11 +150,11 @@ function queryStringToBooleanArray(value: string): boolean[] {
   return queryStringArray(value).map(queryStringBoolean);
 }
 
-function queryStringDateArray(value: string): DateTime[] {
+function queryStringDateArray(value: string): (DateTime | null)[] {
   return queryStringArray(value).map(queryStringDate);
 }
 
-function queryStringDate(value: string): DateTime {
+function queryStringDate(value: string): DateTime | null {
   // if a null or undefined value is passed into luxon's DateTime.fromISO, it will return the current time
   // this can be confusing and lead to lots of bugs. We therefore return the null value here
   if (value === "") {
