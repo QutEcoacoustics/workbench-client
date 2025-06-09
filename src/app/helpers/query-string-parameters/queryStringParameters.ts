@@ -132,7 +132,6 @@ function queryStringNumber(value: string): number | null {
   // the condition is not applied, rather than returning incorrect results that would be returned with parseInt()
   const parsedNumber = Number(value);
   if (isNaN(parsedNumber)) {
-    console.warn(`Expected "number" type query string parameter. Received "${value}".`);
     return null;
   }
 
