@@ -64,7 +64,7 @@ export const jsStringArray = {
 /** Converts an object to an Angular `Params` object with stringified values */
 export function serializeObjectToParams<T>(
   queryStringParameters: T,
-  spec: IQueryStringParameterSpec
+  spec: IQueryStringParameterSpec<Partial<T>>
 ): Params {
   const resultParameter: Params = {};
 
@@ -74,17 +74,20 @@ export function serializeObjectToParams<T>(
     return resultParameter;
   }
 
-  Object.entries(queryStringParameters).forEach(
-    ([key, value]: [string, string]) => {
+  // We iterate over the spec instead of using Object.entries on the
+  // queryStringParameter model so that the qsp model can contain getters which
+  // would not be returned by Object.entries.
+  Object.entries(spec).forEach(
+    ([key, serializationTechnique]: [string, ISerializationTechnique]) => {
+      const value = queryStringParameters[key];
+
       // null and undefined values are omitted when used on angular HTTPParams
       // therefore, we should not serialize them as they will have no effect on the query string
-      // we use isInstantiated here because we want to serialize "falsey" values such as 0 and empty strings
+      // we use isInstantiated here because we want to serialize "falsy" values such as 0 and empty strings
       // we also omit empty arrays so that we don't end up with empty query string parameters for arrays
       if (!isInstantiated(value)) {
         return;
       }
-
-      const serializationTechnique = spec[key];
 
       if (serializationTechnique) {
         resultParameter[key] = serializationTechnique.serialize(value);
