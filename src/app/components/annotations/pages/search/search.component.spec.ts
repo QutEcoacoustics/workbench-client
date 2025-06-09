@@ -165,7 +165,7 @@ describe("AnnotationSearchComponent", () => {
     expect(spec.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 
-  fit("should make the correct api call", () => {
+  it("should make the correct api call", () => {
     const expectedBody: Filters<AudioEvent> = {
       paging: {
         page: 1,

@@ -72,6 +72,7 @@ describe("annotationSearchParameters", () => {
                 lessThan: DateTime.fromISO("2020-03-01T00:00:00.000Z", { zone: "utc" })
               }
             },
+            { "audioRecordings.id": { in: [11, 12, 13] } },
             {
               "audioRecordings.siteId": {
                 in: [6, 7, 8, 9],
@@ -97,30 +98,6 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
       },
-      /*
-      expectedFitlers: () => ({
-        filter: {
-          and: [
-            { "audioRecordings.id": { in: [11, 12, 13] } },
-            { "tags.id": { in: [4, 5, 6] } },
-            {
-              recordedDate: {
-                lessThan: {
-                  expressions: ["local_offset", "time_of_day"],
-                  value: "22:15",
-                },
-              },
-            },
-            { "regions.id": { in: [2, 3, 4, 5] } },
-            { "sites.id": { in: [6, 7, 8, 9] } }
-          ],
-        },
-        sorting: {
-          orderBy: "score",
-          direction: "asc",
-        },
-      } as Filters<AudioEvent>),
-      */
       expectedFitlers: () => ({
         filter: {
           and: [
@@ -130,6 +107,7 @@ describe("annotationSearchParameters", () => {
                 lessThan: jasmine.any(DateTime),
               },
             },
+            { "audioRecordings.id": { in: [11, 12, 13] } },
             { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
           ],
         },
@@ -138,7 +116,6 @@ describe("annotationSearchParameters", () => {
           direction: "asc",
         },
       }),
-      //expectedFitlers: () => ({}),
     },
   ];
 

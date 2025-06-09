@@ -235,7 +235,7 @@ export class AnnotationSearchParameters
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.recordingDateTimeFilters(tagFilters);
+    const dateTimeFilters = this.recordingFilters(tagFilters);
     const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
     const filter = this.eventDateTimeFilters(siteFilters);
 
@@ -320,7 +320,7 @@ export class AnnotationSearchParameters
     return [];
   }
 
-  private recordingDateTimeFilters(
+  private recordingFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
@@ -341,7 +341,13 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
-    return dateFilter;
+    const recordingFilter = filterModelIds(
+      "audioRecordings",
+      this.audioRecordings,
+      dateFilter,
+    );
+
+    return recordingFilter;
   }
 
   // TODO: this function is a placeholder for future implementation once the api
