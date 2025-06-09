@@ -11,9 +11,9 @@ import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTempla
 import { Region } from "@models/Region";
 import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 
 export const regionsMenuItemActions = [
   shallowNewRegionMenuItem,
@@ -25,12 +25,17 @@ export const regionsMenuItemActions = [
   selector: "baw-regions",
   template: `
     @if (!error) {
-      <baw-debounce-input
-        label="Filter"
-        placeholder="Filter Sites"
-        [default]="filter"
-        (filter)="onFilter($event)"
-      ></baw-debounce-input>
+      <label class="input-group mb-3">
+        <span class="input-group-prepend input-group-text">Filter</span>
+        <input
+          bawDebouncedInput
+          type="text"
+          class="form-control"
+          placeholder="Filter Sites"
+          [value]="filter"
+          (filter)="onFilter($event)"
+        >
+      </label>
 
       @if (!loading) {
         <!-- Regions Exist -->
@@ -53,7 +58,7 @@ export const regionsMenuItemActions = [
     }
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
-  imports: [DebounceInputComponent, CardsComponent, NgbPagination, ErrorHandlerComponent]
+  imports: [DebouncedInputDirective, CardsComponent, NgbPagination, ErrorHandlerComponent]
 })
 class RegionListComponent extends PaginationTemplate<Region> implements OnInit {
   public models: List<Region> = List([]);

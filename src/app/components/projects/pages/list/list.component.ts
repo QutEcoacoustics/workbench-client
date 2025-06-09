@@ -12,9 +12,9 @@ import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTempla
 import { Project } from "@models/Project";
 import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 
 export const projectsMenuItemActions = [
   newProjectMenuItem,
@@ -27,12 +27,17 @@ export const projectsMenuItemActions = [
   selector: "baw-projects-list",
   template: `
     @if (!error) {
-      <baw-debounce-input
-        label="Filter"
-        placeholder="Filter Projects"
-        [default]="filter"
-        (filter)="onFilter($event)"
-      ></baw-debounce-input>
+      <label class="input-group mb-3">
+        <span class="input-group-prepend input-group-text">Filter</span>
+        <input
+          bawDebouncedInput
+          type="text"
+          class="form-control"
+          placeholder="Filter Projects"
+          [value]="filter"
+          (filter)="onFilter($event)"
+        >
+      </label>
 
       @if (!loading) {
         <!-- Projects Exist -->
@@ -56,7 +61,7 @@ export const projectsMenuItemActions = [
     <baw-error-handler [error]="error"></baw-error-handler>
   `,
   imports: [
-    DebounceInputComponent,
+    DebouncedInputDirective,
     CardsComponent,
     NgbPagination,
     ErrorHandlerComponent,

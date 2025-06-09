@@ -17,10 +17,10 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { forkJoin } from "rxjs";
 import { mergeMap, takeUntil } from "rxjs/operators";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { FormComponent } from "@shared/form/form.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -34,7 +34,7 @@ const projectKey = "project";
   templateUrl: "./assign.component.html",
   styleUrl: "./assign.component.scss",
   imports: [
-    DebounceInputComponent,
+    DebouncedInputDirective,
     NgxDatatableModule,
     DatatableDefaultsDirective,
     FormComponent,

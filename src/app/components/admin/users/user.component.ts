@@ -13,17 +13,17 @@ import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { User } from "@models/User";
 import { List } from "immutable";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { UrlDirective } from "@directives/url/url.directive";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 
 @Component({
   selector: "baw-admin-users",
   templateUrl: "./user.component.html",
   imports: [
-    DebounceInputComponent,
+    DebouncedInputDirective,
     NgxDatatableModule,
     DatatableDefaultsDirective,
     UrlDirective,

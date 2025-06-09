@@ -33,8 +33,8 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 
 @Component({
   selector: "baw-annotation-search-form",
-  templateUrl: "annotation-search-form.component.html",
-  styleUrl: "annotation-search-form.component.scss",
+  templateUrl: "./annotation-search-form.component.html",
+  styleUrl: "./annotation-search-form.component.scss",
   imports: [
     FormsModule,
     DateTimeFilterComponent,

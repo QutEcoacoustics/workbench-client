@@ -9,7 +9,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
@@ -20,6 +19,7 @@ import { Subject } from "rxjs";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { MockComponent } from "ng-mocks";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { ProjectListComponent } from "./list.component";
 
 describe("ProjectsListComponent", () => {
@@ -160,7 +160,7 @@ describe("ProjectsListComponent", () => {
 
   describe("filtering", () => {
     function getFilter() {
-      return spec.query(DebounceInputComponent);
+      return spec.query(DebouncedInputDirective);
     }
 
     it("should have filtering option", async () => {
@@ -174,14 +174,14 @@ describe("ProjectsListComponent", () => {
       await handleApiRequest(projects);
       spec.component.filter = "custom value";
       spec.detectChanges();
-      expect(getFilter().default).toBe("custom value");
+      expect(getFilter()["value"]).toBe("custom value");
     });
 
     it("should call onFilter when event detected", async () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
       spyOn(spec.component, "onFilter").and.stub();
-      getFilter().filter.next("custom value");
+      getFilter().filter.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

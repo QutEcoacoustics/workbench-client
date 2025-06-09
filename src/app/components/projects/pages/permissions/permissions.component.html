@@ -104,11 +104,16 @@
 <h4>Current users</h4>
 
 <!-- Filter permissions by username -->
-<baw-debounce-input
-  label="Filter"
-  placeholder="Filter Users"
-  (filter)="updateFilter($event)"
-></baw-debounce-input>
+<label class="input-group mb-3">
+  <span class="input-group-prepend input-group-text">Filter</span>
+  <input
+    bawDebouncedInput
+    type="text"
+    class="form-control"
+    placeholder="Filter Users"
+    (filter)="updateFilter($event)"
+  >
+</label>
 
 <!-- Permissions table -->
 <ngx-datatable
