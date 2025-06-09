@@ -169,7 +169,7 @@ class AnnotationSearchComponent
 
       const response = await firstValueFrom(request);
 
-      const itemWarningThreshold = 1_000 as const;
+      const itemWarningThreshold = 1_000;
       const responseMetadata = response[0].getMetadata();
       const numberOfItems = responseMetadata.paging.total;
 
