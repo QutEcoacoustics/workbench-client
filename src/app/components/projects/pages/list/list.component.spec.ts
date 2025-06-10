@@ -181,7 +181,7 @@ describe("ProjectsListComponent", () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
       spyOn(spec.component, "onFilter").and.stub();
-      getFilter().filter.emit("custom value");
+      getFilter().valueChange.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

@@ -89,7 +89,7 @@ const regionKey = "region";
           class="form-control"
           placeholder="Filter Points"
           [value]="filter"
-          (filter)="onFilter($event)"
+          (valueChange)="onFilter($event)"
         >
       </label>
 

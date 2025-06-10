@@ -35,7 +35,7 @@ export const projectsMenuItemActions = [
           class="form-control"
           placeholder="Filter Projects"
           [value]="filter"
-          (filter)="onFilter($event)"
+          (valueChange)="onFilter($event)"
         >
       </label>
 

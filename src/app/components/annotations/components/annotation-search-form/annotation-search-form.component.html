@@ -56,19 +56,11 @@
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
-  <label class="form-label w-100">
-    Minimum Score
-    <input
-      id="score-input"
-      type="number"
-      class="form-control"
-      placeholder="0.00"
-      step="0.01"
-      max="1"
-      min="0"
-      (keyup)="updateScore($event.target['value'])"
-    />
-  </label>
+  <baw-percentage-input
+    [label]="'Minimum Score'"
+    [value]="searchParameters.score"
+    (valueChange)="updateParameterProperty('score', $event)"
+  ></baw-percentage-input>
 
   <baw-wip>
     <div class="form-check mt-2">
@@ -82,7 +74,7 @@
         type="checkbox"
         class="form-check-input"
         [checked]="searchParameters.onlyUnverified"
-        (change)="updateSubModel('onlyUnverified', $event.target['checked'])"
+        (change)="updateParameterProperty('onlyUnverified', $event.target['checked'])"
       />
       <label for="filter-verified" class="form-check-label">
         Only show un-verified annotations

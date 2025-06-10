@@ -101,7 +101,7 @@ const projectKey = "project";
           class="form-control"
           placeholder="Filter Sites"
           [value]="filter"
-          (filter)="onFilter($event)"
+          (valueChange)="onFilter($event)"
         >
       </label>
 

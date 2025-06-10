@@ -6,6 +6,14 @@ export function generateAnnotationSearchParameters(
   data?: Partial<IAnnotationSearchParameters>
 ): Required<IAnnotationSearchParameters> {
   return {
+    audioRecordings: modelData.ids(),
+    tags: modelData.ids(),
+    onlyUnverified: modelData.bool(),
+    score: modelData.percentage(),
+    daylightSavings: modelData.bool(),
+    recordingDate: [modelData.dateTime(), modelData.dateTime()],
+    recordingTime: [modelData.time(), modelData.time()],
+
     projects: modelData.ids(),
     regions: modelData.ids(),
     sites: modelData.ids(),
@@ -14,14 +22,8 @@ export function generateAnnotationSearchParameters(
     routeRegionId: modelData.id(),
     routeSiteId: modelData.id(),
 
-    audioRecordings: modelData.ids(),
-    tags: modelData.ids(),
-    onlyUnverified: modelData.bool(),
-    recordingTime: [modelData.time(), modelData.time()],
-    recordingDate: [modelData.dateTime(), modelData.dateTime()],
     eventDate: [modelData.dateTime(), modelData.dateTime()],
     eventTime: [modelData.time(), modelData.time()],
-    daylightSavings: modelData.bool(),
     sort: modelData.helpers.arrayElement(
       // We need to type cast Object.keys here because lib.d's implementation of
       // Object.keys does not maintain object structural typing, and will return

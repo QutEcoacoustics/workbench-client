@@ -5,8 +5,7 @@ import { defaultDebounceTime } from "src/app/app.helper";
 
 @Directive({ selector: "input[bawDebouncedInput]" })
 export class DebouncedInputDirective extends withUnsubscribe() implements OnInit {
-  public filter = output<string>();
-
+  public valueChange = output<string>();
   private input$ = new Subject<string>();
 
   public ngOnInit() {
@@ -16,10 +15,10 @@ export class DebouncedInputDirective extends withUnsubscribe() implements OnInit
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((input) => this.filter.emit(input));
+      .subscribe((input) => this.valueChange.emit(input));
   }
 
-  @HostListener("keydown", ["$event"])
+  @HostListener("keyup", ["$event"])
   protected onKeydown(event: KeyboardEvent) {
     if (!(event.target instanceof HTMLInputElement)) {
       console.warn("bawDebouncedInput must be attached to an input element");

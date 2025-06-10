@@ -40,7 +40,7 @@ export function assertPaginationTemplate<
         const spy = jasmine.createSpy().and.stub();
         spectator.component.onFilter = spy;
         const filter = getFilterInput();
-        filter.filter.emit("Custom Filter");
+        filter.valueChange.emit("Custom Filter");
         spectator.detectChanges();
         expect(spy).toHaveBeenCalled();
       });

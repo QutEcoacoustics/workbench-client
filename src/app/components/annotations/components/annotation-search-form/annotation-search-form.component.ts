@@ -30,6 +30,8 @@ import { FormsModule } from "@angular/forms";
 import { WIPComponent } from "@shared/wip/wip.component";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { PercentageInputComponent } from "@shared/percentage-input/percentage-input.component";
+import { Writeable } from "@helpers/advancedTypes";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -39,6 +41,7 @@ import { InnerFilter } from "@baw-api/baw-api.service";
     FormsModule,
     DateTimeFilterComponent,
     TypeaheadInputComponent,
+    PercentageInputComponent,
     WIPComponent,
     NgbCollapse,
     NgbHighlight,
@@ -175,11 +178,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  protected updateScore(value: number) {
-    this.searchParameters.score = value;
-    this.searchParametersChange.emit(this.searchParameters);
-  }
-
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.recordingDate = [
@@ -209,8 +207,10 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  protected updateOnlyUnverified(value: boolean): void {
-    this.searchParameters.onlyUnverified = value;
+  protected updateParameterProperty<
+    T extends keyof Writeable<AnnotationSearchParameters>,
+  >(key: T, value: AnnotationSearchParameters[T]) {
+    this.searchParameters[key] = value;
     this.searchParametersChange.emit(this.searchParameters);
   }
 
