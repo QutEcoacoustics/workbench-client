@@ -38,6 +38,7 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { nStepObservable } from "@test/helpers/general";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
@@ -58,6 +59,7 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioRecording: AudioRecording;
 
   let expectedAudioEventTable: any;
+  let expectedFilesTable: any;
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -84,6 +86,9 @@ describe("AnnotationsDetailsComponent", () => {
   function switchToFileTab(): void {
     const target = fileTabButton();
     spec.click(target);
+
+    flush();
+    spec.detectChanges();
   }
 
   async function setup(): Promise<void> {
@@ -203,6 +208,19 @@ describe("AnnotationsDetailsComponent", () => {
     expect(spec.component).toBeInstanceOf(AnnotationImportDetailsComponent);
   });
 
+  it("should not emit a file filter until the tab is clicked", fakeAsync(() => {
+    expect(mockAudioEventFileService.filter).not.toHaveBeenCalled();
+
+    switchToFileTab();
+
+    expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        paging: { page: 1 },
+      }),
+      mockAudioEventImport
+    );
+  }));
+
   describe("audio event table", () => {
     assertDatatable(() => ({
       columns: () => ["Audio Recording", "Created At", "Tags", "Actions"],
@@ -220,35 +238,27 @@ describe("AnnotationsDetailsComponent", () => {
   });
 
   describe("file table", () => {
-    it("should not emit a filter event until the tab is clicked", () => {
-      expect(mockAudioEventFileService.filter).not.toHaveBeenCalled();
-
+    beforeEach(fakeAsync(() => {
       switchToFileTab();
 
-      expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({
-          paging: { page: 1 },
-        }),
-        mockAudioEventImport
-      );
-    });
-
-    xdescribe("after switching to file tab", () => {
-      beforeEach(() => {
-        switchToFileTab();
-      });
-
-      assertDatatable(() => ({
-        service: mockAudioEventFileService,
-        columns: () => [
-          "File Name",
-          "Date Imported",
-          "Additional Tags",
-          "Actions",
-        ],
-        rows: () => [],
-        root: () => activeTabContent(),
+      expectedFilesTable = mockAudioEventImportFiles.map((file) => ({
+        "File Name": file.name,
+        "Date Imported": file.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
+        "Additional Tags": "No associated tags",
+        Actions: "",
       }));
-    });
+    }));
+
+    assertDatatable(() => ({
+      service: mockAudioEventFileService,
+      columns: () => [
+        "File Name",
+        "Date Imported",
+        "Additional Tags",
+        "Actions",
+      ],
+      rows: () => expectedFilesTable,
+      root: () => activeTabContent(),
+    }));
   });
 });
