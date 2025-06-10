@@ -1,10 +1,14 @@
 import {
   createComponentFactory,
+  dispatchFakeEvent,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters, SortingKey } from "@components/annotations/pages/annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+  SortingKey,
+} from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -16,11 +20,12 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import {
+  getElementByInnerText,
   selectFromTypeahead,
   toggleDropdown,
   waitForDropdown,
 } from "@test/helpers/html";
-import { fakeAsync } from "@angular/core/testing";
+import { fakeAsync, tick } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
@@ -34,6 +39,7 @@ import {
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
+import { defaultDebounceTime } from "src/app/app.helper";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -75,7 +81,7 @@ describe("AnnotationSearchFormComponent", () => {
 
     sitesApiSpy.filter.andCallFake(() => of(mockSitesResponse));
     sitesApiSpy.show.andCallFake((id: Id) =>
-      of(mockSitesResponse.find((site) => site.id === id))
+      of(mockSitesResponse.find((site) => site.id === id)),
     );
 
     // we mock both filter and show requests because we need to have consistent
@@ -86,12 +92,7 @@ describe("AnnotationSearchFormComponent", () => {
     const response = Promise.all([
       interceptFilterApiRequest(tagsApiSpy, injector, mockTagsResponse, Tag),
 
-      interceptShowApiRequest(
-        tagsApiSpy,
-        injector,
-        mockTagsResponse[0],
-        Tag,
-      ),
+      interceptShowApiRequest(tagsApiSpy, injector, mockTagsResponse[0], Tag),
 
       interceptFilterApiRequest(
         recordingsApiSpy,
@@ -327,13 +328,57 @@ describe("AnnotationSearchFormComponent", () => {
       expect(modelChangeSpy).not.toHaveBeenCalled();
     }));
 
+    it("should emit a new model if the score is updated to a truthy value", fakeAsync(() => {
+      const testedValue = modelData.datatype.number({ min: 1 });
+
+      spec.typeInElement(testedValue.toString(), scoreInput());
+      dispatchFakeEvent(scoreInput(), "keyup");
+      tick(defaultDebounceTime);
+
+      expect(modelChangeSpy).toHaveBeenCalled();
+    }));
+
+    it("should emit a new model if the score is updated to a falsy value", fakeAsync(() => {
+      spec.typeInElement("0", scoreInput());
+      dispatchFakeEvent(scoreInput(), "keyup");
+      tick(defaultDebounceTime);
+
+      expect(modelChangeSpy).toHaveBeenCalled();
+    }));
+
+    it("should emit a new model if the score is updated to an empty value", fakeAsync(() => {
+      spec.typeInElement("", scoreInput());
+      dispatchFakeEvent(scoreInput(), "keyup");
+      tick(defaultDebounceTime);
+
+      expect(modelChangeSpy).toHaveBeenCalled();
+    }));
+
+    it("should emit a new model if the sort is updated to a non-default value", () => {
+      const targetOption = getElementByInnerText<HTMLOptionElement>(
+        spec,
+        "Score (Ascending)",
+      );
+      spec.selectOption(sortingDropdown(), targetOption);
+      expect(modelChangeSpy).toHaveBeenCalled();
+    });
+
+    it("should emit a new model if the sort is updated to the default value", () => {
+      const targetOption = getElementByInnerText<HTMLOptionElement>(
+        spec,
+        "Created Date (Oldest First)",
+      );
+      spec.selectOption(sortingDropdown(), targetOption);
+      expect(modelChangeSpy).toHaveBeenCalled();
+    });
+
     // TODO: enable this test once we have the endpoint available to filter by verified status
     xit("should emit the correct model if the only verified checkbox is updated", () => {
       spec.click(onlyVerifiedCheckbox());
 
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({ onlyUnverified: true })
+        jasmine.objectContaining({ onlyUnverified: true }),
       );
     });
   });

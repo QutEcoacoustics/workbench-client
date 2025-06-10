@@ -2,24 +2,6 @@ import { ComponentFixture, flush, tick } from "@angular/core/testing";
 import { Spectator, SpectatorHost } from "@ngneat/spectator";
 
 /**
- * TODO Replace with spectator method
- * Insert value into input element
- *
- * @param wrapper Wrapper element
- * @param selector HTML selector
- * @param value Value to insert
- */
-export function inputValue(wrapper: any, selector: string, value: string) {
-  const input = wrapper.querySelector(selector);
-  if (input.disabled) {
-    fail("Input is disabled");
-  }
-
-  input.value = value;
-  input.dispatchEvent(new Event("input"));
-}
-
-/**
  * A click button test helper that performs assertions that the element is a
  * button and is enabled.
  */
