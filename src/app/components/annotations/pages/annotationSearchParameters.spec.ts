@@ -9,7 +9,7 @@ import { AnnotationSearchParameters } from "./annotationSearchParameters";
 interface SearchParamtersTest {
   name: string;
   inputParams: Params;
-  expectedFitlers: () => Filters<AudioEvent>;
+  expectedFilters: () => Filters<AudioEvent>;
 }
 
 describe("annotationSearchParameters", () => {
@@ -41,7 +41,7 @@ describe("annotationSearchParameters", () => {
     {
       name: "should create correct default filters",
       inputParams: undefined,
-      expectedFitlers: () => ({
+      expectedFilters: () => ({
         filter: {
           "audioRecordings.siteId": {
             in: Array.from(routeProject.siteIds),
@@ -64,7 +64,7 @@ describe("annotationSearchParameters", () => {
         regions: "2,3,4,5",
         sites: "6,7,8,9",
       },
-      expectedFitlers: () => ({
+      expectedFilters: () => ({
         filter: {
           and: [
             { "tags.id": { in: [4, 5, 6] } },
@@ -79,6 +79,7 @@ describe("annotationSearchParameters", () => {
                 in: [6, 7, 8, 9],
               },
             },
+            { score: { gteq: 0.5 } },
           ],
         },
         sorting: {
@@ -99,7 +100,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
       },
-      expectedFitlers: () => ({
+      expectedFilters: () => ({
         filter: {
           and: [
             { "tags.id": { in: [4, 5, 6] } },
@@ -123,7 +124,7 @@ describe("annotationSearchParameters", () => {
   for (const test of testCases) {
     it(test.name, () => {
       const dataModel = createParameterModel(test.inputParams);
-      expect(dataModel.toFilter()).toEqual(test.expectedFitlers());
+      expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
 });

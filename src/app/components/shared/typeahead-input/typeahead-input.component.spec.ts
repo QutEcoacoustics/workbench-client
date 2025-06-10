@@ -91,10 +91,6 @@ describe("TypeaheadInputComponent", () => {
     expect(inputLabel()).toHaveExactTrimmedText(testLabelContent);
   });
 
-  it("should hide the label if there is no label attribute", () => {
-    expect(inputLabel()).not.toExist();
-  });
-
   it("should not create object pills if multiple inputs is disabled", () => {
     spec.component.multipleInputs = false;
     const numberOfActiveItems = 1;

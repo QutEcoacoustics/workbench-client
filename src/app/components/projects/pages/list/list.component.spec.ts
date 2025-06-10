@@ -159,14 +159,18 @@ describe("ProjectsListComponent", () => {
   });
 
   describe("filtering", () => {
-    function getFilter() {
+    function getFilterInput(): HTMLInputElement {
+      return spec.query("input[type='text']");
+    }
+
+    function getInputDirective() {
       return spec.query(DebouncedInputDirective);
     }
 
     it("should have filtering option", async () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
-      expect(getFilter()).toBeTruthy();
+      expect(getFilterInput()).toBeTruthy();
     });
 
     it("should have default value attached", async () => {
@@ -174,14 +178,14 @@ describe("ProjectsListComponent", () => {
       await handleApiRequest(projects);
       spec.component.filter = "custom value";
       spec.detectChanges();
-      expect(getFilter()["value"]).toBe("custom value");
+      expect(getFilterInput()["value"]).toBe("custom value");
     });
 
     it("should call onFilter when event detected", async () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
       spyOn(spec.component, "onFilter").and.stub();
-      getFilter().valueChange.emit("custom value");
+      getInputDirective().valueChange.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

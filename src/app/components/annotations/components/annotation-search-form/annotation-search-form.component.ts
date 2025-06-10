@@ -18,7 +18,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate, NgbCollapse, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbCollapse, NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
@@ -45,6 +45,7 @@ import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-in
     DebouncedInputDirective,
     NgbCollapse,
     NgbHighlight,
+    NgbTooltip,
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {

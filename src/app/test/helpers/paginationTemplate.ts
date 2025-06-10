@@ -20,7 +20,11 @@ export function assertPaginationTemplate<
     beforeEach(() => (spectator = setup()));
 
     describe("filter input", () => {
-      function getFilterInput() {
+      function getFilterInput(): HTMLInputElement {
+        return spectator.query("input[type='text']");
+      }
+
+      function getInputDirective() {
         return spectator.query(DebouncedInputDirective);
       }
 
@@ -39,7 +43,7 @@ export function assertPaginationTemplate<
       it("should trigger onFilter events", () => {
         const spy = jasmine.createSpy().and.stub();
         spectator.component.onFilter = spy;
-        const filter = getFilterInput();
+        const filter = getInputDirective();
         filter.valueChange.emit("Custom Filter");
         spectator.detectChanges();
         expect(spy).toHaveBeenCalled();

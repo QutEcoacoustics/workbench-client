@@ -57,15 +57,19 @@
   ></baw-typeahead-input>
 
   <label class="form-label w-100">
-    Minimum Score
+    <span
+      class="tooltip-hint"
+      [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
+    >
+      Minimum Score
+    </span>
     <input
       bawDebouncedInput
       type="number"
       class="form-control"
       placeholder="0.00"
       step="0.01"
-      max="1"
-      min="0"
+      [value]="searchParameters.score"
       (valueChange)="updateParameterProperty('score', toNumber($event))"
     >
   </label>
