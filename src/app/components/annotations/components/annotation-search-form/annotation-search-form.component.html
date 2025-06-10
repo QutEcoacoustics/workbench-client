@@ -65,6 +65,7 @@
     </span>
     <input
       bawDebouncedInput
+      id="score-input"
       type="number"
       class="form-control"
       placeholder="0.00"
@@ -121,8 +122,8 @@
     </div>
   </div>
 
-  <div class="mt-2">
-    <label for="sort-input">Sort by</label>
+  <label class="form-label mt-2 w-100">
+    Sort by
     <select
       id="sort-input"
       class="form-select"
@@ -136,7 +137,7 @@
       <option value="score-asc">Score (Ascending)</option>
       <option value="score-desc">Score (Descending)</option>
     </select>
-  </div>
+  </label>
 </form>
 
 <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">

@@ -4,7 +4,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { AnnotationSearchParameters, SortingKey } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -117,6 +117,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sitesTypeahead = () => spec.query("#sites-input");
   const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
+  const scoreInput = () => spec.query("#score-input");
 
   const tagsTypeahead = () => spec.query("#tags-input");
   const tagPills = () =>
@@ -134,6 +135,8 @@ describe("AnnotationSearchFormComponent", () => {
   const advancedFiltersCollapsable = () =>
     spec.query(".advanced-filters>[ng-reflect-collapsed]");
   const recordingsTypeahead = () => spec.query("#recordings-input");
+
+  const sortingDropdown = () => spec.query("#sort-input");
 
   beforeEach(() => {
     mockTagsResponse = Array.from({ length: 10 }, () => new Tag(generateTag()));
@@ -221,6 +224,27 @@ describe("AnnotationSearchFormComponent", () => {
     // verified status
     xit("should pre-populate the only verified checkbox if provided in the search parameters model", () => {
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
+    });
+
+    it("should pre-populate the sorting dropdown correctly", () => {
+      const testedSorting = "score-asc" satisfies SortingKey;
+
+      setup({ sort: testedSorting });
+      expect(sortingDropdown()).toHaveValue("score-asc");
+      expect(spec.component.searchParameters.sort).toEqual("score-asc");
+    });
+
+    it("should have the correct sorting selection for an empty parameter", () => {
+      setup();
+      expect(sortingDropdown()).toHaveValue("created-asc");
+    });
+
+    it("should pre-populate the score filter correctly", () => {
+      const mockScore = modelData.datatype.number();
+      setup({ score: mockScore });
+
+      expect(scoreInput()).toHaveValue(mockScore.toString());
+      expect(spec.component.searchParameters.score).toEqual(mockScore);
     });
 
     it("should automatically open the advanced filters if the search parameters have advanced filters", fakeAsync(() => {
