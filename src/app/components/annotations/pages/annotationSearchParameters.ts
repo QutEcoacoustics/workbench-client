@@ -9,7 +9,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds as tagFilters } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
@@ -247,10 +247,10 @@ export class AnnotationSearchParameters
 
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.recordingFilters(tagFilters);
-    const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
-    const filter = this.eventDateTimeFilters(siteFilters);
+    let filter = tagFilters<Tag>("tags", this.tags);
+    filter = this.addRecordingFilters(filter);
+    filter = this.addRouteFilters(filter);
+    filter = this.addEventFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -333,7 +333,13 @@ export class AnnotationSearchParameters
     return [];
   }
 
-  private recordingFilters(
+  private addRouteFilters(
+    initialFilter: InnerFilter<AudioEvent>,
+  ): InnerFilter<AudioEvent> {
+    return filterAnd(initialFilter, this.routeFilters());
+  }
+
+  private addRecordingFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
@@ -354,7 +360,7 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
-    const recordingFilter = filterModelIds(
+    const recordingFilter = tagFilters(
       "audioRecordings",
       this.audioRecordings,
       dateFilter,
@@ -363,13 +369,25 @@ export class AnnotationSearchParameters
     return recordingFilter;
   }
 
-  // TODO: this function is a placeholder for future implementation once the api
-  // supports filtering by event date time
+  // TODO: We should add support for event date/time filtering once the api
+  // adds supports.
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  private eventDateTimeFilters(
+  private addEventFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    return initialFilter;
+    // I purposely use a falsy condition here.
+    // Because this falsy condition will match against a score of zero, this
+    // method will short circuit and return the initial filter if the score is
+    // zero, undefined, or null.
+    if (!this.score) {
+      return initialFilter;
+    }
+
+    const scoreFilters = {
+      score: { gteq: this.score },
+    } as const satisfies InnerFilter<AudioEvent>;
+
+    return filterAnd(initialFilter, scoreFilters);
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
