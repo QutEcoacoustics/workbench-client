@@ -30,8 +30,8 @@ import { FormsModule } from "@angular/forms";
 import { WIPComponent } from "@shared/wip/wip.component";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { PercentageInputComponent } from "@shared/percentage-input/percentage-input.component";
 import { Writeable } from "@helpers/advancedTypes";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -41,8 +41,8 @@ import { Writeable } from "@helpers/advancedTypes";
     FormsModule,
     DateTimeFilterComponent,
     TypeaheadInputComponent,
-    PercentageInputComponent,
     WIPComponent,
+    DebouncedInputDirective,
     NgbCollapse,
     NgbHighlight,
   ],
@@ -232,5 +232,14 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     this.searchParameters.sort = event.target.value;
     this.searchParametersChange.emit(this.searchParameters);
+  }
+
+  protected toNumber(stringValue: string): number | null {
+    const value = Number(stringValue);
+    if (isNaN(value)) {
+      return null;
+    }
+
+    return value;
   }
 }

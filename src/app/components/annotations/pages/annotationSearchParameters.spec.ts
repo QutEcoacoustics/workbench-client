@@ -59,6 +59,7 @@ describe("annotationSearchParameters", () => {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
         recordingDate: ",2020-03-01",
+        score: 0.5,
 
         regions: "2,3,4,5",
         sites: "6,7,8,9",

@@ -56,11 +56,19 @@
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
-  <baw-percentage-input
-    [label]="'Minimum Score'"
-    [value]="searchParameters.score"
-    (valueChange)="updateParameterProperty('score', $event)"
-  ></baw-percentage-input>
+  <label class="form-label w-100">
+    Minimum Score
+    <input
+      bawDebouncedInput
+      type="number"
+      class="form-control"
+      placeholder="0.00"
+      step="0.01"
+      max="1"
+      min="0"
+      (valueChange)="updateParameterProperty('score', toNumber($event))"
+    >
+  </label>
 
   <baw-wip>
     <div class="form-check mt-2">
