@@ -9,10 +9,11 @@ export function generateAnnotationSearchParameters(
     audioRecordings: modelData.ids(),
     tags: modelData.ids(),
     onlyUnverified: modelData.bool(),
-    score: modelData.percentage(),
     daylightSavings: modelData.bool(),
     recordingDate: [modelData.dateTime(), modelData.dateTime()],
     recordingTime: [modelData.time(), modelData.time()],
+
+    score: [modelData.datatype.number(), modelData.datatype.number()],
 
     projects: modelData.ids(),
     regions: modelData.ids(),

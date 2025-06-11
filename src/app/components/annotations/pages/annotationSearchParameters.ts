@@ -64,10 +64,10 @@ export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
   onlyUnverified: boolean;
-  score: number;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
+  score: MonoTuple<number, 2>;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -103,10 +103,10 @@ const serializationTable: IQueryStringParameterSpec<
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   onlyUnverified: jsBoolean,
-  score: jsNumber,
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
   recordingTime: luxonDurationArray,
+  score: jsNumberArray,
 
   // because the serialization of route parameters is handled by the angular
   // router, we only want to serialize the model filter query string parameters
@@ -156,10 +156,10 @@ export class AnnotationSearchParameters
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
   public onlyUnverified: boolean;
-  public score: number;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
+  public score: MonoTuple<number, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -243,6 +243,14 @@ export class AnnotationSearchParameters
 
   public get recordingTimeFinishedBefore(): Duration | null {
     return this.recordingTime ? this.recordingTime[1] : null;
+  }
+
+  public get scoreLowerBound(): number | null {
+    return this.score ? this.score[0] : null;
+  }
+
+  public get scoreUpperBound(): number | null {
+    return this.score ? this.score[1] : null;
   }
 
   // TODO: fix up this function
@@ -379,15 +387,27 @@ export class AnnotationSearchParameters
     // Because this falsy condition will match against a score of zero, this
     // method will short circuit and return the initial filter if the score is
     // zero, undefined, or null.
-    if (!this.score) {
+    if (!isInstantiated(this.score)) {
       return initialFilter;
     }
 
-    const scoreFilters = {
-      score: { gteq: this.score },
-    } as const satisfies InnerFilter<AudioEvent>;
+    const lowerBound = this.score[0];
+    const upperBound = this.score[1];
 
-    return filterAnd(initialFilter, scoreFilters);
+    let scoreFilters: InnerFilter<AudioEvent> = initialFilter;
+    if (isInstantiated(lowerBound)) {
+      scoreFilters = filterAnd(scoreFilters, {
+        score: { gteq: lowerBound }
+      });
+    }
+
+    if (isInstantiated(upperBound)) {
+      scoreFilters = filterAnd(scoreFilters, {
+        score: { lteq: upperBound },
+      });
+    }
+
+    return scoreFilters;
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {

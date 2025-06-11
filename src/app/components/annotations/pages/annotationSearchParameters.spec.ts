@@ -59,7 +59,7 @@ describe("annotationSearchParameters", () => {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
         recordingDate: ",2020-03-01",
-        score: 0.5,
+        score: "0.5,0.9",
 
         regions: "2,3,4,5",
         sites: "6,7,8,9",
@@ -80,6 +80,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { gteq: 0.5 } },
+            { score: { lteq: 0.9 } },
           ],
         },
         sorting: {

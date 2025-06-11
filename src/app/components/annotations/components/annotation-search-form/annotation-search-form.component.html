@@ -56,24 +56,53 @@
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
-  <label class="form-label w-100">
-    <span
-      class="tooltip-hint"
-      [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
-    >
-      Minimum Score
-    </span>
-    <input
-      bawDebouncedInput
-      id="score-input"
-      type="number"
-      class="form-control"
-      placeholder="0.00"
-      step="0.01"
-      [value]="searchParameters.score"
-      (valueChange)="updateParameterProperty('score', toNumber($event))"
-    >
-  </label>
+  <div>
+    <div class="d-flex">
+      <label class="input-group">
+        <span
+          class="input-group-text tooltip-hint"
+          [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
+        >
+          Minimum Score
+        </span>
+        <input
+          bawDebouncedInput
+          id="lower-score-input"
+          type="number"
+          class="form-control"
+          placeholder="-Infinity"
+          step="0.01"
+          [value]="searchParameters.score"
+          (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
+        >
+      </label>
+
+      <label class="ms-2 input-group">
+        <span
+          class="input-group-text tooltip-hint"
+          [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
+        >
+          Maximum Score
+        </span>
+        <input
+          bawDebouncedInput
+          id="upper-score-input"
+          type="number"
+          class="form-control"
+          placeholder="Infinity"
+          step="0.01"
+          [value]="searchParameters.score"
+          (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
+        >
+      </label>
+    </div>
+
+    @if (scoreRangeError() !== null) {
+      <p id="score-errors">
+        <strong class="fw-normal text-danger">{{ scoreRangeError() }}</strong>
+      </p>
+    }
+  </div>
 
   <baw-wip>
     <div class="form-check mt-2">

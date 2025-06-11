@@ -12,8 +12,8 @@ import { AbstractModel } from "@models/AbstractModel";
  * @returns A new filter which satisfies the intersection between the two filters
  */
 export function filterAnd<T extends AbstractModel>(
-  filter: InnerFilter,
-  newFilter: InnerFilter
+  filter: InnerFilter<T>,
+  newFilter: InnerFilter<T>,
 ): InnerFilter<Writeable<T>> {
   if (!newFilter || Object.keys(newFilter).length === 0) {
     return filter;

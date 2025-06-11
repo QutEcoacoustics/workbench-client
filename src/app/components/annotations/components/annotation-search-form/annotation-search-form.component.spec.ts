@@ -62,6 +62,32 @@ describe("AnnotationSearchFormComponent", () => {
     providers: [provideMockBawApi()],
   });
 
+  const sitesTypeahead = () => spec.query("#sites-input");
+  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
+
+  const tagsTypeahead = () => spec.query("#tags-input");
+  const tagPills = () =>
+    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
+
+  const projectsInput = () => projectsTypeahead().querySelector("input");
+  const projectsTypeahead = () => spec.query("#projects-input");
+
+  const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
+  const endDateInput = () =>
+    spec.query<HTMLInputElement>("#date-finished-before");
+
+  const lowerScoreInput = () => spec.query("#lower-score-input");
+  const upperScoreInput = () => spec.query("#upper-score-input");
+  const scoreErrors = () => spec.query("#score-errors");
+
+  const advancedFiltersToggle = () =>
+    spec.query<HTMLButtonElement>("#advanced-filters-toggle");
+  const advancedFiltersCollapsable = () =>
+    spec.query(".advanced-filters>[ng-reflect-collapsed]");
+  const recordingsTypeahead = () => spec.query("#recordings-input");
+
+  const sortingDropdown = () => spec.query("#sort-input");
+
   function setup(params: Params = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
@@ -116,28 +142,17 @@ describe("AnnotationSearchFormComponent", () => {
     return response;
   }
 
-  const sitesTypeahead = () => spec.query("#sites-input");
-  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
-  const scoreInput = () => spec.query("#score-input");
+  function setLowerBoundScore(value: string) {
+    spec.typeInElement(value, lowerScoreInput());
+    dispatchFakeEvent(lowerScoreInput(), "keyup");
+    tick(defaultDebounceTime);
+  }
 
-  const tagsTypeahead = () => spec.query("#tags-input");
-  const tagPills = () =>
-    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
-
-  const projectsInput = () => projectsTypeahead().querySelector("input");
-  const projectsTypeahead = () => spec.query("#projects-input");
-
-  const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
-  const endDateInput = () =>
-    spec.query<HTMLInputElement>("#date-finished-before");
-
-  const advancedFiltersToggle = () =>
-    spec.query<HTMLButtonElement>("#advanced-filters-toggle");
-  const advancedFiltersCollapsable = () =>
-    spec.query(".advanced-filters>[ng-reflect-collapsed]");
-  const recordingsTypeahead = () => spec.query("#recordings-input");
-
-  const sortingDropdown = () => spec.query("#sort-input");
+  function setUpperBoundScore(value: string) {
+    spec.typeInElement(value, upperScoreInput());
+    dispatchFakeEvent(upperScoreInput(), "keyup");
+    tick(defaultDebounceTime);
+  }
 
   beforeEach(() => {
     mockTagsResponse = Array.from({ length: 10 }, () => new Tag(generateTag()));
@@ -241,11 +256,18 @@ describe("AnnotationSearchFormComponent", () => {
     });
 
     it("should pre-populate the score filter correctly", () => {
-      const mockScore = modelData.datatype.number();
-      setup({ score: mockScore });
+      const mockLowerScore = modelData.datatype.number();
+      const mockUpperScore = modelData.datatype.number();
 
-      expect(scoreInput()).toHaveValue(mockScore.toString());
-      expect(spec.component.searchParameters.score).toEqual(mockScore);
+      setup({ score: `${mockLowerScore},${mockUpperScore}` });
+
+      expect(lowerScoreInput()).toHaveValue(mockLowerScore.toString());
+      expect(upperScoreInput()).toHaveValue(mockUpperScore.toString());
+
+      expect(spec.component.searchParameters.score).toEqual([
+        mockLowerScore,
+        mockUpperScore
+      ]);
     });
 
     it("should automatically open the advanced filters if the search parameters have advanced filters", fakeAsync(() => {
@@ -325,33 +347,26 @@ describe("AnnotationSearchFormComponent", () => {
 
       spec.typeInElement(testedDate, endDateInput());
 
-      expect(modelChangeSpy).not.toHaveBeenCalled();
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
     }));
 
     it("should emit a new model if the score is updated to a truthy value", fakeAsync(() => {
       const testedValue = modelData.datatype.number({ min: 1 });
-
-      spec.typeInElement(testedValue.toString(), scoreInput());
-      dispatchFakeEvent(scoreInput(), "keyup");
-      tick(defaultDebounceTime);
-
-      expect(modelChangeSpy).toHaveBeenCalled();
+      setLowerBoundScore(testedValue.toString());
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
     }));
 
     it("should emit a new model if the score is updated to a falsy value", fakeAsync(() => {
-      spec.typeInElement("0", scoreInput());
-      dispatchFakeEvent(scoreInput(), "keyup");
-      tick(defaultDebounceTime);
-
-      expect(modelChangeSpy).toHaveBeenCalled();
+      setLowerBoundScore("0");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
     }));
 
     it("should emit a new model if the score is updated to an empty value", fakeAsync(() => {
-      spec.typeInElement("", scoreInput());
-      dispatchFakeEvent(scoreInput(), "keyup");
-      tick(defaultDebounceTime);
+      setLowerBoundScore("42");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
 
-      expect(modelChangeSpy).toHaveBeenCalled();
+      setLowerBoundScore("");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(2);
     }));
 
     it("should emit a new model if the sort is updated to a non-default value", () => {
@@ -360,7 +375,7 @@ describe("AnnotationSearchFormComponent", () => {
         "Score (Ascending)",
       );
       spec.selectOption(sortingDropdown(), targetOption);
-      expect(modelChangeSpy).toHaveBeenCalled();
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
     });
 
     it("should emit a new model if the sort is updated to the default value", () => {
@@ -369,7 +384,7 @@ describe("AnnotationSearchFormComponent", () => {
         "Created Date (Oldest First)",
       );
       spec.selectOption(sortingDropdown(), targetOption);
-      expect(modelChangeSpy).toHaveBeenCalled();
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
     });
 
     // TODO: enable this test once we have the endpoint available to filter by verified status
@@ -379,6 +394,47 @@ describe("AnnotationSearchFormComponent", () => {
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({ onlyUnverified: true }),
+      );
+    });
+  });
+
+  describe("form validation", () => {
+    it("should show an error if the upper bound score is greater than the lower bound", () => {
+      setLowerBoundScore("0.8")
+      setUpperBoundScore("0.2");
+
+      expect(scoreErrors()).toHaveExactTrimmedText(
+        "Score lower bound must be less than or equal to the score upper bound.",
+      );
+    });
+
+    it("should display an error if the score is set to a non-number input", () => {
+      // Note that I am pushing the score input to its limit by testing against
+      // a hexadecimal input.
+      // If we are using parseInt or parsing hexadecimal, the lower bound would
+      // incorrectly pass.
+      setLowerBoundScore("0xa");
+      setUpperBoundScore("0.2");
+
+      expect(scoreErrors()).toHaveExactTrimmedText("Score must be a number.");
+    });
+
+    it("should be able to remove an error by deleting everything in the input", () => {
+      setLowerBoundScore("0.8")
+      setUpperBoundScore("0.2");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+
+      setLowerBoundScore("");
+      expect(scoreErrors()).not.toExist();
+      expect(modelChangeSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it("should display an error if the initial state is incorrect", () => {
+      setup({ score: "0.8,0.2" });
+      spec.detectChanges();
+
+      expect(scoreErrors()).toHaveExactTrimmedText(
+        "Score lower bound must be less than or equal to the score upper bound.",
       );
     });
   });
