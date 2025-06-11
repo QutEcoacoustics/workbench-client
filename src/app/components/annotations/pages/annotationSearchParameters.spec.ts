@@ -128,7 +128,7 @@ describe("annotationSearchParameters", () => {
     {
       name: "should create correct filter for only lower score range",
       inputParams: {
-        score: "0.2,"
+        score: "0.2,",
       },
       expectedFilters: () => ({
         filter: {

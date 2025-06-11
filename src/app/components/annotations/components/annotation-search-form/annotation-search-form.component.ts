@@ -230,7 +230,12 @@ export class AnnotationSearchFormComponent implements OnInit {
     boundPosition: ScoreRangeBounds,
   ) {
     const value = toNumber(textValue);
-    if (value === null) {
+
+    // While not a valid number, an empty text input is a valid value because
+    // the user is trying to remove their filter.
+    // In this case, we should pass through the null value so that score is
+    // removed from the parameter model / query string parameters.
+    if (value === null && textValue !== "") {
       this.scoreRangeError.set("Score must be a number.");
       return;
     }

@@ -91,7 +91,12 @@ export function serializeObjectToParams<T>(
       }
 
       if (serializationTechnique) {
-        resultParameter[key] = serializationTechnique.serialize(value);
+        const paramValue = serializationTechnique.serialize(value);
+        if (!isInstantiated(paramValue)) {
+          return;
+        }
+
+        resultParameter[key] = paramValue;
       }
     }
   );
@@ -191,6 +196,11 @@ function durationArrayToQueryString(value: Duration[]): string {
     .join(",");
 }
 
-function arrayToQueryString(value: unknown[]): string {
-  return Array.from(value).join(",");
+function arrayToQueryString(value: unknown[]): string | null {
+  const valueArray = Array.from(value);
+  if (valueArray.every((arrayItem) => !isInstantiated(arrayItem))) {
+    return null;
+  }
+
+  return valueArray.join(",");
 }
