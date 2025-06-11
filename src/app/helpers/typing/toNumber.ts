@@ -1,3 +1,13 @@
+// A generic that can be used to extract a number out of a string during
+// TypeScript type checking.
+// E.g. The return type of toNumber("5") will have a return type of 5
+//
+// This type has purposely not been exported as I want all number conventions
+// to run through the toNumber() function.
+type ParseInt<T extends string> = T extends `${infer N extends number}`
+  ? N
+  : null;
+
 // TODO: If needed, add support for parsing numerical separators like _ and ,
 /**
  * A function to convert a string to a number.
@@ -11,7 +21,7 @@
  * @returns
  * A number if the string is a valid number or "null" if the number is not valid
  */
-export function toNumber(stringValue: string): number | null {
+export function toNumber<T extends string>(stringValue: T): ParseInt<T> {
   // Some values such as an empty string will incorrectly convert to a number
   // value of 0 when using the number constructor.
   // We special case these cases and return "null" indicating that they are not
@@ -29,7 +39,7 @@ export function toNumber(stringValue: string): number | null {
   // unexpected numbers in an attempt not to throw errors, and does not support
   // numeric separators.
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt#using_parseint
-  const value = Number(stringValue);
+  const value = Number(stringValue) as ParseInt<T>;
   if (isNaN(value) || !isFinite(value)) {
     return null;
   }
