@@ -32,6 +32,7 @@ import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { toNumber } from "@helpers/typing/toNumber";
 
 @Component({
   selector: "baw-annotation-search-form",
@@ -71,6 +72,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
+  protected toNumber = toNumber;
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -233,14 +235,5 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     this.searchParameters.sort = event.target.value;
     this.searchParametersChange.emit(this.searchParameters);
-  }
-
-  protected toNumber(stringValue: string): number | null {
-    const value = Number(stringValue);
-    if (isNaN(value)) {
-      return null;
-    }
-
-    return value;
   }
 }
