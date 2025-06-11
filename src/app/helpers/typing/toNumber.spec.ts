@@ -20,6 +20,8 @@ describe("toNumber", () => {
     expect(toNumber("")).toBeNull();
     expect(toNumber(" ")).toBeNull();
     expect(toNumber("\t")).toBeNull();
+    expect(toNumber("\n")).toBeNull();
+    expect(toNumber("\r")).toBeNull();
   });
 
   it("should return null for 'Infinity' string values", () => {

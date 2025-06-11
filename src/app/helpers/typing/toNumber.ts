@@ -4,9 +4,11 @@
 //
 // This type has purposely not been exported as I want all number conventions
 // to run through the toNumber() function.
-type ParseInt<T extends string> = T extends `${infer N extends number}`
-  ? N
-  : null;
+type ParseInt<T extends string> = T extends " " | "\t" | "\n" | "\r"
+  ? null
+  : T extends `${infer N extends number}`
+    ? N
+    : null;
 
 // TODO: If needed, add support for parsing numerical separators like _ and ,
 /**
@@ -26,7 +28,13 @@ export function toNumber<T extends string>(stringValue: T): ParseInt<T> {
   // value of 0 when using the number constructor.
   // We special case these cases and return "null" indicating that they are not
   // numbers.
-  if (stringValue === "" || stringValue === " " || stringValue === "\t") {
+  if (
+    stringValue === "" ||
+    stringValue === " " ||
+    stringValue === "\t" ||
+    stringValue === "\n" ||
+    stringValue === "\r"
+  ) {
     return null;
   }
 
