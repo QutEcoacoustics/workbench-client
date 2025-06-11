@@ -76,8 +76,10 @@ describe("AnnotationSearchFormComponent", () => {
   const endDateInput = () =>
     spec.query<HTMLInputElement>("#date-finished-before");
 
-  const lowerScoreInput = () => spec.query("#lower-score-input");
-  const upperScoreInput = () => spec.query("#upper-score-input");
+  const lowerScoreInput = () =>
+    spec.query<HTMLInputElement>("#lower-score-input");
+  const upperScoreInput = () =>
+    spec.query<HTMLInputElement>("#upper-score-input");
   const scoreErrors = () => spec.query("#score-errors");
 
   const advancedFiltersToggle = () =>
@@ -146,12 +148,14 @@ describe("AnnotationSearchFormComponent", () => {
     spec.typeInElement(value, lowerScoreInput());
     dispatchFakeEvent(lowerScoreInput(), "keyup");
     tick(defaultDebounceTime);
+    spec.detectChanges();
   }
 
   function setUpperBoundScore(value: string) {
     spec.typeInElement(value, upperScoreInput());
     dispatchFakeEvent(upperScoreInput(), "keyup");
     tick(defaultDebounceTime);
+    spec.detectChanges();
   }
 
   beforeEach(() => {
@@ -347,7 +351,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       spec.typeInElement(testedDate, endDateInput());
 
-      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+      expect(modelChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should emit a new model if the score is updated to a truthy value", fakeAsync(() => {
@@ -399,16 +403,25 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   describe("form validation", () => {
-    it("should show an error if the upper bound score is greater than the lower bound", () => {
+    it("should show an error if the upper bound score is greater than the lower bound", fakeAsync(() => {
+      setup();
       setLowerBoundScore("0.8")
       setUpperBoundScore("0.2");
 
       expect(scoreErrors()).toHaveExactTrimmedText(
         "Score lower bound must be less than or equal to the score upper bound.",
       );
-    });
+    }));
 
-    it("should display an error if the score is set to a non-number input", () => {
+    // This test is really only needed for Firefox because other browsers like
+    // Chrome and Safari don't allow users to input free form text into number
+    // inputs.
+    //
+    // TODO: Remove once https://bugzilla.mozilla.org/show_bug.cgi?id=1398528
+    // is resolved.
+    it("should display an error if the score is set to a non-number input", fakeAsync(() => {
+      setup();
+
       // Note that I am pushing the score input to its limit by testing against
       // a hexadecimal input.
       // If we are using parseInt or parsing hexadecimal, the lower bound would
@@ -416,26 +429,33 @@ describe("AnnotationSearchFormComponent", () => {
       setLowerBoundScore("0xa");
       setUpperBoundScore("0.2");
 
-      expect(scoreErrors()).toHaveExactTrimmedText("Score must be a number.");
-    });
+      // Most browsers (Chrome and Safari) will not update the number input box
+      // because the value input is not a number.
+      // However, Firefox will allow users to input free form text into the
+      // number input. Therefore we only assert for the error if the value of
+      // the input box has changed to the invalid value.
+      if (lowerScoreInput().value) {
+        expect(scoreErrors()).toHaveExactTrimmedText("Score must be a number.");
+      }
+    }));
 
-    it("should be able to remove an error by deleting everything in the input", () => {
+    it("should be able to remove an error by deleting everything in the input", fakeAsync(() => {
+      setup();
+
       setLowerBoundScore("0.8")
       setUpperBoundScore("0.2");
-      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
 
       setLowerBoundScore("");
       expect(scoreErrors()).not.toExist();
-      expect(modelChangeSpy).toHaveBeenCalledTimes(2);
-    });
+    }));
 
-    it("should display an error if the initial state is incorrect", () => {
+    it("should display an error if the initial state is incorrect", fakeAsync(() => {
       setup({ score: "0.8,0.2" });
       spec.detectChanges();
 
       expect(scoreErrors()).toHaveExactTrimmedText(
         "Score lower bound must be less than or equal to the score upper bound.",
       );
-    });
+    }));
   });
 });

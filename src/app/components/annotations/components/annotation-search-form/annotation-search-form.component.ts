@@ -136,6 +136,10 @@ export class AnnotationSearchFormComponent implements OnInit {
         dateFinishedBefore,
       };
     }
+
+    if (isInstantiated(this.searchParameters.score)) {
+      this.validateScoreParameters();
+    }
   }
 
   /**
@@ -245,17 +249,9 @@ export class AnnotationSearchFormComponent implements OnInit {
     currentScore[arrayIndex] = value;
 
     this.searchParameters.score = currentScore;
-
-    if (
-      this.searchParameters.scoreLowerBound >
-      this.searchParameters.scoreUpperBound
-    ) {
-      this.scoreRangeError.set("Score lower bound must be less than or equal to the score upper bound.");
-    } else {
-      this.scoreRangeError.set(null);
-    }
-
     this.searchParametersChange.emit(this.searchParameters);
+
+    this.validateScoreParameters();
   }
 
   protected updateParameterProperty<
@@ -282,5 +278,22 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
 
     this.searchParametersChange.emit(this.searchParameters);
+  }
+
+  // While I could add a function to the template to validate that the score is
+  // valid, that would not be very performant because we'd be checking if the
+  // score is valid even when unrelated properties are updated.
+  //
+  // TODO: Replace this with a computed signal once this component migrates to
+  // onPush + signal-based reactivity.
+  private validateScoreParameters() {
+    if (
+      this.searchParameters.scoreLowerBound >
+      this.searchParameters.scoreUpperBound
+    ) {
+      this.scoreRangeError.set("Score lower bound must be less than or equal to the score upper bound.");
+    } else {
+      this.scoreRangeError.set(null);
+    }
   }
 }

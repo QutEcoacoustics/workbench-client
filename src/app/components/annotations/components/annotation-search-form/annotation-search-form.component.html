@@ -72,7 +72,7 @@
           class="form-control"
           placeholder="-Infinity"
           step="0.01"
-          [value]="searchParameters.score"
+          [value]="searchParameters.score?.[0]"
           (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
         >
       </label>
@@ -91,7 +91,7 @@
           class="form-control"
           placeholder="Infinity"
           step="0.01"
-          [value]="searchParameters.score"
+          [value]="searchParameters.score?.[1]"
           (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
         >
       </label>
