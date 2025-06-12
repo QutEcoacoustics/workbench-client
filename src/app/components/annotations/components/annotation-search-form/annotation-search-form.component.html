@@ -57,44 +57,52 @@
   ></baw-typeahead-input>
 
   <div>
-    <div class="d-flex">
-      <label class="input-group">
-        <span
-          class="input-group-text tooltip-hint"
-          [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
-        >
-          Minimum Score
-        </span>
-        <input
-          bawDebouncedInput
-          id="lower-score-input"
-          type="number"
-          class="form-control"
-          placeholder="-Infinity"
-          step="0.01"
-          [value]="searchParameters.score?.[0]"
-          (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
-        >
-      </label>
+    <div class="row">
+      <div class="col-md-6 mb-2 mb-md-0">
+        <label class="input-group">
+          <span
+            class="input-group-text tooltip-hint"
+            [ngbTooltip]="
+              'Applying this filter will cause all events without a score to be hidden.'
+            "
+          >
+            Minimum Score
+          </span>
+          <input
+            bawDebouncedInput
+            id="lower-score-input"
+            type="number"
+            class="form-control"
+            placeholder="-Infinity"
+            step="0.01"
+            [value]="searchParameters.score?.[0]"
+            (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
+          />
+        </label>
+      </div>
 
-      <label class="ms-2 input-group">
-        <span
-          class="input-group-text tooltip-hint"
-          [ngbTooltip]="'Applying this filter will cause all events without a score to be hidden.'"
-        >
-          Maximum Score
-        </span>
-        <input
-          bawDebouncedInput
-          id="upper-score-input"
-          type="number"
-          class="form-control"
-          placeholder="Infinity"
-          step="0.01"
-          [value]="searchParameters.score?.[1]"
-          (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
-        >
-      </label>
+      <div class="col-md-6">
+        <label class="input-group">
+          <span
+            class="input-group-text tooltip-hint"
+            [ngbTooltip]="
+              'Applying this filter will cause all events without a score to be hidden.'
+            "
+          >
+            Maximum Score
+          </span>
+          <input
+            bawDebouncedInput
+            id="upper-score-input"
+            type="number"
+            class="form-control"
+            placeholder="Infinity"
+            step="0.01"
+            [value]="searchParameters.score?.[1]"
+            (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
+          />
+        </label>
+      </div>
     </div>
 
     @if (scoreRangeError() !== null) {

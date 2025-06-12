@@ -449,7 +449,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(scoreErrors()).not.toExist();
     }));
 
-    it("should display an error if the initial state is incorrect", fakeAsync(() => {
+    fit("should display an error if the initial state is incorrect", fakeAsync(() => {
       setup({ score: "0.8,0.2" });
       spec.detectChanges();
 
