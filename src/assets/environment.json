@@ -2,7 +2,7 @@
   "endpoints": {
     "environment": "development",
     "apiRoot": "https://api.staging.ecosounds.org",
-    "clientOrigin": "http://development.ecosounds.org:4200",
+    "clientOrigin": "https://development.ecosounds.org:4200",
     "clientDir": "/",
     "oldClientOrigin": "https://api.staging.ecosounds.org",
     "oldClientBase": "/listen_to/index.html"

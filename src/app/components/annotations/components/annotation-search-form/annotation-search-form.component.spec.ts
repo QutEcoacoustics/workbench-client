@@ -457,5 +457,23 @@ describe("AnnotationSearchFormComponent", () => {
         "Score lower bound must be less than or equal to the score upper bound.",
       );
     }));
+
+    it("should not display an error message if there is only a minimum score", fakeAsync(() => {
+      setup();
+
+      // If we are not correctly handling the null upper bound case, a positive
+      // minimum score because in JavaScript 1 > null === true.
+      setLowerBoundScore("1")
+      expect(scoreErrors()).not.toExist();
+    }));
+
+    it("should not display an error message if there is only a maximum score", fakeAsync(() => {
+      setup();
+
+      // Similar to the comment above, if you don't handle the null lower bound
+      // case, this test case will fail because -1 < null === true
+      setLowerBoundScore("-1")
+      expect(scoreErrors()).not.toExist();
+    }));
   });
 });

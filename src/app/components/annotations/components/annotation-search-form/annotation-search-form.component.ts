@@ -288,8 +288,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   // onPush + signal-based reactivity.
   private validateScoreParameters() {
     if (
-      this.searchParameters.scoreLowerBound >
-      this.searchParameters.scoreUpperBound
+      this.searchParameters.scoreLowerBound !== null &&
+      this.searchParameters.scoreUpperBound !== null &&
+      this.searchParameters.scoreLowerBound > this.searchParameters.scoreUpperBound
     ) {
       this.scoreRangeError.set("Score lower bound must be less than or equal to the score upper bound.");
     } else {
