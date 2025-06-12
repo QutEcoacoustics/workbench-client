@@ -63,19 +63,23 @@
           <span
             class="input-group-text tooltip-hint"
             [ngbTooltip]="
-              'Applying this filter will cause all events without a score to be hidden.'
+              'Any event with an empty score, will also be filtered out.'
             "
           >
             Minimum Score
           </span>
           <input
+            #lowerScore="ngModel"
             bawDebouncedInput
             id="lower-score-input"
+            name="lowerScore"
             type="number"
             class="form-control"
             placeholder="-Infinity"
             step="0.01"
-            [value]="searchParameters.score?.[0]"
+            [class.is-invalid]="lowerScore.invalid"
+            [max]="searchParameters.scoreUpperBound"
+            [ngModel]="searchParameters.score?.[0]"
             (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
           />
         </label>
@@ -86,28 +90,41 @@
           <span
             class="input-group-text tooltip-hint"
             [ngbTooltip]="
-              'Applying this filter will cause all events without a score to be hidden.'
+              'Any event with an empty score, will also be filtered out.'
             "
           >
             Maximum Score
           </span>
           <input
+            #upperScore="ngModel"
             bawDebouncedInput
             id="upper-score-input"
+            name="upperScore"
             type="number"
             class="form-control"
             placeholder="Infinity"
             step="0.01"
-            [value]="searchParameters.score?.[1]"
+            [class.is-invalid]="upperScore.invalid"
+            [min]="searchParameters.scoreLowerBound"
+            [ngModel]="searchParameters.score?.[1]"
             (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
           />
         </label>
       </div>
     </div>
 
-    @if (scoreRangeError() !== null) {
+    @if (form.invalid) {
       <p id="score-errors">
-        <strong class="fw-normal text-danger">{{ scoreRangeError() }}</strong>
+        <strong class="fw-normal text-danger">
+          @if (
+            upperScore.hasError("min") ||
+            lowerScore.hasError("max")
+          ) {
+            Score minimum must be less than or equal to the score maximum.
+          } @else if (upperScore.hasError("type") || lowerScore.hasError("type")) {
+            Score must be a number.
+          }
+        </strong>
       </p>
     }
   </div>

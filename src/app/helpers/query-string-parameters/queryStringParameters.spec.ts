@@ -147,7 +147,7 @@ describe("queryStringParameters", () => {
       expect(result).toEqual(expectedOutput);
     });
 
-    it("should not keys that have empty array values", () => {
+    it("should not emit keys that have empty array values", () => {
       const testInput = {
         testing: "test,mangos",
         score: [],

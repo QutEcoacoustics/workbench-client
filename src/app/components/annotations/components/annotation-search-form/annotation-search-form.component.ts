@@ -4,7 +4,6 @@ import {
   Input,
   OnInit,
   Output,
-  signal,
   ViewChild,
 } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -61,6 +60,7 @@ enum ScoreRangeBounds {
     NgbCollapse,
     NgbHighlight,
     NgbTooltip,
+    FormsModule,
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
@@ -87,7 +87,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected scoreRangeError = signal<string | null>(null);
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -135,10 +134,6 @@ export class AnnotationSearchFormComponent implements OnInit {
         dateFiltering: true,
         dateFinishedBefore,
       };
-    }
-
-    if (isInstantiated(this.searchParameters.score)) {
-      this.validateScoreParameters();
     }
   }
 
@@ -240,7 +235,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     // In this case, we should pass through the null value so that score is
     // removed from the parameter model / query string parameters.
     if (value === null && textValue !== "") {
-      this.scoreRangeError.set("Score must be a number.");
       return;
     }
 
@@ -250,8 +244,6 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     this.searchParameters.score = currentScore;
     this.searchParametersChange.emit(this.searchParameters);
-
-    this.validateScoreParameters();
   }
 
   protected updateParameterProperty<
@@ -278,23 +270,5 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
 
     this.searchParametersChange.emit(this.searchParameters);
-  }
-
-  // While I could add a function to the template to validate that the score is
-  // valid, that would not be very performant because we'd be checking if the
-  // score is valid even when unrelated properties are updated.
-  //
-  // TODO: Replace this with a computed signal once this component migrates to
-  // onPush + signal-based reactivity.
-  private validateScoreParameters() {
-    if (
-      this.searchParameters.scoreLowerBound !== null &&
-      this.searchParameters.scoreUpperBound !== null &&
-      this.searchParameters.scoreLowerBound > this.searchParameters.scoreUpperBound
-    ) {
-      this.scoreRangeError.set("Score lower bound must be less than or equal to the score upper bound.");
-    } else {
-      this.scoreRangeError.set(null);
-    }
   }
 }

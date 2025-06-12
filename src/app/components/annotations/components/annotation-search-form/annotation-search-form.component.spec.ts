@@ -409,7 +409,16 @@ describe("AnnotationSearchFormComponent", () => {
       setUpperBoundScore("0.2");
 
       expect(scoreErrors()).toHaveExactTrimmedText(
-        "Score lower bound must be less than or equal to the score upper bound.",
+        "Score minimum must be less than or equal to the score maximum.",
+      );
+    }));
+
+    it("should display an error if the initial state is incorrect", fakeAsync(() => {
+      setup({ score: "0.8,0.2" });
+      spec.detectChanges();
+
+      expect(scoreErrors()).toHaveExactTrimmedText(
+        "Score minimum must be less than or equal to the score maximum.",
       );
     }));
 
@@ -447,15 +456,6 @@ describe("AnnotationSearchFormComponent", () => {
 
       setLowerBoundScore("");
       expect(scoreErrors()).not.toExist();
-    }));
-
-    fit("should display an error if the initial state is incorrect", fakeAsync(() => {
-      setup({ score: "0.8,0.2" });
-      spec.detectChanges();
-
-      expect(scoreErrors()).toHaveExactTrimmedText(
-        "Score lower bound must be less than or equal to the score upper bound.",
-      );
     }));
 
     it("should not display an error message if there is only a minimum score", fakeAsync(() => {
