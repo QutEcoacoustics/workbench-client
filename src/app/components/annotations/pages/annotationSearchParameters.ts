@@ -398,7 +398,7 @@ export class AnnotationSearchParameters
       },
     };
 
-    return filterAnd(importFileFilters, initialFilter);
+    return filterAnd(initialFilter, importFileFilters);
   }
 
   // TODO: We should add support for event date/time filtering once the api
