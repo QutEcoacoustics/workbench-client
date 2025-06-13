@@ -1,8 +1,8 @@
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { AbstractModel } from "@models/AbstractModel";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { Spectator } from "@ngneat/spectator";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 
 /**
  * Asserts that an NgbPagination component behaves as expected and can be
@@ -20,27 +20,31 @@ export function assertPaginationTemplate<
     beforeEach(() => (spectator = setup()));
 
     describe("filter input", () => {
-      function getFilterInput() {
-        return spectator.query(DebounceInputComponent);
+      function getFilterInput(): HTMLInputElement {
+        return spectator.query("input[type='text']");
+      }
+
+      function getInputDirective() {
+        return spectator.query(DebouncedInputDirective);
       }
 
       it("should have filter input", () => {
         const filter = getFilterInput();
         expect(filter).toBeTruthy();
-        expect(filter.default).toBe("");
+        expect(filter["value"]).toBe("");
       });
 
       it("should set filter default value", () => {
         spectator.component.filter = "Custom Filter";
         spectator.detectChanges();
-        expect(getFilterInput().default).toBe("Custom Filter");
+        expect(getFilterInput()["value"]).toBe("Custom Filter");
       });
 
       it("should trigger onFilter events", () => {
         const spy = jasmine.createSpy().and.stub();
         spectator.component.onFilter = spy;
-        const filter = getFilterInput();
-        filter.filter.next("Custom Filter");
+        const filter = getInputDirective();
+        filter.valueChange.emit("Custom Filter");
         spectator.detectChanges();
         expect(spy).toHaveBeenCalled();
       });

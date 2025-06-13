@@ -35,7 +35,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { SiteMapComponent } from "../../../projects/components/site-map/site-map.component";
 import { SiteCardComponent } from "../../../projects/components/site-card/site-card.component";
 
@@ -81,12 +81,17 @@ const regionKey = "region";
         </div>
       </div>
 
-      <baw-debounce-input
-        label="Filter"
-        placeholder="Filter Points"
-        [default]="filter"
-        (filter)="onFilter($event)"
-      ></baw-debounce-input>
+      <label class="input-group mb-3">
+        <span class="input-group-prepend input-group-text">Filter</span>
+        <input
+          bawDebouncedInput
+          type="text"
+          class="form-control"
+          placeholder="Filter Points"
+          [value]="filter"
+          (valueChange)="onFilter($event)"
+        >
+      </label>
 
       @if (!hasSites() && !loading) {
         <p class="lead">
@@ -121,7 +126,7 @@ const regionKey = "region";
   `,
   imports: [
       AuthenticatedImageDirective,
-      DebounceInputComponent,
+      DebouncedInputDirective,
       SiteMapComponent,
       SiteCardComponent,
       NgbPagination,

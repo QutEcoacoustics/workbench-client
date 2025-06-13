@@ -40,8 +40,8 @@ import { merge, Observable, takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { analysesMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { annotationsImportMenuItem } from "@components/import-annotations/import-annotations.menu";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { SiteMapComponent } from "../../components/site-map/site-map.component";
 import { SiteCardComponent } from "../../components/site-card/site-card.component";
 
@@ -93,12 +93,17 @@ const projectKey = "project";
         </small>
       </h2>
 
-      <baw-debounce-input
-        label="Filter"
-        placeholder="Filter Sites"
-        [default]="filter"
-        (filter)="onFilter($event)"
-      ></baw-debounce-input>
+      <label class="input-group mb-3">
+        <span class="input-group-prepend input-group-text">Filter</span>
+        <input
+          bawDebouncedInput
+          type="text"
+          class="form-control"
+          placeholder="Filter Sites"
+          [value]="filter"
+          (valueChange)="onFilter($event)"
+        >
+      </label>
 
       @if (!hasSites && !hasRegions && !loading) {
         <p class="lead">
@@ -144,7 +149,7 @@ const projectKey = "project";
   styleUrl: "details.component.scss",
   imports: [
     AuthenticatedImageDirective,
-    DebounceInputComponent,
+    DebouncedInputDirective,
     SiteMapComponent,
     SiteCardComponent,
     NgbPagination,

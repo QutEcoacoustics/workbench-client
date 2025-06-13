@@ -39,7 +39,7 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
     }
 
     return api.filter({
-      filter: filterAnd({ [key]: { eq: id } }, filters),
+      filter: filterAnd({ [key]: { eq: id } } as any, filters),
     });
   };
 }

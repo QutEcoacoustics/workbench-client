@@ -18,8 +18,16 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate, NgbCollapse, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import {
+  NgbDate,
+  NgbCollapse,
+  NgbHighlight,
+  NgbTooltip,
+} from "@ng-bootstrap/ng-bootstrap";
+import {
+  DateTimeFilterModel,
+  DateTimeFilterComponent,
+} from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
   createSearchCallback,
@@ -30,18 +38,29 @@ import { FormsModule } from "@angular/forms";
 import { WIPComponent } from "@shared/wip/wip.component";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { Writeable } from "@helpers/advancedTypes";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { toNumber } from "@helpers/typing/toNumber";
+
+enum ScoreRangeBounds {
+  Lower,
+  Upper,
+}
 
 @Component({
   selector: "baw-annotation-search-form",
-  templateUrl: "annotation-search-form.component.html",
-  styleUrl: "annotation-search-form.component.scss",
+  templateUrl: "./annotation-search-form.component.html",
+  styleUrl: "./annotation-search-form.component.scss",
   imports: [
     FormsModule,
     DateTimeFilterComponent,
     TypeaheadInputComponent,
     WIPComponent,
+    DebouncedInputDirective,
     NgbCollapse,
     NgbHighlight,
+    NgbTooltip,
+    FormsModule,
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
@@ -51,7 +70,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected projectsApi: ProjectsService,
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService
+    protected tagsApi: TagsService,
   ) {}
 
   @Input({ required: true })
@@ -67,6 +86,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
+  protected scoreRangeBounds = ScoreRangeBounds;
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -107,7 +127,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       const dateFinishedBefore = new NgbDate(
         this.searchParameters.recordingDateFinishedBefore.year,
         this.searchParameters.recordingDateFinishedBefore.month,
-        this.searchParameters.recordingDateFinishedBefore.day
+        this.searchParameters.recordingDateFinishedBefore.day,
       );
 
       this.recordingDateTimeFilters = {
@@ -118,17 +138,17 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   /**
-    * Creates a filter condition to fetch models scoped to the current route
-    * models.
-    * This can be used in the typeaheads where you need to provide search
-    * results for site, regions, etc... under a parent model (e.g. project).
-    */
+   * Creates a filter condition to fetch models scoped to the current route
+   * models.
+   * This can be used in the typeaheads where you need to provide search
+   * results for site, regions, etc... under a parent model (e.g. project).
+   */
   protected routeModelFilters(): InnerFilter<Project | Region | Site> {
     if (this.site) {
       return filterModel("sites", this.site);
     } else if (this.region) {
       return filterModel("regions", this.region);
-    } else if (this.project){
+    } else if (this.project) {
       return filterModel("projects", this.project);
     }
 
@@ -147,7 +167,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       this.searchParameters.audioRecordings = null;
     } else {
       const recordingIds = this.recordingsTypeahead.value.map(
-        (model: AudioRecording) => model.id
+        (model: AudioRecording) => model.id,
       );
 
       if (recordingIds.length > 0) {
@@ -160,7 +180,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected updateSubModel(
     key: keyof AnnotationSearchParameters,
-    subModels: any[]
+    subModels: any[],
   ): void {
     // if the subModels array is empty, the user has not selected any models
     // we should set the search parameter to null so that it is not emitted
@@ -204,12 +224,36 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  protected updateOnlyUnverified(value: boolean): void {
-    this.searchParameters.onlyUnverified = value;
+  protected updateScoreRange(
+    textValue: string,
+    boundPosition: ScoreRangeBounds,
+  ) {
+    const value = toNumber(textValue);
+
+    // While not a valid number, an empty text input is a valid value because
+    // the user is trying to remove their filter.
+    // In this case, we should pass through the null value so that score is
+    // removed from the parameter model / query string parameters.
+    if (value === null && textValue !== "") {
+      return;
+    }
+
+    const arrayIndex = boundPosition === ScoreRangeBounds.Lower ? 0 : 1;
+    const currentScore = this.searchParameters.score ?? [null, null];
+    currentScore[arrayIndex] = value;
+
+    this.searchParameters.score = currentScore;
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  public updateSortBy(event: Event): void {
+  protected updateParameterProperty<
+    T extends keyof Writeable<AnnotationSearchParameters>,
+  >(key: T, value: AnnotationSearchParameters[T]) {
+    this.searchParameters[key] = value;
+    this.searchParametersChange.emit(this.searchParameters);
+  }
+
+  protected updateSortBy(event: Event): void {
     // We use a type guard here because event.target is typed as a HTMLElement
     // which does not have the "value" property.
     // By type narrowing the target to a HTMLSelectElement, we can ensure that
@@ -225,7 +269,6 @@ export class AnnotationSearchFormComponent implements OnInit {
       return;
     }
 
-    this.searchParameters.sort = event.target.value;
     this.searchParametersChange.emit(this.searchParameters);
   }
 }

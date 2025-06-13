@@ -47,8 +47,8 @@ const annotationsKey = "annotations";
 
 @Component({
   selector: "baw-annotations-search",
-  templateUrl: "search.component.html",
-  styleUrl: "search.component.scss",
+  templateUrl: "./search.component.html",
+  styleUrl: "./search.component.scss",
   imports: [
     AnnotationSearchFormComponent,
     IfLoggedInComponent,

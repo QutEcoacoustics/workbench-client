@@ -1,0 +1,8 @@
+// You can use this class to indicate that a certain element has a tooltip when
+// hovered.
+// This class is globally available instead of using a combination of bootstrap
+// classes so that if we want to change this hint styling in the future, we just
+// have to change it in this one place.
+.tooltip-hint {
+  text-decoration: dotted underline;
+}

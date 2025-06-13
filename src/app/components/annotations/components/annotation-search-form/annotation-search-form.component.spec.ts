@@ -1,10 +1,14 @@
 import {
   createComponentFactory,
+  dispatchFakeEvent,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+  SortingKey,
+} from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -16,11 +20,12 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import {
+  getElementByInnerText,
   selectFromTypeahead,
   toggleDropdown,
   waitForDropdown,
 } from "@test/helpers/html";
-import { fakeAsync } from "@angular/core/testing";
+import { fakeAsync, tick } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
 import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
@@ -34,6 +39,7 @@ import {
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
+import { defaultDebounceTime } from "src/app/app.helper";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -56,6 +62,34 @@ describe("AnnotationSearchFormComponent", () => {
     providers: [provideMockBawApi()],
   });
 
+  const sitesTypeahead = () => spec.query("#sites-input");
+  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
+
+  const tagsTypeahead = () => spec.query("#tags-input");
+  const tagPills = () =>
+    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
+
+  const projectsInput = () => projectsTypeahead().querySelector("input");
+  const projectsTypeahead = () => spec.query("#projects-input");
+
+  const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
+  const endDateInput = () =>
+    spec.query<HTMLInputElement>("#date-finished-before");
+
+  const lowerScoreInput = () =>
+    spec.query<HTMLInputElement>("#lower-score-input");
+  const upperScoreInput = () =>
+    spec.query<HTMLInputElement>("#upper-score-input");
+  const scoreErrors = () => spec.query("#score-errors");
+
+  const advancedFiltersToggle = () =>
+    spec.query<HTMLButtonElement>("#advanced-filters-toggle");
+  const advancedFiltersCollapsable = () =>
+    spec.query(".advanced-filters>[ng-reflect-collapsed]");
+  const recordingsTypeahead = () => spec.query("#recordings-input");
+
+  const sortingDropdown = () => spec.query("#sort-input");
+
   function setup(params: Params = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
@@ -75,7 +109,7 @@ describe("AnnotationSearchFormComponent", () => {
 
     sitesApiSpy.filter.andCallFake(() => of(mockSitesResponse));
     sitesApiSpy.show.andCallFake((id: Id) =>
-      of(mockSitesResponse.find((site) => site.id === id))
+      of(mockSitesResponse.find((site) => site.id === id)),
     );
 
     // we mock both filter and show requests because we need to have consistent
@@ -86,12 +120,7 @@ describe("AnnotationSearchFormComponent", () => {
     const response = Promise.all([
       interceptFilterApiRequest(tagsApiSpy, injector, mockTagsResponse, Tag),
 
-      interceptShowApiRequest(
-        tagsApiSpy,
-        injector,
-        mockTagsResponse[0],
-        Tag,
-      ),
+      interceptShowApiRequest(tagsApiSpy, injector, mockTagsResponse[0], Tag),
 
       interceptFilterApiRequest(
         recordingsApiSpy,
@@ -112,28 +141,25 @@ describe("AnnotationSearchFormComponent", () => {
     searchParameters.routeProjectModel = mockProject;
     spec.setInput("searchParameters", searchParameters);
 
+    tick();
+    spec.detectChanges();
+
     return response;
   }
 
-  const sitesTypeahead = () => spec.query("#sites-input");
-  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
+  function setLowerBoundScore(value: string) {
+    spec.typeInElement(value, lowerScoreInput());
+    dispatchFakeEvent(lowerScoreInput(), "keyup");
+    tick(defaultDebounceTime);
+    spec.detectChanges();
+  }
 
-  const tagsTypeahead = () => spec.query("#tags-input");
-  const tagPills = () =>
-    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
-
-  const projectsInput = () => projectsTypeahead().querySelector("input");
-  const projectsTypeahead = () => spec.query("#projects-input");
-
-  const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
-  const endDateInput = () =>
-    spec.query<HTMLInputElement>("#date-finished-before");
-
-  const advancedFiltersToggle = () =>
-    spec.query<HTMLButtonElement>("#advanced-filters-toggle");
-  const advancedFiltersCollapsable = () =>
-    spec.query(".advanced-filters>[ng-reflect-collapsed]");
-  const recordingsTypeahead = () => spec.query("#recordings-input");
+  function setUpperBoundScore(value: string) {
+    spec.typeInElement(value, upperScoreInput());
+    dispatchFakeEvent(upperScoreInput(), "keyup");
+    tick(defaultDebounceTime);
+    spec.detectChanges();
+  }
 
   beforeEach(() => {
     mockTagsResponse = Array.from({ length: 10 }, () => new Tag(generateTag()));
@@ -145,10 +171,10 @@ describe("AnnotationSearchFormComponent", () => {
     mockRecording = new AudioRecording(generateAudioRecording());
   });
 
-  it("should create", () => {
+  it("should create", fakeAsync(() => {
     setup();
     expect(spec.component).toBeInstanceOf(AnnotationSearchFormComponent);
-  });
+  }));
 
   it("should have a collapsable advanced filters section", fakeAsync(() => {
     setup();
@@ -159,10 +185,10 @@ describe("AnnotationSearchFormComponent", () => {
 
   describe("pre-population from first load", () => {
     // check the population of a typeahead input that uses a property backing
-    it("should pre-populate the project typeahead input if provided", () => {
+    it("should pre-populate the project typeahead input if provided", fakeAsync(() => {
       setup();
       expect(projectsInput()).toHaveProperty("placeholder", mockProject.name);
-    });
+    }));
 
     // check the population of a typeahead input that does not use a property backing
     it("should pre-populate the tags typeahead input if provided in the search parameters model", fakeAsync(async () => {
@@ -219,9 +245,37 @@ describe("AnnotationSearchFormComponent", () => {
     // check the population of a checkbox boolean input
     // TODO: enable this test once we have the endpoint available to filter by
     // verified status
-    xit("should pre-populate the only verified checkbox if provided in the search parameters model", () => {
+    xit("should pre-populate the only verified checkbox if provided in the search parameters model", fakeAsync(() => {
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-    });
+    }));
+
+    it("should pre-populate the sorting dropdown correctly", fakeAsync(() => {
+      const testedSorting = "score-asc" satisfies SortingKey;
+
+      setup({ sort: testedSorting });
+      expect(sortingDropdown()).toHaveValue("score-asc");
+      expect(spec.component.searchParameters.sort).toEqual("score-asc");
+    }));
+
+    it("should have the correct sorting selection for an empty parameter", fakeAsync(() => {
+      setup();
+      expect(sortingDropdown()).toHaveValue("created-asc");
+    }));
+
+    it("should pre-populate the score filter correctly", fakeAsync(() => {
+      const mockLowerScore = modelData.datatype.number();
+      const mockUpperScore = modelData.datatype.number();
+
+      setup({ score: `${mockLowerScore},${mockUpperScore}` });
+
+      expect(lowerScoreInput()).toHaveValue(mockLowerScore.toString());
+      expect(upperScoreInput()).toHaveValue(mockUpperScore.toString());
+
+      expect(spec.component.searchParameters.score).toEqual([
+        mockLowerScore,
+        mockUpperScore
+      ]);
+    }));
 
     it("should automatically open the advanced filters if the search parameters have advanced filters", fakeAsync(() => {
       setup({ audioRecordings: "1" });
@@ -246,13 +300,19 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   describe("update emission", () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       setup();
-    });
+    }));
 
     // check a typeahead input that also has an optional property backing
     it("should emit the correct model if the site is updated", fakeAsync(() => {
       const testedSite = mockSitesResponse[0];
+
+      // When the form initializes it will make an initial model emission with
+      // its initial model.
+      // Because we want to assert that updating the site causes one update with
+      // the correct parameters, we reset the call spy.
+      modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
       expect(spec.component.searchParameters.sites).toEqual([testedSite.id]);
@@ -264,6 +324,8 @@ describe("AnnotationSearchFormComponent", () => {
     // check a typeahead input that does not have an optional property backing
     it("should emit the correct model if the tags are updated", fakeAsync(() => {
       const testedTag = mockTagsResponse[0];
+
+      modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
       expect(spec.component.searchParameters.tags).toEqual([testedTag.id]);
@@ -284,6 +346,7 @@ describe("AnnotationSearchFormComponent", () => {
       const testedDate = "2021-10-10";
       const expectedNewModel = {};
 
+      modelChangeSpy.calls.reset();
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
@@ -295,6 +358,7 @@ describe("AnnotationSearchFormComponent", () => {
     it("should not emit a new model if the date filters are updated with an invalid value", fakeAsync(() => {
       const testedDate = "2021109-12";
 
+      modelChangeSpy.calls.reset();
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
@@ -303,14 +367,140 @@ describe("AnnotationSearchFormComponent", () => {
       expect(modelChangeSpy).not.toHaveBeenCalled();
     }));
 
+    it("should emit a new model if the score is updated to a truthy value", fakeAsync(() => {
+      const testedValue = modelData.datatype.number({ min: 1 });
+
+      modelChangeSpy.calls.reset();
+      setLowerBoundScore(testedValue.toString());
+
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should emit a new model if the score is updated to a falsy value", fakeAsync(() => {
+      modelChangeSpy.calls.reset();
+      setLowerBoundScore("0");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should emit a new model if the score is updated to an empty value", fakeAsync(() => {
+      modelChangeSpy.calls.reset();
+      setLowerBoundScore("42");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+
+      setLowerBoundScore("");
+      expect(modelChangeSpy).toHaveBeenCalledTimes(2);
+    }));
+
+    it("should emit a new model if the sort is updated to a non-default value", fakeAsync(() => {
+      const targetOption = getElementByInnerText<HTMLOptionElement>(
+        spec,
+        "Score (Ascending)",
+      );
+
+      modelChangeSpy.calls.reset();
+      spec.selectOption(sortingDropdown(), targetOption);
+
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should emit a new model if the sort is updated to the default value", fakeAsync(() => {
+      const targetOption = getElementByInnerText<HTMLOptionElement>(
+        spec,
+        "Created Date (Oldest First)",
+      );
+
+      modelChangeSpy.calls.reset();
+      spec.selectOption(sortingDropdown(), targetOption);
+
+      expect(modelChangeSpy).toHaveBeenCalledTimes(1);
+    }));
+
     // TODO: enable this test once we have the endpoint available to filter by verified status
-    xit("should emit the correct model if the only verified checkbox is updated", () => {
+    xit("should emit the correct model if the only verified checkbox is updated", fakeAsync(() => {
+      modelChangeSpy.calls.reset();
       spec.click(onlyVerifiedCheckbox());
 
       expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({ onlyUnverified: true })
+        jasmine.objectContaining({ onlyUnverified: true }),
       );
-    });
+    }));
+  });
+
+  describe("form validation", () => {
+    // This has been temporarily disabled because of "value changed after it was
+    // checked" errors that only occur in testing environments.
+    // TODO: Re-enable this test if we get some time.
+    xit("should show an error if the upper bound score is greater than the lower bound", fakeAsync(async () => {
+      setup();
+
+      setLowerBoundScore("0.8")
+      setUpperBoundScore("0.2");
+
+      expect(scoreErrors()).toHaveExactTrimmedText(
+        "Score minimum must be less than or equal to the score maximum.",
+      );
+    }));
+
+    it("should display an error if the initial state is incorrect", fakeAsync(() => {
+      setup({ score: "0.8,0.2" });
+      expect(scoreErrors()).toHaveExactTrimmedText(
+        "Score minimum must be less than or equal to the score maximum.",
+      );
+    }));
+
+    // This test is really only needed for Firefox because other browsers like
+    // Chrome and Safari don't allow users to input free form text into number
+    // inputs.
+    //
+    // TODO: Remove once https://bugzilla.mozilla.org/show_bug.cgi?id=1398528
+    // is resolved.
+    it("should display an error if the score is set to a non-number input", fakeAsync(() => {
+      setup();
+
+      // Note that I am pushing the score input to its limit by testing against
+      // a hexadecimal input.
+      // If we are using parseInt or parsing hexadecimal, the lower bound would
+      // incorrectly pass.
+      setLowerBoundScore("0xa");
+      setUpperBoundScore("0.2");
+
+      // Most browsers (Chrome and Safari) will not update the number input box
+      // because the value input is not a number.
+      // However, Firefox will allow users to input free form text into the
+      // number input. Therefore we only assert for the error if the value of
+      // the input box has changed to the invalid value.
+      if (lowerScoreInput().value) {
+        expect(scoreErrors()).toHaveExactTrimmedText("Score must be a number.");
+      }
+    }));
+
+    xit("should be able to remove an error by deleting everything in the input", fakeAsync(() => {
+      setup();
+
+      setLowerBoundScore("0.8")
+      setUpperBoundScore("0.2");
+
+      setLowerBoundScore("");
+      expect(scoreErrors()).not.toExist();
+    }));
+
+    it("should not display an error message if there is only a minimum score", fakeAsync(() => {
+      setup();
+
+      // If we are not correctly handling the null upper bound case, a positive
+      // minimum score because in JavaScript 1 > null === true.
+      setLowerBoundScore("1")
+      expect(scoreErrors()).not.toExist();
+    }));
+
+    it("should not display an error message if there is only a maximum score", fakeAsync(() => {
+      setup();
+
+      // Similar to the comment above, if you don't handle the null lower bound
+      // case, this test case will fail because -1 < null === true
+      setLowerBoundScore("-1")
+      expect(scoreErrors()).not.toExist();
+    }));
   });
 });

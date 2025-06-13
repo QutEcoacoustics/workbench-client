@@ -89,7 +89,7 @@ export function filterTime(
       ],
     };
 
-    filters = filterAnd<AudioRecording>(filters, timeInnerFilter);
+    filters = filterAnd(filters, timeInnerFilter);
   } else {
     if (startTime) {
       const startTimeFilter = {
@@ -98,7 +98,13 @@ export function filterTime(
         },
       };
 
-      filters = filterAnd<AudioRecording>(filters, startTimeFilter);
+      // We do this override because recordedEndDate is a virtual field that we
+      // can filter by, but does not exist on the database or audio recording
+      // model emitted by the api.
+      //
+      // TODO: Remove this type cast once we add support for typing virtual
+      // fields on filter bodies.
+      filters = filterAnd(filters, startTimeFilter as InnerFilter<AudioRecording>);
     }
 
     if (endTime) {
@@ -108,7 +114,7 @@ export function filterTime(
         },
       };
 
-      filters = filterAnd<AudioRecording>(filters, endTimeFilter);
+      filters = filterAnd(filters, endTimeFilter);
     }
   }
 

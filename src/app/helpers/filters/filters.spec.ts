@@ -2,6 +2,7 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { Id } from "@interfaces/apiInterfaces";
+import { AudioRecording } from "@models/AudioRecording";
 import { filterAnd, filterModel, filterModelIds } from "./filters";
 
 describe("ModelFilters", () => {
@@ -20,11 +21,11 @@ describe("ModelFilters", () => {
 
     it("should create an 'and' condition if there is no and condition for a newly multi conditional filter", () => {
       const currentFilters = {
-        ["projects.id"]: {
+        "projects.id": {
           eq: 1,
         },
-      };
-      const additionalFilters = {
+      } as InnerFilter<AudioRecording>;
+      const additionalFilters: InnerFilter<AudioRecording> = {
         recordedDate: { greaterThan: "2021-10-10" },
       };
 
@@ -58,12 +59,12 @@ describe("ModelFilters", () => {
       };
 
       const additionalFilters = {
-        ["sites.id"]: {
+        "sites.id": {
           in: [{ eq: 1 }, { eq: 2 }],
         },
-      };
+      } as InnerFilter<AudioRecording>;
 
-      const expectedResult: InnerFilter = {
+      const expectedResult: InnerFilter<AudioRecording> = {
         and: [
           {
             ["projects.id"]: {

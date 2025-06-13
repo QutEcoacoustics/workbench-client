@@ -1,5 +1,6 @@
 import { Params } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { toNumber } from "@helpers/typing/toNumber";
 import { DateTime, Duration } from "luxon";
 
 export type IQueryStringParameterSpec<T = Record<string, unknown>> = {
@@ -90,7 +91,12 @@ export function serializeObjectToParams<T>(
       }
 
       if (serializationTechnique) {
-        resultParameter[key] = serializationTechnique.serialize(value);
+        const paramValue = serializationTechnique.serialize(value);
+        if (!isInstantiated(paramValue)) {
+          return;
+        }
+
+        resultParameter[key] = paramValue;
       }
     }
   );
@@ -128,14 +134,7 @@ function queryStringBoolean(value: string): boolean {
 }
 
 function queryStringNumber(value: string): number | null {
-  // we want to use number here so that if the user inputs a malformed number into the query string parameters
-  // the condition is not applied, rather than returning incorrect results that would be returned with parseInt()
-  const parsedNumber = Number(value);
-  if (isNaN(parsedNumber)) {
-    return null;
-  }
-
-  return parsedNumber;
+  return toNumber(value);
 }
 
 function queryStringArray(value: string): string[] {
@@ -197,6 +196,11 @@ function durationArrayToQueryString(value: Duration[]): string {
     .join(",");
 }
 
-function arrayToQueryString(value: unknown[]): string {
-  return Array.from(value).join(",");
+function arrayToQueryString(value: unknown[]): string | null {
+  const valueArray = Array.from(value);
+  if (valueArray.every((arrayItem) => !isInstantiated(arrayItem))) {
+    return null;
+  }
+
+  return valueArray.join(",");
 }

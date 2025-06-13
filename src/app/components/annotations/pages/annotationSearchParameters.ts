@@ -9,7 +9,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds as tagFilters } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
@@ -67,6 +67,7 @@ export interface IAnnotationSearchParameters {
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
+  score: MonoTuple<number, 2>;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -105,6 +106,7 @@ const serializationTable: IQueryStringParameterSpec<
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
   recordingTime: luxonDurationArray,
+  score: jsNumberArray,
 
   // because the serialization of route parameters is handled by the angular
   // router, we only want to serialize the model filter query string parameters
@@ -157,6 +159,7 @@ export class AnnotationSearchParameters
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
+  public score: MonoTuple<number, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -242,12 +245,20 @@ export class AnnotationSearchParameters
     return this.recordingTime ? this.recordingTime[1] : null;
   }
 
+  public get scoreLowerBound(): number | null {
+    return this.score ? this.score[0] : null;
+  }
+
+  public get scoreUpperBound(): number | null {
+    return this.score ? this.score[1] : null;
+  }
+
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    const tagFilters = filterModelIds<Tag>("tags", this.tags);
-    const dateTimeFilters = this.recordingFilters(tagFilters);
-    const siteFilters = filterAnd(dateTimeFilters, this.routeFilters());
-    const filter = this.eventDateTimeFilters(siteFilters);
+    let filter = tagFilters<Tag>("tags", this.tags);
+    filter = this.addRecordingFilters(filter);
+    filter = this.addRouteFilters(filter);
+    filter = this.addEventFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -330,7 +341,13 @@ export class AnnotationSearchParameters
     return [];
   }
 
-  private recordingFilters(
+  private addRouteFilters(
+    initialFilter: InnerFilter<AudioEvent>,
+  ): InnerFilter<AudioEvent> {
+    return filterAnd(initialFilter, this.routeFilters());
+  }
+
+  private addRecordingFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     const dateFilter = filterEventRecordingDate(
@@ -351,7 +368,7 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
-    const recordingFilter = filterModelIds(
+    const recordingFilter = tagFilters(
       "audioRecordings",
       this.audioRecordings,
       dateFilter,
@@ -360,13 +377,37 @@ export class AnnotationSearchParameters
     return recordingFilter;
   }
 
-  // TODO: this function is a placeholder for future implementation once the api
-  // supports filtering by event date time
+  // TODO: We should add support for event date/time filtering once the api
+  // adds supports.
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  private eventDateTimeFilters(
+  private addEventFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    return initialFilter;
+    // I purposely use a falsy condition here.
+    // Because this falsy condition will match against a score of zero, this
+    // method will short circuit and return the initial filter if the score is
+    // zero, undefined, or null.
+    if (!isInstantiated(this.score)) {
+      return initialFilter;
+    }
+
+    const lowerBound = this.score[0];
+    const upperBound = this.score[1];
+
+    let scoreFilters: InnerFilter<AudioEvent> = initialFilter;
+    if (isInstantiated(lowerBound)) {
+      scoreFilters = filterAnd(scoreFilters, {
+        score: { gteq: lowerBound }
+      });
+    }
+
+    if (isInstantiated(upperBound)) {
+      scoreFilters = filterAnd(scoreFilters, {
+        score: { lteq: upperBound },
+      });
+    }
+
+    return scoreFilters;
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {

@@ -9,7 +9,6 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateRegion } from "@test/fakes/Region";
@@ -19,6 +18,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { RegionListComponent } from "./list.component";
 
 describe("RegionsListComponent", () => {
@@ -158,14 +158,18 @@ describe("RegionsListComponent", () => {
   });
 
   describe("filtering", () => {
-    function getFilter() {
-      return spec.query(DebounceInputComponent);
+    function getFilterInput(): HTMLInputElement {
+      return spec.query("input[type='text']");
+    }
+
+    function getInputDirective() {
+      return spec.query(DebouncedInputDirective);
     }
 
     it("should have filtering option", async () => {
       const regions = generateRegions(3);
       await handleApiRequest(regions);
-      expect(getFilter()).toBeTruthy();
+      expect(getFilterInput()).toBeTruthy();
     });
 
     it("should have default value attached", async () => {
@@ -173,14 +177,14 @@ describe("RegionsListComponent", () => {
       await handleApiRequest(regions);
       spec.component.filter = "custom value";
       spec.detectChanges();
-      expect(getFilter().default).toBe("custom value");
+      expect(getFilterInput()["value"]).toBe("custom value");
     });
 
     it("should call onFilter when event detected", async () => {
       const regions = generateRegions(3);
       await handleApiRequest(regions);
       spyOn(spec.component, "onFilter").and.stub();
-      getFilter().filter.next("custom value");
+      getInputDirective().valueChange.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

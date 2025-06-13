@@ -127,6 +127,44 @@ describe("queryStringParameters", () => {
 
       expect(result).toEqual(expectedOutput);
     });
+
+    it("should not serialize arrays that only have null values", () => {
+      const testInput = {
+        testing: "test,mangos",
+        score: [null,null],
+      };
+      const expectedOutput: Params = {
+        testing: "test,mangos",
+      };
+
+      const testSpec: IQueryStringParameterSpec = {
+        testing: jsString,
+        score: jsNumberArray,
+      };
+
+      const result = serializeObjectToParams(testInput, testSpec);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it("should not emit keys that have empty array values", () => {
+      const testInput = {
+        testing: "test,mangos",
+        score: [],
+      };
+      const expectedOutput: Params = {
+        testing: "test,mangos",
+      };
+
+      const testSpec: IQueryStringParameterSpec = {
+        testing: jsString,
+        score: jsNumberArray,
+      };
+
+      const result = serializeObjectToParams(testInput, testSpec);
+
+      expect(result).toEqual(expectedOutput);
+    });
   });
 
   describe("deserialization", () => {

@@ -15,11 +15,16 @@
     <strong>all {{ totalModels }}</strong> sites.
   </p>
 
-  <baw-debounce-input
-    label="Filter"
-    placeholder="Filter Sites"
-    (filter)="onFilter($event)"
-  ></baw-debounce-input>
+  <label class="input-group mb-3">
+    <span class="input-group-prepend input-group-text">Filter</span>
+    <input
+      bawDebouncedInput
+      type="text"
+      class="form-control"
+      placeholder="Filter Sites"
+      (valueChange)="onFilter($event)"
+    >
+  </label>
 
   <ngx-datatable
     #table

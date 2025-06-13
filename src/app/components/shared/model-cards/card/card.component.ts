@@ -53,7 +53,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
 
           @if (!!licenseText) {
             <div
-              class="license-badge badge text-bg-secondary"
+              class="license-badge badge text-bg-secondary tooltip-hint"
               [ngbTooltip]="'This license has been applied to all data, metadata, and analysis results'"
               container="body"
             >

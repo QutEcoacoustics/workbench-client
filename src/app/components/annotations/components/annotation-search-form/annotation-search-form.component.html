@@ -56,6 +56,79 @@
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
+  <div>
+    <div class="row">
+      <div class="col-md-6 mb-2 mb-md-0">
+        <label class="input-group">
+          <span
+            class="input-group-text tooltip-hint"
+            [ngbTooltip]="
+              'Any event with an empty score, will also be filtered out.'
+            "
+          >
+            Minimum Score
+          </span>
+          <input
+            #lowerScore="ngModel"
+            bawDebouncedInput
+            id="lower-score-input"
+            name="lowerScore"
+            type="number"
+            class="form-control"
+            placeholder="-Infinity"
+            step="0.01"
+            [class.is-invalid]="lowerScore.invalid"
+            [max]="searchParameters.scoreUpperBound"
+            [ngModel]="searchParameters.score?.[0]"
+            (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
+          />
+        </label>
+      </div>
+
+      <div class="col-md-6">
+        <label class="input-group">
+          <span
+            class="input-group-text tooltip-hint"
+            [ngbTooltip]="
+              'Any event with an empty score, will also be filtered out.'
+            "
+          >
+            Maximum Score
+          </span>
+          <input
+            #upperScore="ngModel"
+            bawDebouncedInput
+            id="upper-score-input"
+            name="upperScore"
+            type="number"
+            class="form-control"
+            placeholder="Infinity"
+            step="0.01"
+            [class.is-invalid]="upperScore.invalid"
+            [min]="searchParameters.scoreLowerBound"
+            [ngModel]="searchParameters.score?.[1]"
+            (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
+          />
+        </label>
+      </div>
+    </div>
+
+    @if (form.invalid) {
+      <p id="score-errors">
+        <strong class="fw-normal text-danger">
+          @if (
+            upperScore.hasError("min") ||
+            lowerScore.hasError("max")
+          ) {
+            Score minimum must be less than or equal to the score maximum.
+          } @else if (upperScore.hasError("type") || lowerScore.hasError("type")) {
+            Score must be a number.
+          }
+        </strong>
+      </p>
+    }
+  </div>
+
   <baw-wip>
     <div class="form-check mt-2">
       <!--
@@ -68,7 +141,7 @@
         type="checkbox"
         class="form-check-input"
         [checked]="searchParameters.onlyUnverified"
-        (change)="updateSubModel('onlyUnverified', $event.target['checked'])"
+        (change)="updateParameterProperty('onlyUnverified', $event.target['checked'])"
       />
       <label for="filter-verified" class="form-check-label">
         Only show un-verified annotations
@@ -103,8 +176,8 @@
     </div>
   </div>
 
-  <div class="mt-2">
-    <label for="sort-input">Sort by</label>
+  <label class="form-label mt-2 w-100">
+    Sort by
     <select
       id="sort-input"
       class="form-select"
@@ -118,7 +191,7 @@
       <option value="score-asc">Score (Ascending)</option>
       <option value="score-desc">Score (Descending)</option>
     </select>
-  </div>
+  </label>
 </form>
 
 <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">

@@ -38,11 +38,11 @@ import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ModelSelectorComponent } from "@shared/model-selector/model-selector.component";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { projectMenuItemActions } from "../details/details.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -50,13 +50,13 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-project-permissions",
-  templateUrl: "permissions.component.html",
-  styleUrl: "permissions.component.scss",
+  templateUrl: "./permissions.component.html",
+  styleUrl: "./permissions.component.scss",
   imports: [
     SelectableItemsComponent,
     NgbHighlight,
     ModelSelectorComponent,
-    DebounceInputComponent,
+    DebouncedInputDirective,
     NgxDatatableModule,
     DatatableDefaultsDirective,
     DatatablePaginationDirective,

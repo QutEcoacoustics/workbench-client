@@ -9,12 +9,12 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DebounceInputComponent } from "@shared/debounce-input/debounce-input.component";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import {
   adminEditTagMenuItem,
   adminNewTagMenuItem,
@@ -28,7 +28,7 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
   selector: "baw-admin-tags",
   templateUrl: "./list.component.html",
   imports: [
-    DebounceInputComponent,
+    DebouncedInputDirective,
     NgxDatatableModule,
     DatatableDefaultsDirective,
     CheckboxComponent,

@@ -47,14 +47,10 @@
       margin-right: 0.25rem;
     }
 
+    // When hovered, the license badge shows information about what the
+    // license is applied to.
     .license-badge {
       max-width: 10rem;
-
-      // When hovered, the license badge shows information about what the
-      // license is applied to.
-      // The license badge is dotted to indicate that it has a behavior on
-      // hover.
-      text-decoration: dotted underline;
     }
   }
 }
