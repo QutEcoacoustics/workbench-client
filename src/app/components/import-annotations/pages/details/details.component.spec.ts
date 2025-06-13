@@ -29,7 +29,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { assertDatatable } from "@test/helpers/datatable";
-import { NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
 import { modelData } from "@test/helpers/faker";
 import { generateTag } from "@test/fakes/Tag";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -38,6 +38,9 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { nStepObservable } from "@test/helpers/general";
+import { fakeAsync, flush } from "@angular/core/testing";
+import { getElementByInnerText } from "@test/helpers/html";
+import { Sorting } from "@baw-api/baw-api.service";
 import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
@@ -58,6 +61,7 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioRecording: AudioRecording;
 
   let expectedAudioEventTable: any;
+  let expectedFilesTable: any;
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -84,6 +88,21 @@ describe("AnnotationsDetailsComponent", () => {
   function switchToFileTab(): void {
     const target = fileTabButton();
     spec.click(target);
+
+    flush();
+    spec.detectChanges();
+  }
+
+  function deleteFirstFile() {
+    const deleteButton = getElementByInnerText(spec, "Delete");
+    spec.click(deleteButton);
+
+    const confirmationButton = spec.query<HTMLButtonElement>(
+      "baw-harvest-confirmation-modal #next-btn",
+      { root: true },
+    );
+    spec.click(confirmationButton);
+    flush();
   }
 
   async function setup(): Promise<void> {
@@ -112,27 +131,27 @@ describe("AnnotationsDetailsComponent", () => {
     mockAudioEvents = modelData.randomArray(
       1,
       10,
-      () => new AudioEvent(generateAudioEvent(), injector)
+      () => new AudioEvent(generateAudioEvent(), injector),
     );
     mockAudioEvents.forEach((event) =>
       event.addMetadata(
         modelData.model.generatePagingMetadata({
           items: mockAudioEvents.length,
-        })
-      )
+        }),
+      ),
     );
 
     mockAudioEventImportFiles = modelData.randomArray(
       1,
       10,
-      () => new AudioEventImportFile(generateAudioEventImportFile(), injector)
+      () => new AudioEventImportFile(generateAudioEventImportFile(), injector),
     );
     mockAudioEventImportFiles.forEach((file) =>
       file.addMetadata(
         modelData.model.generatePagingMetadata({
           items: mockAudioEventImportFiles.length,
-        })
-      )
+        }),
+      ),
     );
 
     mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
@@ -140,15 +159,16 @@ describe("AnnotationsDetailsComponent", () => {
 
     mockAudioEventFileService = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
     mockAudioEventFileService.list.and.callFake(() =>
-      of(mockAudioEventImportFiles)
+      of(mockAudioEventImportFiles),
     );
     mockAudioEventFileService.filter.and.callFake(() =>
-      of(mockAudioEventImportFiles)
+      of(mockAudioEventImportFiles),
     );
+    mockAudioEventFileService.destroy.andReturn(of());
 
     mockAudioEventImportService = spec.inject(AUDIO_EVENT_IMPORT.token);
     mockAudioEventImportService.show.and.callFake(() =>
-      of(mockAudioEventImport)
+      of(mockAudioEventImport),
     );
 
     const audioEventSubject = new Subject<AudioEventImport>();
@@ -164,6 +184,13 @@ describe("AnnotationsDetailsComponent", () => {
 
     mockTagsService = spec.inject(TAG.token);
     mockTagsService.show.and.callFake(() => tagsSubject);
+
+    // When deleting a file, we use a modal to confirm that the user wants to
+    // delete the file.
+    // By disabling the modal animation, we don't have to (fake) async await for
+    // the modal to open during testing.
+    const modalConfigService = spec.inject(NgbModalConfig);
+    modalConfigService.animation = false;
 
     // without mocking the timezone, tests that assert time will fail in CI
     // and other timezones that are not the same as the developers local timezone (UTC+8)
@@ -193,15 +220,28 @@ describe("AnnotationsDetailsComponent", () => {
     {
       audioEventImport: {
         model: new AudioEventImport(
-          generateAudioEventImport({ name: "test name" })
+          generateAudioEventImport({ name: "test name" }),
         ),
       },
-    }
+    },
   );
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(AnnotationImportDetailsComponent);
   });
+
+  it("should not emit a file filter until the tab is clicked", fakeAsync(() => {
+    expect(mockAudioEventFileService.filter).not.toHaveBeenCalled();
+
+    switchToFileTab();
+
+    expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        paging: { page: 1 },
+      }),
+      mockAudioEventImport,
+    );
+  }));
 
   describe("audio event table", () => {
     assertDatatable(() => ({
@@ -214,41 +254,66 @@ describe("AnnotationsDetailsComponent", () => {
       expect(mockEventsService.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({
           paging: { page: 1 },
-        })
+        }),
       );
     });
   });
 
   describe("file table", () => {
-    it("should not emit a filter event until the tab is clicked", () => {
-      expect(mockAudioEventFileService.filter).not.toHaveBeenCalled();
-
+    beforeEach(fakeAsync(() => {
       switchToFileTab();
 
-      expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({
-          paging: { page: 1 },
-        }),
-        mockAudioEventImport
-      );
-    });
-
-    xdescribe("after switching to file tab", () => {
-      beforeEach(() => {
-        switchToFileTab();
-      });
-
-      assertDatatable(() => ({
-        service: mockAudioEventFileService,
-        columns: () => [
-          "File Name",
-          "Date Imported",
-          "Additional Tags",
-          "Actions",
-        ],
-        rows: () => [],
-        root: () => activeTabContent(),
+      expectedFilesTable = mockAudioEventImportFiles.map((file) => ({
+        "File Name": file.name,
+        "Date Imported": file.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
+        "Additional Tags": "No associated tags",
+        Actions: "",
       }));
-    });
+    }));
+
+    assertDatatable(() => ({
+      service: mockAudioEventFileService,
+      columns: () => [
+        "File Name",
+        "Date Imported",
+        "Additional Tags",
+        "Actions",
+      ],
+      rows: () => expectedFilesTable,
+      root: () => activeTabContent(),
+    }));
+
+    it("should make the correct api requests to delete a file", fakeAsync(() => {
+      deleteFirstFile();
+      expect(mockAudioEventFileService.destroy).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should refresh the files table after deleting a file", fakeAsync(() => {
+      // We first sort the files table by "File Name" column, to ensure that
+      // the re-fetch request maintains the same sorting conditions.
+      const fileNameColumn = spec.query(".datatable-header-cell-template-wrap");
+      const sortingHandle = fileNameColumn.querySelector(".sort-btn");
+      spec.click(sortingHandle);
+
+      const expectedSortingFilters: Sorting<keyof AudioEventImportFile> = {
+        direction: "asc",
+        orderBy: "name",
+      };
+      expect(mockAudioEventFileService.filter).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          sorting: expectedSortingFilters,
+        }),
+        jasmine.any(AudioEventImport),
+      );
+
+      deleteFirstFile();
+
+      expect(mockAudioEventFileService.filter).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          sorting: expectedSortingFilters,
+        }),
+        jasmine.any(AudioEventImport),
+      );
+    }));
   });
 });

@@ -67,7 +67,7 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               <a
-                class="btn btn-sm btn-outline-primary"
+                class="btn btn-sm btn-primary"
                 [href]="value.viewUrl"
               >
                 View
@@ -111,18 +111,6 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <!-- <baw-loading
-                *ngIf="value.additionalTags | isUnresolved; else additionalTagsTemplate"
-                size="sm"
-              ></baw-loading>
-
-              <ng-template #additionalTagsTemplate>
-                <baw-inline-list
-                  [items]="value.additionalTags"
-                  [itemKey]="'text'"
-                  [emptyTemplate]="noAssociatedTagsTemplate"
-                ></baw-inline-list>
-              </ng-template> -->
               <baw-inline-list
                 [items]="value.additionalTags"
                 [itemKey]="'text'"
@@ -144,12 +132,19 @@
                 file viewer for the file type.
               -->
               <a
-                class="btn btn-sm btn-outline-primary"
+                class="btn btn-sm btn-primary"
                 [href]="value.path"
                 target="_blank"
               >
                 Download
               </a>
+
+              <button
+                class="btn btn-sm btn-outline-danger ms-1"
+                (click)="deleteFile(deleteFileModal, value)"
+              >
+                Delete
+              </button>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
@@ -166,4 +161,18 @@
 
 <ng-template #noAdditionalTagsTemplate>
   <span>No additional tags</span>
+</ng-template>
+
+<ng-template #deleteFileModal let-modal>
+  <baw-harvest-confirmation-modal
+    nextLabel="Delete File"
+    cancelLabel="Return"
+    isDanger="true"
+    [modal]="modal"
+  >
+    <p>
+      Are you sure you want to delete this file? All annotations imported from
+      this file will be removed.
+    </p>
+  </baw-harvest-confirmation-modal>
 </ng-template>

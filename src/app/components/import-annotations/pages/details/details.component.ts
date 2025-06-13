@@ -25,6 +25,7 @@ import {
   NgbNavLinkBase,
   NgbNavContent,
   NgbNavOutlet,
+  NgbModal,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
@@ -38,6 +39,8 @@ import { projectResolvers } from "@baw-api/project/projects.service";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
 import { Project } from "@models/Project";
+import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
@@ -91,6 +94,7 @@ interface ImportGroup {
     InlineListComponent,
     NgbNavOutlet,
     IsUnresolvedPipe,
+    ConfirmationComponent,
   ],
 })
 class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
@@ -100,7 +104,8 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     private eventImportsApi: AudioEventImportService,
     private eventImportFileApi: AudioEventImportFileService,
     private notifications: ToastService,
-    private router: Router
+    private router: Router,
+    private modals: NgbModal,
   ) {
     super();
   }
@@ -182,6 +187,32 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   ): Observable<AudioEventImportFile[]> => {
     return this.eventImportFileApi.filter(filters, this.audioEventImport);
   };
+
+  protected async deleteFile(
+    confirmationModal: any,
+    fileModel: AudioEventImportFile,
+  ) {
+    const ref = this.modals.open(confirmationModal);
+    const success = await ref.result.catch((_) => false);
+    const fileName = fileModel.name;
+
+    if (success) {
+      this.eventImportFileApi.destroy(fileModel, this.audioEventImport)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          next: () => {
+            this.notifications.success(`Successfully deleted file ${fileName}`);
+
+            // Because one of the files has now been deleted, we need to
+            // re-fetch the files from the api.
+            this.fileFilters$.next(this.fileFilters$.value);
+          },
+          error: (err: BawApiError) => {
+            this.notifications.error(err.message)
+          },
+        });
+    }
+  }
 
   protected deleteModel(): void {
     this.eventImportsApi
