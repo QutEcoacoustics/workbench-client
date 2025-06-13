@@ -1,4 +1,4 @@
-import { Directive, HostListener, OnInit, output } from "@angular/core";
+import { Directive, HostListener, NgZone, OnInit, output } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
