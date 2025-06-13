@@ -8,6 +8,7 @@ export function generateAnnotationSearchParameters(
   return {
     audioRecordings: modelData.ids(),
     tags: modelData.ids(),
+    importFiles: modelData.ids(),
     onlyUnverified: modelData.bool(),
     daylightSavings: modelData.bool(),
     recordingDate: [modelData.dateTime(), modelData.dateTime()],

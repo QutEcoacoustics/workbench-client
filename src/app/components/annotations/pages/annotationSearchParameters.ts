@@ -9,7 +9,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds as tagFilters } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
@@ -38,7 +38,11 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { DateTime, Duration } from "luxon";
 
-export type SortingKey = "score-asc" | "score-desc" | "created-asc" | "created-desc";
+export type SortingKey =
+  | "score-asc"
+  | "score-desc"
+  | "created-asc"
+  | "created-desc";
 
 // prettier-ignore
 export const sortingOptions = new Map([
@@ -63,6 +67,7 @@ export const sortingOptions = new Map([
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
+  importFiles: CollectionIds;
   onlyUnverified: boolean;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
@@ -102,6 +107,7 @@ const serializationTable: IQueryStringParameterSpec<
 > = {
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
+  importFiles: jsNumberArray,
   onlyUnverified: jsBoolean,
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
@@ -155,6 +161,7 @@ export class AnnotationSearchParameters
 
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
+  public importFiles: CollectionIds;
   public onlyUnverified: boolean;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
@@ -255,8 +262,9 @@ export class AnnotationSearchParameters
 
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    let filter = tagFilters<Tag>("tags", this.tags);
+    let filter = filterModelIds<Tag>("tags", this.tags);
     filter = this.addRecordingFilters(filter);
+    filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
 
@@ -368,13 +376,29 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
-    const recordingFilter = tagFilters(
+    const recordingFilter = filterModelIds(
       "audioRecordings",
       this.audioRecordings,
       dateFilter,
     );
 
     return recordingFilter;
+  }
+
+  private annotationImportFilters(
+    initialFilter: InnerFilter<AudioEvent>,
+  ): InnerFilter<AudioEvent> {
+    if (!isInstantiated(this.importFiles)) {
+      return initialFilter;
+    }
+
+    const importFileFilters = {
+      audioEventImportFileId: {
+        in: Array.from(this.importFiles),
+      },
+    };
+
+    return filterAnd(initialFilter, importFileFilters);
   }
 
   // TODO: We should add support for event date/time filtering once the api
@@ -397,7 +421,7 @@ export class AnnotationSearchParameters
     let scoreFilters: InnerFilter<AudioEvent> = initialFilter;
     if (isInstantiated(lowerBound)) {
       scoreFilters = filterAnd(scoreFilters, {
-        score: { gteq: lowerBound }
+        score: { gteq: lowerBound },
       });
     }
 

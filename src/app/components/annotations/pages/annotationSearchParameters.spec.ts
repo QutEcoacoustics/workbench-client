@@ -61,6 +61,7 @@ describe("annotationSearchParameters", () => {
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
+        importFiles: "1,12,23",
         recordingDate: ",2020-03-01",
         score: "0.5,0.9",
 
@@ -79,6 +80,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
+            { "audioEventImportFileId": { in: [1, 12, 23] } },
             {
               "audioRecordings.siteId": {
                 in: [6, 7, 8, 9],
