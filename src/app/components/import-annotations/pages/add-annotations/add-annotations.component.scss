@@ -5,13 +5,34 @@
 }
 
 .file-list-item-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  position: relative;
+
+  display: flex;
+  flex-wrap: wrap;
+
   gap: 1em;
 
   & > * {
     display: flex;
     align-items: center;
+    min-width: 200px;
+
+    width: 25%;
+
+    overflow-wrap: anywhere;
+  }
+}
+
+.file-data {
+  display: flex;
+  flex-wrap: wrap;
+  width: 45% !important;
+
+  gap: 0.5rem;
+
+  & > * {
+    min-width: 0;
+    flex: 1 1 auto;
   }
 }
 
@@ -22,10 +43,6 @@
 
   width: 1.5em;
   height: 1.5em;
-}
-
-.additional-file-tags {
-  width: 100%;
 }
 
 .event-errors {

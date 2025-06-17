@@ -24,7 +24,7 @@
             @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">
                 <div class="file-list-item-content">
-                  <span>
+                  <span class="file-name">
                     <button
                       class="remove-file-btn btn btn-link text-dark me-1"
                       [ngbTooltip]="'Remove file'"
@@ -52,7 +52,7 @@
                     </ng-template>
                   </baw-error-card>
 
-                  <div>
+                  <div class="file-data">
                     <baw-typeahead-input
                       #additionalFileTagInput
                       class="additional-file-tags"
@@ -70,7 +70,7 @@
 
                     <baw-typeahead-input
                       #additionalProvenanceInput
-                      class="file-provenance ms-2"
+                      class="file-provenance"
                       inputPlaceholder="Add provenance"
                       [searchCallback]="provenanceApi.typeaheadCallback()"
                       [resultTemplate]="nameTypeaheadTemplate"
