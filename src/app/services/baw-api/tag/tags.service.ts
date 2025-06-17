@@ -77,7 +77,7 @@ export class TagsService implements StandardApi<Tag> {
   }
 
   public typeaheadCallback(): TypeaheadSearchCallback<Tag> {
-    return createSearchCallback<Tag>(this, "text");
+    return createSearchCallback(this, "text");
   }
 
   /**

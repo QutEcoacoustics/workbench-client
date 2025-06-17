@@ -73,6 +73,8 @@ import {
 import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -99,9 +101,15 @@ interface QueuedFile {
   errors: ReadonlyArray<EventImportError>;
 
   /**
-   * Audio events that will be applied to every event row in the file.
+   * Tags that will be applied to every event row in the file.
    */
   additionalTagIds: Id[];
+
+  /**
+   * Describes what machine learning recogniser generated the events in the
+   * file.
+   */
+  provenanceId: Id;
 }
 
 class TableRow extends AbstractModelWithoutId {
@@ -164,6 +172,7 @@ class AddAnnotationsComponent
 {
   public constructor(
     protected tagsApi: TagsService,
+    protected provenanceApi: AudioEventProvenanceService,
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
     private router: Router,
@@ -181,6 +190,9 @@ class AddAnnotationsComponent
 
   @ViewChildren("additionalFileTagInput")
   private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
+
+  @ViewChildren("additionalProvenanceInput")
+  private provenanceFileInputs!: TypeaheadInputComponent<AudioEventProvenance>[];
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -319,7 +331,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], [])
+      this.importFileToBufferedFile(file, null, [], [], null)
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -373,6 +385,34 @@ class AddAnnotationsComponent
 
   protected updateFileAdditionalTagIds(model: QueuedFile, tagIds: Id[]): void {
     model.additionalTagIds = tagIds;
+    this.performDryRun();
+  }
+
+  protected updateExtraProvenances(
+    extraProvenance: AudioEventProvenance,
+    host: TypeaheadInputComponent<AudioEventProvenance>,
+  ): void {
+    // when the user applies "extra tags" we want to immediately set the import
+    // state to "UPLOADING" so that the UI elements get locked while the extra
+    // tags are applied
+    this.importState = ImportState.UPLOADING;
+
+    const provenanceFileInputs = this.provenanceFileInputs;
+    for (const input of provenanceFileInputs) {
+      input.value = [extraProvenance];
+    }
+
+    for (const file of this.importFiles$.value) {
+      file.provenanceId = extraProvenance.id;
+    }
+
+    this.performDryRun();
+
+    host.value = null;
+  }
+
+  protected updateFileProvenance(model: QueuedFile, provenanceId: Id): void {
+    model.provenanceId = provenanceId;
     this.performDryRun();
   }
 
@@ -468,6 +508,7 @@ class AddAnnotationsComponent
   ): Observable<QueuedFile> {
     const importFileModel = this.createAudioEventImportFile(queueModel);
     const file = queueModel.file;
+    const provenanceId = queueModel.provenanceId;
 
     // We use defer inside this iif to ensure that the api is only called when
     // the observable is subscribed to (the commit flag is evaluated).
@@ -475,8 +516,8 @@ class AddAnnotationsComponent
     // the result of one api call would be ignored by the iif operator.
     return iif(
       () => commit,
-      defer(() => this.api.create(importFileModel, this.audioEventImport)),
-      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport))
+      defer(() => this.api.create(importFileModel, this.audioEventImport, provenanceId)),
+      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport, provenanceId))
     ).pipe(
       first(),
       map(
@@ -485,7 +526,8 @@ class AddAnnotationsComponent
             file,
             model,
             [],
-            queueModel.additionalTagIds
+            queueModel.additionalTagIds,
+            queueModel.provenanceId,
           )
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
@@ -500,7 +542,8 @@ class AddAnnotationsComponent
           file,
           error.data,
           errors,
-          queueModel.additionalTagIds
+          queueModel.additionalTagIds,
+          queueModel.provenanceId,
         );
         return of(result);
       })
@@ -524,13 +567,15 @@ class AddAnnotationsComponent
     file: File,
     model: AudioEventImportFile,
     errors: EventImportError[],
-    additionalTagIds: Id[]
+    additionalTagIds: Id[],
+    provenanceId: Id,
   ): QueuedFile {
     return {
-      additionalTagIds,
       file,
       model,
       errors,
+      additionalTagIds,
+      provenanceId,
     };
   }
 

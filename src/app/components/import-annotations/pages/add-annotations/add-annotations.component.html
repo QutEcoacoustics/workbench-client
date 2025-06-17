@@ -67,6 +67,19 @@
                         )
                       "
                     ></baw-typeahead-input>
+
+                    <baw-typeahead-input
+                      #additionalProvenanceInput
+                      class="file-provenance ms-2"
+                      inputPlaceholder="Add provenance"
+                      [searchCallback]="provenanceApi.typeaheadCallback()"
+                      [resultTemplate]="nameTypeaheadTemplate"
+                      [inputDisabled]="isUploading"
+                      [multipleInputs]="false"
+                      (modelChange)="
+                        updateFileProvenance(fileModel, $event?.[0]?.id)
+                      "
+                    ></baw-typeahead-input>
                   </div>
                 </div>
               </li>
@@ -91,6 +104,26 @@
 
         <p class="text-muted">
           Extra tags will be applied to all files in the annotation import.
+        </p>
+      </div>
+
+      <div class="mt-2">
+        <baw-typeahead-input
+          #extraProvenanceInput
+          id="extra-provenance-input"
+          label="Apply provenance to all files"
+          [inputPlaceholder]="'search for provenance by name'"
+          [searchCallback]="provenanceApi.typeaheadCallback()"
+          [resultTemplate]="nameTypeaheadTemplate"
+          [inputDisabled]="(hasFiles() | async) === false"
+          [multipleInputs]="false"
+          (modelChange)="
+            updateExtraProvenances($event[0], extraProvenanceInput)
+          "
+        ></baw-typeahead-input>
+
+        <p class="text-muted">
+          Provenances will be applied to all files in the annotation import.
         </p>
       </div>
     </div>
@@ -139,7 +172,9 @@
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="tooltip-hint"
-            [ngbTooltip]="'File index and the index of the annotation in the file'"
+            [ngbTooltip]="
+              'File index and the index of the annotation in the file'
+            "
             container="body"
           >
             ID
@@ -275,7 +310,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="120">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="140">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
@@ -286,6 +321,21 @@
             [itemKey]="'text'"
             [emptyTemplate]="emptyTemplate"
           ></baw-inline-list>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Provenance
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          @if (value.provenance) {
+            <a [bawUrl]="value.provenance.viewUrl"></a>
+            {{ value.provenance.name }}
+          } @else {
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
+          }
         </ng-template>
       </ngx-datatable-column>
 
@@ -314,6 +364,10 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+</ng-template>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
 </ng-template>
 
 <ng-template #emptyTemplate>

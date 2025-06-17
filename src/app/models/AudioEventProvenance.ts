@@ -27,7 +27,6 @@ export class AudioEventProvenance
 
   /**
    * Navigates to the details page of an AudioEventProvenance
-   * WARNING: THIS IS NOT CURRENTLY FUNCTIONAL, BUT WE DO USE THIS IN THE CODEBASE AS A STAGING PLACEHOLDER
    */
   public get viewUrl(): string {
     console.warn("AudioEventProvenance.viewUrl is not implemented");

@@ -88,7 +88,7 @@ export class AudioEvent
   public audioRecording?: AudioRecording;
   @hasOne<AudioEvent, AudioEventProvenance>(
     AUDIO_EVENT_PROVENANCE,
-    "provenanceId"
+    "provenanceId",
   )
   public provenance?: AudioEventProvenance;
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
@@ -97,7 +97,7 @@ export class AudioEvent
   public constructor(audioEvent: IAudioEvent, injector?: AssociationInjector) {
     super(audioEvent, injector);
     this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
-      (tagging) => new Tagging(tagging, injector)
+      (tagging) => new Tagging(tagging, injector),
     );
   }
 
@@ -115,7 +115,7 @@ export class AudioEvent
   public get listenViewUrl(): string {
     return listenRecordingMenuItem.route.format(
       { audioRecordingId: this.audioRecordingId },
-      { start: this.startTimeSeconds, padding: 10 }
+      { start: this.startTimeSeconds, padding: 10 },
     );
   }
 
