@@ -1,6 +1,5 @@
 import { NgIfContext, NgTemplateOutlet } from "@angular/common";
 import { Component, Input, TemplateRef } from "@angular/core";
-import { UrlDirective } from "@directives/url/url.directive";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 
@@ -10,7 +9,7 @@ import { AbstractModel } from "@models/AbstractModel";
     @if (!!items && items.length > 0) {
       @for (item of items; track item; let isLast = $last) {
         <span>
-          <a [bawUrl]="item.viewUrl">{{ itemText(item) }}</a>
+          <a [href]="item.viewUrl">{{ itemText(item) }}</a>
           @if (!isLast) {, }
         </span>
       }
@@ -18,7 +17,7 @@ import { AbstractModel } from "@models/AbstractModel";
       <ng-template [ngTemplateOutlet]="emptyTemplate"></ng-template>
     }
   `,
-  imports: [NgTemplateOutlet, UrlDirective]
+  imports: [NgTemplateOutlet]
 })
 export class InlineListComponent {
   @Input() public items: AbstractModel[];
