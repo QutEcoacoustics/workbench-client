@@ -10,39 +10,56 @@
   display: flex;
   flex-wrap: wrap;
 
-  gap: 1em;
+  gap: 1rem;
 
-  & > * {
-    display: flex;
-    align-items: center;
+  .file-actions,
+  .file-error {
+    // Both of the file actions and errors have a fixed with instead of flexing
+    // with their content so that all of the content is vertically aligned.
+    min-width: 200px;
+    width: 25%;
+  }
+
+  .file-data {
     min-width: 200px;
 
-    width: 25%;
-
-    overflow-wrap: anywhere;
-  }
-}
-
-.file-data {
-  display: flex;
-  flex-wrap: wrap;
-  width: 45% !important;
-
-  gap: 0.5rem;
-
-  & > * {
-    min-width: 0;
+    // If there is left over space, we want to allow the "file data" (additional
+    // tags and provenance associated with a file) to fill up this remaining
+    // space.
     flex: 1 1 auto;
+
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    & > * {
+      flex: 1 1;
+    }
   }
 }
 
-.remove-file-btn {
+.file-actions {
   display: flex;
-  justify-content: center;
-  align-items: center;
 
-  width: 1.5em;
-  height: 1.5em;
+  .remove-file-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+  .file-name {
+    // If the user uploads a really long file name, we want the file name to
+    // wrap to the next line.
+    // Because file names sometimes use underscores (or similar) in replacement
+    // of spaces, break-word will not always work.
+    // If the break-word overflow-wrap doesn't work because there are no spaces
+    // in the filename, we fall back to breaking anywhere so that we don't
+    // start overflowing content.
+    overflow-wrap: break-word anywhere;
+  }
 }
 
 .event-errors {

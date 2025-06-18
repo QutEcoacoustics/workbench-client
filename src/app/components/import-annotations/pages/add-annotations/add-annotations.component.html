@@ -24,7 +24,7 @@
             @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">
                 <div class="file-list-item-content">
-                  <span>
+                  <span class="file-actions">
                     <button
                       class="remove-file-btn btn btn-link text-dark me-1"
                       [ngbTooltip]="'Remove file'"
@@ -33,7 +33,7 @@
                       <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
                     </button>
 
-                    <span>{{ fileModel.file.name }}</span>
+                    <span class="file-name">{{ fileModel.file.name }}</span>
                   </span>
 
                   <baw-error-card
