@@ -24,7 +24,7 @@
             @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">
                 <div class="file-list-item-content">
-                  <span class="file-name">
+                  <span>
                     <button
                       class="remove-file-btn btn btn-link text-dark me-1"
                       [ngbTooltip]="'Remove file'"
@@ -170,9 +170,7 @@
         <ng-template let-column="column" ngx-datatable-header-template>
           <span
             class="tooltip-hint"
-            [ngbTooltip]="
-              'File index and the index of the annotation in the file'
-            "
+            [ngbTooltip]="'File index and the index of the annotation in the file'"
             container="body"
           >
             ID

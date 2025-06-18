@@ -106,8 +106,8 @@ interface QueuedFile {
   additionalTagIds: Id[];
 
   /**
-   * Describes what machine learning recogniser generated the events in the
-   * file.
+   * Describes how the events in the file were created/generated.
+   * E.g. What machine learning recogniser was used.
    */
   provenanceId: Id;
 }
