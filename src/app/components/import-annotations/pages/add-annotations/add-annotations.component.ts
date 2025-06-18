@@ -392,7 +392,7 @@ class AddAnnotationsComponent
     extraProvenance: AudioEventProvenance,
     host: TypeaheadInputComponent<AudioEventProvenance>,
   ): void {
-    // when the user applies "extra tags" we want to immediately set the import
+    // when the user applies "provenances" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
     // tags are applied
     this.importState = ImportState.UPLOADING;
