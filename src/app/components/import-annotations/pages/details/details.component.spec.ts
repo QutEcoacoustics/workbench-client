@@ -221,6 +221,7 @@ describe("AnnotationsDetailsComponent", () => {
       "Audio Recording": event.audioRecording?.id.toString(),
       "Created At": event.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
       Tags: mockTagModel.text,
+      Provenance: mockProvenance.name,
       Actions: "",
     }));
   }
@@ -261,7 +262,13 @@ describe("AnnotationsDetailsComponent", () => {
 
   describe("audio event table", () => {
     assertDatatable(() => ({
-      columns: () => ["Audio Recording", "Created At", "Tags", "Actions"],
+      columns: () => [
+        "Audio Recording",
+        "Created At",
+        "Tags",
+        "Provenance",
+        "Actions",
+      ],
       rows: () => expectedAudioEventTable,
       root: () => activeTabContent(),
     }));
