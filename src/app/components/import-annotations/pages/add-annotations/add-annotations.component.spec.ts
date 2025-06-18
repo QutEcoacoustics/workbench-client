@@ -93,7 +93,8 @@ describe("AddAnnotationsComponent", () => {
   const removeFileButtons = () =>
     spec.queryAll<HTMLButtonElement>(".remove-file-btn");
 
-  const additionalFileTagInputs = () => spec.queryAll(".additional-file-tags");
+  const additionalFileTagInputs = (): (TypeaheadInputComponent &
+    HTMLElement)[] => spec.queryAll(".additional-file-tags");
   const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
     spec.query("#extra-tags-input");
 
@@ -140,8 +141,9 @@ describe("AddAnnotationsComponent", () => {
   }
 
   function fileProvenance(index: number): string {
-    const tagInput = additionalFileTagInputs()[index];
-    return tagInput.textContent.trim();
+    const provenanceInput = provenanceFileInputs()[index];
+    const inputElement = provenanceInput.querySelector("input");
+    return inputElement.value;
   }
 
   function setup(): void {

@@ -400,6 +400,7 @@ class AddAnnotationsComponent
     const provenanceFileInputs = this.provenanceFileInputs;
     for (const input of provenanceFileInputs) {
       input.value = [extraProvenance];
+      input.inputModel = extraProvenance.toString();
     }
 
     for (const file of this.importFiles$.value) {
@@ -408,7 +409,8 @@ class AddAnnotationsComponent
 
     this.performDryRun();
 
-    host.value = null;
+    host.value = [];
+    host.inputModel = null;
   }
 
   protected updateFileProvenance(model: QueuedFile, provenanceId: Id): void {

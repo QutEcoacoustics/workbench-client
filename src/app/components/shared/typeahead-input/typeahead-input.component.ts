@@ -31,8 +31,8 @@ export type TypeaheadSearchCallback<T> = (
 
 @Component({
   selector: "baw-typeahead-input",
-  templateUrl: "typeahead-input.component.html",
-  styleUrl: "typeahead-input.component.scss",
+  templateUrl: "./typeahead-input.component.html",
+  styleUrl: "./typeahead-input.component.scss",
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
 })
 export class TypeaheadInputComponent<T = unknown> {
