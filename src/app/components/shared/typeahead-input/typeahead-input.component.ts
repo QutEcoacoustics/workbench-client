@@ -26,13 +26,13 @@ import { FormsModule } from "@angular/forms";
 
 export type TypeaheadSearchCallback<T> = (
   text: string,
-  activeItems: T[]
+  activeItems: T[],
 ) => Observable<T[]>;
 
 @Component({
   selector: "baw-typeahead-input",
-  templateUrl: "typeahead-input.component.html",
-  styleUrl: "typeahead-input.component.scss",
+  templateUrl: "./typeahead-input.component.html",
+  styleUrl: "./typeahead-input.component.scss",
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
 })
 export class TypeaheadInputComponent<T = unknown> {
@@ -70,7 +70,7 @@ export class TypeaheadInputComponent<T = unknown> {
   public inputModel: string | null;
   protected focus$ = new Subject<T[]>();
 
-  public findOptions = (text$: Observable<string>): Observable<T[]> => {
+  protected findOptions = (text$: Observable<string>): Observable<T[]> => {
     const maximumResults = 10;
 
     return merge(this.focus$, text$).pipe(
@@ -91,15 +91,15 @@ export class TypeaheadInputComponent<T = unknown> {
 
         return this.searchCallback(term, this.value);
       }),
-      map((items: T[]) => items.slice(0, maximumResults))
+      map((items: T[]) => items.slice(0, maximumResults)),
     );
   };
 
-  public templateFormatter = (item: T): string => item.toString();
+  protected templateFormatter = (item: T): string => item.toString();
 
-  public onItemSelected($event: NgbTypeaheadSelectItemEvent<T>): void {
-    $event.preventDefault();
-    const selectedItem = $event.item;
+  protected onItemSelected(event: NgbTypeaheadSelectItemEvent<T>): void {
+    event.preventDefault();
+    const selectedItem = event.item;
 
     if (this.multipleInputs) {
       this.value.push(selectedItem);
@@ -107,19 +107,21 @@ export class TypeaheadInputComponent<T = unknown> {
 
       this.inputModel = null;
     } else {
-      this.inputModel = selectedItem.toString();
+      this.value = [selectedItem];
       this.modelChange.emit([selectedItem]);
+
+      this.inputModel = selectedItem.toString();
     }
   }
 
-  public removeLastItem(): void {
+  protected removeLastItem(): void {
     if (this.multipleInputs && this.value.length > 0 && !this.inputModel) {
       this.value.pop();
       this.modelChange.emit(this.value);
     }
   }
 
-  public removeItem(indexToRemove: number): void {
+  protected removeItem(indexToRemove: number): void {
     // if the "value" array has a length of 1, the splice function doesn't return an empty array
     // therefore, we use length === 1 as an edge case
     if (this.value.length === 1) {
@@ -127,6 +129,24 @@ export class TypeaheadInputComponent<T = unknown> {
     } else {
       this.value.splice(indexToRemove, 1);
       this.modelChange.emit(this.value);
+    }
+  }
+
+  protected handleInput(): void {
+    // When in single input mode, the typeahead acts as autocomplete where items
+    // wil be suggested as the user searches, and the input's value will be used
+    // as output.
+    // Therefore, if the user selects an item, then starts changing the value,
+    // we want to undo that selection.
+    // To prevent emitting a lot of events, we only emit a change event if there
+    // is a value currently selected.
+    //
+    // TODO: we should add "lose matching" support so that if the user types in
+    // the exact value as a search result it should be automatically selected,
+    // meaning that the user doesn't have to click on the search result item.
+    if (!this.multipleInputs && this.value.length > 0) {
+      this.value = [];
+      this.modelChange.emit([]);
     }
   }
 }

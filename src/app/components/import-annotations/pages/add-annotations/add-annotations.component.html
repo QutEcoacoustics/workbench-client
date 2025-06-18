@@ -24,7 +24,7 @@
             @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">
                 <div class="file-list-item-content">
-                  <span>
+                  <span class="file-actions">
                     <button
                       class="remove-file-btn btn btn-link text-dark me-1"
                       [ngbTooltip]="'Remove file'"
@@ -33,7 +33,7 @@
                       <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
                     </button>
 
-                    <span>{{ fileModel.file.name }}</span>
+                    <span class="file-name">{{ fileModel.file.name }}</span>
                   </span>
 
                   <baw-error-card
@@ -52,7 +52,7 @@
                     </ng-template>
                   </baw-error-card>
 
-                  <div>
+                  <div class="file-data">
                     <baw-typeahead-input
                       #additionalFileTagInput
                       class="additional-file-tags"
@@ -65,6 +65,18 @@
                           fileModel,
                           getIdsFromAbstractModelArray($event)
                         )
+                      "
+                    ></baw-typeahead-input>
+
+                    <baw-typeahead-input
+                      #additionalProvenanceInput
+                      class="file-provenance"
+                      inputPlaceholder="Add provenance"
+                      [searchCallback]="provenanceApi.typeaheadCallback()"
+                      [inputDisabled]="isUploading"
+                      [multipleInputs]="false"
+                      (modelChange)="
+                        updateFileProvenance(fileModel, $event?.[0]?.id)
                       "
                     ></baw-typeahead-input>
                   </div>
@@ -91,6 +103,25 @@
 
         <p class="text-muted">
           Extra tags will be applied to all files in the annotation import.
+        </p>
+      </div>
+
+      <div class="mt-2">
+        <baw-typeahead-input
+          #extraProvenanceInput
+          id="extra-provenance-input"
+          label="Apply provenance to all files"
+          [inputPlaceholder]="'search for provenance by name'"
+          [searchCallback]="provenanceApi.typeaheadCallback()"
+          [inputDisabled]="(hasFiles() | async) === false"
+          [multipleInputs]="false"
+          (modelChange)="
+            updateExtraProvenances($event[0], extraProvenanceInput)
+          "
+        ></baw-typeahead-input>
+
+        <p class="text-muted">
+          Provenances will be applied to all files in the annotation import.
         </p>
       </div>
     </div>
@@ -151,7 +182,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="70">
         <ng-template let-column="column" ngx-datatable-header-template>
           Recording
         </ng-template>
@@ -177,7 +208,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="50">
         <ng-template let-column="column" ngx-datatable-header-template>
           Start Time
         </ng-template>
@@ -191,7 +222,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="50">
         <ng-template let-column="column" ngx-datatable-header-template>
           End Time
         </ng-template>
@@ -205,7 +236,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="70">
         <ng-template let-column="column" ngx-datatable-header-template>
           Low Frequency
         </ng-template>
@@ -219,7 +250,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="70">
         <ng-template let-column="column" ngx-datatable-header-template>
           High Frequency
         </ng-template>
@@ -247,7 +278,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="80">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="70">
         <ng-template let-column="column" ngx-datatable-header-template>
           Reference
         </ng-template>
@@ -275,7 +306,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [sortable]="false" prop="event" [width]="120">
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="140">
         <ng-template let-column="column" ngx-datatable-header-template>
           Tags
         </ng-template>
@@ -289,10 +320,24 @@
         </ng-template>
       </ngx-datatable-column>
 
+      <ngx-datatable-column [sortable]="false" prop="event" [width]="100">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          Provenance
+        </ng-template>
+
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          @if (value.provenance) {
+            {{ value.provenance.toString() }}
+          } @else {
+            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
+          }
+        </ng-template>
+      </ngx-datatable-column>
+
       <ngx-datatable-column
         [sortable]="false"
-        [minWidth]="240"
-        [width]="240"
+        [minWidth]="210"
+        [width]="210"
         prop="event"
       >
         <ng-template let-column="column" ngx-datatable-header-template>

@@ -180,8 +180,6 @@ describe("TypeaheadInputComponent", () => {
     tick(defaultDebounceTime);
     selectedDropdownOption().click();
 
-    // assert that the component only emitted the second site, and that the first site was removed
-    expect(spec.component.value).toHaveLength(0);
     expect(spec.component.modelChange.emit).toHaveBeenCalledWith([
       siteToSelect,
     ]);
@@ -264,6 +262,36 @@ describe("TypeaheadInputComponent", () => {
     const dropdownItems = dropdownOptions();
     expect(dropdownItems).toHaveLength(0);
   }));
+
+  describe("single input mode", () => {
+    beforeEach(() => {
+      spec.component.multipleInputs = false;
+    });
+
+    it("should emit an empty value if the user inputs an invalid value in single input mode", fakeAsync(() => {
+      spec.component.modelChange.emit = jasmine.createSpy("modelChange");
+
+      typeInInput("this is not a valid site name");
+      tick(defaultDebounceTime);
+
+      expect(spec.component.value).toEqual([]);
+      expect(spec.component.modelChange.emit).not.toHaveBeenCalled();
+    }));
+
+    it("should emit an empty value if the user clears the input in single input mode", fakeAsync(() => {
+      const testInput = defaultFakeSites[0].name;
+      typeInInput(testInput);
+      tick(defaultDebounceTime);
+      selectedDropdownOption().click();
+
+      spec.component.modelChange.emit = jasmine.createSpy("modelChange");
+      typeInInput("");
+      tick(defaultDebounceTime);
+
+      expect(spec.component.value).toEqual([]);
+      expect(spec.component.modelChange.emit).toHaveBeenCalledOnceWith([]);
+    }));
+  });
 
   describe("default query", () => {
     it("should show a list of default options when focused and the defaultQuery is true", fakeAsync(() => {

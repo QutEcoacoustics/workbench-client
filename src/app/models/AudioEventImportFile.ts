@@ -1,16 +1,28 @@
-import { CollectionIds, DateTimeTimezone, FilePath, Id } from "@interfaces/apiInterfaces";
+import {
+  CollectionIds,
+  DateTimeTimezone,
+  FilePath,
+  Id,
+} from "@interfaces/apiInterfaces";
 import {
   ANALYSIS_JOB_ITEM,
   AUDIO_EVENT_IMPORT,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
+import {
+  bawDateTime,
+  bawPersistAttr,
+  bawSubModelCollection,
+} from "./AttributeDecorators";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import { AnalysisJobItem } from "./AnalysisJobItem";
 import { Tag } from "./Tag";
 import { AudioEventImport } from "./AudioEventImport";
-import { IImportedAudioEvent, ImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
+import {
+  IImportedAudioEvent,
+  ImportedAudioEvent,
+} from "./AudioEventImport/ImportedAudioEvent";
 
 export interface IAudioEventImportFile {
   id?: Id;

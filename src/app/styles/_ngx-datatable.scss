@@ -63,6 +63,10 @@ ngx-datatable {
       height: 100%;
     }
   }
+
+  datatable-header-cell {
+    white-space: wrap !important;
+  }
 }
 
 @keyframes query {

@@ -6,10 +6,13 @@ export function generateAudioEventProvenance(
 ): Required<IAudioEventProvenance> {
   return {
     id: modelData.id(),
-    name: modelData.param(),
-    version: modelData.param(),
+    name: modelData.name.jobTitle(),
+    version: modelData.version(),
     description: modelData.description(),
-    score: modelData.percentage(),
+    scoreMinimum: modelData.datatype.number(),
+    scoreMaximum: modelData.datatype.number(),
+    ...modelData.model.generateDescription(),
+    ...modelData.model.generateAllUsers(),
     ...data,
   };
 }

@@ -13,15 +13,18 @@ import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { appLibraryImports } from "src/app/app.config";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
   let api: SpyObject<ScriptsService>;
+  let provenanceApi: SpyObject<AudioEventProvenanceService>;
+
   let component: AdminScriptsEditComponent;
   let defaultModel: Script;
   let fixture: ComponentFixture<AdminScriptsEditComponent>;
@@ -38,16 +41,20 @@ describe("AdminScriptsEditComponent", () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(
             { script: scriptResolvers.show },
-            { script: { model, error } }
+            { script: { model, error } },
           ),
         },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminScriptsEditComponent);
-    api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     router = TestBed.inject(Router);
     notifications = TestBed.inject(ToastService);
+
+    api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
+    provenanceApi = TestBed.inject(
+      AudioEventProvenanceService,
+    ) as SpyObject<AudioEventProvenanceService>;
 
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
     if (model) {
@@ -59,6 +66,8 @@ describe("AdminScriptsEditComponent", () => {
     spyOn(notifications, "success").and.stub();
     spyOn(notifications, "error").and.stub();
     spyOn(router, "navigateByUrl").and.stub();
+
+    provenanceApi.show.and.returnValue(of());
 
     fixture.detectChanges();
   }

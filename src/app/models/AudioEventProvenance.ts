@@ -1,13 +1,15 @@
-import { Id } from "../interfaces/apiInterfaces";
+import { HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
 
-export interface IAudioEventProvenance {
+export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
   id: Id;
   name: string;
   version: string;
   description: string;
-  score: number;
+
+  scoreMinimum: number;
+  scoreMaximum: number;
 }
 
 export class AudioEventProvenance
@@ -23,11 +25,12 @@ export class AudioEventProvenance
   @bawPersistAttr()
   public readonly description: string;
   @bawPersistAttr()
-  public readonly score: number;
+  public readonly scoreMinimum: number;
+  @bawPersistAttr()
+  public readonly scoreMaximum: number;
 
   /**
    * Navigates to the details page of an AudioEventProvenance
-   * WARNING: THIS IS NOT CURRENTLY FUNCTIONAL, BUT WE DO USE THIS IN THE CODEBASE AS A STAGING PLACEHOLDER
    */
   public get viewUrl(): string {
     console.warn("AudioEventProvenance.viewUrl is not implemented");
@@ -35,6 +38,6 @@ export class AudioEventProvenance
   }
 
   public override toString(): string {
-    return `${this.name} (version ${this.version})`;
+    return `${this.name} (v.${this.version})`;
   }
 }

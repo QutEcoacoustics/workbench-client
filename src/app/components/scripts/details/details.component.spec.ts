@@ -5,7 +5,11 @@ import {
   scriptResolvers,
   ScriptsService,
 } from "@baw-api/script/scripts.service";
-import { ACCOUNT, SCRIPT } from "@baw-api/ServiceTokens";
+import {
+  ACCOUNT,
+  AUDIO_EVENT_PROVENANCE,
+  SCRIPT,
+} from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
@@ -21,6 +25,9 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { appLibraryImports } from "src/app/app.config";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {
@@ -37,7 +44,7 @@ describe("ScriptComponent", () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(
             { script: scriptResolvers.show },
-            { script: { model, error } }
+            { script: { model, error } },
           ),
         },
       ],
@@ -45,18 +52,25 @@ describe("ScriptComponent", () => {
 
     fixture = TestBed.createComponent(AdminScriptComponent);
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
+
     const accountsApi = TestBed.inject(
-      ACCOUNT.token
+      ACCOUNT.token,
     ) as SpyObject<AccountsService>;
     const scriptsApi = TestBed.inject(
-      SCRIPT.token
+      SCRIPT.token,
     ) as SpyObject<ScriptsService>;
+    const provenanceApi = TestBed.inject(
+      AUDIO_EVENT_PROVENANCE.token,
+    ) as SpyObject<AudioEventProvenanceService>;
+
     component = fixture.componentInstance;
 
     const accountsSubject = new Subject<User>();
     accountsApi.show.and.callFake(() => accountsSubject);
     const scriptsSubject = new Subject<Script>();
     scriptsApi.show.and.callFake(() => scriptsSubject);
+    const provenanceSubject = new Subject<AudioEventProvenance>();
+    provenanceApi.show.andCallFake(() => provenanceSubject);
 
     // Update model to contain injector
     if (model) {
@@ -66,11 +80,22 @@ describe("ScriptComponent", () => {
     return Promise.all([
       nStepObservable(
         accountsSubject,
-        () => new User({ id: 1, userName: "custom username" })
+        () => new User({ id: 1, userName: "custom username" }),
       ),
       nStepObservable(
         scriptsSubject,
-        () => new Script({ id: 1, name: "custom script" })
+        () => new Script({ id: 1, name: "custom script" }),
+      ),
+      nStepObservable(
+        provenanceSubject,
+        () =>
+          new AudioEventProvenance(
+            generateAudioEventProvenance({
+              id: 1,
+              name: "BirdNET",
+              version: "2.4",
+            }),
+          ),
       ),
     ]);
   }
@@ -130,7 +155,22 @@ describe("ScriptComponent", () => {
         plain: model.executableSettingsMediaType,
       },
       { label: "Verified", key: "verified", checkbox: model.verified },
+      {
+        label: "Is Last Version",
+        key: "isLastVersion",
+        checkbox: model.isLastVersion,
+      },
+      {
+        label: "Is First Version",
+        key: "isFirstVersion",
+        checkbox: model.isFirstVersion,
+      },
       { label: "Group Id", key: "groupId", plain: model.groupId },
+      {
+        label: "Provenance Id",
+        key: "provenanceId",
+        plain: model.provenanceId,
+      },
       { label: "Group", key: "group", model: "Script: custom script (1)" },
       { label: "Creator", key: "creator", model: "User: custom username (1)" },
       { label: "Created At", key: "createdAt", dateTime: model.createdAt },

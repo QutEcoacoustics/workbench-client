@@ -8,6 +8,7 @@ import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
   AUDIO_EVENT_IMPORT_FILE,
+  AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
   TAG,
 } from "@baw-api/ServiceTokens";
@@ -39,6 +40,9 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -48,6 +52,7 @@ describe("AddAnnotationsComponent", () => {
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
+  let provenanceServiceSpy: SpyObject<AudioEventProvenanceService>;
 
   let notificationsSpy: SpyObject<ToastService>;
   let routerSpy: SpyObject<Router>;
@@ -56,6 +61,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
+  let mockProvenanceResponse: AudioEventProvenance[];
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -86,9 +92,15 @@ describe("AddAnnotationsComponent", () => {
   const fileAlerts = () => spec.queryAll<HTMLElement>(".file-error");
   const removeFileButtons = () =>
     spec.queryAll<HTMLButtonElement>(".remove-file-btn");
-  const additionalFileTagInputs = () => spec.queryAll(".additional-file-tags");
+
+  const additionalFileTagInputs = (): (TypeaheadInputComponent &
+    HTMLElement)[] => spec.queryAll(".additional-file-tags");
   const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
     spec.query("#extra-tags-input");
+
+  const provenanceFileInputs = () => spec.queryAll(".file-provenance");
+  const extraProvenanceTypeahead = (): TypeaheadInputComponent & HTMLElement =>
+    spec.query("#extra-provenance-input");
 
   function addFiles(files: File[]): void {
     inputFile(spec, fileInput(), files);
@@ -96,6 +108,11 @@ describe("AddAnnotationsComponent", () => {
 
   function addExtraTag(tag: string): void {
     const target = extraTagsTypeahead();
+    selectFromTypeahead(spec, target, tag);
+  }
+
+  function addExtraProvenance(tag: string): void {
+    const target = extraProvenanceTypeahead();
     selectFromTypeahead(spec, target, tag);
   }
 
@@ -112,10 +129,21 @@ describe("AddAnnotationsComponent", () => {
     selectFromTypeahead(spec, target, tag);
   }
 
-  function filesAdditionalTags(index: number): string[] {
+  function addProvenanceToFile(index: number, tag: string): void {
+    const target = provenanceFileInputs()[index];
+    selectFromTypeahead(spec, target, tag);
+  }
+
+  function fileAdditionalTags(index: number): string[] {
     const tagInput = additionalFileTagInputs()[index];
     const itemPills = tagInput.querySelectorAll(".item-pill");
     return Array.from(itemPills).map((item) => item.textContent.trim());
+  }
+
+  function fileProvenance(index: number): string {
+    const provenanceInput = provenanceFileInputs()[index];
+    const inputElement = provenanceInput.querySelector("input");
+    return inputElement.value;
   }
 
   function setup(): void {
@@ -130,6 +158,7 @@ describe("AddAnnotationsComponent", () => {
 
     fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
     tagServiceSpy = spec.inject(TAG.token);
+    provenanceServiceSpy = spec.inject(AUDIO_EVENT_PROVENANCE.token);
     recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
 
     notificationsSpy = spec.inject(ToastService);
@@ -151,6 +180,13 @@ describe("AddAnnotationsComponent", () => {
       () => new Tag(generateTag(), injectorSpy),
     );
 
+    mockProvenanceResponse = modelData.randomArray(
+      1,
+      10,
+      () =>
+        new AudioEventProvenance(generateAudioEventProvenance(), injectorSpy),
+    );
+
     mockRecordingsResponse = new AudioRecording(
       generateAudioRecording(),
       injectorSpy,
@@ -161,6 +197,12 @@ describe("AddAnnotationsComponent", () => {
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
     tagServiceSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
+
+    provenanceServiceSpy.filter.and.callFake(() => of(mockProvenanceResponse));
+    provenanceServiceSpy.show.and.callFake(() => of(mockProvenanceResponse[0]));
+    provenanceServiceSpy.typeaheadCallback.and.returnValue(() =>
+      of(mockProvenanceResponse),
+    );
 
     recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
 
@@ -198,6 +240,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        null,
       );
     });
 
@@ -221,6 +264,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        null,
       );
     });
 
@@ -237,6 +281,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
         audioEventImport,
+        null,
       );
     });
   });
@@ -333,6 +378,7 @@ describe("AddAnnotationsComponent", () => {
       expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport,
+        null,
       );
     });
 
@@ -347,6 +393,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          null,
         );
       });
     });
@@ -386,6 +433,7 @@ describe("AddAnnotationsComponent", () => {
           event.isReference ? "Yes" : "No",
           event.score.toLocaleString(),
           expectedTagValue,
+          mockProvenanceResponse[0].toString(),
           expectedErrorValue,
         ];
 
@@ -445,6 +493,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          null,
         );
       }));
 
@@ -461,12 +510,13 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          null,
         );
       }));
 
       it("should start with no additional tags", () => {
         addFiles([modelData.file(), modelData.file()]);
-        expect(filesAdditionalTags(0)).toHaveLength(0);
+        expect(fileAdditionalTags(0)).toHaveLength(0);
       });
     });
 
@@ -477,7 +527,7 @@ describe("AddAnnotationsComponent", () => {
         const testedTag = mockTagsResponse[0];
         addExtraTag(testedTag.text);
 
-        expect(filesAdditionalTags(0)).toContain(testedTag.text);
+        expect(fileAdditionalTags(0)).toContain(testedTag.text);
       }));
 
       it("should clear the extra tags input once a tag is selected", fakeAsync(() => {
@@ -487,6 +537,67 @@ describe("AddAnnotationsComponent", () => {
         addExtraTag(testedTag.text);
 
         expect(extraTagsTypeahead().value).toHaveLength(0);
+      }));
+    });
+  });
+
+  describe("provenances", () => {
+    describe("file provenance", () => {
+      it("should perform a dry run when a provenance is added", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        fileImportSpy.dryCreate.calls.reset();
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addProvenanceToFile(0, testedProvenance.name);
+
+        expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
+          jasmine.any(AudioEventImportFile),
+          audioEventImport,
+          testedProvenance.id,
+        );
+      }));
+
+      it("should commit a files provenance when the import is committed", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addProvenanceToFile(0, testedProvenance.name);
+
+        commitImport();
+
+        expect(fileImportSpy.create).toHaveBeenCalledWith(
+          jasmine.any(AudioEventImportFile),
+          audioEventImport,
+          testedProvenance.id,
+        );
+      }));
+
+      it("should start with no provenance", () => {
+        addFiles([modelData.file(), modelData.file()]);
+        expect(fileProvenance(0)).toEqual("");
+      });
+    });
+
+    // The "all files" provenance input can be used to apply a provenance to
+    // every file in the current annotation import.
+    describe("all files provenance", () => {
+      it("should add provenances to every queued file", fakeAsync(() => {
+        addFiles([modelData.file(), modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addExtraProvenance(testedProvenance.name);
+
+        expect(fileProvenance(0)).toEqual(testedProvenance.toString());
+      }));
+
+      it("should clear the extra provenance input once a tag is selected", fakeAsync(() => {
+        addFiles([modelData.file(), modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addExtraProvenance(testedProvenance.name);
+
+        expect(extraProvenanceTypeahead().value).toHaveLength(0);
       }));
     });
   });
@@ -522,6 +633,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.create).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          null,
         );
       });
     });
@@ -646,6 +758,7 @@ describe("AddAnnotationsComponent", () => {
         "Reference",
         "Score",
         "Tags",
+        "Provenance",
         "Errors",
       ],
       rows: () => [],
