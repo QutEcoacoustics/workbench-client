@@ -8,7 +8,7 @@ import { IdOr } from "@baw-api/api-common";
 import { AudioEventImportFileService } from "./audio-event-import-file.service";
 
 type Model = AudioEventImportFile;
-type Params = [IdOr<AudioEventImport>];
+type Params = [IdOr<AudioEventImport>, ...args: any];
 type Service = AudioEventImportFileService;
 
 describe("AudioEventImportFIleService", () => {

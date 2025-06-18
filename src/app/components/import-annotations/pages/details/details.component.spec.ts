@@ -16,6 +16,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import {
   AUDIO_EVENT_IMPORT,
   AUDIO_EVENT_IMPORT_FILE,
+  AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
   SHALLOW_AUDIO_EVENT,
   TAG,
@@ -41,6 +42,9 @@ import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
 import { getElementByInnerText } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
@@ -53,10 +57,12 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventImportService: SpyObject<AudioEventImportService>;
   let mockAudioEventFileService: SpyObject<AudioEventImportFileService>;
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
+  let mockProvenanceService: SpyObject<AudioEventProvenanceService>;
 
   let mockAudioEventImport: AudioEventImport;
   let mockTagModel: Tag;
   let mockAudioEvents: AudioEvent[];
+  let mockProvenance: AudioEventProvenance;
   let mockAudioEventImportFiles: AudioEventImportFile[];
   let mockAudioRecording: AudioRecording;
 
@@ -141,6 +147,11 @@ describe("AnnotationsDetailsComponent", () => {
       ),
     );
 
+    mockProvenance = new AudioEventProvenance(
+      generateAudioEventProvenance(),
+      injector,
+    );
+
     mockAudioEventImportFiles = modelData.randomArray(
       1,
       10,
@@ -173,10 +184,12 @@ describe("AnnotationsDetailsComponent", () => {
 
     const audioEventSubject = new Subject<AudioEventImport>();
     const tagsSubject = new Subject<Tag[]>();
+    const provenanceSubject = new Subject<AudioEventProvenance>();
 
     const promise = Promise.all([
       nStepObservable(audioEventSubject, () => mockAudioEvents as any),
       nStepObservable(tagsSubject, () => mockTagModel as any),
+      nStepObservable(provenanceSubject, () => mockProvenance as any),
     ]);
 
     mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -184,6 +197,9 @@ describe("AnnotationsDetailsComponent", () => {
 
     mockTagsService = spec.inject(TAG.token);
     mockTagsService.show.and.callFake(() => tagsSubject);
+
+    mockProvenanceService = spec.inject(AUDIO_EVENT_PROVENANCE.token);
+    mockProvenanceService.show.and.callFake(() => provenanceSubject);
 
     // When deleting a file, we use a modal to confirm that the user wants to
     // delete the file.

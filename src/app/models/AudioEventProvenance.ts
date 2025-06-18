@@ -1,13 +1,15 @@
-import { Id } from "../interfaces/apiInterfaces";
+import { HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
 
-export interface IAudioEventProvenance {
+export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
   id: Id;
   name: string;
   version: string;
   description: string;
-  score: number;
+
+  scoreMinimum: number;
+  scoreMaximum: number;
 }
 
 export class AudioEventProvenance
@@ -23,7 +25,9 @@ export class AudioEventProvenance
   @bawPersistAttr()
   public readonly description: string;
   @bawPersistAttr()
-  public readonly score: number;
+  public readonly scoreMinimum: number;
+  @bawPersistAttr()
+  public readonly scoreMaximum: number;
 
   /**
    * Navigates to the details page of an AudioEventProvenance

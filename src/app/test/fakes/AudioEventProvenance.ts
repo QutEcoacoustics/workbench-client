@@ -9,7 +9,10 @@ export function generateAudioEventProvenance(
     name: modelData.param(),
     version: modelData.param(),
     description: modelData.description(),
-    score: modelData.percentage(),
+    scoreMinimum: modelData.datatype.number(),
+    scoreMaximum: modelData.datatype.number(),
+    ...modelData.model.generateDescription(),
+    ...modelData.model.generateAllUsers(),
     ...data,
   };
 }

@@ -646,6 +646,7 @@ describe("AddAnnotationsComponent", () => {
         "Reference",
         "Score",
         "Tags",
+        "Provenance",
         "Errors",
       ],
       rows: () => [],
