@@ -38,6 +38,6 @@ export class AudioEventProvenance
   }
 
   public override toString(): string {
-    return `${this.name} (version ${this.version})`;
+    return `${this.name} (v.${this.version})`;
   }
 }
