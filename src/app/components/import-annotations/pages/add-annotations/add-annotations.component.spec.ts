@@ -8,6 +8,7 @@ import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
   AUDIO_EVENT_IMPORT_FILE,
+  AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
   TAG,
 } from "@baw-api/ServiceTokens";
@@ -39,6 +40,9 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
+import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -48,6 +52,7 @@ describe("AddAnnotationsComponent", () => {
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
+  let provenanceServiceSpy: SpyObject<AudioEventProvenanceService>;
 
   let notificationsSpy: SpyObject<ToastService>;
   let routerSpy: SpyObject<Router>;
@@ -56,6 +61,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
+  let mockProvenanceResponse: AudioEventProvenance;
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -130,6 +136,7 @@ describe("AddAnnotationsComponent", () => {
 
     fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
     tagServiceSpy = spec.inject(TAG.token);
+    provenanceServiceSpy = spec.inject(AUDIO_EVENT_PROVENANCE.token);
     recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
 
     notificationsSpy = spec.inject(ToastService);
@@ -151,6 +158,10 @@ describe("AddAnnotationsComponent", () => {
       () => new Tag(generateTag(), injectorSpy),
     );
 
+    mockProvenanceResponse = new AudioEventProvenance(
+      generateAudioEventProvenance(),
+    );
+
     mockRecordingsResponse = new AudioRecording(
       generateAudioRecording(),
       injectorSpy,
@@ -161,6 +172,12 @@ describe("AddAnnotationsComponent", () => {
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
     tagServiceSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
+
+    provenanceServiceSpy.filter.and.callFake(() => of(mockProvenanceResponse));
+    provenanceServiceSpy.show.and.callFake(() => of(mockProvenanceResponse));
+    provenanceServiceSpy.typeaheadCallback.and.returnValue(() =>
+      of([mockProvenanceResponse]),
+    );
 
     recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
 
@@ -198,6 +215,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        null,
       );
     });
 
@@ -221,6 +239,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        null,
       );
     });
 
@@ -237,6 +256,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
         audioEventImport,
+        null,
       );
     });
   });
@@ -333,6 +353,7 @@ describe("AddAnnotationsComponent", () => {
       expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport,
+        null,
       );
     });
 
@@ -347,6 +368,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          null,
         );
       });
     });
@@ -386,6 +408,7 @@ describe("AddAnnotationsComponent", () => {
           event.isReference ? "Yes" : "No",
           event.score.toLocaleString(),
           expectedTagValue,
+          "Loading...",
           expectedErrorValue,
         ];
 
@@ -445,6 +468,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          null,
         );
       }));
 
@@ -461,6 +485,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          null,
         );
       }));
 
@@ -522,6 +547,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.create).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          null,
         );
       });
     });
