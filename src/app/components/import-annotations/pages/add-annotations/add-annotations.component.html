@@ -73,7 +73,6 @@
                       class="file-provenance"
                       inputPlaceholder="Add provenance"
                       [searchCallback]="provenanceApi.typeaheadCallback()"
-                      [resultTemplate]="nameTypeaheadTemplate"
                       [inputDisabled]="isUploading"
                       [multipleInputs]="false"
                       (modelChange)="
@@ -114,7 +113,6 @@
           label="Apply provenance to all files"
           [inputPlaceholder]="'search for provenance by name'"
           [searchCallback]="provenanceApi.typeaheadCallback()"
-          [resultTemplate]="nameTypeaheadTemplate"
           [inputDisabled]="(hasFiles() | async) === false"
           [multipleInputs]="false"
           (modelChange)="
@@ -363,10 +361,6 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
-</ng-template>
-
-<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
 </ng-template>
 
 <ng-template #emptyTemplate>

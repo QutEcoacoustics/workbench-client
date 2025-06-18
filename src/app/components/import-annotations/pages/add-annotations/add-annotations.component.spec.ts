@@ -573,10 +573,6 @@ describe("AddAnnotationsComponent", () => {
         );
       }));
 
-      it("should perform a dry run with no provenance if the user changes the provenance name to an invalid name", () => {});
-
-      it("should perform a dry run with no provenances if the provenance input is cleared", () => {});
-
       it("should start with no provenance", () => {
         addFiles([modelData.file(), modelData.file()]);
         expect(fileProvenance(0)).toEqual("");

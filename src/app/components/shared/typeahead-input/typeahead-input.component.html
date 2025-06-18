@@ -46,6 +46,7 @@
         (focus)="focus$.next($any($event).target.value)"
         (selectItem)="onItemSelected($event)"
         (keydown.backspace)="removeLastItem()"
+        (input)="handleInput()"
         [disabled]="inputDisabled"
       />
     </div>
