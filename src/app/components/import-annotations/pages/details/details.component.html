@@ -54,8 +54,24 @@
                 <baw-inline-list
                   [items]="value.tags"
                   [itemKey]="'text'"
-                  [emptyTemplate]="noAssociatedTagsTemplate"
+                  [emptyTemplate]="noTagsTemplate"
                 ></baw-inline-list>
+              }
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column prop="">
+            <ng-template let-column="column" ngx-datatable-header-template>
+              Provenance
+            </ng-template>
+
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              @if (value.provenance | isUnresolved) {
+                <baw-loading size="sm"></baw-loading>
+              } @else if (value.provenance) {
+                {{ value.provenance }}
+              } @else {
+                <ng-container [ngTemplateOutlet]="noProvenanceTemplate"></ng-container>
               }
             </ng-template>
           </ngx-datatable-column>
@@ -114,7 +130,7 @@
               <baw-inline-list
                 [items]="value.additionalTags"
                 [itemKey]="'text'"
-                [emptyTemplate]="noAssociatedTagsTemplate"
+                [emptyTemplate]="noTagsTemplate"
               ></baw-inline-list>
             </ng-template>
           </ngx-datatable-column>
@@ -155,12 +171,12 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<ng-template #noAssociatedTagsTemplate>
+<ng-template #noTagsTemplate>
   <span>No associated tags</span>
 </ng-template>
 
-<ng-template #noAdditionalTagsTemplate>
-  <span>No additional tags</span>
+<ng-template #noProvenanceTemplate>
+  <span>No provenance</span>
 </ng-template>
 
 <ng-template #deleteFileModal let-modal>

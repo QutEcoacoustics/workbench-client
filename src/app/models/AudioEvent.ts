@@ -86,10 +86,7 @@ export class AudioEvent
   public deleter?: User;
   @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne<AudioEvent, AudioEventProvenance>(
-    AUDIO_EVENT_PROVENANCE,
-    "provenanceId",
-  )
+  @hasOne<AudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
   @hasMany<AudioEvent, Tag>(TAG, "tagIds")
   public tags?: Tag[];

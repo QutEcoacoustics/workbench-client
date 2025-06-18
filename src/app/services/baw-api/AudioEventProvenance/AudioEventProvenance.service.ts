@@ -19,8 +19,6 @@ import { createSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 const audioEventProvenanceId: IdParamOptional<AudioEventProvenance> = id;
 const endpoint = stringTemplate`/provenances/${audioEventProvenanceId}${option}`;
 
-// the baw-api functionality of this model is not currently complete, therefore we are returning mock data
-// TODO: remove mock data once the api is complete
 @Injectable()
 export class AudioEventProvenanceService
   implements StandardApi<AudioEventProvenance>

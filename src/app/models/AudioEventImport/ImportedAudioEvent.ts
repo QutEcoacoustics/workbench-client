@@ -1,10 +1,11 @@
-import { AUDIO_EVENT_IMPORT, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_IMPORT, AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { hasOne } from "@models/AssociationDecorators";
 import { bawPersistAttr, bawSubModelCollection } from "@models/AttributeDecorators";
 import { IAudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag, Tag } from "@models/Tag";
 
@@ -46,12 +47,15 @@ export class ImportedAudioEvent
   public readonly errors?: EventImportError[];
   @bawSubModelCollection<ImportedAudioEvent, Tag>(Tag)
   public readonly tags?: Tag[];
+  public readonly provenanceId?: Id;
 
   // Associations
   @hasOne<ImportedAudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
   @hasOne<ImportedAudioEvent, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportId")
   public audioEventImport?: AudioEventImport;
+  @hasOne<ImportedAudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");

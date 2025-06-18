@@ -41,6 +41,7 @@ import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@
 import { Project } from "@models/Project";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { NgTemplateOutlet } from "@angular/common";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
@@ -79,6 +80,7 @@ interface ImportGroup {
   selector: "baw-annotation-import",
   templateUrl: "./details.component.html",
   imports: [
+    NgTemplateOutlet,
     NgbNav,
     NgbNavItem,
     NgbNavItemRole,
