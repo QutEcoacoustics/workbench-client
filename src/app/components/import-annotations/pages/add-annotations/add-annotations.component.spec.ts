@@ -61,7 +61,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
-  let mockProvenanceResponse: AudioEventProvenance;
+  let mockProvenanceResponse: AudioEventProvenance[];
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -92,9 +92,14 @@ describe("AddAnnotationsComponent", () => {
   const fileAlerts = () => spec.queryAll<HTMLElement>(".file-error");
   const removeFileButtons = () =>
     spec.queryAll<HTMLButtonElement>(".remove-file-btn");
+
   const additionalFileTagInputs = () => spec.queryAll(".additional-file-tags");
   const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
     spec.query("#extra-tags-input");
+
+  const provenanceFileInputs = () => spec.queryAll(".file-provenance");
+  const extraProvenanceTypeahead = (): TypeaheadInputComponent & HTMLElement =>
+    spec.query("#extra-provenance-input");
 
   function addFiles(files: File[]): void {
     inputFile(spec, fileInput(), files);
@@ -102,6 +107,11 @@ describe("AddAnnotationsComponent", () => {
 
   function addExtraTag(tag: string): void {
     const target = extraTagsTypeahead();
+    selectFromTypeahead(spec, target, tag);
+  }
+
+  function addExtraProvenance(tag: string): void {
+    const target = extraProvenanceTypeahead();
     selectFromTypeahead(spec, target, tag);
   }
 
@@ -118,10 +128,20 @@ describe("AddAnnotationsComponent", () => {
     selectFromTypeahead(spec, target, tag);
   }
 
-  function filesAdditionalTags(index: number): string[] {
+  function addProvenanceToFile(index: number, tag: string): void {
+    const target = provenanceFileInputs()[index];
+    selectFromTypeahead(spec, target, tag);
+  }
+
+  function fileAdditionalTags(index: number): string[] {
     const tagInput = additionalFileTagInputs()[index];
     const itemPills = tagInput.querySelectorAll(".item-pill");
     return Array.from(itemPills).map((item) => item.textContent.trim());
+  }
+
+  function fileProvenance(index: number): string {
+    const tagInput = additionalFileTagInputs()[index];
+    return tagInput.textContent.trim();
   }
 
   function setup(): void {
@@ -158,8 +178,11 @@ describe("AddAnnotationsComponent", () => {
       () => new Tag(generateTag(), injectorSpy),
     );
 
-    mockProvenanceResponse = new AudioEventProvenance(
-      generateAudioEventProvenance(),
+    mockProvenanceResponse = modelData.randomArray(
+      1,
+      10,
+      () =>
+        new AudioEventProvenance(generateAudioEventProvenance(), injectorSpy),
     );
 
     mockRecordingsResponse = new AudioRecording(
@@ -174,9 +197,9 @@ describe("AddAnnotationsComponent", () => {
     tagServiceSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
 
     provenanceServiceSpy.filter.and.callFake(() => of(mockProvenanceResponse));
-    provenanceServiceSpy.show.and.callFake(() => of(mockProvenanceResponse));
+    provenanceServiceSpy.show.and.callFake(() => of(mockProvenanceResponse[0]));
     provenanceServiceSpy.typeaheadCallback.and.returnValue(() =>
-      of([mockProvenanceResponse]),
+      of(mockProvenanceResponse),
     );
 
     recordingServiceSpy.show.and.callFake(() => of(mockRecordingsResponse));
@@ -408,7 +431,7 @@ describe("AddAnnotationsComponent", () => {
           event.isReference ? "Yes" : "No",
           event.score.toLocaleString(),
           expectedTagValue,
-          "Loading...",
+          mockProvenanceResponse[0].toString(),
           expectedErrorValue,
         ];
 
@@ -491,7 +514,7 @@ describe("AddAnnotationsComponent", () => {
 
       it("should start with no additional tags", () => {
         addFiles([modelData.file(), modelData.file()]);
-        expect(filesAdditionalTags(0)).toHaveLength(0);
+        expect(fileAdditionalTags(0)).toHaveLength(0);
       });
     });
 
@@ -502,7 +525,7 @@ describe("AddAnnotationsComponent", () => {
         const testedTag = mockTagsResponse[0];
         addExtraTag(testedTag.text);
 
-        expect(filesAdditionalTags(0)).toContain(testedTag.text);
+        expect(fileAdditionalTags(0)).toContain(testedTag.text);
       }));
 
       it("should clear the extra tags input once a tag is selected", fakeAsync(() => {
@@ -512,6 +535,71 @@ describe("AddAnnotationsComponent", () => {
         addExtraTag(testedTag.text);
 
         expect(extraTagsTypeahead().value).toHaveLength(0);
+      }));
+    });
+  });
+
+  describe("provenances", () => {
+    describe("file provenance", () => {
+      it("should perform a dry run when a provenance is added", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        fileImportSpy.dryCreate.calls.reset();
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addProvenanceToFile(0, testedProvenance.name);
+
+        expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
+          jasmine.any(AudioEventImportFile),
+          audioEventImport,
+          testedProvenance.id,
+        );
+      }));
+
+      it("should commit a files provenance when the import is committed", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addProvenanceToFile(0, testedProvenance.name);
+
+        commitImport();
+
+        expect(fileImportSpy.create).toHaveBeenCalledWith(
+          jasmine.any(AudioEventImportFile),
+          audioEventImport,
+          testedProvenance.id,
+        );
+      }));
+
+      it("should perform a dry run with no provenance if the user changes the provenance name to an invalid name", () => {});
+
+      it("should perform a dry run with no provenances if the provenance input is cleared", () => {});
+
+      it("should start with no provenance", () => {
+        addFiles([modelData.file(), modelData.file()]);
+        expect(fileProvenance(0)).toEqual("");
+      });
+    });
+
+    // The "all files" provenance input can be used to apply a provenance to
+    // every file in the current annotation import.
+    describe("all files provenance", () => {
+      it("should add provenances to every queued file", fakeAsync(() => {
+        addFiles([modelData.file(), modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addExtraProvenance(testedProvenance.name);
+
+        expect(fileProvenance(0)).toEqual(testedProvenance.toString());
+      }));
+
+      it("should clear the extra provenance input once a tag is selected", fakeAsync(() => {
+        addFiles([modelData.file(), modelData.file()]);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addExtraProvenance(testedProvenance.name);
+
+        expect(extraProvenanceTypeahead().value).toHaveLength(0);
       }));
     });
   });

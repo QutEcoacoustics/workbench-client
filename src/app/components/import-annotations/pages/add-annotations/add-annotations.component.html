@@ -330,10 +330,8 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.provenance | isUnresolved) {
-            <baw-loading size="sm"></baw-loading>
-          } @else if (value.provenance) {
-            {{ value.provenance.name }}
+          @if (value.provenance) {
+            {{ value.provenance.toString() }}
           } @else {
             <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
           }

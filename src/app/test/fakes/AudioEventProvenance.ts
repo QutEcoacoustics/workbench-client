@@ -6,8 +6,8 @@ export function generateAudioEventProvenance(
 ): Required<IAudioEventProvenance> {
   return {
     id: modelData.id(),
-    name: modelData.param(),
-    version: modelData.param(),
+    name: modelData.name.jobTitle(),
+    version: modelData.version(),
     description: modelData.description(),
     scoreMinimum: modelData.datatype.number(),
     scoreMaximum: modelData.datatype.number(),

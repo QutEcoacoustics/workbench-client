@@ -50,12 +50,10 @@ export const modelData = {
   ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
-  licenseName: () => modelData.helpers.arrayElement(
-    Object.keys(spdxLicenseListFull),
-  ),
-  license: () => modelData.helpers.arrayElement(
-    Object.values(spdxLicenseListFull),
-  ),
+  licenseName: () =>
+    modelData.helpers.arrayElement(Object.keys(spdxLicenseListFull)),
+  license: () =>
+    modelData.helpers.arrayElement(Object.values(spdxLicenseListFull)),
   icon: (): IconProp => [
     "fas",
     faker.helpers.arrayElement<IconName>([
@@ -78,6 +76,8 @@ export const modelData = {
     ":" +
     faker.helpers.arrayElement(["00", "30"]),
   param: () => faker.name.jobTitle().replace(specialCharRegex, ""),
+  version: () =>
+    `${modelData.datatype.number()}.${modelData.datatype.number()}`,
   seconds: () => faker.datatype.number(86400 - 30) + 30,
   startEndSeconds: () => {
     const min = faker.datatype.number(86400 - 30) + 30;
@@ -281,7 +281,7 @@ function hexaDecimal(count: number = 1): string {
 function randomArray<T>(
   min: number,
   max: number,
-  callback: (index: number) => T
+  callback: (index: number) => T,
 ): T[] {
   const len = faker.datatype.number({ min, max });
   const array = [];
@@ -317,7 +317,7 @@ function randomFile(
     type: string;
     name: string;
     contents: BlobPart[];
-  }> = {}
+  }> = {},
 ) {
   return new File(data.contents ?? [], data?.name ?? faker.system.fileName(), {
     type: data.type ?? "text/plain",
