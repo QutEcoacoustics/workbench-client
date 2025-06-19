@@ -297,6 +297,7 @@ describe("AnnotationsDetailsComponent", () => {
     assertDatatable(() => ({
       service: mockAudioEventFileService,
       columns: () => [
+        "Id",
         "File Name",
         "Date Imported",
         "Additional Tags",
@@ -320,7 +321,7 @@ describe("AnnotationsDetailsComponent", () => {
 
       const expectedSortingFilters: Sorting<keyof AudioEventImportFile> = {
         direction: "asc",
-        orderBy: "name",
+        orderBy: "id",
       };
       expect(mockAudioEventFileService.filter).toHaveBeenCalledWith(
         jasmine.objectContaining({
