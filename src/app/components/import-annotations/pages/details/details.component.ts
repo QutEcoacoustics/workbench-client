@@ -81,6 +81,7 @@ interface ImportGroup {
 @Component({
   selector: "baw-annotation-import",
   templateUrl: "./details.component.html",
+  styleUrl: "./details.component.scss",
   imports: [
     NgTemplateOutlet,
     NgbNav,

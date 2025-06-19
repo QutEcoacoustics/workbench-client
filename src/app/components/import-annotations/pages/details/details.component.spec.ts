@@ -45,6 +45,10 @@ import { Sorting } from "@baw-api/baw-api.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
+import { verificationRoute } from "@components/annotations/annotation.routes";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
@@ -65,9 +69,12 @@ describe("AnnotationsDetailsComponent", () => {
   let mockProvenance: AudioEventProvenance;
   let mockAudioEventImportFiles: AudioEventImportFile[];
   let mockAudioRecording: AudioRecording;
+  let mockProject: Project;
 
   let expectedAudioEventTable: any;
   let expectedFilesTable: any;
+
+  const fileVerifyLinks = () => spec.queryAll(StrongRouteDirective);
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -115,8 +122,15 @@ describe("AnnotationsDetailsComponent", () => {
     spec = createComponent({
       detectChanges: false,
       data: {
+        resolvers: {
+          audioEventImport: "audioEventImport",
+          project: "project",
+        },
         audioEventImport: {
           model: mockAudioEventImport,
+        },
+        project: {
+          model: mockProject,
         },
       },
     });
@@ -129,6 +143,7 @@ describe("AnnotationsDetailsComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
     mockAudioEventImport["injector"] = injector;
+    mockProject["injector"] = injector;
 
     mockAudioRecording = new AudioRecording(generateAudioRecording(), injector);
 
@@ -228,6 +243,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   beforeEach(async () => {
     mockAudioEventImport = new AudioEventImport(generateAudioEventImport());
+    mockProject = new Project(generateProject());
     await setup();
   });
 
@@ -339,5 +355,25 @@ describe("AnnotationsDetailsComponent", () => {
         jasmine.any(AudioEventImport),
       );
     }));
+
+    it("should have the correct 'verify' link", () => {
+      const expectedLinks = mockAudioEventImportFiles.map(
+        (file: AudioEventImportFile) => {
+          const routeParams = { projectId: mockProject.id };
+          const queryParams = { importFiles: file.id };
+          return { routeParams, queryParams };
+        },
+      );
+
+      const verificationLinks = fileVerifyLinks();
+      verificationLinks.forEach((link, i: number) => {
+        const expectedResult = expectedLinks[i];
+
+        expect(link).toHaveStrongRoute(verificationRoute.project);
+
+        expect(link.routeParams).toEqual(expectedResult.routeParams);
+        expect(link.queryParams).toEqual(expectedResult.queryParams);
+      });
+    });
   });
 });
