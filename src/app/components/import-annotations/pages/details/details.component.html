@@ -146,40 +146,40 @@
           </ngx-datatable-column>
 
           <ngx-datatable-column [sortable]="false" prop="">
-            <ng-template ngx-datatable-header-template>
-              Actions
-            </ng-template>
+            <ng-template ngx-datatable-header-template>Actions</ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <!--
+              <div class="actions-cell">
+                <!--
                 we use an anchor element here instead of a button so that users
                 can middle click to download and open in a new tab.
                 Opening in a new tab only apply if the browser has inbuilt
                 file viewer for the file type.
               -->
-              <a
-                class="btn btn-sm btn-primary"
-                [href]="value.path"
-                target="_blank"
-              >
-                Download
-              </a>
+                <a
+                  class="btn btn-sm btn-primary"
+                  [href]="value.path"
+                  target="_blank"
+                >
+                  Download
+                </a>
 
-              <a
-                class="btn btn-sm btn-outline-primary ms-1"
-                [strongRoute]="verificationRoute.project"
-                [routeParams]="{ projectId: project.id }"
-                [queryParams]="{ importFiles: value.id }"
-              >
-                Verify
-              </a>
+                <a
+                  class="verify-button btn btn-sm btn-outline-primary"
+                  [strongRoute]="verificationRoute.project"
+                  [routeParams]="{ projectId: project.id }"
+                  [queryParams]="{ importFiles: value.id }"
+                >
+                  Verify
+                </a>
 
-              <button
-                class="btn btn-sm btn-outline-danger ms-1"
-                (click)="deleteFile(deleteFileModal, value)"
-              >
-                Delete
-              </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteFile(deleteFileModal, value)"
+                >
+                  Delete
+                </button>
+              </div>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
