@@ -101,16 +101,6 @@
           bawDatatableDefaults
           [bawDatatablePagination]="{ filters: fileFilters$, getModels: getFileModels }"
         >
-          <ngx-datatable-column prop="name">
-            <ng-template let-column="column" ngx-datatable-header-template>
-              File Name
-            </ng-template>
-
-            <ng-template let-value="value" ngx-datatable-cell-template>
-              {{ value ?? "Unknown" }}
-            </ng-template>
-          </ngx-datatable-column>
-
           <ngx-datatable-column prop="id">
             <ng-template let-column="column" ngx-datatable-header-template>
               Id
@@ -118,6 +108,16 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               {{ value }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column prop="name">
+            <ng-template let-column="column" ngx-datatable-header-template>
+              File Name
+            </ng-template>
+
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value ?? "Unknown" }}
             </ng-template>
           </ngx-datatable-column>
 
