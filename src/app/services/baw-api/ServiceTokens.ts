@@ -44,6 +44,7 @@ import type { AnnotationService } from "@services/models/annotation.service";
 import type { MediaService } from "@services/media/media.service";
 import type { AudioEventImportFile } from "@models/AudioEventImportFile";
 import type { Verification } from "@models/Verification";
+import { AbstractSetting } from "@models/AbstractSetting";
 import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
@@ -163,3 +164,4 @@ export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOT
 export const VERIFICATION = new ServiceToken<VerificationService, Verification>("VERIFICATION");
 export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService, Verification>("S_VERIFICATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
+export const SITE_SETTINGS = new ServiceToken<AbstractSetting, never>("SITE_SETTINGS");

@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.input-label {
+  position: relative;
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.5rem;
+
+  .number-input,
+  .slider-input {
+    min-width: 200px;
+    flex: 1 1;
+  }
+
+  .number-input {
+    max-width: 200px;
+  }
+}
