@@ -101,6 +101,16 @@
           bawDatatableDefaults
           [bawDatatablePagination]="{ filters: fileFilters$, getModels: getFileModels }"
         >
+          <ngx-datatable-column prop="id" [width]="30">
+            <ng-template let-column="column" ngx-datatable-header-template>
+              Id
+            </ng-template>
+
+            <ng-template let-value="value" ngx-datatable-cell-template>
+              {{ value }}
+            </ng-template>
+          </ngx-datatable-column>
+
           <ngx-datatable-column prop="name">
             <ng-template let-column="column" ngx-datatable-header-template>
               File Name
@@ -153,6 +163,15 @@
                 target="_blank"
               >
                 Download
+              </a>
+
+              <a
+                class="btn btn-sm btn-outline-primary ms-1"
+                [strongRoute]="verificationRoute.project"
+                [routeParams]="{ projectId: project.id }"
+                [queryParams]="{ importFiles: value.id }"
+              >
+                Verify
               </a>
 
               <button

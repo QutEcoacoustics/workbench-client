@@ -18,6 +18,9 @@ const annotationSearchRouteQueryParamResolver = (
         sites: params.sties,
         tags: params.tags,
         onlyUnverified: params.onlyUnverified,
+        score: params.score,
+        importFiles: params.importFiles,
+        sort: params.sort,
         date: params.date,
         time: params.time,
       }
