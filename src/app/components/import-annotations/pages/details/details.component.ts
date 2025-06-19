@@ -42,6 +42,8 @@ import { Project } from "@models/Project";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { NgTemplateOutlet } from "@angular/common";
+import { verificationRoute } from "@components/annotations/annotation.routes";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
@@ -97,6 +99,7 @@ interface ImportGroup {
     NgbNavOutlet,
     IsUnresolvedPipe,
     ConfirmationComponent,
+    StrongRouteDirective,
   ],
 })
 class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
@@ -112,6 +115,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
+  protected verificationRoute = verificationRoute;
   protected active = 1;
   protected importGroups: ImportGroup[] = [this.emptyImportGroup];
   protected audioEventImport: AudioEventImport;
