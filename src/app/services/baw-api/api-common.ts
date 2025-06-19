@@ -1,6 +1,6 @@
 import { PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Param } from "@interfaces/apiInterfaces";
+import { Id, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { InjectionToken } from "@angular/core";
@@ -9,7 +9,7 @@ import { BawServiceOptions, Filters } from "./baw-api.service";
 /**
  * Variable is an id or AbstractModel
  */
-export type IdOr<T extends AbstractModel> = T | number;
+export type IdOr<T extends AbstractModel> = T | Id;
 
 /**
  * Variable is an id or parameter

@@ -17,6 +17,7 @@ import { adminOrphansMenuItem } from "../orphan/orphans.menus";
 import { adminSettingsMenuItem } from "../settings/settings.menus";
 import { adminTagGroupsMenuItem } from "../tag-group/tag-group.menus";
 import { adminTagsMenuItem } from "../tags/tags.menus";
+import { InstanceSettingsComponent } from "./components/site-settings/instance-settings.component";
 
 export const adminMenuItemActions = [
   adminAnalysisJobsMenuItem,
@@ -40,10 +41,8 @@ export const adminMenuItemActions = [
 
 @Component({
   selector: "baw-dashboard",
-  template: `
-    <h1>Admin Dashboard</h1>
-    <p>Welcome to the super-secret-site-settings!</p>
-  `,
+  templateUrl: "./dashboard.component.html",
+  imports: [InstanceSettingsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminDashboardComponent extends PageComponent {}
