@@ -11,10 +11,10 @@ export interface IBatchAnalysisRemoteEnqueueLimit {
 export class BatchAnalysisRemoteEnqueueLimit extends AbstractSetting
   implements IBatchAnalysisRemoteEnqueueLimit
 {
-  public readonly kind = "batch_analysis_remote_enqueue_limit";
-  @bawPersistAttr()
+  public readonly kind = "site_setting";
+  @bawPersistAttr({ update: true })
   public readonly name: string;
-  @bawPersistAttr()
+  @bawPersistAttr({ update: true })
   public readonly value: number;
   public readonly description: string;
 

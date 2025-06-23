@@ -38,6 +38,7 @@ export class RangeComponent implements ControlValueAccessor {
 
   public writeValue(value: any): void {
     this.value.set(value);
+    this.onChange?.(this.value());
   }
 
   public registerOnChange(fn: any): void {
@@ -53,13 +54,14 @@ export class RangeComponent implements ControlValueAccessor {
   }
 
   protected updateValue(event: Event) {
-    // TODO: Remove this type cast
-    const stringValue = (event.target as HTMLInputElement).value;
-    const value = toNumber(stringValue);
-console.debug(value);
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
 
-    this.value.set(value);
-    this.onChange(this.value());
+    const stringValue = event.target.value;
+    const value = toNumber(stringValue);
+
+    this.writeValue(value);
     this.input.emit(this.value());
   }
 }

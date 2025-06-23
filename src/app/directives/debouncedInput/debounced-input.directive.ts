@@ -27,14 +27,16 @@ export class DebouncedInputDirective
   // will only trigger the "change" event when the input loses focus.
   @HostListener("input", ["$event"])
   protected onKeydown(event: KeyboardEvent) {
-    if (
-      !(event.target instanceof HTMLInputElement) &&
-      !(event.target instanceof HTMLTextAreaElement)
-    ) {
-      console.warn("bawDebouncedInput must be attached to an input element");
+    const target = event.target;
+    if (typeof event !== "object" || !("value" in target)) {
+      console.warn("bawDebouncedInput must attach to an element with 'value'");
       return;
     }
 
-    this.input$.next(event.target.value);
+    // The value might be invocable if the element's value is a signal
+    const value =
+      typeof target.value === "function" ? target.value() : target.value;
+
+    this.input$.next(value);
   }
 }

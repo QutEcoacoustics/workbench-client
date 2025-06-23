@@ -12,7 +12,7 @@ import { toNumber } from "@helpers/typing/toNumber";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { BatchAnalysisRemoteEnqueueLimit } from "@models/BatchAnalysisRemoteEnqueueLimit";
 import { RangeComponent } from "@shared/input/range/range.component";
-import { takeUntil } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-instance-settings",
@@ -56,6 +56,9 @@ export class InstanceSettingsComponent
       value,
     });
 
-    this.siteSettings.update(newModel);
+    // We need this firstValueFrom so that the observable gets evaluated and the
+    // requests is sent.
+    // We do not do anything with the value and allow it to execute in async.
+    firstValueFrom(this.siteSettings.update(newModel));
   }
 }
