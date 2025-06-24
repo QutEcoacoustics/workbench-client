@@ -4,7 +4,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { SITE_SETTINGS } from "@baw-api/ServiceTokens";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteSetting } from "@models/SiteSetting";
 import { generateSiteSetting } from "@test/fakes/SiteSetting";
@@ -14,6 +14,7 @@ import { RangeComponent } from "@shared/input/range/range.component";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { ToastService } from "@services/toasts/toasts.service";
+import { generateBawApiError } from "@test/fakes/BawApiError";
 import { InstanceSettingsComponent } from "./instance-settings.component";
 
 describe("InstanceSettingsComponent", () => {
@@ -108,6 +109,18 @@ describe("InstanceSettingsComponent", () => {
 
       const expectedMessage = `Successfully updated batch_analysis_remote_enqueue_limit to ${testUpdatedValue}`;
       expect(toastSpy.success).toHaveBeenCalledOnceWith(expectedMessage);
+    }));
+
+    it("should show an error toast if the update fails", fakeAsync(() => {
+      const error = generateBawApiError();
+      siteSettingsApi.update.and.returnValue(throwError(() => error));
+
+      const testUpdatedValue = mockEnqueueLimit.value + 1;
+      updateValue(testUpdatedValue.toString());
+
+      const expectedMessage =
+        "Failed to update batch_analysis_remote_enqueue_limit";
+      expect(toastSpy.error).toHaveBeenCalledOnceWith(expectedMessage);
     }));
   });
 });

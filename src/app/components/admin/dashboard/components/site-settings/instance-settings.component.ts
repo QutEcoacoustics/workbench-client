@@ -70,7 +70,7 @@ export class InstanceSettingsComponent
           this.notifications.success(message);
         },
         error: () => {
-          const message = "Failed to updated batch_analysis_remote_enqueue_limit";
+          const message = "Failed to update batch_analysis_remote_enqueue_limit";
           this.notifications.error(message);
         },
       });
