@@ -23,16 +23,30 @@ export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
 
+export type IdOrName<T extends AbstractModel> = IdOr<T> | Param;
+
 /**
  * Create id (used by stringTemplate)
  *
  * @param x Api Id
  */
-export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
+export function id<T extends AbstractModel>(x: IdOr<T> | Empty): Param {
   if (x === emptyParam || !isInstantiated(x)) {
     return x;
   } else if (isInstantiated(x?.["id"])) {
     return x?.["id"].toString();
+  } else {
+    return x.toString();
+  }
+}
+
+export function idOrName<T extends AbstractModel>(x: IdOrName<T> | Empty): Param {
+  if (x === emptyParam || !isInstantiated(x)) {
+    return x;
+  } else if (isInstantiated(x?.["id"])) {
+    return x?.["id"].toString();
+  } else if (isInstantiated(x?.["name"])) {
+    return x?.["name"];
   } else {
     return x.toString();
   }

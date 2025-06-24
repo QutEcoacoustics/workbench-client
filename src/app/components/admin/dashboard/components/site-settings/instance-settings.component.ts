@@ -10,7 +10,7 @@ import { SiteSettingsService } from "@baw-api/site-settings/site-settings.servic
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
-import { BatchAnalysisRemoteEnqueueLimit } from "@models/BatchAnalysisRemoteEnqueueLimit";
+import { SiteSetting } from "@models/SiteSetting";
 import { RangeComponent } from "@shared/input/range/range.component";
 import { firstValueFrom, takeUntil } from "rxjs";
 
@@ -28,7 +28,7 @@ export class InstanceSettingsComponent
     super();
   }
 
-  protected enqueueLimit = signal<BatchAnalysisRemoteEnqueueLimit | null>(null);
+  protected enqueueLimit = signal<SiteSetting | null>(null);
   private enqueueLimitInput = viewChild<RangeComponent>("enqueueLimitInput");
 
   public ngOnInit(): void {
@@ -38,7 +38,7 @@ export class InstanceSettingsComponent
     this.siteSettings
       .show("batch_analysis_remote_enqueue_limit")
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((initialValue: BatchAnalysisRemoteEnqueueLimit) => {
+      .subscribe((initialValue: SiteSetting) => {
         this.enqueueLimit.set(initialValue);
         this.enqueueLimitInput().value.set(initialValue.value);
       });
@@ -51,7 +51,7 @@ export class InstanceSettingsComponent
       return;
     }
 
-    const newModel = new BatchAnalysisRemoteEnqueueLimit({
+    const newModel = new SiteSetting({
       ...this.enqueueLimit(),
       value,
     });
