@@ -53,19 +53,16 @@ describe("ToastComponent", () => {
     const variant = toast.variant;
     const options = toast.options;
 
-    // we have to use the @angular/testing setInput() instead of the
-    // ngneat/spectator setInput() method because spectator's setInput method
-    // doesn't support signals
     if (title) {
-      spec.fixture.componentRef.setInput("title", title);
+      spec.setInput("title", title);
     }
 
     if (variant) {
-      spec.fixture.componentRef.setInput("variant", variant);
+      spec.setInput("variant", variant);
     }
 
     if (options) {
-      spec.fixture.componentRef.setInput("options", options);
+      spec.setInput("options", options);
     }
   }
 
@@ -78,7 +75,7 @@ describe("ToastComponent", () => {
   });
 
   it("should create a toast with no title or variant correctly", () => {
-    spec.fixture.componentRef.setInput("title", undefined);
+    spec.setInput("title", undefined);
     spec.detectChanges();
 
     openToast();
@@ -108,7 +105,7 @@ describe("ToastComponent", () => {
       delay: modelData.datatype.number(),
     };
 
-    spec.fixture.componentRef.setInput("options", testedOptions);
+    spec.setInput("options", testedOptions);
     spec.detectChanges();
 
     openToast();

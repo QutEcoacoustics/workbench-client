@@ -9,22 +9,19 @@ interface ErrorCardTest {
 }
 
 describe("ErrorCardComponent", () => {
-  let spectator: Spectator<ErrorCardComponent>;
+  let spec: Spectator<ErrorCardComponent>;
 
   const createComponent = createComponentFactory({
     component: ErrorCardComponent,
   });
 
-  const errorCards = () => spectator.queryAll(".error-output");
+  const errorCards = () => spec.queryAll(".error-output");
 
   function setup(errors: BawErrorData[]) {
-    spectator = createComponent({ detectChanges: false });
+    spec = createComponent({ detectChanges: false });
 
-    // we have to use the lower level Angular TestBed API to set the input
-    // because it is a signal input which is not supported by the Spectator API
-    // see: https://github.com/help-me-mom/ng-mocks/issues/7976
-    spectator.fixture.componentRef.setInput("errors", errors);
-    spectator.detectChanges();
+    spec.setInput("errors", errors);
+    spec.detectChanges();
   }
 
   function generateErrorMessage(property: string, errors: string[]) {
@@ -44,7 +41,7 @@ describe("ErrorCardComponent", () => {
 
   it("should create", () => {
     setup([]);
-    expect(spectator.component).toBeInstanceOf(ErrorCardComponent);
+    expect(spec.component).toBeInstanceOf(ErrorCardComponent);
   });
 
   const tests = [

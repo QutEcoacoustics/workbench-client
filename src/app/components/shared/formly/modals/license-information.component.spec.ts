@@ -20,9 +20,7 @@ describe("LicenseInformationModalComponent", () => {
   function setup(): void {
     spec = createComponent({ detectChanges: false });
 
-    // we use the TestBed fixture because ngNeat spectator does not support
-    // signal based inputs
-    spec.fixture.componentRef.setInput("license", mockLicense);
+    spec.setInput("license", mockLicense);
 
     spec.detectChanges();
   }
