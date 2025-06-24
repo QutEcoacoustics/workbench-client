@@ -13,11 +13,15 @@ import { fakeAsync, tick } from "@angular/core/testing";
 import { RangeComponent } from "@shared/input/range/range.component";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { InstanceSettingsComponent } from "./instance-settings.component";
 
 describe("InstanceSettingsComponent", () => {
   let spec: Spectator<InstanceSettingsComponent>;
+
   let siteSettingsApi: SpyObject<SiteSettingsService>;
+  let toastSpy: SpyObject<ToastService>;
+
   let mockEnqueueLimit: SiteSetting;
 
   const enqueueLimitInput = () => spec.query(RangeComponent);
@@ -28,6 +32,15 @@ describe("InstanceSettingsComponent", () => {
     component: InstanceSettingsComponent,
     providers: [provideMockBawApi()],
   });
+
+  function updateValue(value: string) {
+    spec.typeInElement(value, enqueueLimitNumberInput());
+
+    // Because the input element is debounced, we need to fakeAsync await for
+    // the debounce time until the request is sent out.
+    tick(defaultDebounceTime);
+    spec.detectChanges();
+  }
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
@@ -47,6 +60,10 @@ describe("InstanceSettingsComponent", () => {
     siteSettingsApi = spec.inject(SITE_SETTINGS.token);
     siteSettingsApi.show.and.callFake(() => of(mockEnqueueLimit));
     siteSettingsApi.update.and.callFake(() => of(mockEnqueueLimit));
+
+    toastSpy = spec.inject(ToastService);
+    spyOn(toastSpy, "success");
+    spyOn(toastSpy, "error");
 
     spec.detectChanges();
   });
@@ -78,19 +95,19 @@ describe("InstanceSettingsComponent", () => {
         value: testUpdatedValue,
       });
 
-      spec.typeInElement(
-        testUpdatedValue.toString(),
-        enqueueLimitNumberInput(),
-      );
-
-      // Because the input element is debounced, we need to fakeAsync await for
-      // the debounce time until the request is sent out.
-      tick(defaultDebounceTime);
-      spec.detectChanges();
+      updateValue(testUpdatedValue.toString());
 
       expect(siteSettingsApi.update).toHaveBeenCalledOnceWith(
         expectedUpdatedModel,
       );
+    }));
+
+    it("should show a success notification if the value was updated", fakeAsync(() => {
+      const testUpdatedValue = mockEnqueueLimit.value + 1;
+      updateValue(testUpdatedValue.toString());
+
+      const expectedMessage = `Successfully updated batch_analysis_remote_enqueue_limit to ${testUpdatedValue}`;
+      expect(toastSpy.success).toHaveBeenCalledOnceWith(expectedMessage);
     }));
   });
 });

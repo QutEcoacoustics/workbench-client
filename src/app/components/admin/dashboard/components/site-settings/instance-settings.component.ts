@@ -11,8 +11,9 @@ import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-in
 import { toNumber } from "@helpers/typing/toNumber";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { SiteSetting } from "@models/SiteSetting";
+import { ToastService } from "@services/toasts/toasts.service";
 import { RangeComponent } from "@shared/input/range/range.component";
-import { firstValueFrom, takeUntil } from "rxjs";
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-instance-settings",
@@ -25,7 +26,10 @@ export class InstanceSettingsComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  public constructor(private siteSettings: SiteSettingsService) {
+  public constructor(
+    private siteSettings: SiteSettingsService,
+    private notifications: ToastService,
+  ) {
     super();
   }
 
@@ -57,9 +61,18 @@ export class InstanceSettingsComponent
       value,
     });
 
-    // We need this firstValueFrom so that the observable gets evaluated and the
-    // requests is sent.
-    // We do not do anything with the value and allow it to execute in async.
-    firstValueFrom(this.siteSettings.update(newModel));
+    this.siteSettings
+      .update(newModel)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: () => {
+          const message = `Successfully updated batch_analysis_remote_enqueue_limit to ${value}`;
+          this.notifications.success(message);
+        },
+        error: () => {
+          const message = "Failed to updated batch_analysis_remote_enqueue_limit";
+          this.notifications.error(message);
+        },
+      });
   }
 }
