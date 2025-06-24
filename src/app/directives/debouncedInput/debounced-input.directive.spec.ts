@@ -51,11 +51,10 @@ describe("DebouncedInputDirective", () => {
           keys.join("").substring(0, index + 1),
           inputElement()
         );
-        inputElement().dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
       });
     }
 
-    it("should output on keyup", (done) => {
+    it("should output on input", (done) => {
       setup(undefined, (input) => {
         expect(input).toEqual("a");
         done();

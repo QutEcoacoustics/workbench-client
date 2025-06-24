@@ -1,6 +1,5 @@
 import {
   createComponentFactory,
-  dispatchFakeEvent,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
@@ -149,14 +148,12 @@ describe("AnnotationSearchFormComponent", () => {
 
   function setLowerBoundScore(value: string) {
     spec.typeInElement(value, lowerScoreInput());
-    dispatchFakeEvent(lowerScoreInput(), "keyup");
     tick(defaultDebounceTime);
     spec.detectChanges();
   }
 
   function setUpperBoundScore(value: string) {
     spec.typeInElement(value, upperScoreInput());
-    dispatchFakeEvent(upperScoreInput(), "keyup");
     tick(defaultDebounceTime);
     spec.detectChanges();
   }
