@@ -17,6 +17,7 @@ import { firstValueFrom, takeUntil } from "rxjs";
 @Component({
   selector: "baw-instance-settings",
   templateUrl: "./instance-settings.component.html",
+  styleUrl: "./instance-settings.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DebouncedInputDirective, RangeComponent, FormsModule],
 })
