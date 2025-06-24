@@ -5,7 +5,8 @@ import { assertTooltip } from "@test/helpers/html";
 import { TimezoneInformation } from "@interfaces/apiInterfaces";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { ZonedDateTimeComponent } from "./zoned-datetime.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -49,25 +50,28 @@ function test(
 }
 
 describe("ZonedDateTimeComponent", () => {
-  let spec: Spectator<ZonedDateTimeComponent>;
-
-  const createComponent = createComponentFactory({
-    component: ZonedDateTimeComponent,
-    providers: [provideMockBawApi()],
-  });
+  let component: ZonedDateTimeComponent;
+  let fixture: ComponentFixture<ZonedDateTimeComponent>;
 
   function timeElement(): HTMLTimeElement {
-    return spec.query("time");
+    return fixture.debugElement.query(By.css("time")).nativeElement;
   }
 
   beforeEach(() => {
-    spec = createComponent();
+    TestBed.configureTestingModule({
+      providers: [provideMockBawApi()],
+    });
+
+    fixture = TestBed.createComponent(ZonedDateTimeComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
   });
 
   it("should create", () => {
-    spec.setInput("value", modelData.dateTime());
-    spec.detectChanges();
-    expect(spec.component).toBeInstanceOf(ZonedDateTimeComponent);
+    fixture.componentRef.setInput("value", modelData.dateTime());
+    fixture.detectChanges();
+    expect(component).toBeInstanceOf(ZonedDateTimeComponent);
   });
 
   const localTimezone = "Australia/Darwin";
@@ -140,13 +144,13 @@ describe("ZonedDateTimeComponent", () => {
     it("should update correctly when updating from explicit to implicit timezone", () => {
       const mockDateTime = DateTime.fromISO("2020-01-01T12:10:11.123+09:30");
 
-      spec.setInput("value", mockDateTime);
-      spec.setInput("timezone", "Australia/Perth");
-      spec.detectChanges();
+      fixture.componentRef.setInput("value", mockDateTime);
+      fixture.componentRef.setInput("timezone", "Australia/Perth");
+      fixture.detectChanges();
 
       expect(timeElement().textContent.trim()).toBe("2020-01-01 10:40:11");
-      spec.setInput("timezone", null);
-      spec.detectChanges();
+      fixture.componentRef.setInput("timezone", null);
+      fixture.detectChanges();
 
       expect(timeElement().textContent.trim()).toBe("2020-01-01 12:10:11");
     });
@@ -155,13 +159,13 @@ describe("ZonedDateTimeComponent", () => {
       // because we have not set an explicit timezone, the component should default to using the implicit timezone
       const mockDateTime = DateTime.fromISO("2020-01-01T12:10:11.123+09:30");
 
-      spec.setInput("value", mockDateTime);
-      spec.detectChanges();
+      fixture.componentRef.setInput("value", mockDateTime);
+      fixture.detectChanges();
 
       expect(timeElement().textContent.trim()).toBe("2020-01-01 12:10:11");
 
-      spec.setInput("timezone", "Australia/Perth");
-      spec.detectChanges();
+      fixture.componentRef.setInput("timezone", "Australia/Perth");
+      fixture.detectChanges();
 
       expect(timeElement().textContent.trim()).toBe("2020-01-01 10:40:11");
     });
@@ -218,12 +222,12 @@ describe("ZonedDateTimeComponent", () => {
         for (const timezone of componentTimezones()) {
           describe(`with timezone type: ${timezone.name}`, () => {
             beforeEach(() => {
-              spec.setInput("timezone", timezone.value);
-              spec.setInput("value", testCase.value);
-              spec.setInput("date", testCase.date);
-              spec.setInput("time", testCase.time);
+              fixture.componentRef.setInput("timezone", timezone.value);
+              fixture.componentRef.setInput("value", testCase.value);
+              fixture.componentRef.setInput("date", testCase.date);
+              fixture.componentRef.setInput("time", testCase.time);
 
-              spec.detectChanges();
+              fixture.detectChanges();
             });
 
             it("should display the correct text", () => {
