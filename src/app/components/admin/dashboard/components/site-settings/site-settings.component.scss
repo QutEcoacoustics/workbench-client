@@ -1,3 +1,11 @@
 .site-setting {
+  display: flex;
+  gap: 0.5rem;
+  align-items: end;
+
   max-width: 800px;
+}
+
+.settings-input {
+  flex: 1;
 }

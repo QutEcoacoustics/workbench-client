@@ -13,7 +13,7 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { SiteSetting } from "@models/SiteSetting";
 import { ToastService } from "@services/toasts/toasts.service";
 import { RangeComponent } from "@shared/input/range/range.component";
-import { map, takeUntil } from "rxjs";
+import { iif, map, takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-site-settings",
@@ -33,22 +33,42 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
   protected settings = signal<SiteSetting[]>([]);
 
   // A sort function that can be used to sort site settings by name
-  private settingsSorter: SortFunction<SiteSetting> = (a, b) => {
-    const nameA = a.name;
-    const nameB = b.name;
+  private settingsSorter: SortFunction<SiteSetting> = (a, b) =>
+    a.name.localeCompare(b.name) as ReturnType<SortFunction<SiteSetting>>;
 
-    if (nameA < nameB) {
-      return -1;
-    }
-
-    if (nameA > nameB) {
-      return 1;
-    }
-
-    return 0;
+  public ngOnInit() {
+    this.updateValues();
   }
 
-  public ngOnInit(): void {
+  protected updateSetting(model: SiteSetting, emittedValue: string | null) {
+    const value =
+      typeof emittedValue === "string" ? toNumber(emittedValue) : emittedValue;
+
+    const isUnsetRequest = value === null;
+    iif(
+      () => isUnsetRequest,
+      this.api.destroy(model),
+      this.api.update(new SiteSetting({ ...model, value })),
+    )
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: () => {
+          const message = isUnsetRequest
+            ? `Successfully unset ${model.name}`
+            : `Successfully updated ${model.name} to ${value}`;
+
+          this.notifications.success(message);
+
+          // Because the destroy response does not return the updated model.
+          this.updateValues();
+        },
+        error: () => {
+          this.notifications.error(`Failed to update ${model.name}`);
+        },
+      });
+  }
+
+  private updateValues() {
     // We use a "list" request here so that if this page is expanded to include
     // multiple settings, we only have to make one request and then parse out
     // the individual settings.
@@ -62,29 +82,6 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
       )
       .subscribe((initialValues: SiteSetting[]) => {
         this.settings.set(initialValues);
-      });
-  }
-
-  protected updateSetting(model: SiteSetting, stringValue: string) {
-    const value = toNumber(stringValue);
-    if (value === null) {
-      this.notifications.error(`Failed to updated ${model.name}`);
-      return;
-    }
-
-    const updatedModelBody = new SiteSetting({ ...model, value });
-
-    this.api
-      .update(updatedModelBody)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        next: () => {
-          const message = `Successfully updated ${model.name} to ${value}`;
-          this.notifications.success(message);
-        },
-        error: () => {
-          this.notifications.error(`Failed to update ${model.name}`);
-        },
       });
   }
 }

@@ -22,7 +22,7 @@ export class SiteSetting
   @bawPersistAttr({ update: true })
   public readonly name: string;
   @bawPersistAttr({ update: true })
-  public readonly value: number;
+  public readonly value: number | null;
   public readonly description: string;
   public readonly typeSpecification: string;
 
@@ -33,7 +33,7 @@ export class SiteSetting
     return adminRoute.format();
   }
 
-  /** Humanizes the name of the setting to be disabled in the UI */
+  /** Humanizes the name of the setting to be rendered in the UI */
   public get humanizedName(): string {
     // Site setting names are returned from the server as snake_case.
     // Therefore, we replace all of the underscores with spaces to create a

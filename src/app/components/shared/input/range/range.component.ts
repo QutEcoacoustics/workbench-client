@@ -21,6 +21,7 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
   public min = input(0);
   public max = input(100);
   public step = input(5);
+  public dirty = input(false);
   public value = input<number | undefined>();
 
   // We have an internal value because you cannot write directly to inputs.
