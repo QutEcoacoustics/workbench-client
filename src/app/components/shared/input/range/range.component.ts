@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
+  OnInit,
   output,
   signal,
 } from "@angular/core";
@@ -15,14 +16,15 @@ import { toNumber } from "@helpers/typing/toNumber";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
 })
-export class RangeComponent implements ControlValueAccessor {
+export class RangeComponent implements ControlValueAccessor, OnInit {
   public label = input("");
   public min = input(0);
   public max = input(100);
   public step = input(5);
+  public value = input<number | null>(0);
 
-  public value = signal<number | null>(0);
   protected disabled = signal(false);
+  protected internalValue = signal<number>(0);
 
   private onChange: (value: number | null) => void;
   private onTouched: () => void;
@@ -36,8 +38,12 @@ export class RangeComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-output-native
   public input = output<number>();
 
+  public ngOnInit(): void {
+    this.internalValue.set(this.value());
+  }
+
   public writeValue(value: any): void {
-    this.value.set(value);
+    this.internalValue.set(value);
     this.onChange?.(this.value());
   }
 

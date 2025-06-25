@@ -27,7 +27,7 @@ describe("InstanceSettingsComponent", () => {
 
   const enqueueLimitInput = () => spec.query(RangeComponent);
   const enqueueLimitNumberInput = () =>
-    spec.query<HTMLInputElement>(".enqueue-limit-input input[type='number']");
+    spec.query<HTMLInputElement>("input[type='number']");
 
   const createComponent = createComponentFactory({
     component: SiteSettingsComponent,
@@ -48,6 +48,7 @@ describe("InstanceSettingsComponent", () => {
 
     mockEnqueueLimit = new SiteSetting(
       generateSiteSetting({
+        name: "batch_analysis_remote_enqueue_limit",
         // I set the maximum initial value to 9,999 instead of the maximum
         // 10,000 so that in update tests, I can increment the value by one and
         // ensure that the updated value is different from the initial value and

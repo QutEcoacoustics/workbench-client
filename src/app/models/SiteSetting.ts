@@ -32,4 +32,18 @@ export class SiteSetting
   public get viewUrl(): string {
     return adminRoute.format();
   }
+
+  /** Humanizes the name of the setting to be disabled in the UI */
+  public get humanizedName(): string {
+    // Site setting names are returned from the server as snake_case.
+    // Therefore, we replace all of the underscores with spaces to create a
+    // humanized name.
+    // We return a space separated string instead of something like Title Case
+    // because the formatting of the setting name should be done inside a
+    // components template.
+    //
+    // E.g. If you want Title Case, you can use something like
+    // {{ siteSetting.humanizedName | titleCase }}
+    return this.name.replaceAll("_", " ")
+  }
 }

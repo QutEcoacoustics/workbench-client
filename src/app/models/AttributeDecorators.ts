@@ -3,6 +3,7 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
+import { SortFunction } from "@helpers/advancedTypes";
 import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
 import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
@@ -90,7 +91,7 @@ export function bawImage<Model>(
     default: true,
   };
 
-  const sortImageUrls = (a: ImageUrl, b: ImageUrl): -1 | 0 | 1 => {
+  const sortImageUrls: SortFunction<ImageUrl> = (a, b) => {
     // Default image should always be last in array
     if (a.size === ImageSizes.default) {
       return 1;

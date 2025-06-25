@@ -1,12 +1,14 @@
 <form>
-  <baw-range
-    #enqueueLimitInput
-    bawDebouncedInput
-    class="enqueue-limit-input site-setting"
-    [label]="'Batch Analysis Remote Enqueue Limit'"
-    [min]="0"
-    [max]="10000"
-    [step]="10"
-    (valueChange)="updateEnqueueLimit($event)"
-  ></baw-range>
+  @for (setting of settings(); track setting) {
+    <baw-range
+      bawDebouncedInput
+      class="site-setting"
+      [label]="setting.humanizedName"
+      [min]="0"
+      [max]="10000"
+      [step]="10"
+      [value]="setting.value"
+      (valueChange)="updateSetting(setting, $event)"
+    ></baw-range>
+  }
 </form>

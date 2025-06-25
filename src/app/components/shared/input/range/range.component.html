@@ -4,7 +4,7 @@
     <input
       type="range"
       class="slider-input form-range"
-      [(ngModel)]="value"
+      [(ngModel)]="internalValue"
       [min]="min()"
       [max]="max()"
       [step]="step()"
@@ -15,7 +15,7 @@
     <input
       type="number"
       class="number-input form-control"
-      [(ngModel)]="value"
+      [(ngModel)]="internalValue"
       [min]="min()"
       [max]="max()"
       [step]="step()"

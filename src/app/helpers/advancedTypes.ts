@@ -64,6 +64,8 @@ export type RecursivePartial<T> = {
 /** This value may be asynchronous */
 export type PotentiallyAsync<T> = T | Promise<T>;
 
+export type SortFunction<T, U = T> = (a: T, b: U) => -1 | 0 | 1;
+
 // this brand symbol should never be used at runtime
 // it is only used to have a type that cannot be instantiated by TypeScript
 // outside of the Brand function

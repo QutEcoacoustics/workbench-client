@@ -3,17 +3,17 @@ import {
   Component,
   OnInit,
   signal,
-  viewChild,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { SortFunction } from "@helpers/advancedTypes";
 import { toNumber } from "@helpers/typing/toNumber";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { SiteSetting } from "@models/SiteSetting";
 import { ToastService } from "@services/toasts/toasts.service";
 import { RangeComponent } from "@shared/input/range/range.component";
-import { takeUntil } from "rxjs";
+import { map, takeUntil } from "rxjs";
 
 @Component({
   selector: "baw-site-settings",
@@ -24,42 +24,56 @@ import { takeUntil } from "rxjs";
 })
 export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
   public constructor(
-    private siteSettings: SiteSettingsService,
+    private api: SiteSettingsService,
     private notifications: ToastService,
   ) {
     super();
   }
 
-  protected enqueueLimit = signal<SiteSetting | null>(null);
-  private enqueueLimitInput = viewChild<RangeComponent>("enqueueLimitInput");
+  protected settings = signal<SiteSetting[]>([]);
+
+  // A sort function that can be used to sort site settings by name
+  private settingsSorter: SortFunction<SiteSetting> = (a, b) => {
+    const nameA = a.name;
+    const nameB = b.name;
+
+    if (nameA < nameB) {
+      return -1;
+    }
+
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    return 0;
+  }
 
   public ngOnInit(): void {
     // We use a "list" request here so that if this page is expanded to include
     // multiple settings, we only have to make one request and then parse out
     // the individual settings.
-    this.siteSettings
-      .show("batch_analysis_remote_enqueue_limit")
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((initialValue: SiteSetting) => {
-        this.enqueueLimit.set(initialValue);
-        this.enqueueLimitInput().value.set(initialValue.value);
+    this.api
+      .list()
+      .pipe(
+        map((results) => results.sort(this.settingsSorter)),
+        takeUntil(this.unsubscribe),
+      )
+      .subscribe((initialValues: SiteSetting[]) => {
+        this.settings.set(initialValues);
       });
   }
 
-  protected updateEnqueueLimit(stringValue: string) {
+  protected updateSetting(model: SiteSetting, stringValue: string) {
     const value = toNumber(stringValue);
     if (value === null) {
-      console.error("Failed to updated enqueue limit");
+      console.error(`Failed to updated ${model.name} limit`);
       return;
     }
 
-    const newModel = new SiteSetting({
-      name: "batch_analysis_remote_enqueue_limit",
-      value,
-    });
+    const updatedModelBody = new SiteSetting({ ...model, value });
 
-    this.siteSettings
-      .update(newModel)
+    this.api
+      .update(updatedModelBody)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: () => {
