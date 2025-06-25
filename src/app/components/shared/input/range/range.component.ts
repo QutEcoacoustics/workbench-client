@@ -21,10 +21,12 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
   public min = input(0);
   public max = input(100);
   public step = input(5);
-  public value = input<number | null>(0);
+  public value = input<number | undefined>();
 
+  // We have an internal value because you cannot write directly to inputs.
+  // This signal is used to sync the range and number inputs.
+  protected _value = signal<number>(0);
   protected disabled = signal(false);
-  protected internalValue = signal<number>(0);
 
   private onChange: (value: number | null) => void;
   private onTouched: () => void;
@@ -39,11 +41,12 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
   public input = output<number>();
 
   public ngOnInit(): void {
-    this.internalValue.set(this.value());
+    const initialValue = this.value() ?? 0;
+    this._value.set(initialValue);
   }
 
   public writeValue(value: any): void {
-    this.internalValue.set(value);
+    this._value.set(value);
     this.onChange?.(this.value());
   }
 
@@ -61,9 +64,12 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
 
   protected updateValue(event: Event) {
     const stringValue = (event.target as HTMLInputElement).value;
+
+    // I purposely don't handle the "null" case here, so that the value can be
+    // "null" if the user inputs an invalid value into the number input.
     const value = toNumber(stringValue);
 
     this.writeValue(value);
-    this.input.emit(this.value());
+    this.input.emit(value);
   }
 }

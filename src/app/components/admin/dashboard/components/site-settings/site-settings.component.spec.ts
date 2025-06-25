@@ -17,7 +17,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { SiteSettingsComponent } from "./site-settings.component";
 
-describe("InstanceSettingsComponent", () => {
+describe("SiteSettingsComponent", () => {
   let spec: Spectator<SiteSettingsComponent>;
 
   let siteSettingsApi: SpyObject<SiteSettingsService>;
@@ -60,7 +60,7 @@ describe("InstanceSettingsComponent", () => {
     );
 
     siteSettingsApi = spec.inject(SITE_SETTINGS.token);
-    siteSettingsApi.show.and.callFake(() => of(mockEnqueueLimit));
+    siteSettingsApi.list.and.callFake(() => of([mockEnqueueLimit]));
     siteSettingsApi.update.and.callFake(() => of(mockEnqueueLimit));
 
     toastSpy = spec.inject(ToastService);

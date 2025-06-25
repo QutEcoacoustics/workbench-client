@@ -17,7 +17,7 @@ describe("AdminDashboardComponent", () => {
     spec = createComponent({ detectChanges: false });
 
     const settingsApi = spec.inject(SITE_SETTINGS.token);
-    settingsApi.show.and.returnValue(of())
+    settingsApi.list.and.returnValue(of())
 
     spec.detectChanges();
   });

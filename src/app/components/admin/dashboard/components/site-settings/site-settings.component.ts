@@ -68,7 +68,7 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
   protected updateSetting(model: SiteSetting, stringValue: string) {
     const value = toNumber(stringValue);
     if (value === null) {
-      console.error(`Failed to updated ${model.name} limit`);
+      this.notifications.error(`Failed to updated ${model.name}`);
       return;
     }
 
@@ -79,13 +79,11 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: () => {
-          const message = `Successfully updated batch_analysis_remote_enqueue_limit to ${value}`;
+          const message = `Successfully updated ${model.name} to ${value}`;
           this.notifications.success(message);
         },
         error: () => {
-          const message =
-            "Failed to update batch_analysis_remote_enqueue_limit";
-          this.notifications.error(message);
+          this.notifications.error(`Failed to update ${model.name}`);
         },
       });
   }

@@ -37,7 +37,7 @@ describe("SiteSettingsService", () => {
     baseUrl,
   );
 
-  [false, true].forEach((hasId: boolean) => {
+  [false, true].forEach((hasName: boolean) => {
     let model: SiteSetting;
     const modelId = modelData.id();
     const modelName = "batch_analysis_remote_enqueue_limit";
@@ -47,19 +47,19 @@ describe("SiteSettingsService", () => {
     }
 
     function modelIdentifier(): Id | Param | any {
-      if (hasId) {
-        return modelId;
+      if (hasName) {
+        return modelName;
       }
 
-      return modelName;
+      return modelId;
     }
 
     beforeEach(() => {
-      const id = hasId ? modelId : undefined;
+      const name = hasName ? modelName : undefined;
 
       model = new SiteSetting(generateSiteSetting({
-        id,
-        name: modelName,
+        id: modelId,
+        name,
       }));
     });
 
