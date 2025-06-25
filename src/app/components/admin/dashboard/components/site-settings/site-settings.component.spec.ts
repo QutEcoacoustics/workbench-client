@@ -15,10 +15,10 @@ import { defaultDebounceTime } from "src/app/app.helper";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { generateBawApiError } from "@test/fakes/BawApiError";
-import { InstanceSettingsComponent } from "./instance-settings.component";
+import { SiteSettingsComponent } from "./site-settings.component";
 
 describe("InstanceSettingsComponent", () => {
-  let spec: Spectator<InstanceSettingsComponent>;
+  let spec: Spectator<SiteSettingsComponent>;
 
   let siteSettingsApi: SpyObject<SiteSettingsService>;
   let toastSpy: SpyObject<ToastService>;
@@ -30,7 +30,7 @@ describe("InstanceSettingsComponent", () => {
     spec.query<HTMLInputElement>(".enqueue-limit-input input[type='number']");
 
   const createComponent = createComponentFactory({
-    component: InstanceSettingsComponent,
+    component: SiteSettingsComponent,
     providers: [provideMockBawApi()],
   });
 
@@ -70,7 +70,7 @@ describe("InstanceSettingsComponent", () => {
   });
 
   it("should create", () => {
-    expect(spec.component).toBeInstanceOf(InstanceSettingsComponent);
+    expect(spec.component).toBeInstanceOf(SiteSettingsComponent);
   });
 
   describe("batch analysis remote enqueue limit", () => {

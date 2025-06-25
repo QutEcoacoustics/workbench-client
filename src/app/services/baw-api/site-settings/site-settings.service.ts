@@ -6,7 +6,7 @@ import {
   ApiShow,
   ApiUpdate,
   emptyParam,
-  idOrName,
+  nameOrId,
   IdOrName,
 } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
@@ -16,7 +16,7 @@ import { SiteSetting } from "@models/SiteSetting";
 
 type SettingsIdentifierParam = (_: IdOrName<SiteSetting>) => Param;
 
-const settingIdentifier: SettingsIdentifierParam = idOrName;
+const settingIdentifier: SettingsIdentifierParam = nameOrId;
 const endpoint = stringTemplate`/admin/site_settings/${settingIdentifier}`;
 
 @Injectable()

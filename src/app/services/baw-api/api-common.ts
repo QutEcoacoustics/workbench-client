@@ -40,13 +40,19 @@ export function id<T extends AbstractModel>(x: IdOr<T> | Empty): Param {
   }
 }
 
-export function idOrName<T extends AbstractModel>(x: IdOrName<T> | Empty): Param {
+/**
+ * A temptable url parameter that will use a models name or id.
+ * If both name and id properties exist on the model, the name will be used.
+ *
+ * @param x A model with name or Id properties
+ */
+export function nameOrId<T extends AbstractModel>(x: IdOrName<T> | Empty): Param {
   if (x === emptyParam || !isInstantiated(x)) {
     return x;
-  } else if (isInstantiated(x?.["id"])) {
-    return x?.["id"].toString();
   } else if (isInstantiated(x?.["name"])) {
     return x?.["name"];
+  } else if (isInstantiated(x?.["id"])) {
+    return x?.["id"].toString();
   } else {
     return x.toString();
   }

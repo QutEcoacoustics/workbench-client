@@ -9,6 +9,9 @@ export function generateSiteSetting(
     name: modelData.name.firstName(),
     value: modelData.datatype.number(),
     description: modelData.lorem.sentence(),
+    typeSpecification: modelData.typeSpecification(),
+    createdAt: modelData.dateTime(),
+    updatedAt: modelData.dateTime(),
     ...data,
   };
 }

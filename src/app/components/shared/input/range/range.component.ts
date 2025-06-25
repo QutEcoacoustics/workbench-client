@@ -54,11 +54,7 @@ export class RangeComponent implements ControlValueAccessor {
   }
 
   protected updateValue(event: Event) {
-    if (!(event.target instanceof HTMLInputElement)) {
-      return;
-    }
-
-    const stringValue = event.target.value;
+    const stringValue = (event.target as HTMLInputElement).value;
     const value = toNumber(stringValue);
 
     this.writeValue(value);

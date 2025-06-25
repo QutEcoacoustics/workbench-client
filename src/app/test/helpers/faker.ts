@@ -104,6 +104,8 @@ export const modelData = {
     }),
   dateTime: (): DateTime => DateTime.fromJSDate(faker.date.past()),
   uuid: () => faker.datatype.uuid(),
+  typeSpecification: () =>
+    modelData.helpers.arrayElement(["string", "int", "nil"]),
   file: randomFile,
   pbsResources: (): Required<PbsResources> => ({
     ncpus: modelData.datatype.number(),

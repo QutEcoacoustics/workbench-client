@@ -16,16 +16,13 @@ import { RangeComponent } from "@shared/input/range/range.component";
 import { takeUntil } from "rxjs";
 
 @Component({
-  selector: "baw-instance-settings",
-  templateUrl: "./instance-settings.component.html",
-  styleUrl: "./instance-settings.component.scss",
+  selector: "baw-site-settings",
+  templateUrl: "./site-settings.component.html",
+  styleUrl: "./site-settings.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DebouncedInputDirective, RangeComponent, FormsModule],
 })
-export class InstanceSettingsComponent
-  extends withUnsubscribe()
-  implements OnInit
-{
+export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
   public constructor(
     private siteSettings: SiteSettingsService,
     private notifications: ToastService,
@@ -57,7 +54,7 @@ export class InstanceSettingsComponent
     }
 
     const newModel = new SiteSetting({
-      ...this.enqueueLimit(),
+      name: "batch_analysis_remote_enqueue_limit",
       value,
     });
 
@@ -70,7 +67,8 @@ export class InstanceSettingsComponent
           this.notifications.success(message);
         },
         error: () => {
-          const message = "Failed to update batch_analysis_remote_enqueue_limit";
+          const message =
+            "Failed to update batch_analysis_remote_enqueue_limit";
           this.notifications.error(message);
         },
       });

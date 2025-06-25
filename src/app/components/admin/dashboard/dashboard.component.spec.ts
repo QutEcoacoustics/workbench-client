@@ -3,7 +3,7 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SITE_SETTINGS } from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
 import { AdminDashboardComponent } from "./dashboard.component";
-import { InstanceSettingsComponent } from "./components/site-settings/instance-settings.component";
+import { SiteSettingsComponent } from "./components/site-settings/site-settings.component";
 
 describe("AdminDashboardComponent", () => {
   let spec: Spectator<AdminDashboardComponent>;
@@ -27,6 +27,6 @@ describe("AdminDashboardComponent", () => {
   });
 
   it("should have the instance settings on the dashboard", () => {
-    expect(spec.query(InstanceSettingsComponent)).toExist();
+    expect(spec.query(SiteSettingsComponent)).toExist();
   });
 });
