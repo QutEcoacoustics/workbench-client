@@ -116,6 +116,7 @@ import {
   verificationResolvers,
   VerificationService,
 } from "./verification/verification.service";
+import { SiteSettingsService } from "./site-settings/site-settings.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -340,6 +341,10 @@ const serviceList = [
     serviceToken: Tokens.SHALLOW_VERIFICATION,
     service: ShallowVerificationService,
     resolvers: shallowVerificationResolvers,
+  },
+  {
+    serviceToken: Tokens.SITE_SETTINGS,
+    service: SiteSettingsService,
   },
 ] satisfies ServiceProvider<unknown>[];
 

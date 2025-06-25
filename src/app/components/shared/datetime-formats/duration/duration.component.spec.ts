@@ -3,8 +3,7 @@ import { Duration, DurationLikeObject } from "luxon";
 import { modelData } from "@test/helpers/faker";
 import { assertTooltip } from "@test/helpers/html";
 import { withDefaultZone } from "@test/helpers/mocks";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { By } from "@angular/platform-browser";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { DurationComponent } from "./duration.component";
 
 // I have created this interface for TypeScript LSP typing and auto completion
@@ -70,41 +69,35 @@ const testCases: TestCase[] = [
 /* eslint-enable max-len */
 
 describe("DurationComponent", () => {
-  let fixture: ComponentFixture<DurationComponent>;
-  let component: DurationComponent;
+  let spec: Spectator<DurationComponent>;
+
+  const createComponent = createComponentFactory({
+    component: DurationComponent,
+    providers: [provideMockBawApi()],
+  });
 
   function timeElement(): HTMLTimeElement {
-    return fixture.debugElement.query(By.css("time")).nativeElement;
+    return spec.query("time");
   }
 
-  // because signal inputs are not supported by ngNeat/spectator, I have used the Angular native TestBed
-  // so that using setInput() correctly updates the input signal
-  // TODO: replace with ngNeat/spectator once https://github.com/ngneat/spectator/issues/637 is resolved
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [provideMockBawApi()],
-    });
-
-    fixture = TestBed.createComponent(DurationComponent);
-    component = fixture.componentInstance;
-
-    fixture.detectChanges();
+    spec = createComponent();
   });
 
   it("should create", () => {
-    fixture.componentRef.setInput("value", modelData.time());
-    expect(component).toBeInstanceOf(DurationComponent);
+    spec.setInput("value", modelData.time());
+    expect(spec.component).toBeInstanceOf(DurationComponent);
   });
 
   withDefaultZone("Australia/Perth", () => {
     testCases.forEach((testCase) => {
       describe(testCase.name, () => {
         beforeEach(() => {
-          fixture.componentRef.setInput("value", testCase.value);
-          fixture.componentRef.setInput("iso8601", testCase.iso8601);
-          fixture.componentRef.setInput("humanized", testCase.humanized);
-          fixture.componentRef.setInput("sexagesimal", testCase.sexagesimal);
-          fixture.detectChanges();
+          spec.setInput("value", testCase.value);
+          spec.setInput("iso8601", testCase.iso8601);
+          spec.setInput("humanized", testCase.humanized);
+          spec.setInput("sexagesimal", testCase.sexagesimal);
+          spec.detectChanges();
         });
 
         it("should have the correct text", () => {

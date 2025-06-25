@@ -1,0 +1,29 @@
+<label class="input-label form-label">
+  <span [class.modified]="dirty()">
+    {{ label() }}
+  </span>
+
+  <div class="input-container">
+    <input
+      type="range"
+      class="slider-input form-range"
+      [(ngModel)]="_value"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [disabled]="disabled()"
+      (input)="updateValue($event)"
+    />
+
+    <input
+      type="number"
+      class="number-input form-control"
+      [(ngModel)]="_value"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [disabled]="disabled()"
+      (input)="updateValue($event)"
+    />
+  </div>
+</label>

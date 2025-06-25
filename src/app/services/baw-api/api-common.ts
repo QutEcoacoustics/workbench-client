@@ -1,6 +1,6 @@
 import { PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { Param } from "@interfaces/apiInterfaces";
+import { Id, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { InjectionToken } from "@angular/core";
@@ -9,7 +9,7 @@ import { BawServiceOptions, Filters } from "./baw-api.service";
 /**
  * Variable is an id or AbstractModel
  */
-export type IdOr<T extends AbstractModel> = T | number;
+export type IdOr<T extends AbstractModel> = T | Id;
 
 /**
  * Variable is an id or parameter
@@ -23,14 +23,34 @@ export type IdParamOptional<T extends AbstractModel> = (
   _: IdOr<T> | Empty
 ) => string;
 
+export type IdOrName<T extends AbstractModel> = IdOr<T> | Param;
+
 /**
  * Create id (used by stringTemplate)
  *
  * @param x Api Id
  */
-export function id<T extends AbstractModel>(x: IdOr<T> | Empty) {
+export function id<T extends AbstractModel>(x: IdOr<T> | Empty): Param {
   if (x === emptyParam || !isInstantiated(x)) {
     return x;
+  } else if (isInstantiated(x?.["id"])) {
+    return x?.["id"].toString();
+  } else {
+    return x.toString();
+  }
+}
+
+/**
+ * A temptable url parameter that will use a models name or id.
+ * If both name and id properties exist on the model, the name will be used.
+ *
+ * @param x A model with name or Id properties
+ */
+export function nameOrId<T extends AbstractModel>(x: IdOrName<T> | Empty): Param {
+  if (x === emptyParam || !isInstantiated(x)) {
+    return x;
+  } else if (isInstantiated(x?.["name"])) {
+    return x?.["name"];
   } else if (isInstantiated(x?.["id"])) {
     return x?.["id"].toString();
   } else {

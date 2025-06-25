@@ -1,0 +1,37 @@
+:host {
+  // We set the "display" on the host element, so that if someone wants to use
+  // this component as inline or flex, can you directly set it on the
+  // <baw-range> element.
+  // E.g. <baw-range style="display: inline"></baw-range>
+  display: block;
+}
+
+.input-label {
+  position: relative;
+  width: 100%;
+
+  // I unset the margin so that consumers arn't forced into having a certain
+  // margin on this component, can can instead set it on the <baw-range>
+  // element.
+  // Note that this margin is overriding the bootstrap styling.
+  margin: 0;
+}
+
+.input-container {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.5rem;
+
+  .number-input,
+  .slider-input {
+    min-width: 200px;
+    flex: 1 1;
+  }
+
+  .number-input {
+    max-width: 200px;
+  }
+}

@@ -2,3 +2,8 @@
 .required::after {
   content: "*";
 }
+
+.modified::after {
+  content: "(modified)";
+  color: var(--baw-info-darkest);
+}
