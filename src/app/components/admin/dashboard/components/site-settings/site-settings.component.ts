@@ -55,6 +55,8 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
     this.api
       .list()
       .pipe(
+        // We sort settings by name so that the UI structure is stable and does
+        // not rely on the order returned by the API
         map((results) => results.sort(this.settingsSorter)),
         takeUntil(this.unsubscribe),
       )
