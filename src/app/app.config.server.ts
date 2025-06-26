@@ -1,6 +1,6 @@
+import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { existsSync, readFileSync } from "node:fs";
 import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
-import { provideServerRendering } from "@angular/platform-server";
 import {
   NgHttpCachingConfig,
   NgHttpCachingStrategy,
@@ -11,7 +11,6 @@ import { DeviceDetectorService } from "ngx-device-detector";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { environment } from "src/environments/environment";
-import { provideServerRouting } from "@angular/ssr";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { appConfig } from "./app.config";
@@ -37,24 +36,10 @@ export const serverCacheConfig = {
 } as const satisfies NgHttpCachingConfig;
 
 const serverConfig: ApplicationConfig = {
-  providers: [
-    provideServerRendering(),
-    provideServerRouting(serverRoutes),
-
-    { provide: API_CONFIG, useFactory: readConfig },
-
-    {
+  providers: [provideServerRendering(withRoutes(serverRoutes)), { provide: API_CONFIG, useFactory: readConfig }, {
       provide: DeviceDetectorService,
       useClass: UniversalDeviceDetectorService,
-    },
-    // we provide a different timeout interceptor for the server so that
-    // requests can timeout faster than on the browser so that the user sees
-    // their first content faster
-    providerTimeoutInterceptor({ timeout: environment.ssrTimeout }),
-    // we explicitly provide NgHttpCachingModule with a disabled cache strategy
-    // to prevent caching on the server
-    provideNgHttpCaching(serverCacheConfig),
-  ],
+    }, providerTimeoutInterceptor({ timeout: environment.ssrTimeout }), provideNgHttpCaching(serverCacheConfig)],
 };
 
 export const ssrConfig = mergeApplicationConfig(appConfig, serverConfig);
