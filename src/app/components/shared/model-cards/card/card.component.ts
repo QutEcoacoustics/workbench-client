@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -7,11 +7,10 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { LicensesService } from "@services/licenses/licenses.service";
 import { map, Observable } from "rxjs";
-import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { UrlDirective } from "@directives/url/url.directive";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { LoadingComponent } from "../../loading/loading.component";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
@@ -25,15 +24,15 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
     <div class="card h-100">
       <!-- Image -->
       <div class="card-image position-relative">
-        <a [bawUrl]="model.viewUrl">
-          <img [alt]="model.name + ' image'" [src]="model.imageUrls" />
+        <a [bawUrl]="model().viewUrl">
+          <img [alt]="model().name + ' image'" [src]="model().imageUrls" />
         </a>
       </div>
 
       <div class="card-body">
         <!-- Title -->
-        <a class="card-title truncate" [bawUrl]="model.viewUrl">
-          <h4 [innerText]="model.name"></h4>
+        <a class="card-title truncate" [bawUrl]="model().viewUrl">
+          <h4 [innerText]="model().name"></h4>
         </a>
 
         <!-- Description -->
@@ -41,7 +40,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
           <div class="truncate">
             <p
               [innerHtml]="
-                model.descriptionHtmlTagline ?? '<i>No description given</i>'
+                model().descriptionHtmlTagline ?? '<i>No description given</i>'
               "
             ></p>
           </div>
@@ -52,40 +51,35 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
             <div id="owner" class="badge text-bg-highlight">Owner</div>
           }
 
-          @if (!!licenseText) {
+          @if (!!model().license) {
             <div
               class="license-badge badge text-bg-secondary tooltip-hint"
-              [ngbTooltip]="'This license has been applied to all data, metadata, and analysis results'"
+              [ngbTooltip]="
+                'This license has been applied to all data, metadata, and analysis results'
+              "
               container="body"
             >
-              {{ licenseText }}
+              {{ licenseService.licenseText(model().license) }}
             </div>
           }
 
-          <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
+          @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
+            @if (hasNoAudio.loading) {
+              <baw-loading size="sm" color="light"></baw-loading>
+            } @else if (hasNoAudio.value) {
+              <div id="no-audio" class="badge text-bg-secondary">
+                No audio yet
+              </div>
+            }
+          }
         </div>
       </div>
     </div>
-
-    <ng-template #noAudioTemplate>
-      @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
-        @if (hasNoAudio.value !== false) {
-          <div id="no-audio" class="badge text-bg-secondary">
-            @if (hasNoAudio.loading) {
-              <baw-loading size="sm" color="light"></baw-loading>
-            }
-            @if (hasNoAudio.value) {
-              <span>No audio yet</span>
-            }
-          </div>
-        }
-      }
-    </ng-template>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     UrlDirective,
     AuthenticatedImageDirective,
-    NgTemplateOutlet,
     NgbTooltip,
     LoadingComponent,
     AsyncPipe,
@@ -94,42 +88,31 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
 })
 export class CardComponent implements OnInit {
   public constructor(
+    protected licenseService: LicensesService,
     private recordingApi: AudioRecordingsService,
     private session: BawSessionService,
-    private licenseService: LicensesService,
   ) {}
 
-  @Input() public model: Project | Region;
+  public model = input<Project | Region>();
 
-  public hasNoAudio$: Observable<boolean>;
+  protected hasNoAudio$: Observable<boolean>;
   protected isOwner: boolean;
-  protected licenseText: string | undefined = undefined;
 
   public ngOnInit(): void {
-    this.isOwner = this.model.creatorId === this.session.loggedInUser?.id;
+    this.isOwner = this.model().creatorId === this.session.loggedInUser?.id;
     this.hasNoAudio$ = this.getRecordings().pipe(
       map((recordings): boolean => recordings.length === 0),
     );
-    this.updateLicense();
   }
 
   private getRecordings(): Observable<AudioRecording[]> {
     const filters: Filters<AudioRecording> = { paging: { items: 1 } };
-    if (this.model instanceof Region) {
-      return this.recordingApi.filterByRegion(filters, this.model);
+    const resolvedModel = this.model();
+
+    if (resolvedModel instanceof Region) {
+      return this.recordingApi.filterByRegion(filters, resolvedModel);
     } else {
-      return this.recordingApi.filterByProject(filters, this.model);
+      return this.recordingApi.filterByProject(filters, resolvedModel);
     }
-  }
-
-  private async updateLicense() {
-    if (!isInstantiated(this.model.license)) {
-      this.licenseText = null;
-      return;
-    }
-
-    this.licenseText = await this.licenseService.licenseText(
-      this.model.license,
-    );
   }
 }
