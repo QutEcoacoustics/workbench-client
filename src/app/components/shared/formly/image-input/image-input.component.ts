@@ -69,7 +69,6 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     // the image as default, by setting the models image attribute to null.
     return (
       (isUsingServerDefaultImage && this.model.image === undefined) ||
-      imageUrls.length === 0 ||
       this.model.image === null
     );
   }
