@@ -55,6 +55,25 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
   public imageInput: ElementRef;
   public asFormControl = asFormControl;
 
+  /**
+   * A predicate that returns if the models image is a default image
+   */
+  protected get usesDefaultImage(): boolean {
+    const imageUrls = this.model?.imageUrls;
+    const isUsingServerDefaultImage =
+      !imageUrls ||
+      imageUrls.every((image: ImageUrl): boolean => image.default);
+
+    // Returns true if the current image used is a default image and if the user
+    // hasn't redefined the image or returns true if the user explicitly sets
+    // the image as default, by setting the models image attribute to null.
+    return (
+      (isUsingServerDefaultImage && this.model.image === undefined) ||
+      imageUrls.length === 0 ||
+      this.model.image === null
+    );
+  }
+
   public ngAfterViewInit() {
     if (!this.usesDefaultImage) {
       const imageUrls = this.model.imageUrls as ImageUrl[];
@@ -71,24 +90,10 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     }
   }
 
-  /**
-   * A predicate that returns if the models image is a default image
-   */
-  public get usesDefaultImage(): boolean {
-    const imageUrls = this.model?.imageUrls as ImageUrl[];
-    const isUsingServerDefaultImage = imageUrls?.every((image: ImageUrl): boolean => image.default);
-
-    // returns true if the current image used is a default image and if the user hasn't redefined the image
-    // or returns true if the user explicitly sets the image as default, by setting the models image attribute to null
-    return (
-      (isUsingServerDefaultImage && this.model.image === undefined) ||
-      this.model.image === null
-    );
-  }
-
   private fileName(filePath: string): string {
     return (
-      filePath?.split("/")
+      filePath
+        ?.split("/")
         .pop()
         // remove URL parameters from the file name
         .split("?")
@@ -108,7 +113,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     if (images.length !== 1) {
       // TODO Display error to user
       throw new Error(
-        "File input returned multiple files. This should only return one value"
+        "File input returned multiple files. This should only return one value",
       );
     }
 
