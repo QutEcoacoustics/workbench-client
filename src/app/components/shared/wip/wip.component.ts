@@ -42,7 +42,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
       </div>
     </ng-template>
   `,
-  styleUrl: "wip.component.scss",
+  styleUrl: "./wip.component.scss",
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,

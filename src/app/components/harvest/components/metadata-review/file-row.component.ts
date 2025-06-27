@@ -84,7 +84,7 @@ interface ValidationMessage {
       </div>
     </div>
   `,
-  styleUrl: "file-row.component.scss",
+  styleUrl: "./file-row.component.scss",
   // Nothing in this component can change without a change in the row
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [

@@ -40,7 +40,7 @@ const siteKey = "site";
 
 @Component({
   selector: "baw-download",
-  templateUrl: "download.component.html",
+  templateUrl: "./download.component.html",
   imports: [
     SitesWithoutTimezonesComponent,
     FormsModule,

@@ -30,7 +30,7 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-import-list-annotation-imports",
-  templateUrl: "list.component.html",
+  templateUrl: "./list.component.html",
   imports: [
     NgxDatatableModule,
     DatatableDefaultsDirective,

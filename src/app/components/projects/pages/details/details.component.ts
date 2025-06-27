@@ -146,7 +146,7 @@ const projectKey = "project";
 
     <div class="mb-3"></div>
   `,
-  styleUrl: "details.component.scss",
+  styleUrl: "./details.component.scss",
   imports: [
     AuthenticatedImageDirective,
     DebouncedInputDirective,

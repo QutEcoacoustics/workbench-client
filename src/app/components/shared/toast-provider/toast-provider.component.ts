@@ -6,8 +6,8 @@ import { ToastService } from "@services/toasts/toasts.service";
 
 @Component({
   selector: "baw-toast-provider",
-  templateUrl: "toast-provider.component.html",
-  styleUrl: "toast-provider.component.scss",
+  templateUrl: "./toast-provider.component.html",
+  styleUrl: "./toast-provider.component.scss",
   imports: [NgbToast, FontAwesomeModule, NgClass, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

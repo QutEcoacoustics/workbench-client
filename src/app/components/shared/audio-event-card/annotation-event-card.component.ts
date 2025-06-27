@@ -15,8 +15,8 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
 
 @Component({
   selector: "baw-annotation-event-card",
-  templateUrl: "annotation-event-card.component.html",
-  styleUrl: "annotation-event-card.component.scss",
+  templateUrl: "./annotation-event-card.component.html",
+  styleUrl: "./annotation-event-card.component.scss",
   imports: [FaIconComponent, ZonedDateTimeComponent, IsUnresolvedPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

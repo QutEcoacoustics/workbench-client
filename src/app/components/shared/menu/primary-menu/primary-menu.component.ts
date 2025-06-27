@@ -46,8 +46,8 @@ export interface HeaderDropdown {
  */
 @Component({
   selector: "baw-primary-menu",
-  templateUrl: "primary-menu.component.html",
-  styleUrl: "primary-menu.component.scss",
+  templateUrl: "./primary-menu.component.html",
+  styleUrl: "./primary-menu.component.scss",
   imports: [
     HeaderItemComponent,
     HeaderDropdownComponent,

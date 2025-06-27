@@ -23,8 +23,8 @@ export const gridTileContentSelector = "baw-grid-tile-content";
 
 @Component({
   selector: "baw-ng-grid-tile-content",
-  templateUrl: "grid-tile-content.component.html",
-  styleUrl: "grid-tile-content.component.scss",
+  templateUrl: "./grid-tile-content.component.html",
+  styleUrl: "./grid-tile-content.component.scss",
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

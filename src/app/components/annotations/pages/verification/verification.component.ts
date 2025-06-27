@@ -67,8 +67,8 @@ const confirmedMapping = {
 
 @Component({
   selector: "baw-verification",
-  templateUrl: "verification.component.html",
-  styleUrl: "verification.component.scss",
+  templateUrl: "./verification.component.html",
+  styleUrl: "./verification.component.scss",
   imports: [
     FaIconComponent,
     NgbTooltip,
