@@ -73,9 +73,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
     private config: ConfigService,
-  ) {
-    this.hideProjectsInput = this.config.settings.hideProjects;
-  }
+  ) {}
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
@@ -112,6 +110,8 @@ export class AnnotationSearchFormComponent implements OnInit {
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
     ];
+
+    this.hideProjectsInput = this.config.settings.hideProjects;
 
     for (const key of advancedFilterKeys) {
       const value = this.searchParameters[key];

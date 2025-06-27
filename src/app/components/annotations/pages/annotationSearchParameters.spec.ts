@@ -10,6 +10,7 @@ interface SearchParamtersTest {
   name: string;
   inputParams: Params;
   expectedFilters: () => Filters<AudioEvent>;
+  expectedWithoutProject?: () => Filters<AudioEvent>;
 }
 
 describe("annotationSearchParameters", () => {
@@ -20,19 +21,24 @@ describe("annotationSearchParameters", () => {
     expect(dataModel).toBeInstanceOf(AnnotationSearchParameters);
   });
 
-  function createParameterModel(params?: Params): AnnotationSearchParameters {
+  function createParameterModel(
+    params?: Params,
+    withProject = true,
+  ): AnnotationSearchParameters {
     const dataModel = new AnnotationSearchParameters(params);
 
-    const mockProjectId = modelData.id();
-    dataModel.routeProjectId = modelData.id();
+    if (withProject) {
+      const mockProjectId = modelData.id();
+      dataModel.routeProjectId = modelData.id();
 
-    const mockSiteIds = modelData.ids();
-    routeProject = new Project({
-      id: mockProjectId,
-      siteIds: mockSiteIds,
-    });
+      const mockSiteIds = modelData.ids();
+      routeProject = new Project({
+        id: mockProjectId,
+        siteIds: mockSiteIds,
+      });
 
-    dataModel.routeProjectModel = routeProject;
+      dataModel.routeProjectModel = routeProject;
+    }
 
     return dataModel;
   }
@@ -55,6 +61,7 @@ describe("annotationSearchParameters", () => {
           },
           sorting: defaultSorting,
         }) as Filters<AudioEvent>,
+      expectedWithoutProject: () => ({ sorting: defaultSorting }),
     },
     {
       name: "should create correct filter when filters is set",
@@ -80,7 +87,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            { "audioEventImportFileId": { in: [1, 12, 23] } },
+            { audioEventImportFileId: { in: [1, 12, 23] } },
             {
               "audioRecordings.siteId": {
                 in: [6, 7, 8, 9],
@@ -145,6 +152,12 @@ describe("annotationSearchParameters", () => {
         },
         sorting: defaultSorting,
       }),
+      expectedWithoutProject: () => ({
+        filter: {
+          score: { gteq: 0.2 },
+        },
+        sorting: defaultSorting,
+      }),
     },
     {
       name: "should create correct filter for only a upper score range",
@@ -164,13 +177,34 @@ describe("annotationSearchParameters", () => {
         },
         sorting: defaultSorting,
       }),
+      expectedWithoutProject: () => ({
+        filter: {
+          score: { lteq: 0.9 },
+        },
+        sorting: defaultSorting,
+      }),
     },
   ];
 
   for (const test of testCases) {
-    it(test.name, () => {
+    it(`${test.name} (with project)`, () => {
       const dataModel = createParameterModel(test.inputParams);
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
+    });
+
+    it(`${test.name} (without project)`, () => {
+      const dataModel = createParameterModel(test.inputParams, false);
+
+      // Some tests have the same expected filter regardless of if there is a
+      // route project.
+      // To reduce boilerplate and repeated definitions, we allow the
+      // expectedWithoutProject spec definition to be blank, and we will use the
+      // same expectedFilters definition.
+      const expectedFilter = test.expectedWithoutProject
+        ? test.expectedWithoutProject()
+        : test.expectedFilters();
+
+      expect(dataModel.toFilter()).toEqual(expectedFilter);
     });
   }
 });

@@ -271,6 +271,18 @@ export class AnnotationSearchParameters
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
     const sorting = this.sortingFilters();
+
+    // If there are no filter conditions, we want to return the sorting
+    // conditions, but if there are even no sorting conditions, we just want to
+    // return an empty filter body.
+    if (Object.keys(filter).length === 0) {
+      if (sorting !== undefined) {
+        return { sorting };
+      }
+
+      return {};
+    }
+
     if (sorting === undefined) {
       return { filter };
     }
@@ -297,6 +309,7 @@ export class AnnotationSearchParameters
     // The siteIds() method will return "null" if we don't want to scope to
     // any site ids.
     // In this case, we return an empty inner filter.
+    //
     const modelSiteIds = this.siteIds();
     if (modelSiteIds === null) {
       return {};
