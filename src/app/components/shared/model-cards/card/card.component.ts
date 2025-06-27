@@ -11,6 +11,7 @@ import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { UrlDirective } from "@directives/url/url.directive";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { LoadingComponent } from "../../loading/loading.component";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
@@ -122,7 +123,7 @@ export class CardComponent implements OnInit {
   }
 
   private async updateLicense() {
-    if (this.model.license === null) {
+    if (!isInstantiated(this.model.license)) {
       this.licenseText = null;
       return;
     }
