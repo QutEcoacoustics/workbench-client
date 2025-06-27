@@ -13,7 +13,6 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { User } from "@models/User";
 import { NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
-import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -66,7 +65,7 @@ export class ModelSelectorComponent<Model extends AbstractModel>
   @Input() public model: Model;
   @Input() public getModels: (input: Model | string) => Observable<Model[]>;
   @Input() public formatter: (model: AbstractModel) => string;
-  @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
+  @Input() public resultTemplate: TemplateRef<any>;
   @Output() public modelChange = new EventEmitter<Model>();
 
   public focus$ = new Subject<Model>();

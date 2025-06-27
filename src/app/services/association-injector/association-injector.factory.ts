@@ -43,5 +43,5 @@ function associationInjectorFactory(
   // warning: using "as" here disables type-checking for this line. Make sure
   // that you have correctly type-checked the association injector before this
   // type cast
-  return associationInjector as AssociationInjector;
+  return associationInjector as unknown as AssociationInjector;
 }

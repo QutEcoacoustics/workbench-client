@@ -9,7 +9,6 @@ import {
   NgbTypeaheadSelectItemEvent,
   NgbTypeahead,
 } from "@ng-bootstrap/ng-bootstrap";
-import { ResultTemplateContext } from "@ng-bootstrap/ng-bootstrap/typeahead/typeahead-window";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -47,7 +46,8 @@ export class TypeaheadInputComponent<T = unknown> {
    * Describes how to convert an object model into a human readable form for
    * use in the pills and typeahead dropdown.
    */
-  @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
+  // @Input() public resultTemplate: TemplateRef<ResultTemplateContext | any>;
+  @Input() public resultTemplate: TemplateRef<any>;
   /** Whether the typeahead input should allow multiple inputs in pill form */
   @Input() public multipleInputs = true;
   /** Text to show above the input field. Usually a one 1-2 word description. */

@@ -16,7 +16,7 @@
       "dom.iterable"
     ],
     "module": "ES2020",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
     "outDir": "./dist/out-tsc",
