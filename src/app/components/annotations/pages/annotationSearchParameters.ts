@@ -293,7 +293,14 @@ export class AnnotationSearchParameters
     // however, the api doesn't currently support this functionality
     // therefore, we do a virtual join by filtering on the project/region site
     // ids on the client.
+    //
+    // The siteIds() method will return "null" if we don't want to scope to
+    // any site ids.
+    // In this case, we return an empty inner filter.
     const modelSiteIds = this.siteIds();
+    if (modelSiteIds === null) {
+      return {};
+    }
 
     return {
       "audioRecordings.siteId": {
@@ -313,7 +320,7 @@ export class AnnotationSearchParameters
   // TODO: remove this method once the API supports filtering audio events by
   // projects, and regions.
   // see: https://github.com/QutEcoacoustics/baw-server/issues/687
-  private siteIds(): Id[] {
+  private siteIds(): Id[] | null {
     const qspSites = this.sites ? Array.from(this.sites) : [];
 
     // We use a !== null condition here instead of a truthy assertion so that
@@ -342,11 +349,7 @@ export class AnnotationSearchParameters
       return qspProjects;
     }
 
-    // This condition should never hit in regular use.
-    // We return an empty array here instead of throwing an error in the hope
-    // that the application can recover instead of crashing all work.
-    console.error("Failed to find any scoped route or qsps models");
-    return [];
+    return null;
   }
 
   private addRouteFilters(

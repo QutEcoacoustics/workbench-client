@@ -227,7 +227,8 @@ function getPageInfo(
   };
 }
 
-AnnotationSearchComponent.linkToRoute(getPageInfo("project"))
+AnnotationSearchComponent.linkToRoute(getPageInfo("base"))
+  .linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));

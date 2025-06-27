@@ -26,10 +26,17 @@ const annotationSearchRouteQueryParamResolver = (
       }
     : {};
 
-export type AnnotationRoute = "project" | "region" | "site" | "siteAndRegion";
+export type AnnotationRoute =
+  | "base"
+  | "project"
+  | "region"
+  | "site"
+  | "siteAndRegion";
 export type AnnotationStrongRoute = Record<AnnotationRoute, StrongRoute>;
 
 export const annotationSearchRoute: AnnotationStrongRoute = {
+  /** /annotations */
+  base: StrongRoute.newRoot().add(annotationsRouteName),
   /** /project/:projectId/site/:siteId/annotations */
   site: siteRoute.add(
     annotationsRouteName,
@@ -55,6 +62,12 @@ export const annotationSearchRoute: AnnotationStrongRoute = {
 const verificationRouteGuards = [isLoggedInGuard];
 
 export const verificationRoute: AnnotationStrongRoute = {
+  /** /annotations/verify */
+  base: annotationSearchRoute.base.add(
+    verificationRouteName,
+    annotationSearchRouteQueryParamResolver,
+    { canActivate: verificationRouteGuards },
+  ),
   /** /project/:projectId/site/:siteId/annotations/verify */
   site: annotationSearchRoute.site.add(
     verificationRouteName,

@@ -14,11 +14,13 @@ import { List } from "immutable";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
 
 export const regionsMenuItemActions = [
   shallowNewRegionMenuItem,
   audioRecordingMenuItems.list.base,
   audioRecordingMenuItems.batch.base,
+  annotationMenuItems.search.base,
 ];
 
 @Component({

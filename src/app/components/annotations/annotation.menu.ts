@@ -52,6 +52,8 @@ function makeAnnotationSearchMenuItem(
 }
 
 const annotationSearchMenuitem: AnnotationMenuRoutes = {
+  /** /annotations */
+  base: makeAnnotationSearchMenuItem("base"),
   /** /project/:projectId/site/:siteId/annotations */
   site: makeAnnotationSearchMenuItem("site", siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/annotations */
@@ -63,6 +65,8 @@ const annotationSearchMenuitem: AnnotationMenuRoutes = {
 };
 
 const verificationMenuItem: AnnotationMenuRoutes = {
+  /** /annotations/verify */
+  base: makeVerificationMenuItem("base"),
   /** /project/:projectId/site/:siteId/annotations/verify */
   site: makeVerificationMenuItem("site", annotationSearchMenuitem.site),
   /** /project/:projectId/region/:regionId/site/:siteId/annotations/verify */
@@ -72,7 +76,6 @@ const verificationMenuItem: AnnotationMenuRoutes = {
   /** /project/:projectId/annotations/verify */
   project: makeVerificationMenuItem("project", annotationSearchMenuitem.project),
 };
-
 
 const verificationCategory = {
   site: makeVerificationCategory("site"),

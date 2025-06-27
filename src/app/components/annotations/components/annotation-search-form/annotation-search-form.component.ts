@@ -41,6 +41,7 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
+import { ConfigService } from "@services/config/config.service";
 
 enum ScoreRangeBounds {
   Lower,
@@ -71,7 +72,10 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
-  ) {}
+    private config: ConfigService,
+  ) {
+    this.hideProjectsInput = this.config.settings.hideProjects;
+  }
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
@@ -86,6 +90,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
+  protected hideProjectsInput = false;
   protected scoreRangeBounds = ScoreRangeBounds;
 
   protected get project(): Project {
