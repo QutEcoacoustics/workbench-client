@@ -1,3 +1,14 @@
+// Because the typeahead includes a <label> element, it naturally has a
+// margin-bottom provided by bootstrap.
+// However, because the label is inside of this component, it's not possible to
+// override the margin.
+// Therefore, I expose the margin on the host element so that it can be
+// overwritten by consumers simply through a style selector.
+// e.g. <baw-typeahead-input style="margin: 2rem"></baw-typeahead-input>
+:host {
+  margin-bottom: 0.5rem;
+}
+
 #typeahead-input {
   width: max-content;
   min-width: 10rem;
