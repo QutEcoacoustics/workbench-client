@@ -3,10 +3,11 @@ import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyFieldProps } from "@ngx-formly/core";
 import { inputFile } from "@test/helpers/html";
 import { testFormProviders } from "@test/helpers/testbed";
+import { modelData } from "@test/helpers/faker";
 import { ImageInputComponent } from "./image-input.component";
 
 describe("FormlyImageInput", () => {
-  let spectator: SpectatorHost<ImageInputComponent>;
+  let spec: SpectatorHost<ImageInputComponent>;
 
   let model: any;
   let formGroup: FormGroup;
@@ -17,11 +18,11 @@ describe("FormlyImageInput", () => {
   });
 
   function getInput() {
-    return spectator.query<HTMLInputElement>("input[type='file']");
+    return spec.query<HTMLInputElement>("input[type='file']");
   }
 
-  function getButton() {
-    return spectator.query<HTMLButtonElement>("button");
+  function removeButton() {
+    return spec.query<HTMLButtonElement>("button");
   }
 
   function setup(options: FormlyFieldProps = {}) {
@@ -30,7 +31,7 @@ describe("FormlyImageInput", () => {
     formGroup = new FormGroup({ asFormControl: new FormControl("") });
     model = {
       image: "",
-      imageUrls: [],
+      imageUrls: modelData.imageUrls(),
     };
 
     const hostTemplate = `
@@ -39,7 +40,7 @@ describe("FormlyImageInput", () => {
       </form>
     `;
 
-    spectator = createHost(hostTemplate, {
+    spec = createHost(hostTemplate, {
       hostProps: {
         formGroup,
         field: {
@@ -50,13 +51,13 @@ describe("FormlyImageInput", () => {
         },
       },
     });
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   describe("imageInput", () => {
     it("should display file input", () => {
       setup();
-      expect(getInput()).toBeTruthy();
+      expect(getInput()).toExist();
     });
   });
 
@@ -67,32 +68,28 @@ describe("FormlyImageInput", () => {
       // if this test is not passing, it may be because the condition for the remove
       // image button is dependent on the file name
       model.image = new File([""], "project_span4.png");
-      spectator.detectChanges();
+      spec.detectChanges();
 
-      expect(getButton()).toBeTruthy();
+      expect(removeButton()).toExist();
     });
 
     it("should not display remove image button if the model does not have an image", () => {
       setup();
       model.image = null;
-      spectator.detectChanges();
+      spec.detectChanges();
 
-      expect(getButton()).toBeNull();
+      expect(removeButton()).not.toExist();
     });
 
     it("should not display remove image button once the button has been clicked", () => {
       setup();
-      expect(getButton()).toBeTruthy();
-
-      getButton().click();
-      spectator.detectChanges();
-
-      expect(getButton()).toBeNull();
+      spec.click(removeButton());
+      expect(removeButton()).not.toExist();
     });
 
     it("should set model value to null on click", () => {
       setup();
-      getButton().click();
+      removeButton().click();
       expect(model.image).toBeNull();
     });
 
@@ -101,9 +98,9 @@ describe("FormlyImageInput", () => {
       const imageInput = getInput();
 
       const testingFile = new File([""], "testFile.png");
-      inputFile(spectator, imageInput, [testingFile]);
+      inputFile(spec, imageInput, [testingFile]);
 
-      getButton().click();
+      spec.click(removeButton());
       expect(imageInput.value).toBeFalsy();
     });
   });
