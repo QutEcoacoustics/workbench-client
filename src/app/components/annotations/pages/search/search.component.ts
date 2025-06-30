@@ -37,6 +37,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { IfLoggedInComponent } from "@shared/can/can.component";
 import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -200,15 +201,19 @@ class AnnotationSearchComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.searchParameters.routeSiteId) {
+    // I use isInstantiated() here instead of a falsy assertion so that ids of
+    // zero will pass as a valid project route id.
+    if (isInstantiated(this.searchParameters.routeSiteId)) {
       return this.searchParameters.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.searchParameters.routeRegionId) {
+    } else if (isInstantiated(this.searchParameters.routeRegionId)) {
       return annotationMenuItems.verify.region.route;
+    } else if (isInstantiated(this.searchParameters.routeProjectId)) {
+      return annotationMenuItems.verify.project.route;
     }
 
-    return annotationMenuItems.verify.project.route;
+    return annotationMenuItems.verify.base.route;
   }
 }
 
@@ -227,7 +232,8 @@ function getPageInfo(
   };
 }
 
-AnnotationSearchComponent.linkToRoute(getPageInfo("project"))
+AnnotationSearchComponent.linkToRoute(getPageInfo("base"))
+  .linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));

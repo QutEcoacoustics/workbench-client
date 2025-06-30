@@ -39,6 +39,8 @@ import {
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { ConfigService } from "@services/config/config.service";
+import { testApiConfig } from "@services/config/configMock.service";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -89,8 +91,14 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sortingDropdown = () => spec.query("#sort-input");
 
-  function setup(params: Params = {}): Promise<any> {
+  function setup(params: Params = {}, hideProjects = false): Promise<any> {
     spec = createComponent({ detectChanges: false });
+
+    const mockSettings = testApiConfig.settings;
+    mockSettings.hideProjects = hideProjects;
+
+    const mockConfigService = spec.inject(ConfigService);
+    spyOnProperty(mockConfigService, "settings").and.returnValue(mockSettings);
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
     tagsApiSpy = spec.inject(TAG.token);
@@ -178,6 +186,11 @@ describe("AnnotationSearchFormComponent", () => {
     expect(recordingsTypeahead()).toBeHidden();
     toggleDropdown(spec, advancedFiltersToggle());
     expect(recordingsTypeahead()).toBeVisible();
+  }));
+
+  it("should not show the projects input if projects are hidden", fakeAsync(() => {
+    setup({}, true);
+    expect(projectsTypeahead()).not.toExist();
   }));
 
   describe("pre-population from first load", () => {

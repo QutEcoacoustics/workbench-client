@@ -22,7 +22,6 @@ import { firstValueFrom } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { StrongRoute } from "@interfaces/strongRoute";
 import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -233,18 +232,6 @@ class VerificationComponent
     });
   }
 
-  protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.site) {
-      return this.site.isPoint
-        ? annotationMenuItems.verify.siteAndRegion.route
-        : annotationMenuItems.verify.site.route;
-    } else if (this.region) {
-      return annotationMenuItems.verify.region.route;
-    }
-
-    return annotationMenuItems.verify.project.route;
-  }
-
   protected getPageCallback(): any {
     return async ({ page }: PagingContext) => {
       const nextPage = (page ?? 0) + 1;
@@ -336,7 +323,8 @@ function getPageInfo(
   };
 }
 
-VerificationComponent.linkToRoute(getPageInfo("project"))
+VerificationComponent.linkToRoute(getPageInfo("base"))
+  .linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
