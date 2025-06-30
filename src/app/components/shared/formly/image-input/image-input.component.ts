@@ -55,22 +55,6 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
   public imageInput: ElementRef;
   public asFormControl = asFormControl;
 
-  public ngAfterViewInit() {
-    if (!this.usesDefaultImage) {
-      const imageUrls = this.model.imageUrls as ImageUrl[];
-      const currentImage = imageUrls && imageUrls[0];
-      const imageFileName = this.fileName(currentImage?.url);
-
-      // if the current model has a different image to the default image, display the name of the file in the image input
-      // for security reasons, modern web browsers don't allow changing a file inputs value directly
-      // because of this we need to use a data transfer which is performed in "protected mode"
-      // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/files
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(new File([""], imageFileName));
-      this.imageInput.nativeElement.files = dataTransfer.files;
-    }
-  }
-
   /**
    * A predicate that returns if the models image is a default image, or if the
    * model has not been instantiated.
@@ -102,6 +86,22 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
       (isUsingServerDefaultImage && this.model.image === undefined) ||
       this.model.image === null
     );
+  }
+
+  public ngAfterViewInit() {
+    if (!this.usesDefaultImage) {
+      const imageUrls = this.model.imageUrls as ImageUrl[];
+      const currentImage = imageUrls && imageUrls[0];
+      const imageFileName = this.fileName(currentImage?.url);
+
+      // if the current model has a different image to the default image, display the name of the file in the image input
+      // for security reasons, modern web browsers don't allow changing a file inputs value directly
+      // because of this we need to use a data transfer which is performed in "protected mode"
+      // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/files
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(new File([""], imageFileName));
+      this.imageInput.nativeElement.files = dataTransfer.files;
+    }
   }
 
   private fileName(filePath: string): string {
