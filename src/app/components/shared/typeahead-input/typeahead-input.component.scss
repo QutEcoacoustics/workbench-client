@@ -6,6 +6,7 @@
 // overwritten by consumers simply through a style selector.
 // e.g. <baw-typeahead-input style="margin: 2rem"></baw-typeahead-input>
 :host {
+  display: block;
   margin-bottom: 0.5rem;
 }
 
@@ -20,6 +21,9 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+}
+
+.typeahead-label {
   margin: 0;
 }
 
