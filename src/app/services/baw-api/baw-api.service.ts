@@ -530,6 +530,81 @@ export class BawApiService<
   }
 
   /**
+   * Uses the create endpoint to create a model if it doesn't already exist.
+   * If the model already exists, the model will be updated.
+   *
+   * @param classBuilder Model to create
+   * @param path API path
+   * @param model Model to insert into API request
+   */
+  public createOrUpdate(
+    classBuilder: ClassBuilder,
+    path: string,
+    updatePath: (model: Model) => string,
+    model: AbstractModel,
+    options: BawServiceOptions = {}
+  ): Observable<Model> {
+    const jsonData = model.getJsonAttributesForCreate();
+    let body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
+
+    let formData = model.getFormDataOnlyAttributesForUpdate();
+    if (options.params) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we want to add
+      // the unscoped params to the JSON body.
+      if (formData) {
+        formData = this.addUnscopedFormdataParams(formData, options.params);
+      } else {
+        body = this.addUnscopedJsonParams(body, options.params);
+      }
+    }
+
+    // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
+    // if there is only a formData body, we want to return the output of the formData PUT request
+    // if there is both a JSON body and formData, we want to return the output of the last request sent (formData PUT request)
+    // we default to returning null if there is no JSON or formData body
+    return of(null).pipe(
+      concatMap(
+        model.hasJsonOnlyAttributesForCreate()
+          ? () => this.httpPut(path, body, undefined, options).pipe()
+          : (data) => of(data)
+      ),
+      // we create a class from the POST response so that we can construct an update route for the formData PUT request
+      // using the updatePath callback. We do this before the concatMap below because the updatePath callback is dependent
+      // on the instantiated class from the POST response object
+      map(this.handleSingleResponse(classBuilder)),
+      // using concatMap here ensures that the httpPost request completes before the httpPut request is made
+      concatMap((data) =>
+        // we use an if statement here because we want to create a new observable and apply a map function to it
+        // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
+        iif(
+          () => model.hasFormDataOnlyAttributesForCreate(),
+          this.httpPut(
+            updatePath(data),
+            formData,
+            multiPartApiHeaders,
+            options
+          ).pipe(map(this.handleSingleResponse(classBuilder))),
+          of(data)
+        )
+      ),
+      // TODO: this should be a more targeted cache invalidation
+      // we have to clear the cache when creating new models because the new
+      // models might be included in cached associations
+      tap(() => this.clearCache()),
+      // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
+      // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder)
+      )
+    );
+  }
+
+  /**
    * Get response from destroy route
    *
    * @param path API path
