@@ -16,6 +16,11 @@
     border-bottom: var(--card-border);
 
     a {
+      // We use "disable: block" so the images box model is pre-allocated to
+      // reduce layout shift.
+      // Additionally, we do this at the link level so that the touch target
+      // is a fixed size / location and doesn't move when images are loaded or
+      // changed.
       display: block;
       width: auto;
       height: auto;
