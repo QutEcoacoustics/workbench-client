@@ -104,18 +104,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     }
   }
 
-  private fileName(filePath: string): string {
-    return (
-      filePath
-        ?.split("/")
-        .pop()
-        // remove URL parameters from the file name
-        .split("?")
-        .shift()
-    );
-  }
-
-  public readFile(): void {
+  protected readFile(): void {
     // File input returns a list of files, grab the first file and set it as
     // the value of this field
     const images = this.formControl.value;
@@ -134,8 +123,19 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     this.formControl.setValue(images.item(0));
   }
 
-  public removeImage(): void {
+  protected removeImage(): void {
     this.model.image = null;
     this.imageInput.nativeElement.value = null;
+  }
+
+  private fileName(filePath: string): string {
+    return (
+      filePath
+        ?.split("/")
+        .pop()
+        // remove URL parameters from the file name
+        .split("?")
+        .shift()
+    );
   }
 }
