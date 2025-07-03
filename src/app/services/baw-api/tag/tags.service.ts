@@ -26,6 +26,7 @@ import {
 
 const tagId: IdParamOptional<Tag> = id;
 const endpoint = stringTemplate`/tags/${tagId}${option}`;
+const updateEndpoint = stringTemplate`/admin/tags/${tagId}${option}`;
 
 @Injectable()
 export class TagsService implements StandardApi<Tag> {
@@ -54,11 +55,11 @@ export class TagsService implements StandardApi<Tag> {
 
   // TODO https://github.com/QutEcoacoustics/baw-server/issues/449
   public update(model: Tag): Observable<Tag> {
-    return this.api.update(Tag, endpoint(model, emptyParam), model);
+    return this.api.update(Tag, updateEndpoint(model, emptyParam), model);
   }
 
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
-    return this.api.destroy(endpoint(model, emptyParam));
+    return this.api.destroy(updateEndpoint(model, emptyParam));
   }
 
   /**

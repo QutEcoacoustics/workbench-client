@@ -1,42 +1,55 @@
 import { IdOr } from "@baw-api/api-common";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { createServiceFactory } from "@ngneat/spectator";
 import { generateTag } from "@test/fakes/Tag";
 import {
   mockServiceProviders,
+  validateApiDestroy,
+  validateApiUpdate,
   validateCustomApiFilter,
-  validateStandardApi,
+  validateReadAndCreateApi,
 } from "@test/helpers/api-common";
+import { modelData } from "@test/helpers/faker";
 import { TagsService } from "./tags.service";
 
 describe("TagsService", (): void => {
-  const createModel = () => new Tag(generateTag({ id: 5 }));
+  const modelId = modelData.id();
+  const createModel = () => new Tag(generateTag({ id: modelId }));
   const baseUrl = "/tags/";
-  const updateUrl = baseUrl + "5";
-  let spec: SpectatorService<TagsService>;
+  const updateUrl = "/admin/tags/";
 
   const createService = createServiceFactory({
     service: TagsService,
     providers: mockServiceProviders,
   });
 
-  beforeEach((): void => {
-    spec = createService();
-  });
-
-  validateStandardApi(
-    () => spec,
+  validateReadAndCreateApi(
+    createService,
     Tag,
     baseUrl,
     baseUrl + "filter",
-    updateUrl,
+    baseUrl + modelId,
     createModel,
-    5
+    modelId,
+  );
+
+  validateApiUpdate(
+    createService,
+    Tag,
+    updateUrl + modelId,
+    createModel,
+  );
+
+  validateApiDestroy(
+    createService,
+    updateUrl + modelId,
+    modelId,
+    createModel,
   );
 
   validateCustomApiFilter<Tag, [IdOr<User>], TagsService>(
-    () => spec,
+    createService,
     Tag,
     baseUrl + "filter",
     "filterByCreator",

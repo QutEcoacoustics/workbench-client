@@ -37,7 +37,6 @@ export class Tag extends AbstractModel<ITag> implements ITag {
   public readonly typeOfTag?: string;
   @bawPersistAttr()
   public readonly retired?: boolean;
-  @bawPersistAttr()
   public readonly notes?: Hash;
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;

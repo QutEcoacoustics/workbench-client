@@ -12,7 +12,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { FormComponent } from "@shared/form/form.component";
 import { adminTagsMenuItemActions } from "../list/list.component";
-import schema from "../tag.schema.json";
+import schema from "../tag.edit.schema.json";
 import {
   adminEditTagMenuItem,
   adminTagsCategory,

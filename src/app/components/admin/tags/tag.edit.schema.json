@@ -1,0 +1,38 @@
+{
+  "fields": [
+    {
+      "key": "text",
+      "type": "input",
+      "props": {
+        "label": "Text",
+        "type": "text",
+        "required": true
+      }
+    },
+    {
+      "key": "typeOfTag",
+      "type": "select",
+      "props": {
+        "label": "Type of Tag",
+        "required": true,
+        "options": []
+      }
+    },
+    {
+      "key": "retired",
+      "type": "checkbox",
+      "props": {
+        "label": "Retired",
+        "required": false
+      }
+    },
+    {
+      "key": "isTaxonomic",
+      "type": "checkbox",
+      "props": {
+        "label": "Is Taxonomic",
+        "required": false
+      }
+    }
+  ]
+}
