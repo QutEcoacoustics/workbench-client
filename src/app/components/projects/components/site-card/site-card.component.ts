@@ -50,7 +50,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
             <span
               id="no-audio"
               class="badge rounded-pill text-bg-secondary my-1"
-              >
+            >
               @if (hasNoAudio.loading) {
                 <baw-loading size="sm" color="light"></baw-loading>
               }

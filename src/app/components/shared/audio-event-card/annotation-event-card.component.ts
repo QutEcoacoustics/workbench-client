@@ -5,7 +5,7 @@ import {
   ElementRef,
   input,
   OnInit,
-  ViewChild,
+  viewChild,
 } from "@angular/core";
 import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
@@ -15,8 +15,8 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
 
 @Component({
   selector: "baw-annotation-event-card",
-  templateUrl: "annotation-event-card.component.html",
-  styleUrl: "annotation-event-card.component.scss",
+  templateUrl: "./annotation-event-card.component.html",
+  styleUrl: "./annotation-event-card.component.scss",
   imports: [FaIconComponent, ZonedDateTimeComponent, IsUnresolvedPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -25,14 +25,17 @@ export class AnnotationEventCardComponent implements OnInit, AfterViewInit {
 
   protected spectrogramId: string;
 
-  @ViewChild("mediaControls", { static: true })
-  private mediaControls: ElementRef<MediaControlsComponent>;
+  // Note that there is no { static: true } option for viewChild signals.
+  // This is on purpose, because signals are supposed to be able to
+  // automatically detect non-changes.
+  // https://github.com/angular/angular/issues/54376
+  private mediaControls = viewChild<ElementRef<MediaControlsComponent>>("mediaControls");
 
   public ngOnInit(): void {
     this.spectrogramId = `spectrogram-${this.annotation().id}`;
   }
 
   public ngAfterViewInit(): void {
-    this.mediaControls.nativeElement.for = this.spectrogramId;
+    this.mediaControls().nativeElement.for = this.spectrogramId;
   }
 }
