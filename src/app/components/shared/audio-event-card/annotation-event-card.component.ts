@@ -11,7 +11,6 @@ import { Annotation } from "@models/data/Annotation";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -24,7 +23,6 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     ZonedDateTimeComponent,
     IsUnresolvedPipe,
     LoadingComponent,
-    InlineListComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

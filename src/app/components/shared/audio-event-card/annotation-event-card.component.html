@@ -27,15 +27,11 @@
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
 
-      @let tagModels = annotation().tags;
-      @if (tagModels | isUnresolved; as models) {
-        <baw-loading class="inline-spinner" size="sm"></baw-loading>
-      } @else {
-        <baw-inline-list
-          [items]="tagModels"
-          [itemKey]="'text'"
-          [emptyTemplate]="noTagsTemplate"
-        ></baw-inline-list>
+      @for (text of annotation().tags; track text; let isLast = $last) {
+        <span>
+          <a [href]="text.viewUrl">{{ text.text }}</a>
+          @if (!isLast) {, }
+        </span>
       }
     </span>
 

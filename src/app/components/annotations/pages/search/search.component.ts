@@ -38,6 +38,7 @@ import { IfLoggedInComponent } from "@shared/can/can.component";
 import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { RenderMode } from "@angular/ssr";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -106,8 +107,8 @@ class AnnotationSearchComponent
     viewChild<ElementRef<FiltersWarningModalComponent>>("broadSearchWarningModal");
 
   public searchParameters: AnnotationSearchParameters;
-  protected paginationInformation: Paging;
   public searchResults: Annotation[] = [];
+  protected paginationInformation: Paging;
   protected verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
@@ -228,6 +229,18 @@ function getPageInfo(
       [siteKey]: siteResolvers.showOptional,
       [annotationsKey]: annotationResolvers.showOptional,
     },
+    // We use client rendering because:
+    // 1. We are rendering spectrograms, and we should not be trying to render
+    //    spectrograms on the server.
+    // 2. The most used sampling technique is to only show annotations that the
+    //    current user has not verified.
+    //    During SSR we do not know who the current user is, so we would have
+    //    to double fetch the list of audio events (once unauthenticated and
+    //    once when the user authenticates).
+    //    To prevent making redundant requests, we do not server render the
+    //    search page, and only start rendering on the client where the user is
+    //    authenticated.
+    renderMode: RenderMode.Client,
   };
 }
 

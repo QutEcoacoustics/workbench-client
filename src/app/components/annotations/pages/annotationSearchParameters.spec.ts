@@ -4,9 +4,10 @@ import { Filters, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Params } from "@angular/router";
 import { DateTime } from "luxon";
+import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
-interface SearchParamtersTest {
+interface SearchParameterTest {
   name: string;
   inputParams: Params;
   expectedFilters: () => Filters<AudioEvent>;
@@ -42,7 +43,7 @@ describe("annotationSearchParameters", () => {
     direction: "asc",
   };
 
-  const testCases: SearchParamtersTest[] = [
+  const testCases: SearchParameterTest[] = [
     {
       name: "should create correct default filters",
       inputParams: undefined,
@@ -80,7 +81,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            { "audioEventImportFileId": { in: [1, 12, 23] } },
+            { audioEventImportFileId: { in: [1, 12, 23] } },
             {
               "audioRecordings.siteId": {
                 in: [6, 7, 8, 9],
@@ -173,4 +174,24 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
+
+  describe("sampling", () => {
+    // These tests only assert that the correct filter conditions can be created
+    // for the following conditions.
+    // Asserting that the user model can be successfully resolved and assigned
+    // is tested in the annotation search form and other consumers.
+    it("should have the correct default sampling when logged in", () => {
+      const dataModel = new AnnotationSearchParameters(
+        generateAnnotationSearchUrlParameters(),
+      );
+
+      // Because the user id cannot be instantiated through the query string
+      // parameters, we have to manually assign it.
+
+      const expectedFilters = {};
+      const realizedFilters = {};
+    });
+
+    it("should correctly update default filters if the user logs out", () => {});
+  });
 });

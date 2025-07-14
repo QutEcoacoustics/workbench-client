@@ -62,7 +62,6 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   const sitesTypeahead = () => spec.query("#sites-input");
-  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
 
   const tagsTypeahead = () => spec.query("#tags-input");
   const tagPills = () =>
@@ -239,13 +238,6 @@ describe("AnnotationSearchFormComponent", () => {
       ).toBeFalsy();
     }));
 
-    // check the population of a checkbox boolean input
-    // TODO: enable this test once we have the endpoint available to filter by
-    // verified status
-    xit("should pre-populate the only verified checkbox if provided in the search parameters model", fakeAsync(() => {
-      expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-    }));
-
     it("should pre-populate the sorting dropdown correctly", fakeAsync(() => {
       const testedSorting = "score-asc" satisfies SortingKey;
 
@@ -410,17 +402,6 @@ describe("AnnotationSearchFormComponent", () => {
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
-    }));
-
-    // TODO: enable this test once we have the endpoint available to filter by verified status
-    xit("should emit the correct model if the only verified checkbox is updated", fakeAsync(() => {
-      modelChangeSpy.calls.reset();
-      spec.click(onlyVerifiedCheckbox());
-
-      expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({ onlyUnverified: true }),
-      );
     }));
   });
 

@@ -40,7 +40,7 @@ import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
-import { AuthTriggerData, BawSessionService } from "@baw-api/baw-session.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 
 enum ScoreRangeBounds {
   Lower,
@@ -136,13 +136,6 @@ export class AnnotationSearchFormComponent implements OnInit {
         dateFinishedBefore,
       };
     }
-
-    this.session.authTrigger
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      .subscribe((data: AuthTriggerData) => {
-        this.searchParameters.userId = data.user?.id;
-        this.searchParametersChange.emit(this.searchParameters)
-      });
   }
 
   /**
@@ -183,7 +176,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       }
     }
 
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
   }
 
   protected updateSubModel(
@@ -194,13 +187,13 @@ export class AnnotationSearchFormComponent implements OnInit {
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
       this.searchParameters[key as any] = null;
-      this.searchParametersChange.emit(this.searchParameters);
+      this.emiUpdate();
       return;
     }
 
     const ids = subModels.map((model) => model.id);
     this.searchParameters[key as any] = ids;
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
@@ -229,7 +222,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       this.searchParameters.recordingTime = null;
     }
 
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
   }
 
   protected updateScoreRange(
@@ -251,14 +244,14 @@ export class AnnotationSearchFormComponent implements OnInit {
     currentScore[arrayIndex] = value;
 
     this.searchParameters.score = currentScore;
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
   }
 
   protected updateParameterProperty<
     T extends keyof Writeable<AnnotationSearchParameters>,
   >(key: T, value: AnnotationSearchParameters[T]) {
     this.searchParameters[key] = value;
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
   }
 
   protected updateDiscreteOptions(key: string, event: Event): void {
@@ -280,6 +273,15 @@ export class AnnotationSearchFormComponent implements OnInit {
     const value = event.target.value;
 
     this.searchParameters[key] = value;
-    this.searchParametersChange.emit(this.searchParameters);
+    this.emiUpdate();
+  }
+
+  private emiUpdate() {
+    this.session.authTrigger
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe(({ user }) => {
+        this.searchParameters.userId = user?.id;
+        this.searchParametersChange.emit(this.searchParameters)
+      });
   }
 }
