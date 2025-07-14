@@ -65,13 +65,11 @@ export const sortingOptions = new Map([
   }],
 ]) satisfies Map<string, Sorting<keyof AudioEvent>>;
 
-export type SamplingKey = "only-new" | "only-unverified";
-
-export const samplingOptions = new Map([
-  ["only-unseen", { "error": 5 }],
-  ["only-unverified", { "verifications.id": { eq: null } }],
-  ["show-all", {}],
-]) as Map<string, InnerFilter<AudioEvent>>;
+// The sampling options map can be found in the AnnotationSearchParameter's
+// getters.
+// I have to use a getter because some of the filter conditions depend on the
+// session state.
+export type SamplingKey = "only-new" | "only-unverified" | "show-all";
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -240,6 +238,21 @@ export class AnnotationSearchParameters
     } else {
       console.error(`Invalid sampling key: "${value}"`);
     }
+  }
+
+  private get samplingOptions() {
+    const onlyUnverified = { "verifications.id": { eq: null } } as any;
+    const onlyUserUnverified = isInstantiated(this.userId)
+      ? { "verifications.creatorId": { notEq: this.userId } }
+      : null as any;
+
+    const onlyUnseen = filterOr(onlyUnverified, onlyUserUnverified);
+
+    return new Map([
+      ["only-new", onlyUnseen],
+      ["only-unverified", onlyUnverified],
+      ["show-all", null],
+    ]) as Map<string, InnerFilter<AudioEvent>>;
   }
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
@@ -415,28 +428,6 @@ export class AnnotationSearchParameters
     return recordingFilter;
   }
 
-  private addSamplingFilters(initialFilter: InnerFilter<AudioEvent>) {
-    const defaultSamplingKey = "only-new" satisfies SamplingKey ;
-    const samplingKey = this.isSamplingKey(this.sampling)
-      ? this.sort
-      : defaultSamplingKey;
-
-    let samplingFilters = samplingOptions.get(samplingKey);
-    if (samplingKey === "only-new") {
-      samplingFilters = {
-        "verifications.creatorId": { eq: null },
-      } as InnerFilter<AudioEvent>;
-
-      if (this.userId !== undefined) {
-        samplingFilters = filterOr(samplingFilters, {
-          "verifications.creatorId": { notEq: this.userId },
-        } as InnerFilter<AudioEvent>);
-      }
-    }
-
-    return filterAnd(initialFilter, samplingFilters);
-  }
-
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
@@ -486,6 +477,17 @@ export class AnnotationSearchParameters
     return scoreFilters;
   }
 
+  private addSamplingFilters(initialFilter: InnerFilter<AudioEvent>) {
+    const defaultSamplingKey = "only-new" satisfies SamplingKey;
+    const samplingKey = this.isSamplingKey(this.sampling)
+      ? this.sampling
+      : defaultSamplingKey;
+
+    const samplingFilters = this.samplingOptions.get(samplingKey);
+
+    return filterAnd(initialFilter, samplingFilters);
+  }
+
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
     const defaultSortKey = "created-asc" satisfies SortingKey;
     const sortingKey = this.isSortingKey(this.sort)
@@ -513,6 +515,6 @@ export class AnnotationSearchParameters
   }
 
   private isSamplingKey(key: string): key is SamplingKey {
-    return samplingOptions.has(key);
+    return this.samplingOptions.has(key);
   }
 }

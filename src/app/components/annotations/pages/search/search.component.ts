@@ -3,7 +3,7 @@ import {
   ElementRef,
   Inject,
   OnInit,
-  ViewChild,
+  viewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -102,8 +102,8 @@ class AnnotationSearchComponent
     this.pageSize = 24;
   }
 
-  @ViewChild("broadSearchWarningModal")
-  public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
+  public broadFilterWarningModal =
+    viewChild<ElementRef<FiltersWarningModalComponent>>("broadSearchWarningModal");
 
   public searchParameters: AnnotationSearchParameters;
   protected paginationInformation: Paging;
@@ -178,7 +178,7 @@ class AnnotationSearchComponent
       const numberOfItems = responseMetadata.paging.total;
 
       if (numberOfItems > itemWarningThreshold) {
-        const warningModal = this.modals.open(this.broadFilterWarningModal);
+        const warningModal = this.modals.open(this.broadFilterWarningModal());
         const success = await warningModal.result.catch((_) => false);
 
         // the user doesn't want to continue with the search

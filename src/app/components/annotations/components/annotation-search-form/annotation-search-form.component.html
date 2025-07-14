@@ -152,7 +152,7 @@
           [value]="searchParameters.sampling ?? 'only-new'"
           (change)="updateDiscreteOptions('sampling', $event)"
         >
-          <option value="only-unseen">Only show annotations unverified by me</option>
+          <option value="only-new">Only show annotations unverified by me</option>
           <option value="only-unverified">Only show annotations that have not been verified</option>
           <option value="show-all">Show annotations regardless of verification status</option>
         </select>

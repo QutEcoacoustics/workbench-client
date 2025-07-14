@@ -25,7 +25,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     IsUnresolvedPipe,
     LoadingComponent,
     InlineListComponent
-],
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationEventCardComponent implements AfterViewInit {
