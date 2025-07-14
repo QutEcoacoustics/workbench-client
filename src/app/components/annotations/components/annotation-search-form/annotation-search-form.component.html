@@ -129,26 +129,6 @@
     }
   </div>
 
-  <baw-wip>
-    <div class="form-check mt-2">
-      <!--
-        Because the verifications endpoint is not available yet, we cannot
-        filter by verified annotations. This is a placeholder for future
-        functionality.
-      -->
-      <input
-        id="filter-verified"
-        type="checkbox"
-        class="form-check-input"
-        [checked]="searchParameters.onlyUnverified"
-        (change)="updateParameterProperty('onlyUnverified', $event.target['checked'])"
-      />
-      <label for="filter-verified" class="form-check-label">
-        Only show un-verified annotations
-      </label>
-    </div>
-  </baw-wip>
-
   <div class="advanced-filters mt-2">
     <button
       id="advanced-filters-toggle"
@@ -163,6 +143,21 @@
       [(ngbCollapse)]="hideAdvancedFilters"
       class="card card-body border-top-0"
     >
+      <label class="form-label w-100">
+        Sampling Behavior
+        <select
+          id="sort-input"
+          class="form-select"
+          placeholder="Only show annotations unverified by me"
+          [value]="searchParameters.sampling ?? 'only-new'"
+          (change)="updateDiscreteOptions('sampling', $event)"
+        >
+          <option value="only-unseen">Only show annotations unverified by me</option>
+          <option value="only-unverified">Only show annotations that have not been verified</option>
+          <option value="show-all">Show annotations regardless of verification status</option>
+        </select>
+      </label>
+
       <baw-typeahead-input
         #recordingsTypeahead
         id="recordings-input"
@@ -183,7 +178,7 @@
       class="form-select"
       placeholder="Created Date (Oldest First)"
       [value]="searchParameters.sort ?? 'created-asc'"
-      (change)="updateSortBy($event)"
+      (change)="updateDiscreteOptions('sort', $event)"
     >
       <option value="created-asc">Created Date (Oldest First)</option>
       <option value="created-desc">Created Date (Newest First)</option>

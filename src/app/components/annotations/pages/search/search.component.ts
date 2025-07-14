@@ -37,6 +37,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { IfLoggedInComponent } from "@shared/can/can.component";
 import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -56,6 +57,7 @@ const annotationsKey = "annotations";
     NgbPagination,
     ErrorHandlerComponent,
     FiltersWarningModalComponent,
+    LoadingComponent,
   ],
 })
 class AnnotationSearchComponent
@@ -69,7 +71,7 @@ class AnnotationSearchComponent
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super(
       router,
@@ -81,7 +83,9 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.loading = true;
         this.searchResults = await Promise.all(
-          newResults.map(async (result) => await annotationService.show(result))
+          newResults.map(
+            async (result) => await annotationService.show(result),
+          ),
         );
 
         if (newResults.length > 0) {
@@ -195,7 +199,7 @@ class AnnotationSearchComponent
           siteId: this.searchParameters.routeSiteId,
         }),
       ],
-      { queryParams }
+      { queryParams },
     );
   }
 
@@ -213,7 +217,7 @@ class AnnotationSearchComponent
 }
 
 function getPageInfo(
-  subRoute: keyof typeof annotationMenuItems.search
+  subRoute: keyof typeof annotationMenuItems.search,
 ): IPageInfo {
   return {
     pageRoute: annotationMenuItems.search[subRoute],

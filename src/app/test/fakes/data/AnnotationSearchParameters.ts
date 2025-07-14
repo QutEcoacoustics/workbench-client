@@ -1,15 +1,19 @@
 import { Params } from "@angular/router";
-import { IAnnotationSearchParameters, SortingKey, sortingOptions } from "@components/annotations/pages/annotationSearchParameters";
+import {
+  IAnnotationSearchParameters,
+  SamplingKey,
+  SortingKey,
+  sortingOptions,
+} from "@components/annotations/pages/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnnotationSearchParameters(
-  data?: Partial<IAnnotationSearchParameters>
+  data?: Partial<IAnnotationSearchParameters>,
 ): Required<IAnnotationSearchParameters> {
   return {
     audioRecordings: modelData.ids(),
     tags: modelData.ids(),
     importFiles: modelData.ids(),
-    onlyUnverified: modelData.bool(),
     daylightSavings: modelData.bool(),
     recordingDate: [modelData.dateTime(), modelData.dateTime()],
     recordingTime: [modelData.time(), modelData.time()],
@@ -32,13 +36,14 @@ export function generateAnnotationSearchParameters(
       // string[], which incorrectly broadens the type.
       Object.keys(sortingOptions) as SortingKey[],
     ),
+    sampling: modelData.helpers.arrayElement(
+      Object.keys(sortingOptions) as SamplingKey[],
+    ),
     ...data,
   };
 }
 
-export function generateAnnotationSearchUrlParameters(
-  data?: Params
-): Params {
+export function generateAnnotationSearchUrlParameters(data?: Params): Params {
   return {
     projects: modelData.ids().join(","),
     regions: modelData.ids().join(","),

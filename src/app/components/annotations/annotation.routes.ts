@@ -21,6 +21,7 @@ const annotationSearchRouteQueryParamResolver = (
         score: params.score,
         importFiles: params.importFiles,
         sort: params.sort,
+        sampling: params.sampling,
         date: params.date,
         time: params.time,
       }

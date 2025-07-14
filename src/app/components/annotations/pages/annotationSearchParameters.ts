@@ -9,7 +9,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
@@ -36,6 +36,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 
 export type SortingKey =
@@ -64,11 +65,18 @@ export const sortingOptions = new Map([
   }],
 ]) satisfies Map<string, Sorting<keyof AudioEvent>>;
 
+export type SamplingKey = "only-new" | "only-unverified";
+
+export const samplingOptions = new Map([
+  ["only-unseen", { "error": 5 }],
+  ["only-unverified", { "verifications.id": { eq: null } }],
+  ["show-all", {}],
+]) as Map<string, InnerFilter<AudioEvent>>;
+
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
   importFiles: CollectionIds;
-  onlyUnverified: boolean;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
@@ -98,6 +106,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  sampling: SamplingKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -108,7 +117,6 @@ const serializationTable: IQueryStringParameterSpec<
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   importFiles: jsNumberArray,
-  onlyUnverified: jsBoolean,
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
   recordingTime: luxonDurationArray,
@@ -121,6 +129,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  sampling: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -162,7 +171,6 @@ export class AnnotationSearchParameters
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
   public importFiles: CollectionIds;
-  public onlyUnverified: boolean;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
@@ -185,7 +193,10 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public userId: User["id"];
+
   private _sort: SortingKey;
+  private _sampling: SamplingKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -209,7 +220,25 @@ export class AnnotationSearchParameters
         this._sort = value;
       }
     } else {
-      console.error(`Incorrect sorting key: "${value}"`);
+      console.error(`Invalid sorting key: "${value}"`);
+    }
+  }
+
+  public get sampling(): SamplingKey {
+    return this._sampling;
+  }
+
+  public set sampling(value: string) {
+    if (this.isSamplingKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // "only-new" as the default if there is no "sort" query string parameter.
+      if (value === "only-new") {
+        this._sampling = null;
+      } else {
+        this._sampling = value;
+      }
+    } else {
+      console.error(`Invalid sampling key: "${value}"`);
     }
   }
 
@@ -267,6 +296,7 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
+    filter = this.addSamplingFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -385,6 +415,28 @@ export class AnnotationSearchParameters
     return recordingFilter;
   }
 
+  private addSamplingFilters(initialFilter: InnerFilter<AudioEvent>) {
+    const defaultSamplingKey = "only-new" satisfies SamplingKey ;
+    const samplingKey = this.isSamplingKey(this.sampling)
+      ? this.sort
+      : defaultSamplingKey;
+
+    let samplingFilters = samplingOptions.get(samplingKey);
+    if (samplingKey === "only-new") {
+      samplingFilters = {
+        "verifications.creatorId": { eq: null },
+      } as InnerFilter<AudioEvent>;
+
+      if (this.userId !== undefined) {
+        samplingFilters = filterOr(samplingFilters, {
+          "verifications.creatorId": { notEq: this.userId },
+        } as InnerFilter<AudioEvent>);
+      }
+    }
+
+    return filterAnd(initialFilter, samplingFilters);
+  }
+
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
@@ -458,5 +510,9 @@ export class AnnotationSearchParameters
     // would return true, and would attempt to serialize a function when
     // creating the filter request body.
     return sortingOptions.has(key);
+  }
+
+  private isSamplingKey(key: string): key is SamplingKey {
+    return samplingOptions.has(key);
   }
 }

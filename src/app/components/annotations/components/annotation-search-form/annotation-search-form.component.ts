@@ -35,12 +35,12 @@ import {
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
-import { WIPComponent } from "@shared/wip/wip.component";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
+import { AuthTriggerData, BawSessionService } from "@baw-api/baw-session.service";
 
 enum ScoreRangeBounds {
   Lower,
@@ -55,7 +55,6 @@ enum ScoreRangeBounds {
     FormsModule,
     DateTimeFilterComponent,
     TypeaheadInputComponent,
-    WIPComponent,
     DebouncedInputDirective,
     NgbCollapse,
     NgbHighlight,
@@ -71,6 +70,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
+    private session: BawSessionService,
   ) {}
 
   @Input({ required: true })
@@ -106,6 +106,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
+      "sampling",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -135,6 +136,13 @@ export class AnnotationSearchFormComponent implements OnInit {
         dateFinishedBefore,
       };
     }
+
+    this.session.authTrigger
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe((data: AuthTriggerData) => {
+        this.searchParameters.userId = data.user?.id;
+        this.searchParametersChange.emit(this.searchParameters)
+      });
   }
 
   /**
@@ -253,7 +261,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParametersChange.emit(this.searchParameters);
   }
 
-  protected updateSortBy(event: Event): void {
+  protected updateDiscreteOptions(key: string, event: Event): void {
     // We use a type guard here because event.target is typed as a HTMLElement
     // which does not have the "value" property.
     // By type narrowing the target to a HTMLSelectElement, we can ensure that
@@ -269,6 +277,9 @@ export class AnnotationSearchFormComponent implements OnInit {
       return;
     }
 
+    const value = event.target.value;
+
+    this.searchParameters[key] = value;
     this.searchParametersChange.emit(this.searchParameters);
   }
 }
