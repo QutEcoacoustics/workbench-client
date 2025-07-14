@@ -18,6 +18,11 @@ oe-axes {
   width: 100%;
 }
 
+.inline-spinner {
+  display: inline-block;
+  width: min-content;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
