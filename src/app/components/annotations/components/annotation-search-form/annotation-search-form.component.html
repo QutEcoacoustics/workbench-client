@@ -144,15 +144,15 @@
       class="card card-body border-top-0"
     >
       <label class="form-label w-100">
-        Sampling Behavior
+        Sample Selection Behavior
         <select
-          id="sampling-input"
+          id="select-input"
           class="form-select"
           placeholder="Only show annotations unverified by me"
-          [value]="searchParameters.sampling ?? defaultSampling()"
-          (change)="updateDiscreteOptions('sampling', $event)"
+          [value]="searchParameters.select ?? defaultSelect()"
+          (change)="updateDiscreteOptions('select', $event)"
         >
-          <option value="only-new" [disabled]="!isLoggedIn()">Only show annotations unverified by me</option>
+          <option value="my-unverified" [disabled]="!isLoggedIn()">Only show annotations unverified by me</option>
           <option value="only-unverified">Only show annotations that have not been verified</option>
           <option value="show-all">Show annotations regardless of verification status</option>
         </select>

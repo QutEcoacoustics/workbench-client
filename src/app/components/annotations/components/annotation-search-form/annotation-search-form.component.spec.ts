@@ -90,7 +90,7 @@ describe("AnnotationSearchFormComponent", () => {
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   const sortingDropdown = () => spec.query("#sort-input");
-  // const samplingDropdown = () => spec.query("#sort-input");
+  // const selectionDropdown = () => spec.query("#sort-input");
 
   function setup(params: Params = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });

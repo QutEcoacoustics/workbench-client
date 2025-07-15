@@ -69,7 +69,7 @@ describe("annotationSearchParameters", () => {
     direction: "asc",
   };
 
-  const onlyNewSamplingFilters = {
+  const onlyMyUnverifiedSelectionFilters = {
     or: [
       { "verifications.creatorId": { notEq: 42 } },
       { "verifications.id": { eq: null } },
@@ -88,7 +88,7 @@ describe("annotationSearchParameters", () => {
                 in: Array.from(routeProject.siteIds),
               },
             },
-            onlyNewSamplingFilters,
+            onlyMyUnverifiedSelectionFilters,
           ],
         },
         sorting: defaultSorting,
@@ -106,7 +106,7 @@ describe("annotationSearchParameters", () => {
         regions: "2,3,4,5",
         sites: "6,7,8,9",
 
-        sampling: "show-all",
+        select: "show-all",
       },
       expectedFilters: () => ({
         filter: {
@@ -146,7 +146,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
 
-        sampling: "only-unverified",
+        select: "only-unverified",
       },
       expectedFilters: () => ({
         filter: {
@@ -184,7 +184,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { gteq: 0.2 } },
-            onlyNewSamplingFilters,
+            onlyMyUnverifiedSelectionFilters,
           ],
         },
         sorting: defaultSorting,
@@ -204,7 +204,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { lteq: 0.9 } },
-            onlyNewSamplingFilters,
+            onlyMyUnverifiedSelectionFilters,
           ],
         },
         sorting: defaultSorting,

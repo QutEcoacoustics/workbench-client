@@ -230,7 +230,7 @@ function getPageInfo(
     // We use client rendering because:
     // 1. We are rendering spectrograms, and we should not be trying to render
     //    spectrograms on the server.
-    // 2. The most used sampling technique is to only show annotations that the
+    // 2. The most used selection technique is to only show annotations that the
     //    current user has not verified.
     //    During SSR we do not know who the current user is, so we would have
     //    to double fetch the list of audio events (once unauthenticated and

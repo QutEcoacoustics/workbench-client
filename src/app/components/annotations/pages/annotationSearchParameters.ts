@@ -63,13 +63,13 @@ export const sortingOptions = new Map([
     orderBy: "createdAt",
     direction: "desc",
   }],
-]) satisfies Map<string, Sorting<keyof AudioEvent>>;
+]) satisfies Map<SortingKey, Sorting<keyof AudioEvent>>;
 
-// The sampling options map can be found in the AnnotationSearchParameter's
+// The select options map can be found in the AnnotationSearchParameter's
 // getters.
 // I have to use a getter because some of the filter conditions depend on the
 // session state.
-export type SamplingKey = "only-new" | "only-unverified" | "show-all";
+export type SelectKey = "my-unverified" | "only-unverified" | "show-all";
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -104,7 +104,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
-  sampling: SamplingKey;
+  select: SelectKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -127,7 +127,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
-  sampling: jsString,
+  select: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -193,7 +193,7 @@ export class AnnotationSearchParameters
   public eventTime: MonoTuple<Duration, 2>;
 
   private _sort: SortingKey;
-  private _sampling: SamplingKey;
+  private _select: SelectKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -221,21 +221,21 @@ export class AnnotationSearchParameters
     }
   }
 
-  public get sampling(): SamplingKey {
-    return this._sampling;
+  public get select(): SelectKey {
+    return this._select;
   }
 
-  public set sampling(value: string) {
-    if (this.isSamplingKey(value) || !isInstantiated(value)) {
+  public set select(value: string) {
+    if (this.isSelectKey(value) || !isInstantiated(value)) {
       // So that we can minimize the number of query string parameters, we use
-      // "only-new" as the default if there is no "sort" query string parameter.
-      if (value === "only-new") {
-        this._sampling = null;
+      // "my-unverified" as the default if there is no "sort" query string parameter.
+      if (value === "my-unverified") {
+        this._select = null;
       } else {
-        this._sampling = value;
+        this._select = value;
       }
     } else {
-      console.error(`Invalid sampling key: "${value}"`);
+      console.error(`Invalid select key: "${value}"`);
     }
   }
 
@@ -286,9 +286,9 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
-  private get samplingOptions() {
+  private get selectOptions() {
     return new Map([
-      ["only-new", {
+      ["my-unverified", {
         or: [
           { "verifications.creatorId": { notEq: this.user?.id ?? null } },
           { "verifications.id": { eq: null } }
@@ -296,7 +296,7 @@ export class AnnotationSearchParameters
       }],
       ["only-unverified", { "verifications.id": { eq: null } }],
       ["show-all", null],
-    ]) satisfies Map<string, InnerFilter<AudioEvent>>;
+    ]) satisfies Map<SelectKey, InnerFilter<AudioEvent>>;
   }
 
   // TODO: fix up this function
@@ -306,7 +306,7 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
-    filter = this.addSamplingFilters(filter);
+    filter = this.addSelectFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -474,15 +474,15 @@ export class AnnotationSearchParameters
     return scoreFilters;
   }
 
-  private addSamplingFilters(initialFilter: InnerFilter<AudioEvent>) {
-    const defaultSamplingKey = "only-new" satisfies SamplingKey;
-    const samplingKey = this.isSamplingKey(this.sampling)
-      ? this.sampling
-      : defaultSamplingKey;
+  private addSelectFilters(initialFilter: InnerFilter<AudioEvent>) {
+    const defaultSelectKey = "my-unverified" satisfies SelectKey;
+    const selectKey = this.isSelectKey(this.select)
+      ? this.select
+      : defaultSelectKey;
 
-    const samplingFilters = this.samplingOptions.get(samplingKey);
+    const selectFilters = this.selectOptions.get(selectKey);
 
-    return filterAnd(initialFilter, samplingFilters);
+    return filterAnd(initialFilter, selectFilters);
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
@@ -508,10 +508,10 @@ export class AnnotationSearchParameters
     // E.g. If we used the "in" operator here, a sorting key of hasOwnProperty
     // would return true, and would attempt to serialize a function when
     // creating the filter request body.
-    return sortingOptions.has(key);
+    return sortingOptions.has(key as any);
   }
 
-  private isSamplingKey(key: string): key is SamplingKey {
-    return this.samplingOptions.has(key);
+  private isSelectKey(key: string): key is SelectKey {
+    return this.selectOptions.has(key as any);
   }
 }

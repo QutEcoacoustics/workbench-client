@@ -14,7 +14,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AnnotationSearchParameters, SamplingKey } from "@components/annotations/pages/annotationSearchParameters";
+import { AnnotationSearchParameters, SelectKey } from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -96,8 +96,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
   protected isLoggedIn = signal(false);
-  protected defaultSampling = computed<SamplingKey>(
-    () => this.isLoggedIn() ? "only-new" : "only-unverified",
+  protected defaultSelect = computed<SelectKey>(
+    () => this.isLoggedIn() ? "my-unverified" : "only-unverified",
   )
 
   protected get project(): Project {
@@ -118,7 +118,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "sampling",
+      "select",
     ];
 
     for (const key of advancedFilterKeys) {

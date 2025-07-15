@@ -54,7 +54,7 @@
 
     @if (searchResults.length === 0 && !loading) {
       <h2 class="no-results-error">
-        No {{ searchParameters.sampling !== "show-all" ? "unverified" : "" }} annotations
+        No {{ searchParameters.select !== "show-all" ? "unverified" : "" }} annotations
         found
       </h2>
       } @if(displayPagination) {
