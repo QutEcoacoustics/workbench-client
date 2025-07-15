@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
+import { currentUserIdSigil, Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_RECORDING,
   PROJECT,
@@ -9,7 +9,7 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   deserializeParamsToObject,
@@ -36,7 +36,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 
 export type SortingKey =
@@ -70,6 +69,17 @@ export const sortingOptions = new Map([
 // I have to use a getter because some of the filter conditions depend on the
 // session state.
 export type SamplingKey = "only-new" | "only-unverified" | "show-all";
+
+const samplingOptions = new Map([
+  ["only-new", {
+    or: [
+      { "verifications.creatorId": { notEq: currentUserIdSigil } },
+      { "verifications.id": { eq: null } }
+    ],
+  }],
+  ["only-unverified", { "verifications.id": { eq: null } }],
+  ["show-all", null],
+]) satisfies Map<string, InnerFilter<AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -191,8 +201,6 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  public userId: User["id"];
-
   private _sort: SortingKey;
   private _sampling: SamplingKey;
 
@@ -238,21 +246,6 @@ export class AnnotationSearchParameters
     } else {
       console.error(`Invalid sampling key: "${value}"`);
     }
-  }
-
-  private get samplingOptions() {
-    const onlyUnverified = { "verifications.id": { eq: null } } as any;
-    const onlyUserUnverified = isInstantiated(this.userId)
-      ? { "verifications.creatorId": { notEq: this.userId } }
-      : null as any;
-
-    const onlyUnseen = filterOr(onlyUnverified, onlyUserUnverified);
-
-    return new Map([
-      ["only-new", onlyUnseen],
-      ["only-unverified", onlyUnverified],
-      ["show-all", null],
-    ]) as Map<string, InnerFilter<AudioEvent>>;
   }
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
@@ -483,7 +476,7 @@ export class AnnotationSearchParameters
       ? this.sampling
       : defaultSamplingKey;
 
-    const samplingFilters = this.samplingOptions.get(samplingKey);
+    const samplingFilters = samplingOptions.get(samplingKey);
 
     return filterAnd(initialFilter, samplingFilters);
   }
@@ -515,6 +508,6 @@ export class AnnotationSearchParameters
   }
 
   private isSamplingKey(key: string): key is SamplingKey {
-    return this.samplingOptions.has(key);
+    return samplingOptions.has(key);
   }
 }

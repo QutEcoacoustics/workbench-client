@@ -31,16 +31,18 @@ export class BawSessionService {
     return this._authToken;
   }
 
-  public get currentUser(): User {
-    if (this.isLoggedIn) {
-      return this.loggedInUser;
-    }
-
-    return User.getUnknownUser(undefined);
+  public get isContactable(): UserConcent {
+    return this.loggedInUser.contactable;
   }
 
-  public get isContactable(): UserConcent {
-    return this.currentUser.contactable;
+  /** Is user logged in */
+  public get isLoggedIn(): boolean {
+    return !!this.authToken;
+  }
+
+  /** Returns a subject which tracks the change in loggedIn status */
+  public get authTrigger(): Observable<AuthTriggerData> {
+    return this._authTrigger;
   }
 
   /** Set user details */
@@ -62,16 +64,6 @@ export class BawSessionService {
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
     this._authTrigger.next({ user: guestUser });
-  }
-
-  /** Is user logged in */
-  public get isLoggedIn(): boolean {
-    return !!this.authToken;
-  }
-
-  /** Returns a subject which tracks the change in loggedIn status */
-  public get authTrigger(): Observable<AuthTriggerData> {
-    return this._authTrigger;
   }
 
   public addAuthTokenToUrl(url: string): string {

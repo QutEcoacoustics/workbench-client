@@ -149,7 +149,7 @@
           id="sort-input"
           class="form-select"
           placeholder="Only show annotations unverified by me"
-          [value]="searchParameters.sampling ?? 'only-unverified'"
+          [value]="searchParameters.sampling ?? defaultSampling()"
           (change)="updateDiscreteOptions('sampling', $event)"
         >
           <option value="only-new" [disabled]="!isLoggedIn()">Only show annotations unverified by me</option>

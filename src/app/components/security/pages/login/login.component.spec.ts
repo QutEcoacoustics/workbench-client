@@ -120,7 +120,7 @@ describe("LoginComponent", () => {
     accountSpy = spec.inject(ACCOUNT.token);
 
     session = spec.inject(BawSessionService);
-    spyOnProperty(session, "currentUser").and.returnValue(
+    spyOnProperty(session, "loggedInUser").and.returnValue(
       new User(generateUser())
     );
 
@@ -398,14 +398,14 @@ describe("LoginComponent", () => {
       it("should make the correct api calls for a 'yes' response", () => {
         clickButton(spec, communicationsYesButton());
         expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
+          session.loggedInUser.id
         );
       });
 
       it("should make the correct api calls for a 'no' response", () => {
         clickButton(spec, communicationsNoButton());
         expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
+          session.loggedInUser.id
         );
       });
     });

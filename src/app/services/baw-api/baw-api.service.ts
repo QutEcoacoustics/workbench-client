@@ -329,8 +329,10 @@ export class BawApiService<
     filters: Filters<Model>,
     options: BawServiceOptions = {}
   ): Observable<Model[]> {
+    const expandedFilter = this.expandFilterSigils(filters);
+
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpPost(path, filters, undefined, options)),
+      switchMap(() => this.httpPost(path, expandedFilter, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
       catchError((err) =>
         this.handleError(err, this.suppressErrors(options), classBuilder)
@@ -823,6 +825,29 @@ export class BawApiService<
       ...params,
     };
   }
+
+  /**
+   * Expands "special" filter values
+   * This function returns an observable so if the user model changes (either
+   * through login or logout), the filter request will be re-requested and any
+   * consumers will be automatically updated with the new value.
+   */
+  private expandFilterSigils<T>(filter: any): InnerFilter<T> {
+    const userId = this.session.loggedInUser?.id ?? null;
+
+    if (filter === null || typeof filter !== "object") {
+        return filter === currentUserIdSigil ? userId : filter;
+    } else if (Array.isArray(filter)) {
+        return filter.map(item => this.expandFilterSigils(item));
+    }
+
+    const result: any = {};
+    for (const [key, value] of Object.entries(filter)) {
+        result[key] = this.expandFilterSigils(value);
+    }
+
+    return result;
+  }
 }
 
 /**
@@ -830,9 +855,12 @@ export class BawApiService<
  * represent the current user.
  * When the request is sent, this symbol will be replaced with the current users
  * id.
+ *
+ * This is a client polyfill of an api filter feature proposal
+ * see: https://github.com/QutEcoacoustics/baw-server/issues/798
  */
-export const currentUserId = Symbol("filter:session.currentUser.id");
-type CurrentUserIdSigil = typeof currentUserId;
+export const currentUserIdSigil = Symbol("filter:session.loggedInUser.id");
+type CurrentUserIdSigil = typeof currentUserIdSigil;
 
 /**
  * Model keys which may be a valid association to another model

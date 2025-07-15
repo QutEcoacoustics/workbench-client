@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   EventEmitter,
   Input,
   OnInit,
@@ -13,7 +14,7 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { AnnotationSearchParameters, SamplingKey } from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -95,6 +96,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
   protected isLoggedIn = signal(false);
+  protected defaultSampling = computed<SamplingKey>(
+    () => this.isLoggedIn() ? "only-new" : "only-unverified",
+  )
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -285,11 +289,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   private emiUpdate() {
-    this.session.authTrigger
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      .subscribe(({ user }) => {
-        this.searchParameters.userId = user?.id;
-        this.searchParametersChange.emit(this.searchParameters)
-      });
+    this.searchParametersChange.emit(this.searchParameters);
   }
 }
