@@ -31,6 +31,14 @@ export class BawSessionService {
     return this._authToken;
   }
 
+  public get currentUser(): User {
+    if (this.isLoggedIn) {
+      return this.loggedInUser;
+    }
+
+    return User.getUnknownUser(undefined);
+  }
+
   public get isContactable(): UserConcent {
     return this.loggedInUser.contactable;
   }

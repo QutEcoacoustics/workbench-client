@@ -10,6 +10,8 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
@@ -20,6 +22,8 @@ describe("SearchFiltersModalComponent", () => {
   let mockSitesApi: SpyObject<ShallowSitesService>;
   let mockRegionsApi: SpyObject<ShallowRegionsService>;
   let mockTagsApi: SpyObject<TagsService>;
+
+  let mockUser: User;
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
@@ -38,6 +42,7 @@ describe("SearchFiltersModalComponent", () => {
 
     const searchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
+      mockUser,
       injector,
     );
 
@@ -66,6 +71,8 @@ describe("SearchFiltersModalComponent", () => {
     spec.query<HTMLButtonElement>("#update-filters-btn");
 
   beforeEach(() => {
+    mockUser = new User(generateUser());
+
     setup();
   });
 

@@ -65,6 +65,8 @@ import {
 } from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { IconsModule } from "@shared/icons/icons.module";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
@@ -89,6 +91,7 @@ describe("VerificationComponent", () => {
   let routeSite: Site;
 
   let mockSearchParameters: AnnotationSearchParameters;
+  let mockUser: User;
   let mockAudioEventsResponse: AudioEvent[] = [];
   let defaultFakeTags: Tag[];
   let mockAudioRecording: AudioRecording;
@@ -136,6 +139,7 @@ describe("VerificationComponent", () => {
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
+      mockUser,
       injector
     );
     mockSearchParameters.routeSiteModel = routeSite;
@@ -262,6 +266,8 @@ describe("VerificationComponent", () => {
         )
       );
     }
+
+    mockUser = new User(generateUser());
 
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion({ projectId: routeProject.id }));

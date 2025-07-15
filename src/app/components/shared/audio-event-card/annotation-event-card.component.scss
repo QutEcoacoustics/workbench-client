@@ -11,6 +11,18 @@
 oe-axes {
   display: block;
   width: 332px;
+
+  // I am trialing using content-visibility so that spectrograms down the page
+  // don't have to paint until the user starts to scroll.
+  // This should improve the initial page load and responsiveness.
+  // However, it does have the possibility to create lag when scrolling because
+  // content will be painted on scroll.
+  //
+  // To see what this does, enable "show paints" in the Chrome dev tools
+  // "layers" tab.
+  //
+  // If this proves to be bad for UX, we should revert this change.
+  content-visibility: auto;
 }
 
 .info-line {

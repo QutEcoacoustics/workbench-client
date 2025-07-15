@@ -4,7 +4,8 @@ import { Filters, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Params } from "@angular/router";
 import { DateTime } from "luxon";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 interface SearchParameterTest {
@@ -15,14 +16,39 @@ interface SearchParameterTest {
 
 describe("annotationSearchParameters", () => {
   let routeProject: Project;
+  let mockUser: User;
 
   it("should create", () => {
     const dataModel = new AnnotationSearchParameters();
     expect(dataModel).toBeInstanceOf(AnnotationSearchParameters);
   });
 
+  // If the user is un-authenticated, they should see all unverified events
+  // because the default for logged in users (show all that the user hasn't
+  // verified) cannot be performed for a logged in user.
+  xit("should have the correct default filters for an unauthenticated user", () => {
+    const dataModel = new AnnotationSearchParameters();
+
+    const expectedFilters = {
+      filter: {
+        and: [
+          { "audioRecordings.siteId": { in: [] } },
+          { "verifications.id": { eq: null } },
+        ],
+      },
+      sorting: {
+        orderBy: "createdAt",
+        direction: "asc",
+      },
+    } as any;
+    const realizedFilters = dataModel.toFilter();
+
+    expect(realizedFilters).toEqual(expectedFilters);
+  });
+
   function createParameterModel(params?: Params): AnnotationSearchParameters {
-    const dataModel = new AnnotationSearchParameters(params);
+    mockUser = new User(generateUser({ id: 42 }));
+    const dataModel = new AnnotationSearchParameters(params, mockUser);
 
     const mockProjectId = modelData.id();
     dataModel.routeProjectId = modelData.id();
@@ -43,19 +69,30 @@ describe("annotationSearchParameters", () => {
     direction: "asc",
   };
 
+  const onlyNewSamplingFilters = {
+    or: [
+      { "verifications.creatorId": { notEq: 42 } },
+      { "verifications.id": { eq: null } },
+    ],
+  };
+
   const testCases: SearchParameterTest[] = [
     {
-      name: "should create correct default filters",
+      name: "should create correct default filters for an authenticated user",
       inputParams: undefined,
-      expectedFilters: () =>
-        ({
-          filter: {
-            "audioRecordings.siteId": {
-              in: Array.from(routeProject.siteIds),
+      expectedFilters: () => ({
+        filter: {
+          and: [
+            {
+              "audioRecordings.siteId": {
+                in: Array.from(routeProject.siteIds),
+              },
             },
-          },
-          sorting: defaultSorting,
-        }) as Filters<AudioEvent>,
+            onlyNewSamplingFilters,
+          ],
+        },
+        sorting: defaultSorting,
+      }),
     },
     {
       name: "should create correct filter when filters is set",
@@ -68,6 +105,8 @@ describe("annotationSearchParameters", () => {
 
         regions: "2,3,4,5",
         sites: "6,7,8,9",
+
+        sampling: "show-all",
       },
       expectedFilters: () => ({
         filter: {
@@ -106,6 +145,8 @@ describe("annotationSearchParameters", () => {
         sites: "6,7,8,9",
 
         sort: "score-asc",
+
+        sampling: "only-unverified",
       },
       expectedFilters: () => ({
         filter: {
@@ -120,6 +161,7 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
+            { "verifications.id": { eq: null } },
           ],
         },
         sorting: {
@@ -142,6 +184,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { gteq: 0.2 } },
+            onlyNewSamplingFilters,
           ],
         },
         sorting: defaultSorting,
@@ -161,6 +204,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { lteq: 0.9 } },
+            onlyNewSamplingFilters,
           ],
         },
         sorting: defaultSorting,
@@ -174,28 +218,4 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
-
-  describe("sampling", () => {
-    // These tests only assert that the correct filter conditions can be created
-    // for the following conditions.
-    // Asserting that the user model can be successfully resolved and assigned
-    // is tested in the annotation search form and other consumers.
-    it("should have the correct default sampling when logged in", () => {
-      const dataModel = new AnnotationSearchParameters(
-        generateAnnotationSearchUrlParameters(),
-      );
-
-      // Because the user id cannot be instantiated through the query string
-      // parameters, we have to manually assign it.
-      const mockUserId = modelData.id();
-      dataModel.userId = mockUserId;
-
-      const expectedFilters = {};
-      const realizedFilters = dataModel.toFilter();
-
-      expect(realizedFilters).toEqual(expectedFilters);
-    });
-
-    it("should correctly update default filters if the user logs out", () => {});
-  });
 });

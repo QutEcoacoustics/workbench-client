@@ -176,14 +176,14 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   protected optInContactable() {
     this.communicationsToastElement.close();
     firstValueFrom(
-      this.accountsApi.optInContactable(this.session.loggedInUser.id)
+      this.accountsApi.optInContactable(this.session.currentUser.id)
     );
   }
 
   protected optOutContactable() {
     this.communicationsToastElement.close();
     firstValueFrom(
-      this.accountsApi.optOutContactable(this.session.loggedInUser.id)
+      this.accountsApi.optOutContactable(this.session.currentUser.id)
     );
   }
 }

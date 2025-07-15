@@ -43,6 +43,8 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockComponent } from "ng-mocks";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -60,6 +62,7 @@ describe("AnnotationSearchComponent", () => {
   let mockAnnotationResponse: Annotation;
   let mockSearchParameters: AnnotationSearchParameters;
   let mockAudioRecording: AudioRecording;
+  let mockUser: User;
 
   let routeProject: Project;
   let routeRegion: Region;
@@ -149,8 +152,11 @@ describe("AnnotationSearchComponent", () => {
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());
 
+    mockUser = new User(generateUser());
+
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
+      mockUser,
     );
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeRegionModel = routeRegion;
@@ -183,6 +189,12 @@ describe("AnnotationSearchComponent", () => {
               in: Array.from(mockSearchParameters.sites),
             },
           },
+          {
+            or: [
+              { "verifications.creatorId": { notEq: mockUser.id} },
+              { "verifications.id": { eq: null } },
+            ],
+          }
         ],
       },
       sorting: {

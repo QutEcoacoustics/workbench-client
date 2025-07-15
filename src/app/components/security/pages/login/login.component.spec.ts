@@ -398,14 +398,14 @@ describe("LoginComponent", () => {
       it("should make the correct api calls for a 'yes' response", () => {
         clickButton(spec, communicationsYesButton());
         expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
-          session.loggedInUser.id
+          session.currentUser.id
         );
       });
 
       it("should make the correct api calls for a 'no' response", () => {
         clickButton(spec, communicationsNoButton());
         expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
-          session.loggedInUser.id
+          session.currentUser.id
         );
       });
     });

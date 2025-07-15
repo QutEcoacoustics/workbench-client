@@ -39,6 +39,8 @@ import {
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -54,6 +56,7 @@ describe("AnnotationSearchFormComponent", () => {
   let mockSitesResponse: Site[] = [];
   let mockProject: Project;
   let mockRecording: AudioRecording;
+  let mockUser: User;
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
@@ -87,6 +90,7 @@ describe("AnnotationSearchFormComponent", () => {
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   const sortingDropdown = () => spec.query("#sort-input");
+  const samplingDropdown = () => spec.query("#sort-input");
 
   function setup(params: Params = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
@@ -135,7 +139,7 @@ describe("AnnotationSearchFormComponent", () => {
       ),
     ]);
 
-    const searchParameters = new AnnotationSearchParameters(params, injector);
+    const searchParameters = new AnnotationSearchParameters(params, mockUser, injector);
     searchParameters.routeProjectModel = mockProject;
     spec.setInput("searchParameters", searchParameters);
 
@@ -165,6 +169,7 @@ describe("AnnotationSearchFormComponent", () => {
     );
     mockProject = new Project(generateProject());
     mockRecording = new AudioRecording(generateAudioRecording());
+    mockUser = new User(generateUser());
   });
 
   it("should create", fakeAsync(() => {

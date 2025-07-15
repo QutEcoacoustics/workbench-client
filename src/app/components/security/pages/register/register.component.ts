@@ -91,7 +91,7 @@ class RegisterComponent
         map(() => {
           firstValueFrom(
             this.accountsApi.updateContactableConcent(
-              this.session.loggedInUser.id,
+              this.session.currentUser.id,
               model.contactable ? UserConcent.yes : UserConcent.no
             )
           );
