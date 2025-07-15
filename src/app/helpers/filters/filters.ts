@@ -36,33 +36,6 @@ export function filterAnd<T extends AbstractModel>(
 }
 
 /**
- * Adds an inner filter to the root of an existing filter in an `or` expression
- *
- * @param filter The current inner filter conditions
- * @param newFilter A new inner filter condition that will be added in an `or` expression
- * @returns A new filter which satisfies the intersection between the two filters
- */
-export function filterOr<T extends AbstractModel>(
-  filter: InnerFilter<T>,
-  newFilter: InnerFilter<T>,
-): InnerFilter<Writeable<T>> {
-  if (!newFilter || Object.keys(newFilter).length === 0) {
-    return filter;
-  }
-
-  if (!filter || Object.keys(filter).length === 0) {
-    return newFilter;
-  } else {
-    return {
-      or: filter.or
-        ? [...(filter.or as InnerFilter[]), newFilter]
-        : [filter, newFilter],
-    };
-  }
-}
-
-
-/**
  * Adds a new filter to an existing filter that filters by a model's id
  *
  * @param key The key identifier of the model, most likely the type

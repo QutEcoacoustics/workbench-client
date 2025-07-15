@@ -192,7 +192,7 @@ class VerificationComponent
       const apiRequest = this.verificationApi.createOrUpdate(
         verification,
         subject as AudioEvent,
-        this.session.loggedInUser
+        this.session.currentUser
       );
 
       // I use firstValueFrom so that the observable is evaluated

@@ -120,7 +120,7 @@ describe("LoginComponent", () => {
     accountSpy = spec.inject(ACCOUNT.token);
 
     session = spec.inject(BawSessionService);
-    spyOnProperty(session, "loggedInUser").and.returnValue(
+    spyOnProperty(session, "currentUser").and.returnValue(
       new User(generateUser())
     );
 
