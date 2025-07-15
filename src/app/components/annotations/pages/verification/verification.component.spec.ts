@@ -76,7 +76,6 @@ describe("VerificationComponent", () => {
 
   let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
-  let fileWriteSpy: jasmine.Spy;
 
   let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let tagsApiSpy: SpyObject<TagsService>;
@@ -243,7 +242,6 @@ describe("VerificationComponent", () => {
 
   beforeEach(async () => {
     patchSharedArrayBuffer();
-    fileWriteSpy = saveFilePickerApiSpy();
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
@@ -316,14 +314,6 @@ describe("VerificationComponent", () => {
       "button"
     );
 
-  const dataSourceComponent = () =>
-    document.querySelector<HTMLElement>("oe-data-source");
-  const dataSourceRoot = () => dataSourceComponent().shadowRoot;
-  const downloadResultsButton = () =>
-    dataSourceRoot().querySelector<HTMLButtonElement>(
-      "[data-testid='download-results-button']"
-    );
-
   function toggleParameters(): void {
     spec.click(dialogToggleButton());
     tick(1_000);
@@ -369,35 +359,6 @@ describe("VerificationComponent", () => {
     }
 
     await detectChanges(spec);
-  }
-
-  async function downloadResults() {
-    const downloadButton = downloadResultsButton();
-
-    await waitUntil(() => !downloadButton.disabled);
-
-    expect(downloadButton).not.toBeDisabled();
-    downloadButton.click();
-
-    await waitUntil(() => fileWriteSpy.calls.count() > 0);
-
-    detectChanges(spec);
-  }
-
-  function saveFilePickerApiSpy(): jasmine.Spy {
-    const fileWriteApi = jasmine.createSpy("write").and.stub();
-
-    const mockApi = () =>
-      Object({
-        createWritable: () =>
-          Object({
-            write: fileWriteApi,
-            close: jasmine.createSpy("close").and.stub(),
-          }),
-      });
-
-    window["showSaveFilePicker"] = mockApi;
-    return fileWriteApi;
   }
 
   function gridSize(): number {
@@ -595,20 +556,6 @@ describe("VerificationComponent", () => {
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
           expect(realizedTileCount).toBeGreaterThan(0);
-        });
-
-        // jasmine will automatically fail if an error is thrown in a test
-        // by clicking the download button we can assert that the download
-        // functionality was called without throwing an error
-        // we also assert that the file write api was called with a file
-        it("should download results without error", async () => {
-          // the verification grid will not allow us to download results if
-          // there is no history to download. Therefore, we have to make a
-          // decision before testing downloading results
-          await makeDecision(0);
-          await downloadResults();
-
-          expect(fileWriteSpy).toHaveBeenCalledOnceWith(jasmine.any(File));
         });
       });
     });

@@ -207,7 +207,7 @@ describe("AnnotationSearchComponent", () => {
   });
 
   it("should display an error if there are no search results", () => {
-    const expectedText = "No annotations found";
+    const expectedText = "No unverified annotations found";
 
     spec.component.searchResults = [];
     spec.component.loading = false;
