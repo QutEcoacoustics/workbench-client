@@ -329,10 +329,8 @@ export class BawApiService<
     filters: Filters<Model>,
     options: BawServiceOptions = {}
   ): Observable<Model[]> {
-    const expandedFilter = this.expandFilterSigils(filters);
-
     return this.session.authTrigger.pipe(
-      switchMap(() => this.httpPost(path, expandedFilter, undefined, options)),
+      switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
       catchError((err) =>
         this.handleError(err, this.suppressErrors(options), classBuilder)
@@ -825,42 +823,7 @@ export class BawApiService<
       ...params,
     };
   }
-
-  /**
-   * Expands "special" filter values
-   * This function returns an observable so if the user model changes (either
-   * through login or logout), the filter request will be re-requested and any
-   * consumers will be automatically updated with the new value.
-   */
-  private expandFilterSigils<T>(filter: any): InnerFilter<T> {
-    const userId = this.session.loggedInUser?.id ?? null;
-
-    if (filter === null || typeof filter !== "object") {
-        return filter === currentUserIdSigil ? userId : filter;
-    } else if (Array.isArray(filter)) {
-        return filter.map(item => this.expandFilterSigils(item));
-    }
-
-    const result: any = {};
-    for (const [key, value] of Object.entries(filter)) {
-        result[key] = this.expandFilterSigils(value);
-    }
-
-    return result;
-  }
 }
-
-/**
- * A special symbol that you can use inside a filter condition that will
- * represent the current user.
- * When the request is sent, this symbol will be replaced with the current users
- * id.
- *
- * This is a client polyfill of an api filter feature proposal
- * see: https://github.com/QutEcoacoustics/baw-server/issues/798
- */
-export const currentUserIdSigil = Symbol("filter:session.loggedInUser.id");
-type CurrentUserIdSigil = typeof currentUserIdSigil;
 
 /**
  * Model keys which may be a valid association to another model
@@ -936,10 +899,10 @@ export interface Expression {
 }
 
 export interface Comparisons {
-  eq?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
-  equal?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
-  notEq?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
-  notEqual?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
+  eq?: string | number | boolean | SerializableObject;
+  equal?: string | number | boolean | SerializableObject;
+  notEq?: string | number | boolean | SerializableObject;
+  notEqual?: string | number | boolean | SerializableObject;
   lt?: string | number | Expression | SerializableObject;
   lessThan?: string | number | Expression | SerializableObject;
   notLt?: string | number | Expression | SerializableObject;

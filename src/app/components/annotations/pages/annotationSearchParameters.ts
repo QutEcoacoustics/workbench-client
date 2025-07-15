@@ -1,5 +1,5 @@
 import { Params } from "@angular/router";
-import { currentUserIdSigil, Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_RECORDING,
   PROJECT,
@@ -36,6 +36,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 
 export type SortingKey =
@@ -69,17 +70,6 @@ export const sortingOptions = new Map([
 // I have to use a getter because some of the filter conditions depend on the
 // session state.
 export type SamplingKey = "only-new" | "only-unverified" | "show-all";
-
-const samplingOptions = new Map([
-  ["only-new", {
-    or: [
-      { "verifications.creatorId": { notEq: currentUserIdSigil } },
-      { "verifications.id": { eq: null } }
-    ],
-  }],
-  ["only-unverified", { "verifications.id": { eq: null } }],
-  ["show-all", null],
-]) satisfies Map<string, InnerFilter<AudioEvent>>;
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -159,6 +149,7 @@ export class AnnotationSearchParameters
 {
   public constructor(
     protected queryStringParameters: Params = {},
+    public user?: User,
     public injector?: AssociationInjector,
   ) {
     const deserializedObject: IAnnotationSearchParameters =
@@ -293,6 +284,19 @@ export class AnnotationSearchParameters
 
   public get scoreUpperBound(): number | null {
     return this.score ? this.score[1] : null;
+  }
+
+  private get samplingOptions() {
+    return new Map([
+      ["only-new", {
+        or: [
+          { "verifications.creatorId": { notEq: this.user?.id ?? null } },
+          { "verifications.id": { eq: null } }
+        ],
+      }],
+      ["only-unverified", { "verifications.id": { eq: null } }],
+      ["show-all", null],
+    ]) satisfies Map<string, InnerFilter<AudioEvent>>;
   }
 
   // TODO: fix up this function
@@ -476,7 +480,7 @@ export class AnnotationSearchParameters
       ? this.sampling
       : defaultSamplingKey;
 
-    const samplingFilters = samplingOptions.get(samplingKey);
+    const samplingFilters = this.samplingOptions.get(samplingKey);
 
     return filterAnd(initialFilter, samplingFilters);
   }
@@ -508,6 +512,6 @@ export class AnnotationSearchParameters
   }
 
   private isSamplingKey(key: string): key is SamplingKey {
-    return samplingOptions.has(key);
+    return this.samplingOptions.has(key);
   }
 }

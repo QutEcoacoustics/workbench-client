@@ -1,27 +1,17 @@
-import { Injectable, Type } from "@angular/core";
-import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
+import { Injectable } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
-import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import {
-  BawProvider,
-  BawResolver,
-  ResolvedModel,
-} from "@baw-api/resolver-common";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
-import { firstValueFrom, Observable, of } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class AnnotationService {
   public constructor(
     private tagsApi: TagsService,
-    private audioRecordingsApi: AudioRecordingsService
+    private audioRecordingsApi: AudioRecordingsService,
   ) {}
 
   public async show(audioEvent: AudioEvent): Promise<Annotation> {
@@ -46,77 +36,15 @@ export class AnnotationService {
             in: tagIds,
           },
         } as any,
-      })
+      }),
     );
   }
 
   private async showAudioRecording(
-    audioEvent: AudioEvent
+    audioEvent: AudioEvent,
   ): Promise<AudioRecording> {
     return await firstValueFrom(
-      this.audioRecordingsApi.show(audioEvent.audioRecordingId)
-    )
+      this.audioRecordingsApi.show(audioEvent.audioRecordingId),
+    );
   }
 }
-
-interface ResolverNames {
-  showOptional: string;
-}
-
-// we use a custom resolver here because the annotation service is a virtual
-// service that does not have an api backing
-// therefore, we cannot use the standard BawApiResolver here
-class AnnotationResolver extends BawResolver<
-  AnnotationSearchParameters,
-  undefined,
-  [],
-  any,
-  ResolverNames
-> {
-  public constructor() {
-    super([ProjectsService, ShallowRegionsService, ShallowSitesService]);
-  }
-
-  public createProviders(
-    name: string,
-    resolver: Type<{
-      resolve: ResolveFn<ResolvedModel<AnnotationSearchParameters>>;
-    }>,
-    deps: Type<ProjectsService | ShallowRegionsService | ShallowSitesService>[]
-  ): ResolverNames & { providers: BawProvider[] } {
-    const showOptionalProvider = {
-      showOptional: name + "ShowOptionalResolver",
-      providers: [
-        {
-          provide: name + "ShowOptionalResolver",
-          useClass: resolver,
-          deps,
-        },
-      ],
-    };
-
-    return showOptionalProvider;
-  }
-
-  public resolverFn(
-    route: ActivatedRouteSnapshot
-  ): Observable<AnnotationSearchParameters> {
-    const routeProjectId = route.params["projectId"];
-    const routeRegionId = route.params["regionId"];
-    const routeSiteId = route.params["siteId"];
-
-    const data = {
-      routeProjectId: routeProjectId,
-      routeRegionId: routeRegionId,
-      routeSiteId: routeSiteId,
-      ...route.queryParams,
-    };
-
-    const parameterModel = new AnnotationSearchParameters(data);
-    return of(parameterModel);
-  }
-}
-
-export const annotationResolvers = new AnnotationResolver().create(
-  "Annotations"
-);
