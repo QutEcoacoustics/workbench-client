@@ -826,6 +826,15 @@ export class BawApiService<
 }
 
 /**
+ * A special symbol that you can use inside a filter condition that will
+ * represent the current user.
+ * When the request is sent, this symbol will be replaced with the current users
+ * id.
+ */
+export const currentUserId = Symbol("filter:session.currentUser.id");
+type CurrentUserIdSigil = typeof currentUserId;
+
+/**
  * Model keys which may be a valid association to another model
  */
 type AssociationKeys<Model extends AbstractModel> = KeysOfType<
@@ -899,10 +908,10 @@ export interface Expression {
 }
 
 export interface Comparisons {
-  eq?: string | number | boolean | SerializableObject;
-  equal?: string | number | boolean | SerializableObject;
-  notEq?: string | number | boolean | SerializableObject;
-  notEqual?: string | number | boolean | SerializableObject;
+  eq?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
+  equal?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
+  notEq?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
+  notEqual?: string | number | boolean | SerializableObject | CurrentUserIdSigil;
   lt?: string | number | Expression | SerializableObject;
   lessThan?: string | number | Expression | SerializableObject;
   notLt?: string | number | Expression | SerializableObject;

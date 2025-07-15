@@ -4,6 +4,7 @@ import {
   Input,
   OnInit,
   Output,
+  signal,
   ViewChild,
 } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -41,6 +42,7 @@ import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { isGuestPredicate } from "src/app/app.menus";
 
 enum ScoreRangeBounds {
   Lower,
@@ -71,7 +73,12 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
     private session: BawSessionService,
-  ) {}
+  ) {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.session.authTrigger.subscribe(({ user }) => {
+      this.isLoggedIn.set(!isGuestPredicate(user));
+    });
+  }
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
@@ -87,6 +94,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
+  protected isLoggedIn = signal(false);
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
