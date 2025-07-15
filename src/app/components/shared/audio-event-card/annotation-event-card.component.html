@@ -27,11 +27,15 @@
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
 
-      @for (text of annotation().tags; track text; let isLast = $last) {
-        <span>
-          <a [href]="text.viewUrl">{{ text.text }}</a>
-          @if (!isLast) {, }
-        </span>
+      @if (annotation().tags.length > 0) {
+        @for (text of annotation().tags; track text; let isLast = $last) {
+          <span>
+            <a [href]="text.viewUrl">{{ text.text }}</a>
+            @if (!isLast) {, }
+          </span>
+        }
+      } @else {
+        <i>No tags</i>
       }
     </span>
 
@@ -62,7 +66,3 @@
     </span>
   </div>
 </div>
-
-<ng-template #noTagsTemplate>
-  <i>No tags</i>
-</ng-template>

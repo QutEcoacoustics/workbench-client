@@ -187,9 +187,13 @@ describe("annotationSearchParameters", () => {
 
       // Because the user id cannot be instantiated through the query string
       // parameters, we have to manually assign it.
+      const mockUserId = modelData.id();
+      dataModel.userId = mockUserId;
 
       const expectedFilters = {};
-      const realizedFilters = {};
+      const realizedFilters = dataModel.toFilter();
+
+      expect(realizedFilters).toEqual(expectedFilters);
     });
 
     it("should correctly update default filters if the user logs out", () => {});
