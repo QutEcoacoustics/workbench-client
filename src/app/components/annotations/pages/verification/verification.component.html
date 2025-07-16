@@ -49,8 +49,18 @@
     <baw-grid-tile-content></baw-grid-tile-content>
   </template>
 
-  <oe-verification verified="true" shortcut="Y"></oe-verification>
-  <oe-verification verified="false" shortcut="N"></oe-verification>
+  <oe-verification
+    verified="true"
+    shortcut="Y"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
+  <oe-verification
+    verified="false"
+    shortcut="N"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>
