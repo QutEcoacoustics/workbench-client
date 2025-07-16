@@ -39,6 +39,8 @@ import {
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
 import { defaultDebounceTime } from "src/app/app.helper";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -54,6 +56,7 @@ describe("AnnotationSearchFormComponent", () => {
   let mockSitesResponse: Site[] = [];
   let mockProject: Project;
   let mockRecording: AudioRecording;
+  let mockUser: User;
 
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
@@ -62,7 +65,6 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   const sitesTypeahead = () => spec.query("#sites-input");
-  const onlyVerifiedCheckbox = () => spec.query("#filter-verified");
 
   const tagsTypeahead = () => spec.query("#tags-input");
   const tagPills = () =>
@@ -136,7 +138,7 @@ describe("AnnotationSearchFormComponent", () => {
       ),
     ]);
 
-    const searchParameters = new AnnotationSearchParameters(params, injector);
+    const searchParameters = new AnnotationSearchParameters(params, mockUser, injector);
     searchParameters.routeProjectModel = mockProject;
     spec.setInput("searchParameters", searchParameters);
 
@@ -166,6 +168,7 @@ describe("AnnotationSearchFormComponent", () => {
     );
     mockProject = new Project(generateProject());
     mockRecording = new AudioRecording(generateAudioRecording());
+    mockUser = new User(generateUser());
   });
 
   it("should create", fakeAsync(() => {
@@ -239,13 +242,6 @@ describe("AnnotationSearchFormComponent", () => {
       ).toBeFalsy();
     }));
 
-    // check the population of a checkbox boolean input
-    // TODO: enable this test once we have the endpoint available to filter by
-    // verified status
-    xit("should pre-populate the only verified checkbox if provided in the search parameters model", fakeAsync(() => {
-      expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-    }));
-
     it("should pre-populate the sorting dropdown correctly", fakeAsync(() => {
       const testedSorting = "score-asc" satisfies SortingKey;
 
@@ -285,7 +281,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(advancedFiltersCollapsable()).toHaveClass("show");
     }));
 
-    it("should not apply the advanced filters if the dropdown is closed", fakeAsync(() => {
+    it("should not apply the audio recording id filters if the advanced filters dropdown is closed", fakeAsync(() => {
       setup({ audioRecordings: "1" });
       expect(spec.component.searchParameters.audioRecordings).toHaveLength(1);
 
@@ -410,17 +406,6 @@ describe("AnnotationSearchFormComponent", () => {
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
-    }));
-
-    // TODO: enable this test once we have the endpoint available to filter by verified status
-    xit("should emit the correct model if the only verified checkbox is updated", fakeAsync(() => {
-      modelChangeSpy.calls.reset();
-      spec.click(onlyVerifiedCheckbox());
-
-      expect(spec.component.searchParameters.onlyUnverified).toBeTrue();
-      expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        jasmine.objectContaining({ onlyUnverified: true }),
-      );
     }));
   });
 

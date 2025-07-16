@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { DecimalPipe } from "@angular/common";
@@ -18,7 +18,7 @@ import { DecimalPipe } from "@angular/common";
 
     <div class="modal-body">
       <p>
-        You are seeing <em>all</em> ({{ itemCount | number }}) annotations
+        You are seeing <em>all</em> ({{ itemCount() | number }}) annotations
         because no search filters were used.
       </p>
 
@@ -44,12 +44,13 @@ import { DecimalPipe } from "@angular/common";
     </div>
   `,
   imports: [DecimalPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FiltersWarningModalComponent implements ModalComponent {
-  @Input({ required: true }) public modal: NgbActiveModal;
-  @Input({ required: true }) public itemCount: number;
+  public modal = input.required<NgbActiveModal>();
+  public itemCount = input.required<number>();
 
   public closeModal(status: boolean): void {
-    this.modal.close(status);
+    this.modal().close(status);
   }
 }

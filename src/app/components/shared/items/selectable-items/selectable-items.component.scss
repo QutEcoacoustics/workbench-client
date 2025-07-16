@@ -1,0 +1,7 @@
+button {
+  height: 100%;
+
+  &[disabled], &[readonly="true"] {
+    cursor: not-allowed;
+  }
+}

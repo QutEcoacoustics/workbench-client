@@ -23,17 +23,13 @@ import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
-import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import {
-  annotationResolvers,
-  AnnotationService,
-} from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -47,6 +43,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
+import { annotationResolvers } from "@services/models/annotation.resolver";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -67,12 +64,11 @@ const confirmedMapping = {
 
 @Component({
   selector: "baw-verification",
-  templateUrl: "verification.component.html",
-  styleUrl: "verification.component.scss",
+  templateUrl: "./verification.component.html",
+  styleUrl: "./verification.component.scss",
   imports: [
     FaIconComponent,
     NgbTooltip,
-    ProgressWarningComponent,
     SearchFiltersModalComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -95,9 +91,6 @@ class VerificationComponent
   ) {
     super();
   }
-
-  @ViewChild("progressWarningModal")
-  private lostProgressWarningModal: ElementRef<ProgressWarningComponent>;
 
   @ViewChild("searchFiltersModal")
   private searchFiltersModal: ElementRef<SearchFiltersModalComponent>;
@@ -220,17 +213,7 @@ class VerificationComponent
       return;
     }
 
-    // if the user has unsaved changes, we want to warn them that their progress
-    // will be lost if they update the search parameters
-    const confirmationModal = this.modals.open(this.lostProgressWarningModal);
-    confirmationModal.result.then((success: boolean) => {
-      if (success) {
-        this.searchParameters = newModel;
-        this.updateGridCallback();
-      } else {
-        this.openSearchFiltersModal();
-      }
-    });
+    this.updateGridCallback();
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {

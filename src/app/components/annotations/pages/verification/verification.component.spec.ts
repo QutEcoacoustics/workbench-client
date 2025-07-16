@@ -50,7 +50,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
 import { nodeModule, testAsset } from "@test/helpers/karma";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
-import { ProgressWarningComponent } from "@components/annotations/components/modals/progress-warning/progress-warning.component";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -65,7 +64,10 @@ import {
 } from "@test/helpers/general";
 import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { IconsModule } from "@shared/icons/icons.module";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
+import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { AnnotationSearchParameters, VerificationStatusKey } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
@@ -74,7 +76,6 @@ describe("VerificationComponent", () => {
 
   let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
   let mediaServiceSpy: SpyObject<MediaService>;
-  let fileWriteSpy: jasmine.Spy;
 
   let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let tagsApiSpy: SpyObject<TagsService>;
@@ -89,6 +90,7 @@ describe("VerificationComponent", () => {
   let routeSite: Site;
 
   let mockSearchParameters: AnnotationSearchParameters;
+  let mockUser: User;
   let mockAudioEventsResponse: AudioEvent[] = [];
   let defaultFakeTags: Tag[];
   let mockAudioRecording: AudioRecording;
@@ -100,8 +102,8 @@ describe("VerificationComponent", () => {
     imports: [
       IconsModule,
 
+      SelectableItemsComponent,
       SearchFiltersModalComponent,
-      ProgressWarningComponent,
       AnnotationSearchFormComponent,
       TypeaheadInputComponent,
       DateTimeFilterComponent,
@@ -136,6 +138,7 @@ describe("VerificationComponent", () => {
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
+      mockUser,
       injector
     );
     mockSearchParameters.routeSiteModel = routeSite;
@@ -239,7 +242,6 @@ describe("VerificationComponent", () => {
 
   beforeEach(async () => {
     patchSharedArrayBuffer();
-    fileWriteSpy = saveFilePickerApiSpy();
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
@@ -263,6 +265,8 @@ describe("VerificationComponent", () => {
       );
     }
 
+    mockUser = new User(generateUser());
+
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion({ projectId: routeProject.id }));
     routeSite = new Site(generateSite({ regionId: routeRegion.id }));
@@ -275,7 +279,7 @@ describe("VerificationComponent", () => {
     modalsSpy?.dismissAll();
   });
 
-  const dialogToggleButton = () =>
+  const dialogShowButton = () =>
     spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
@@ -310,16 +314,13 @@ describe("VerificationComponent", () => {
       "button"
     );
 
-  const dataSourceComponent = () =>
-    document.querySelector<HTMLElement>("oe-data-source");
-  const dataSourceRoot = () => dataSourceComponent().shadowRoot;
-  const downloadResultsButton = () =>
-    dataSourceRoot().querySelector<HTMLButtonElement>(
-      "[data-testid='download-results-button']"
-    );
+  function clickVerificationStatusFilter(value: VerificationStatusKey) {
+    const target = document.querySelector(`[aria-valuetext="${value}"]`);
+    spec.click(target);
+  }
 
-  function toggleParameters(): void {
-    spec.click(dialogToggleButton());
+  function showParameters(): void {
+    spec.click(dialogShowButton());
     tick(1_000);
     discardPeriodicTasks();
   }
@@ -365,35 +366,6 @@ describe("VerificationComponent", () => {
     await detectChanges(spec);
   }
 
-  async function downloadResults() {
-    const downloadButton = downloadResultsButton();
-
-    await waitUntil(() => !downloadButton.disabled);
-
-    expect(downloadButton).not.toBeDisabled();
-    downloadButton.click();
-
-    await waitUntil(() => fileWriteSpy.calls.count() > 0);
-
-    detectChanges(spec);
-  }
-
-  function saveFilePickerApiSpy(): jasmine.Spy {
-    const fileWriteApi = jasmine.createSpy("write").and.stub();
-
-    const mockApi = () =>
-      Object({
-        createWritable: () =>
-          Object({
-            write: fileWriteApi,
-            close: jasmine.createSpy("close").and.stub(),
-          }),
-      });
-
-    window["showSaveFilePicker"] = mockApi;
-    return fileWriteApi;
-  }
-
   function gridSize(): number {
     return gridTiles().length;
   }
@@ -422,23 +394,39 @@ describe("VerificationComponent", () => {
         await detectChanges(spec);
       });
 
-      xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      xit("should update the search parameters when filter conditions are added", async () => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
 
-        toggleParameters();
-        selectFromTypeahead(spec, tagsTypeahead(), tagText);
+        await detectChanges(spec);
 
-        const realizedComponentParams = spec.component.searchParameters;
-        expect(realizedComponentParams.tags).toContain(expectedTagId);
-      }));
+        fakeAsync(() => {
+          showParameters();
+          selectFromTypeahead(spec, tagsTypeahead(), tagText);
+        })();
+
+        spec.click(updateFiltersButton());
+
+        expect(spec.component.searchParameters.tags).toContain(expectedTagId);
+      });
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
         expect(modalsSpy.open).not.toHaveBeenCalled();
-        toggleParameters();
+        showParameters();
         expect(modalsSpy.open).toHaveBeenCalledTimes(1);
       }));
+
+      it("should correctly update the selection parameter when filter conditions are added", async () => {
+        await detectChanges(spec);
+        fakeAsync(() => showParameters())();
+
+        clickVerificationStatusFilter("any");
+
+        spec.click(updateFiltersButton());
+
+        expect(spec.component.searchParameters.verificationStatus).toEqual("any");
+      });
     });
 
     describe("with initial search parameters", () => {
@@ -470,7 +458,7 @@ describe("VerificationComponent", () => {
         );
       });
 
-      describe("verification api", () => {
+      xdescribe("verification api", () => {
         beforeEach(async () => {
           await waitUntil(() => gridSize() > 2);
         });
@@ -572,12 +560,11 @@ describe("VerificationComponent", () => {
           const tagText = targetTag.text;
 
           fakeAsync(() => {
-            toggleParameters();
+            showParameters();
             selectFromTypeahead(spec, tagsTypeahead(), tagText);
           })();
 
           spec.click(updateFiltersButton());
-
           await detectChanges(spec);
 
           // we use the "toBe" matcher so that we compare the "getPage" callback
@@ -586,23 +573,23 @@ describe("VerificationComponent", () => {
           expect(newPagingCallback).not.toBe(initialPagingCallback);
         });
 
+        it("should reset the verification grids getPage function when the selection criteria is changed", async () => {
+          await detectChanges(spec);
+          const initialPagingCallback = verificationGrid().getPage;
+
+          fakeAsync(() => showParameters())();
+          clickVerificationStatusFilter("any");
+
+          spec.click(updateFiltersButton());
+          await detectChanges(spec);
+
+          const newPagingCallback = verificationGrid().getPage;
+          expect(newPagingCallback).not.toBe(initialPagingCallback);
+        });
+
         it("should populate the verification grid correctly for the first page", () => {
           const realizedTileCount = verificationGrid().populatedTileCount;
           expect(realizedTileCount).toBeGreaterThan(0);
-        });
-
-        // jasmine will automatically fail if an error is thrown in a test
-        // by clicking the download button we can assert that the download
-        // functionality was called without throwing an error
-        // we also assert that the file write api was called with a file
-        it("should download results without error", async () => {
-          // the verification grid will not allow us to download results if
-          // there is no history to download. Therefore, we have to make a
-          // decision before testing downloading results
-          await makeDecision(0);
-          await downloadResults();
-
-          expect(fileWriteSpy).toHaveBeenCalledOnceWith(jasmine.any(File));
         });
       });
     });

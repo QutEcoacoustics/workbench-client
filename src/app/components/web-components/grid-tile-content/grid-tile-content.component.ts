@@ -5,7 +5,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   signal,
-  ViewChild,
+  viewChild,
   ViewEncapsulation,
 } from "@angular/core";
 import { NgElement, WithProperties } from "@angular/elements";
@@ -23,8 +23,8 @@ export const gridTileContentSelector = "baw-grid-tile-content";
 
 @Component({
   selector: "baw-ng-grid-tile-content",
-  templateUrl: "grid-tile-content.component.html",
-  styleUrl: "grid-tile-content.component.scss",
+  templateUrl: "./grid-tile-content.component.html",
+  styleUrl: "./grid-tile-content.component.scss",
   encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -32,24 +32,19 @@ export const gridTileContentSelector = "baw-grid-tile-content";
 export class GridTileContentComponent implements WithContext {
   public constructor(
     public elementRef: ElementRef,
-    public changeDetectorRef: ChangeDetectorRef
+    public changeDetectorRef: ChangeDetectorRef,
   ) {}
 
-  @ViewChild("contextSpectrogram")
-  private contextSpectrogram: ElementRef<SpectrogramComponent>;
-
-  @ViewChild("contextMediaControls")
-  private contextMediaControls: ElementRef<MediaControlsComponent>;
+  private contextSpectrogram =
+    viewChild<ElementRef<SpectrogramComponent>>("contextSpectrogram");
+  private contextMediaControls =
+    viewChild<ElementRef<MediaControlsComponent>>("contextMediaControls");
 
   protected model = signal<Annotation>(undefined);
-  protected contextExpanded = false;
+  protected contextExpanded = signal(false);
 
   public get listenLink(): string {
     return this.model()?.viewUrl;
-  }
-
-  public get contextSpectrogramId(): string {
-    return `spectrogram-${this.model()?.id}-context`;
   }
 
   public get contextSource(): string {
@@ -63,20 +58,16 @@ export class GridTileContentComponent implements WithContext {
 
   @ContextSubscription(gridTileContext)
   public handleContextChange(subjectWrapper: SubjectWrapper): void {
-    this.contextExpanded = false;
+    this.contextExpanded.set(false);
     this.model.set(subjectWrapper.subject as any);
   }
 
   protected toggleContext(): void {
-    this.contextExpanded = !this.contextExpanded;
-  }
-
-  protected closeContext(): void {
-    this.contextExpanded = false;
+    this.contextExpanded.update((value) => !value);
   }
 
   protected contextSpectrogramLoaded(): void {
-    this.contextMediaControls.nativeElement.for = this.contextSpectrogramId;
+    this.contextMediaControls().nativeElement.for = this.contextSpectrogram().nativeElement;
   }
 }
 

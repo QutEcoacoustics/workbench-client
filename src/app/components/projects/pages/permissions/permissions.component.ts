@@ -48,6 +48,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 
 const projectKey = "project";
 
+type NullablePermission = PermissionLevel | "none";
+
 @Component({
   selector: "baw-project-permissions",
   templateUrl: "./permissions.component.html",
@@ -90,28 +92,20 @@ class PermissionsComponent
     filter: { userId: { notEq: null } },
   });
 
-  /** Mapping between permission levels, and selection indexes */
-  private selectionIndex = {
-    [PermissionLevel.owner]: 3,
-    [PermissionLevel.writer]: 2,
-    [PermissionLevel.reader]: 1,
-    none: 0,
-  };
-
   /** Permission level options for individual users */
-  public individualOptions: ISelectableItem[] = [
+  public individualOptions: ISelectableItem<NullablePermission>[] = [
     { label: "None", value: "none" },
     { label: "Reader", value: PermissionLevel.reader },
     { label: "Writer", value: PermissionLevel.writer },
     { label: "Owner", value: PermissionLevel.owner },
   ];
   /** Permission level options for anonymous guests */
-  public anonymousOptions: ISelectableItem[] = [
+  public anonymousOptions: ISelectableItem<NullablePermission>[] = [
     { label: "No access (none)", value: "none" },
     { label: "Reader access", value: PermissionLevel.reader },
   ];
   /** Permission level options for any logged in user */
-  public userOptions: ISelectableItem[] = [
+  public userOptions: ISelectableItem<NullablePermission>[] = [
     ...this.anonymousOptions,
     { label: "Writer access", value: PermissionLevel.writer },
   ];
@@ -221,13 +215,6 @@ class PermissionsComponent
     });
   }
 
-  /** Get selection index for permission level */
-  public getSelectionIndex(level: PermissionLevel): number {
-    return isInstantiated(level)
-      ? this.selectionIndex[level]
-      : this.selectionIndex.none;
-  }
-
   /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
     return this.permissionsMatchingUsername?.find(
@@ -236,16 +223,15 @@ class PermissionsComponent
   }
 
   /** Create/update permissions for a new user */
-  public createNewPermission(user: User, selection: number): void {
+  public createNewPermission(user: User, selection: NullablePermission): void {
     const successMsg = `Successfully created permissions for ${user.userName}`;
-    const level = this.individualOptions[selection].value;
     const permission = new Permission({
       userId: user.id,
       allowAnonymous: false,
       allowLoggedIn: false,
     });
 
-    if (selection === this.selectionIndex.none) {
+    if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
@@ -254,7 +240,7 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(() => {
+      this.updatePermission(permission, selection).subscribe(() => {
         this.notifications.success(successMsg);
         this.selectedUser = undefined;
         this.updateTable();
@@ -265,13 +251,12 @@ class PermissionsComponent
   /** Update permissions for existing user */
   public updateExistingPermission(
     permission: Permission,
-    selection: number
+    selection: NullablePermission,
   ): void {
     // TODO It would be nice to use the username
     const successMsg = "Successfully updated user permission";
-    const level = this.individualOptions[selection].value;
 
-    if (selection === this.selectionIndex.none) {
+    if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
@@ -280,7 +265,7 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(() => {
+      this.updatePermission(permission, selection).subscribe(() => {
         this.notifications.success(successMsg);
         this.updateTable();
       });
@@ -288,9 +273,8 @@ class PermissionsComponent
   }
 
   /** Update anonymous permissions */
-  public updateAnonymousPermission(selection: number): void {
+  public updateAnonymousPermission(selection: NullablePermission): void {
     const successMsg = "Successfully updated visitor permission";
-    const level = this.anonymousOptions[selection].value;
     const permission = new Permission(
       {
         id: this.anonymousPermission?.id,
@@ -301,7 +285,7 @@ class PermissionsComponent
       this.injector
     );
 
-    if (selection === this.selectionIndex.none) {
+    if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
@@ -309,7 +293,7 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(
+      this.updatePermission(permission, selection).subscribe(
         (result: Permission) => {
           this.notifications.success(successMsg);
           this.anonymousPermission = result;
@@ -319,8 +303,7 @@ class PermissionsComponent
   }
 
   /** Update base permissions for all users */
-  public updateUserPermission(selection: number): void {
-    const level = this.individualOptions[selection].value;
+  public updateUserPermission(selection: NullablePermission): void {
     const successMsg =
       "Successfully updated permissions for all logged in users";
     const permission = new Permission(
@@ -332,7 +315,8 @@ class PermissionsComponent
       },
       this.injector
     );
-    if (selection === this.selectionIndex.none) {
+
+    if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
@@ -340,7 +324,7 @@ class PermissionsComponent
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      this.updatePermission(permission, level).subscribe(
+      this.updatePermission(permission, selection).subscribe(
         (result: Permission) => {
           this.notifications.success(successMsg);
           this.usersPermission = result;

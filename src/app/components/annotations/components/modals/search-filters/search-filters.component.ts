@@ -5,7 +5,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { NgClass } from "@angular/common";
 import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
 
 @Component({
@@ -22,41 +21,26 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     </div>
 
     <div class="modal-footer justify-content-end">
-      <div>
-        @if (isDirty) {
-          <p>
-            <strong>
-              You have unapplied search filters. If you update the verification
-              grid, your progress will be lost.
-            </strong>
-          </p>
-        }
-
-        <div class="mt-2">
-          <button
-            id="exit-btn"
-            class="btn btn-outline-primary me-2"
-            (click)="closeModal()"
-            [disabled]="!this.isFormDirty"
-          >
-            Exit without updating
-          </button>
-          <button
-            id="update-filters-btn"
-            class="btn btn-warning"
-            (click)="success()"
-            [ngClass]="{
-              'btn-primary': !isDirty,
-              'btn-warning': isDirty,
-            }"
-          >
-            Update search filters
-          </button>
-        </div>
+      <div class="mt-2">
+        <button
+          id="exit-btn"
+          class="btn btn-outline-primary me-2"
+          (click)="closeModal()"
+          [disabled]="!this.isFormDirty"
+        >
+          Exit without updating
+        </button>
+        <button
+          id="update-filters-btn"
+          class="btn btn-primary"
+          (click)="success()"
+        >
+          Update search filters
+        </button>
       </div>
     </div>
   `,
-  imports: [AnnotationSearchFormComponent, NgClass],
+  imports: [AnnotationSearchFormComponent],
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   @Input() public modal: NgbActiveModal;

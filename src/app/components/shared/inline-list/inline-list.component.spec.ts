@@ -4,7 +4,7 @@ import { modelData } from "@test/helpers/faker";
 import { InlineListComponent } from "./inline-list.component";
 
 describe("InlineListComponent", () => {
-  let spectator: SpectatorHost<InlineListComponent>;
+  let spec: SpectatorHost<InlineListComponent>;
   let defaultTestItems: any[];
 
   const createComponent = createHostFactory({
@@ -21,14 +21,15 @@ describe("InlineListComponent", () => {
       <baw-inline-list [items]="items" [itemKey]="itemKey" [emptyTemplate]="emptyTemplate"></baw-inline-list>
     `;
 
-    spectator = createComponent(testBedTemplate, { detectChanges: false });
-
-    spectator.detectChanges();
-
-    spectator.component.items = initialItems;
-    spectator.component.itemKey = itemKey;
-
-    spectator.detectChanges();
+    spec = createComponent(
+      testBedTemplate,
+      {
+        hostProps: {
+          items: initialItems,
+          itemKey,
+        },
+      },
+    );
   }
 
   beforeEach(() => {
@@ -40,20 +41,20 @@ describe("InlineListComponent", () => {
   });
 
   const inlineListElements = (): HTMLSpanElement[] =>
-    spectator.queryAll<HTMLSpanElement>("span");
+    spec.queryAll<HTMLSpanElement>("span");
 
   function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
+    return spec.debugElement.query(
       (el) => el.nativeElement.innerText === text
     ).nativeElement;
   }
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(InlineListComponent);
+    expect(spec.component).toBeInstanceOf(InlineListComponent);
   });
 
   it("should add commas between each item", () => {
-    const itemElements: HTMLSpanElement[] = inlineListElements();
+    const itemElements = inlineListElements();
 
     itemElements.forEach((itemElement: HTMLSpanElement, index: number) => {
       // because we are testing that the last element does not have a comma
@@ -73,10 +74,8 @@ describe("InlineListComponent", () => {
 
     const item = { name, viewUrl: itemViewUrl } as any;
 
-    spectator.component.items = [item];
-    spectator.component.itemKey = "name";
-
-    spectator.detectChanges();
+    spec.setHostInput("items", [item]);
+    spec.setHostInput("itemKey", "name");
 
     const itemElement: HTMLSpanElement =
       getElementByInnerText<HTMLSpanElement>("test");
@@ -88,10 +87,8 @@ describe("InlineListComponent", () => {
   it("should use the item's itemKey for the items display text", () => {
     const item = { itemKey: "item key", toString: () => "test" } as any;
 
-    spectator.component.items = [item];
-    spectator.component.itemKey = "itemKey";
-
-    spectator.detectChanges();
+    spec.setHostInput("items", [item]);
+    spec.setHostInput("itemKey", "itemKey");
 
     const itemElement = getElementByInnerText("item key");
     expect(itemElement).toExist();
@@ -100,21 +97,18 @@ describe("InlineListComponent", () => {
   it("should use the item's toString method if no itemKey is provided", () => {
     const item = { toString: () => "items tostring" } as any;
 
-    spectator.component.items = [item];
-    spectator.component.itemKey = undefined;
-
-    spectator.detectChanges();
+    spec.setHostInput("items", [item]);
+    spec.setHostInput("itemKey", undefined);
 
     const itemElement = getElementByInnerText("items tostring");
     expect(itemElement).toExist();
   });
 
   it("should use the empty template if no items are provided", () => {
-    spectator.component.items = [];
-    spectator.detectChanges();
+    spec.setHostInput("items", []);
 
     const emptyTemplateItem: HTMLSpanElement =
-      spectator.query("#template-span");
+      spec.query("#template-span");
     expect(emptyTemplateItem).toExist();
   });
 
@@ -128,18 +122,16 @@ describe("InlineListComponent", () => {
       { name: "test1" },
       { name: "test2" },
       { name: "test3" },
-    ] as any;
+    ];
 
     const updatedItems = [
       { name: "test1" },
       { name: "changed item key" },
       { name: "test3" },
-    ] as any;
+    ];
 
-    spectator.component.items = initialItems;
-    spectator.component.itemKey = "name";
-
-    spectator.detectChanges();
+    spec.setHostInput("items", initialItems);
+    spec.setHostInput("itemKey", "name");
 
     const itemElements = inlineListElements();
     expect(itemElements).toHaveLength(initialItems.length);
@@ -148,8 +140,7 @@ describe("InlineListComponent", () => {
       expect(itemElement).toHaveText(initialItems[index].name);
     });
 
-    spectator.component.items = updatedItems;
-    spectator.detectChanges();
+    spec.setHostInput("items", updatedItems);
 
     const updatedItemElements = inlineListElements();
     expect(updatedItemElements).toHaveLength(updatedItems.length);
@@ -160,18 +151,16 @@ describe("InlineListComponent", () => {
   });
 
   it("should dynamically update the list if an item is added", () => {
-    const initialItemLength = spectator.component.items.length;
+    const initialItemLength = spec.component.items().length;
 
-    const updatedItems = [...spectator.component.items, "new item"] as any;
+    const updatedItems = [...spec.component.items(), "new item"];
 
     const itemElements = inlineListElements();
     expect(itemElements).toHaveLength(initialItemLength);
 
-    spectator.component.items = updatedItems;
-    spectator.detectChanges();
+    spec.setHostInput("items", updatedItems);
 
     const updatedItemElements = inlineListElements();
-
     expect(updatedItemElements).toHaveLength(updatedItems.length);
   });
 });

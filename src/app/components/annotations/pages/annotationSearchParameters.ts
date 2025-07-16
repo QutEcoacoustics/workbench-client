@@ -36,6 +36,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 
 export type SortingKey =
@@ -62,13 +63,18 @@ export const sortingOptions = new Map([
     orderBy: "createdAt",
     direction: "desc",
   }],
-]) satisfies Map<string, Sorting<keyof AudioEvent>>;
+]) satisfies Map<SortingKey, Sorting<keyof AudioEvent>>;
+
+// The verification status options map can be found in the
+// AnnotationSearchParameter's getters.
+// I have to use a getter because some of the filter conditions depend on the
+// session state.
+export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
   importFiles: CollectionIds;
-  onlyUnverified: boolean;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
@@ -98,6 +104,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  verificationStatus: VerificationStatusKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -108,7 +115,6 @@ const serializationTable: IQueryStringParameterSpec<
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   importFiles: jsNumberArray,
-  onlyUnverified: jsBoolean,
   daylightSavings: jsBoolean,
   recordingDate: luxonDateArray,
   recordingTime: luxonDurationArray,
@@ -121,6 +127,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  verificationStatus: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -142,6 +149,7 @@ export class AnnotationSearchParameters
 {
   public constructor(
     protected queryStringParameters: Params = {},
+    public user?: User,
     public injector?: AssociationInjector,
   ) {
     const deserializedObject: IAnnotationSearchParameters =
@@ -162,7 +170,6 @@ export class AnnotationSearchParameters
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
   public importFiles: CollectionIds;
-  public onlyUnverified: boolean;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
@@ -186,6 +193,7 @@ export class AnnotationSearchParameters
   public eventTime: MonoTuple<Duration, 2>;
 
   private _sort: SortingKey;
+  private _select: VerificationStatusKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -209,7 +217,25 @@ export class AnnotationSearchParameters
         this._sort = value;
       }
     } else {
-      console.error(`Incorrect sorting key: "${value}"`);
+      console.error(`Invalid sorting key: "${value}"`);
+    }
+  }
+
+  public get verificationStatus(): VerificationStatusKey {
+    return this._select;
+  }
+
+  public set verificationStatus(value: string) {
+    if (this.isSelectKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // "unverified-for-me" as the default if there is no "sort" query string parameter.
+      if (value === "unverified-for-me") {
+        this._select = null;
+      } else {
+        this._select = value;
+      }
+    } else {
+      console.error(`Invalid select key: "${value}"`);
     }
   }
 
@@ -260,6 +286,19 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
+  private get selectOptions() {
+    return new Map([
+      ["unverified-for-me", {
+        or: [
+          { "verifications.creatorId": { notEq: this.user?.id ?? null } },
+          { "verifications.id": { eq: null } }
+        ],
+      }],
+      ["unverified", { "verifications.id": { eq: null } }],
+      ["any", null],
+    ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
+  }
+
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
     let filter = filterModelIds<Tag>("tags", this.tags);
@@ -267,6 +306,7 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
+    filter = this.addSelectFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -308,7 +348,7 @@ export class AnnotationSearchParameters
   // projects or regions.
   //
   // This method will return the most specific list of site ids from the route
-  // and qsps models
+  // and query string parameter models
   //
   // TODO: remove this method once the API supports filtering audio events by
   // projects, and regions.
@@ -434,6 +474,17 @@ export class AnnotationSearchParameters
     return scoreFilters;
   }
 
+  private addSelectFilters(initialFilter: InnerFilter<AudioEvent>) {
+    const defaultKey = "unverified-for-me" satisfies VerificationStatusKey;
+    const statusKey = this.isSelectKey(this.verificationStatus)
+      ? this.verificationStatus
+      : defaultKey;
+
+    const selectFilters = this.selectOptions.get(statusKey);
+
+    return filterAnd(initialFilter, selectFilters);
+  }
+
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
     const defaultSortKey = "created-asc" satisfies SortingKey;
     const sortingKey = this.isSortingKey(this.sort)
@@ -457,6 +508,10 @@ export class AnnotationSearchParameters
     // E.g. If we used the "in" operator here, a sorting key of hasOwnProperty
     // would return true, and would attempt to serialize a function when
     // creating the filter request body.
-    return sortingOptions.has(key);
+    return sortingOptions.has(key as any);
+  }
+
+  private isSelectKey(key: string): key is VerificationStatusKey {
+    return this.selectOptions.has(key as any);
   }
 }

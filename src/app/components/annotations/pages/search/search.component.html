@@ -29,17 +29,15 @@
 
 <div>
   @if (!error) {
-    @if (!loading) {
-      @if (searchResults.length > 0) {
-        <p>
-          Displaying
-          <span class="fw-bold">{{ searchResults.length }}</span> of
-          <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-          events.
-        </p>
-      }
+    @if (loading) {
+      <baw-loading></baw-loading>
     } @else {
-      <h3>Loading...</h3>
+      <p>
+        Displaying
+        <span class="fw-bold">{{ searchResults.length }}</span> of
+        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
+        events.
+      </p>
     }
 
     <div class="annotations-grid my-2">
@@ -55,10 +53,7 @@
     </div>
 
     @if (searchResults.length === 0 && !loading) {
-      <h2 class="no-results-error">
-        No {{ searchParameters.onlyUnverified ? "unverified" : "" }} annotations
-        found
-      </h2>
+      <h2 class="no-results-error">No annotations found</h2>
       } @if(displayPagination) {
       <ngb-pagination
         class="d-flex justify-content-center mt-4"

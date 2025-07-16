@@ -62,9 +62,16 @@ body {
 // Create a grey coloured bootstrap button. This is used by the selectable-items component
 // to create standard looking buttons.
 .btn-default {
+  --bs-btn-hover-color: #333;
+  --bs-btn-hover-bg: white;
+
   background-color: white;
-  border-color: #ccc;
   color: #333;
+  border-color: #ccc;
+
+  &:hover {
+    border-color: #aaa;
+  }
 }
 
 // Creates formatting for code examples

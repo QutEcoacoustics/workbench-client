@@ -116,38 +116,17 @@
     @if (form.invalid) {
       <p id="score-errors">
         <strong class="fw-normal text-danger">
-          @if (
-            upperScore.hasError("min") ||
-            lowerScore.hasError("max")
-          ) {
+          @if (upperScore.hasError("min") || lowerScore.hasError("max")) {
             Score minimum must be less than or equal to the score maximum.
-          } @else if (upperScore.hasError("type") || lowerScore.hasError("type")) {
+          } @else if (
+            upperScore.hasError("type") || lowerScore.hasError("type")
+          ) {
             Score must be a number.
           }
         </strong>
       </p>
     }
   </div>
-
-  <baw-wip>
-    <div class="form-check mt-2">
-      <!--
-        Because the verifications endpoint is not available yet, we cannot
-        filter by verified annotations. This is a placeholder for future
-        functionality.
-      -->
-      <input
-        id="filter-verified"
-        type="checkbox"
-        class="form-check-input"
-        [checked]="searchParameters.onlyUnverified"
-        (change)="updateParameterProperty('onlyUnverified', $event.target['checked'])"
-      />
-      <label for="filter-verified" class="form-check-label">
-        Only show un-verified annotations
-      </label>
-    </div>
-  </baw-wip>
 
   <div class="advanced-filters mt-2">
     <button
@@ -176,6 +155,16 @@
     </div>
   </div>
 
+  <div class="mt-2">
+    <label class="form-label w-100">Show annotations</label>
+    <baw-selectable-items
+      [options]="verifiedStatusOptions"
+      [selection]="searchParameters.verificationStatus ?? defaultVerificationStatus"
+      [inline]="true"
+      (selectionChange)="updateDiscreteOptions('verificationStatus', $event)"
+    ></baw-selectable-items>
+  </div>
+
   <label class="form-label mt-2 w-100">
     Sort by
     <select
@@ -183,7 +172,7 @@
       class="form-select"
       placeholder="Created Date (Oldest First)"
       [value]="searchParameters.sort ?? 'created-asc'"
-      (change)="updateSortBy($event)"
+      (change)="updateDiscreteOptions('sort', $any($event).target.value)"
     >
       <option value="created-asc">Created Date (Oldest First)</option>
       <option value="created-desc">Created Date (Newest First)</option>

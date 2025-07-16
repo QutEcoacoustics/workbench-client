@@ -8,7 +8,7 @@
     <oe-axes>
       <oe-indicator>
         <oe-spectrogram
-          [id]="spectrogramId"
+          #spectrogram
           [src]="annotation().audioLink"
           scaling="stretch"
           color-map="grayscale"
@@ -26,22 +26,27 @@
   <div class="card-body">
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
-      @for (text of annotation().tags; track text; let isLast = $last) {
-        <span>
-          <a [href]="text.viewUrl">{{ text.text }}</a>
-          @if (!isLast) {, }
-        </span>
+
+      @if (annotation().tags.length > 0) {
+        @for (text of annotation().tags; track text; let isLast = $last) {
+          <span>
+            <a [href]="text.viewUrl">{{ text.text }}</a>
+            @if (!isLast) {, }
+          </span>
+        }
+      } @else {
+        <i>No tags</i>
       }
     </span>
 
     <span class="info-line">
-      @if (annotation().audioRecording.site | isUnresolved) {
-        <baw-loading
-          size="sm"
-        ></baw-loading>
+      <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
+
+      @let siteModel = annotation().audioRecording.site;
+      @if (siteModel | isUnresolved) {
+        <baw-loading class="inline-spinner" size="sm"></baw-loading>
       } @else {
-        <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
-        <a [href]="annotation().audioRecording.site.viewUrl">{{ annotation().audioRecording.site.name }}</a>
+        <a [href]="siteModel.viewUrl">{{ siteModel.name }}</a>
       }
     </span>
 
