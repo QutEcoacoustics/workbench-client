@@ -34,8 +34,8 @@
       title="Visitors"
       description="Visitors are public (anonymous) users that are either not logged in or have not registered."
       [options]="anonymousOptions"
-      [selection]="getSelectionIndex(anonymousPermission?.level)"
-      (selectionChange)="updateAnonymousPermission($event)"
+      [selection]="anonymousPermission?.level ?? 'none'"
+      (selectionChange)="updateAnonymousPermission($any($event))"
     ></baw-selectable-items>
   </div>
   <div class="col-md-6">
@@ -43,8 +43,8 @@
       title="Users"
       description="Users are people that have registered and have logged into the website. "
       [options]="userOptions"
-      [selection]="getSelectionIndex(usersPermission?.level)"
-      (selectionChange)="updateUserPermission($event)"
+      [selection]="usersPermission?.level ?? 'none'"
+      (selectionChange)="updateUserPermission($any($event))"
     ></baw-selectable-items>
   </div>
 </div>
@@ -94,9 +94,9 @@
     <baw-selectable-items
       class="flex-grow-1"
       [options]="individualOptions"
-      [selection]="getSelectionIndex(getPermissionForUser(selectedUser)?.level)"
+      [selection]="getPermissionForUser(selectedUser)?.level ?? 'none'"
       [inline]="true"
-      (selectionChange)="createNewPermission(selectedUser, $event)"
+      (selectionChange)="createNewPermission(selectedUser, $any($event))"
     ></baw-selectable-items>
   }
 </section>
@@ -145,7 +145,7 @@
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
       <baw-selectable-items
         [options]="individualOptions"
-        [selection]="getSelectionIndex(value)"
+        [selection]="value ?? 'none'"
         [inline]="true"
         (selectionChange)="updateExistingPermission(row, $event)"
       ></baw-selectable-items>

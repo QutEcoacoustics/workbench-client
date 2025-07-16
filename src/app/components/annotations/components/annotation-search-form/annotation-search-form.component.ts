@@ -92,7 +92,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions: ISelectableItem[] = [
+  protected verifiedStatusOptions: ISelectableItem<VerificationStatusKey>[] = [
     { label: "I have not verified", value: "unverified-for-me" },
     { label: "no one has verified", value: "unverified" },
     { label: "even if they have been verified", value: "any" },

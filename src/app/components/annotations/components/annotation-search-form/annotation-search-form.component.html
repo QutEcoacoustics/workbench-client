@@ -159,7 +159,7 @@
     <label class="form-label w-100">Show annotations</label>
     <baw-selectable-items
       [options]="verifiedStatusOptions"
-      [selection]="searchParameters.verificationStatus"
+      [selection]="searchParameters.verificationStatus ?? 'unverified-for-me'"
       [inline]="true"
       (selectionChange)="updateDiscreteOptions('verificationStatus', $event)"
     ></baw-selectable-items>

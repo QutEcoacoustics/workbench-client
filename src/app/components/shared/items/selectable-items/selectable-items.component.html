@@ -1,20 +1,20 @@
-@if (title) {
-  <h3>{{ title }}</h3>
+@if (title()) {
+  <h3>{{ title() }}</h3>
 }
 
-@if (description) {
-  <p>{{ description }}</p>
+@if (description()) {
+  <p>{{ description() }}</p>
 }
 
-@if (inline) {
-  @for (option of options; track option) {
+@if (inline()) {
+  @for (option of options(); track option) {
     <button
       class="btn btn-sm btn-default me-1"
-      [disabled]="isSelected(option.value) || disabled"
+      [disabled]="isSelected(option.value) || disabled()"
       (click)="changeSelection(option.value)"
     >
       {{ option.label }}
-      @if (isSelected(option.value) && !disabled) {
+      @if (isSelected(option.value) && !disabled()) {
         <fa-icon
           class="text-success"
           [icon]="['fas', 'check']"
@@ -24,7 +24,7 @@
   }
 } @else {
   <div class="list-group">
-    @for (option of options; track option) {
+    @for (option of options(); track option) {
       <button
         class="list-group-item d-flex justify-content-between align-items-center"
         [disabled]="isSelected(option.value)"

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
@@ -21,24 +21,25 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectableItemsComponent<T> {
-  @Input() public title: string;
-  @Input() public description: string;
-  @Input() public options: ISelectableItem[];
-  @Input() public selection: T;
-  @Input() public inline = false;
-  @Input() public disabled = false;
-  @Output() public selectionChange = new EventEmitter<T>();
+  public title = input<string>();
+  public description = input<string>();
+  public options = input<ISelectableItem<T>[]>();
+  public selection = input<T>();
+  public inline = input(false);
+  public disabled = input(false);
+  public selectionChange = output<T>();
 
   protected changeSelection(item: T) {
-    this.selectionChange.next(item);
+    this.selectionChange.emit(item);
   }
 
   protected isSelected(item: T): boolean {
-    return this.selection === item;
+    return this.selection() === item;
   }
 }
 
-export interface ISelectableItem {
+export interface ISelectableItem<T> {
   label: string;
-  value: any;
+  value: T;
+  disabled?: boolean;
 }
