@@ -1,7 +1,6 @@
 import { Params } from "@angular/router";
 import {
   IAnnotationSearchParameters,
-  VerificationStatusKey,
   SortingKey,
   sortingOptions,
 } from "@components/annotations/pages/annotationSearchParameters";
