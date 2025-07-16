@@ -76,7 +76,12 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
     protected session: BawSessionService,
-  ) {}
+  ) {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.session.authTrigger.subscribe(() => {
+      this.verifiedStatusOptions[0].disabled = !this.session.isLoggedIn;
+    });
+  }
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
@@ -93,7 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions: ISelectableItem<VerificationStatusKey>[] = [
-    { label: "I have not verified", value: "unverified-for-me" },
+    { label: "I have not verified", value: "unverified-for-me", disabled: true },
     { label: "no one has verified", value: "unverified" },
     { label: "even if they have been verified", value: "any" },
   ];
@@ -110,13 +115,16 @@ export class AnnotationSearchFormComponent implements OnInit {
     return this.searchParameters.routeSiteModel;
   }
 
+  protected get defaultVerificationStatus(): VerificationStatusKey {
+    return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
+  }
+
   public ngOnInit(): void {
     // if there are advanced filters when we initially load the page, we should
     // automatically open the advanced filters accordion so that the user can
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "verificationStatus",
     ];
 
     for (const key of advancedFilterKeys) {

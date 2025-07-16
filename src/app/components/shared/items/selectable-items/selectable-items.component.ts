@@ -8,15 +8,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 @Component({
   selector: "baw-selectable-items",
   templateUrl: "./selectable-items.component.html",
-  styles: [`
-    button {
-      height: 100%;
-    }
-
-    button[disabled] {
-      cursor: not-allowed;
-    }
-  `],
+  styleUrl: "./selectable-items.component.scss",
   imports: [FaIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,10 +23,6 @@ export class SelectableItemsComponent<T> {
 
   protected changeSelection(item: T) {
     this.selectionChange.emit(item);
-  }
-
-  protected isSelected(item: T): boolean {
-    return this.selection() === item;
   }
 }
 
