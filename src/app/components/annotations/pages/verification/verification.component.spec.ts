@@ -279,11 +279,13 @@ describe("VerificationComponent", () => {
     modalsSpy?.dismissAll();
   });
 
-  const dialogToggleButton = () =>
+  const dialogShowButton = () =>
     spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
+  const selectionDropdown =() =>
+    document.querySelector<HTMLSelectElement>("#select-input");
   const updateFiltersButton = () =>
     document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
@@ -314,8 +316,8 @@ describe("VerificationComponent", () => {
       "button"
     );
 
-  function toggleParameters(): void {
-    spec.click(dialogToggleButton());
+  function showParameters(): void {
+    spec.click(dialogShowButton());
     tick(1_000);
     discardPeriodicTasks();
   }
@@ -389,23 +391,41 @@ describe("VerificationComponent", () => {
         await detectChanges(spec);
       });
 
-      xit("should update the search parameters when filter conditions are added", fakeAsync(() => {
+      xit("should update the search parameters when filter conditions are added", async () => {
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
         const expectedTagId = targetTag.id;
 
-        toggleParameters();
-        selectFromTypeahead(spec, tagsTypeahead(), tagText);
+        await detectChanges(spec);
 
-        const realizedComponentParams = spec.component.searchParameters;
-        expect(realizedComponentParams.tags).toContain(expectedTagId);
-      }));
+        fakeAsync(() => {
+          showParameters();
+          selectFromTypeahead(spec, tagsTypeahead(), tagText);
+        })();
+
+        spec.click(updateFiltersButton());
+
+        expect(spec.component.searchParameters.tags).toContain(expectedTagId);
+      });
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
         expect(modalsSpy.open).not.toHaveBeenCalled();
-        toggleParameters();
+        showParameters();
         expect(modalsSpy.open).toHaveBeenCalledTimes(1);
       }));
+
+      it("should correctly update the selection parameter when filter conditions are added", async () => {
+        await detectChanges(spec);
+
+        fakeAsync(() => {
+          showParameters();
+          spec.selectOption(selectionDropdown(), "any");
+        })();
+
+        spec.click(updateFiltersButton());
+
+        expect(spec.component.searchParameters.verificationStatus).toEqual("any");
+      });
     });
 
     describe("with initial search parameters", () => {
@@ -539,16 +559,31 @@ describe("VerificationComponent", () => {
           const tagText = targetTag.text;
 
           fakeAsync(() => {
-            toggleParameters();
+            showParameters();
             selectFromTypeahead(spec, tagsTypeahead(), tagText);
           })();
 
           spec.click(updateFiltersButton());
-
           await detectChanges(spec);
 
           // we use the "toBe" matcher so that we compare the "getPage" callback
           // by reference
+          const newPagingCallback = verificationGrid().getPage;
+          expect(newPagingCallback).not.toBe(initialPagingCallback);
+        });
+
+        it("should reset the verification grids getPage function when the selection criteria is changed", async () => {
+          await detectChanges(spec);
+          const initialPagingCallback = verificationGrid().getPage;
+
+          fakeAsync(() => {
+            showParameters();
+            spec.selectOption(selectionDropdown(), "any");
+          })();
+
+          spec.click(updateFiltersButton());
+          await detectChanges(spec);
+
           const newPagingCallback = verificationGrid().getPage;
           expect(newPagingCallback).not.toBe(initialPagingCallback);
         });

@@ -1,11 +1,9 @@
 import {
   Component,
-  computed,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  signal,
   ViewChild,
 } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -14,7 +12,10 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AnnotationSearchParameters, SelectKey } from "@components/annotations/pages/annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+  VerificationStatusKey,
+} from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -43,7 +44,7 @@ import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { isGuestPredicate } from "src/app/app.menus";
+import { ISelectableItem, SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
 
 enum ScoreRangeBounds {
   Lower,
@@ -59,6 +60,7 @@ enum ScoreRangeBounds {
     DateTimeFilterComponent,
     TypeaheadInputComponent,
     DebouncedInputDirective,
+    SelectableItemsComponent,
     NgbCollapse,
     NgbHighlight,
     NgbTooltip,
@@ -73,13 +75,8 @@ export class AnnotationSearchFormComponent implements OnInit {
     protected regionsApi: ShallowRegionsService,
     protected sitesApi: ShallowSitesService,
     protected tagsApi: TagsService,
-    private session: BawSessionService,
-  ) {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.session.authTrigger.subscribe(({ user }) => {
-      this.isLoggedIn.set(!isGuestPredicate(user));
-    });
-  }
+    protected session: BawSessionService,
+  ) {}
 
   @Input({ required: true })
   public searchParameters: AnnotationSearchParameters;
@@ -95,10 +92,11 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected createIdSearchCallback = createIdSearchCallback;
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected isLoggedIn = signal(false);
-  protected defaultSelect = computed<SelectKey>(
-    () => this.isLoggedIn() ? "my-unverified" : "only-unverified",
-  )
+  protected verifiedStatusOptions: ISelectableItem[] = [
+    { label: "I have not verified", value: "unverified-for-me" },
+    { label: "no one has verified", value: "unverified" },
+    { label: "even if they have been verified", value: "any" },
+  ];
 
   protected get project(): Project {
     return this.searchParameters.routeProjectModel;
@@ -118,7 +116,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "select",
+      "verificationStatus",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -153,7 +151,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   /**
    * Creates a filter condition to fetch models scoped to the current route
    * models.
-   * This can be used in the typeaheads where you need to provide search
+   * This can be used in the typeahead's where you need to provide search
    * results for site, regions, etc... under a parent model (e.g. project).
    */
   protected routeModelFilters(): InnerFilter<Project | Region | Site> {
@@ -188,7 +186,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       }
     }
 
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
   protected updateSubModel(
@@ -199,13 +197,13 @@ export class AnnotationSearchFormComponent implements OnInit {
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
       this.searchParameters[key as any] = null;
-      this.emiUpdate();
+      this.emitUpdate();
       return;
     }
 
     const ids = subModels.map((model) => model.id);
     this.searchParameters[key as any] = ids;
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
@@ -234,7 +232,7 @@ export class AnnotationSearchFormComponent implements OnInit {
       this.searchParameters.recordingTime = null;
     }
 
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
   protected updateScoreRange(
@@ -256,39 +254,26 @@ export class AnnotationSearchFormComponent implements OnInit {
     currentScore[arrayIndex] = value;
 
     this.searchParameters.score = currentScore;
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
   protected updateParameterProperty<
     T extends keyof Writeable<AnnotationSearchParameters>,
   >(key: T, value: AnnotationSearchParameters[T]) {
     this.searchParameters[key] = value;
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
-  protected updateDiscreteOptions(key: string, event: Event): void {
-    // We use a type guard here because event.target is typed as a HTMLElement
-    // which does not have the "value" property.
-    // By type narrowing the target to a HTMLSelectElement, we can ensure that
-    // the "value" property is defined.
-    //
-    // Note that this condition should never trigger, and because this method
-    // should always be called from a select element event listener, so this
-    // type guard is purely for correctness and type narrowing.
-    // Additionally, JIT should be able to optimize away this guard before the
-    // method is ever called.
-    if (!(event.target instanceof HTMLSelectElement)) {
-      console.warn("Attempted to update sort key through non-select element");
-      return;
-    }
-
-    const value = event.target.value;
-
+  protected updateDiscreteOptions(key: string, value: unknown): void {
     this.searchParameters[key] = value;
-    this.emiUpdate();
+    this.emitUpdate();
   }
 
-  private emiUpdate() {
+  protected defaultSelectOption(): VerificationStatusKey {
+    return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
+  }
+
+  private emitUpdate() {
     this.searchParametersChange.emit(this.searchParameters);
   }
 }

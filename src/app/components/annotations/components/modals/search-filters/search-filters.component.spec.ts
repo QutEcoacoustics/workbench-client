@@ -31,7 +31,7 @@ describe("SearchFiltersModalComponent", () => {
     providers: [provideMockBawApi()],
   });
 
-  function setup(): void {
+  beforeEach(() => {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -40,6 +40,7 @@ describe("SearchFiltersModalComponent", () => {
       jasmine.createSpy("successCallback");
     successSpy.and.stub();
 
+    mockUser = new User(generateUser());
     const searchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
       mockUser,
@@ -64,17 +65,11 @@ describe("SearchFiltersModalComponent", () => {
       modal: mockModal,
     });
     spec.detectChanges();
-  }
+  });
 
   const exitButton = () => spec.query<HTMLButtonElement>("#exit-btn");
   const updateButton = () =>
     spec.query<HTMLButtonElement>("#update-filters-btn");
-
-  beforeEach(() => {
-    mockUser = new User(generateUser());
-
-    setup();
-  });
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(SearchFiltersModalComponent);

@@ -90,7 +90,6 @@ describe("AnnotationSearchFormComponent", () => {
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   const sortingDropdown = () => spec.query("#sort-input");
-  // const selectionDropdown = () => spec.query("#sort-input");
 
   function setup(params: Params = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
@@ -282,7 +281,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(advancedFiltersCollapsable()).toHaveClass("show");
     }));
 
-    it("should not apply the advanced filters if the dropdown is closed", fakeAsync(() => {
+    it("should not apply the audio recording id filters if the advanced filters dropdown is closed", fakeAsync(() => {
       setup({ audioRecordings: "1" });
       expect(spec.component.searchParameters.audioRecordings).toHaveLength(1);
 

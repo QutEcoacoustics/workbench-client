@@ -171,72 +171,74 @@ describe("AnnotationSearchComponent", () => {
     expect(spec.component).toBeInstanceOf(AnnotationSearchComponent);
   });
 
-  it("should make the correct api call", () => {
-    const expectedBody: Filters<AudioEvent> = {
-      paging: {
-        page: 1,
-        items: responsePageSize,
-      },
-      filter: {
-        and: [
-          {
-            "tags.id": {
-              in: Array.from(mockSearchParameters.tags),
+  describe("api calls", () => {
+    it("should make the correct api call", () => {
+      const expectedBody: Filters<AudioEvent> = {
+        paging: {
+          page: 1,
+          items: responsePageSize,
+        },
+        filter: {
+          and: [
+            {
+              "tags.id": {
+                in: Array.from(mockSearchParameters.tags),
+              },
             },
-          },
-          {
-            "audioRecordings.siteId": {
-              in: Array.from(mockSearchParameters.sites),
+            {
+              "audioRecordings.siteId": {
+                in: Array.from(mockSearchParameters.sites),
+              },
             },
-          },
-          {
-            or: [
-              { "verifications.creatorId": { notEq: mockUser.id} },
-              { "verifications.id": { eq: null } },
-            ],
-          }
-        ],
-      },
-      sorting: {
-        orderBy: "createdAt",
-        direction: "asc",
-      },
-    };
+            {
+              or: [
+                { "verifications.creatorId": { notEq: mockUser.id} },
+                { "verifications.id": { eq: null } },
+              ],
+            }
+          ],
+        },
+        sorting: {
+          orderBy: "createdAt",
+          direction: "asc",
+        },
+      };
 
-    expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
+      expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
+    });
   });
 
-  it("should display an error if there are no search results", () => {
-    const expectedText = "No unverified annotations found";
+  describe("search results", () => {
+    it("should display the correct error message if there are no search results", () => {
+      const expectedText = "No annotations found";
 
-    spec.component.searchResults = [];
-    spec.component.loading = false;
-    spec.detectChanges();
+      spec.component.searchParameters.verificationStatus = "any";
 
-    const element = getElementByInnerText(spec, expectedText);
-    expect(element).toExist();
+      spec.component.searchResults = [];
+      spec.component.loading = false;
+      spec.detectChanges();
+
+      const element = getElementByInnerText(spec, expectedText);
+      expect(element).toExist();
+    });
+
+    it("should not display an error if the search results are still loading", () => {
+      const expectedText = "No annotations found";
+
+      spec.component.searchResults = [];
+      spec.component.loading = true;
+      spec.detectChanges();
+
+      const element = getElementByInnerText(spec, expectedText);
+      expect(element).not.toExist();
+    });
+
+    it("should display a page of search results", () => {
+      spec.detectChanges();
+
+      const expectedResults = mockAudioEventsResponse.length;
+      const realizedResults = spectrogramElements().length;
+      expect(realizedResults).toEqual(expectedResults);
+    });
   });
-
-  it("should not display an error if the search results are still loading", () => {
-    const expectedText = "No annotations found";
-
-    spec.component.searchResults = [];
-    spec.component.loading = true;
-    spec.detectChanges();
-
-    const element = getElementByInnerText(spec, expectedText);
-    expect(element).not.toExist();
-  });
-
-  it("should display a page of search results", () => {
-    spec.detectChanges();
-
-    const expectedResults = mockAudioEventsResponse.length;
-    const realizedResults = spectrogramElements().length;
-    expect(realizedResults).toEqual(expectedResults);
-  });
-
-  it("should add a query string parameters when a filter condition is added", () => {});
-
-  it("should remove a query string parameter when a filter condition is removed", () => {});
 });

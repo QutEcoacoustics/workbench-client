@@ -6,7 +6,7 @@ import { AnnotationSearchParameters } from "@components/annotations/pages/annota
 import { lastValueFrom } from "rxjs";
 
 @Injectable({ providedIn: "root" })
-class AnnotationsResolver
+class AnnotationsSearchResolver
   implements Resolve<{ model: AnnotationSearchParameters }>
 {
   public constructor(
@@ -43,7 +43,7 @@ export const annotationResolvers = {
   providers: [
     {
       provide: "annotationSearchParametersResolver",
-      useClass: AnnotationsResolver,
+      useClass: AnnotationsSearchResolver,
       deps: [BawSessionService, SecurityService],
     },
   ],

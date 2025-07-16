@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
@@ -18,22 +18,23 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
     }
   `],
   imports: [FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectableItemsComponent {
+export class SelectableItemsComponent<T> {
   @Input() public title: string;
   @Input() public description: string;
   @Input() public options: ISelectableItem[];
-  @Input() public selection: number;
+  @Input() public selection: T;
   @Input() public inline = false;
   @Input() public disabled = false;
-  @Output() public selectionChange = new EventEmitter<number>();
+  @Output() public selectionChange = new EventEmitter<T>();
 
-  public changeSelection(index: number) {
-    this.selectionChange.next(index);
+  protected changeSelection(item: T) {
+    this.selectionChange.next(item);
   }
 
-  public isSelected(index: number): boolean {
-    return this.selection === index;
+  protected isSelected(item: T): boolean {
+    return this.selection === item;
   }
 }
 

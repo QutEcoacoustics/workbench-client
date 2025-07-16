@@ -1,7 +1,7 @@
 import { Params } from "@angular/router";
 import {
   IAnnotationSearchParameters,
-  SelectKey,
+  VerificationStatusKey,
   SortingKey,
   sortingOptions,
 } from "@components/annotations/pages/annotationSearchParameters";
@@ -36,8 +36,8 @@ export function generateAnnotationSearchParameters(
       // string[], which incorrectly broadens the type.
       Object.keys(sortingOptions) as SortingKey[],
     ),
-    select: modelData.helpers.arrayElement(
-      Object.keys(sortingOptions) as SelectKey[],
+    verificationStatus: modelData.helpers.arrayElement(
+      ["unverified-for-me", "unverified", "any"],
     ),
     ...data,
   };

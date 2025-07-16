@@ -69,7 +69,7 @@ describe("annotationSearchParameters", () => {
     direction: "asc",
   };
 
-  const onlyMyUnverifiedSelectionFilters = {
+  const myUnverifiedFilters = {
     or: [
       { "verifications.creatorId": { notEq: 42 } },
       { "verifications.id": { eq: null } },
@@ -88,7 +88,7 @@ describe("annotationSearchParameters", () => {
                 in: Array.from(routeProject.siteIds),
               },
             },
-            onlyMyUnverifiedSelectionFilters,
+            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -106,7 +106,7 @@ describe("annotationSearchParameters", () => {
         regions: "2,3,4,5",
         sites: "6,7,8,9",
 
-        select: "show-all",
+        verificationStatus: "any",
       },
       expectedFilters: () => ({
         filter: {
@@ -146,7 +146,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
 
-        select: "only-unverified",
+        verificationStatus: "unverified",
       },
       expectedFilters: () => ({
         filter: {
@@ -184,7 +184,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { gteq: 0.2 } },
-            onlyMyUnverifiedSelectionFilters,
+            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -204,7 +204,26 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { lteq: 0.9 } },
-            onlyMyUnverifiedSelectionFilters,
+            myUnverifiedFilters,
+          ],
+        },
+        sorting: defaultSorting,
+      }),
+    },
+    {
+      name: "should have the correct filters for only a selection filter",
+      inputParams: {
+        verificationStatus: "unverified",
+      },
+      expectedFilters: () => ({
+        filter: {
+          and: [
+            {
+              "audioRecordings.siteId": {
+                in: Array.from(routeProject.siteIds),
+              },
+            },
+            { "verifications.id": { eq: null } },
           ],
         },
         sorting: defaultSorting,

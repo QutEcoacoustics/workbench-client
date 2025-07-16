@@ -39,6 +39,8 @@ export class AnnotationEventCardComponent implements AfterViewInit {
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
   public ngAfterViewInit() {
-    this.mediaControls().nativeElement.for = this.spectrogram().nativeElement;
+    setTimeout(() => {
+      this.mediaControls().nativeElement.for = this.spectrogram().nativeElement;
+    }, 0);
   }
 }

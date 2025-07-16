@@ -53,10 +53,7 @@
     </div>
 
     @if (searchResults.length === 0 && !loading) {
-      <h2 class="no-results-error">
-        No {{ searchParameters.select !== "show-all" ? "unverified" : "" }} annotations
-        found
-      </h2>
+      <h2 class="no-results-error">No annotations found</h2>
       } @if(displayPagination) {
       <ngb-pagination
         class="d-flex justify-content-center mt-4"

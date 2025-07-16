@@ -116,12 +116,11 @@
     @if (form.invalid) {
       <p id="score-errors">
         <strong class="fw-normal text-danger">
-          @if (
-            upperScore.hasError("min") ||
-            lowerScore.hasError("max")
-          ) {
+          @if (upperScore.hasError("min") || lowerScore.hasError("max")) {
             Score minimum must be less than or equal to the score maximum.
-          } @else if (upperScore.hasError("type") || lowerScore.hasError("type")) {
+          } @else if (
+            upperScore.hasError("type") || lowerScore.hasError("type")
+          ) {
             Score must be a number.
           }
         </strong>
@@ -143,21 +142,6 @@
       [(ngbCollapse)]="hideAdvancedFilters"
       class="card card-body border-top-0"
     >
-      <label class="form-label w-100">
-        Sample Selection Behavior
-        <select
-          id="select-input"
-          class="form-select"
-          placeholder="Only show annotations unverified by me"
-          [value]="searchParameters.select ?? defaultSelect()"
-          (change)="updateDiscreteOptions('select', $event)"
-        >
-          <option value="my-unverified" [disabled]="!isLoggedIn()">Only show annotations unverified by me</option>
-          <option value="only-unverified">Only show annotations that have not been verified</option>
-          <option value="show-all">Show annotations regardless of verification status</option>
-        </select>
-      </label>
-
       <baw-typeahead-input
         #recordingsTypeahead
         id="recordings-input"
@@ -171,6 +155,16 @@
     </div>
   </div>
 
+  <div class="mt-2">
+    <label class="form-label w-100">Show annotations</label>
+    <baw-selectable-items
+      [options]="verifiedStatusOptions"
+      [selection]="searchParameters.verificationStatus"
+      [inline]="true"
+      (selectionChange)="updateDiscreteOptions('verificationStatus', $event)"
+    ></baw-selectable-items>
+  </div>
+
   <label class="form-label mt-2 w-100">
     Sort by
     <select
@@ -178,7 +172,7 @@
       class="form-select"
       placeholder="Created Date (Oldest First)"
       [value]="searchParameters.sort ?? 'created-asc'"
-      (change)="updateDiscreteOptions('sort', $event)"
+      (change)="updateDiscreteOptions('sort', $any($event).target.value)"
     >
       <option value="created-asc">Created Date (Oldest First)</option>
       <option value="created-desc">Created Date (Newest First)</option>

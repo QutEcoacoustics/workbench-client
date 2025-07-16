@@ -65,11 +65,11 @@ export const sortingOptions = new Map([
   }],
 ]) satisfies Map<SortingKey, Sorting<keyof AudioEvent>>;
 
-// The select options map can be found in the AnnotationSearchParameter's
-// getters.
+// The verification status options map can be found in the
+// AnnotationSearchParameter's getters.
 // I have to use a getter because some of the filter conditions depend on the
 // session state.
-export type SelectKey = "my-unverified" | "only-unverified" | "show-all";
+export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -104,7 +104,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
-  select: SelectKey;
+  verificationStatus: VerificationStatusKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -127,7 +127,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
-  select: jsString,
+  verificationStatus: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -193,7 +193,7 @@ export class AnnotationSearchParameters
   public eventTime: MonoTuple<Duration, 2>;
 
   private _sort: SortingKey;
-  private _select: SelectKey;
+  private _select: VerificationStatusKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -221,15 +221,15 @@ export class AnnotationSearchParameters
     }
   }
 
-  public get select(): SelectKey {
+  public get verificationStatus(): VerificationStatusKey {
     return this._select;
   }
 
-  public set select(value: string) {
+  public set verificationStatus(value: string) {
     if (this.isSelectKey(value) || !isInstantiated(value)) {
       // So that we can minimize the number of query string parameters, we use
-      // "my-unverified" as the default if there is no "sort" query string parameter.
-      if (value === "my-unverified") {
+      // "unverified-for-me" as the default if there is no "sort" query string parameter.
+      if (value === "unverified-for-me") {
         this._select = null;
       } else {
         this._select = value;
@@ -288,15 +288,15 @@ export class AnnotationSearchParameters
 
   private get selectOptions() {
     return new Map([
-      ["my-unverified", {
+      ["unverified-for-me", {
         or: [
           { "verifications.creatorId": { notEq: this.user?.id ?? null } },
           { "verifications.id": { eq: null } }
         ],
       }],
-      ["only-unverified", { "verifications.id": { eq: null } }],
-      ["show-all", null],
-    ]) satisfies Map<SelectKey, InnerFilter<AudioEvent>>;
+      ["unverified", { "verifications.id": { eq: null } }],
+      ["any", null],
+    ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
   }
 
   // TODO: fix up this function
@@ -348,7 +348,7 @@ export class AnnotationSearchParameters
   // projects or regions.
   //
   // This method will return the most specific list of site ids from the route
-  // and qsps models
+  // and query string parameter models
   //
   // TODO: remove this method once the API supports filtering audio events by
   // projects, and regions.
@@ -475,12 +475,12 @@ export class AnnotationSearchParameters
   }
 
   private addSelectFilters(initialFilter: InnerFilter<AudioEvent>) {
-    const defaultSelectKey = "my-unverified" satisfies SelectKey;
-    const selectKey = this.isSelectKey(this.select)
-      ? this.select
-      : defaultSelectKey;
+    const defaultKey = "unverified-for-me" satisfies VerificationStatusKey;
+    const statusKey = this.isSelectKey(this.verificationStatus)
+      ? this.verificationStatus
+      : defaultKey;
 
-    const selectFilters = this.selectOptions.get(selectKey);
+    const selectFilters = this.selectOptions.get(statusKey);
 
     return filterAnd(initialFilter, selectFilters);
   }
@@ -511,7 +511,7 @@ export class AnnotationSearchParameters
     return sortingOptions.has(key as any);
   }
 
-  private isSelectKey(key: string): key is SelectKey {
+  private isSelectKey(key: string): key is VerificationStatusKey {
     return this.selectOptions.has(key as any);
   }
 }
