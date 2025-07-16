@@ -67,7 +67,8 @@ import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@typ
 import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { AnnotationSearchParameters, VerificationStatusKey } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
@@ -102,6 +103,7 @@ describe("VerificationComponent", () => {
     imports: [
       IconsModule,
 
+      SelectableItemsComponent,
       SearchFiltersModalComponent,
       ProgressWarningComponent,
       AnnotationSearchFormComponent,
@@ -284,8 +286,6 @@ describe("VerificationComponent", () => {
 
   const tagsTypeahead = () =>
     document.querySelector<HTMLElement>("#tags-input");
-  const selectionDropdown =() =>
-    document.querySelector<HTMLSelectElement>("#select-input");
   const updateFiltersButton = () =>
     document.querySelector<HTMLButtonElement>("#update-filters-btn");
 
@@ -315,6 +315,11 @@ describe("VerificationComponent", () => {
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
       "button"
     );
+
+  function clickVerificationStatusFilter(value: VerificationStatusKey) {
+    const target = document.querySelector(`[aria-valuetext="${value}"]`);
+    spec.click(target);
+  }
 
   function showParameters(): void {
     spec.click(dialogShowButton());
@@ -416,11 +421,9 @@ describe("VerificationComponent", () => {
 
       it("should correctly update the selection parameter when filter conditions are added", async () => {
         await detectChanges(spec);
+        fakeAsync(() => showParameters())();
 
-        fakeAsync(() => {
-          showParameters();
-          spec.selectOption(selectionDropdown(), "any");
-        })();
+        clickVerificationStatusFilter("any");
 
         spec.click(updateFiltersButton());
 
@@ -576,10 +579,8 @@ describe("VerificationComponent", () => {
           await detectChanges(spec);
           const initialPagingCallback = verificationGrid().getPage;
 
-          fakeAsync(() => {
-            showParameters();
-            spec.selectOption(selectionDropdown(), "any");
-          })();
+          fakeAsync(() => showParameters())();
+          clickVerificationStatusFilter("any");
 
           spec.click(updateFiltersButton());
           await detectChanges(spec);
