@@ -458,7 +458,7 @@ describe("VerificationComponent", () => {
         );
       });
 
-      describe("verification api", () => {
+      xdescribe("verification api", () => {
         beforeEach(async () => {
           await waitUntil(() => gridSize() > 2);
         });

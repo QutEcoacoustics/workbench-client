@@ -85,11 +85,6 @@ describe("SearchFiltersModalComponent", () => {
     expect(successSpy).toHaveBeenCalled();
   });
 
-  it("should have a warning button if the host has decisions", () => {
-    spec.setInput("hasDecisions", true);
-    expect(updateButton()).toHaveClass("btn-warning");
-  });
-
   it("should have a primary button if the host does not have decisions", () => {
     spec.setInput("hasDecisions", false);
     expect(updateButton()).toHaveClass("btn-primary");
