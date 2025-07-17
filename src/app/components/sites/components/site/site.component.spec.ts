@@ -133,7 +133,7 @@ describe("SiteComponent", () => {
 
       const image = spec.query<HTMLImageElement>("img");
       expect(image).toHaveImage(
-        `${websiteHttpUrl}${assetRoot}/images/site/site_span4.png`,
+        `${websiteHttpUrl}${assetRoot}/images/site/site_span4.webp`,
         { alt: `${site.name} image` }
       );
     });
