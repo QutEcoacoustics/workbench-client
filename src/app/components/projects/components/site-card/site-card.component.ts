@@ -98,8 +98,8 @@ export class SiteCardComponent implements OnInit {
   }
 
   private getRecording(): Observable<AudioRecording[]> {
-    const filter = { paging: { items: 1 } };
-    if (this.region) {
+    const filter = { paging: { items: 1 } } as const;
+    if (this.region()) {
       return this.recordingApi.filterByRegion(filter, this.region());
     } else {
       return this.recordingApi.filterBySite(filter, this.site());
