@@ -193,7 +193,7 @@ export class AnnotationSearchParameters
   public eventTime: MonoTuple<Duration, 2>;
 
   private _sort: SortingKey;
-  private _select: VerificationStatusKey;
+  private _verificationStatus: VerificationStatusKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -222,17 +222,17 @@ export class AnnotationSearchParameters
   }
 
   public get verificationStatus(): VerificationStatusKey {
-    return this._select;
+    return this._verificationStatus;
   }
 
   public set verificationStatus(value: string) {
-    if (this.isSelectKey(value) || !isInstantiated(value)) {
+    if (this.isVerificationStatusKey(value) || !isInstantiated(value)) {
       // So that we can minimize the number of query string parameters, we use
       // "unverified-for-me" as the default if there is no "sort" query string parameter.
       if (value === "unverified-for-me") {
-        this._select = null;
+        this._verificationStatus = null;
       } else {
-        this._select = value;
+        this._verificationStatus = value;
       }
     } else {
       console.error(`Invalid select key: "${value}"`);
@@ -286,12 +286,18 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
-  private get selectOptions() {
+  private get verificationStatusOptions() {
     return new Map([
       ["unverified-for-me", {
         or: [
           { "verifications.creatorId": { notEq: this.user?.id ?? null } },
-          { "verifications.id": { eq: null } }
+          { "verifications.id": { eq: null } },
+          {
+            and: [
+              { "verifications.creatorId": { eq: this.user?.id ?? null } },
+              { "verifications.confirmed": { eq: "skip" } },
+            ],
+          },
         ],
       }],
       ["unverified", { "verifications.id": { eq: null } }],
@@ -306,7 +312,7 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
-    filter = this.addSelectFilters(filter);
+    filter = this.addVerificationFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -474,15 +480,15 @@ export class AnnotationSearchParameters
     return scoreFilters;
   }
 
-  private addSelectFilters(initialFilter: InnerFilter<AudioEvent>) {
+  private addVerificationFilters(initialFilter: InnerFilter<AudioEvent>) {
     const defaultKey = "unverified-for-me" satisfies VerificationStatusKey;
-    const statusKey = this.isSelectKey(this.verificationStatus)
+    const statusKey = this.isVerificationStatusKey(this.verificationStatus)
       ? this.verificationStatus
       : defaultKey;
 
-    const selectFilters = this.selectOptions.get(statusKey);
+    const filters = this.verificationStatusOptions.get(statusKey);
 
-    return filterAnd(initialFilter, selectFilters);
+    return filterAnd(initialFilter, filters);
   }
 
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
@@ -511,7 +517,7 @@ export class AnnotationSearchParameters
     return sortingOptions.has(key as any);
   }
 
-  private isSelectKey(key: string): key is VerificationStatusKey {
-    return this.selectOptions.has(key as any);
+  private isVerificationStatusKey(key: string): key is VerificationStatusKey {
+    return this.verificationStatusOptions.has(key as any);
   }
 }

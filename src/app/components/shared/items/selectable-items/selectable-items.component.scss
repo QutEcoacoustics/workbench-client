@@ -5,3 +5,19 @@ button {
     cursor: not-allowed;
   }
 }
+
+.inline-button {
+  &:not(:first-of-type) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  &:not(:last-of-type) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    // We remove the right border so that when the two buttons are positioned
+    // against each other, there is not a double border.
+    border-right: none;
+  }
+}

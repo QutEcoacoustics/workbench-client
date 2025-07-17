@@ -11,7 +11,7 @@
     @let selected = option.value === selection();
 
     <button
-      class="btn btn-sm btn-default me-1"
+      class="inline-button btn btn-sm btn-default"
       (click)="changeSelection(option.value)"
       [disabled]="option.disabled || disabled()"
       [attr.readonly]="selected"
