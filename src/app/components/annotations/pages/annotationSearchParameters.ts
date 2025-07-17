@@ -300,7 +300,12 @@ export class AnnotationSearchParameters
           },
         ],
       }],
-      ["unverified", { "verifications.id": { eq: null } }],
+      ["unverified", {
+        or: [
+          { "verifications.confirmed": { eq: null } },
+          { "verifications.confirmed": { eq: "skip" } },
+        ],
+      }],
       ["any", null],
     ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
   }

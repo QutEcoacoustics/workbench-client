@@ -167,7 +167,12 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
-            { "verifications.id": { eq: null } },
+            {
+              or: [
+                { "verifications.confirmed": { eq: null } },
+                { "verifications.confirmed": { eq: "skip" } },
+              ],
+            },
           ],
         },
         sorting: {
@@ -217,7 +222,7 @@ describe("annotationSearchParameters", () => {
       }),
     },
     {
-      name: "should have the correct filters for only a selection filter",
+      name: "should have the correct filters for only a verification status filter",
       inputParams: {
         verificationStatus: "unverified",
       },
@@ -229,7 +234,12 @@ describe("annotationSearchParameters", () => {
                 in: Array.from(routeProject.siteIds),
               },
             },
-            { "verifications.id": { eq: null } },
+            {
+              or: [
+                { "verifications.confirmed": { eq: null } },
+                { "verifications.confirmed": { eq: "skip" } },
+              ],
+            },
           ],
         },
         sorting: defaultSorting,
