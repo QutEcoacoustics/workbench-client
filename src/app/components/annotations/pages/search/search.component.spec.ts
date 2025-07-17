@@ -194,6 +194,12 @@ describe("AnnotationSearchComponent", () => {
               or: [
                 { "verifications.creatorId": { notEq: mockUser.id} },
                 { "verifications.id": { eq: null } },
+                {
+                  and: [
+                    { "verifications.creatorId": { eq: mockUser.id} },
+                    { "verifications.confirmed": { eq: "skip" } },
+                  ],
+                },
               ],
             }
           ],

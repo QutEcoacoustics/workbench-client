@@ -73,6 +73,12 @@ describe("annotationSearchParameters", () => {
     or: [
       { "verifications.creatorId": { notEq: 42 } },
       { "verifications.id": { eq: null } },
+      {
+        and: [
+          { "verifications.creatorId": { eq: 42 } },
+          { "verifications.confirmed": { eq: "skip" } },
+        ],
+      },
     ],
   };
 
