@@ -98,9 +98,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected hideAdvancedFilters = true;
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions: ISelectableItem<VerificationStatusKey>[] = [
-    { label: "I have not verified", value: "unverified-for-me", disabled: true },
-    { label: "no one has verified", value: "unverified" },
-    { label: "even if they have been verified", value: "any" },
+    { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
+    { label: "have not been verified by anyone", value: "unverified" },
+    { label: "are verified or unverified", value: "any" },
   ];
 
   protected get project(): Project {
