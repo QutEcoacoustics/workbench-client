@@ -291,13 +291,8 @@ export class AnnotationSearchParameters
       ["unverified-for-me", {
         or: [
           { "verifications.creatorId": { notEq: this.user?.id ?? null } },
-          { "verifications.id": { eq: null } },
-          {
-            and: [
-              { "verifications.creatorId": { eq: this.user?.id ?? null } },
-              { "verifications.confirmed": { eq: "skip" } },
-            ],
-          },
+          { "verifications.confirmed": { eq: null } },
+          { "verifications.confirmed": { eq: "skip" } },
         ],
       }],
       ["unverified", {

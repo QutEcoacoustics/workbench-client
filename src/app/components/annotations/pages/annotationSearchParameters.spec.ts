@@ -72,13 +72,8 @@ describe("annotationSearchParameters", () => {
   const myUnverifiedFilters = {
     or: [
       { "verifications.creatorId": { notEq: 42 } },
-      { "verifications.id": { eq: null } },
-      {
-        and: [
-          { "verifications.creatorId": { eq: 42 } },
-          { "verifications.confirmed": { eq: "skip" } },
-        ],
-      },
+      { "verifications.confirmed": { eq: null } },
+      { "verifications.confirmed": { eq: "skip" } },
     ],
   };
 
