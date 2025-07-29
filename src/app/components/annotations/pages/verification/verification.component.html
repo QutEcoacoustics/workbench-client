@@ -44,6 +44,7 @@
   (focus)="verificationGridFocused = true"
   (blur)="verificationGridFocused = false"
   grid-size="12"
+  autofocus
 >
   <template>
     <baw-grid-tile-content></baw-grid-tile-content>
@@ -58,6 +59,12 @@
   <oe-verification
     verified="false"
     shortcut="N"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
+  <oe-verification
+    verified="unsure"
+    shortcut="U"
     (focus)="verificationGridFocused = true"
     (blur)="verificationGridFocused = false"
   ></oe-verification>

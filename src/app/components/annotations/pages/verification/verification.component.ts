@@ -132,16 +132,6 @@ class VerificationComponent
       return;
     }
 
-    // because the verification grid keybindings are scoped at the component
-    // level, we automatically focus the verification grid component so that
-    // users don't have to manually focus the verification grid to start using
-    // shortcuts
-    //
-    // without this automatic focusing, the user would have to click on the
-    // verification grid (e.g. to make a sub-selection) before being able to
-    // use the shortcut keys
-    this.focusVerificationGrid();
-
     const timeoutDurationMilliseconds = 1_000 as const;
 
     // we wait a second after the verification grid has loaded to give the user
@@ -175,11 +165,11 @@ class VerificationComponent
 
       const tagId = subjectWrapper.tag.id;
 
-      const verificationData = {
+      const verificationData: IVerification = {
         audioEventId: subject.id,
         confirmed: mappedDecision,
         tagId,
-      } as const satisfies IVerification;
+      };
 
       const verification = new Verification(verificationData, this.injector);
 
@@ -196,10 +186,6 @@ class VerificationComponent
       // render thread can continue to run while the request is being made
       firstValueFrom(apiRequest);
     }
-  }
-
-  protected focusVerificationGrid(): void {
-    this.verificationGridElement.nativeElement.focus();
   }
 
   protected openSearchFiltersModal(): void {
