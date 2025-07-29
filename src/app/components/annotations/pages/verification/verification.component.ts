@@ -165,11 +165,11 @@ class VerificationComponent
 
       const tagId = subjectWrapper.tag.id;
 
-      const verificationData = {
+      const verificationData: IVerification = {
         audioEventId: subject.id,
         confirmed: mappedDecision,
         tagId,
-      } as const satisfies IVerification;
+      };
 
       const verification = new Verification(verificationData, this.injector);
 

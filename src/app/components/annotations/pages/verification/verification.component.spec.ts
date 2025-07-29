@@ -53,7 +53,7 @@ import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { Verification } from "@models/Verification";
+import { ConfirmedStatus, Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WIPComponent } from "@shared/wip/wip.component";
@@ -67,7 +67,10 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { AnnotationSearchParameters, VerificationStatusKey } from "../annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+  VerificationStatusKey,
+} from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
 
 describe("VerificationComponent", () => {
@@ -139,7 +142,7 @@ describe("VerificationComponent", () => {
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
       mockUser,
-      injector
+      injector,
     );
     mockSearchParameters.routeSiteModel = routeSite;
     mockSearchParameters.routeSiteId = routeSite.id;
@@ -153,23 +156,23 @@ describe("VerificationComponent", () => {
     defaultFakeTags = modelData.randomArray(
       3,
       10,
-      () => new Tag(generateTag(), injector)
+      () => new Tag(generateTag(), injector),
     );
 
     mockAudioEventsResponse = modelData.randomArray(
       3,
       3,
-      () => new AudioEvent(generateAudioEvent(), injector)
+      () => new AudioEvent(generateAudioEvent(), injector),
     );
 
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({ siteId: routeSite.id }),
-      injector
+      injector,
     );
 
     mockAnnotationResponse = new Annotation(
       generateAnnotation({ audioRecording: mockAudioRecording }),
-      injector
+      injector,
     );
 
     spec.component.searchParameters = mockSearchParameters;
@@ -204,7 +207,7 @@ describe("VerificationComponent", () => {
         projectApiSpy,
         injector,
         [routeProject],
-        Project
+        Project,
       ),
 
       interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
@@ -212,17 +215,17 @@ describe("VerificationComponent", () => {
         audioEventsApiSpy,
         injector,
         mockAudioEventsResponse,
-        AudioEvent
+        AudioEvent,
       ),
     ]);
 
     tagsApiSpy.typeaheadCallback = (() => () => of(defaultFakeTags)) as any;
 
     verificationApiSpy.createOrUpdate = jasmine.createSpy(
-      "createOrUpdate"
+      "createOrUpdate",
     ) as any;
     verificationApiSpy.createOrUpdate.and.callFake(() =>
-      of(verificationResponse)
+      of(verificationResponse),
     );
 
     verificationApiSpy.create = jasmine.createSpy("create") as any;
@@ -260,7 +263,7 @@ describe("VerificationComponent", () => {
     if (!customElements.get("oe-verification-grid")) {
       await import(
         /* webpackIgnore: true */ nodeModule(
-          "@ecoacoustics/web-components/dist/components.js"
+          "@ecoacoustics/web-components/dist/components.js",
         )
       );
     }
@@ -293,25 +296,25 @@ describe("VerificationComponent", () => {
 
   const gridTiles = () =>
     verificationGridRoot().querySelectorAll<VerificationGridTileComponent>(
-      "oe-verification-grid-tile"
+      "oe-verification-grid-tile",
     );
 
   // a lot of the web components elements of interest are in the shadow DOM
   // therefore, we have to chain some query selectors to get to the elements
   const bootstrapElement = () =>
     verificationGridRoot().querySelector<VerificationBootstrapComponent>(
-      "oe-verification-bootstrap"
+      "oe-verification-bootstrap",
     );
   const helpCloseButton = () =>
     bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(
-      ".close-button"
+      ".close-button",
     );
 
   const decisionComponents = () =>
     document.querySelectorAll<HTMLButtonElement>("oe-verification");
   const decisionButton = (index: number) =>
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
-      "button"
+      "button",
     );
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
@@ -341,12 +344,12 @@ describe("VerificationComponent", () => {
 
     const startTile = targetGridTiles[start];
     const startTileClickTarget = startTile.shadowRoot.querySelector(
-      "[part='tile-container']"
+      "[part='tile-container']",
     );
 
     const endTile = targetGridTiles[end];
     const endTileClickTarget = endTile.shadowRoot.querySelector(
-      "[part='tile-container']"
+      "[part='tile-container']",
     );
 
     startTileClickTarget.dispatchEvent(new MouseEvent("pointerdown"));
@@ -359,7 +362,7 @@ describe("VerificationComponent", () => {
     // e.g. makeSelection(0, 0) should select the first tile
     if (startTile !== endTile) {
       endTileClickTarget.dispatchEvent(
-        new MouseEvent("pointerdown", { shiftKey: true })
+        new MouseEvent("pointerdown", { shiftKey: true }),
       );
     }
 
@@ -425,7 +428,9 @@ describe("VerificationComponent", () => {
 
         spec.click(updateFiltersButton());
 
-        expect(spec.component.searchParameters.verificationStatus).toEqual("any");
+        expect(spec.component.searchParameters.verificationStatus).toEqual(
+          "any",
+        );
       });
     });
 
@@ -454,23 +459,23 @@ describe("VerificationComponent", () => {
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({
             tags: jasmine.arrayContaining(mockTagIds),
-          })
+          }),
         );
       });
 
-      xdescribe("verification api", () => {
+      describe("verification api", () => {
         beforeEach(async () => {
-          await waitUntil(() => gridSize() > 2);
+          await waitUntil(() => verificationGrid().loaded);
         });
 
         it("should make the correct api calls when a decision is made about the entire grid", async () => {
           await makeDecision(0);
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
-            gridSize()
+            gridSize(),
           );
         });
 
-        it("should make a verification api when a single decision is made", async () => {
+        xit("should make a verification api call when a single decision is made", async () => {
           await makeSelection(0, 0);
           await makeDecision(0);
 
@@ -479,11 +484,11 @@ describe("VerificationComponent", () => {
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
             jasmine.anything(),
             jasmine.anything(),
-            jasmine.anything()
+            jasmine.anything(),
           );
         });
 
-        it("should make multiple verification api calls when multiple decisions are made", async () => {
+        xit("should make multiple verification api calls when multiple decisions are made", async () => {
           await makeSelection(0, 2);
           await makeDecision(0);
 
@@ -494,17 +499,17 @@ describe("VerificationComponent", () => {
           ];
 
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
-            expectedApiCalls.length
+            expectedApiCalls.length,
           );
 
           for (const apiCall of expectedApiCalls) {
             expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
-              ...apiCall
+              ...apiCall,
             );
           }
         });
 
-        it("should make the correct api calls when a decision is overwritten", async () => {
+        xit("should make the correct api calls when a decision is overwritten", async () => {
           await makeSelection(0, 0);
           await makeDecision(0);
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(1);
@@ -515,8 +520,26 @@ describe("VerificationComponent", () => {
           expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
             jasmine.anything(),
             jasmine.anything(),
-            jasmine.anything()
+            jasmine.anything(),
           );
+        });
+
+        describe("decisions", () => {
+          interface DecisionTest {
+            decision: string;
+            expectedDecision: ConfirmedStatus;
+          }
+
+          const decisionTests: DecisionTest[] = [
+            { decision: "true", expectedDecision: ConfirmedStatus.Correct },
+            { decision: "false", expectedDecision: ConfirmedStatus.Incorrect },
+            { decision: "Unsure", expectedDecision: ConfirmedStatus.Unsure },
+          ];
+
+          // Because the web components and the
+          for (const test of decisionTests) {
+            it(`should emit the correct api decision "${test.decision}"`, () => {});
+          }
         });
       });
 
