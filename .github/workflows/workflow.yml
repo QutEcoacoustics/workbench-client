@@ -141,9 +141,7 @@ jobs:
 
     steps:
       - name: Checkout Workbench Client
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+        uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Checkout LFS objects
         run: git lfs checkout
@@ -163,9 +161,7 @@ jobs:
 
     steps:
       - name: Checkout Workbench Client
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+        uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Checkout LFS objects
         run: git lfs checkout

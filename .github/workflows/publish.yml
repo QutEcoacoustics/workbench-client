@@ -24,10 +24,11 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      # We cache LFS assets in CI so that less of the GitHub LFS budget is used
+      # by simple cloning in CI
       - name: Checkout Workbench Client
-        uses: actions/checkout@v4
+        uses: nschloe/action-cached-lfs-checkout@v1
         with:
-          lfs: true
           fetch-depth: 50
 
       # fetch more tag info so git_version.ps1 works properly
