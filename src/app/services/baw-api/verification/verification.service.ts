@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
+  ApiCreateOrUpdate,
   emptyParam,
   filterParam,
   id,
@@ -17,8 +18,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { User } from "@models/User";
 import { Verification } from "@models/Verification";
-import { CONFLICT } from "http-status";
-import { catchError, map, mergeMap, Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -70,7 +70,7 @@ export class VerificationService
 
 @Injectable()
 export class ShallowVerificationService
-  implements StandardApi<Verification, []>
+  implements StandardApi<Verification, []>, ApiCreateOrUpdate<Verification, []>
 {
   public constructor(private api: BawApiService<Verification>) {}
 
@@ -117,47 +117,13 @@ export class ShallowVerificationService
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
    */
-  public createOrUpdate(
-    model: Verification,
-    audioEvent: AudioEvent,
-    user: User
-  ): Observable<Verification> {
-    return this.api
-      .create(
-        Verification,
-        endpointShallow(emptyParam, emptyParam),
-        (verification) => endpointShallow(verification, emptyParam),
-        model,
-        { disableNotification: true }
-      )
-      .pipe(
-        // fetching the verification model here is the only way to be certain
-        // that there are no race conditions
-        catchError((err) => {
-          if (err.status === CONFLICT) {
-            const verificationModel = this.audioEventUserVerification(
-              audioEvent,
-              user
-            );
-            return verificationModel.pipe(
-              mergeMap((verification) => {
-                if (!verification) {
-                  throw err;
-                }
-
-                const newModel = new Verification({
-                  ...verification,
-                  ...model,
-                });
-
-                return this.update(newModel);
-              })
-            );
-          }
-
-          throw err;
-        })
-      );
+  public createOrUpdate(model: Verification): Observable<Verification> {
+    return this.api.createOrUpdate(
+      Verification,
+      endpointShallow(emptyParam, emptyParam),
+      (verification) => endpointShallow(verification, emptyParam),
+      model,
+    );
   }
 
   /**
