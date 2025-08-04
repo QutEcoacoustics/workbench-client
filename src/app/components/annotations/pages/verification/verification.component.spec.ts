@@ -179,10 +179,10 @@ describe("VerificationComponent", () => {
       injector,
     );
 
-    spec.component.searchParameters = mockSearchParameters;
-    spec.component.project = routeProject;
-    spec.component.region = routeRegion;
-    spec.component.site = routeSite;
+    spec.setInput("searchParameters", mockSearchParameters);
+    spec.setInput("project", routeProject);
+    spec.setInput("region", routeRegion);
+    spec.setInput("site", routeSite);
 
     verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
     audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -415,7 +415,7 @@ describe("VerificationComponent", () => {
 
         spec.click(updateFiltersButton());
 
-        expect(spec.component.searchParameters.tags).toContain(expectedTagId);
+        expect(spec.component.searchParameters().tags).toContain(expectedTagId);
       });
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
@@ -432,7 +432,7 @@ describe("VerificationComponent", () => {
 
         spec.click(updateFiltersButton());
 
-        expect(spec.component.searchParameters.verificationStatus).toEqual(
+        expect(spec.component.searchParameters().verificationStatus).toEqual(
           "any",
         );
       });
@@ -458,7 +458,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spec.component.searchParameters;
+        const realizedParameterModel = spec.component.searchParameters();
 
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({

@@ -24,7 +24,7 @@ import {
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
@@ -104,6 +104,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  taskTag: Id;
   verificationStatus: VerificationStatusKey;
 
   onlyTagged: boolean;
@@ -129,6 +130,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  taskTag: jsNumber,
   verificationStatus: jsString,
 
   onlyTagged: jsBoolean,
@@ -196,6 +198,8 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public taskTag: Id;
+
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
   public _onlyTagged: boolean;
@@ -255,6 +259,9 @@ export class AnnotationSearchParameters
       this._onlyTagged = value;
     }
   }
+
+  @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
+  public taskTagModel?: Tag;
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
@@ -434,12 +441,11 @@ export class AnnotationSearchParameters
     // verification screen will show the same results.
     //
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2236
-    const instantiatedTagFilters =
-      this.onlyTagged === null
-        ? ({
-            "tags.id": { notEq: null },
-          } as InnerFilter<AudioEvent>)
-        : {};
+    const instantiatedTagFilters = !isInstantiated(this.onlyTagged)
+      ? ({
+          "tags.id": { notEq: null },
+        } as InnerFilter<AudioEvent>)
+      : {};
 
     return filterAnd(tagFilters, instantiatedTagFilters);
   }

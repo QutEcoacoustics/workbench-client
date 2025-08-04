@@ -13,46 +13,57 @@
     inputPlaceholder="All"
     [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
-    [value]="searchParameters.tagModels"
+    [value]="searchParameters().tagModels"
     (modelChange)="updateSubModel('tags', $event)"
+  ></baw-typeahead-input>
+
+  <baw-typeahead-input
+    id="task-tag-input"
+    label="Tag to Verify"
+    [inputPlaceholder]="searchParameters().tagModels[0]?.text ?? 'All'"
+    [searchCallback]="tagsApi.typeaheadCallback()"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    [value]="[searchParameters().taskTagModel]"
+    [multipleInputs]="false"
+    (modelChange)="updateSubModel('taskTag', $event)"
   ></baw-typeahead-input>
 
   <baw-typeahead-input
     id="projects-input"
     label="Project(s)"
-    [inputPlaceholder]="project ? project.name : 'All'"
+    [inputPlaceholder]="project() ? project().name : 'All'"
     [searchCallback]="
       createSearchCallback(projectsApi, 'name', this.routeModelFilters())
     "
     [resultTemplate]="nameTypeaheadTemplate"
-    [inputDisabled]="!!project"
+    [inputDisabled]="!!project()"
     (modelChange)="updateSubModel('projects', $event)"
   ></baw-typeahead-input>
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
-  @if (!site || site?.isPoint) {
+  @if (!site() || site()?.isPoint) {
     <baw-typeahead-input
       id="region-input"
       label="Site(s)"
-      [inputPlaceholder]="region ? region.name : 'All'"
+      [inputPlaceholder]="region() ? region().name : 'All'"
       [searchCallback]="
         createSearchCallback(regionsApi, 'name', this.routeModelFilters())
       "
       [resultTemplate]="nameTypeaheadTemplate"
-      [inputDisabled]="!!region"
+      [inputDisabled]="!!region()"
       (modelChange)="updateSubModel('regions', $event)"
     ></baw-typeahead-input>
   }
 
   <baw-typeahead-input
     id="sites-input"
-    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
-    [inputPlaceholder]="site ? site.name : 'All'"
+    [label]="site() ? (site()?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
+    [inputPlaceholder]="site() ? site().name : 'All'"
     [searchCallback]="
       createSearchCallback(sitesApi, 'name', this.routeModelFilters())
     "
     [resultTemplate]="nameTypeaheadTemplate"
-    [inputDisabled]="!!site"
+    [inputDisabled]="!!site()"
     (modelChange)="updateSubModel('sites', $event)"
   ></baw-typeahead-input>
 
@@ -78,8 +89,8 @@
             placeholder="-Infinity"
             step="0.01"
             [class.is-invalid]="lowerScore.invalid"
-            [max]="searchParameters.scoreUpperBound"
-            [ngModel]="searchParameters.score?.[0]"
+            [max]="searchParameters().scoreUpperBound"
+            [ngModel]="searchParameters().score?.[0]"
             (valueChange)="updateScoreRange($event, scoreRangeBounds.Lower)"
           />
         </label>
@@ -105,8 +116,8 @@
             placeholder="Infinity"
             step="0.01"
             [class.is-invalid]="upperScore.invalid"
-            [min]="searchParameters.scoreLowerBound"
-            [ngModel]="searchParameters.score?.[1]"
+            [min]="searchParameters().scoreLowerBound"
+            [ngModel]="searchParameters().score?.[1]"
             (valueChange)="updateScoreRange($event, scoreRangeBounds.Upper)"
           />
         </label>
@@ -134,7 +145,7 @@
       class="btn btn-outline-secondary w-100"
       (click)="toggleAdvancedFilters()"
     >
-      {{ hideAdvancedFilters ? "Show" : "Hide" }} Advanced Filters
+      {{ hideAdvancedFilters() ? "Show" : "Hide" }} Advanced Filters
     </button>
 
     <div
@@ -149,7 +160,7 @@
         inputPlaceholder="All"
         [searchCallback]="createIdSearchCallback(recordingsApi, 'id')"
         [resultTemplate]="idTypeaheadTemplate"
-        [value]="searchParameters.audioRecordingModels"
+        [value]="searchParameters().audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
       ></baw-typeahead-input>
     </div>
@@ -159,8 +170,8 @@
     <label class="form-label w-100">
       Only show tagged annotations
       <baw-checkbox
-        [checked]="searchParameters.onlyTagged ?? true"
-        (checkedChange)="updateBooleanOption('onlyTagged', $event)"
+        [checked]="searchParameters().onlyTagged ?? true"
+        (checkedChange)="updateParameterProperty('onlyTagged', $event)"
       ></baw-checkbox>
     </label>
   </div>
@@ -168,10 +179,10 @@
   <div class="mt-2">
     <label class="form-label w-100">Show annotations that</label>
     <baw-selectable-items
-      [options]="verifiedStatusOptions"
-      [selection]="searchParameters.verificationStatus ?? defaultVerificationStatus"
+      [options]="verifiedStatusOptions()"
+      [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
       [inline]="true"
-      (selectionChange)="updateDiscreteOptions('verificationStatus', $event)"
+      (selectionChange)="updateParameterProperty('verificationStatus', $event)"
     ></baw-selectable-items>
   </div>
 
@@ -181,8 +192,8 @@
       id="sort-input"
       class="form-select"
       placeholder="Created Date (Oldest First)"
-      [value]="searchParameters.sort ?? 'created-asc'"
-      (change)="updateDiscreteOptions('sort', $any($event).target.value)"
+      [value]="searchParameters().sort ?? 'created-asc'"
+      (change)="updateParameterProperty('sort', $any($event).target.value)"
     >
       <option value="created-asc">Created Date (Oldest First)</option>
       <option value="created-desc">Created Date (Newest First)</option>

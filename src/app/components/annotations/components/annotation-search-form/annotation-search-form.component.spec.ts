@@ -214,10 +214,10 @@ describe("AnnotationSearchFormComponent", () => {
 
       expect(endDateInput()).toHaveValue(testEndDate.toFormat("yyyy-MM-dd"));
       expect(
-        spec.component.searchParameters.recordingDateStartedAfter
+        spec.component.searchParameters().recordingDateStartedAfter
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
+        spec.component.searchParameters().recordingDateFinishedBefore
       ).toBeTruthy();
     }));
 
@@ -235,10 +235,10 @@ describe("AnnotationSearchFormComponent", () => {
       waitForDropdown(spec);
 
       expect(
-        spec.component.searchParameters.recordingDateStartedAfter
+        spec.component.searchParameters().recordingDateStartedAfter
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
+        spec.component.searchParameters().recordingDateFinishedBefore
       ).toBeFalsy();
     }));
 
@@ -247,7 +247,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       setup({ sort: testedSorting });
       expect(sortingDropdown()).toHaveValue("score-asc");
-      expect(spec.component.searchParameters.sort).toEqual("score-asc");
+      expect(spec.component.searchParameters().sort).toEqual("score-asc");
     }));
 
     it("should have the correct sorting selection for an empty parameter", fakeAsync(() => {
@@ -264,7 +264,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(lowerScoreInput()).toHaveValue(mockLowerScore.toString());
       expect(upperScoreInput()).toHaveValue(mockUpperScore.toString());
 
-      expect(spec.component.searchParameters.score).toEqual([
+      expect(spec.component.searchParameters().score).toEqual([
         mockLowerScore,
         mockUpperScore
       ]);
@@ -283,12 +283,11 @@ describe("AnnotationSearchFormComponent", () => {
 
     it("should not apply the audio recording id filters if the advanced filters dropdown is closed", fakeAsync(() => {
       setup({ audioRecordings: "1" });
-      expect(spec.component.searchParameters.audioRecordings).toHaveLength(1);
+      expect(spec.component.searchParameters().audioRecordings).toHaveLength(1);
 
       toggleDropdown(spec, advancedFiltersToggle());
 
-      const realizedModel = spec.component.searchParameters;
-      expect(realizedModel.audioRecordings).toHaveLength(0);
+      expect(spec.component.searchParameters().audioRecordings).toHaveLength(0);
     }));
   });
 
@@ -308,7 +307,7 @@ describe("AnnotationSearchFormComponent", () => {
       modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
-      expect(spec.component.searchParameters.sites).toEqual([testedSite.id]);
+      expect(spec.component.searchParameters().sites).toEqual([testedSite.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
         spec.component.searchParameters
       );
@@ -321,7 +320,7 @@ describe("AnnotationSearchFormComponent", () => {
       modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
-      expect(spec.component.searchParameters.tags).toEqual([testedTag.id]);
+      expect(spec.component.searchParameters().tags).toEqual([testedTag.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
         spec.component.searchParameters
       );

@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
   EventEmitter,
   Output,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -54,6 +55,7 @@ export interface DateTimeFilterModel {
     FaIconComponent,
     TimeComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateTimeFilterComponent
   extends withUnsubscribe()

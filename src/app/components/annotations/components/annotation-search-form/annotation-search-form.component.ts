@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, model, OnInit, output, signal, viewChild } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -44,7 +37,10 @@ import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { ISelectableItem, SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import {
+  ISelectableItem,
+  SelectableItemsComponent,
+} from "@shared/items/selectable-items/selectable-items.component";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 
 enum ScoreRangeBounds {
@@ -66,8 +62,9 @@ enum ScoreRangeBounds {
     NgbHighlight,
     NgbTooltip,
     FormsModule,
-    CheckboxComponent
-],
+    CheckboxComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
@@ -81,41 +78,39 @@ export class AnnotationSearchFormComponent implements OnInit {
   ) {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.session.authTrigger.subscribe(() => {
-      this.verifiedStatusOptions[0].disabled = !this.session.isLoggedIn;
+      this.verifiedStatusOptions.update((current) => {
+        current[0].disabled = !this.session.isLoggedIn;
+        return current;
+      });
     });
   }
 
-  @Input({ required: true })
-  public searchParameters: AnnotationSearchParameters;
-  @Output()
-  public searchParametersChange =
-    new EventEmitter<AnnotationSearchParameters>();
+  public searchParameters = model.required<AnnotationSearchParameters>();
+  public searchParametersChange = output<AnnotationSearchParameters>();
 
-  @ViewChild("recordingsTypeahead")
-  private recordingsTypeahead: TypeaheadInputComponent<AudioRecording>;
+  private recordingsTypeahead = viewChild<
+    TypeaheadInputComponent<AudioRecording>
+  >("recordingsTypeahead");
 
-  protected recordingDateTimeFilters: DateTimeFilterModel = {};
+  protected recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
-  protected hideAdvancedFilters = true;
+  protected hideAdvancedFilters = signal(true);
+
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions: ISelectableItem<VerificationStatusKey>[] = [
-    { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
+  protected verifiedStatusOptions = signal<ISelectableItem<VerificationStatusKey>[]>([
+    {
+      label: "have not been verified by me",
+      value: "unverified-for-me",
+      disabled: true,
+    },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
-  ];
+  ]);
 
-  protected get project(): Project {
-    return this.searchParameters.routeProjectModel;
-  }
-
-  protected get region(): Region {
-    return this.searchParameters.routeRegionModel;
-  }
-
-  protected get site(): Site {
-    return this.searchParameters.routeSiteModel;
-  }
+  protected project = computed(() => this.searchParameters().routeProjectModel);
+  protected region = computed(() => this.searchParameters().routeRegionModel);
+  protected site = computed(() => this.searchParameters().routeSiteModel);
 
   protected get defaultVerificationStatus(): VerificationStatusKey {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
@@ -130,31 +125,31 @@ export class AnnotationSearchFormComponent implements OnInit {
     ];
 
     for (const key of advancedFilterKeys) {
-      const value = this.searchParameters[key];
+      const value = this.searchParameters()[key];
 
       if (Array.isArray(value) && value.length > 0) {
-        this.hideAdvancedFilters = false;
+        this.hideAdvancedFilters.set(false);
         break;
       } else if (isInstantiated(value)) {
-        this.hideAdvancedFilters = false;
+        this.hideAdvancedFilters.set(false);
         break;
       }
     }
 
     // we want to set the initial model the date/time filters
     // TODO: this should probably be moved to a different spot
-    const hasDateFilters = this.searchParameters.recordingDate?.length > 0;
+    const hasDateFilters = this.searchParameters().recordingDate?.length > 0;
     if (hasDateFilters) {
       const dateFinishedBefore = new NgbDate(
-        this.searchParameters.recordingDateFinishedBefore.year,
-        this.searchParameters.recordingDateFinishedBefore.month,
-        this.searchParameters.recordingDateFinishedBefore.day,
+        this.searchParameters().recordingDateFinishedBefore.year,
+        this.searchParameters().recordingDateFinishedBefore.month,
+        this.searchParameters().recordingDateFinishedBefore.day,
       );
 
-      this.recordingDateTimeFilters = {
+      this.recordingDateTimeFilters.set({
         dateFiltering: true,
         dateFinishedBefore,
-      };
+      });
     }
   }
 
@@ -165,12 +160,12 @@ export class AnnotationSearchFormComponent implements OnInit {
    * results for site, regions, etc... under a parent model (e.g. project).
    */
   protected routeModelFilters(): InnerFilter<Project | Region | Site> {
-    if (this.site) {
-      return filterModel("sites", this.site);
-    } else if (this.region) {
-      return filterModel("regions", this.region);
-    } else if (this.project) {
-      return filterModel("projects", this.project);
+    if (this.site()) {
+      return filterModel("sites", this.site());
+    } else if (this.region()) {
+      return filterModel("regions", this.region());
+    } else if (this.project()) {
+      return filterModel("projects", this.project());
     }
 
     // When an empty object is returned, annotations will not be filtered to a
@@ -182,17 +177,23 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   protected toggleAdvancedFilters(): void {
-    this.hideAdvancedFilters = !this.hideAdvancedFilters;
+    this.hideAdvancedFilters.update((current) => !current);
 
-    if (this.hideAdvancedFilters) {
-      this.searchParameters.audioRecordings = null;
+    if (this.hideAdvancedFilters()) {
+      this.searchParameters.update((current) => {
+        current.audioRecordings = null;
+        return current;
+      });
     } else {
-      const recordingIds = this.recordingsTypeahead.value.map(
-        (model: AudioRecording) => model.id,
+      const recordingIds = this.recordingsTypeahead().value.map(
+        (recordingModel: AudioRecording) => recordingModel.id,
       );
 
       if (recordingIds.length > 0) {
-        this.searchParameters.audioRecordings = recordingIds;
+        this.searchParameters.update((current) => {
+          current.audioRecordings = recordingIds;
+          return current;
+        });
       }
     }
 
@@ -206,40 +207,59 @@ export class AnnotationSearchFormComponent implements OnInit {
     // if the subModels array is empty, the user has not selected any models
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
-      this.searchParameters[key as any] = null;
-      this.emitUpdate();
+      this.searchParameters.update((current) => {
+        current[key as any] = null;
+        return current;
+      });
       return;
     }
 
-    const ids = subModels.map((model) => model.id);
-    this.searchParameters[key as any] = ids;
+    const ids = subModels.map((subModel) => subModel.id);
+    this.searchParameters.update((current) => {
+      current[key as any] = ids;
+      return current;
+    });
+
     this.emitUpdate();
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
-      this.searchParameters.recordingDate = [
-        dateTimeModel.dateStartedAfter
-          ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-          : null,
-        dateTimeModel.dateFinishedBefore
-          ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-          : null,
-      ];
+      this.searchParameters.update((current) => {
+        current.recordingDate = [
+          dateTimeModel.dateStartedAfter
+            ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+            : null,
+          dateTimeModel.dateFinishedBefore
+            ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+            : null,
+        ];
+        return current;
+      });
     }
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-      this.searchParameters.recordingTime = [
-        dateTimeModel.timeStartedAfter,
-        dateTimeModel.timeFinishedBefore,
-      ];
+      this.searchParameters.update((current) => {
+        current.recordingTime = [
+          dateTimeModel.timeStartedAfter,
+          dateTimeModel.timeFinishedBefore,
+        ];
+        return current;
+      });
     }
 
     if (!dateTimeModel.dateFiltering) {
-      this.searchParameters.recordingDate = null;
+      this.searchParameters.update((current) => {
+        current.recordingDate = null;
+        return current;
+      })
     }
+
     if (!dateTimeModel.timeFiltering) {
-      this.searchParameters.recordingTime = null;
+      this.searchParameters.update((current) => {
+        current.recordingTime = null;
+        return current;
+      })
     }
 
     this.emitUpdate();
@@ -260,27 +280,25 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
 
     const arrayIndex = boundPosition === ScoreRangeBounds.Lower ? 0 : 1;
-    const currentScore = this.searchParameters.score ?? [null, null];
+    const currentScore = this.searchParameters().score ?? [null, null];
     currentScore[arrayIndex] = value;
 
-    this.searchParameters.score = currentScore;
+    this.searchParameters.update((current) => {
+      current.score = currentScore;
+      return current;
+    })
+
     this.emitUpdate();
   }
 
   protected updateParameterProperty<
     T extends keyof Writeable<AnnotationSearchParameters>,
   >(key: T, value: AnnotationSearchParameters[T]) {
-    this.searchParameters[key] = value;
-    this.emitUpdate();
-  }
+    this.searchParameters.update((current) => {
+      current[key] = value;
+      return current
+    })
 
-  protected updateDiscreteOptions(key: string, value: unknown): void {
-    this.searchParameters[key] = value;
-    this.emitUpdate();
-  }
-
-  protected updateBooleanOption(key: string, value: boolean): void {
-    this.searchParameters[key] = value;
     this.emitUpdate();
   }
 
@@ -289,6 +307,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   private emitUpdate() {
-    this.searchParametersChange.emit(this.searchParameters);
+    this.searchParametersChange.emit(this.searchParameters());
   }
 }

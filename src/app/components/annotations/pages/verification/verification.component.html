@@ -9,7 +9,7 @@
 <div class="container header-content mb-2">
   <div>
     <h2>
-      @if (!verificationGridFocused) {
+      @if (!verificationGridFocused()) {
         <fa-icon
           [ngbTooltip]="'Shortcut keys are disabled because the verification grid has lost focus. Select a verification grid tile to enable shortcut keys.'"
           [icon]="['fas', 'triangle-exclamation']"
@@ -41,8 +41,8 @@
   id="verification-grid"
   (grid-loaded)="handleGridLoaded()"
   (decision-made)="handleDecision($event)"
-  (focus)="verificationGridFocused = true"
-  (blur)="verificationGridFocused = false"
+  (focus)="verificationGridFocused.set(true)"
+  (blur)="verificationGridFocused.set(false)"
   grid-size="12"
   autofocus
 >
@@ -53,28 +53,28 @@
   <oe-verification
     verified="true"
     shortcut="Y"
-    (focus)="verificationGridFocused = true"
-    (blur)="verificationGridFocused = false"
+    (focus)="verificationGridFocused.set(true)"
+    (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
   <oe-verification
     verified="false"
     shortcut="N"
-    (focus)="verificationGridFocused = true"
-    (blur)="verificationGridFocused = false"
+    (focus)="verificationGridFocused.set(true)"
+    (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
   <oe-verification
     verified="unsure"
     shortcut="U"
-    (focus)="verificationGridFocused = true"
-    (blur)="verificationGridFocused = false"
+    (focus)="verificationGridFocused.set(true)"
+    (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>
   <baw-search-filters-modal
     [modal]="filtersModal"
-    [formValue]="searchParameters"
-    [hasDecisions]="hasUnsavedChanges"
+    [formValue]="searchParameters()"
+    [hasDecisions]="hasUnsavedChanges()"
     [successCallback]="requestModelUpdate.bind(this)"
   ></baw-search-filters-modal>
 </ng-template>

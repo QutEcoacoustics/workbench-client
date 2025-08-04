@@ -28,11 +28,17 @@ oe-axes {
 .info-line {
   display: block;
   width: 100%;
+
+  overflow-wrap: break-word;
 }
 
 .inline-spinner {
   display: inline-block;
   width: min-content;
+}
+
+.card-container {
+  max-width: min-content;
 }
 
 .card-header {
