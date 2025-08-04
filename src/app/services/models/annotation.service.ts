@@ -41,8 +41,8 @@ export class AnnotationService {
   ) {
     const tags = await this.showTags(audioEvent);
     const orderedTags = tags.sort((a, b) =>
-      this.tagPriority(b, searchParameters) -
-      this.tagPriority(a, searchParameters),
+      searchParameters.tagPriority(b) -
+      searchParameters.tagPriority(a),
     );
     const usedTag = orderedTags.length > 0 ? [orderedTags[0]] : [];
 
@@ -55,49 +55,6 @@ export class AnnotationService {
     };
 
     return new Annotation(data);
-  }
-
-  /**
-   * Assigns a tag a numerical priority specifying how relevant the tag is to
-   * the search parameters.
-   *
-   * 0. A priority set by a user (e.g. PE wants to specify that a particular
-   *    call variant tag should be verified)
-   *
-   * 1. the tag which matches any tag used to filter the current dataset
-   *    e.g. if we're searching for "Powerful Owl" then the tag "Powerful Owl"
-   *    should be prioritized from the tag list "Powerful Owl Alarm Call,
-   *    Ninoxboobook, Powerful Owl"
-   *
-   * 2. The first common_name tag
-   *
-   * 3. The first species_name tag
-   *
-   * 4. In the worst case: the first remaining tag that does not match any of
-   *    those conditions.
-   */
-  private tagPriority(tag: Tag, searchParameters: AnnotationSearchParameters): number {
-    if (tag.id === searchParameters.taskTag) {
-      return 0;
-    }
-
-    if (Array.from(searchParameters.tags).includes(tag.id)) {
-      return 1;
-    }
-
-    if (tag) {
-      return 2;
-    }
-
-    if (tag.typeOfTag === "common_name") {
-      return 3;
-    }
-
-    if (tag.typeOfTag === "species_name") {
-      return 4;
-    }
-
-    return 5;
   }
 
   private async showTags(audioEvent: AudioEvent): Promise<Tag[]> {

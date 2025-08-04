@@ -83,7 +83,11 @@ class AnnotationSearchComponent
         this.loading = true;
         this.searchResults = await Promise.all(
           newResults.map(
-            async (result) => await annotationService.show(result),
+            async (result) =>
+              await annotationService.showVerificationAnnotation(
+                result,
+                this.searchParameters,
+              ),
           ),
         );
 

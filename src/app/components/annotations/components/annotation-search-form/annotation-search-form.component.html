@@ -21,9 +21,8 @@
     id="task-tag-input"
     label="Tag to Verify"
     [inputPlaceholder]="searchParameters().tagModels[0]?.text ?? 'All'"
-    [searchCallback]="tagsApi.typeaheadCallback()"
+    [searchCallback]="tagTaskSearchCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
-    [value]="[searchParameters().taskTagModel]"
     [multipleInputs]="false"
     (modelChange)="updateSubModel('taskTag', $event)"
   ></baw-typeahead-input>

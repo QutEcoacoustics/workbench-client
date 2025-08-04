@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, model, OnInit, output, signal, viewChild } from "@angular/core";
+import { Component, computed, model, OnInit, output, signal, viewChild } from "@angular/core";
 import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -42,6 +42,7 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
+import { Tag } from "@models/Tag";
 
 enum ScoreRangeBounds {
   Lower,
@@ -64,7 +65,6 @@ enum ScoreRangeBounds {
     FormsModule,
     CheckboxComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
@@ -151,6 +151,15 @@ export class AnnotationSearchFormComponent implements OnInit {
         dateFinishedBefore,
       });
     }
+  }
+
+  protected tagTaskSearchCallback() {
+    const tagIds = this.searchParameters().tags ?? [];
+    const filters: InnerFilter<Tag> = {
+      "id": { in: Array.from(tagIds) },
+    };
+
+    return createSearchCallback(this.tagsApi, "text", filters);
   }
 
   /**

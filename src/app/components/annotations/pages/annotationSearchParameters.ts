@@ -360,6 +360,47 @@ export class AnnotationSearchParameters
     );
   }
 
+  /**
+   * Assigns a tag a numerical priority specifying how relevant the tag is to
+   * the search parameters.
+   *
+   * 5. A priority set by a user (e.g. PE wants to specify that a particular
+   *    call variant tag should be verified)
+   *
+   * 4. the tag which matches any tag used to filter the current dataset
+   *    e.g. if we're searching for "Powerful Owl" then the tag "Powerful Owl"
+   *    should be prioritized from the tag list "Powerful Owl Alarm Call,
+   *    Ninoxboobook, Powerful Owl"
+   *
+   * 3. The first common_name tag
+   *
+   * 2. The first species_name tag
+   *
+   * 1. In the worst case: the first remaining tag that does not match any of
+   *    those conditions.
+   *
+   * A higher value means a the tag is more specific to the current search.
+   */
+  public tagPriority(tag: Tag): number {
+    if (tag.id === this.taskTag) {
+      return 5;
+    }
+
+    if (Array.from(this.tags).includes(tag.id)) {
+      return 4;
+    }
+
+    if (tag.typeOfTag === "common_name") {
+      return 3;
+    }
+
+    if (tag.typeOfTag === "species_name") {
+      return 2;
+    }
+
+    return 1;
+  }
+
   private routeFilters(): InnerFilter<AudioEvent> {
     // because this filter is constructed for audio events, but the project
     // model is associated with the audio recording model, we need to do a
