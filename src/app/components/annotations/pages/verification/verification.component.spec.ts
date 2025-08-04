@@ -1,5 +1,6 @@
 import {
   createRoutingFactory,
+  mockProvider,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
@@ -7,7 +8,7 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Params } from "@angular/router";
+import { Params, Router } from "@angular/router";
 import { of } from "rxjs";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -129,6 +130,9 @@ describe("VerificationComponent", () => {
           provide: AnnotationService,
           useValue: { show: () => mockAnnotationResponse },
         },
+        mockProvider(Router, {
+          createUrlTree: () => ({}),
+        }),
       ],
       queryParams: queryParameters,
     });

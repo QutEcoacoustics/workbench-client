@@ -45,6 +45,7 @@ import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-in
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ISelectableItem, SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 
 enum ScoreRangeBounds {
   Lower,
@@ -65,7 +66,8 @@ enum ScoreRangeBounds {
     NgbHighlight,
     NgbTooltip,
     FormsModule,
-  ],
+    CheckboxComponent
+],
 })
 export class AnnotationSearchFormComponent implements OnInit {
   public constructor(
@@ -273,6 +275,11 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   protected updateDiscreteOptions(key: string, value: unknown): void {
+    this.searchParameters[key] = value;
+    this.emitUpdate();
+  }
+
+  protected updateBooleanOption(key: string, value: boolean): void {
     this.searchParameters[key] = value;
     this.emitUpdate();
   }

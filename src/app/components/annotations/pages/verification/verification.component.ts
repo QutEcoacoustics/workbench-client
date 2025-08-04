@@ -132,7 +132,7 @@ class VerificationComponent
       return;
     }
 
-    const timeoutDurationMilliseconds = 1_000 as const;
+    const timeoutDurationMilliseconds = 1_000;
 
     // we wait a second after the verification grid has loaded to give the user
     // some time to see the grid in the context of the website before we scroll
@@ -280,11 +280,7 @@ class VerificationComponent
   private updateUrlParameters(): void {
     const queryParams = this.searchParameters.toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
-
-    // TODO: remove this guard before review. For some reason urlTree is null during testing
-    if (urlTree) {
-      this.location.replaceState(urlTree.toString());
-    }
+    this.location.replaceState(urlTree.toString());
   }
 }
 

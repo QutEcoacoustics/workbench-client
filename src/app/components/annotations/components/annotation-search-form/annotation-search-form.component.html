@@ -156,6 +156,16 @@
   </div>
 
   <div class="mt-2">
+    <label class="form-label w-100">
+      Only show tagged annotations
+      <baw-checkbox
+        [checked]="searchParameters.onlyTagged ?? true"
+        (checkedChange)="updateBooleanOption('onlyTagged', $event)"
+      ></baw-checkbox>
+    </label>
+  </div>
+
+  <div class="mt-2">
     <label class="form-label w-100">Show annotations that</label>
     <baw-selectable-items
       [options]="verifiedStatusOptions"
