@@ -10,9 +10,13 @@ import { ITag, Tag } from "@models/Tag";
 import { ITagging, Tagging } from "@models/Tagging";
 import { MediaService } from "@services/media/media.service";
 
+export type TagComparer = (a: Tag, b: Tag) => number;
+
 export interface IAnnotation extends Required<IAudioEvent> {
-  tags: ITag[];
+  unsortedTags: ITag[];
   audioRecording: AudioRecording;
+
+  tagComparer: TagComparer;
 }
 
 // this class is not backed by the api or a database table
@@ -37,12 +41,17 @@ export class Annotation extends AbstractModelWithoutId implements IAnnotation {
   public readonly deleterId: number;
   public readonly deletedAt: string | DateTimeTimezone;
   @bawSubModelCollection(Tag)
-  public readonly tags: Tag[];
+  public readonly unsortedTags: Tag[];
   public readonly audioRecording: AudioRecording;
   public readonly score: number;
   public readonly durationSeconds: number;
   public readonly channel: number;
   public readonly audioEventImportFileId: number;
+  public readonly tagComparer: TagComparer;
+
+  public get tags(): Tag[] {
+    return this.unsortedTags.sort(this.tagComparer);
+  }
 
   public get mediaService(): MediaService {
     return this.injector.get(MEDIA.token);

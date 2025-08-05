@@ -363,8 +363,11 @@ export class AnnotationSearchParameters
    *    those conditions.
    *
    * A higher value means a the tag is more specific to the current search.
+   *
+   * This method is a callback function so that it can encapsulate "this" as a
+   * closure when passed into services as a value.
    */
-  public tagPriority(tag: Tag): number {
+  public tagComparer = (tag: Tag): number => {
     if (tag.id === this.taskTag) {
       return 5;
     }

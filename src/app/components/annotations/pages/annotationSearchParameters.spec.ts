@@ -298,7 +298,7 @@ describe("annotationSearchParameters", () => {
       ];
 
       const realizedResult = testedTags.sort((a, b) =>
-        dataModel.tagPriority(b) - dataModel.tagPriority(a),
+        dataModel.tagComparer(b) - dataModel.tagComparer(a),
       );
 
       expect(realizedResult).toEqual(expectedResult);

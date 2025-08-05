@@ -75,7 +75,7 @@ describe("AnnotationSearchComponent", () => {
     providers: [
       provideMockBawApi(),
       mockProvider(AnnotationService, {
-        showVerificationAnnotation: () => mockAnnotationResponse,
+        show: () => mockAnnotationResponse,
       }),
       mockProvider(Router),
     ],

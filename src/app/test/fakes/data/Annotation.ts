@@ -2,6 +2,7 @@ import { IAnnotation } from "@models/data/Annotation";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { AudioRecording } from "@models/AudioRecording";
+import { AbstractModel } from "@models/AbstractModel";
 import { generateAudioEvent } from "../AudioEvent";
 import { generateTag } from "../Tag";
 import { generateAudioRecording } from "../AudioRecording";
@@ -25,11 +26,13 @@ export function generateAnnotation(
   });
 
   const tags = modelData.randomArray(0, 10, () => new Tag(generateTag()));
+  const tagComparer = (a: AbstractModel, b: AbstractModel) => b.id - a.id;
 
   return {
     ...audioEvent,
     audioRecording,
-    tags,
+    tagComparer,
+    unsortedTags: tags,
     ...data,
   };
 }

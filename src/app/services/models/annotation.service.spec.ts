@@ -16,7 +16,10 @@ import { generateTag } from "@test/fakes/Tag";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AbstractModel } from "@models/AbstractModel";
 import { AnnotationService } from "./annotation.service";
+
+const reverseIdComparer = (a: AbstractModel, b: AbstractModel) => b.id - a.id;
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
@@ -66,22 +69,22 @@ describe("AnnotationService", () => {
 
   describe("show", () => {
     it("should have all the same property values as the original audio event model", async () => {
-      const result = await spec.service.show(mockAudioEvent);
+      const result = await spec.service.show(mockAudioEvent, reverseIdComparer);
       expect(result).toEqual(
         jasmine.objectContaining(mockAudioEvent as any),
       );
     });
 
     it("should resolve the associated audio recording model", async () => {
-      const result = await spec.service.show(mockAudioEvent);
+      const result = await spec.service.show(mockAudioEvent, reverseIdComparer);
       expect(result.audioRecording).toEqual(mockRecording);
     });
 
     // TODO: this test is disabled until a upstream web components PR is merged
     // see: https://github.com/ecoacoustics/web-components/pull/222
     xit("should resolve all the associated tag models", async () => {
-      const result = await spec.service.show(mockAudioEvent);
-      expect(result.tags).toEqual(mockTags);
+      const result = await spec.service.show(mockAudioEvent, reverseIdComparer);
+      expect(result.unsortedTags).toEqual(mockTags);
     });
   });
 });

@@ -137,7 +137,7 @@ describe("VerificationComponent", () => {
       },
       providers: [
         mockProvider(AnnotationService, {
-          showVerificationAnnotation: () => mockAnnotationResponse
+          show: () => mockAnnotationResponse
         }),
         mockProvider(Router, {
           createUrlTree: () => ({}),

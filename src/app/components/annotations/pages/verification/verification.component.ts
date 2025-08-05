@@ -237,9 +237,9 @@ class VerificationComponent
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
       const annotations = await Promise.all(
         items.map((item) =>
-          this.annotationsService.showVerificationAnnotation(
+          this.annotationsService.show(
             item,
-            this.searchParameters(),
+            this.searchParameters().tagComparer,
           ),
         ),
       );
