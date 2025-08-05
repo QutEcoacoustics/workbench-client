@@ -42,6 +42,7 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 
 enum ScoreRangeBounds {
   Lower,
@@ -61,6 +62,7 @@ enum ScoreRangeBounds {
     NgbCollapse,
     NgbHighlight,
     NgbTooltip,
+    IsUnresolvedPipe,
     FormsModule,
   ],
 })

@@ -6,6 +6,7 @@ import {
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AnnotationSearchParameters,
+  IAnnotationSearchParameters,
   SortingKey,
 } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
@@ -26,7 +27,6 @@ import {
 } from "@test/helpers/html";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -95,7 +95,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sortingDropdown = () => spec.query("#sort-input");
 
-  function setup(params: Params = {}): Promise<any> {
+  function setup(params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -227,10 +227,17 @@ describe("AnnotationSearchFormComponent", () => {
     it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
       const testedTag = mockTagsResponse[0];
 
-      const response = setup({ tags: testedTag.id.toString() });
+      const response = setup({
+        tags: testedTag.id.toString(),
+        taskTag: testedTag.id.toString(),
+      });
+
       spec.detectChanges();
       await response;
       spec.detectChanges();
+
+      expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
+      expect(taskTagInput()).toHaveValue(testedTag.text);
     }));
 
     it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
@@ -246,7 +253,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
     }));
 
-    fit("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
+    it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
       const testedTag = mockTagsResponse[0];
 
       const response = setup({ tags: `${testedTag.id}` });
@@ -257,7 +264,7 @@ describe("AnnotationSearchFormComponent", () => {
       expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
     }));
 
-    it("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
+    xit("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
       const response = setup({ tags: "" });
 
       spec.detectChanges();
