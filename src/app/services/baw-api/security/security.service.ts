@@ -143,12 +143,7 @@ export class SecurityService {
       }
     );
 
-    // Logout first to ensure token and cookie are synchronized
-    return this.signOut().pipe(
-      mergeMap(() => handleAuth),
-      // Ignore any sign out errors, and continue with authentication
-      catchError(() => handleAuth)
-    );
+    return handleAuth;
   }
 
   /**

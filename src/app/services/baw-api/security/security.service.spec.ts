@@ -213,18 +213,15 @@ describe("SecurityService", () => {
         );
       }
 
-      it("should call signOut", async () => {
+      // If the user is logged out before logging in, the authentication token
+      // will be rotated.
+      // We used to do this before we started rotating authentication tokens,
+      // so this test protects against regressions.
+      it("should not sign the user out", async () => {
         const promise = interceptSignOut(true);
         spec.service.signIn(defaults.loginDetails);
         await promise;
-        expect(spec.service.signOut).toHaveBeenCalled();
-      });
-
-      it("should handle signOut failure", async () => {
-        const promise = interceptSignOut(false);
-        spec.service.signIn(defaults.loginDetails);
-        await promise;
-        expect(spec.service.signOut).toHaveBeenCalled();
+        expect(spec.service.signOut).not.toHaveBeenCalled();
       });
 
       it("should call handleAuth", async () => {
