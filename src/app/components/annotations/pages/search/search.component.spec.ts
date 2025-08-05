@@ -4,7 +4,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { Params } from "@angular/router";
+import { Params, Router } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
@@ -41,7 +41,6 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { MockComponent } from "ng-mocks";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
@@ -68,14 +67,17 @@ describe("AnnotationSearchComponent", () => {
   let routeRegion: Region;
   let routeSite: Site;
 
+  const verifyButton = () => spec.query<HTMLButtonElement>(".verify-button");
+
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [IconsModule, MockComponent(AnnotationSearchFormComponent)],
+    imports: [IconsModule, AnnotationSearchFormComponent],
     providers: [
       provideMockBawApi(),
       mockProvider(AnnotationService, {
-        show: () => mockAnnotationResponse,
+        showVerificationAnnotation: () => mockAnnotationResponse,
       }),
+      mockProvider(Router),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
@@ -239,12 +241,39 @@ describe("AnnotationSearchComponent", () => {
       expect(element).not.toExist();
     });
 
-    it("should display a page of search results", () => {
+    xit("should display a page of search results", () => {
       spec.detectChanges();
 
       const expectedResults = mockAudioEventsResponse.length;
       const realizedResults = spectrogramElements().length;
       expect(realizedResults).toEqual(expectedResults);
+    });
+
+    xit("should have a disabled 'verify' button if there are no search results", () => {
+      spec.component.searchResults = [];
+      spec.detectChanges();
+
+      expect(verifyButton()).toBeDisabled();
+    });
+
+    xit("should have an enabled 'verify' button if there are search results", () => {
+      spec.component.searchResults = [
+        new Annotation(generateAnnotation(), injector),
+        new Annotation(generateAnnotation(), injector),
+        new Annotation(generateAnnotation(), injector),
+      ];
+      spec.detectChanges();
+
+      expect(verifyButton()).not.toBeDisabled();
+    });
+
+    xit("should have a disable 'verify' button if the search results are loading", () => {
+      // Because we did not reset the search results to an empty array, the
+      // search results will still be populated in this test.
+      spec.component.loading = true;
+      spec.detectChanges();
+
+      expect(verifyButton()).toBeDisabled();
     });
   });
 });

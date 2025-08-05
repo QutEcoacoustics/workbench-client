@@ -41,7 +41,6 @@ import {
   ISelectableItem,
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
-import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
 import { Tag } from "@models/Tag";
 
 enum ScoreRangeBounds {
@@ -63,7 +62,6 @@ enum ScoreRangeBounds {
     NgbHighlight,
     NgbTooltip,
     FormsModule,
-    CheckboxComponent,
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {

@@ -114,6 +114,7 @@ describe("annotationSearchParameters", () => {
         regions: "2,3,4,5",
         sites: "6,7,8,9",
 
+        taskTag: "5",
         verificationStatus: "any",
       },
       expectedFilters: () => ({
@@ -154,6 +155,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
 
+        taskTag: "4",
         verificationStatus: "unverified",
       },
       expectedFilters: () => ({

@@ -309,7 +309,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       expect(spec.component.searchParameters().sites).toEqual([testedSite.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
+        spec.component.searchParameters()
       );
     }));
 
@@ -322,7 +322,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       expect(spec.component.searchParameters().tags).toEqual([testedTag.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
+        spec.component.searchParameters()
       );
     }));
 

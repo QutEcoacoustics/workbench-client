@@ -23,7 +23,7 @@ import {
   SHALLOW_VERIFICATION,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
@@ -125,11 +125,20 @@ describe("VerificationComponent", () => {
         regionId: routeRegion.id,
         siteId: routeSite.id,
       },
-      providers: [
-        {
-          provide: AnnotationService,
-          useValue: { show: () => mockAnnotationResponse },
+      data: {
+        resolvers: {
+          project: "resolver",
+          region: "resolver",
+          site: "resolver",
         },
+        project: routeProject,
+        region: routeRegion,
+        site: routeSite,
+      },
+      providers: [
+        mockProvider(AnnotationService, {
+          showVerificationAnnotation: () => mockAnnotationResponse
+        }),
         mockProvider(Router, {
           createUrlTree: () => ({}),
         }),
@@ -179,10 +188,7 @@ describe("VerificationComponent", () => {
       injector,
     );
 
-    spec.setInput("searchParameters", mockSearchParameters);
-    spec.setInput("project", routeProject);
-    spec.setInput("region", routeRegion);
-    spec.setInput("site", routeSite);
+    spec.component.searchParameters = signal(mockSearchParameters);
 
     verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
     audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
