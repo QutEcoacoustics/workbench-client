@@ -106,8 +106,6 @@ export interface IAnnotationSearchParameters {
   sort: SortingKey;
   taskTag: Id;
   verificationStatus: VerificationStatusKey;
-
-  onlyTagged: boolean;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -132,8 +130,6 @@ const serializationTable: IQueryStringParameterSpec<
   sort: jsString,
   taskTag: jsNumber,
   verificationStatus: jsString,
-
-  onlyTagged: jsBoolean,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -202,7 +198,6 @@ export class AnnotationSearchParameters
 
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
-  public _onlyTagged: boolean;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -245,18 +240,6 @@ export class AnnotationSearchParameters
       }
     } else {
       console.error(`Invalid select key: "${value}"`);
-    }
-  }
-
-  public get onlyTagged(): boolean {
-    return this._onlyTagged;
-  }
-
-  public set onlyTagged(value: boolean) {
-    if (value === true) {
-      this._onlyTagged = null;
-    } else {
-      this._onlyTagged = value;
     }
   }
 
@@ -473,22 +456,7 @@ export class AnnotationSearchParameters
 
   private tagFilters(): InnerFilter<AudioEvent> {
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
-
-    // Because verification state uses a composite key of tag id and audio event
-    // id, each annotation during verification must have a tag.
-    // Because we treat the annotation search page as a "preview" of what you
-    // will be verifying, we add the condition to only show annotations with
-    // tags to this shared parameter model so that the "preview" and
-    // verification screen will show the same results.
-    //
-    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2236
-    const instantiatedTagFilters = !isInstantiated(this.onlyTagged)
-      ? ({
-          "tags.id": { notEq: null },
-        } as InnerFilter<AudioEvent>)
-      : {};
-
-    return filterAnd(tagFilters, instantiatedTagFilters);
+    return tagFilters;
   }
 
   private addRecordingFilters(
