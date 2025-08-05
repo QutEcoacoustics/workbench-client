@@ -14,13 +14,6 @@ export class AnnotationService {
     private audioRecordingsApi: AudioRecordingsService,
   ) {}
 
-  /**
-   * Returns an Annotation model for an audio event that can be verified.
-   * This means that there is only one tag.
-   * If there are multiple tags, the tag with the highest priority is selected.
-   *
-   * https://github.com/QutEcoacoustics/workbench-client/issues/2340
-   */
   public async show(audioEvent: AudioEvent, tagComparer: TagComparer): Promise<Annotation> {
     const audioRecording = await this.showAudioRecording(audioEvent);
     const audioEventTags = await this.showTags(audioEvent);

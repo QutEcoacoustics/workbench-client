@@ -98,11 +98,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions = signal<ISelectableItem<VerificationStatusKey>[]>([
-    {
-      label: "have not been verified by me",
-      value: "unverified-for-me",
-      disabled: true,
-    },
+    { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
   ]);
@@ -152,6 +148,13 @@ export class AnnotationSearchFormComponent implements OnInit {
     }
   }
 
+  /**
+   * A typeahead callback that is used when selecting what tag from the tag
+   * filters the user wants to verify.
+   * This search callback is different from the traditional tag typeahead
+   * callback because it is limited to the subset of tags that the user has
+   * selected in the search parameters.
+   */
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
@@ -161,6 +164,10 @@ export class AnnotationSearchFormComponent implements OnInit {
     return createSearchCallback(this.tagsApi, "text", filters);
   }
 
+  /**
+   * A callable predicate that can be used in the template to check if the user
+   * has explicitly defined a tag they are performing a verification task on.
+   */
   protected hasTaskTag(): boolean {
     const taskTag = this.searchParameters().taskTagModel;
 

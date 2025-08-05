@@ -73,6 +73,9 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
   protected focus$ = new Subject<T[]>();
 
   public ngOnChanges(change: SimpleChanges): void {
+    // If we are not creating a multiple input typeahead, changing the [value]
+    // property should directly change the value inside the typeahead input.
+    // This is also useful for populating the typeahead with a default value.
     if (!this.multipleInputs && Object.prototype.hasOwnProperty.call(change, "value")) {
       const value = this.value[0]?.toString();
       this.inputModel = value;

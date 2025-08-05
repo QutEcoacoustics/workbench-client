@@ -50,9 +50,10 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
   ) {}
 
   public ifLoggedIn = input<boolean>();
-  private predicates: CanPredicate[] = [];
 
   private contentWrapper = viewChild<ElementRef<HTMLSpanElement>>("contentWrapper");
+
+  private predicates: CanPredicate[] = [];
 
   public ngOnInit(): void {
     if (this.ifLoggedIn) {

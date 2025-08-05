@@ -176,6 +176,10 @@ class AnnotationSearchComponent
 
       const response = await firstValueFrom(request);
       if (response.length === 0) {
+        // We usually get the total number of items from the first return items
+        // response metadata.
+        // However, if there are no items, we cannot index into the first item.
+        // To prevent throwing an error, we do an early return.
         return;
       }
 
