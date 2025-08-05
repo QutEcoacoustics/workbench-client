@@ -20,7 +20,7 @@
   <baw-typeahead-input
     id="task-tag-input"
     label="Tag to Verify"
-    [inputPlaceholder]="searchParameters().tagModels[0]?.text ?? 'All'"
+    [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
     [searchCallback]="tagTaskSearchCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     [multipleInputs]="false"

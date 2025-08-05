@@ -175,6 +175,9 @@ class AnnotationSearchComponent
       });
 
       const response = await firstValueFrom(request);
+      if (response.length === 0) {
+        return;
+      }
 
       const itemWarningThreshold = 1_000;
       const responseMetadata = response[0].getMetadata();
