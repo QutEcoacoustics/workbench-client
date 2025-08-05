@@ -42,7 +42,7 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
-import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { isUnresolvedModel } from "@models/AbstractModel";
 
 enum ScoreRangeBounds {
   Lower,
@@ -62,7 +62,6 @@ enum ScoreRangeBounds {
     NgbCollapse,
     NgbHighlight,
     NgbTooltip,
-    IsUnresolvedPipe,
     FormsModule,
   ],
 })
@@ -160,6 +159,15 @@ export class AnnotationSearchFormComponent implements OnInit {
     };
 
     return createSearchCallback(this.tagsApi, "text", filters);
+  }
+
+  protected hasTaskTag(): boolean {
+    const taskTag = this.searchParameters().taskTagModel;
+
+    const isResolved = !isUnresolvedModel(taskTag);
+    const instantiated = isInstantiated(taskTag);
+
+    return isResolved && instantiated;
   }
 
   /**

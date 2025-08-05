@@ -24,7 +24,7 @@
     [searchCallback]="tagTaskSearchCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     [multipleInputs]="false"
-    [value]="(searchParameters().taskTagModel | isUnresolved) || !searchParameters().taskTagModel ? [] : [searchParameters().taskTagModel]"
+    [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
     (modelChange)="updateSubModel('taskTag', $event)"
   ></baw-typeahead-input>
 
