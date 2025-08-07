@@ -35,6 +35,7 @@ export function generateAnnotationSearchParameters(
       // string[], which incorrectly broadens the type.
       Object.keys(sortingOptions) as SortingKey[],
     ),
+    taskTag: modelData.id(),
     verificationStatus: modelData.helpers.arrayElement(
       ["unverified-for-me", "unverified", "any"],
     ),

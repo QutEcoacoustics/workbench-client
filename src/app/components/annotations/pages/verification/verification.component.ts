@@ -1,11 +1,13 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   Inject,
   OnInit,
-  ViewChild,
+  signal,
+  viewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -66,11 +68,8 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
-  imports: [
-    FaIconComponent,
-    NgbTooltip,
-    SearchFiltersModalComponent,
-  ],
+  imports: [FaIconComponent, NgbTooltip, SearchFiltersModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 class VerificationComponent
@@ -87,40 +86,44 @@ class VerificationComponent
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }
 
-  @ViewChild("searchFiltersModal")
-  private searchFiltersModal: ElementRef<SearchFiltersModalComponent>;
+  private searchFiltersModal =
+    viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
+  private verificationGridElement =
+    viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
 
-  @ViewChild("verificationGrid")
-  private verificationGridElement: ElementRef<VerificationGridComponent>;
+  public searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public hasUnsavedChanges = signal(false);
+  protected verificationGridFocused = signal(true);
+  private doneInitialScroll = signal(false);
 
-  public searchParameters: AnnotationSearchParameters;
-  public hasUnsavedChanges = false;
-  protected verificationGridFocused = true;
-  private doneInitialScroll = false;
-
-  public project?: Project;
-  public region?: Region;
-  public site?: Site;
+  public project = signal<Project | null>(null);
+  public region = signal<Region | null>(null);
+  public site = signal<Site | null>(null);
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      annotationsKey
-    ] as AnnotationSearchParameters;
-    this.searchParameters.injector = this.injector;
+    this.searchParameters.update((current) => {
+      const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
 
-    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
-    if (models[regionKey]) {
-      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
-    }
-    if (models[siteKey]) {
-      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
-    }
+      newModel.injector = this.injector;
+
+      current.routeProjectModel ??= models[projectKey] as Project;
+
+      if (models[regionKey]) {
+        current.routeRegionModel ??= models[regionKey] as Region;
+      }
+
+      if (models[siteKey]) {
+        current.routeSiteModel ??= models[siteKey] as Site;
+      }
+
+      return newModel;
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -128,11 +131,11 @@ class VerificationComponent
   }
 
   protected handleGridLoaded(): void {
-    if (this.doneInitialScroll) {
+    if (this.doneInitialScroll()) {
       return;
     }
 
-    const timeoutDurationMilliseconds = 1_000 as const;
+    const timeoutDurationMilliseconds = 1_000;
 
     // we wait a second after the verification grid has loaded to give the user
     // some time to see the grid in the context of the website before we scroll
@@ -143,7 +146,7 @@ class VerificationComponent
 
     // we set the done initial scroll value before the timeout so that we don't
     // send two scroll events if the user makes a decision before the timeout
-    this.doneInitialScroll = true;
+    this.doneInitialScroll.set(true);
   }
 
   protected handleDecision(decisionEvent: Event): void {
@@ -152,7 +155,7 @@ class VerificationComponent
       return;
     }
 
-    this.hasUnsavedChanges = true;
+    this.hasUnsavedChanges.set(true);
 
     const subjectWrappers = decisionEvent.detail;
     for (const subjectWrapper of subjectWrappers) {
@@ -177,7 +180,7 @@ class VerificationComponent
       const apiRequest = this.verificationApi.createOrUpdate(
         verification,
         subject as AudioEvent,
-        this.session.currentUser
+        this.session.currentUser,
       );
 
       // I use firstValueFrom so that the observable is evaluated
@@ -189,12 +192,12 @@ class VerificationComponent
   }
 
   protected openSearchFiltersModal(): void {
-    this.modals.open(this.searchFiltersModal, { size: "xl" });
+    this.modals.open(this.searchFiltersModal(), { size: "xl" });
   }
 
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    if (!this.hasUnsavedChanges) {
-      this.searchParameters = newModel;
+    if (!this.hasUnsavedChanges()) {
+      this.searchParameters.set(newModel);
       this.updateGridCallback();
       return;
     }
@@ -203,11 +206,11 @@ class VerificationComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.site) {
-      return this.site.isPoint
+    if (this.site()) {
+      return this.site().isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.region) {
+    } else if (this.region()) {
       return annotationMenuItems.verify.region.route;
     }
 
@@ -222,7 +225,12 @@ class VerificationComponent
 
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
       const annotations = await Promise.all(
-        items.map((item) => this.annotationsService.show(item))
+        items.map((item) =>
+          this.annotationsService.show(
+            item,
+            this.searchParameters().tagPriority,
+          ),
+        ),
       );
 
       return new Object({
@@ -240,17 +248,18 @@ class VerificationComponent
     }
 
     // TODO: this is a hacky solution to get the verification grid to update
-    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
-    this.verificationGridElement.nativeElement.subjects = [];
+    this.verificationGridElement().nativeElement.getPage =
+      this.getPageCallback();
+    this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
-    this.hasUnsavedChanges = false;
+    this.hasUnsavedChanges.set(false);
   }
 
   // TODO: this function can be improved with instanceof checks once we export
   // data model constructors from the web components
   // see: https://github.com/ecoacoustics/web-components/issues/303
   private isDecisionEvent(
-    event: Event
+    event: Event,
   ): event is CustomEvent<SubjectWrapper[]> {
     return (
       event instanceof CustomEvent &&
@@ -261,7 +270,7 @@ class VerificationComponent
   }
 
   private scrollToVerificationGrid(): void {
-    this.verificationGridElement.nativeElement.scrollIntoView({
+    this.verificationGridElement().nativeElement.scrollIntoView({
       behavior: "smooth",
       block: "end",
     });
@@ -269,7 +278,7 @@ class VerificationComponent
 
   private filterConditions(page: number): Filters<AudioEvent> {
     const paging: Paging = { page };
-    const routeFilters = this.searchParameters.toFilter();
+    const routeFilters = this.searchParameters().toFilter();
 
     return {
       paging,
@@ -278,13 +287,9 @@ class VerificationComponent
   }
 
   private updateUrlParameters(): void {
-    const queryParams = this.searchParameters.toQueryParams();
+    const queryParams = this.searchParameters().toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
-
-    // TODO: remove this guard before review. For some reason urlTree is null during testing
-    if (urlTree) {
-      this.location.replaceState(urlTree.toString());
-    }
+    this.location.replaceState(urlTree.toString());
   }
 }
 

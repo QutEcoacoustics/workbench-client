@@ -6,6 +6,7 @@ import {
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AnnotationSearchParameters,
+  IAnnotationSearchParameters,
   SortingKey,
 } from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
@@ -26,7 +27,6 @@ import {
 } from "@test/helpers/html";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { modelData } from "@test/helpers/faker";
-import { Params } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -35,6 +35,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { Id } from "@interfaces/apiInterfaces";
 import {
   interceptFilterApiRequest,
+  interceptMappedApiRequests,
   interceptShowApiRequest,
 } from "@test/helpers/general";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -70,8 +71,11 @@ describe("AnnotationSearchFormComponent", () => {
   const tagPills = () =>
     tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
 
-  const projectsInput = () => projectsTypeahead().querySelector("input");
+  const taskTagTypeahead = () => spec.query("#task-tag-input");
+  const taskTagInput = () => taskTagTypeahead().querySelector("input");
+
   const projectsTypeahead = () => spec.query("#projects-input");
+  const projectsInput = () => projectsTypeahead().querySelector("input");
 
   const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
   const endDateInput = () =>
@@ -91,7 +95,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sortingDropdown = () => spec.query("#sort-input");
 
-  function setup(params: Params = {}): Promise<any> {
+  function setup(params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {}): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -118,27 +122,36 @@ describe("AnnotationSearchFormComponent", () => {
     // has-many associations that use show requests
     tagsApiSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
 
+    const mockTagShowResponses = new Map<any, Tag>([]);
+    for (const tag of mockTagsResponse) {
+      mockTagShowResponses.set(tag.id, tag);
+    }
+
     const response = Promise.all([
       interceptFilterApiRequest(tagsApiSpy, injector, mockTagsResponse, Tag),
 
-      interceptShowApiRequest(tagsApiSpy, injector, mockTagsResponse[0], Tag),
+      interceptMappedApiRequests(tagsApiSpy.show, mockTagShowResponses),
 
       interceptFilterApiRequest(
         recordingsApiSpy,
         injector,
         [mockRecording],
-        AudioRecording
+        AudioRecording,
       ),
 
       interceptShowApiRequest(
         recordingsApiSpy,
         injector,
         mockRecording,
-        AudioRecording
+        AudioRecording,
       ),
     ]);
 
-    const searchParameters = new AnnotationSearchParameters(params, mockUser, injector);
+    const searchParameters = new AnnotationSearchParameters(
+      params,
+      mockUser,
+      injector,
+    );
     searchParameters.routeProjectModel = mockProject;
     spec.setInput("searchParameters", searchParameters);
 
@@ -161,11 +174,18 @@ describe("AnnotationSearchFormComponent", () => {
   }
 
   beforeEach(() => {
-    mockTagsResponse = Array.from({ length: 10 }, () => new Tag(generateTag()));
+    // We use the index in the array as the id so that we are guaranteed to have
+    // no conflicting ids.
+    mockTagsResponse = Array.from(
+      { length: 10 },
+      (_, i) => new Tag(generateTag({ id: i })),
+    );
+
     mockSitesResponse = Array.from(
       { length: 10 },
-      () => new Site(generateSite())
+      (_, i) => new Site(generateSite({ id: i })),
     );
+
     mockProject = new Project(generateProject());
     mockRecording = new AudioRecording(generateAudioRecording());
     mockUser = new User(generateUser());
@@ -204,6 +224,56 @@ describe("AnnotationSearchFormComponent", () => {
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
     }));
 
+    it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
+      const testedTag = mockTagsResponse[0];
+
+      const response = setup({
+        tags: testedTag.id.toString(),
+        taskTag: testedTag.id.toString(),
+      });
+
+      spec.detectChanges();
+      await response;
+      spec.detectChanges();
+
+      expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
+      expect(taskTagInput()).toHaveValue(testedTag.text);
+    }));
+
+    it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
+      const response = setup({
+        tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
+      });
+
+      spec.detectChanges();
+      await response;
+      spec.detectChanges();
+
+      const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
+      expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
+    }));
+
+    it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
+      const testedTag = mockTagsResponse[0];
+
+      const response = setup({ tags: `${testedTag.id}` });
+      spec.detectChanges();
+      await response;
+      spec.detectChanges();
+
+      expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
+    }));
+
+    xit("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
+      const response = setup({ tags: "" });
+
+      spec.detectChanges();
+      await response;
+      spec.detectChanges();
+
+      expect(taskTagInput()).toHaveProperty("placeholder", "First Tag");
+    }));
+
     // check the population of an external component that is not a typeahead input
     it("should pre-populate the date filters if provided in the search parameters model", fakeAsync(() => {
       const testEndDate = modelData.dateTime();
@@ -214,10 +284,10 @@ describe("AnnotationSearchFormComponent", () => {
 
       expect(endDateInput()).toHaveValue(testEndDate.toFormat("yyyy-MM-dd"));
       expect(
-        spec.component.searchParameters.recordingDateStartedAfter
+        spec.component.searchParameters().recordingDateStartedAfter,
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
+        spec.component.searchParameters().recordingDateFinishedBefore,
       ).toBeTruthy();
     }));
 
@@ -235,10 +305,10 @@ describe("AnnotationSearchFormComponent", () => {
       waitForDropdown(spec);
 
       expect(
-        spec.component.searchParameters.recordingDateStartedAfter
+        spec.component.searchParameters().recordingDateStartedAfter,
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters.recordingDateFinishedBefore
+        spec.component.searchParameters().recordingDateFinishedBefore,
       ).toBeFalsy();
     }));
 
@@ -247,7 +317,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       setup({ sort: testedSorting });
       expect(sortingDropdown()).toHaveValue("score-asc");
-      expect(spec.component.searchParameters.sort).toEqual("score-asc");
+      expect(spec.component.searchParameters().sort).toEqual("score-asc");
     }));
 
     it("should have the correct sorting selection for an empty parameter", fakeAsync(() => {
@@ -264,9 +334,9 @@ describe("AnnotationSearchFormComponent", () => {
       expect(lowerScoreInput()).toHaveValue(mockLowerScore.toString());
       expect(upperScoreInput()).toHaveValue(mockUpperScore.toString());
 
-      expect(spec.component.searchParameters.score).toEqual([
+      expect(spec.component.searchParameters().score).toEqual([
         mockLowerScore,
-        mockUpperScore
+        mockUpperScore,
       ]);
     }));
 
@@ -283,12 +353,11 @@ describe("AnnotationSearchFormComponent", () => {
 
     it("should not apply the audio recording id filters if the advanced filters dropdown is closed", fakeAsync(() => {
       setup({ audioRecordings: "1" });
-      expect(spec.component.searchParameters.audioRecordings).toHaveLength(1);
+      expect(spec.component.searchParameters().audioRecordings).toHaveLength(1);
 
       toggleDropdown(spec, advancedFiltersToggle());
 
-      const realizedModel = spec.component.searchParameters;
-      expect(realizedModel.audioRecordings).toHaveLength(0);
+      expect(spec.component.searchParameters().audioRecordings).toHaveLength(0);
     }));
   });
 
@@ -308,9 +377,9 @@ describe("AnnotationSearchFormComponent", () => {
       modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
-      expect(spec.component.searchParameters.sites).toEqual([testedSite.id]);
+      expect(spec.component.searchParameters().sites).toEqual([testedSite.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
+        spec.component.searchParameters(),
       );
     }));
 
@@ -321,9 +390,9 @@ describe("AnnotationSearchFormComponent", () => {
       modelChangeSpy.calls.reset();
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
-      expect(spec.component.searchParameters.tags).toEqual([testedTag.id]);
+      expect(spec.component.searchParameters().tags).toEqual([testedTag.id]);
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(
-        spec.component.searchParameters
+        spec.component.searchParameters(),
       );
     }));
 
@@ -416,7 +485,7 @@ describe("AnnotationSearchFormComponent", () => {
     xit("should show an error if the upper bound score is greater than the lower bound", fakeAsync(async () => {
       setup();
 
-      setLowerBoundScore("0.8")
+      setLowerBoundScore("0.8");
       setUpperBoundScore("0.2");
 
       expect(scoreErrors()).toHaveExactTrimmedText(
@@ -460,7 +529,7 @@ describe("AnnotationSearchFormComponent", () => {
     xit("should be able to remove an error by deleting everything in the input", fakeAsync(() => {
       setup();
 
-      setLowerBoundScore("0.8")
+      setLowerBoundScore("0.8");
       setUpperBoundScore("0.2");
 
       setLowerBoundScore("");
@@ -472,7 +541,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // If we are not correctly handling the null upper bound case, a positive
       // minimum score because in JavaScript 1 > null === true.
-      setLowerBoundScore("1")
+      setLowerBoundScore("1");
       expect(scoreErrors()).not.toExist();
     }));
 
@@ -481,7 +550,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // Similar to the comment above, if you don't handle the null lower bound
       // case, this test case will fail because -1 < null === true
-      setLowerBoundScore("-1")
+      setLowerBoundScore("-1");
       expect(scoreErrors()).not.toExist();
     }));
   });

@@ -1,5 +1,6 @@
 import {
   createRoutingFactory,
+  mockProvider,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
@@ -7,7 +8,7 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Params } from "@angular/router";
+import { Params, Router } from "@angular/router";
 import { of } from "rxjs";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
@@ -22,7 +23,7 @@ import {
   SHALLOW_VERIFICATION,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
@@ -124,11 +125,23 @@ describe("VerificationComponent", () => {
         regionId: routeRegion.id,
         siteId: routeSite.id,
       },
-      providers: [
-        {
-          provide: AnnotationService,
-          useValue: { show: () => mockAnnotationResponse },
+      data: {
+        resolvers: {
+          project: "resolver",
+          region: "resolver",
+          site: "resolver",
         },
+        project: routeProject,
+        region: routeRegion,
+        site: routeSite,
+      },
+      providers: [
+        mockProvider(AnnotationService, {
+          show: () => mockAnnotationResponse
+        }),
+        mockProvider(Router, {
+          createUrlTree: () => ({}),
+        }),
       ],
       queryParams: queryParameters,
     });
@@ -175,10 +188,7 @@ describe("VerificationComponent", () => {
       injector,
     );
 
-    spec.component.searchParameters = mockSearchParameters;
-    spec.component.project = routeProject;
-    spec.component.region = routeRegion;
-    spec.component.site = routeSite;
+    spec.component.searchParameters = signal(mockSearchParameters);
 
     verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
     audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
@@ -411,7 +421,7 @@ describe("VerificationComponent", () => {
 
         spec.click(updateFiltersButton());
 
-        expect(spec.component.searchParameters.tags).toContain(expectedTagId);
+        expect(spec.component.searchParameters().tags).toContain(expectedTagId);
       });
 
       it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
@@ -428,7 +438,7 @@ describe("VerificationComponent", () => {
 
         spec.click(updateFiltersButton());
 
-        expect(spec.component.searchParameters.verificationStatus).toEqual(
+        expect(spec.component.searchParameters().verificationStatus).toEqual(
           "any",
         );
       });
@@ -454,7 +464,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spec.component.searchParameters;
+        const realizedParameterModel = spec.component.searchParameters();
 
         expect(realizedParameterModel).toEqual(
           jasmine.objectContaining({

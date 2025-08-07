@@ -103,6 +103,7 @@
   "extensions": {
     "recommendations": [
       "cyrilletuzi.angular-schematics",
+      "angular.ng-template",
       "dbaeumer.vscode-eslint",
       "streetsidesoftware.code-spell-checker",
       "xabikos.jasminesnippets",

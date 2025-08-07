@@ -42,12 +42,12 @@
         [placeholder]="value.length < 1 ? inputPlaceholder : ''"
         [ngbTypeahead]="findOptions"
         [resultTemplate]="resultTemplate"
+        [disabled]="inputDisabled"
         [(ngModel)]="inputModel"
         (focus)="focus$.next($any($event).target.value)"
         (selectItem)="onItemSelected($event)"
         (keydown.backspace)="removeLastItem()"
         (input)="handleInput()"
-        [disabled]="inputDisabled"
       />
     </div>
   </label>

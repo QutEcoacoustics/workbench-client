@@ -24,7 +24,7 @@ import {
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
@@ -104,6 +104,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  taskTag: Id;
   verificationStatus: VerificationStatusKey;
 }
 
@@ -127,6 +128,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  taskTag: jsNumber,
   verificationStatus: jsString,
 };
 
@@ -192,6 +194,8 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public taskTag: Id;
+
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
 
@@ -238,6 +242,13 @@ export class AnnotationSearchParameters
       console.error(`Invalid select key: "${value}"`);
     }
   }
+
+  public get tagPriority(): Id[] {
+    return [this.taskTag, ...this.tags ?? []];
+  }
+
+  @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
+  public taskTagModel?: Tag;
 
   @hasMany<AnnotationSearchParameters, AudioRecording>(
     AUDIO_RECORDING,
@@ -312,7 +323,7 @@ export class AnnotationSearchParameters
 
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    let filter = filterModelIds<Tag>("tags", this.tags);
+    let filter = this.tagFilters();
     filter = this.addRecordingFilters(filter);
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
@@ -404,6 +415,11 @@ export class AnnotationSearchParameters
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     return filterAnd(initialFilter, this.routeFilters());
+  }
+
+  private tagFilters(): InnerFilter<AudioEvent> {
+    const tagFilters = filterModelIds<Tag>("tags", this.tags);
+    return tagFilters;
   }
 
   private addRecordingFilters(
