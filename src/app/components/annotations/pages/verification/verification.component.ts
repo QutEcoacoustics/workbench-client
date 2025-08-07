@@ -107,34 +107,23 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters.update(
-      (current) =>
-        current ?? (models[annotationsKey] as AnnotationSearchParameters),
-    );
-
     this.searchParameters.update((current) => {
-      current.injector = this.injector;
-      return current;
-    });
+      const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
 
-    this.searchParameters.update((current) => {
+      newModel.injector = this.injector;
+
       current.routeProjectModel ??= models[projectKey] as Project;
-      return current;
-    });
 
-    if (models[regionKey]) {
-      this.searchParameters.update((current) => {
+      if (models[regionKey]) {
         current.routeRegionModel ??= models[regionKey] as Region;
-        return current;
-      });
-    }
+      }
 
-    if (models[siteKey]) {
-      this.searchParameters.update((current) => {
+      if (models[siteKey]) {
         current.routeSiteModel ??= models[siteKey] as Site;
-        return current;
-      });
-    }
+      }
+
+      return newModel;
+    });
   }
 
   public ngAfterViewInit(): void {

@@ -10,8 +10,6 @@ import { ITag, Tag } from "@models/Tag";
 import { ITagging, Tagging } from "@models/Tagging";
 import { MediaService } from "@services/media/media.service";
 
-export type TagComparer = (a: Tag, b: Tag) => number;
-
 export interface IAnnotation extends Required<IAudioEvent> {
   tags: ITag[];
   audioRecording: AudioRecording;
