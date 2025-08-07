@@ -14,6 +14,7 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import {
   AnnotationSearchParameters,
+  TaskBehaviorKey,
   VerificationStatusKey,
 } from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -101,6 +102,10 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
+  ];
+  protected taskBehaviorOptions: ISelectableItem<TaskBehaviorKey>[] = [
+    { label: "verify", value: "verify" },
+    { label: "verify and correct", value: "verify-and-correct" },
   ];
 
   protected get project(): Project {

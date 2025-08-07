@@ -5,6 +5,8 @@ import {
   ElementRef,
   Inject,
   OnInit,
+  signal,
+  viewChild,
   ViewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -18,7 +20,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, mergeMap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -44,6 +46,16 @@ import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/deci
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
 import { annotationResolvers } from "@services/models/annotation.resolver";
+import { Id } from "@interfaces/apiInterfaces";
+import { Tagging } from "@models/Tagging";
+import { TaggingsService } from "@baw-api/tag/taggings.service";
+import {
+  TagPromptComponent,
+  TypeaheadCallback,
+  WhenPredicate,
+} from "@ecoacoustics/web-components/@types";
+import { Tag } from "@models/Tag";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -66,11 +78,7 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
-  imports: [
-    FaIconComponent,
-    NgbTooltip,
-    SearchFiltersModalComponent,
-  ],
+  imports: [FaIconComponent, NgbTooltip, SearchFiltersModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 class VerificationComponent
@@ -81,13 +89,15 @@ class VerificationComponent
     private audioEventApi: ShallowAudioEventsService,
     private verificationApi: ShallowVerificationService,
     private annotationsService: AnnotationService,
+    private taggingsApi: TaggingsService,
+    private tagsApi: TagsService,
 
     private session: BawSessionService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
   }
@@ -98,9 +108,13 @@ class VerificationComponent
   @ViewChild("verificationGrid")
   private verificationGridElement: ElementRef<VerificationGridComponent>;
 
+  private tagPromptElement =
+    viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
+
   public searchParameters: AnnotationSearchParameters;
   public hasUnsavedChanges = false;
   protected verificationGridFocused = true;
+  protected readonly hasCorrectionTask = signal(false);
   private doneInitialScroll = false;
 
   public project?: Project;
@@ -121,10 +135,19 @@ class VerificationComponent
     if (models[siteKey]) {
       this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
     }
+
+    this.hasCorrectionTask.set(
+      this.searchParameters.taskBehavior === "verify-and-correct",
+    );
   }
 
   public ngAfterViewInit(): void {
     this.updateGridCallback();
+
+    if (this.hasCorrectionTask()) {
+      this.tagPromptElement().nativeElement.search = this.tagSearchCallback();
+      this.tagPromptElement().nativeElement.when = this.addTagWhenPredicate();
+    }
   }
 
   protected handleGridLoaded(): void {
@@ -158,10 +181,16 @@ class VerificationComponent
     for (const subjectWrapper of subjectWrappers) {
       const subject = subjectWrapper.subject as Readonly<AudioEvent>;
 
+      if (typeof subjectWrapper.newTag !== "symbol") {
+        firstValueFrom(
+          this.correctTag(subject as AudioEvent, subjectWrapper.newTag.tag.id),
+        );
+      }
+
       // I have to use "as string" here because the upstream typing is incorrect
       // TODO: We should remove this "as string" and improve the upstream typing
       const mappedDecision =
-        confirmedMapping[subjectWrapper.verification.confirmed as string];
+        confirmedMapping[(subjectWrapper.verification as any).confirmed];
 
       const tagId = subjectWrapper.tag.id;
 
@@ -177,7 +206,7 @@ class VerificationComponent
       const apiRequest = this.verificationApi.createOrUpdate(
         verification,
         subject as AudioEvent,
-        this.session.currentUser
+        this.session.currentUser,
       );
 
       // I use firstValueFrom so that the observable is evaluated
@@ -186,6 +215,10 @@ class VerificationComponent
       // render thread can continue to run while the request is being made
       firstValueFrom(apiRequest);
     }
+  }
+
+  protected tagTextFormatter(tag: Tag): string {
+    return tag.text;
   }
 
   protected openSearchFiltersModal(): void {
@@ -222,7 +255,7 @@ class VerificationComponent
 
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
       const annotations = await Promise.all(
-        items.map((item) => this.annotationsService.show(item))
+        items.map((item) => this.annotationsService.show(item)),
       );
 
       return new Object({
@@ -250,7 +283,7 @@ class VerificationComponent
   // data model constructors from the web components
   // see: https://github.com/ecoacoustics/web-components/issues/303
   private isDecisionEvent(
-    event: Event
+    event: Event,
   ): event is CustomEvent<SubjectWrapper[]> {
     return (
       event instanceof CustomEvent &&
@@ -285,6 +318,53 @@ class VerificationComponent
     if (urlTree) {
       this.location.replaceState(urlTree.toString());
     }
+  }
+
+  private tagSearchCallback(): TypeaheadCallback<any> {
+    return (text: string) => {
+      const filterBody: Filters<Tag> = {
+        filter: {
+          text: { contains: text },
+        },
+      };
+
+      return firstValueFrom(this.tagsApi.filter(filterBody));
+    };
+  }
+
+  private addTagWhenPredicate(): WhenPredicate {
+    return (subject: SubjectWrapper) =>
+      subject.tag === null || subject.verification?.["confirmed"] === "false";
+  }
+
+  /**
+   * Corrects an incorrect tag on an audio event by verifying the existing tag
+   * as "incorrect", creating a new tag that is correct, and submitting a
+   * "correct" verification decision.
+   */
+  private correctTag(audioEvent: AudioEvent, newTagId: Id) {
+    const correctTag = new Tagging({
+      audioEventId: audioEvent.id,
+      tagId: newTagId,
+    });
+
+    return this.taggingsApi
+      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
+      .pipe(
+        mergeMap(() => {
+          const correctVerification = new Verification({
+            audioEventId: audioEvent.id,
+            confirmed: ConfirmedStatus.Correct,
+            tagId: newTagId,
+          });
+
+          return this.verificationApi.createOrUpdate(
+            correctVerification,
+            audioEvent,
+            this.session.currentUser,
+          );
+        }),
+      );
   }
 }
 

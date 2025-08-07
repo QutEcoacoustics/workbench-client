@@ -140,5 +140,5 @@ export const audioEventResolvers = new Resolvers<
   AudioEvent,
   [IdOr<AudioRecording>]
 >([AudioEventsService], "audioEventId", ["audioRecordingId"]).create(
-  "AudioEvent"
+  "AudioEvent",
 );
