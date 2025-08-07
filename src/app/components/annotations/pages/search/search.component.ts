@@ -82,9 +82,7 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.loading = true;
 
-        // Use a "then" statement here instead of "await" so that the UI doesn't
-        // lock up while waiting for the annotations to be fetched.
-        Promise.all(
+        this.searchResults = await Promise.all(
           newResults.map(
             async (result) =>
               await annotationService.show(
@@ -92,17 +90,15 @@ class AnnotationSearchComponent
                 this.searchParameters.tagPriority,
               ),
           ),
-        ).then((searchResults) => {
-          this.searchResults = searchResults;
+        )
 
-          if (newResults.length === 0) {
-            this.paginationInformation = { total: 0, items: 0, page: 1 };
-          } else {
-            this.paginationInformation = newResults[0].getMetadata().paging;
-          }
+        if (newResults.length === 0) {
+          this.paginationInformation = { total: 0, items: 0, page: 1 };
+        } else {
+          this.paginationInformation = newResults[0].getMetadata().paging;
+        }
 
-          this.loading = false;
-        });
+        this.loading = false;
       },
       () => this.searchParameters.toFilter().filter,
       () => this.searchParameters.toFilter().sorting,
