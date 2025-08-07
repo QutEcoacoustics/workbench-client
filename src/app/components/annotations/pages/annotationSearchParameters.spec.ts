@@ -286,22 +286,12 @@ describe("annotationSearchParameters", () => {
 
       // Note that the sorting algorithm is stable.
       // Meaning that relative order is maintained for the filtered tags.
-      const expectedResult = [
-        testedTags[2],
-        testedTags[0],
-        testedTags[1],
-        testedTags[3],
-        testedTags[5],
-        testedTags[7],
-        testedTags[6],
-        testedTags[4],
-      ];
-
+      const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
       const realizedResult = testedTags.sort((a, b) =>
         dataModel.tagComparer(b) - dataModel.tagComparer(a),
       );
-
-      expect(realizedResult).toEqual(expectedResult);
+      const realizedIds = realizedResult.map(tag => tag.id);
+      expect(realizedIds).toEqual(expectedIds);
     });
   });
 });

@@ -239,7 +239,7 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.searchParameters().tagComparer,
+            this.searchParameters().tagPriority,
           ),
         ),
       );

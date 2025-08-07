@@ -71,7 +71,7 @@ describe("AudioEventCardComponent", () => {
         audioRecordingId: mockAudioRecording.id,
         startTimeSeconds: 0,
         endTimeSeconds: 5,
-        unsortedTags: [mockTag],
+        tags: [mockTag],
       }),
       injectorSpy
     );

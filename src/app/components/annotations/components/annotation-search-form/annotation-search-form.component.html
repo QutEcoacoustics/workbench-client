@@ -18,17 +18,6 @@
   ></baw-typeahead-input>
 
   <baw-typeahead-input
-    id="task-tag-input"
-    label="Tag to Verify"
-    [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
-    [searchCallback]="tagTaskSearchCallback()"
-    [resultTemplate]="tagsTypeaheadTemplate"
-    [multipleInputs]="false"
-    [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
-    (modelChange)="updateSubModel('taskTag', $event)"
-  ></baw-typeahead-input>
-
-  <baw-typeahead-input
     id="projects-input"
     label="Project(s)"
     [inputPlaceholder]="project() ? project().name : 'All'"
@@ -162,6 +151,18 @@
         [resultTemplate]="idTypeaheadTemplate"
         [value]="searchParameters().audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
+      ></baw-typeahead-input>
+
+      <!-- Tags to verify moved to advanced filters -->
+      <baw-typeahead-input
+        id="task-tag-input"
+        label="Tag to Verify"
+        [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
+        [searchCallback]="tagsApi.typeaheadCallback()"
+        [resultTemplate]="tagsTypeaheadTemplate"
+        [multipleInputs]="false"
+        [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
+        (modelChange)="updateSubModel('taskTag', $event)"
       ></baw-typeahead-input>
     </div>
   </div>

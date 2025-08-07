@@ -84,7 +84,7 @@ describe("AnnotationService", () => {
     // see: https://github.com/ecoacoustics/web-components/pull/222
     xit("should resolve all the associated tag models", async () => {
       const result = await spec.service.show(mockAudioEvent, reverseIdComparer);
-      expect(result.unsortedTags).toEqual(mockTags);
+      expect(result.tags).toEqual(mockTags);
     });
   });
 });

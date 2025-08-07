@@ -117,6 +117,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
+      "taskTag",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -206,6 +207,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = null;
+        current.taskTag = null;
         return current;
       });
     } else {
@@ -219,6 +221,7 @@ export class AnnotationSearchFormComponent implements OnInit {
           return current;
         });
       }
+      // Do not set taskTag here, it will be set by the typeahead input
     }
 
     this.emitUpdate();
@@ -235,6 +238,8 @@ export class AnnotationSearchFormComponent implements OnInit {
         current[key as any] = null;
         return current;
       });
+
+      this.emitUpdate();
       return;
     }
 
