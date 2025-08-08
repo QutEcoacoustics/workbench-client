@@ -44,7 +44,6 @@ import {
   Verification,
 } from "@models/Verification";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
@@ -95,7 +94,6 @@ class VerificationComponent
     private taggingsApi: TaggingsService,
     private tagsApi: TagsService,
 
-    private session: BawSessionService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
@@ -232,6 +230,10 @@ class VerificationComponent
     this.verificationGridElement.nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges = false;
+
+    this.hasCorrectionTask.set(
+      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+    );
   }
 
   protected handleDecision(decisionEvent: Event): void {
@@ -242,6 +244,8 @@ class VerificationComponent
 
     this.hasUnsavedChanges = true;
 
+    // TODO: We should be updating the annotation models here after updates.
+    // see: https://github.com/QutEcoacoustics/workbench-client/pull/2384#discussion_r2261893642
     const decision = decisionEvent.detail;
     for (const [subject, receipt] of decision) {
       const change = receipt.change;
@@ -278,7 +282,6 @@ class VerificationComponent
     const apiRequest = this.verificationApi.createOrUpdate(
       verification,
       subject as AudioEvent,
-      this.session.currentUser,
     );
 
     // I use firstValueFrom so that the observable is evaluated
@@ -288,6 +291,12 @@ class VerificationComponent
     firstValueFrom(apiRequest);
   }
 
+  /**
+   * Corrects an incorrectly tagged audio event by applying a new correct
+   * tagging and automatically verifying the new tagging as "correct".
+   * Making a correction decision is typically conditional upon the initial tag
+   * initially having an "incorrect" verification applied.
+   */
   private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any;
     const newTagId = subjectWrapper.newTag as any;
@@ -322,7 +331,6 @@ class VerificationComponent
           return this.verificationApi.createOrUpdate(
             correctVerification,
             audioEvent,
-            this.session.currentUser,
           );
         }),
       );

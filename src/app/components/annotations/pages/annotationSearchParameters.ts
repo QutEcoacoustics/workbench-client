@@ -251,7 +251,8 @@ export class AnnotationSearchParameters
   public set taskBehavior(value: string) {
     if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
       // So that we can minimize the number of query string parameters, we use
-      // "unverified-for-me" as the default if there is no "sort" query string parameter.
+      // "unverified-for-me" as the default if there is no "taskBehavior" query
+      // string parameter.
       if (value === "verify") {
         this._taskBehavior = null;
       } else {

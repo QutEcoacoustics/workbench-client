@@ -11,6 +11,7 @@ import {
   StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
@@ -72,7 +73,10 @@ export class VerificationService
 export class ShallowVerificationService
   implements StandardApi<Verification, []>
 {
-  public constructor(private api: BawApiService<Verification>) {}
+  public constructor(
+    private api: BawApiService<Verification>,
+    private session: BawSessionService,
+  ) {}
 
   public list(): Observable<Verification[]> {
     return this.api.list(Verification, endpointShallow(emptyParam, emptyParam));
@@ -120,7 +124,6 @@ export class ShallowVerificationService
   public createOrUpdate(
     model: Verification,
     audioEvent: AudioEvent,
-    user: User
   ): Observable<Verification> {
     return this.api
       .create(
@@ -137,7 +140,7 @@ export class ShallowVerificationService
           if (err.status === CONFLICT) {
             const verificationModel = this.audioEventUserVerification(
               audioEvent,
-              user
+              this.session.currentUser,
             );
             return verificationModel.pipe(
               mergeMap((verification) => {
