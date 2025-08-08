@@ -71,7 +71,7 @@ export const sortingOptions = new Map([
 // session state.
 export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
 
-export type TaskBehaviorKey = "verify-and-correct" | "verify";
+export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -550,7 +550,7 @@ export class AnnotationSearchParameters
   }
 
   private isTaskBehaviorKey(key: string): key is TaskBehaviorKey {
-    const validOptions: TaskBehaviorKey[] = ["verify-and-correct", "verify"];
+    const validOptions: TaskBehaviorKey[] = ["verify-and-correct-tag", "verify"];
     return validOptions.some((option) => option === key);
   }
 }

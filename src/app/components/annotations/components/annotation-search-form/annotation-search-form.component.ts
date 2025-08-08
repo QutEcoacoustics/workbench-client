@@ -105,7 +105,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   ];
   protected taskBehaviorOptions: ISelectableItem<TaskBehaviorKey>[] = [
     { label: "verify", value: "verify" },
-    { label: "verify and correct", value: "verify-and-correct" },
+    { label: "verify and correct tag", value: "verify-and-correct-tag" },
   ];
 
   protected get project(): Project {

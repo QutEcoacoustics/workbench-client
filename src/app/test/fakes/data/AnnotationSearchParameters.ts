@@ -39,7 +39,7 @@ export function generateAnnotationSearchParameters(
       ["unverified-for-me", "unverified", "any"],
     ),
     taskBehavior: modelData.helpers.arrayElement(
-      ["verify", "verify-and-correct"],
+      ["verify", "verify-and-correct-tag"],
     ),
     ...data,
   };

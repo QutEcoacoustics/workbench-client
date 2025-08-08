@@ -140,7 +140,7 @@ class VerificationComponent
     }
 
     this.hasCorrectionTask.set(
-      this.searchParameters.taskBehavior === "verify-and-correct",
+      this.searchParameters.taskBehavior === "verify-and-correct-tag",
     );
   }
 

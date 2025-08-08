@@ -11,16 +11,12 @@ import {
   StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
-import { TaggingsService } from "@baw-api/tag/taggings.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { Tagging } from "@models/Tagging";
 import { User } from "@models/User";
-import { ConfirmedStatus, Verification } from "@models/Verification";
+import { Verification } from "@models/Verification";
 import { CONFLICT } from "http-status";
 import { catchError, map, mergeMap, Observable } from "rxjs";
 
