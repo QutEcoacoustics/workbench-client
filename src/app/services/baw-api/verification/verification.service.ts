@@ -16,7 +16,7 @@ import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { User } from "@models/User";
+import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
 import { CONFLICT } from "http-status";
 import { catchError, map, mergeMap, Observable } from "rxjs";
@@ -30,8 +30,7 @@ const endpoint =
 
 @Injectable()
 export class VerificationService
-  implements
-    ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
+  implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
   public constructor(private api: BawApiService<Verification>) {}
 
@@ -123,7 +122,8 @@ export class ShallowVerificationService
    */
   public createOrUpdate(
     model: Verification,
-    audioEvent: AudioEvent,
+    audioEvent: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
   ): Observable<Verification> {
     return this.api
       .create(
@@ -140,8 +140,9 @@ export class ShallowVerificationService
           if (err.status === CONFLICT) {
             const verificationModel = this.audioEventUserVerification(
               audioEvent,
-              this.session.currentUser,
+              tag,
             );
+
             return verificationModel.pipe(
               mergeMap((verification) => {
                 if (!verification) {
@@ -171,20 +172,26 @@ export class ShallowVerificationService
    * If the user has not verified the audio event, null is returned.
    */
   public audioEventUserVerification(
-    event: AudioEvent,
-    user: User
+    event: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const filter = {
+    const eventId = event instanceof AudioEvent ? event.id : event;
+    const tagId = tag instanceof Tag ? tag.id : tag;
+
+    const user = this.session.currentUser;
+
+    const filter: Filters<Verification> = {
       filter: {
         and: [
-          { audioEventId: { eq: event.id } },
+          { audioEventId: { eq: eventId } },
+          { tagId: { eq: tagId } },
           { creatorId: { eq: user.id } },
         ],
       },
       paging: {
         items: 1,
       },
-    } as const satisfies Filters<Verification>;
+    };
 
     // the api enforces having one verification per user per audio event
     // therefore, it is safe to assume that there will only be one result

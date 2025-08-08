@@ -20,7 +20,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, mergeMap } from "rxjs";
+import { first, firstValueFrom, map, mergeMap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import {
@@ -250,12 +250,18 @@ class VerificationComponent
     for (const [subject, receipt] of decision) {
       const change = receipt.change;
 
-      if (Object.prototype.hasOwnProperty.call(change, "verification")) {
+      const verificationChange = change.verification;
+      if (verificationChange) {
         this.handleVerificationDecision(subject);
+      } else if (verificationChange === null) {
+        this.deleteVerificationDecision(subject);
       }
 
-      if (Object.prototype.hasOwnProperty.call(change, "newTag")) {
+      const newTagChange = change.newTag;
+      if (newTagChange) {
         this.handleTagCorrectionDecision(subject);
+      } else if (newTagChange === null) {
+        this.deleteTagCorrectionDecision(subject);
       }
     }
   }
@@ -282,12 +288,32 @@ class VerificationComponent
     const apiRequest = this.verificationApi.createOrUpdate(
       verification,
       subject as AudioEvent,
+      tagId,
     );
 
     // I use firstValueFrom so that the observable is evaluated
     // but I don't have to subscribe or unsubscribe.
     // Additionally, notice that the function is not awaited so that the
     // render thread can continue to run while the request is being made
+    firstValueFrom(apiRequest);
+  }
+
+  private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
+    const apiRequest = this.verificationApi.audioEventUserVerification(
+      subjectWrapper.subject as any,
+      subjectWrapper.tag.id,
+    ).pipe(
+      map((verification) => {
+        if (!verification) {
+          return;
+        }
+
+        // If the verification exists, we delete it
+        this.verificationApi.destroy(verification.id);
+      }),
+      first(),
+    );
+
     firstValueFrom(apiRequest);
   }
 
@@ -304,6 +330,9 @@ class VerificationComponent
     const apiRequest = this.correctTag(audioEvent, newTagId.tag.id);
 
     firstValueFrom(apiRequest);
+  }
+
+  private deleteTagCorrectionDecision(_subjectWrapper: SubjectWrapper): void {
   }
 
   // TODO: This logic should probably be moved to a service
@@ -331,6 +360,7 @@ class VerificationComponent
           return this.verificationApi.createOrUpdate(
             correctVerification,
             audioEvent,
+            newTagId,
           );
         }),
       );
@@ -342,7 +372,11 @@ class VerificationComponent
   private isDecisionEvent(
     event: Event,
   ): event is CustomEvent<DecisionMadeEvent> {
-    return true;
+    if (!(event instanceof CustomEvent)) {
+      return false;
+    }
+
+    return event.detail instanceof Map;
   }
 
   private scrollToVerificationGrid(): void {

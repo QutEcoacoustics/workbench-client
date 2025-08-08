@@ -151,7 +151,7 @@ describe("ShallowVerificationService", () => {
           },
         } as const satisfies Filters<Verification>;
 
-        spec.service.audioEventUserVerification(mockAudioEvent, mockUser);
+        spec.service.audioEventUserVerification(mockAudioEvent);
 
         expect(api.filter).toHaveBeenCalledOnceWith(
           Verification,
@@ -162,7 +162,7 @@ describe("ShallowVerificationService", () => {
 
       it("should return the verification if the audio event is verified", async () => {
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent)
         );
 
         expect(response).toEqual(mockFilterResponse[0]);
@@ -172,7 +172,7 @@ describe("ShallowVerificationService", () => {
         mockFilterResponse = [];
 
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent)
         );
 
         expect(response).toBeNull();
@@ -182,7 +182,7 @@ describe("ShallowVerificationService", () => {
     describe("createOrUpdate", () => {
       it("should emit a create request if the verification does not exist", () => {
         spec.service
-          .createOrUpdate(mockModel, mockAudioEvent, mockUser)
+          .createOrUpdate(mockModel, mockAudioEvent)
           .subscribe();
         expect(api.create).toHaveBeenCalledTimes(1);
       });
@@ -195,7 +195,7 @@ describe("ShallowVerificationService", () => {
         );
 
         const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser)
+          spec.service.createOrUpdate(mockModel, mockAudioEvent)
         );
 
         expect(api.create).toHaveBeenCalledTimes(1);
@@ -212,7 +212,7 @@ describe("ShallowVerificationService", () => {
         );
 
         const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).pipe(
+          spec.service.createOrUpdate(mockModel, mockAudioEvent).pipe(
             catchError(() => of(null))
           )
         );
