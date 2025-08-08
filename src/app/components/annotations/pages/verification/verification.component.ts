@@ -308,7 +308,6 @@ class VerificationComponent
           return;
         }
 
-        // If the verification exists, we delete it
         this.verificationApi.destroy(verification.id);
       }),
       first(),
