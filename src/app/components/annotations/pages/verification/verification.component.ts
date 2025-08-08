@@ -20,10 +20,13 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, mergeMap } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import {
+  DecisionMadeEvent,
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -46,8 +49,6 @@ import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/deci
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
 import { annotationResolvers } from "@services/models/annotation.resolver";
-import { Id } from "@interfaces/apiInterfaces";
-import { Tagging } from "@models/Tagging";
 import { TaggingsService } from "@baw-api/tag/taggings.service";
 import {
   TagPromptComponent,
@@ -169,54 +170,6 @@ class VerificationComponent
     this.doneInitialScroll = true;
   }
 
-  protected handleDecision(decisionEvent: Event): void {
-    if (!this.isDecisionEvent(decisionEvent)) {
-      console.error("Received invalid decision event", decisionEvent);
-      return;
-    }
-
-    this.hasUnsavedChanges = true;
-
-    const subjectWrappers = decisionEvent.detail;
-    for (const subjectWrapper of subjectWrappers) {
-      const subject = subjectWrapper.subject as Readonly<AudioEvent>;
-
-      if (typeof subjectWrapper.newTag !== "symbol") {
-        firstValueFrom(
-          this.correctTag(subject as AudioEvent, subjectWrapper.newTag.tag.id),
-        );
-      }
-
-      // I have to use "as string" here because the upstream typing is incorrect
-      // TODO: We should remove this "as string" and improve the upstream typing
-      const mappedDecision =
-        confirmedMapping[(subjectWrapper.verification as any).confirmed];
-
-      const tagId = subjectWrapper.tag.id;
-
-      const verificationData: IVerification = {
-        audioEventId: subject.id,
-        confirmed: mappedDecision,
-        tagId,
-      };
-
-      const verification = new Verification(verificationData, this.injector);
-
-      // I have to use "as any" here to remove the readonly typing
-      const apiRequest = this.verificationApi.createOrUpdate(
-        verification,
-        subject as AudioEvent,
-        this.session.currentUser,
-      );
-
-      // I use firstValueFrom so that the observable is evaluated
-      // but I don't have to subscribe or unsubscribe.
-      // Additionally, notice that the function is not awaited so that the
-      // render thread can continue to run while the request is being made
-      firstValueFrom(apiRequest);
-    }
-  }
-
   protected tagTextFormatter(tag: Tag): string {
     return tag.text;
   }
@@ -279,18 +232,76 @@ class VerificationComponent
     this.hasUnsavedChanges = false;
   }
 
+  protected handleDecision(decisionEvent: Event): void {
+    if (!this.isDecisionEvent(decisionEvent)) {
+      console.error("Received invalid decision event", decisionEvent);
+      return;
+    }
+
+    this.hasUnsavedChanges = true;
+
+    const decision = decisionEvent.detail;
+    for (const [subject, receipt] of decision) {
+      const change = receipt.change;
+
+      if (Object.prototype.hasOwnProperty.call(change, "verification")) {
+        this.handleVerificationDecision(subject);
+      }
+
+      if (Object.prototype.hasOwnProperty.call(change, "newTag")) {
+        this.handleTagCorrectionDecision(subject);
+      }
+    }
+  }
+
+  private handleVerificationDecision(subjectWrapper: SubjectWrapper): void {
+    const subject = subjectWrapper.subject as Readonly<AudioEvent>;
+
+    // I have to use "as string" here because the upstream typing is incorrect
+    // TODO: We should remove this "as string" and improve the upstream typing
+    const mappedDecision =
+      confirmedMapping[(subjectWrapper.verification as any).confirmed];
+
+    const tagId = subjectWrapper.tag.id;
+
+    const verificationData: IVerification = {
+      audioEventId: subject.id,
+      confirmed: mappedDecision,
+      tagId,
+    };
+
+    const verification = new Verification(verificationData, this.injector);
+
+    // I have to use "as any" here to remove the readonly typing
+    const apiRequest = this.verificationApi.createOrUpdate(
+      verification,
+      subject as AudioEvent,
+      this.session.currentUser,
+    );
+
+    // I use firstValueFrom so that the observable is evaluated
+    // but I don't have to subscribe or unsubscribe.
+    // Additionally, notice that the function is not awaited so that the
+    // render thread can continue to run while the request is being made
+    firstValueFrom(apiRequest);
+  }
+
+  private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
+    const audioEvent = subjectWrapper.subject as any;
+    const newTagId = subjectWrapper.newTag as any;
+
+    const apiRequest = this.verificationApi.correctTag(audioEvent, newTagId.tag.id);
+
+    firstValueFrom(apiRequest);
+  }
+
   // TODO: this function can be improved with instanceof checks once we export
   // data model constructors from the web components
   // see: https://github.com/ecoacoustics/web-components/issues/303
   private isDecisionEvent(
     event: Event,
-  ): event is CustomEvent<SubjectWrapper[]> {
-    return (
-      event instanceof CustomEvent &&
-      event.detail instanceof Array &&
-      event.detail.length > 0 &&
-      "subject" in event.detail[0]
-    );
+  ): event is CustomEvent<DecisionMadeEvent> {
+    return true;
   }
 
   private scrollToVerificationGrid(): void {
@@ -335,36 +346,6 @@ class VerificationComponent
   private addTagWhenPredicate(): WhenPredicate {
     return (subject: SubjectWrapper) =>
       subject.tag === null || subject.verification?.["confirmed"] === "false";
-  }
-
-  /**
-   * Corrects an incorrect tag on an audio event by verifying the existing tag
-   * as "incorrect", creating a new tag that is correct, and submitting a
-   * "correct" verification decision.
-   */
-  private correctTag(audioEvent: AudioEvent, newTagId: Id) {
-    const correctTag = new Tagging({
-      audioEventId: audioEvent.id,
-      tagId: newTagId,
-    });
-
-    return this.taggingsApi
-      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
-      .pipe(
-        mergeMap(() => {
-          const correctVerification = new Verification({
-            audioEventId: audioEvent.id,
-            confirmed: ConfirmedStatus.Correct,
-            tagId: newTagId,
-          });
-
-          return this.verificationApi.createOrUpdate(
-            correctVerification,
-            audioEvent,
-            this.session.currentUser,
-          );
-        }),
-      );
   }
 }
 

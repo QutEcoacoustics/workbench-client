@@ -11,12 +11,16 @@ import {
   StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
+import { TaggingsService } from "@baw-api/tag/taggings.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { Tagging } from "@models/Tagging";
 import { User } from "@models/User";
-import { Verification } from "@models/Verification";
+import { ConfirmedStatus, Verification } from "@models/Verification";
 import { CONFLICT } from "http-status";
 import { catchError, map, mergeMap, Observable } from "rxjs";
 
@@ -72,7 +76,11 @@ export class VerificationService
 export class ShallowVerificationService
   implements StandardApi<Verification, []>
 {
-  public constructor(private api: BawApiService<Verification>) {}
+  public constructor(
+    private api: BawApiService<Verification>,
+    private taggingsApi: TaggingsService,
+    private session: BawSessionService,
+  ) {}
 
   public list(): Observable<Verification[]> {
     return this.api.list(Verification, endpointShallow(emptyParam, emptyParam));
@@ -189,6 +197,36 @@ export class ShallowVerificationService
     return this.filter(filter).pipe(
       map((results) => (results.length > 0 ? results[0] : null))
     );
+  }
+
+  /**
+   * Corrects an incorrect tag on an audio event by verifying the existing tag
+   * as "incorrect", creating a new tag that is correct, and submitting a
+   * "correct" verification decision.
+   */
+  public correctTag(audioEvent: AudioEvent, newTagId: Id) {
+    const correctTag = new Tagging({
+      audioEventId: audioEvent.id,
+      tagId: newTagId,
+    });
+
+    return this.taggingsApi
+      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
+      .pipe(
+        mergeMap(() => {
+          const correctVerification = new Verification({
+            audioEventId: audioEvent.id,
+            confirmed: ConfirmedStatus.Correct,
+            tagId: newTagId,
+          });
+
+          return this.createOrUpdate(
+            correctVerification,
+            audioEvent,
+            this.session.currentUser,
+          );
+        }),
+      );
   }
 }
 
