@@ -49,7 +49,7 @@ describe("VerificationService", () => {
 
   const createService = createServiceFactory({
     service: VerificationService,
-    providers: [provideMockBawApi(), ...mockServiceProviders],
+    providers: mockServiceProviders,
   });
 
   beforeEach(() => {
