@@ -50,6 +50,16 @@
     <baw-grid-tile-content></baw-grid-tile-content>
   </template>
 
+  <oe-tag-prompt
+    #tagPrompt
+    verified="unsure"
+    shortcut="C"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  >
+    Correct Tag
+  </oe-tag-prompt>
+
   <oe-verification
     verified="true"
     shortcut="Y"

@@ -71,6 +71,8 @@ export const sortingOptions = new Map([
 // session state.
 export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
 
+export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
+
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
@@ -105,6 +107,7 @@ export interface IAnnotationSearchParameters {
 
   sort: SortingKey;
   verificationStatus: VerificationStatusKey;
+  taskBehavior: TaskBehaviorKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -128,6 +131,7 @@ const serializationTable: IQueryStringParameterSpec<
 
   sort: jsString,
   verificationStatus: jsString,
+  taskBehavior: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -194,6 +198,7 @@ export class AnnotationSearchParameters
 
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
+  private _taskBehavior: TaskBehaviorKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -233,6 +238,25 @@ export class AnnotationSearchParameters
         this._verificationStatus = null;
       } else {
         this._verificationStatus = value;
+      }
+    } else {
+      console.error(`Invalid select key: "${value}"`);
+    }
+  }
+
+  public get taskBehavior(): TaskBehaviorKey {
+    return this._taskBehavior;
+  }
+
+  public set taskBehavior(value: string) {
+    if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // "unverified-for-me" as the default if there is no "taskBehavior" query
+      // string parameter.
+      if (value === "verify") {
+        this._taskBehavior = null;
+      } else {
+        this._taskBehavior = value;
       }
     } else {
       console.error(`Invalid select key: "${value}"`);
@@ -524,5 +548,10 @@ export class AnnotationSearchParameters
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {
     return this.verificationStatusOptions.has(key as any);
+  }
+
+  private isTaskBehaviorKey(key: string): key is TaskBehaviorKey {
+    const validOptions: TaskBehaviorKey[] = ["verify-and-correct-tag", "verify"];
+    return validOptions.some((option) => option === key);
   }
 }

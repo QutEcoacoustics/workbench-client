@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { AnalysisJob } from "@models/AnalysisJob";
+import { Injectable } from "@angular/core";
 import { AudioEvent } from "@models/AudioEvent";
 import { Tagging } from "@models/Tagging";
 import { Observable } from "rxjs";
+import { AudioRecording } from "@models/AudioRecording";
 import {
   emptyParam,
   filterParam,
@@ -17,89 +17,89 @@ import {
 import { BawApiService, Filters } from "../baw-api.service";
 import { Resolvers } from "../resolver-common";
 
-const analysisJobId: IdParam<AnalysisJob> = id;
+const audioRecordingId: IdParam<AudioRecording> = id;
 const audioEventId: IdParam<AudioEvent> = id;
 const taggingId: IdParamOptional<Tagging> = id;
-const endpoint = stringTemplate`/audio_recordings/${analysisJobId}/audio_events/${audioEventId}/taggings/${taggingId}${option}`;
+const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_events/${audioEventId}/taggings/${taggingId}${option}`;
 
 @Injectable()
 export class TaggingsService
-  implements StandardApi<Tagging, [IdOr<AnalysisJob>, IdOr<AudioEvent>]>
+  implements StandardApi<Tagging, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
   public constructor(private api: BawApiService<Tagging>) {}
 
   public list(
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {
     return this.api.list(
       Tagging,
-      endpoint(analysisJob, audioEvent, emptyParam, emptyParam)
+      endpoint(audioRecording, audioEvent, emptyParam, emptyParam)
     );
   }
 
   public filter(
     filters: Filters<Tagging>,
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging[]> {
     return this.api.filter(
       Tagging,
-      endpoint(analysisJob, audioEvent, emptyParam, filterParam),
+      endpoint(audioRecording, audioEvent, emptyParam, filterParam),
       filters
     );
   }
 
   public show(
     model: IdOr<Tagging>,
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.api.show(
       Tagging,
-      endpoint(analysisJob, audioEvent, model, emptyParam)
+      endpoint(audioRecording, audioEvent, model, emptyParam)
     );
   }
 
   public create(
     model: Tagging,
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.api.create(
       Tagging,
-      endpoint(analysisJob, audioEvent, emptyParam, emptyParam),
-      (tagging) => endpoint(analysisJob, audioEvent, tagging, emptyParam),
+      endpoint(audioRecording, audioEvent, emptyParam, emptyParam),
+      (tagging) => endpoint(audioRecording, audioEvent, tagging, emptyParam),
       model
     );
   }
 
   public update(
     model: Tagging,
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging> {
     return this.api.update(
       Tagging,
-      endpoint(analysisJob, audioEvent, model, emptyParam),
+      endpoint(audioRecording, audioEvent, model, emptyParam),
       model
     );
   }
 
   public destroy(
     model: IdOr<Tagging>,
-    analysisJob: IdOr<AnalysisJob>,
+    audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging | void> {
     return this.api.destroy(
-      endpoint(analysisJob, audioEvent, model, emptyParam)
+      endpoint(audioRecording, audioEvent, model, emptyParam)
     );
   }
 }
 
 export const taggingResolvers = new Resolvers<
   Tagging,
-  [IdOr<AnalysisJob>, IdOr<AudioEvent>]
->([TaggingsService], "taggingId", ["analysisJobId", "audioEventId"]).create(
+  [IdOr<AudioRecording>, IdOr<AudioEvent>]
+>([TaggingsService], "taggingId", ["audioRecordingId", "audioEventId"]).create(
   "Tagging"
 );
