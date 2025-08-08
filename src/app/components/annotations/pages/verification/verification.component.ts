@@ -20,7 +20,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, mergeMap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import {
@@ -57,6 +57,8 @@ import {
 } from "@ecoacoustics/web-components/@types";
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { Tagging } from "@models/Tagging";
+import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -290,9 +292,40 @@ class VerificationComponent
     const audioEvent = subjectWrapper.subject as any;
     const newTagId = subjectWrapper.newTag as any;
 
-    const apiRequest = this.verificationApi.correctTag(audioEvent, newTagId.tag.id);
+    const apiRequest = this.correctTag(audioEvent, newTagId.tag.id);
 
     firstValueFrom(apiRequest);
+  }
+
+  // TODO: This logic should probably be moved to a service
+  /**
+   * Corrects an incorrect tag on an audio event by verifying the existing tag
+   * as "incorrect", creating a new tag that is correct, and submitting a
+   * "correct" verification decision.
+   */
+  private correctTag(audioEvent: AudioEvent, newTagId: Id) {
+    const correctTag = new Tagging({
+      audioEventId: audioEvent.id,
+      tagId: newTagId,
+    });
+
+    return this.taggingsApi
+      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
+      .pipe(
+        mergeMap(() => {
+          const correctVerification = new Verification({
+            audioEventId: audioEvent.id,
+            confirmed: ConfirmedStatus.Correct,
+            tagId: newTagId,
+          });
+
+          return this.verificationApi.createOrUpdate(
+            correctVerification,
+            audioEvent,
+            this.session.currentUser,
+          );
+        }),
+      );
   }
 
   // TODO: this function can be improved with instanceof checks once we export

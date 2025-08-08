@@ -17,6 +17,7 @@ import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { CONFLICT, INTERNAL_SERVER_ERROR } from "http-status";
 import { catchError, firstValueFrom, of, throwError } from "rxjs";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   ShallowVerificationService,
   VerificationService,
@@ -48,7 +49,7 @@ describe("VerificationService", () => {
 
   const createService = createServiceFactory({
     service: VerificationService,
-    providers: mockServiceProviders,
+    providers: [provideMockBawApi(), ...mockServiceProviders],
   });
 
   beforeEach(() => {
