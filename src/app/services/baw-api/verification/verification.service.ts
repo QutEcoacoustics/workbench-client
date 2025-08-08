@@ -19,7 +19,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
 import { CONFLICT } from "http-status";
-import { catchError, map, mergeMap, Observable } from "rxjs";
+import { catchError, first, map, mergeMap, Observable, switchMap } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -165,18 +165,40 @@ export class ShallowVerificationService
   }
 
   /**
-   * Fetches a users verification model for a specific audio event
+   * Destroys a verification model for a specific audio event + tag combination.
+   * This service method can be called without knowing the verification model or
+   * the verification ID.
+   */
+  public destroyEventVerification(
+    audioEvent: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
+  ): Observable<void | Verification> {
+    return this.audioEventUserVerification(audioEvent, tag).pipe(
+      switchMap((verification) => {
+        if (!verification) {
+          return;
+        }
+
+        return this.destroy(verification.id);
+      }),
+      first(),
+    );
+  }
+
+  /**
+   * Fetches a users verification model for a specific audio event + tag
+   * combination.
    *
    * @returns
    * A verification model if the user has verified the audio event.
    * If the user has not verified the audio event, null is returned.
    */
   public audioEventUserVerification(
-    event: IdOr<AudioEvent>,
+    eventModel: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const eventId = event instanceof AudioEvent ? event.id : event;
-    const tagId = tag instanceof Tag ? tag.id : tag;
+    const eventId = typeof eventModel === "number" ? eventModel : eventModel.id;
+    const tagId = typeof tag === "number" ? tag : tag.id;
 
     const user = this.session.currentUser;
 

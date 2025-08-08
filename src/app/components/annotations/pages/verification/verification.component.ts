@@ -20,7 +20,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { first, firstValueFrom, map, mergeMap } from "rxjs";
+import { firstValueFrom, map, switchMap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import {
@@ -58,6 +58,7 @@ import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
 import { Id } from "@interfaces/apiInterfaces";
+import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -121,6 +122,17 @@ class VerificationComponent
   public project?: Project;
   public region?: Region;
   public site?: Site;
+
+  // TODO: Remove this once the corrections endpoint is finished
+  /**
+   * A mapping of audio events and the currently applied tag correction model
+   * in the form of a fully-fledged Tagging model.
+   * This is useful when trying to update the correction on an audio event and
+   * you need to delete a tagging that was previously applied.
+   * By using a client-side map, we can cache the tagging client side and
+   * prevent making another request to the api.
+   */
+  private tagCorrectionMapping = new Map<AudioEvent["id"], Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -250,18 +262,50 @@ class VerificationComponent
     for (const [subject, receipt] of decision) {
       const change = receipt.change;
 
+      // Emitting the old model was a hack added to the web components to get a
+      // feature shipped quickly.
+      // TODO: Once the web components emit a more descriptive decision-made
+      // event, we should replace this hack.
+      // see: https://github.com/ecoacoustics/web-components/issues/448
+      const oldSubject = receipt.oldSubject as any;
+
       const verificationChange = change.verification;
-      if (verificationChange) {
-        this.handleVerificationDecision(subject);
-      } else if (verificationChange === null) {
+      if (verificationChange === null) {
         this.deleteVerificationDecision(subject);
+      } else if (verificationChange) {
+        this.handleVerificationDecision(subject);
       }
 
-      const newTagChange = change.newTag;
-      if (newTagChange) {
-        this.handleTagCorrectionDecision(subject);
-      } else if (newTagChange === null) {
-        this.deleteTagCorrectionDecision(subject);
+      const newTagDecision = change.newTag;
+      const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
+
+      if (newTagDecision === null || newTagDecision === decisionNotRequired) {
+        this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
+      } else if (newTagDecision) {
+        // If there was a newTag (tag correction) applied in the previous
+        // subject model, we need to delete it before applying the new
+        // decision.
+        //
+        // TODO: Comparing by tag text here is probably not the most robust
+        // solution, but I have done it to push out a feature quickly.
+        // I compare the tag text so that if the currently applied tag is
+        // selected again, we don't throw a conflict error from trying to
+        // correct the currently applied tag.
+        //
+        // We know that the newTagDecision is a Tag model and not a
+        // decisionNotRequired because the if condition would have caught the
+        // decision not required condition.
+        // Therefore, while bad, this "as any" is theoretically fine
+        // (although not type checked).
+        if (
+          (newTagDecision as any).tag?.text !== oldSubjectTagCorrection?.text
+        ) {
+          if (oldSubjectTagCorrection) {
+            this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
+          }
+
+          this.handleTagCorrectionDecision(subject);
+        }
       }
     }
   }
@@ -299,18 +343,12 @@ class VerificationComponent
   }
 
   private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
-    const apiRequest = this.verificationApi.audioEventUserVerification(
-      subjectWrapper.subject as any,
-      subjectWrapper.tag.id,
-    ).pipe(
-      map((verification) => {
-        if (!verification) {
-          return;
-        }
+    const audioEvent = subjectWrapper.subject as any as AudioEvent;
+    const tag = subjectWrapper.tag as Tag;
 
-        this.verificationApi.destroy(verification.id);
-      }),
-      first(),
+    const apiRequest = this.verificationApi.destroyEventVerification(
+      audioEvent,
+      tag,
     );
 
     firstValueFrom(apiRequest);
@@ -324,14 +362,49 @@ class VerificationComponent
    */
   private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any;
-    const newTagId = subjectWrapper.newTag as any;
+    const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.correctTag(audioEvent, newTagId.tag.id);
+    const apiRequest = this.addCorrectTagging(audioEvent, newTag.tag.id).pipe(
+      map((correctTagging: Tagging) => {
+        this.tagCorrectionMapping.set(audioEvent.id, correctTagging);
+        return correctTagging;
+      }),
+    );
 
     firstValueFrom(apiRequest);
   }
 
-  private deleteTagCorrectionDecision(_subjectWrapper: SubjectWrapper): void {
+  private deleteTagCorrectionDecision(
+    subjectWrapper: SubjectWrapper,
+    tagToRemove: Tag,
+  ): void {
+    const audioEvent = subjectWrapper.subject as any;
+
+    const targetTagging = this.tagCorrectionMapping.get(audioEvent.id);
+    if (!targetTagging) {
+      // This condition can trigger if users make a request to update a tagging
+      // while there is an existing tagging request pending.
+      console.error(
+        "Could not find tagging for existing audio event correction",
+      );
+      return;
+    }
+
+    // Remove the verification from the audio event and then remove the tagging
+    // that was added as part of the tag correction decision.
+    const apiRequest = this.verificationApi
+      .destroyEventVerification(audioEvent, tagToRemove)
+      .pipe(
+        switchMap(() => {
+          return this.taggingsApi.destroy(
+            targetTagging.id,
+            audioEvent.audioRecordingId,
+            audioEvent.id,
+          );
+        }),
+      );
+
+    firstValueFrom(apiRequest);
   }
 
   // TODO: This logic should probably be moved to a service
@@ -340,7 +413,7 @@ class VerificationComponent
    * as "incorrect", creating a new tag that is correct, and submitting a
    * "correct" verification decision.
    */
-  private correctTag(audioEvent: AudioEvent, newTagId: Id) {
+  private addCorrectTagging(audioEvent: AudioEvent, newTagId: Id) {
     const correctTag = new Tagging({
       audioEventId: audioEvent.id,
       tagId: newTagId,
@@ -349,18 +422,22 @@ class VerificationComponent
     return this.taggingsApi
       .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
       .pipe(
-        mergeMap(() => {
+        map((tagging: Tagging) => {
           const correctVerification = new Verification({
             audioEventId: audioEvent.id,
             confirmed: ConfirmedStatus.Correct,
             tagId: newTagId,
           });
 
-          return this.verificationApi.createOrUpdate(
+          const verificationRequest = this.verificationApi.createOrUpdate(
             correctVerification,
             audioEvent,
             newTagId,
           );
+
+          firstValueFrom(verificationRequest);
+
+          return tagging;
         }),
       );
   }
