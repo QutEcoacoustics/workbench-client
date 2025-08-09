@@ -18,6 +18,7 @@ import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
 import {
   catchError,
+  concatMap,
   first,
   map,
   mergeMap,
@@ -140,14 +141,20 @@ export class SecurityService {
       (token: string) => details.getBody(token),
       (page) => {
         validateLoggedIn(page);
-      }
+      },
     );
 
-    // Logout first to ensure token and cookie are synchronized
-    return this.signOut().pipe(
-      mergeMap(() => handleAuth),
-      // Ignore any sign out errors, and continue with authentication
-      catchError(() => handleAuth)
+    return handleAuth.pipe(
+      catchError(() =>
+        // If login fails, we attempt to log out then send another login request.
+        // This can happen if you open two login pages while logged out, then
+        // attempt to log into two different accounts on the different login
+        // screens.
+        this.signOut().pipe(
+          concatMap(() => handleAuth),
+          catchError((signOutErr) => this.api.handleError(signOutErr, true)),
+        ),
+      ),
     );
   }
 
