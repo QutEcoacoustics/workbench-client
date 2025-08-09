@@ -50,16 +50,6 @@
     <baw-grid-tile-content></baw-grid-tile-content>
   </template>
 
-  <oe-tag-prompt
-    #tagPrompt
-    verified="unsure"
-    shortcut="C"
-    (focus)="verificationGridFocused = true"
-    (blur)="verificationGridFocused = false"
-  >
-    Correct Tag
-  </oe-tag-prompt>
-
   <oe-verification
     verified="true"
     shortcut="Y"
@@ -78,6 +68,18 @@
     (focus)="verificationGridFocused = true"
     (blur)="verificationGridFocused = false"
   ></oe-verification>
+
+  @if (hasCorrectionTask()) {
+    <oe-tag-prompt
+      #tagPrompt
+      verified="unsure"
+      shortcut="C"
+      (focus)="verificationGridFocused = true"
+      (blur)="verificationGridFocused = false"
+    >
+      Correct Tag
+    </oe-tag-prompt>
+  }
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>
