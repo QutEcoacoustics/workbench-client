@@ -10,6 +10,8 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
+import { User } from "@models/User";
+import { generateUser } from "@test/fakes/User";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
@@ -21,13 +23,15 @@ describe("SearchFiltersModalComponent", () => {
   let mockRegionsApi: SpyObject<ShallowRegionsService>;
   let mockTagsApi: SpyObject<TagsService>;
 
+  let mockUser: User;
+
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
     imports: [IconsModule],
     providers: [provideMockBawApi()],
   });
 
-  function setup(): void {
+  beforeEach(() => {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -36,8 +40,10 @@ describe("SearchFiltersModalComponent", () => {
       jasmine.createSpy("successCallback");
     successSpy.and.stub();
 
+    mockUser = new User(generateUser());
     const searchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(),
+      mockUser,
       injector,
     );
 
@@ -59,15 +65,11 @@ describe("SearchFiltersModalComponent", () => {
       modal: mockModal,
     });
     spec.detectChanges();
-  }
+  });
 
   const exitButton = () => spec.query<HTMLButtonElement>("#exit-btn");
   const updateButton = () =>
     spec.query<HTMLButtonElement>("#update-filters-btn");
-
-  beforeEach(() => {
-    setup();
-  });
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(SearchFiltersModalComponent);
@@ -81,11 +83,6 @@ describe("SearchFiltersModalComponent", () => {
   it("should use the success callback if the update button is clicked", () => {
     updateButton().click();
     expect(successSpy).toHaveBeenCalled();
-  });
-
-  it("should have a warning button if the host has decisions", () => {
-    spec.setInput("hasDecisions", true);
-    expect(updateButton()).toHaveClass("btn-warning");
   });
 
   it("should have a primary button if the host does not have decisions", () => {

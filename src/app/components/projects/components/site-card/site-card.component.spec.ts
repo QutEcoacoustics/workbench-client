@@ -15,6 +15,7 @@ import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
 import { SiteCardComponent } from "./site-card.component";
 
 describe("SiteCardComponent", () => {
@@ -25,7 +26,7 @@ describe("SiteCardComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: SiteCardComponent,
-    providers: [provideMockBawApi()],
+    providers: [mockAssociationInjector, provideMockBawApi()],
   });
 
   beforeEach(() => {
@@ -51,6 +52,9 @@ describe("SiteCardComponent", () => {
     const recordingApi = spec.inject(AudioRecordingsService);
     recordingApi.filterBySite.and.callFake(() => subject);
     recordingApi.filterByRegion.and.callFake(() => subject);
+
+    spec.component["recordingApi"] = recordingApi;
+
     return nStepObservable(subject, () => recordings);
   }
 

@@ -61,6 +61,8 @@
       "Millis",
       "prerender",
       "SAMEORIGIN",
+      "lteq",
+      "gteq",
     ],
     "cSpell.flagWords": [
       "yuo",

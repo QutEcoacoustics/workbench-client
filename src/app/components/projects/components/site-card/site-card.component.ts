@@ -1,15 +1,16 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { first, map } from "rxjs/operators";
 import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { UrlDirective } from "@directives/url/url.directive";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pipe";
 
 @Component({
@@ -18,19 +19,19 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
     <li class="list-group-item p-2">
       <div class="body">
         <div class="heading m-0 mb-1">
-          <a id="nameLink" [bawUrl]="model.getViewUrl(project)">
+          <a id="nameLink" [bawUrl]="model().getViewUrl(project())">
             <img
               id="image"
               class="me-2"
-              [src]="model.imageUrls"
-              [alt]="model.name + ' alt'"
+              [src]="model().imageUrls"
+              [alt]="model().name + ' alt'"
             />
-            <h5 id="name">{{ model.name }}</h5>
+            <h5 id="name">{{ model().name }}</h5>
           </a>
         </div>
 
         <ul class="nav mb-0">
-          @if (region) {
+          @if (region()) {
             <li class="nav-item" id="points">
               <span class="badge rounded-pill text-bg-highlight my-1">
                 {{ numPoints() }} {{ numPoints() === 1 ? "Point" : "Points" }}
@@ -50,7 +51,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
             <span
               id="no-audio"
               class="badge rounded-pill text-bg-secondary my-1"
-              >
+            >
               @if (hasNoAudio.loading) {
                 <baw-loading size="sm" color="light"></baw-loading>
               }
@@ -71,34 +72,37 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
     LoadingComponent,
     AsyncPipe,
     WithLoadingPipe,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteCardComponent implements OnInit {
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
-  public model: Site | Region;
-  public hasNoAudio$: Observable<boolean>;
+  public project = input<Project>();
+  public region = input<Region>();
+  public site = input<Site>();
+  protected model = computed(() => this.region() || this.site());
 
-  public constructor(private recordingApi: AudioRecordingsService) {}
+  protected hasNoAudio$: Observable<boolean>;
+
+  private associationInjector = inject(ASSOCIATION_INJECTOR);
+  private recordingApi = this.associationInjector.get(AudioRecordingsService);
 
   public ngOnInit(): void {
-    this.model = this.region || this.site;
     this.hasNoAudio$ = this.getRecording().pipe(
+      first(),
       map((recordings): boolean => recordings.length === 0)
     );
   }
 
   public numPoints(): number {
-    return this.region?.siteIds?.size || 0;
+    return this.region()?.siteIds?.size || 0;
   }
 
   private getRecording(): Observable<AudioRecording[]> {
-    const filter = { paging: { items: 1 } };
-    if (this.region) {
-      return this.recordingApi.filterByRegion(filter, this.region);
+    const filter = { paging: { items: 1 } } as const;
+    if (this.region()) {
+      return this.recordingApi.filterByRegion(filter, this.region());
     } else {
-      return this.recordingApi.filterBySite(filter, this.site);
+      return this.recordingApi.filterBySite(filter, this.site());
     }
   }
 }

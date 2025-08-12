@@ -44,22 +44,43 @@
   (focus)="verificationGridFocused = true"
   (blur)="verificationGridFocused = false"
   grid-size="12"
+  autofocus
 >
   <template>
     <baw-grid-tile-content></baw-grid-tile-content>
   </template>
 
-  <oe-verification verified="true" shortcut="Y"></oe-verification>
-  <oe-verification verified="false" shortcut="N"></oe-verification>
+  <oe-verification
+    verified="true"
+    shortcut="Y"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
+  <oe-verification
+    verified="false"
+    shortcut="N"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
+  <oe-verification
+    verified="unsure"
+    shortcut="U"
+    (focus)="verificationGridFocused = true"
+    (blur)="verificationGridFocused = false"
+  ></oe-verification>
 
-  <oe-data-source slot="data-source" for="verification-grid"></oe-data-source>
+  @if (hasCorrectionTask()) {
+    <oe-tag-prompt
+      #tagPrompt
+      verified="unsure"
+      shortcut="C"
+      (focus)="verificationGridFocused = true"
+      (blur)="verificationGridFocused = false"
+    >
+      Correct Tag
+    </oe-tag-prompt>
+  }
 </oe-verification-grid>
-
-<ng-template #progressWarningModal let-warningModal>
-  <baw-progress-warning-modal
-    [modal]="warningModal"
-  ></baw-progress-warning-modal>
-</ng-template>
 
 <ng-template #searchFiltersModal let-filtersModal>
   <baw-search-filters-modal

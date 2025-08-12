@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 /**
@@ -8,36 +8,26 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 @Component({
   selector: "baw-selectable-items",
   templateUrl: "./selectable-items.component.html",
-  styles: [`
-    button {
-      height: 100%;
-    }
-
-    button[disabled] {
-      cursor: not-allowed;
-    }
-  `],
+  styleUrl: "./selectable-items.component.scss",
   imports: [FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectableItemsComponent {
-  @Input() public title: string;
-  @Input() public description: string;
-  @Input() public options: ISelectableItem[];
-  @Input() public selection: number;
-  @Input() public inline = false;
-  @Input() public disabled = false;
-  @Output() public selectionChange = new EventEmitter<number>();
+export class SelectableItemsComponent<T> {
+  public title = input<string>();
+  public description = input<string>();
+  public options = input<ISelectableItem<T>[]>();
+  public selection = input<T>();
+  public inline = input(false);
+  public disabled = input(false);
+  public selectionChange = output<T>();
 
-  public changeSelection(index: number) {
-    this.selectionChange.next(index);
-  }
-
-  public isSelected(index: number): boolean {
-    return this.selection === index;
+  protected changeSelection(item: T) {
+    this.selectionChange.emit(item);
   }
 }
 
-export interface ISelectableItem {
+export interface ISelectableItem<T> {
   label: string;
-  value: any;
+  value: T;
+  disabled?: boolean;
 }

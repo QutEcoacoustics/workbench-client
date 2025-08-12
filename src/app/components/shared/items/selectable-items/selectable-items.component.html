@@ -1,24 +1,26 @@
-@if (title) {
-  <h3>
-    {{ title }}
-  </h3>
+@if (title()) {
+  <h3>{{ title() }}</h3>
 }
 
-@if (description) {
-  <p>
-    {{ description }}
-  </p>
+@if (description()) {
+  <p>{{ description() }}</p>
 }
 
-@if (inline) {
-  @for (option of options; track option; let i = $index) {
+@if (inline()) {
+  @for (option of options(); track option) {
+    @let selected = option.value === selection();
+
     <button
-      class="btn btn-sm btn-default me-1"
-      [disabled]="isSelected(i) || disabled"
-      (click)="changeSelection(i)"
+      class="inline-button btn btn-sm btn-default"
+      (click)="changeSelection(option.value)"
+      [disabled]="option.disabled || disabled()"
+      [attr.readonly]="selected"
+      [attr.aria-valuetext]="option.value"
+      [attr.aria-selected]="selected"
+      role="radio"
     >
       {{ option.label }}
-      @if (isSelected(i) && !disabled) {
+      @if (selected && !disabled()) {
         <fa-icon
           class="text-success"
           [icon]="['fas', 'check']"
@@ -28,14 +30,20 @@
   }
 } @else {
   <div class="list-group">
-    @for (option of options; track option; let i = $index) {
+    @for (option of options(); track option) {
+      @let selected = option.value === selection();
+
       <button
         class="list-group-item d-flex justify-content-between align-items-center"
-        [disabled]="isSelected(i)"
-        (click)="changeSelection(i)"
+        (click)="changeSelection(option.value)"
+        [disabled]="option.disabled"
+        [attr.readonly]="selected"
+        [attr.aria-valuetext]="option.value"
+        [attr.aria-selected]="selected"
+        role="radio"
       >
         {{ option.label }}
-        @if (isSelected(i)) {
+        @if (selected) {
           <fa-icon
             class="text-success"
             [icon]="['fas', 'check']"

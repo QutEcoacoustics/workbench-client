@@ -1,5 +1,4 @@
 import { IdOr } from "@baw-api/api-common";
-import { AnalysisJob } from "@models/AnalysisJob";
 import { AudioEvent } from "@models/AudioEvent";
 import { Tagging } from "@models/Tagging";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
@@ -8,10 +7,11 @@ import {
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
+import { AudioRecording } from "@models/AudioRecording";
 import { TaggingsService } from "./taggings.service";
 
 type Model = Tagging;
-type Params = [IdOr<AnalysisJob>, IdOr<AudioEvent>];
+type Params = [IdOr<AudioRecording>, IdOr<AudioEvent>];
 type Service = TaggingsService;
 
 describe("TaggingsService", (): void => {

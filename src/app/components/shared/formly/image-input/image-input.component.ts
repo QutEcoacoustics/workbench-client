@@ -55,6 +55,39 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
   public imageInput: ElementRef;
   public asFormControl = asFormControl;
 
+  /**
+   * A predicate that returns if the models image is a default image, or if the
+   * model has not been instantiated.
+   * The model can be "undefined" during model creation.
+   * (e.g. the "new project" form)
+   */
+  protected get usesDefaultImage(): boolean {
+    const imageUrls = this.model?.imageUrls;
+
+    // Note that the "imageUrls" property can only be set by the server.
+    // If the client wants to change / set the image of a model, it will use the
+    // "image" property.
+    //
+    // Therefore, if the "imageUrls" property is not defined, the model we are
+    // working with did not originate from the server and will therefore use the
+    // default image if the user hasn't explicitly set an image on the client.
+    const isUsingServerDefaultImage =
+      !imageUrls ||
+      imageUrls.every((image: ImageUrl): boolean => image.default);
+
+    // Return true if:
+    //
+    // 1. The current image is a default image and the user hasn't uploaded a
+    //    new replacement image.
+    //
+    // 2. We are using the default image because the user has explicitly set the
+    //    image property to "null".
+    return (
+      (isUsingServerDefaultImage && this.model.image === undefined) ||
+      this.model.image === null
+    );
+  }
+
   public ngAfterViewInit() {
     if (!this.usesDefaultImage) {
       const imageUrls = this.model.imageUrls as ImageUrl[];
@@ -71,32 +104,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     }
   }
 
-  /**
-   * A predicate that returns if the models image is a default image
-   */
-  public get usesDefaultImage(): boolean {
-    const imageUrls = this.model?.imageUrls as ImageUrl[];
-    const isUsingServerDefaultImage = imageUrls?.every((image: ImageUrl): boolean => image.default);
-
-    // returns true if the current image used is a default image and if the user hasn't redefined the image
-    // or returns true if the user explicitly sets the image as default, by setting the models image attribute to null
-    return (
-      (isUsingServerDefaultImage && this.model.image === undefined) ||
-      this.model.image === null
-    );
-  }
-
-  private fileName(filePath: string): string {
-    return (
-      filePath?.split("/")
-        .pop()
-        // remove URL parameters from the file name
-        .split("?")
-        .shift()
-    );
-  }
-
-  public readFile(): void {
+  protected readFile(): void {
     // File input returns a list of files, grab the first file and set it as
     // the value of this field
     const images = this.formControl.value;
@@ -108,15 +116,26 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     if (images.length !== 1) {
       // TODO Display error to user
       throw new Error(
-        "File input returned multiple files. This should only return one value"
+        "File input returned multiple files. This should only return one value",
       );
     }
 
     this.formControl.setValue(images.item(0));
   }
 
-  public removeImage(): void {
+  protected removeImage(): void {
     this.model.image = null;
     this.imageInput.nativeElement.value = null;
+  }
+
+  private fileName(filePath: string): string {
+    return (
+      filePath
+        ?.split("/")
+        .pop()
+        // remove URL parameters from the file name
+        .split("?")
+        .shift()
+    );
   }
 }

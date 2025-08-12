@@ -1,9 +1,7 @@
-import {
-  annotationResolvers,
-  AnnotationService,
-} from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotation.service";
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
+import { annotationResolvers } from "@services/models/annotation.resolver";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,

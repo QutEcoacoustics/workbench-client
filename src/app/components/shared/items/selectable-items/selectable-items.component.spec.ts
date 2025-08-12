@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SelectableItemsComponent } from "./selectable-items.component";
 
 describe("SelectableItemsComponent", () => {
-  let component: SelectableItemsComponent;
-  let fixture: ComponentFixture<SelectableItemsComponent>;
+  let component: SelectableItemsComponent<any>;
+  let fixture: ComponentFixture<SelectableItemsComponent<any>>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -43,7 +43,7 @@ export class ErrorHandlerComponent implements OnInit {
     [NOT_FOUND]: "Not Found",
     [REQUEST_TIMEOUT]: "Request Timed Out",
     [CLIENT_TIMEOUT]: "Connection Failure",
-  };
+  } as const;
 
   public constructor(@Inject(IS_SERVER_PLATFORM) private isSsr: boolean) {}
 

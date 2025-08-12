@@ -1,10 +1,11 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
+  input,
   OnInit,
-  ViewChild,
+  viewChild,
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { Observable } from "rxjs";
@@ -39,7 +40,8 @@ interface CanPredicate {
       <ng-content></ng-content>
     </span>
   `,
-  imports: [NgbTooltip]
+  imports: [NgbTooltip],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
   public constructor(
@@ -47,11 +49,9 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
     public elementRef: ElementRef
   ) {}
 
-  @Input()
-  public ifLoggedIn: boolean;
+  public ifLoggedIn = input<boolean>();
 
-  @ViewChild("contentWrapper")
-  private contentWrapper: ElementRef<HTMLSpanElement>;
+  private contentWrapper = viewChild<ElementRef<HTMLSpanElement>>("contentWrapper");
 
   private predicates: CanPredicate[] = [];
 
@@ -76,7 +76,7 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
 
   private disableInteractiveContent(state: boolean): void {
     // TODO: use a ContentChild decorator here
-    const content = this.contentWrapper.nativeElement.children;
+    const content = this.contentWrapper().nativeElement.children;
 
     for (const element of content) {
       if (state) {

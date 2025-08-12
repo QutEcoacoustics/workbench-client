@@ -3,7 +3,7 @@ import {
   ElementRef,
   Inject,
   OnInit,
-  ViewChild,
+  viewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
@@ -24,10 +24,7 @@ import {
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
-import {
-  annotationResolvers,
-  AnnotationService,
-} from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotation.service";
 import { firstValueFrom } from "rxjs";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
@@ -37,6 +34,9 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { IfLoggedInComponent } from "@shared/can/can.component";
 import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { RenderMode } from "@angular/ssr";
+import { annotationResolvers } from "@services/models/annotation.resolver";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -56,6 +56,7 @@ const annotationsKey = "annotations";
     NgbPagination,
     ErrorHandlerComponent,
     FiltersWarningModalComponent,
+    LoadingComponent,
   ],
 })
 class AnnotationSearchComponent
@@ -69,7 +70,7 @@ class AnnotationSearchComponent
     protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
+    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super(
       router,
@@ -81,7 +82,9 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.loading = true;
         this.searchResults = await Promise.all(
-          newResults.map(async (result) => await annotationService.show(result))
+          newResults.map(
+            async (result) => await annotationService.show(result),
+          ),
         );
 
         if (newResults.length > 0) {
@@ -98,12 +101,12 @@ class AnnotationSearchComponent
     this.pageSize = 24;
   }
 
-  @ViewChild("broadSearchWarningModal")
-  public broadFilterWarningModal: ElementRef<FiltersWarningModalComponent>;
+  public broadFilterWarningModal =
+    viewChild<ElementRef<FiltersWarningModalComponent>>("broadSearchWarningModal");
 
   public searchParameters: AnnotationSearchParameters;
-  protected paginationInformation: Paging;
   public searchResults: Annotation[] = [];
+  protected paginationInformation: Paging;
   protected verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
@@ -174,7 +177,7 @@ class AnnotationSearchComponent
       const numberOfItems = responseMetadata.paging.total;
 
       if (numberOfItems > itemWarningThreshold) {
-        const warningModal = this.modals.open(this.broadFilterWarningModal);
+        const warningModal = this.modals.open(this.broadFilterWarningModal());
         const success = await warningModal.result.catch((_) => false);
 
         // the user doesn't want to continue with the search
@@ -195,7 +198,7 @@ class AnnotationSearchComponent
           siteId: this.searchParameters.routeSiteId,
         }),
       ],
-      { queryParams }
+      { queryParams },
     );
   }
 
@@ -213,7 +216,7 @@ class AnnotationSearchComponent
 }
 
 function getPageInfo(
-  subRoute: keyof typeof annotationMenuItems.search
+  subRoute: keyof typeof annotationMenuItems.search,
 ): IPageInfo {
   return {
     pageRoute: annotationMenuItems.search[subRoute],
@@ -224,6 +227,18 @@ function getPageInfo(
       [siteKey]: siteResolvers.showOptional,
       [annotationsKey]: annotationResolvers.showOptional,
     },
+    // We use client rendering because:
+    // 1. We are rendering spectrograms, and we should not be trying to render
+    //    spectrograms on the server.
+    // 2. The most used selection technique is to only show annotations that the
+    //    current user has not verified.
+    //    During SSR we do not know who the current user is, so we would have
+    //    to double fetch the list of audio events (once unauthenticated and
+    //    once when the user authenticates).
+    //    To prevent making redundant requests, we do not server render the
+    //    search page, and only start rendering on the client where the user is
+    //    authenticated.
+    renderMode: RenderMode.Client,
   };
 }
 

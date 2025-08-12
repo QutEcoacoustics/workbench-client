@@ -16,13 +16,10 @@ import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
 import {
-  ApiCreate,
-  ApiDestroy,
   ApiFilter,
   ApiFilterShow,
   ApiList,
   ApiShow,
-  ApiUpdate,
   IdOr,
 } from "./api-common";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
@@ -44,9 +41,6 @@ export abstract class BawResolver<
     | ApiList<ServiceModel, ServiceParams>
     | ApiFilter<ServiceModel, ServiceParams>
     | ApiShow<ServiceModel, ServiceParams, IdOr<ServiceModel>>
-    | ApiCreate<ServiceModel, ServiceParams>
-    | ApiUpdate<ServiceModel, ServiceParams>
-    | ApiDestroy<ServiceModel, ServiceParams, IdOr<ServiceModel>>
     | ApiFilterShow<ServiceModel, ServiceParams>,
   ResolverName = { customResolver: string }
 > {

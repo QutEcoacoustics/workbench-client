@@ -12,13 +12,15 @@ import {
   StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { User } from "@models/User";
+import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
-import { map, Observable } from "rxjs";
+import { CONFLICT } from "http-status";
+import { catchError, first, map, mergeMap, Observable, switchMap } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -29,8 +31,7 @@ const endpoint =
 
 @Injectable()
 export class VerificationService
-  implements
-    ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
+  implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
   public constructor(private api: BawApiService<Verification>) {}
 
@@ -72,7 +73,10 @@ export class VerificationService
 export class ShallowVerificationService
   implements StandardApi<Verification, []>, ApiCreateOrUpdate<Verification, []>
 {
-  public constructor(private api: BawApiService<Verification>) {}
+  public constructor(
+    private api: BawApiService<Verification>,
+    private session: BawSessionService,
+  ) {}
 
   public list(): Observable<Verification[]> {
     return this.api.list(Verification, endpointShallow(emptyParam, emptyParam));
@@ -127,27 +131,55 @@ export class ShallowVerificationService
   }
 
   /**
-   * Fetches a users verification model for a specific audio event
+   * Destroys a verification model for a specific audio event + tag combination.
+   * This service method can be called without knowing the verification model or
+   * the verification ID.
+   */
+  public destroyEventVerification(
+    audioEvent: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
+  ): Observable<void | Verification> {
+    return this.audioEventUserVerification(audioEvent, tag).pipe(
+      switchMap((verification) => {
+        if (!verification) {
+          return;
+        }
+
+        return this.destroy(verification.id);
+      }),
+      first(),
+    );
+  }
+
+  /**
+   * Fetches a users verification model for a specific audio event + tag
+   * combination.
    *
    * @returns
    * A verification model if the user has verified the audio event.
    * If the user has not verified the audio event, null is returned.
    */
   public audioEventUserVerification(
-    event: AudioEvent,
-    user: User
+    eventModel: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const filter = {
+    const eventId = typeof eventModel === "number" ? eventModel : eventModel.id;
+    const tagId = typeof tag === "number" ? tag : tag.id;
+
+    const user = this.session.currentUser;
+
+    const filter: Filters<Verification> = {
       filter: {
         and: [
-          { audioEventId: { eq: event.id } },
+          { audioEventId: { eq: eventId } },
+          { tagId: { eq: tagId } },
           { creatorId: { eq: user.id } },
         ],
       },
       paging: {
         items: 1,
       },
-    } as const satisfies Filters<Verification>;
+    };
 
     // the api enforces having one verification per user per audio event
     // therefore, it is safe to assume that there will only be one result
