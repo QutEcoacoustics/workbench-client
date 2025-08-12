@@ -187,7 +187,7 @@ export interface ApiCreateOrUpdate<M extends AbstractModel, P extends any[] = []
    * @param model Model create/update
    * @param urlParameters URL parameter values
    */
-  update(model: M, ...urlParameters: P): Observable<M>;
+  createOrUpdate(model: M, ...urlParameters: P): Observable<M>;
 }
 
 /**
