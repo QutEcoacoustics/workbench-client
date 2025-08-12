@@ -8,6 +8,7 @@ import {
   OnInit,
   signal,
   viewChild,
+  ViewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -20,10 +21,13 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, switchMap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import {
+  DecisionMadeEvent,
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -41,11 +45,21 @@ import {
   Verification,
 } from "@models/Verification";
 import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
 import { annotationResolvers } from "@services/models/annotation.resolver";
+import { TaggingsService } from "@baw-api/tag/taggings.service";
+import {
+  TagPromptComponent,
+  TypeaheadCallback,
+  WhenPredicate,
+} from "@ecoacoustics/web-components/@types";
+import { Tag } from "@models/Tag";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Tagging } from "@models/Tagging";
+import { Id } from "@interfaces/apiInterfaces";
+import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -80,8 +94,9 @@ class VerificationComponent
     private audioEventApi: ShallowAudioEventsService,
     private verificationApi: ShallowVerificationService,
     private annotationsService: AnnotationService,
+    private taggingsApi: TaggingsService,
+    private tagsApi: TagsService,
 
-    private session: BawSessionService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
@@ -95,7 +110,9 @@ class VerificationComponent
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
   private verificationGridElement =
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
-
+  private tagPromptElement =
+    viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
+  
   public searchParameters = signal<AnnotationSearchParameters | null>(null);
   public hasUnsavedChanges = signal(false);
   protected verificationGridFocused = signal(true);
@@ -104,6 +121,17 @@ class VerificationComponent
   public project = signal<Project | null>(null);
   public region = signal<Region | null>(null);
   public site = signal<Site | null>(null);
+
+  // TODO: Remove this once the corrections endpoint is finished
+  /**
+   * A mapping of audio events and the currently applied tag correction model
+   * in the form of a fully-fledged Tagging model.
+   * This is useful when trying to update the correction on an audio event and
+   * you need to delete a tagging that was previously applied.
+   * By using a client-side map, we can cache the tagging client side and
+   * prevent making another request to the api.
+   */
+  private tagCorrectionMapping = new Map<AudioEvent["id"], Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -124,10 +152,19 @@ class VerificationComponent
 
       return newModel;
     });
+    
+    this.hasCorrectionTask.set(
+      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+    );
   }
 
   public ngAfterViewInit(): void {
     this.updateGridCallback();
+
+    if (this.hasCorrectionTask()) {
+      this.tagPromptElement().nativeElement.search = this.tagSearchCallback();
+      this.tagPromptElement().nativeElement.when = this.addTagWhenPredicate();
+    }
   }
 
   protected handleGridLoaded(): void {
@@ -149,46 +186,8 @@ class VerificationComponent
     this.doneInitialScroll.set(true);
   }
 
-  protected handleDecision(decisionEvent: Event): void {
-    if (!this.isDecisionEvent(decisionEvent)) {
-      console.error("Received invalid decision event", decisionEvent);
-      return;
-    }
-
-    this.hasUnsavedChanges.set(true);
-
-    const subjectWrappers = decisionEvent.detail;
-    for (const subjectWrapper of subjectWrappers) {
-      const subject = subjectWrapper.subject as Readonly<AudioEvent>;
-
-      // I have to use "as string" here because the upstream typing is incorrect
-      // TODO: We should remove this "as string" and improve the upstream typing
-      const mappedDecision =
-        confirmedMapping[subjectWrapper.verification.confirmed as string];
-
-      const tagId = subjectWrapper.tag.id;
-
-      const verificationData: IVerification = {
-        audioEventId: subject.id,
-        confirmed: mappedDecision,
-        tagId,
-      };
-
-      const verification = new Verification(verificationData, this.injector);
-
-      // I have to use "as any" here to remove the readonly typing
-      const apiRequest = this.verificationApi.createOrUpdate(
-        verification,
-        subject as AudioEvent,
-        this.session.currentUser,
-      );
-
-      // I use firstValueFrom so that the observable is evaluated
-      // but I don't have to subscribe or unsubscribe.
-      // Additionally, notice that the function is not awaited so that the
-      // render thread can continue to run while the request is being made
-      firstValueFrom(apiRequest);
-    }
+  protected tagTextFormatter(tag: Tag): string {
+    return tag.text;
   }
 
   protected openSearchFiltersModal(): void {
@@ -253,6 +252,204 @@ class VerificationComponent
     this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges.set(false);
+
+    this.hasCorrectionTask.set(
+      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+    );
+  }
+
+  protected handleDecision(decisionEvent: Event): void {
+    if (!this.isDecisionEvent(decisionEvent)) {
+      console.error("Received invalid decision event", decisionEvent);
+      return;
+    }
+
+    this.hasUnsavedChanges = true;
+
+    // TODO: We should be updating the annotation models here after updates.
+    // see: https://github.com/QutEcoacoustics/workbench-client/pull/2384#discussion_r2261893642
+    const decision = decisionEvent.detail;
+    for (const [subject, receipt] of decision) {
+      const change = receipt.change;
+
+      // Emitting the old model was a hack added to the web components to get a
+      // feature shipped quickly.
+      // TODO: Once the web components emit a more descriptive decision-made
+      // event, we should replace this hack.
+      // see: https://github.com/ecoacoustics/web-components/issues/448
+      const oldSubject = receipt.oldSubject as any;
+
+      const verificationChange = change.verification;
+      if (verificationChange === null) {
+        this.deleteVerificationDecision(subject);
+      } else if (verificationChange) {
+        this.handleVerificationDecision(subject);
+      }
+
+      const newTagDecision = change.newTag;
+      const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
+
+      if (newTagDecision === null || newTagDecision === decisionNotRequired) {
+        this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
+      } else if (newTagDecision) {
+        // If there was a newTag (tag correction) applied in the previous
+        // subject model, we need to delete it before applying the new
+        // decision.
+        //
+        // TODO: Comparing by tag text here is probably not the most robust
+        // solution, but I have done it to push out a feature quickly.
+        // I compare the tag text so that if the currently applied tag is
+        // selected again, we don't throw a conflict error from trying to
+        // correct the currently applied tag.
+        //
+        // We know that the newTagDecision is a Tag model and not a
+        // decisionNotRequired because the if condition would have caught the
+        // decision not required condition.
+        // Therefore, while bad, this "as any" is theoretically fine
+        // (although not type checked).
+        if (
+          (newTagDecision as any).tag?.text !== oldSubjectTagCorrection?.text
+        ) {
+          if (oldSubjectTagCorrection) {
+            this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
+          }
+
+          this.handleTagCorrectionDecision(subject);
+        }
+      }
+    }
+  }
+
+  private handleVerificationDecision(subjectWrapper: SubjectWrapper): void {
+    const subject = subjectWrapper.subject as Readonly<AudioEvent>;
+
+    // I have to use "as string" here because the upstream typing is incorrect
+    // TODO: We should remove this "as string" and improve the upstream typing
+    const mappedDecision =
+      confirmedMapping[(subjectWrapper.verification as any).confirmed];
+
+    const tagId = subjectWrapper.tag.id;
+
+    const verificationData: IVerification = {
+      audioEventId: subject.id,
+      confirmed: mappedDecision,
+      tagId,
+    };
+
+    const verification = new Verification(verificationData, this.injector);
+
+    // I have to use "as any" here to remove the readonly typing
+    const apiRequest = this.verificationApi.createOrUpdate(
+      verification,
+      subject as AudioEvent,
+      tagId,
+    );
+
+    // I use firstValueFrom so that the observable is evaluated
+    // but I don't have to subscribe or unsubscribe.
+    // Additionally, notice that the function is not awaited so that the
+    // render thread can continue to run while the request is being made
+    firstValueFrom(apiRequest);
+  }
+
+  private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
+    const audioEvent = subjectWrapper.subject as any as AudioEvent;
+    const tag = subjectWrapper.tag as Tag;
+
+    const apiRequest = this.verificationApi.destroyEventVerification(
+      audioEvent,
+      tag,
+    );
+
+    firstValueFrom(apiRequest);
+  }
+
+  /**
+   * Corrects an incorrectly tagged audio event by applying a new correct
+   * tagging and automatically verifying the new tagging as "correct".
+   * Making a correction decision is typically conditional upon the initial tag
+   * initially having an "incorrect" verification applied.
+   */
+  private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
+    const audioEvent = subjectWrapper.subject as any;
+    const newTag = subjectWrapper.newTag as any;
+
+    const apiRequest = this.addCorrectTagging(audioEvent, newTag.tag.id).pipe(
+      map((correctTagging: Tagging) => {
+        this.tagCorrectionMapping.set(audioEvent.id, correctTagging);
+        return correctTagging;
+      }),
+    );
+
+    firstValueFrom(apiRequest);
+  }
+
+  private deleteTagCorrectionDecision(
+    subjectWrapper: SubjectWrapper,
+    tagToRemove: Tag,
+  ): void {
+    const audioEvent = subjectWrapper.subject as any;
+
+    const targetTagging = this.tagCorrectionMapping.get(audioEvent.id);
+    if (!targetTagging) {
+      // This condition can trigger if users make a request to update a tagging
+      // while there is an existing tagging request pending.
+      console.error(
+        "Could not find tagging for existing audio event correction",
+      );
+      return;
+    }
+
+    // Remove the verification from the audio event and then remove the tagging
+    // that was added as part of the tag correction decision.
+    const apiRequest = this.verificationApi
+      .destroyEventVerification(audioEvent, tagToRemove)
+      .pipe(
+        switchMap(() => {
+          return this.taggingsApi.destroy(
+            targetTagging.id,
+            audioEvent.audioRecordingId,
+            audioEvent.id,
+          );
+        }),
+      );
+
+    firstValueFrom(apiRequest);
+  }
+
+  // TODO: This logic should probably be moved to a service
+  /**
+   * Corrects an incorrect tag on an audio event by verifying the existing tag
+   * as "incorrect", creating a new tag that is correct, and submitting a
+   * "correct" verification decision.
+   */
+  private addCorrectTagging(audioEvent: AudioEvent, newTagId: Id) {
+    const correctTag = new Tagging({
+      audioEventId: audioEvent.id,
+      tagId: newTagId,
+    });
+
+    return this.taggingsApi
+      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
+      .pipe(
+        map((tagging: Tagging) => {
+          const correctVerification = new Verification({
+            audioEventId: audioEvent.id,
+            confirmed: ConfirmedStatus.Correct,
+            tagId: newTagId,
+          });
+
+          const verificationRequest = this.verificationApi.createOrUpdate(
+            correctVerification,
+            audioEvent,
+            newTagId,
+          );
+
+          firstValueFrom(verificationRequest);
+
+          return tagging;
+        }),
+      );
   }
 
   // TODO: this function can be improved with instanceof checks once we export
@@ -260,13 +457,12 @@ class VerificationComponent
   // see: https://github.com/ecoacoustics/web-components/issues/303
   private isDecisionEvent(
     event: Event,
-  ): event is CustomEvent<SubjectWrapper[]> {
-    return (
-      event instanceof CustomEvent &&
-      event.detail instanceof Array &&
-      event.detail.length > 0 &&
-      "subject" in event.detail[0]
-    );
+  ): event is CustomEvent<DecisionMadeEvent> {
+    if (!(event instanceof CustomEvent)) {
+      return false;
+    }
+
+    return event.detail instanceof Map;
   }
 
   private scrollToVerificationGrid(): void {
@@ -290,6 +486,23 @@ class VerificationComponent
     const queryParams = this.searchParameters().toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
+  }
+
+  private tagSearchCallback(): TypeaheadCallback<any> {
+    return (text: string) => {
+      const filterBody: Filters<Tag> = {
+        filter: {
+          text: { contains: text },
+        },
+      };
+
+      return firstValueFrom(this.tagsApi.filter(filterBody));
+    };
+  }
+
+  private addTagWhenPredicate(): WhenPredicate {
+    return (subject: SubjectWrapper) =>
+      subject.tag === null || subject.verification?.["confirmed"] === "false";
   }
 }
 

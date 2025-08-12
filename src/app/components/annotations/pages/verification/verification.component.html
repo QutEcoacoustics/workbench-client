@@ -68,6 +68,18 @@
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
+
+  @if (hasCorrectionTask()) {
+    <oe-tag-prompt
+      #tagPrompt
+      verified="unsure"
+      shortcut="C"
+      (focus)="verificationGridFocused = true"
+      (blur)="verificationGridFocused = false"
+    >
+      Correct Tag
+    </oe-tag-prompt>
+  }
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>

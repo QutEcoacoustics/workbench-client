@@ -177,6 +177,16 @@
     ></baw-selectable-items>
   </div>
 
+  <div class="mt-2">
+    <label class="form-label w-100">Task Behavior</label>
+    <baw-selectable-items
+      [options]="taskBehaviorOptions"
+      [selection]="searchParameters.taskBehavior ?? 'verify'"
+      [inline]="true"
+      (selectionChange)="updateDiscreteOptions('taskBehavior', $event)"
+    ></baw-selectable-items>
+  </div>
+
   <label class="form-label mt-2 w-100">
     Sort by
     <select
