@@ -19,8 +19,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
-import { CONFLICT } from "http-status";
-import { catchError, first, map, mergeMap, Observable, switchMap } from "rxjs";
+import { first, map, Observable, switchMap } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;

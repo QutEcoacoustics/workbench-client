@@ -191,7 +191,7 @@ describe("ShallowVerificationService", () => {
     describe("createOrUpdate", () => {
       it("should emit a create request if the verification does not exist", () => {
         spec.service
-          .createOrUpdate(mockModel, mockAudioEvent, mockTag)
+          .createOrUpdate(mockModel)
           .subscribe();
         expect(api.create).toHaveBeenCalledTimes(1);
       });
@@ -204,7 +204,7 @@ describe("ShallowVerificationService", () => {
         );
 
         const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockTag)
+          spec.service.createOrUpdate(mockModel)
         );
 
         expect(api.create).toHaveBeenCalledTimes(1);
@@ -221,7 +221,7 @@ describe("ShallowVerificationService", () => {
         );
 
         const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockTag).pipe(
+          spec.service.createOrUpdate(mockModel).pipe(
             catchError(() => of(null))
           )
         );

@@ -426,7 +426,7 @@ export class BawApiService<
     return of(null).pipe(
       concatMap(
         model.hasJsonOnlyAttributesForCreate()
-          ? () => this.httpPost(path, body, undefined, options).pipe()
+          ? () => this.httpPost(path, body, undefined, options)
           : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
@@ -563,24 +563,28 @@ export class BawApiService<
       }
     }
 
-    // as part of the multi part request, if there is only a JSON body, we want to return the output of the JSON POST request
-    // if there is only a formData body, we want to return the output of the formData PUT request
-    // if there is both a JSON body and formData, we want to return the output of the last request sent (formData PUT request)
-    // we default to returning null if there is no JSON or formData body
-    return of(null).pipe(
-      concatMap(
-        model.hasJsonOnlyAttributesForCreate()
-          ? () => this.httpPut(path, body, undefined, options).pipe()
-          : (data) => of(data)
-      ),
-      // we create a class from the POST response so that we can construct an update route for the formData PUT request
-      // using the updatePath callback. We do this before the concatMap below because the updatePath callback is dependent
-      // on the instantiated class from the POST response object
+    // As part of the multi part request, if there is only a JSON body, we want
+    // to return the output of the JSON POST request.
+    // If there is only a formData body, we want to return the output of the
+    // formData PUT request if there is both a JSON body and formData, we want
+    // to return the output of the formData PUT request because it is sent after
+    // the initial JSON request, so it will have the most up-to-date model.
+    return iif(
+      () => model.hasJsonOnlyAttributesForCreate(),
+      this.httpPut(path, body, undefined, options),
+      // When there is no JSON body, we pass through "null" so that the form
+      // data request will be used as the response body.
+      of(null),
+    ).pipe(
+      // We create a class from the POST response so that we can construct an
+      // update route for the formData PUT request using the updatePath
+      // callback. We do this before the concatMap below because the updatePath
+      // callback is dependent on the instantiated class from the POST response
+      // object.
       map(this.handleSingleResponse(classBuilder)),
-      // using concatMap here ensures that the httpPost request completes before the httpPut request is made
+      // Using concatMap here ensures that the httpPost request completes before
+      // the httpPut (formdata) request is made.
       concatMap((data) =>
-        // we use an if statement here because we want to create a new observable and apply a map function to it
-        // using ternary logic here (similar to the update function) would result in poor readability and a lot of nesting
         iif(
           () => model.hasFormDataOnlyAttributesForCreate(),
           this.httpPut(
@@ -596,8 +600,6 @@ export class BawApiService<
       // we have to clear the cache when creating new models because the new
       // models might be included in cached associations
       tap(() => this.clearCache()),
-      // there is no map function here, because the handleSingleResponse method is invoked on the POST and PUT requests
-      // individually. Moving the handleSingleResponse mapping here would result in the response object being instantiated twice
       catchError((err) =>
         this.handleError(err, this.suppressErrors(options), classBuilder)
       )
