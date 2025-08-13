@@ -530,16 +530,19 @@ export class BawApiService<
   }
 
   /**
-   * Uses the create endpoint to create a model if it doesn't already exist.
-   * If the model already exists, the model will be updated.
+   * Uses the create endpoint (with PUT instead of POST) to create a model if it
+   * doesn't already exist.
+   * Update the model if it exists.
    *
    * @param classBuilder Model to create
-   * @param path API path
+   * @param upsertPath API path for JSON create requests.
+   * @param updatePath API path to send multipart update requests.
    * @param model Model to insert into API request
+   * @param options Service options to disable notifications, modify caching, etc...
    */
   public createOrUpdate(
     classBuilder: ClassBuilder,
-    path: string,
+    upsertPath: string,
     updatePath: (model: Model) => string,
     model: AbstractModel,
     options: BawServiceOptions = {}
@@ -571,7 +574,7 @@ export class BawApiService<
     // the initial JSON request, so it will have the most up-to-date model.
     return iif(
       () => model.hasJsonOnlyAttributesForCreate(),
-      this.httpPut(path, body, undefined, options),
+      this.httpPut(upsertPath, body, undefined, options),
       // When there is no JSON body, we pass through "null" so that the form
       // data request will be used as the response body.
       of(null),

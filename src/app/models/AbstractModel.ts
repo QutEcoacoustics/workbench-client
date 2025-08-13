@@ -186,6 +186,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.jsonAttributes({ update: true });
   }
 
+  public hasJsonOnlyAttributesForUpsert(): boolean {
+    return this.hasJsonOnlyAttributesForCreate() || this.hasJsonOnlyAttributesForUpdate();
+  }
+
+  public getJsonAttributesForUpsert(): Partial<this> {
+    return {
+      ...this.getJsonAttributesForCreate(),
+      ...this.getJsonAttributesForUpdate(),
+    };
+  }
+
   /**
    * @example
    * ```ts
@@ -244,6 +255,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public getFormDataOnlyAttributesForUpdate(): FormData {
     return this.formDataOnlyAttributes({ update: true });
+  }
+
+  public hasFormDataOnlyAttributesForUpsert(): boolean {
+    return (
+      this.hasFormDataOnlyAttributesForCreate() ||
+      this.hasFormDataOnlyAttributesForUpdate()
+    );
+  }
+
+  public getFormDataOnlyAttributesForUpsert(): FormData {
+    return this.formDataOnlyAttributes();
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
