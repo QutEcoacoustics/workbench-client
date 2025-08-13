@@ -181,9 +181,9 @@
     <label class="form-label w-100">Task Behavior</label>
     <baw-selectable-items
       [options]="taskBehaviorOptions"
-      [selection]="searchParameters.taskBehavior ?? 'verify'"
+      [selection]="searchParameters().taskBehavior ?? 'verify'"
       [inline]="true"
-      (selectionChange)="updateDiscreteOptions('taskBehavior', $event)"
+      (selectionChange)="updateParameterProperty('taskBehavior', $event)"
     ></baw-selectable-items>
   </div>
 

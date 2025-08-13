@@ -8,7 +8,6 @@ import {
   OnInit,
   signal,
   viewChild,
-  ViewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -112,10 +111,11 @@ class VerificationComponent
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
-  
+
   public searchParameters = signal<AnnotationSearchParameters | null>(null);
   public hasUnsavedChanges = signal(false);
   protected verificationGridFocused = signal(true);
+  protected hasCorrectionTask = signal(false);
   private doneInitialScroll = signal(false);
 
   public project = signal<Project | null>(null);
@@ -152,9 +152,9 @@ class VerificationComponent
 
       return newModel;
     });
-    
+
     this.hasCorrectionTask.set(
-      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+      this.searchParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -254,7 +254,7 @@ class VerificationComponent
     this.hasUnsavedChanges.set(false);
 
     this.hasCorrectionTask.set(
-      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+      this.searchParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -264,7 +264,7 @@ class VerificationComponent
       return;
     }
 
-    this.hasUnsavedChanges = true;
+    this.hasUnsavedChanges.set(true);
 
     // TODO: We should be updating the annotation models here after updates.
     // see: https://github.com/QutEcoacoustics/workbench-client/pull/2384#discussion_r2261893642
