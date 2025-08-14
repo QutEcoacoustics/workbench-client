@@ -68,6 +68,8 @@ export class AnnotationService {
   }
 
   private tagPriority(tag: Tag, priorityTags: Id[]): number {
+    const priorityTagCount = priorityTags.length;
+
     /**
      * Assigns a tag a numerical priority specifying how relevant the tag is to
      * the search parameters.
@@ -89,8 +91,10 @@ export class AnnotationService {
      *
      * A higher value means a the tag is more specific to the current search.
      */
-    if (priorityTags.includes(tag.id)) {
-      return 4;
+    const priorityTagIndex = priorityTags.indexOf(tag.id);
+    if (priorityTagIndex !== -1) {
+      // tags early in the priority list are more specific
+      return 4 + (priorityTagCount - priorityTagIndex);
     }
 
     if (tag.typeOfTag === "common_name") {

@@ -74,8 +74,8 @@
       #tagPrompt
       verified="unsure"
       shortcut="C"
-      (focus)="verificationGridFocused = true"
-      (blur)="verificationGridFocused = false"
+      (focus)="verificationGridFocused.set(true)"
+      (blur)="verificationGridFocused.set(false)"
     >
       Correct Tag
     </oe-tag-prompt>

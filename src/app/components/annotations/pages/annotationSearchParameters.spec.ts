@@ -6,8 +6,6 @@ import { Params } from "@angular/router";
 import { DateTime } from "luxon";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { Tag } from "@models/Tag";
-import { generateTag } from "@test/fakes/Tag";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 interface SearchParameterTest {
@@ -258,40 +256,23 @@ describe("annotationSearchParameters", () => {
     });
   }
 
-  describe("tagPriority", () => {
-    it("should order an array of tags correctly", () => {
-      // Although we are filtering by 4 tags (1,2,3,4), we have explicitly
-      // specified that we want to verify tag 3.
-      // Therefore, when the tags are ordered from highest priority to lowest,
-      // we should see that tag 3 is preferred.
-      const dataModel = createParameterModel({
-        tags: "1,2,3,4",
-        taskTag: "3",
-      });
+  describe("tag priority", () => {
+    it("should handle an empty array of tags", () => {
+      const dataModel = createParameterModel();
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([]);
+    });
 
-      // Note there are some tags here that do not exist in the search
-      // parameters.
-      // We should see that the additional tags that are not in the search
-      // parameters have the lowest specify.
-      const testedTags = [
-        new Tag(generateTag({ id: 1 })),
-        new Tag(generateTag({ id: 2, typeOfTag: "common_name" })),
-        new Tag(generateTag({ id: 3 })),
-        new Tag(generateTag({ id: 4 })),
-        new Tag(generateTag({ id: 5, typeOfTag: "sounds_like" })),
-        new Tag(generateTag({ id: 6, typeOfTag: "common_name" })),
-        new Tag(generateTag({ id: 7, typeOfTag: "species_name" })),
-        new Tag(generateTag({ id: 8, typeOfTag: "common_name" })),
-      ];
+    it("should handle an array of tags with no task tag", () => {
+      const dataModel = createParameterModel({ tags: "1,2,3,4" });
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([1, 2, 3, 4]);
+    });
 
-      // Note that the sorting algorithm is stable.
-      // Meaning that relative order is maintained for the filtered tags.
-      const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
-      const realizedResult = testedTags.sort((a, b) =>
-        dataModel.tagComparer(b) - dataModel.tagComparer(a),
-      );
-      const realizedIds = realizedResult.map(tag => tag.id);
-      expect(realizedIds).toEqual(expectedIds);
+    it("should handle an array of tags with a task tag", () => {
+      const dataModel = createParameterModel({ tags: "1,2,3,4", taskTag: "3" });
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([3, 1, 2, 4]);
     });
   });
 });

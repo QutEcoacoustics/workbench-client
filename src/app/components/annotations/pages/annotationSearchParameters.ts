@@ -249,7 +249,12 @@ export class AnnotationSearchParameters
   }
 
   public get tagPriority(): Id[] {
-    return [this.taskTag, ...this.tags ?? []];
+    if (isInstantiated(this.taskTag)) {
+      const uniqueIds = new Set([this.taskTag, ...this.tags ?? []]);
+      return Array.from(uniqueIds);
+    }
+
+    return Array.from(this.tags ?? []);
   }
 
   @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
