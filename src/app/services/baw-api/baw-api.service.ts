@@ -547,12 +547,12 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const jsonData = model.getJsonAttributesForCreate();
+    const jsonData = model.getJsonAttributesForUpsert();
     let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    let formData = model.getFormDataOnlyAttributesForUpdate();
+    let formData = model.getFormDataOnlyAttributesForUpsert();
     if (options.params) {
       // If there is already a form data request going out, we want to attach
       // the unscoped params to the form data request.
@@ -573,7 +573,7 @@ export class BawApiService<
     // to return the output of the formData PUT request because it is sent after
     // the initial JSON request, so it will have the most up-to-date model.
     return iif(
-      () => model.hasJsonOnlyAttributesForCreate(),
+      () => model.hasJsonOnlyAttributesForUpsert(),
       this.httpPut(upsertPath, body, undefined, options),
       // When there is no JSON body, we pass through "null" so that the form
       // data request will be used as the response body.
@@ -589,7 +589,7 @@ export class BawApiService<
       // the httpPut (formdata) request is made.
       concatMap((data) =>
         iif(
-          () => model.hasFormDataOnlyAttributesForCreate(),
+          () => model.hasFormDataOnlyAttributesForUpsert(),
           this.httpPut(
             updatePath(data),
             formData,
