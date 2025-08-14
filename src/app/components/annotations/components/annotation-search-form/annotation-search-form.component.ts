@@ -34,7 +34,7 @@ import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { ExtractWritable, Writeable } from "@helpers/advancedTypes";
+import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -233,15 +233,19 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.emitUpdate();
   }
 
-  protected updateSubModel(
-    key: keyof ExtractWritable<typeof AnnotationSearchParameters>,
-    subModels: (typeof AnnotationSearchParameters[typeof key] & AbstractModel)[],
+  protected updateSubModel<T extends AbstractModel>(
+    key: keyof AnnotationSearchParameters,
+    subModels: T[],
   ): void {
     // if the subModels array is empty, the user has not selected any models
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
       this.searchParameters.update((current) => {
-        current[key] = null;
+        // TODO: We should add a TypeScript helper that can extract only
+        // writable keys from a partially-writable type.
+        // This "as any" cast is a workaround to bypass TypeScript not allowing
+        // us to set readonly keys (such as "kind").
+        current[key as any] = null;
         return current;
       });
 
@@ -251,7 +255,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
-      current[key] = ids;
+      current[key as any] = ids;
       return current;
     });
 
