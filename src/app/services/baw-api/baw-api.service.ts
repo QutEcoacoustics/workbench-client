@@ -554,7 +554,7 @@ export class BawApiService<
 
     // We use Object.keys() instead of
     // AbstractModel.hasJsonOnlyAttributesForUpsert so that we don't have to
-    // iterate over all of the model properties to determine if there are
+    // iterate over of the model properties to determine if there are
     // any JSON-only attributes.
     const hasJsonOnlyAttributes = Object.keys(body).length > 0;
 
@@ -564,7 +564,7 @@ export class BawApiService<
 
     // By using entries().next().done, we can determine if there is any form
     // data without using the hasFormDataOnlyAttributes...() abstract model
-    // methods which iterate over all of the model properties.
+    // methods which iterate over of the model properties.
     //
     // next().done will only return true if it failed to get any new entries
     // meaning that if there is one or more entries, it will return false.
