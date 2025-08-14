@@ -47,10 +47,11 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
   public makeFormRequest(
     formEndpoint: string,
     submissionEndpoint: string,
-    body: (authToken: string) => URLSearchParams
+    body: (authToken: string) => URLSearchParams,
+    options: BawFormServiceOptions = {},
   ): Observable<string> {
     // Request HTML document to retrieve form containing auth token
-    return this.htmlRequest(formEndpoint).pipe(
+    return this.htmlRequest(formEndpoint, options).pipe(
       map((page: string) => {
         // Extract auth token if exists
         const token = authTokenRegex.exec(page)?.[1];
@@ -65,7 +66,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
       }),
       // Mimic a traditional form-based request
       mergeMap((token: string) =>
-        this.formRequest(submissionEndpoint, body(token))
+        this.formRequest(submissionEndpoint, body(token), options)
       ),
       tap((response: string) => {
         // Check for recaptcha error message in page body
@@ -131,11 +132,15 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
    *
    * @param path API path
    */
-  public htmlRequest(path: string): Observable<string> {
+  public htmlRequest(
+    path: string,
+    options: BawFormServiceOptions = {},
+  ): Observable<string> {
     return this.http.get(this.getPath(path), {
       responseType: "text",
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: new HttpHeaders({ Accept: "text/html" }),
+      ...options,
     });
   }
 
@@ -149,7 +154,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
    */
   public formRequest(
     path: string,
-    formData: URLSearchParams
+    formData: URLSearchParams,
+    options: BawFormServiceOptions = {},
   ): Observable<string> {
     return this.http.post(this.getPath(path), formData.toString(), {
       responseType: "text",
@@ -159,6 +165,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         "Content-Type": "application/x-www-form-urlencoded",
       }),
+      ...options,
     });
   }
 
@@ -179,4 +186,8 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
 export interface RecaptchaSettings {
   seed: string;
   action: string;
+}
+
+export interface BawFormServiceOptions {
+  withCredentials?: boolean;
 }
