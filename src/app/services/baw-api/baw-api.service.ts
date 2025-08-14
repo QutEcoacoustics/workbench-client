@@ -547,12 +547,24 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
+    const hasJsonOnlyAttributes = model.hasJsonOnlyAttributesForUpsert();
     const jsonData = model.getJsonAttributesForUpsert();
     let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
 
-    let formData = model.getFormDataOnlyAttributesForUpsert();
+    let formData = hasJsonOnlyAttributes
+      ? model.getFormDataOnlyAttributesForUpdate()
+      : model.getFormDataOnlyAttributesForUpsert();
+
+    // By using entries().next().done, we can determine if there is any form
+    // data without using the hasFormDataOnlyAttributes...() abstract model
+    // methods which iterate over all of the model properties.
+    //
+    // next().done will only return true if it failed to get any new entries
+    // meaning that if there is one or more entries, it will return false.
+    const hasFormData = formData.entries().next().done === false;
+
     if (options.params) {
       // If there is already a form data request going out, we want to attach
       // the unscoped params to the form data request.
@@ -573,7 +585,7 @@ export class BawApiService<
     // to return the output of the formData PUT request because it is sent after
     // the initial JSON request, so it will have the most up-to-date model.
     return iif(
-      () => model.hasJsonOnlyAttributesForUpsert(),
+      () => hasJsonOnlyAttributes,
       this.httpPut(upsertPath, body, undefined, options),
       // When there is no JSON body, we pass through "null" so that the form
       // data request will be used as the response body.
@@ -589,23 +601,23 @@ export class BawApiService<
       // the httpPut (formdata) request is made.
       concatMap((data) =>
         iif(
-          () => model.hasFormDataOnlyAttributesForUpsert(),
+          () => hasFormData,
           this.httpPut(
             updatePath(data),
             formData,
             multiPartApiHeaders,
-            options
+            options,
           ).pipe(map(this.handleSingleResponse(classBuilder))),
-          of(data)
-        )
+          of(data),
+        ),
       ),
       // TODO: this should be a more targeted cache invalidation
       // we have to clear the cache when creating new models because the new
       // models might be included in cached associations
       tap(() => this.clearCache()),
       catchError((err) =>
-        this.handleError(err, this.suppressErrors(options), classBuilder)
-      )
+        this.handleError(err, this.suppressErrors(options), classBuilder),
+      ),
     );
   }
 
