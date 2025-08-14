@@ -272,43 +272,41 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
-    if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.searchParameters.update((current) => {
-        current.recordingDate = [
-          dateTimeModel.dateStartedAfter
-            ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-            : null,
+        if (
+          dateTimeModel.dateStartedAfter ||
           dateTimeModel.dateFinishedBefore
-            ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-            : null,
-        ];
+        ) {
+          current.recordingDate = [
+            dateTimeModel.dateStartedAfter
+              ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+              : null,
+            dateTimeModel.dateFinishedBefore
+              ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+              : null,
+          ];
+        }
+
+        if (
+          dateTimeModel.timeStartedAfter ||
+          dateTimeModel.timeFinishedBefore
+        ) {
+          current.recordingTime = [
+            dateTimeModel.timeStartedAfter,
+            dateTimeModel.timeFinishedBefore,
+          ];
+        }
+
+        if (!dateTimeModel.dateFiltering) {
+          current.recordingDate = null;
+        }
+
+        if (!dateTimeModel.timeFiltering) {
+          current.recordingTime = null;
+        }
+
         return current;
       });
-    }
-
-    if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-      this.searchParameters.update((current) => {
-        current.recordingTime = [
-          dateTimeModel.timeStartedAfter,
-          dateTimeModel.timeFinishedBefore,
-        ];
-        return current;
-      });
-    }
-
-    if (!dateTimeModel.dateFiltering) {
-      this.searchParameters.update((current) => {
-        current.recordingDate = null;
-        return current;
-      })
-    }
-
-    if (!dateTimeModel.timeFiltering) {
-      this.searchParameters.update((current) => {
-        current.recordingTime = null;
-        return current;
-      })
-    }
 
     this.emitUpdate();
   }
