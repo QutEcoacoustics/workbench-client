@@ -547,11 +547,16 @@ export class BawApiService<
     model: AbstractModel,
     options: BawServiceOptions = {}
   ): Observable<Model> {
-    const hasJsonOnlyAttributes = model.hasJsonOnlyAttributesForUpsert();
     const jsonData = model.getJsonAttributesForUpsert();
     let body = model.kind
       ? { [model.kind]: jsonData ?? model }
       : jsonData ?? model;
+
+    // We use Object.keys() instead of
+    // AbstractModel.hasJsonOnlyAttributesForUpsert so that we don't have to
+    // iterate over all of the model properties to determine if there are
+    // any JSON-only attributes.
+    const hasJsonOnlyAttributes = Object.keys(body).length > 0;
 
     let formData = hasJsonOnlyAttributes
       ? model.getFormDataOnlyAttributesForUpdate()
