@@ -4,7 +4,5 @@
 // classes so that if we want to change this hint styling in the future, we just
 // have to change it in this one place.
 .tooltip-hint {
-  color: var(--baw-text-color-secondary);
   text-decoration: dotted underline;
-  cursor: help;
 }

@@ -33,7 +33,7 @@ export class AnnotationService {
     return new Annotation(data);
   }
 
-  public makeTagComparer(tagPriority: Id[]): TagComparer {
+  private makeTagComparer(tagPriority: Id[]): TagComparer {
     return (a: Tag, b: Tag): number => {
       const aPriority = this.tagPriority(a, tagPriority);
       const bPriority = this.tagPriority(b, tagPriority);

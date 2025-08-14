@@ -162,7 +162,7 @@
         [resultTemplate]="tagsTypeaheadTemplate"
         [multipleInputs]="false"
         [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
-        (modelChange)="updateSubModel('taskTag', $event)"
+        (modelChange)="updateTaskTag($event)"
       ></baw-typeahead-input>
     </div>
   </div>

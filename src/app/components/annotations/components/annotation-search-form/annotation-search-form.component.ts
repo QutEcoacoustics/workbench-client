@@ -34,7 +34,7 @@ import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { Writeable } from "@helpers/advancedTypes";
+import { MonoTuple, Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -252,6 +252,15 @@ export class AnnotationSearchFormComponent implements OnInit {
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
       current[key as any] = ids;
+      return current;
+    });
+
+    this.emitUpdate();
+  }
+
+  protected updateTaskTag(newTaskTags: Tag[]): void {
+    this.searchParameters.update((current) => {
+      current.taskTag = newTaskTags[0]?.id ?? null;
       return current;
     });
 
