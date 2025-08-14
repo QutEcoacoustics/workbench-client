@@ -22,7 +22,7 @@ interface SerializationConversionOptions {
   formData?: boolean;
 }
 
-type SerializationTargets = XOR<{ create: boolean }, { update: boolean }>;
+type SerializationTargets = XOR<{ create: boolean }, { update: boolean }> | { create: boolean; update: boolean };
 type ModelSerializationOptions = SerializationTargets &
   SerializationConversionOptions;
 
@@ -186,6 +186,17 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     return this.jsonAttributes({ update: true });
   }
 
+  public hasJsonOnlyAttributesForUpsert(): boolean {
+    return this.hasJsonOnlyAttributesForCreate() || this.hasJsonOnlyAttributesForUpdate();
+  }
+
+  public getJsonAttributesForUpsert(): Partial<this> {
+    return {
+      ...this.getJsonAttributesForCreate(),
+      ...this.getJsonAttributesForUpdate(),
+    };
+  }
+
   /**
    * @example
    * ```ts
@@ -244,6 +255,14 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   public getFormDataOnlyAttributesForUpdate(): FormData {
     return this.formDataOnlyAttributes({ update: true });
+  }
+
+  public hasFormDataOnlyAttributesForUpsert(): boolean {
+    return this.hasFormDataOnlyAttributes({ update: true, create: true });
+  }
+
+  public getFormDataOnlyAttributesForUpsert(): FormData {
+    return this.formDataOnlyAttributes({ update: true, create: true });
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
@@ -368,7 +387,11 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     if (opts?.create || opts?.update) {
       return (
         this.getPersistentAttributes()
-          .filter((meta) => (opts.create ? meta.create : meta.update))
+          .filter((meta) => {
+            const satisfiesCreate = opts.create && meta.create;
+            const satisfiesUpdate = opts.update && meta.update;
+            return satisfiesCreate || satisfiesUpdate;
+          })
           // The following filter splits values for attributes that support both json and formData formats
           // when a  null value is present, we send the value in the json request
           // when a File value is present, we send the value in the formData request
