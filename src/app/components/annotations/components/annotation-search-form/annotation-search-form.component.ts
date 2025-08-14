@@ -34,7 +34,7 @@ import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { MonoTuple, Writeable } from "@helpers/advancedTypes";
+import { Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
