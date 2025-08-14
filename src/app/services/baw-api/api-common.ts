@@ -178,6 +178,18 @@ export interface ApiUpdate<M extends AbstractModel, P extends any[] = []> {
    */
   update(model: PartialWith<M, "id">, ...urlParameters: P): Observable<M>;
 }
+
+export interface ApiCreateOrUpdate<M extends AbstractModel, P extends any[] = []> {
+  /**
+   * If the model does NOT exist, create a new model.
+   * If the model already exists, update the existing model with the new value.
+   *
+   * @param model Model create/update
+   * @param urlParameters URL parameter values
+   */
+  createOrUpdate(model: M, ...urlParameters: P): Observable<M>;
+}
+
 /**
  * API Delete functionality
  */

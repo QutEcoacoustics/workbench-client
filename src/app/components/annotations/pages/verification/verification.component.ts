@@ -338,12 +338,7 @@ class VerificationComponent
 
     const verification = new Verification(verificationData, this.injector);
 
-    // I have to use "as any" here to remove the readonly typing
-    const apiRequest = this.verificationApi.createOrUpdate(
-      verification,
-      subject as AudioEvent,
-      tagId,
-    );
+    const apiRequest = this.verificationApi.createOrUpdate(verification);
 
     // I use firstValueFrom so that the observable is evaluated
     // but I don't have to subscribe or unsubscribe.
@@ -439,11 +434,7 @@ class VerificationComponent
             tagId: newTagId,
           });
 
-          const verificationRequest = this.verificationApi.createOrUpdate(
-            correctVerification,
-            audioEvent,
-            newTagId,
-          );
+          const verificationRequest = this.verificationApi.createOrUpdate(correctVerification);
 
           firstValueFrom(verificationRequest);
 

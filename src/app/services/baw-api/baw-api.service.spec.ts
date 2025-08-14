@@ -659,6 +659,12 @@ describe("BawApiService", () => {
         shouldClearCache: true,
       },
       {
+        method: "createOrUpdate",
+        http: "httpPut",
+        singleResult: true,
+        shouldClearCache: true,
+      },
+      {
         method: "destroy",
         http: "httpDelete",
         singleResult: true,
@@ -702,9 +708,7 @@ describe("BawApiService", () => {
 
           function successRequest(response: ApiResponse<unknown>): jasmine.Spy {
             const spy = jasmine.createSpy(http).and.callFake(() => {
-              const subject = new BehaviorSubject<ApiResponse<unknown>>(
-                response
-              );
+              const subject = new BehaviorSubject(response);
               setTimeout(() => subject.complete(), 0);
               return subject;
             });
@@ -734,6 +738,15 @@ describe("BawApiService", () => {
                 );
               case "destroy":
                 return service[method](testedApiPath);
+              case "createOrUpdate":
+                return service[method](
+                  MockModel,
+                  testedApiPath,
+                  (model) => testedApiPath + model.id,
+                  new MockModel(defaultBody, associationInjector)
+                );
+              default:
+                throw new Error(`[fixture] Unknown method: ${method}`);
             }
           }
 
