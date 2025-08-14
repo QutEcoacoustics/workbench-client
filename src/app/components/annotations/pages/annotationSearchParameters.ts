@@ -248,6 +248,12 @@ export class AnnotationSearchParameters
     }
   }
 
+  // We cannot use a set here because we use the index of tags as the priority.
+  // Meaning that if we used a set, we could not use indexOf to find the
+  // priority of a tag.
+  // While we could convert to an Array for the indexOf call, I'd like to
+  // convert as early as possible so we don't have types changing depending on
+  // the context.
   public get tagPriority(): Id[] {
     if (isInstantiated(this.taskTag)) {
       const uniqueIds = new Set([this.taskTag, ...this.tags ?? []]);

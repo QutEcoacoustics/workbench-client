@@ -29,7 +29,7 @@ export function generateAnnotation(
   return {
     ...audioEvent,
     audioRecording,
-    tags: tags,
+    tags,
     ...data,
   };
 }
