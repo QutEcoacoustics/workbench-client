@@ -34,7 +34,7 @@ import { DateTime } from "luxon";
 import { FormsModule } from "@angular/forms";
 import { filterModel } from "@helpers/filters/filters";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { Writeable } from "@helpers/advancedTypes";
+import { ExtractWritable, Writeable } from "@helpers/advancedTypes";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -43,7 +43,7 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
-import { isUnresolvedModel } from "@models/AbstractModel";
+import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
 
 enum ScoreRangeBounds {
   Lower,
@@ -234,14 +234,14 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   protected updateSubModel(
-    key: keyof AnnotationSearchParameters,
-    subModels: any[],
+    key: keyof ExtractWritable<typeof AnnotationSearchParameters>,
+    subModels: (typeof AnnotationSearchParameters[typeof key] & AbstractModel)[],
   ): void {
     // if the subModels array is empty, the user has not selected any models
     // we should set the search parameter to null so that it is not emitted
     if (subModels.length === 0) {
       this.searchParameters.update((current) => {
-        current[key as any] = null;
+        current[key] = null;
         return current;
       });
 
@@ -251,7 +251,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
-      current[key as any] = ids;
+      current[key] = ids;
       return current;
     });
 

@@ -42,6 +42,29 @@ export type Option<T> = T | null;
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
+/**
+ * Extracts the writable keys from an object type
+ * This is useful for creating a function that takes a writable property key of
+ * an object type.
+ *
+ * @example
+ * ```ts
+ * type MyObject = {
+ *   readonly id: number;
+ *   name: string;
+ * };
+ *
+ * type WritableKeys = keyof ExtractWritable<typeof MyObject>;
+ * //^ { name: string }
+ *
+ * function updateObject(obj: MyObject, key: WritableKeys, value: any) {
+ *   // This is valid because we removed the readonly keys
+ *   obj[key] = value;
+ * }
+ * ```
+ */
+export type ExtractWritable<T> = { -readonly [Key in keyof T]: T[Key] };
+
 /** Create a tuple (extends Array type and sets fixed length) */
 export interface MonoTuple<T, L extends number> extends Array<T> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
