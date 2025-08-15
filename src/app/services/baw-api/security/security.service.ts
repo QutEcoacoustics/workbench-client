@@ -134,20 +134,13 @@ export class SecurityService {
       }
     };
 
-    const handleAuth = this.handleAuth(
+    return this.handleAuth(
       accountEndpoint(signInParam),
       accountEndpoint(signInParam),
       (token: string) => details.getBody(token),
       (page) => {
         validateLoggedIn(page);
-      }
-    );
-
-    // Logout first to ensure token and cookie are synchronized
-    return this.signOut().pipe(
-      mergeMap(() => handleAuth),
-      // Ignore any sign out errors, and continue with authentication
-      catchError(() => handleAuth)
+      },
     );
   }
 
@@ -201,7 +194,17 @@ export class SecurityService {
      * - https://github.com/QutEcoacoustics/baw-server/issues/424
      */
     return this.formApi
-      .makeFormRequest(formEndpoint, authEndpoint, getFormData)
+      .makeFormRequest(
+        formEndpoint,
+        authEndpoint,
+        getFormData,
+        // We do not want to send any authentication content when attempting to
+        // sign in so if the user is signed into another account, the new login
+        // will not fail due to mismatched credentials.
+        // If the user is already logged in to a session, the current session
+        // will be replaced with the new session.
+        { withCredentials: false },
+      )
       .pipe(
         tap((page) => pageValidation(page)),
         // Trade the cookie for an API auth token (mimicking old baw-client)
