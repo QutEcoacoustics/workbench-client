@@ -137,17 +137,16 @@ class VerificationComponent
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update((current) => {
       const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
-
       newModel.injector = this.injector;
 
-      current.routeProjectModel ??= models[projectKey] as Project;
+      newModel.routeProjectModel ??= models[projectKey] as Project;
 
       if (models[regionKey]) {
-        current.routeRegionModel ??= models[regionKey] as Region;
+        newModel.routeRegionModel ??= models[regionKey] as Region;
       }
 
       if (models[siteKey]) {
-        current.routeSiteModel ??= models[siteKey] as Site;
+        newModel.routeSiteModel ??= models[siteKey] as Site;
       }
 
       return newModel;
