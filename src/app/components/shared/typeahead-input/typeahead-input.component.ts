@@ -2,7 +2,9 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   TemplateRef,
 } from "@angular/core";
 import {
@@ -35,7 +37,7 @@ export type TypeaheadSearchCallback<T> = (
   styleUrl: "./typeahead-input.component.scss",
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
 })
-export class TypeaheadInputComponent<T = unknown> {
+export class TypeaheadInputComponent<T = unknown> implements OnChanges {
   /**
    * The options callback is typically linked to a service as it should return
    * a list observable of options that the user could select Active items are
@@ -69,6 +71,16 @@ export class TypeaheadInputComponent<T = unknown> {
 
   public inputModel: string | null;
   protected focus$ = new Subject<T[]>();
+
+  public ngOnChanges(change: SimpleChanges): void {
+    // If we are not creating a multiple input typeahead, changing the [value]
+    // property should directly change the value inside the typeahead input.
+    // This is also useful for populating the typeahead with a default value.
+    if (!this.multipleInputs && Object.prototype.hasOwnProperty.call(change, "value")) {
+      const value = this.value[0]?.toString();
+      this.inputModel = value;
+    }
+  }
 
   protected findOptions = (text$: Observable<string>): Observable<T[]> => {
     const maximumResults = 10;
@@ -128,8 +140,9 @@ export class TypeaheadInputComponent<T = unknown> {
       this.value = [];
     } else {
       this.value.splice(indexToRemove, 1);
-      this.modelChange.emit(this.value);
     }
+
+    this.modelChange.emit(this.value);
   }
 
   protected handleInput(): void {

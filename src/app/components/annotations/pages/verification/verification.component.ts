@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
@@ -7,7 +8,6 @@ import {
   OnInit,
   signal,
   viewChild,
-  ViewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -82,6 +82,7 @@ const confirmedMapping = {
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
   imports: [FaIconComponent, NgbTooltip, SearchFiltersModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 class VerificationComponent
@@ -104,24 +105,22 @@ class VerificationComponent
     super();
   }
 
-  @ViewChild("searchFiltersModal")
-  private searchFiltersModal: ElementRef<SearchFiltersModalComponent>;
-
-  @ViewChild("verificationGrid")
-  private verificationGridElement: ElementRef<VerificationGridComponent>;
-
+  private searchFiltersModal =
+    viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
+  private verificationGridElement =
+    viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
 
-  public searchParameters: AnnotationSearchParameters;
-  public hasUnsavedChanges = false;
-  protected verificationGridFocused = true;
-  protected readonly hasCorrectionTask = signal(false);
-  private doneInitialScroll = false;
+  public searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public hasUnsavedChanges = signal(false);
+  protected verificationGridFocused = signal(true);
+  protected hasCorrectionTask = signal(false);
+  private doneInitialScroll = signal(false);
 
-  public project?: Project;
-  public region?: Region;
-  public site?: Site;
+  public project = signal<Project | null>(null);
+  public region = signal<Region | null>(null);
+  public site = signal<Site | null>(null);
 
   // TODO: Remove this once the corrections endpoint is finished
   /**
@@ -136,21 +135,25 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      annotationsKey
-    ] as AnnotationSearchParameters;
-    this.searchParameters.injector = this.injector;
+    this.searchParameters.update((current) => {
+      const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
+      newModel.injector = this.injector;
 
-    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
-    if (models[regionKey]) {
-      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
-    }
-    if (models[siteKey]) {
-      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
-    }
+      newModel.routeProjectModel ??= models[projectKey] as Project;
+
+      if (models[regionKey]) {
+        newModel.routeRegionModel ??= models[regionKey] as Region;
+      }
+
+      if (models[siteKey]) {
+        newModel.routeSiteModel ??= models[siteKey] as Site;
+      }
+
+      return newModel;
+    });
 
     this.hasCorrectionTask.set(
-      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+      this.searchParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -164,11 +167,11 @@ class VerificationComponent
   }
 
   protected handleGridLoaded(): void {
-    if (this.doneInitialScroll) {
+    if (this.doneInitialScroll()) {
       return;
     }
 
-    const timeoutDurationMilliseconds = 1_000 as const;
+    const timeoutDurationMilliseconds = 1_000;
 
     // we wait a second after the verification grid has loaded to give the user
     // some time to see the grid in the context of the website before we scroll
@@ -179,7 +182,7 @@ class VerificationComponent
 
     // we set the done initial scroll value before the timeout so that we don't
     // send two scroll events if the user makes a decision before the timeout
-    this.doneInitialScroll = true;
+    this.doneInitialScroll.set(true);
   }
 
   protected tagTextFormatter(tag: Tag): string {
@@ -187,12 +190,12 @@ class VerificationComponent
   }
 
   protected openSearchFiltersModal(): void {
-    this.modals.open(this.searchFiltersModal, { size: "xl" });
+    this.modals.open(this.searchFiltersModal(), { size: "xl" });
   }
 
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    if (!this.hasUnsavedChanges) {
-      this.searchParameters = newModel;
+    if (!this.hasUnsavedChanges()) {
+      this.searchParameters.set(newModel);
       this.updateGridCallback();
       return;
     }
@@ -201,11 +204,11 @@ class VerificationComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.site) {
-      return this.site.isPoint
+    if (this.site()) {
+      return this.site().isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.region) {
+    } else if (this.region()) {
       return annotationMenuItems.verify.region.route;
     }
 
@@ -220,7 +223,12 @@ class VerificationComponent
 
       const items: AudioEvent[] = await firstValueFrom(serviceObservable);
       const annotations = await Promise.all(
-        items.map((item) => this.annotationsService.show(item)),
+        items.map((item) =>
+          this.annotationsService.show(
+            item,
+            this.searchParameters().tagPriority,
+          ),
+        ),
       );
 
       return new Object({
@@ -238,13 +246,14 @@ class VerificationComponent
     }
 
     // TODO: this is a hacky solution to get the verification grid to update
-    this.verificationGridElement.nativeElement.getPage = this.getPageCallback();
-    this.verificationGridElement.nativeElement.subjects = [];
+    this.verificationGridElement().nativeElement.getPage =
+      this.getPageCallback();
+    this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
-    this.hasUnsavedChanges = false;
+    this.hasUnsavedChanges.set(false);
 
     this.hasCorrectionTask.set(
-      this.searchParameters.taskBehavior === "verify-and-correct-tag",
+      this.searchParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -254,7 +263,7 @@ class VerificationComponent
       return;
     }
 
-    this.hasUnsavedChanges = true;
+    this.hasUnsavedChanges.set(true);
 
     // TODO: We should be updating the annotation models here after updates.
     // see: https://github.com/QutEcoacoustics/workbench-client/pull/2384#discussion_r2261893642
@@ -447,7 +456,7 @@ class VerificationComponent
   }
 
   private scrollToVerificationGrid(): void {
-    this.verificationGridElement.nativeElement.scrollIntoView({
+    this.verificationGridElement().nativeElement.scrollIntoView({
       behavior: "smooth",
       block: "end",
     });
@@ -455,7 +464,7 @@ class VerificationComponent
 
   private filterConditions(page: number): Filters<AudioEvent> {
     const paging: Paging = { page };
-    const routeFilters = this.searchParameters.toFilter();
+    const routeFilters = this.searchParameters().toFilter();
 
     return {
       paging,
@@ -464,13 +473,9 @@ class VerificationComponent
   }
 
   private updateUrlParameters(): void {
-    const queryParams = this.searchParameters.toQueryParams();
+    const queryParams = this.searchParameters().toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
-
-    // TODO: remove this guard before review. For some reason urlTree is null during testing
-    if (urlTree) {
-      this.location.replaceState(urlTree.toString());
-    }
+    this.location.replaceState(urlTree.toString());
   }
 
   private tagSearchCallback(): TypeaheadCallback<any> {

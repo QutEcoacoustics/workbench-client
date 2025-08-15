@@ -24,7 +24,7 @@ import {
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
@@ -106,6 +106,7 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  taskTag: Id;
   verificationStatus: VerificationStatusKey;
   taskBehavior: TaskBehaviorKey;
 }
@@ -130,6 +131,7 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  taskTag: jsNumber,
   verificationStatus: jsString,
   taskBehavior: jsString,
 };
@@ -196,6 +198,8 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public taskTag: Id;
+
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
   private _taskBehavior: TaskBehaviorKey;
@@ -243,6 +247,24 @@ export class AnnotationSearchParameters
       console.error(`Invalid select key: "${value}"`);
     }
   }
+
+  // We cannot use a set here because we use the index of tags as the priority.
+  // Meaning that if we used a set, we could not use indexOf to find the
+  // priority of a tag.
+  // While we could convert to an Array for the indexOf call, I'd like to
+  // convert as early as possible so we don't have types changing depending on
+  // the context.
+  public get tagPriority(): Id[] {
+    if (isInstantiated(this.taskTag)) {
+      const uniqueIds = new Set([this.taskTag, ...this.tags ?? []]);
+      return Array.from(uniqueIds);
+    }
+
+    return Array.from(this.tags ?? []);
+  }
+
+  @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
+  public taskTagModel?: Tag;
 
   public get taskBehavior(): TaskBehaviorKey {
     return this._taskBehavior;
@@ -336,7 +358,7 @@ export class AnnotationSearchParameters
 
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    let filter = filterModelIds<Tag>("tags", this.tags);
+    let filter = this.tagFilters();
     filter = this.addRecordingFilters(filter);
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
@@ -428,6 +450,11 @@ export class AnnotationSearchParameters
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     return filterAnd(initialFilter, this.routeFilters());
+  }
+
+  private tagFilters(): InnerFilter<AudioEvent> {
+    const tagFilters = filterModelIds<Tag>("tags", this.tags);
+    return tagFilters;
   }
 
   private addRecordingFilters(

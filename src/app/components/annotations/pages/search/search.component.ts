@@ -81,15 +81,23 @@ class AnnotationSearchComponent
       () => [],
       async (newResults: AudioEvent[]) => {
         this.loading = true;
+
         this.searchResults = await Promise.all(
           newResults.map(
-            async (result) => await annotationService.show(result),
+            async (result) =>
+              await annotationService.show(
+                result,
+                this.searchParameters.tagPriority,
+              ),
           ),
-        );
+        )
 
-        if (newResults.length > 0) {
+        if (newResults.length === 0) {
+          this.paginationInformation = { total: 0, items: 0, page: 1 };
+        } else {
           this.paginationInformation = newResults[0].getMetadata().paging;
         }
+
         this.loading = false;
       },
       () => this.searchParameters.toFilter().filter,
@@ -171,6 +179,13 @@ class AnnotationSearchComponent
       });
 
       const response = await firstValueFrom(request);
+      if (response.length === 0) {
+        // We usually get the total number of items from the first return items
+        // response metadata.
+        // However, if there are no items, we cannot index into the first item.
+        // To prevent throwing an error, we do an early return.
+        return;
+      }
 
       const itemWarningThreshold = 1_000;
       const responseMetadata = response[0].getMetadata();
