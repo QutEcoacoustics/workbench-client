@@ -59,14 +59,14 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
           throw new BawApiError(
             BAD_REQUEST,
             "Unable to retrieve authenticity token for form request.",
-            {}
+            {},
           );
         }
         return token;
       }),
       // Mimic a traditional form-based request
       mergeMap((token: string) =>
-        this.formRequest(submissionEndpoint, body(token), options)
+        this.formRequest(submissionEndpoint, body(token), options),
       ),
       tap((response: string) => {
         // Check for recaptcha error message in page body
@@ -75,14 +75,14 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
           throw new BawApiError(
             BAD_REQUEST,
             "Captcha response was not correct.",
-            {}
+            {},
           );
         }
       }),
       // Complete observable
       first(),
       // Handle custom errors
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 

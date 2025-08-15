@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
@@ -29,7 +29,6 @@ import {
 import { defaultCachingConfig } from "@services/cache/ngHttpCachingConfig";
 import { withCacheLogging } from "@services/cache/cache-logging.service";
 import { BawSessionService } from "./baw-session.service";
-import { CREDENTIALS_CONTEXT } from "./api.interceptor.service";
 import { BAW_SERVICE_OPTIONS } from "./api-common";
 
 export const defaultApiPageSize = 25;
@@ -165,11 +164,8 @@ export class BawApiService<
 
   // the "context" headers are passed to the interceptor to determine if the request should be cached and if
   // the Authentication token and cookies should be sent in requests
-  private withCredentialsHttpContext(
-    options: Required<BawServiceOptions>,
-    baseContext: HttpContext = new HttpContext()
-  ): HttpContext {
-    return baseContext.set(CREDENTIALS_CONTEXT, options.withCredentials);
+  private httpClientOptions(options: Required<BawServiceOptions>): Parameters<HttpClient["get"]>[1] {
+    return { withCredentials: options.withCredentials };
   }
 
   // because users can input a partial options object, it is possible for the disableNotification property to be undefined
@@ -651,7 +647,8 @@ export class BawApiService<
    * @param headers Request headers
    *
    * @param options Options to modify the request
-   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
+   * e.g. `{ withCredentials: false }` will not include the users authentication
+   * token or cookies in the request.
    */
   public httpGet(
     path: string,
@@ -666,12 +663,11 @@ export class BawApiService<
       withCacheLogging()
     );
 
-    const context = this.withCredentialsHttpContext(fullOptions, cacheContext);
-
     return this.http.get<ApiResponse<Model>>(this.getPath(path), {
       responseType: "json",
+      context: cacheContext,
       headers,
-      context,
+      ...this.httpClientOptions(fullOptions),
     });
   }
 
@@ -684,7 +680,8 @@ export class BawApiService<
    * @param headers Request headers
    *
    * @param options Options to modify the request
-   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
+   * e.g. `{ withCredentials: false }` will not include the users authentication
+   * token or cookies in the request.
    */
   public httpDelete(
     path: string,
@@ -693,12 +690,10 @@ export class BawApiService<
   ): Observable<ApiResponse<Model | void>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.withCredentialsHttpContext(fullOptions);
-
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
       headers,
-      context,
+      ...this.httpClientOptions(fullOptions),
     });
   }
 
@@ -712,7 +707,8 @@ export class BawApiService<
    * @param headers Request headers
    *
    * @param options Options to modify the request
-   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
+   * e.g. `{ withCredentials: false }` will not include the users authentication
+   * token or cookies in the request.
    */
   public httpPost(
     path: string,
@@ -727,15 +723,13 @@ export class BawApiService<
     // const cachingOptions = this.buildCachingOptions(options);
     // const cacheContext = withNgHttpCachingContext(cachingOptions);
 
-    const context = this.withCredentialsHttpContext(fullOptions);
-
     return this.http.post<ApiResponse<Model | Model[]>>(
       this.getPath(path),
       body,
       {
         responseType: "json",
         headers,
-        context,
+        ...this.httpClientOptions(fullOptions),
       }
     );
   }
@@ -750,7 +744,8 @@ export class BawApiService<
    * @param headers Request headers
    *
    * @param options Options to modify the request
-   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
+   * e.g. `{ withCredentials: false }` will not include the users authentication
+   * token or cookies in the request.
    */
   public httpPut(
     path: string,
@@ -760,12 +755,10 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.withCredentialsHttpContext(fullOptions);
-
     return this.http.put<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
       headers,
-      context,
+      ...this.httpClientOptions(fullOptions),
     });
   }
 
@@ -779,7 +772,8 @@ export class BawApiService<
    * @param headers Request headers
    *
    * @param options Options to modify the request
-   * eg. `{ withCredentials: false }` will not include the users authentication token and cookies in the request
+   * e.g. `{ withCredentials: false }` will not include the users authentication
+   * token or cookies in the request.
    */
   public httpPatch(
     path: string,
@@ -789,12 +783,10 @@ export class BawApiService<
   ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
-    const context = this.withCredentialsHttpContext(fullOptions);
-
     return this.http.patch<ApiResponse<Model>>(this.getPath(path), body, {
       responseType: "json",
       headers,
-      context,
+      ...this.httpClientOptions(fullOptions),
     });
   }
 
