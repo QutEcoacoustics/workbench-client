@@ -71,7 +71,7 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [IconsModule, AnnotationSearchFormComponent],
+    imports: [IconsModule],
     providers: [
       provideMockBawApi(),
       mockProvider(AnnotationService, {
@@ -79,6 +79,7 @@ describe("AnnotationSearchComponent", () => {
       }),
       mockProvider(Router),
     ],
+    componentMocks: [AnnotationSearchFormComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
