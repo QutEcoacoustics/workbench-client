@@ -8,11 +8,7 @@ import { Params, Router } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
-import {
-  MEDIA,
-  SHALLOW_AUDIO_EVENT,
-  SHALLOW_SITE,
-} from "@baw-api/ServiceTokens";
+import { SHALLOW_AUDIO_EVENT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -41,9 +37,10 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -54,7 +51,6 @@ describe("AnnotationSearchComponent", () => {
   let injector: AssociationInjector;
 
   let audioEventsSpy: SpyObject<ShallowAudioEventsService>;
-  let mediaSpy: SpyObject<MediaService>;
   let shallowSiteSpy: SpyObject<ShallowSitesService>;
 
   let mockAudioEventsResponse: AudioEvent[] = [];
@@ -71,15 +67,21 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [IconsModule],
+    imports: [IconsModule, AnnotationSearchFormComponent],
     providers: [
       provideMockBawApi(),
+      mockProvider(Router),
       mockProvider(AnnotationService, {
         show: () => mockAnnotationResponse,
       }),
-      mockProvider(Router),
+      mockProvider(TagsService, {
+        show: () => of(),
+        filter: () => of(),
+      }),
+      mockProvider(MediaService, {
+        createMediaUrl: () => testAsset("example.flac"),
+      }),
     ],
-    componentMocks: [AnnotationSearchFormComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
@@ -95,11 +97,6 @@ describe("AnnotationSearchComponent", () => {
     });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
-    mediaSpy = spec.inject(MEDIA.token);
-    spyOn(mediaSpy, "createMediaUrl").and.returnValue(
-      testAsset("example.flac"),
-    );
-
     spec.component.searchParameters = mockSearchParameters;
 
     mockAudioEventsResponse = modelData.randomArray(
