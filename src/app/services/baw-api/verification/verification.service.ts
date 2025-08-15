@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import {
+  ApiCreateOrUpdate,
   emptyParam,
   filterParam,
   id,
@@ -11,14 +12,14 @@ import {
   StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { User } from "@models/User";
+import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
-import { CONFLICT } from "http-status";
-import { catchError, map, mergeMap, Observable } from "rxjs";
+import { first, map, Observable, switchMap } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -29,8 +30,7 @@ const endpoint =
 
 @Injectable()
 export class VerificationService
-  implements
-    ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
+  implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
   public constructor(private api: BawApiService<Verification>) {}
 
@@ -70,9 +70,12 @@ export class VerificationService
 
 @Injectable()
 export class ShallowVerificationService
-  implements StandardApi<Verification, []>
+  implements StandardApi<Verification, []>, ApiCreateOrUpdate<Verification, []>
 {
-  public constructor(private api: BawApiService<Verification>) {}
+  public constructor(
+    private api: BawApiService<Verification>,
+    private session: BawSessionService,
+  ) {}
 
   public list(): Observable<Verification[]> {
     return this.api.list(Verification, endpointShallow(emptyParam, emptyParam));
@@ -111,77 +114,69 @@ export class ShallowVerificationService
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
-  // TODO: simplify when baw-server implements an upsert route
-  // see: https://github.com/QutEcoacoustics/baw-server/issues/724
   /**
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
    */
-  public createOrUpdate(
-    model: Verification,
-    audioEvent: AudioEvent,
-    user: User
-  ): Observable<Verification> {
-    return this.api
-      .create(
-        Verification,
-        endpointShallow(emptyParam, emptyParam),
-        (verification) => endpointShallow(verification, emptyParam),
-        model,
-        { disableNotification: true }
-      )
-      .pipe(
-        // fetching the verification model here is the only way to be certain
-        // that there are no race conditions
-        catchError((err) => {
-          if (err.status === CONFLICT) {
-            const verificationModel = this.audioEventUserVerification(
-              audioEvent,
-              user
-            );
-            return verificationModel.pipe(
-              mergeMap((verification) => {
-                if (!verification) {
-                  throw err;
-                }
-
-                const newModel = new Verification({
-                  ...verification,
-                  ...model,
-                });
-
-                return this.update(newModel);
-              })
-            );
-          }
-
-          throw err;
-        })
-      );
+  public createOrUpdate(model: Verification): Observable<Verification> {
+    return this.api.createOrUpdate(
+      Verification,
+      endpointShallow(emptyParam, emptyParam),
+      (verification) => endpointShallow(verification, emptyParam),
+      model,
+    );
   }
 
   /**
-   * Fetches a users verification model for a specific audio event
+   * Destroys a verification model for a specific audio event + tag combination.
+   * This service method can be called without knowing the verification model or
+   * the verification ID.
+   */
+  public destroyEventVerification(
+    audioEvent: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
+  ): Observable<void | Verification> {
+    return this.audioEventUserVerification(audioEvent, tag).pipe(
+      switchMap((verification) => {
+        if (!verification) {
+          return;
+        }
+
+        return this.destroy(verification.id);
+      }),
+      first(),
+    );
+  }
+
+  /**
+   * Fetches a users verification model for a specific audio event + tag
+   * combination.
    *
    * @returns
    * A verification model if the user has verified the audio event.
    * If the user has not verified the audio event, null is returned.
    */
   public audioEventUserVerification(
-    event: AudioEvent,
-    user: User
+    eventModel: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const filter = {
+    const eventId = typeof eventModel === "number" ? eventModel : eventModel.id;
+    const tagId = typeof tag === "number" ? tag : tag.id;
+
+    const user = this.session.currentUser;
+
+    const filter: Filters<Verification> = {
       filter: {
         and: [
-          { audioEventId: { eq: event.id } },
+          { audioEventId: { eq: eventId } },
+          { tagId: { eq: tagId } },
           { creatorId: { eq: user.id } },
         ],
       },
       paging: {
         items: 1,
       },
-    } as const satisfies Filters<Verification>;
+    };
 
     // the api enforces having one verification per user per audio event
     // therefore, it is safe to assume that there will only be one result

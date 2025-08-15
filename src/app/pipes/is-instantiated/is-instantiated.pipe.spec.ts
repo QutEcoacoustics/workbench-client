@@ -2,7 +2,7 @@ import { createPipeFactory, SpectatorPipe } from "@ngneat/spectator";
 import { isInstantiatedPipe } from "./is-instantiated.pipe";
 
 describe("isInstantiatedPipe", () => {
-  let spec: SpectatorPipe<isInstantiatedPipe>;
+  let spec: SpectatorPipe<isInstantiatedPipe<unknown>>;
 
   const createPipe = createPipeFactory(isInstantiatedPipe);
 

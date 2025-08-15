@@ -4,6 +4,7 @@ import { modelData } from "@test/helpers/faker";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import {
   mockServiceProviders,
+  validateApiCreateOrUpdate,
   validateReadonlyApi,
   validateStandardApi,
 } from "@test/helpers/api-common";
@@ -15,8 +16,10 @@ import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateUser } from "@test/fakes/User";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { CONFLICT, INTERNAL_SERVER_ERROR } from "http-status";
-import { catchError, firstValueFrom, of, throwError } from "rxjs";
+import { firstValueFrom, of, throwError } from "rxjs";
+import { Tag } from "@models/Tag";
+import { generateTag } from "@test/fakes/Tag";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import {
   ShallowVerificationService,
   VerificationService,
@@ -95,9 +98,18 @@ describe("ShallowVerificationService", () => {
     testModelId
   );
 
+  validateApiCreateOrUpdate<Model, ShallowParams, ShallowService>(
+    () => spec,
+    Verification,
+    baseUrl,
+    updateUrl,
+    createModel,
+  );
+
   describe("custom methods", () => {
     let mockModel: Model;
     let mockAudioEvent: AudioEvent;
+    let mockTag: Tag;
     let mockUser: User;
     let api: BawApiService<Model>;
 
@@ -108,61 +120,66 @@ describe("ShallowVerificationService", () => {
     beforeEach(() => {
       mockModel = createModel();
       mockAudioEvent = new AudioEvent(
-        generateAudioEvent({ id: mockModel.audioEventId })
+        generateAudioEvent({ id: mockModel.audioEventId }),
       );
+      mockTag = new Tag(generateTag());
       mockUser = new User(generateUser({ id: mockModel.creatorId }));
 
       mockCreateResponse = createModel();
       mockUpdateResponse = createModel();
       mockFilterResponse = modelData.randomArray(1, 10, () => createModel());
 
+      const sessionMock = spec.inject(BawSessionService);
+      spyOnProperty(sessionMock, "currentUser").and.returnValue(mockUser);
+
       api = spec.inject<BawApiService<Model>>(BawApiService);
 
       spyOn(api, "create").and.callFake(() =>
         mockCreateResponse instanceof BawApiError
           ? throwError(() => mockCreateResponse)
-          : of(mockCreateResponse)
+          : of(mockCreateResponse),
       );
 
       spyOn(api, "update").and.callFake(() =>
         mockUpdateResponse instanceof BawApiError
           ? throwError(() => mockUpdateResponse)
-          : of(mockUpdateResponse)
+          : of(mockUpdateResponse),
       );
 
       spyOn(api, "filter").and.callFake(() =>
         mockFilterResponse instanceof BawApiError
           ? throwError(() => mockFilterResponse)
-          : of(mockFilterResponse)
+          : of(mockFilterResponse),
       );
     });
 
     describe("audioEventUserVerification", () => {
       it("should call the filter api with the correct data", () => {
-        const expectedFilters = {
+        const expectedFilters: Filters<Verification> = {
           filter: {
             and: [
               { audioEventId: { eq: mockAudioEvent.id } },
+              { tagId: { eq: mockTag.id } },
               { creatorId: { eq: mockUser.id } },
             ],
           },
           paging: {
             items: 1,
           },
-        } as const satisfies Filters<Verification>;
+        };
 
-        spec.service.audioEventUserVerification(mockAudioEvent, mockUser);
+        spec.service.audioEventUserVerification(mockAudioEvent, mockTag);
 
         expect(api.filter).toHaveBeenCalledOnceWith(
           Verification,
           jasmine.anything(),
-          expectedFilters
+          expectedFilters,
         );
       });
 
       it("should return the verification if the audio event is verified", async () => {
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent, mockTag),
         );
 
         expect(response).toEqual(mockFilterResponse[0]);
@@ -172,53 +189,8 @@ describe("ShallowVerificationService", () => {
         mockFilterResponse = [];
 
         const response = await firstValueFrom(
-          spec.service.audioEventUserVerification(mockAudioEvent, mockUser)
+          spec.service.audioEventUserVerification(mockAudioEvent, mockTag),
         );
-
-        expect(response).toBeNull();
-      });
-    });
-
-    describe("createOrUpdate", () => {
-      it("should emit a create request if the verification does not exist", () => {
-        spec.service
-          .createOrUpdate(mockModel, mockAudioEvent, mockUser)
-          .subscribe();
-        expect(api.create).toHaveBeenCalledTimes(1);
-      });
-
-      it("should emit an update request if there is a verification conflict", async () => {
-        mockCreateResponse = new BawApiError<Verification>(
-          CONFLICT,
-          "Conflict",
-          null
-        );
-
-        const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser)
-        );
-
-        expect(api.create).toHaveBeenCalledTimes(1);
-        expect(api.update).toHaveBeenCalledTimes(1);
-
-        expect(response).toEqual(mockUpdateResponse as any);
-      });
-
-      it("should not emit an update request if there is an internal server error", async () => {
-        mockCreateResponse = new BawApiError<Verification>(
-          INTERNAL_SERVER_ERROR,
-          "Internal Server Error",
-          null
-        );
-
-        const response = await firstValueFrom(
-          spec.service.createOrUpdate(mockModel, mockAudioEvent, mockUser).pipe(
-            catchError(() => of(null))
-          )
-        );
-
-        expect(api.create).toHaveBeenCalledTimes(1);
-        expect(api.update).toHaveBeenCalledTimes(0);
 
         expect(response).toBeNull();
       });

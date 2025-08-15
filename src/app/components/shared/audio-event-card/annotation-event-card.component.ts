@@ -11,6 +11,9 @@ import { Annotation } from "@models/data/Annotation";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { DecimalPipe } from "@angular/common";
+import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -21,8 +24,11 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   imports: [
     FaIconComponent,
     ZonedDateTimeComponent,
-    IsUnresolvedPipe,
     LoadingComponent,
+    NgbTooltip,
+    IsUnresolvedPipe,
+    isInstantiatedPipe,
+    DecimalPipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

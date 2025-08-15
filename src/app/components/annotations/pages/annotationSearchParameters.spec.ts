@@ -112,6 +112,7 @@ describe("annotationSearchParameters", () => {
         regions: "2,3,4,5",
         sites: "6,7,8,9",
 
+        taskTag: "5",
         verificationStatus: "any",
       },
       expectedFilters: () => ({
@@ -152,6 +153,7 @@ describe("annotationSearchParameters", () => {
 
         sort: "score-asc",
 
+        taskTag: "4",
         verificationStatus: "unverified",
       },
       expectedFilters: () => ({
@@ -253,4 +255,24 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
+
+  describe("tag priority", () => {
+    it("should handle an empty array of tags", () => {
+      const dataModel = createParameterModel();
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([]);
+    });
+
+    it("should handle an array of tags with no task tag", () => {
+      const dataModel = createParameterModel({ tags: "1,2,3,4" });
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([1, 2, 3, 4]);
+    });
+
+    it("should handle an array of tags with a task tag", () => {
+      const dataModel = createParameterModel({ tags: "1,2,3,4", taskTag: "3" });
+      const realizedResult = dataModel.tagPriority;
+      expect(realizedResult).toEqual([3, 1, 2, 4]);
+    });
+  });
 });

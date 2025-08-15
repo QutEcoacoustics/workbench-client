@@ -24,7 +24,7 @@ import {
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel } from "@models/data/parametersModel";
@@ -71,6 +71,8 @@ export const sortingOptions = new Map([
 // session state.
 export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
 
+export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
+
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
@@ -104,7 +106,9 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
+  taskTag: Id;
   verificationStatus: VerificationStatusKey;
+  taskBehavior: TaskBehaviorKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -127,7 +131,9 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
+  taskTag: jsNumber,
   verificationStatus: jsString,
+  taskBehavior: jsString,
 };
 
 const deserializationTable: IQueryStringParameterSpec<
@@ -192,8 +198,11 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
+  public taskTag: Id;
+
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
+  private _taskBehavior: TaskBehaviorKey;
 
   public get sort(): SortingKey {
     return this._sort;
@@ -233,6 +242,43 @@ export class AnnotationSearchParameters
         this._verificationStatus = null;
       } else {
         this._verificationStatus = value;
+      }
+    } else {
+      console.error(`Invalid select key: "${value}"`);
+    }
+  }
+
+  // We cannot use a set here because we use the index of tags as the priority.
+  // Meaning that if we used a set, we could not use indexOf to find the
+  // priority of a tag.
+  // While we could convert to an Array for the indexOf call, I'd like to
+  // convert as early as possible so we don't have types changing depending on
+  // the context.
+  public get tagPriority(): Id[] {
+    if (isInstantiated(this.taskTag)) {
+      const uniqueIds = new Set([this.taskTag, ...this.tags ?? []]);
+      return Array.from(uniqueIds);
+    }
+
+    return Array.from(this.tags ?? []);
+  }
+
+  @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
+  public taskTagModel?: Tag;
+
+  public get taskBehavior(): TaskBehaviorKey {
+    return this._taskBehavior;
+  }
+
+  public set taskBehavior(value: string) {
+    if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
+      // So that we can minimize the number of query string parameters, we use
+      // "unverified-for-me" as the default if there is no "taskBehavior" query
+      // string parameter.
+      if (value === "verify") {
+        this._taskBehavior = null;
+      } else {
+        this._taskBehavior = value;
       }
     } else {
       console.error(`Invalid select key: "${value}"`);
@@ -312,7 +358,7 @@ export class AnnotationSearchParameters
 
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
-    let filter = filterModelIds<Tag>("tags", this.tags);
+    let filter = this.tagFilters();
     filter = this.addRecordingFilters(filter);
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
@@ -404,6 +450,11 @@ export class AnnotationSearchParameters
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
     return filterAnd(initialFilter, this.routeFilters());
+  }
+
+  private tagFilters(): InnerFilter<AudioEvent> {
+    const tagFilters = filterModelIds<Tag>("tags", this.tags);
+    return tagFilters;
   }
 
   private addRecordingFilters(
@@ -524,5 +575,10 @@ export class AnnotationSearchParameters
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {
     return this.verificationStatusOptions.has(key as any);
+  }
+
+  private isTaskBehaviorKey(key: string): key is TaskBehaviorKey {
+    const validOptions: TaskBehaviorKey[] = ["verify-and-correct-tag", "verify"];
+    return validOptions.some((option) => option === key);
   }
 }

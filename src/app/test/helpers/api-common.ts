@@ -17,6 +17,7 @@ import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideCaching } from "@services/cache/provide-caching";
 import {
   ApiCreate,
+  ApiCreateOrUpdate,
   ApiDestroy,
   ApiFilter,
   ApiList,
@@ -214,6 +215,40 @@ export function validateApiUpdate<
         endpoint,
         testModel
       );
+    });
+  });
+}
+
+export function validateApiCreateOrUpdate<
+  Model extends AbstractModel,
+  Params extends any[],
+  Service extends ApiCreateOrUpdate<Model, Params>
+>(
+  createService: () => SpectatorService<Service>,
+  modelBuilder: AbstractModelConstructor<Model>,
+  createEndpoint: string,
+  updateEndpoint: string,
+  model: () => Model,
+  ...parameters: Params
+): void {
+  describe("Api Create or Update", () => {
+    it("should handle create endpoint", () => {
+      const spec = createService();
+      const testModel = model();
+      const service = spec.service;
+
+      const api: BawApiService<Model> =
+        spec.inject<BawApiService<Model>>(BawApiService);
+      spyOn(api, "createOrUpdate").and.callFake(
+        () => new BehaviorSubject<Model>(testModel)
+      );
+      service.createOrUpdate(testModel, ...parameters).subscribe();
+
+      const args = getCallArgs(api.createOrUpdate as jasmine.Spy);
+      expect(args[0]).toBe(modelBuilder);
+      expect(args[1]).toBe(createEndpoint);
+      expect(args[2](testModel)).toBe(updateEndpoint);
+      expect(args[3]).toBe(testModel);
     });
   });
 }

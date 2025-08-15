@@ -426,7 +426,7 @@ export class BawApiService<
     return of(null).pipe(
       concatMap(
         model.hasJsonOnlyAttributesForCreate()
-          ? () => this.httpPost(path, body, undefined, options).pipe()
+          ? () => this.httpPost(path, body, undefined, options)
           : (data) => of(data)
       ),
       // we create a class from the POST response so that we can construct an update route for the formData PUT request
@@ -526,6 +526,103 @@ export class BawApiService<
       catchError((err) =>
         this.handleError(err, this.suppressErrors(options), classBuilder)
       )
+    );
+  }
+
+  /**
+   * Uses the create endpoint (with PUT instead of POST) to create a model if it
+   * doesn't already exist.
+   * Update the model if it exists.
+   *
+   * @param classBuilder Model to create
+   * @param upsertPath API path for JSON create requests.
+   * @param updatePath API path to send multipart update requests.
+   * @param model Model to insert into API request
+   * @param options Service options to disable notifications, modify caching, etc...
+   */
+  public createOrUpdate(
+    classBuilder: ClassBuilder,
+    upsertPath: string,
+    updatePath: (model: Model) => string,
+    model: AbstractModel,
+    options: BawServiceOptions = {}
+  ): Observable<Model> {
+    const jsonData = model.getJsonAttributesForUpsert();
+    let body = model.kind
+      ? { [model.kind]: jsonData ?? model }
+      : jsonData ?? model;
+
+    // We use Object.keys() instead of
+    // AbstractModel.hasJsonOnlyAttributesForUpsert so that we don't have to
+    // iterate over of the model properties to determine if there are
+    // any JSON-only attributes.
+    const hasJsonOnlyAttributes = Object.keys(body).length > 0;
+
+    let formData = hasJsonOnlyAttributes
+      ? model.getFormDataOnlyAttributesForUpdate()
+      : model.getFormDataOnlyAttributesForUpsert();
+
+    // By using entries().next().done, we can determine if there is any form
+    // data without using the hasFormDataOnlyAttributes...() abstract model
+    // methods which iterate over of the model properties.
+    //
+    // next().done will only return true if it failed to get any new entries
+    // meaning that if there is one or more entries, it will return false.
+    const hasFormData = formData.entries().next().done === false;
+
+    if (options.params) {
+      // If there is already a form data request going out, we want to attach
+      // the unscoped params to the form data request.
+      //
+      // If there is not a form data request already going out, we want to add
+      // the unscoped params to the JSON body.
+      if (formData) {
+        formData = this.addUnscopedFormdataParams(formData, options.params);
+      } else {
+        body = this.addUnscopedJsonParams(body, options.params);
+      }
+    }
+
+    // As part of the multi part request, if there is only a JSON body, we want
+    // to return the output of the JSON POST request.
+    // If there is only a formData body, we want to return the output of the
+    // formData PUT request if there is both a JSON body and formData, we want
+    // to return the output of the formData PUT request because it is sent after
+    // the initial JSON request, so it will have the most up-to-date model.
+    return iif(
+      () => hasJsonOnlyAttributes,
+      this.httpPut(upsertPath, body, undefined, options),
+      // When there is no JSON body, we pass through "null" so that the form
+      // data request will be used as the response body.
+      of(null),
+    ).pipe(
+      // We create a class from the POST response so that we can construct an
+      // update route for the formData PUT request using the updatePath
+      // callback. We do this before the concatMap below because the updatePath
+      // callback is dependent on the instantiated class from the POST response
+      // object.
+      map(this.handleSingleResponse(classBuilder)),
+      // Using concatMap here ensures that the httpPost request completes before
+      // the httpPut (formdata) request is made.
+      concatMap((data) =>
+        iif(
+          () => hasFormData,
+          this.httpPut(
+            updatePath(data),
+            formData,
+            multiPartApiHeaders,
+            options,
+          ).pipe(map(this.handleSingleResponse(classBuilder))),
+          of(data),
+        ),
+      ),
+      // TODO: this should be a more targeted cache invalidation
+      // we have to clear the cache when creating new models because the new
+      // models might be included in cached associations
+      tap(() => this.clearCache()),
+      catchError((err) =>
+        this.handleError(err, this.suppressErrors(options), classBuilder),
+      ),
     );
   }
 
