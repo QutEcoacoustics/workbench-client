@@ -8,7 +8,6 @@ import { Params, Router } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
-import { SHALLOW_AUDIO_EVENT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -29,7 +28,6 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -41,6 +39,7 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -133,10 +132,10 @@ describe("AnnotationSearchComponent", () => {
       injector,
     );
 
-    audioEventsSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    audioEventsSpy = spec.inject(ShallowAudioEventsService);
     audioEventsSpy.filter.andCallFake(() => of(mockAudioEventsResponse));
 
-    shallowSiteSpy = spec.inject(SHALLOW_SITE.token);
+    shallowSiteSpy = spec.inject(ShallowSitesService);
     shallowSiteSpy.show.andCallFake(() => of(routeSite));
 
     spec.detectChanges();
@@ -239,7 +238,7 @@ describe("AnnotationSearchComponent", () => {
       expect(element).not.toExist();
     });
 
-    xit("should display a page of search results", () => {
+    it("should display a page of search results", () => {
       spec.detectChanges();
 
       const expectedResults = mockAudioEventsResponse.length;

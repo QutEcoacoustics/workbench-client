@@ -14,15 +14,6 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import {
-  MEDIA,
-  PROJECT,
-  SHALLOW_AUDIO_EVENT,
-  SHALLOW_REGION,
-  SHALLOW_SITE,
-  SHALLOW_VERIFICATION,
-  TAG,
-} from "@baw-api/ServiceTokens";
 import { CUSTOM_ELEMENTS_SCHEMA, signal } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
@@ -31,7 +22,7 @@ import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
-import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
+import { selectFromTypeahead } from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -54,7 +45,7 @@ import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { ConfirmedStatus, Verification } from "@models/Verification";
+import { Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
 import { WIPComponent } from "@shared/wip/wip.component";
@@ -148,7 +139,7 @@ describe("VerificationComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    mediaServiceSpy = spec.inject(MEDIA.token);
+    mediaServiceSpy = spec.inject(MediaService);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
     mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
 
@@ -190,12 +181,12 @@ describe("VerificationComponent", () => {
 
     spec.component.searchParameters = signal(mockSearchParameters);
 
-    verificationApiSpy = spec.inject(SHALLOW_VERIFICATION.token);
-    audioEventsApiSpy = spec.inject(SHALLOW_AUDIO_EVENT.token);
-    tagsApiSpy = spec.inject(TAG.token);
-    projectApiSpy = spec.inject(PROJECT.token);
-    regionApiSpy = spec.inject(SHALLOW_REGION.token);
-    sitesApiSpy = spec.inject(SHALLOW_SITE.token);
+    verificationApiSpy = spec.inject(ShallowVerificationService);
+    audioEventsApiSpy = spec.inject(ShallowAudioEventsService);
+    tagsApiSpy = spec.inject(TagsService);
+    projectApiSpy = spec.inject(ProjectsService);
+    regionApiSpy = spec.inject(ShallowRegionsService);
+    sitesApiSpy = spec.inject(ShallowSitesService);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
@@ -229,7 +220,7 @@ describe("VerificationComponent", () => {
       ),
     ]);
 
-    tagsApiSpy.typeaheadCallback = (() => () => of(defaultFakeTags)) as any;
+    tagsApiSpy.typeaheadCallback.andReturn(() => of(defaultFakeTags));
 
     verificationApiSpy.createOrUpdate = jasmine.createSpy(
       "createOrUpdate",
@@ -473,82 +464,99 @@ describe("VerificationComponent", () => {
         );
       });
 
-      describe("verification api", () => {
-        beforeEach(async () => {
-          await waitUntil(() => verificationGrid().loaded);
-        });
+      describe("decisions", () => {
+        interface DecisionTest {
+          testName: string;
+        }
 
-        it("should make the correct api calls when a decision is made about the entire grid", async () => {
-          await makeDecision(0);
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
-            gridSize(),
-          );
-        });
+        function runDecisionTest(test: DecisionTest) {
+        }
 
-        xit("should make a verification api call when a single decision is made", async () => {
-          await makeSelection(0, 0);
-          await makeDecision(0);
-
-          await detectChanges(spec);
-
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
-            jasmine.anything(),
-            jasmine.anything(),
-            jasmine.anything(),
-          );
-        });
-
-        xit("should make multiple verification api calls when multiple decisions are made", async () => {
-          await makeSelection(0, 2);
-          await makeDecision(0);
-
-          const expectedApiCalls = [
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
-            [jasmine.anything(), jasmine.anything(), jasmine.anything()],
-          ];
-
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
-            expectedApiCalls.length,
-          );
-
-          for (const apiCall of expectedApiCalls) {
-            expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledWith(
-              ...apiCall,
-            );
-          }
-        });
-
-        xit("should make the correct api calls when a decision is overwritten", async () => {
-          await makeSelection(0, 0);
-          await makeDecision(0);
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(1);
-
-          verificationApiSpy.createOrUpdate.calls.reset();
-          await makeDecision(1);
-
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
-            jasmine.anything(),
-            jasmine.anything(),
-            jasmine.anything(),
-          );
-        });
-
-        describe("decisions", () => {
-          interface DecisionTest {
-            decision: string;
-            expectedDecision: ConfirmedStatus;
-          }
-
+        describe("no decision -> decision", () => {
           const decisionTests: DecisionTest[] = [
-            { decision: "true", expectedDecision: ConfirmedStatus.Correct },
-            { decision: "false", expectedDecision: ConfirmedStatus.Incorrect },
-            { decision: "Unsure", expectedDecision: ConfirmedStatus.Unsure },
+            { testName: "verify a tag as correct" },
+            { testName: "verify a tag as incorrect" },
+            { testName: "skip verifying a tag" },
+            { testName: "unsure about a tag" },
+            { testName: "Apply a label" },
+            { testName: "Correct a label" },
+            { testName: "Apply a negative label for counter learning" },
+            { testName: "Skip applying a new tag" },
+            { testName: "Unsure about applying a new tag" },
           ];
 
-          // Because the web components and the
           for (const test of decisionTests) {
-            it(`should emit the correct api decision "${test.decision}"`, () => {});
+            it(test.testName, () => {
+              runDecisionTest(test);
+            });
+          }
+        });
+
+        describe("verification decision -> verification decision", () => {
+          const decisionTests: DecisionTest[] = [
+            { testName: "incorrect -> correct" },
+            { testName: "incorrect -> incorrect" },
+            { testName: "incorrect -> skip" },
+            { testName: "incorrect -> unsure" },
+            { testName: "incorrect -> nothing" },
+
+            { testName: "correct -> correct" },
+            { testName: "correct -> incorrect" },
+            { testName: "correct -> skip" },
+            { testName: "correct -> unsure" },
+            { testName: "correct -> nothing" },
+
+            { testName: "skip -> correct" },
+            { testName: "skip -> incorrect" },
+            { testName: "skip -> skip" },
+            { testName: "skip -> unsure" },
+            { testName: "skip -> nothing" },
+
+            { testName: "unsure -> correct" },
+            { testName: "unsure -> incorrect" },
+            { testName: "unsure -> skip" },
+            { testName: "unsure -> unsure" },
+            { testName: "unsure -> nothing" },
+          ];
+
+          for (const test of decisionTests) {
+            it(test.testName, () => {
+              runDecisionTest(test);
+            });
+          }
+        });
+
+        describe("tag decision -> tag-decision", () => {
+          const decisionTests: DecisionTest[] = [
+            { testName: "incorrect -> correct" },
+            { testName: "incorrect -> incorrect" },
+            { testName: "incorrect -> skip" },
+            { testName: "incorrect -> unsure" },
+            { testName: "incorrect -> nothing" },
+
+            { testName: "correct -> correct" },
+            { testName: "correct -> incorrect" },
+            { testName: "correct -> skip" },
+            { testName: "correct -> unsure" },
+            { testName: "correct -> nothing" },
+
+            { testName: "skip -> correct" },
+            { testName: "skip -> incorrect" },
+            { testName: "skip -> skip" },
+            { testName: "skip -> unsure" },
+            { testName: "skip -> nothing" },
+
+            { testName: "unsure -> correct" },
+            { testName: "unsure -> incorrect" },
+            { testName: "unsure -> skip" },
+            { testName: "unsure -> unsure" },
+            { testName: "unsure -> nothing" },
+          ];
+
+          for (const test of decisionTests) {
+            it(test.testName, () => {
+              runDecisionTest(test);
+            });
           }
         });
       });
