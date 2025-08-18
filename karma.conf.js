@@ -78,6 +78,34 @@ module.exports = function (config) {
         served: true,
       },
     ],
+    // Spectrogram rendering uses SharedArrayBuffer to communicate between
+    // workers. However, using SharedArrayBuffer requires content served
+    // with COEP, COOP, and CORP headers.
+    // So that spectrograms render correctly in testing environments, I serve
+    // all content with the correct security permissions to allow the
+    // spectrograms to render.
+    customHeaders: [
+      {
+        match: ".*",
+        name: "Cross-Origin-Opener-Policy",
+        value: "same-origin",
+      },
+      {
+        match: ".*",
+        name: "Cross-Origin-Embedder-Policy",
+        value: "require-corp",
+      },
+      {
+        match: ".*",
+        name: "Cross-Origin-Resource-Policy",
+        value: "cross-origin",
+      },
+      {
+        match: ".*",
+        name: "Access-Control-Allow-Origin",
+        value: "*",
+      },
+    ],
     viewport: {
       // Ensure you modify the viewports object (@test/helpers/general.ts) to match
       // the values declared here.

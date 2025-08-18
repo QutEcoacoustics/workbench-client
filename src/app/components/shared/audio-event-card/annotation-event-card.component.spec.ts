@@ -23,7 +23,6 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
-import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -99,7 +98,6 @@ describe("AudioEventCardComponent", () => {
   const tagInfoElement = () => spectator.query(".tag-information");
 
   beforeEach(() => {
-    patchSharedArrayBuffer();
     setup();
   });
 

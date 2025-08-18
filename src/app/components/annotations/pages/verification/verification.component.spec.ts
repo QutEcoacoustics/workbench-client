@@ -22,7 +22,7 @@ import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
-import { selectFromTypeahead } from "@test/helpers/html";
+import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -41,10 +41,9 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
 import { nodeModule, testAsset } from "@test/helpers/karma";
-import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { ShallowVerificationService, VerificationService } from "@baw-api/verification/verification.service";
 import { Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
@@ -54,16 +53,42 @@ import {
   interceptShowApiRequest,
   viewports,
 } from "@test/helpers/general";
-import { VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
+import { DecisionComponent, VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
 import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { ngMocks } from "ng-mocks";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
 } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
+
+enum DecisionOptions {
+  TRUE = "true",
+  FALSE = "false",
+  UNSURE = "unsure",
+  SKIP = "skip",
+}
+
+interface VerificationTest {
+  testName?: string;
+  initialDecision: DecisionOptions | null;
+  newDecision: DecisionOptions | null;
+  expectedApiCall: VerificationServiceCall | null;
+}
+
+interface NewTagTest {
+  testName?: string;
+  initialDecision: DecisionOptions | null;
+  newDecision: DecisionOptions | null;
+}
+
+interface VerificationServiceCall {
+  method: keyof ShallowVerificationService;
+  args: any[];
+}
 
 describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
@@ -128,7 +153,7 @@ describe("VerificationComponent", () => {
       },
       providers: [
         mockProvider(AnnotationService, {
-          show: () => mockAnnotationResponse
+          show: () => mockAnnotationResponse,
         }),
         mockProvider(Router, {
           createUrlTree: () => ({}),
@@ -222,22 +247,14 @@ describe("VerificationComponent", () => {
 
     tagsApiSpy.typeaheadCallback.andReturn(() => of(defaultFakeTags));
 
-    verificationApiSpy.createOrUpdate = jasmine.createSpy(
-      "createOrUpdate",
-    ) as any;
-    verificationApiSpy.createOrUpdate.and.callFake(() =>
-      of(verificationResponse),
-    );
+    spyOn(verificationApiSpy, "create").and.returnValue(of(verificationResponse));
+    spyOn(verificationApiSpy, "update").and.returnValue(of(verificationResponse));
+    spyOn(verificationApiSpy, "createOrUpdate").and.returnValue(of(verificationResponse));
+    spyOn(verificationApiSpy, "destroy").and.returnValue(of());
 
-    verificationApiSpy.create = jasmine.createSpy("create") as any;
-    verificationApiSpy.create.and.callFake(() => of(verificationResponse));
-
-    verificationApiSpy.update = jasmine.createSpy("update") as any;
-    verificationApiSpy.update.and.callFake(() => of(verificationResponse));
-
-    // I explicitly set the viewport size so that the grid size is always
-    // consistent no matter what size the karma browser window is
-    viewport.set(viewports.extraLarge);
+    spyOn(verificationApiSpy, "filter").and.returnValue(of([]));
+    spyOn(verificationApiSpy, "list").and.returnValue(of([]));
+    spyOn(verificationApiSpy, "show").and.returnValue(of());
 
     await detectChanges(spec);
 
@@ -245,7 +262,15 @@ describe("VerificationComponent", () => {
   }
 
   beforeEach(async () => {
-    patchSharedArrayBuffer();
+    // The verification grid will automatically scroll into view once it has
+    // loaded. However, I disable this behavior for testing because it can be
+    // annoying to deal with when trying to read test stack traces and the page
+    // automatically scrolls away from what you were reading.
+    Element.prototype.scrollIntoView = () => {};
+
+    // I explicitly set the viewport size so that the grid size is always
+    // consistent no matter what size the karma browser window is
+    viewport.set(viewports.extraLarge);
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
@@ -281,6 +306,7 @@ describe("VerificationComponent", () => {
     // modal windows open at the same time if we do not explicitly dismiss them
     // after each test
     modalsSpy?.dismissAll();
+    viewport.reset();
   });
 
   const dialogShowButton = () =>
@@ -312,7 +338,10 @@ describe("VerificationComponent", () => {
     );
 
   const decisionComponents = () =>
-    document.querySelectorAll<HTMLButtonElement>("oe-verification");
+    document.querySelectorAll<DecisionComponent>(
+      "oe-verification, oe-classification, oe-tag-prompt, oe-skip",
+    );
+
   const decisionButton = (index: number) =>
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
       "button",
@@ -329,7 +358,19 @@ describe("VerificationComponent", () => {
     discardPeriodicTasks();
   }
 
-  async function makeDecision(index: number) {
+  async function makeDecision(decision: DecisionOptions) {
+    const decisions = [
+      DecisionOptions.TRUE,
+      DecisionOptions.FALSE,
+      DecisionOptions.UNSURE,
+      DecisionOptions.SKIP,
+    ];
+
+    const index = decisions.indexOf(decision);
+    if (index < 0) {
+      throw new Error("Could not find decision button");
+    }
+
     const decisionComponent = decisionComponents()[index];
     decisionComponent.disabled = false;
 
@@ -341,6 +382,10 @@ describe("VerificationComponent", () => {
 
   /** Uses shift + click selection to select a range */
   async function makeSelection(start: number, end: number) {
+    // Resize the viewport to make the grid tiles visible
+    //! Smell: I should not have to resize the karma viewport
+    viewport.set(viewports.large);
+    await waitUntil(() => gridTiles().length > 0);
     const targetGridTiles = gridTiles();
 
     const startTile = targetGridTiles[start];
@@ -389,21 +434,441 @@ describe("VerificationComponent", () => {
     expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
 
-  describe("search parameters", () => {
-    describe("no initial search parameters", () => {
-      beforeEach(async () => {
-        await setup();
+  describe("no initial search parameters", () => {
+    beforeEach(async () => {
+      await setup();
 
-        helpCloseButton().click();
-        await detectChanges(spec);
+      helpCloseButton().click();
+      await detectChanges(spec);
+    });
+
+    xit("should update the search parameters when filter conditions are added", async () => {
+      const targetTag = defaultFakeTags[0];
+      const tagText = targetTag.text;
+      const expectedTagId = targetTag.id;
+
+      await detectChanges(spec);
+
+      fakeAsync(() => {
+        showParameters();
+        selectFromTypeahead(spec, tagsTypeahead(), tagText);
+      })();
+
+      spec.click(updateFiltersButton());
+
+      expect(spec.component.searchParameters().tags).toContain(expectedTagId);
+    });
+
+    it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
+      expect(modalsSpy.open).not.toHaveBeenCalled();
+      showParameters();
+      expect(modalsSpy.open).toHaveBeenCalledTimes(1);
+    }));
+
+    it("should correctly update the selection parameter when filter conditions are added", async () => {
+      await detectChanges(spec);
+      fakeAsync(() => showParameters())();
+
+      clickVerificationStatusFilter("any");
+
+      spec.click(updateFiltersButton());
+
+      expect(spec.component.searchParameters().verificationStatus).toEqual(
+        "any",
+      );
+    });
+  });
+
+  describe("with initial search parameters", () => {
+    let mockTagIds: number[];
+
+    beforeEach(async () => {
+      mockTagIds = modelData.ids();
+
+      const testedQueryParameters: Params = {
+        tags: mockTagIds.join(","),
+        taskBehavior: "verify-and-correct-tag",
+      };
+
+      // we recreate the fixture with query parameters so that we can test
+      // the component's behavior when query parameters are present
+      // on load
+      await setup(testedQueryParameters);
+
+      helpCloseButton().click();
+      await detectChanges(spec);
+
+      await waitUntil(() => verificationGrid().loaded);
+    });
+
+    it("should create the correct search parameter model from query string parameters", () => {
+      const realizedParameterModel = spec.component.searchParameters();
+
+      expect(realizedParameterModel).toEqual(
+        jasmine.objectContaining({
+          tags: jasmine.arrayContaining(mockTagIds),
+        }),
+      );
+    });
+
+    describe("verification decisions", () => {
+      const verificationTrueApiCall: VerificationServiceCall = {
+        method: "createOrUpdate",
+        args: [jasmine.objectContaining({ confirmed: "correct" })],
+      };
+
+      const verificationFalseApiCall: VerificationServiceCall = {
+        method: "createOrUpdate",
+        args: [jasmine.objectContaining({ confirmed: "correct" })],
+      };
+
+      const verificationUnsureApiCall: VerificationServiceCall = {
+        method: "createOrUpdate",
+        args: [jasmine.objectContaining({ confirmed: "correct" })],
+      };
+
+      const verificationSkipApiCall: VerificationServiceCall = {
+        method: "createOrUpdate",
+        args: [jasmine.objectContaining({ confirmed: "correct" })],
+      };
+
+      const verificationDeleteApiCall: VerificationServiceCall = {
+        method: "destroy",
+        args: [jasmine.anything()],
+      };
+
+      function runVerificationTest(test: VerificationTest): void {
+        const testName =
+          test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
+
+        fit(testName, async () => {
+          await makeSelection(0, 0);
+
+          if (test.initialDecision) {
+            await makeDecision(test.initialDecision);
+          }
+
+          if (test.expectedApiCall.method) {
+            verificationApiSpy[test.expectedApiCall.method].calls.reset();
+          }
+
+          await makeSelection(0, 0);
+
+          if (test.newDecision) {
+            await makeDecision(test.newDecision);
+          }
+
+          const testedMethods: (keyof ShallowVerificationService)[] = [
+            "create",
+            "update",
+            "createOrUpdate",
+            "destroy",
+            "filter",
+            "list",
+            "show",
+          ];
+
+          for (const method of testedMethods) {
+            if (method === test.expectedApiCall.method) {
+              expect(verificationApiSpy[method]).toHaveBeenCalledOnceWith(
+                ...test.expectedApiCall.args,
+              );
+            } else {
+              expect(verificationApiSpy[method]).not.toHaveBeenCalled();
+            }
+          }
+        });
+      }
+
+      const decisionTests: VerificationTest[] = [
+        {
+          testName: "verify a tag as correct",
+          initialDecision: null,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          testName: "verify a tag as incorrect",
+          initialDecision: null,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        {
+          testName: "skip verifying a tag",
+          initialDecision: null,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationSkipApiCall,
+        },
+        {
+          testName: "unsure about a tag",
+          initialDecision: null,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
+
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: null,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationSkipApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: null,
+          expectedApiCall: verificationDeleteApiCall,
+        },
+
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.TRUE,
+          // No api calls should be made
+          expectedApiCall: null,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationSkipApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: null,
+          expectedApiCall: verificationDeleteApiCall,
+        },
+
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: null,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: null,
+          expectedApiCall: verificationSkipApiCall,
+        },
+
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationSkipApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: null,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: null,
+          expectedApiCall: verificationDeleteApiCall,
+        },
+      ];
+
+      for (const test of decisionTests) {
+        runVerificationTest(test);
+      }
+    });
+
+    describe("new tag decisions", () => {
+      function runNewTagTest(test: NewTagTest): void {
+        const testName =
+          test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
+
+        it(testName, () => {});
+      }
+
+      const decisionTests: NewTagTest[] = [
+        {
+          testName: "Apply a label",
+          initialDecision: null,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          testName: "Correct a label",
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          testName: "Apply a negative label for counter learning",
+          initialDecision: null,
+          newDecision: DecisionOptions.FALSE,
+        },
+        {
+          testName: "Skip applying a new tag",
+          initialDecision: null,
+          newDecision: DecisionOptions.SKIP,
+        },
+        {
+          testName: "Unsure about applying a new tag",
+          initialDecision: null,
+          newDecision: DecisionOptions.UNSURE,
+        },
+
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.FALSE,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.SKIP,
+        },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.UNSURE,
+        },
+        { initialDecision: DecisionOptions.FALSE, newDecision: null },
+
+        {
+          testName: "Correct a label",
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.FALSE,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.SKIP,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.UNSURE,
+        },
+        { initialDecision: DecisionOptions.TRUE, newDecision: null },
+
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.FALSE,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.SKIP,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.UNSURE,
+        },
+        { initialDecision: DecisionOptions.SKIP, newDecision: null },
+
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.TRUE,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.FALSE,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.SKIP,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.UNSURE,
+        },
+        { initialDecision: DecisionOptions.UNSURE, newDecision: null },
+      ];
+
+      for (const test of decisionTests) {
+        runNewTagTest(test);
+      }
+    });
+
+    describe("verification grid functionality", () => {
+      describe("initial state", () => {
+        it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
+          const expectedCustomElements: string[] = [
+            "oe-verification-grid",
+            "oe-verification",
+            "oe-media-controls",
+            "oe-indicator",
+            "oe-axes",
+
+            // these two custom elements are private components not supposed
+            // to be used by the end user
+            // however, because we control both the web components and the
+            // workbench client, I am happy to assert that these two
+            // components are defined, so that the test is more robust
+            "oe-verification-bootstrap",
+            "oe-verification-grid-tile",
+          ];
+
+          for (const selector of expectedCustomElements) {
+            const customElementClass = customElements.get(selector);
+            expect(customElementClass).withContext(selector).toBeDefined();
+          }
+        });
+
+        it("should have the correct grid size target", () => {
+          const expectedTarget = 12;
+          const realizedTarget = verificationGrid().targetGridSize;
+          expect(realizedTarget).toEqual(expectedTarget);
+        });
       });
 
-      xit("should update the search parameters when filter conditions are added", async () => {
+      it("should reset the verification grids getPage function when the search parameters are changed", async () => {
+        await detectChanges(spec);
+
+        const initialPagingCallback = verificationGrid().getPage;
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
-        const expectedTagId = targetTag.id;
-
-        await detectChanges(spec);
 
         fakeAsync(() => {
           showParameters();
@@ -411,227 +876,31 @@ describe("VerificationComponent", () => {
         })();
 
         spec.click(updateFiltersButton());
+        await detectChanges(spec);
 
-        expect(spec.component.searchParameters().tags).toContain(expectedTagId);
+        // we use the "toBe" matcher so that we compare the "getPage" callback
+        // by reference
+        const newPagingCallback = verificationGrid().getPage;
+        expect(newPagingCallback).not.toBe(initialPagingCallback);
       });
 
-      it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
-        expect(modalsSpy.open).not.toHaveBeenCalled();
-        showParameters();
-        expect(modalsSpy.open).toHaveBeenCalledTimes(1);
-      }));
-
-      it("should correctly update the selection parameter when filter conditions are added", async () => {
+      it("should reset the verification grids getPage function when the selection criteria is changed", async () => {
         await detectChanges(spec);
-        fakeAsync(() => showParameters())();
+        const initialPagingCallback = verificationGrid().getPage;
 
+        fakeAsync(() => showParameters())();
         clickVerificationStatusFilter("any");
 
         spec.click(updateFiltersButton());
-
-        expect(spec.component.searchParameters().verificationStatus).toEqual(
-          "any",
-        );
-      });
-    });
-
-    describe("with initial search parameters", () => {
-      let mockTagIds: number[];
-
-      beforeEach(async () => {
-        mockTagIds = modelData.ids();
-
-        const testedQueryParameters: Params = {
-          tags: mockTagIds.join(","),
-        };
-
-        // we recreate the fixture with query parameters so that we can test
-        // the component's behavior when query parameters are present
-        // on load
-        await setup(testedQueryParameters);
-
-        helpCloseButton().click();
         await detectChanges(spec);
+
+        const newPagingCallback = verificationGrid().getPage;
+        expect(newPagingCallback).not.toBe(initialPagingCallback);
       });
 
-      it("should create the correct search parameter model from query string parameters", () => {
-        const realizedParameterModel = spec.component.searchParameters();
-
-        expect(realizedParameterModel).toEqual(
-          jasmine.objectContaining({
-            tags: jasmine.arrayContaining(mockTagIds),
-          }),
-        );
-      });
-
-      describe("decisions", () => {
-        interface DecisionTest {
-          testName: string;
-        }
-
-        function runDecisionTest(test: DecisionTest) {
-        }
-
-        describe("no decision -> decision", () => {
-          const decisionTests: DecisionTest[] = [
-            { testName: "verify a tag as correct" },
-            { testName: "verify a tag as incorrect" },
-            { testName: "skip verifying a tag" },
-            { testName: "unsure about a tag" },
-            { testName: "Apply a label" },
-            { testName: "Correct a label" },
-            { testName: "Apply a negative label for counter learning" },
-            { testName: "Skip applying a new tag" },
-            { testName: "Unsure about applying a new tag" },
-          ];
-
-          for (const test of decisionTests) {
-            it(test.testName, () => {
-              runDecisionTest(test);
-            });
-          }
-        });
-
-        describe("verification decision -> verification decision", () => {
-          const decisionTests: DecisionTest[] = [
-            { testName: "incorrect -> correct" },
-            { testName: "incorrect -> incorrect" },
-            { testName: "incorrect -> skip" },
-            { testName: "incorrect -> unsure" },
-            { testName: "incorrect -> nothing" },
-
-            { testName: "correct -> correct" },
-            { testName: "correct -> incorrect" },
-            { testName: "correct -> skip" },
-            { testName: "correct -> unsure" },
-            { testName: "correct -> nothing" },
-
-            { testName: "skip -> correct" },
-            { testName: "skip -> incorrect" },
-            { testName: "skip -> skip" },
-            { testName: "skip -> unsure" },
-            { testName: "skip -> nothing" },
-
-            { testName: "unsure -> correct" },
-            { testName: "unsure -> incorrect" },
-            { testName: "unsure -> skip" },
-            { testName: "unsure -> unsure" },
-            { testName: "unsure -> nothing" },
-          ];
-
-          for (const test of decisionTests) {
-            it(test.testName, () => {
-              runDecisionTest(test);
-            });
-          }
-        });
-
-        describe("tag decision -> tag-decision", () => {
-          const decisionTests: DecisionTest[] = [
-            { testName: "incorrect -> correct" },
-            { testName: "incorrect -> incorrect" },
-            { testName: "incorrect -> skip" },
-            { testName: "incorrect -> unsure" },
-            { testName: "incorrect -> nothing" },
-
-            { testName: "correct -> correct" },
-            { testName: "correct -> incorrect" },
-            { testName: "correct -> skip" },
-            { testName: "correct -> unsure" },
-            { testName: "correct -> nothing" },
-
-            { testName: "skip -> correct" },
-            { testName: "skip -> incorrect" },
-            { testName: "skip -> skip" },
-            { testName: "skip -> unsure" },
-            { testName: "skip -> nothing" },
-
-            { testName: "unsure -> correct" },
-            { testName: "unsure -> incorrect" },
-            { testName: "unsure -> skip" },
-            { testName: "unsure -> unsure" },
-            { testName: "unsure -> nothing" },
-          ];
-
-          for (const test of decisionTests) {
-            it(test.testName, () => {
-              runDecisionTest(test);
-            });
-          }
-        });
-      });
-
-      describe("verification grid functionality", () => {
-        describe("initial state", () => {
-          it("should be mount all the required Open-Ecoacoustics web components as custom elements", () => {
-            const expectedCustomElements: string[] = [
-              "oe-verification-grid",
-              "oe-verification",
-              "oe-media-controls",
-              "oe-indicator",
-              "oe-axes",
-
-              // these two custom elements are private components not supposed
-              // to be used by the end user
-              // however, because we control both the web components and the
-              // workbench client, I am happy to assert that these two
-              // components are defined, so that the test is more robust
-              "oe-verification-bootstrap",
-              "oe-verification-grid-tile",
-            ];
-
-            for (const selector of expectedCustomElements) {
-              const customElementClass = customElements.get(selector);
-              expect(customElementClass).withContext(selector).toBeDefined();
-            }
-          });
-
-          it("should have the correct grid size target", () => {
-            const expectedTarget = 12;
-            const realizedTarget = verificationGrid().targetGridSize;
-            expect(realizedTarget).toEqual(expectedTarget);
-          });
-        });
-
-        it("should reset the verification grids getPage function when the search parameters are changed", async () => {
-          await detectChanges(spec);
-
-          const initialPagingCallback = verificationGrid().getPage;
-          const targetTag = defaultFakeTags[0];
-          const tagText = targetTag.text;
-
-          fakeAsync(() => {
-            showParameters();
-            selectFromTypeahead(spec, tagsTypeahead(), tagText);
-          })();
-
-          spec.click(updateFiltersButton());
-          await detectChanges(spec);
-
-          // we use the "toBe" matcher so that we compare the "getPage" callback
-          // by reference
-          const newPagingCallback = verificationGrid().getPage;
-          expect(newPagingCallback).not.toBe(initialPagingCallback);
-        });
-
-        it("should reset the verification grids getPage function when the selection criteria is changed", async () => {
-          await detectChanges(spec);
-          const initialPagingCallback = verificationGrid().getPage;
-
-          fakeAsync(() => showParameters())();
-          clickVerificationStatusFilter("any");
-
-          spec.click(updateFiltersButton());
-          await detectChanges(spec);
-
-          const newPagingCallback = verificationGrid().getPage;
-          expect(newPagingCallback).not.toBe(initialPagingCallback);
-        });
-
-        it("should populate the verification grid correctly for the first page", () => {
-          const realizedTileCount = verificationGrid().populatedTileCount;
-          expect(realizedTileCount).toBeGreaterThan(0);
-        });
+      it("should populate the verification grid correctly for the first page", () => {
+        const realizedTileCount = verificationGrid().populatedTileCount;
+        expect(realizedTileCount).toBeGreaterThan(0);
       });
     });
   });

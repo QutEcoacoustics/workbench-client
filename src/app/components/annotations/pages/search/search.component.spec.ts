@@ -28,7 +28,6 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -145,8 +144,6 @@ describe("AnnotationSearchComponent", () => {
     spec.queryAll<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(fakeAsync(() => {
-    patchSharedArrayBuffer();
-
     routeProject = new Project(generateProject());
     routeRegion = new Region(generateRegion());
     routeSite = new Site(generateSite());

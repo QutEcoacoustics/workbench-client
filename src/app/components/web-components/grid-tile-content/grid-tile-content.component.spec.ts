@@ -10,7 +10,6 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { AnnotationService } from "@services/models/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { patchSharedArrayBuffer } from "src/patches/tests/testPatches";
 import { detectChanges } from "@test/helpers/changes";
 import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -87,7 +86,6 @@ describe("GridTileContentComponent", () => {
     spectator.query<SpectrogramComponent>("oe-spectrogram");
 
   beforeEach(() => {
-    patchSharedArrayBuffer();
     setup();
     detectChanges(spectator);
   });
