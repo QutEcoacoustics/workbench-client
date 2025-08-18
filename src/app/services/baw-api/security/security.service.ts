@@ -12,18 +12,11 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AuthToken } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
-import { Session, User } from "@models/User";
+import { Session } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
-import {
-  catchError,
-  first,
-  map,
-  mergeMap,
-  switchMap,
-  tap,
-} from "rxjs/operators";
+import { catchError, first, map, mergeMap, tap } from "rxjs/operators";
 import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
@@ -165,6 +158,8 @@ export class SecurityService {
 
   /** Get details of currently logged in user */
   public sessionDetails(): Observable<Session> {
+    // Note that this request is made with credentials because we want to get
+    // the current users session details.
     return this.api.show(Session, sessionUserEndpoint(Date.now().toString()), {
       // This is used when we are unsure if the user is logged in, no need to
       // show an error as it generally is an expected outcome
@@ -185,8 +180,6 @@ export class SecurityService {
     getFormData: (authToken: string) => URLSearchParams,
     pageValidation: (page: string) => void = () => {}
   ): Observable<void> {
-    let authToken: AuthToken;
-
     /*
      * Mimic a traditional form-based sign in/sign up to get a well-formed auth cookie
      * Needed because of:
@@ -207,18 +200,8 @@ export class SecurityService {
       )
       .pipe(
         tap((page) => pageValidation(page)),
-        // Trade the cookie for an API auth token (mimicking old baw-client)
-        switchMap(() => this.sessionDetails()),
-        // Only accept the first result from the API (can return multiple times)
+        tap(() => this.updateAuthToken()),
         first(),
-        // Save to local storage
-        tap((user: Session) => (authToken = user.authToken)),
-        // Get user details
-        switchMap(() => this.userService.showWithoutNotification()),
-        // Only accept the first result from the API (can return multiple times)
-        first(),
-        // Update session user with user details and save to local storage
-        tap((user: User) => this.session.setLoggedInUser(user, authToken)),
         // Void output
         map(() => {}),
         catchError((err) => {
@@ -237,6 +220,8 @@ export class SecurityService {
   private updateAuthToken() {
     // Update authToken using cookie if exists
     let authToken: AuthToken;
+
+    // Trade the cookie for an API auth token (mimicking old baw-client)
     this.sessionDetails()
       .pipe(
         tap((user) => (authToken = user.authToken)),
@@ -245,6 +230,7 @@ export class SecurityService {
       )
       .subscribe({
         next: (user) => {
+          // Update session user with user details and save to local storage
           this.session.setLoggedInUser(user, authToken);
           this.completeAuthAwait();
         },
