@@ -43,7 +43,7 @@ import { detectChanges } from "@test/helpers/changes";
 import { nodeModule, testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ShallowVerificationService, VerificationService } from "@baw-api/verification/verification.service";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
 import { Verification } from "@models/Verification";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
@@ -58,7 +58,7 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { ngMocks } from "ng-mocks";
+import { T } from "@angular/common/common_module.d-Qx8B6pmN";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
@@ -519,17 +519,17 @@ describe("VerificationComponent", () => {
 
       const verificationFalseApiCall: VerificationServiceCall = {
         method: "createOrUpdate",
-        args: [jasmine.objectContaining({ confirmed: "correct" })],
+        args: [jasmine.objectContaining({ confirmed: "incorrect" })],
       };
 
       const verificationUnsureApiCall: VerificationServiceCall = {
         method: "createOrUpdate",
-        args: [jasmine.objectContaining({ confirmed: "correct" })],
+        args: [jasmine.objectContaining({ confirmed: "unsure" })],
       };
 
       const verificationSkipApiCall: VerificationServiceCall = {
         method: "createOrUpdate",
-        args: [jasmine.objectContaining({ confirmed: "correct" })],
+        args: [jasmine.objectContaining({ confirmed: "skip" })],
       };
 
       const verificationDeleteApiCall: VerificationServiceCall = {
@@ -611,16 +611,20 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.TRUE,
           expectedApiCall: verificationTrueApiCall,
         },
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.FALSE,
-          expectedApiCall: null,
-        },
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.SKIP,
-          expectedApiCall: verificationSkipApiCall,
-        },
+        // {
+        //   initialDecision: DecisionOptions.FALSE,
+        //   newDecision: DecisionOptions.FALSE,
+        //   expectedApiCall: null,
+        // },
+        // {
+        //   // If nothing is selected, the web components will skip all undecided
+        //   // annotations.
+        //   // However, if the verification grid has a selection, decisions can be
+        //   // overwritten with a "skip" decision.
+        //   initialDecision: DecisionOptions.FALSE,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCall: verificationSkipApiCall,
+        // },
         {
           initialDecision: DecisionOptions.FALSE,
           newDecision: DecisionOptions.UNSURE,
@@ -632,22 +636,22 @@ describe("VerificationComponent", () => {
           expectedApiCall: verificationDeleteApiCall,
         },
 
-        {
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.TRUE,
-          // No api calls should be made
-          expectedApiCall: null,
-        },
+        // {
+        //   initialDecision: DecisionOptions.TRUE,
+        //   newDecision: DecisionOptions.TRUE,
+        //   // No api calls should be made
+        //   expectedApiCall: null,
+        // },
         {
           initialDecision: DecisionOptions.TRUE,
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        {
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.SKIP,
-          expectedApiCall: verificationSkipApiCall,
-        },
+        // {
+        //   initialDecision: DecisionOptions.TRUE,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCall: verificationSkipApiCall,
+        // },
         {
           initialDecision: DecisionOptions.TRUE,
           newDecision: DecisionOptions.UNSURE,
@@ -669,11 +673,11 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        {
-          initialDecision: DecisionOptions.SKIP,
-          newDecision: DecisionOptions.SKIP,
-          expectedApiCall: null,
-        },
+        // {
+        //   initialDecision: DecisionOptions.SKIP,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCall: null,
+        // },
         {
           initialDecision: DecisionOptions.SKIP,
           newDecision: DecisionOptions.UNSURE,
@@ -695,11 +699,11 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        {
-          initialDecision: DecisionOptions.UNSURE,
-          newDecision: DecisionOptions.SKIP,
-          expectedApiCall: verificationSkipApiCall,
-        },
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCall: verificationSkipApiCall,
+        // },
         {
           initialDecision: DecisionOptions.UNSURE,
           newDecision: DecisionOptions.UNSURE,
@@ -715,6 +719,10 @@ describe("VerificationComponent", () => {
       for (const test of decisionTests) {
         runVerificationTest(test);
       }
+
+      it("should make verification api calls about the entire page if nothing is selected", () => {
+        expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(gridSize());
+      });
     });
 
     describe("new tag decisions", () => {

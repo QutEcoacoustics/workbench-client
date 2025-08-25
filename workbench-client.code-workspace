@@ -63,6 +63,7 @@
       "SAMEORIGIN",
       "lteq",
       "gteq",
+      "viewports",
     ],
     "cSpell.flagWords": [
       "yuo",
