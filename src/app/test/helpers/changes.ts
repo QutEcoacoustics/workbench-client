@@ -32,19 +32,19 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
       "oe-data-source",
     ];
 
-    const webComponents: any[] = [];
     for (const selector of webComponentSelectors) {
-      const foundElements = spectator.element.querySelectorAll(selector);
-      webComponents.push(...foundElements);
+      const foundElements = spectator.element.querySelectorAll<any>(selector);
+
+      for (const component of foundElements) {
+        await component.updateComplete;
+      }
     }
 
-    for (const component of webComponents) {
-      await component.updateComplete;
-    }
+    await spectator.fixture.whenStable();
   } while (
     // keep detecting changes until the angular components are stable
     // we can be sure that the lit components are stable because we perform their
     // update cycle last
-    !spectator.fixture.isStable
+    !spectator.fixture.isStable()
   );
 }
