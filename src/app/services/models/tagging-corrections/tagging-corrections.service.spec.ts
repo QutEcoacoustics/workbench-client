@@ -17,7 +17,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ConfirmedStatus, Verification } from "@models/Verification";
 import { generateVerification } from "@test/fakes/Verification";
-import { TaggingCorrectionsService } from "./tag-corrections.service";
+import { TaggingCorrectionsService } from "./tagging-corrections.service";
 
 describe("CorrectionsService", () => {
   let spec: SpectatorService<TaggingCorrectionsService>;

@@ -17,7 +17,6 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { CUSTOM_ELEMENTS_SCHEMA, signal } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { VerificationBootstrapComponent } from "@ecoacoustics/web-components/@types/components/bootstrap-modal/bootstrap-modal";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
@@ -66,13 +65,12 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { TaggingCorrectionsService } from "@services/models/tag-corrections/tag-corrections.service";
+import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
 } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
-import { TaggingCorrection } from "@models/data/TaggingCorrection";
 
 enum DecisionOptions {
   TRUE = "true",
@@ -153,6 +151,19 @@ describe("VerificationComponent", () => {
   });
 
   async function setup(queryParameters: Params = {}) {
+    // We stop the bootstrap modal from opening because while the bootstrap is
+    // open, no decisions can be made.
+    // I prevent the modal from opening rather than trying to close it because:
+    // 1) If the modal fails to close or is slow to close, I don't want any
+    //    tests to fails.
+    // 2) It makes the tests faster because we don't have to wait for the modal
+    //    to open and close.
+    //
+    // I have coded this into the web components so that people can't
+    // accidentally make a decision by pressing a keyboard shortcut while the
+    // bootstrap modal is open.
+    setNoBootstrap();
+
     spec = createComponent({
       detectChanges: false,
       params: {
@@ -357,17 +368,6 @@ describe("VerificationComponent", () => {
       "oe-verification-grid-tile",
     );
 
-  // a lot of the web components elements of interest are in the shadow DOM
-  // therefore, we have to chain some query selectors to get to the elements
-  const bootstrapElement = () =>
-    verificationGridRoot().querySelector<VerificationBootstrapComponent>(
-      "oe-verification-bootstrap",
-    );
-  const helpCloseButton = () =>
-    bootstrapElement().shadowRoot.querySelector<HTMLButtonElement>(
-      ".close-button",
-    );
-
   const decisionComponents = () =>
     document.querySelectorAll<DecisionComponent>(
       "oe-verification, oe-classification, oe-tag-prompt, oe-skip",
@@ -401,8 +401,16 @@ describe("VerificationComponent", () => {
     discardPeriodicTasks();
   }
 
+  /**
+   * Prevents the bootstrap modal from opening by setting a local storage key
+   * to automatically dismiss the modal.
+   */
+  function setNoBootstrap(): void {
+    localStorage.setItem("oe-auto-dismiss-bootstrap", "true");
+  }
+
   function isGridLoaded() {
-    return verificationGrid().loaded;
+    return verificationGrid().loadState === "loaded";
     // const tiles = Array.from(verificationGridRoot().querySelectorAll("oe-verification-grid-tile"));
     // return tiles.every((tile) => {
     //   const root = tile.shadowRoot;
@@ -509,8 +517,6 @@ describe("VerificationComponent", () => {
   describe("no initial search parameters", () => {
     beforeEach(async () => {
       await setup();
-
-      helpCloseButton().click();
       await detectChanges(spec);
     });
 
@@ -567,7 +573,6 @@ describe("VerificationComponent", () => {
       // on load
       await setup(testedQueryParameters);
 
-      helpCloseButton().click();
       await detectChanges(spec);
     });
 
@@ -611,7 +616,7 @@ describe("VerificationComponent", () => {
         const testName =
           test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
 
-        it(testName, async () => {
+        fit(testName, async () => {
           if (test.initialDecision) {
             await makeSelection(0, 0);
             await makeVerificationDecision(test.initialDecision);
@@ -650,7 +655,7 @@ describe("VerificationComponent", () => {
                 ...test.expectedApiCall.args,
               );
             } else {
-              expect(verificationApiSpy[method]).notoHaveBeenCalled();
+              expect(verificationApiSpy[method]).not.toHaveBeenCalled();
             }
           }
         });
@@ -1040,7 +1045,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should populate the verification grid correctly for the first page", () => {
-        const realizedTileCount = verificationGrid().populatedTileCount;
+        const realizedTileCount = verificationGrid().pageSize;
         expect(realizedTileCount).toBeGreaterThan(0);
       });
     });

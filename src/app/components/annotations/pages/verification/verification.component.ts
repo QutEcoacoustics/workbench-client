@@ -33,7 +33,7 @@ import { SearchFiltersModalComponent } from "@components/annotations/components/
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -58,7 +58,7 @@ import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
-import { TaggingCorrectionsService } from "@services/models/tag-corrections/tag-corrections.service";
+import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { TaggingCorrection } from "@models/data/TaggingCorrection";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
@@ -250,7 +250,6 @@ class VerificationComponent
     // TODO: this is a hacky solution to get the verification grid to update
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
-    this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges.set(false);
 
