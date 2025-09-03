@@ -24,7 +24,12 @@ export function clickButton<T>(
     fail("Could not perform click: Button is disabled");
   }
 
+  spectator.dispatchMouseEvent(element, "pointerdown");
+  spectator.dispatchMouseEvent(element, "mousedown");
+  spectator.dispatchMouseEvent(element, "click");
+
   // using spectator.click() will cause a change detection cycle
+  // https://github.com/ngneat/spectator/blob/38b036c763b96ab4ebc4/projects/spectator/src/lib/base/dom-spectator.ts#L193
   spectator.click(selector);
 }
 

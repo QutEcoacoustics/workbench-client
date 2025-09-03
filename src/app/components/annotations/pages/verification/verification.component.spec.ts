@@ -22,11 +22,15 @@ import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
-import { selectFromTypeahead, waitUntil } from "@test/helpers/html";
+import {
+  clickButton,
+  selectFromTypeahead,
+  waitUntil,
+} from "@test/helpers/html";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -53,16 +57,22 @@ import {
   interceptShowApiRequest,
   viewports,
 } from "@test/helpers/general";
-import { DecisionComponent, VerificationGridTileComponent } from "@ecoacoustics/web-components/@types";
+import {
+  DecisionComponent,
+  TagPromptComponent,
+  VerificationGridTileComponent,
+} from "@ecoacoustics/web-components/@types";
 import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { TaggingCorrectionsService } from "@services/models/tag-corrections/tag-corrections.service";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
 } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
+import { TaggingCorrection } from "@models/data/TaggingCorrection";
 
 enum DecisionOptions {
   TRUE = "true",
@@ -74,20 +84,29 @@ enum DecisionOptions {
 interface VerificationTest {
   testName?: string;
   initialDecision: DecisionOptions | null;
-  newDecision: DecisionOptions | null;
-  expectedApiCall: VerificationServiceCall | null;
+  newDecision: DecisionOptions;
+  expectedApiCall: VerificationServiceCall;
+}
+
+interface TagCorrectionDecision {
+  item: number;
+  decision: DecisionOptions;
 }
 
 interface NewTagTest {
   testName?: string;
-  initialDecision: DecisionOptions | null;
-  newDecision: DecisionOptions | null;
+  initialDecision: TagCorrectionDecision | DecisionOptions.SKIP | null;
+  newDecision: TagCorrectionDecision;
+  expectedApiCalls: TagCorrectionServiceCall[];
 }
 
-interface VerificationServiceCall {
-  method: keyof ShallowVerificationService;
+interface ServiceCall<T> {
+  method: keyof T;
   args: any[];
 }
+
+type VerificationServiceCall = ServiceCall<ShallowVerificationService>;
+type TagCorrectionServiceCall = ServiceCall<TaggingCorrectionsService>;
 
 describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
@@ -97,6 +116,7 @@ describe("VerificationComponent", () => {
   let mediaServiceSpy: SpyObject<MediaService>;
 
   let verificationApiSpy: SpyObject<ShallowVerificationService>;
+  let taggingCorrectionApiSpy: SpyObject<TaggingCorrectionsService>;
   let tagsApiSpy: SpyObject<TagsService>;
   let projectApiSpy: SpyObject<ProjectsService>;
   let regionApiSpy: SpyObject<ShallowRegionsService>;
@@ -154,6 +174,7 @@ describe("VerificationComponent", () => {
         mockProvider(AnnotationService, {
           show: () => mockAnnotationResponse,
         }),
+        mockProvider(TaggingCorrectionsService),
         mockProvider(Router, {
           createUrlTree: () => ({}),
         }),
@@ -181,11 +202,10 @@ describe("VerificationComponent", () => {
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeProjectId = routeProject.id;
 
-    defaultFakeTags = modelData.randomArray(
-      3,
-      10,
-      () => new Tag(generateTag(), injector),
-    );
+    Array.from({ length: 10 }).map((_, index) => {
+      const tagObject = generateTag({ id: index, text: `item ${index}` });
+      return new Tag(tagObject, injector);
+    });
 
     mockAudioEventsResponse = modelData.randomArray(
       3,
@@ -206,6 +226,7 @@ describe("VerificationComponent", () => {
     spec.component.searchParameters = signal(mockSearchParameters);
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
+    taggingCorrectionApiSpy = spec.inject(TaggingCorrectionsService);
     audioEventsApiSpy = spec.inject(ShallowAudioEventsService);
     tagsApiSpy = spec.inject(TagsService);
     projectApiSpy = spec.inject(ProjectsService);
@@ -246,9 +267,15 @@ describe("VerificationComponent", () => {
 
     tagsApiSpy.typeaheadCallback.andReturn(() => of(defaultFakeTags));
 
-    spyOn(verificationApiSpy, "create").and.returnValue(of(verificationResponse));
-    spyOn(verificationApiSpy, "update").and.returnValue(of(verificationResponse));
-    spyOn(verificationApiSpy, "createOrUpdate").and.returnValue(of(verificationResponse));
+    spyOn(verificationApiSpy, "create").and.returnValue(
+      of(verificationResponse),
+    );
+    spyOn(verificationApiSpy, "update").and.returnValue(
+      of(verificationResponse),
+    );
+    spyOn(verificationApiSpy, "createOrUpdate").and.returnValue(
+      of(verificationResponse),
+    );
     spyOn(verificationApiSpy, "destroy").and.returnValue(of());
 
     spyOn(verificationApiSpy, "filter").and.returnValue(of([]));
@@ -346,6 +373,18 @@ describe("VerificationComponent", () => {
       "oe-verification, oe-classification, oe-tag-prompt, oe-skip",
     );
 
+  const tagPromptComponent = () =>
+    document.querySelector<TagPromptComponent>("oe-tag-prompt");
+  const tagPromptButton = () =>
+    tagPromptComponent().shadowRoot.querySelector("button");
+
+  const tagPromptTypeaheadComponent = () =>
+    tagPromptComponent().shadowRoot.querySelector("oe-typeahead-input");
+  const tagPromptTypeaheadInput = () =>
+    tagPromptTypeaheadComponent().shadowRoot.querySelector("#typeahead-input");
+  const tagPromptTypeaheadItems = () =>
+    tagPromptTypeaheadComponent().shadowRoot.querySelectorAll(".typeahead-result-action");
+
   const decisionButton = (index: number) =>
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
       "button",
@@ -373,7 +412,7 @@ describe("VerificationComponent", () => {
     // });
   }
 
-  async function makeDecision(decision: DecisionOptions) {
+  async function makeVerificationDecision(decision: DecisionOptions) {
     const decisions = [
       DecisionOptions.TRUE,
       DecisionOptions.FALSE,
@@ -392,6 +431,24 @@ describe("VerificationComponent", () => {
     const decisionButtonTarget = decisionButton(index);
     spec.click(decisionButtonTarget);
 
+    await detectChanges(spec);
+  }
+
+  async function makeTagCorrectionDecision(
+    decision: TagCorrectionDecision | DecisionOptions.SKIP,
+  ) {
+    if (decision === DecisionOptions.SKIP) {
+      makeVerificationDecision(DecisionOptions.SKIP);
+      return;
+    }
+
+    clickButton(spec, tagPromptButton());
+    await detectChanges(spec);
+
+    spec.typeInElement("item", tagPromptTypeaheadInput());
+    await detectChanges(spec);
+
+    clickButton(spec, tagPromptTypeaheadItems()[decision.item]);
     await detectChanges(spec);
   }
 
@@ -554,21 +611,27 @@ describe("VerificationComponent", () => {
         const testName =
           test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
 
-        fit(testName, async () => {
-          await makeSelection(0, 0);
-
+        it(testName, async () => {
           if (test.initialDecision) {
-            await makeDecision(test.initialDecision);
+            await makeSelection(0, 0);
+            await makeVerificationDecision(test.initialDecision);
           }
 
           if (test.expectedApiCall.method) {
             verificationApiSpy[test.expectedApiCall.method].calls.reset();
           }
 
+          // We make the selection after resetting calls so that if there is a
+          // bug where a decision is made on selection, this the test will fail.
+          //
+          // Additionally, because of auto-advancement, we need to click on the
+          // target tile after the initial decision is made.
+          // This is because the verification grid will automatically advance
+          // to the next tile after the initial decision.
           await makeSelection(0, 0);
 
           if (test.newDecision) {
-            await makeDecision(test.newDecision);
+            await makeVerificationDecision(test.newDecision);
           }
 
           const testedMethods: (keyof ShallowVerificationService)[] = [
@@ -587,7 +650,7 @@ describe("VerificationComponent", () => {
                 ...test.expectedApiCall.args,
               );
             } else {
-              expect(verificationApiSpy[method]).not.toHaveBeenCalled();
+              expect(verificationApiSpy[method]).notoHaveBeenCalled();
             }
           }
         });
@@ -606,12 +669,12 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        // {
-        //   testName: "skip verifying a tag",
-        //   initialDecision: null,
-        //   newDecision: DecisionOptions.SKIP,
-        //   expectedApiCall: verificationSkipApiCall,
-        // },
+        {
+          testName: "skip verifying a tag",
+          initialDecision: null,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationSkipApiCall,
+        },
         {
           testName: "unsure about a tag",
           initialDecision: null,
@@ -625,16 +688,16 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.TRUE,
           expectedApiCall: verificationTrueApiCall,
         },
-        // {
-        //   initialDecision: DecisionOptions.FALSE,
-        //   newDecision: DecisionOptions.FALSE,
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.FALSE,
 
-        //   // If the "false" decision button is clicked twice, we expect that the
-        //   // decision is toggled and a DELETE api call is made.
-        //   expectedApiCall: verificationDeleteApiCall,
-        // },
+          // If the "false" decision button is clicked twice, we expect that the
+          // decision is toggled and a DELETE api call is made.
+          expectedApiCall: verificationDeleteApiCall,
+        },
         // Overwriting to a "skip" decision is not currently supported
-        // see: https://github.com/ecoacoustics/web-components/issues/487
+        // TODO: https://github.com/ecoacoustics/web-components/issues/487
         // {
         //   initialDecision: DecisionOptions.FALSE,
         //   newDecision: DecisionOptions.SKIP,
@@ -646,73 +709,73 @@ describe("VerificationComponent", () => {
           expectedApiCall: verificationUnsureApiCall,
         },
 
-        // // Transitioning from an initial "true" decision
+        // Transitioning from an initial "true" decision
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationDeleteApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/487
         // {
         //   initialDecision: DecisionOptions.TRUE,
-        //   newDecision: DecisionOptions.TRUE,
-        //   expectedApiCall: verificationDeleteApiCall,
-        // },
-        // {
-        //   initialDecision: DecisionOptions.TRUE,
-        //   newDecision: DecisionOptions.FALSE,
-        //   expectedApiCall: verificationFalseApiCall,
-        // },
-        // // see: https://github.com/ecoacoustics/web-components/issues/487
-        // // {
-        // //   initialDecision: DecisionOptions.TRUE,
-        // //   newDecision: DecisionOptions.SKIP,
-        // //   expectedApiCall: verificationSkipApiCall,
-        // // },
-        // {
-        //   initialDecision: DecisionOptions.TRUE,
-        //   newDecision: DecisionOptions.UNSURE,
-        //   expectedApiCall: verificationUnsureApiCall,
-        // },
-
-        // // Transitioning from an initial "skip" decision
-        // {
-        //   initialDecision: DecisionOptions.SKIP,
-        //   newDecision: DecisionOptions.TRUE,
-        //   expectedApiCall: verificationTrueApiCall,
-        // },
-        // {
-        //   initialDecision: DecisionOptions.SKIP,
-        //   newDecision: DecisionOptions.FALSE,
-        //   expectedApiCall: verificationFalseApiCall,
-        // },
-        // {
-        //   initialDecision: DecisionOptions.SKIP,
         //   newDecision: DecisionOptions.SKIP,
-        //   expectedApiCall: verificationDeleteApiCall,
+        //   expectedApiCall: verificationSkipApiCall,
         // },
-        // {
-        //   initialDecision: DecisionOptions.SKIP,
-        //   newDecision: DecisionOptions.UNSURE,
-        //   expectedApiCall: verificationUnsureApiCall,
-        // },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
 
-        // // Transitioning from an initial "unsure" decision
+        // Transitioning from an initial "skip" decision
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: verificationDeleteApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.SKIP,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationUnsureApiCall,
+        },
+
+        // Transitioning from an initial "unsure" decision
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.TRUE,
+          expectedApiCall: verificationTrueApiCall,
+        },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.FALSE,
+          expectedApiCall: verificationFalseApiCall,
+        },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/487
         // {
         //   initialDecision: DecisionOptions.UNSURE,
-        //   newDecision: DecisionOptions.TRUE,
-        //   expectedApiCall: verificationTrueApiCall,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCall: verificationSkipApiCall,
         // },
-        // {
-        //   initialDecision: DecisionOptions.UNSURE,
-        //   newDecision: DecisionOptions.FALSE,
-        //   expectedApiCall: verificationFalseApiCall,
-        // },
-        // // see: https://github.com/ecoacoustics/web-components/issues/487
-        // // {
-        // //   initialDecision: DecisionOptions.UNSURE,
-        // //   newDecision: DecisionOptions.SKIP,
-        // //   expectedApiCall: verificationSkipApiCall,
-        // // },
-        // {
-        //   initialDecision: DecisionOptions.UNSURE,
-        //   newDecision: DecisionOptions.UNSURE,
-        //   expectedApiCall: verificationDeleteApiCall,
-        // },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.UNSURE,
+          expectedApiCall: verificationDeleteApiCall,
+        },
       ];
 
       for (const test of decisionTests) {
@@ -720,117 +783,188 @@ describe("VerificationComponent", () => {
       }
 
       it("should make verification api calls about the entire page if nothing is selected", () => {
-        expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(gridSize());
+        expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+          gridSize(),
+        );
       });
     });
 
     describe("new tag decisions", () => {
-      function runNewTagTest(test: NewTagTest): void {
+      const newTagCorrectionApiCall: TagCorrectionServiceCall = {
+        method: "create",
+        args: [jasmine.anything()],
+      };
+
+      const deleteTagCorrectionApiCall: TagCorrectionServiceCall = {
+        method: "destroy",
+        args: [jasmine.anything(), jasmine.anything()],
+      };
+
+      async function runNewTagTest(test: NewTagTest): Promise<void> {
         const testName =
           test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
 
-        it(testName, () => {});
+        it(testName, async () => {
+          await makeSelection(0, 0);
+
+          if (test.initialDecision) {
+            await makeSelection(0, 0);
+            await makeTagCorrectionDecision(test.initialDecision);
+          }
+
+          await makeTagCorrectionDecision(test.newDecision);
+
+          for (const apiCall of test.expectedApiCalls) {
+              expect(taggingCorrectionApiSpy[apiCall.method]).toHaveBeenCalledOnceWith(
+                ...apiCall.args,
+              );
+          }
+        });
       }
 
       const decisionTests: NewTagTest[] = [
         {
           testName: "Apply a label",
           initialDecision: null,
-          newDecision: DecisionOptions.TRUE,
+          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+          expectedApiCalls: [newTagCorrectionApiCall],
         },
-        {
-          testName: "Correct a label",
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.TRUE,
-        },
-        {
-          testName: "Apply a negative label for counter learning",
-          initialDecision: null,
-          newDecision: DecisionOptions.FALSE,
-        },
+        // A "false" new-tag decision is currently not implemented
+        // TODO: https://github.com/ecoacoustics/web-components/issues/489
+        // {
+        //   testName: "Apply a negative label for counter learning",
+        //   initialDecision: null,
+        //   newDecision: { item: 0, decision: DecisionOptions.FALSE },
+        // },
         {
           testName: "Skip applying a new tag",
           initialDecision: null,
-          newDecision: DecisionOptions.SKIP,
-        },
-        {
-          testName: "Unsure about applying a new tag",
-          initialDecision: null,
-          newDecision: DecisionOptions.UNSURE,
-        },
+          newDecision: { item: 0, decision: DecisionOptions.SKIP },
 
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.TRUE,
+          // At the moment, we do not record that the user skipped tag
+          // correction.
+          // Therefore, if the user presses the "skip" button is is purey
+          expectedApiCalls: [],
         },
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.FALSE,
-        },
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.SKIP,
-        },
-        {
-          initialDecision: DecisionOptions.FALSE,
-          newDecision: DecisionOptions.UNSURE,
-        },
-        { initialDecision: DecisionOptions.FALSE, newDecision: null },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/489
+        // {
+        //   testName: "Unsure about applying a new tag",
+        //   initialDecision: null,
+        //   newDecision: { item: 0, decision: DecisionOptions.UNSURE },
+        // },
+
+        // TODO: https://github.com/ecoacoustics/web-components/issues/489
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.FALSE },
+        //   newDecision: { item: 0, decision: DecisionOptions.TRUE },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.FALSE },
+        //   newDecision: { item: 0, decision: DecisionOptions.FALSE },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.FALSE },
+        //   newDecision: { item: 0, decision: DecisionOptions.SKIP },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.FALSE },
+        //   newDecision: { item: 0, decision: DecisionOptions.UNSURE },
+        // },
+        // {
+        //    initialDecision: { item: 0, decision: DecisionOptions.FALSE },
+        //    newDecision: null,
+        // },
 
         {
           testName: "Correct a label",
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.TRUE,
+          initialDecision: { item: 0, decision: DecisionOptions.TRUE },
+          newDecision: { item: 1, decision: DecisionOptions.TRUE },
+
+          // Note that because this is done in two requests, it's currently
+          // possible, to change a tag correction and have the DELETE request
+          // succeed without the corresponding CREATE request succeeding,
+          // leaving us in a state where no tag correction is applied.
+          expectedApiCalls: [
+            deleteTagCorrectionApiCall,
+            newTagCorrectionApiCall,
+          ],
         },
         {
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.FALSE,
+          testName: "Correcting to the same label",
+          initialDecision: { item: 0, decision: DecisionOptions.TRUE },
+          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+
+          // Although the test opened the tag correction typeahead, and selected
+          // a tag, we should see that no API calls are made because it selected
+          // the same value that was already present.
+          expectedApiCalls: [],
         },
-        {
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.SKIP,
-        },
-        {
-          initialDecision: DecisionOptions.TRUE,
-          newDecision: DecisionOptions.UNSURE,
-        },
-        { initialDecision: DecisionOptions.TRUE, newDecision: null },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/489
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.TRUE },
+        //   newDecision: { item: 0, DecisionOptions.FALSE },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.TRUE },
+        //   newDecision: { item: 0, decision: DecisionOptions.SKIP },
+        // },
+        // {
+        //   initialDecision: { item: 0, DecisionOptions.TRUE },
+        //   newDecision: { item: 0, decision: DecisionOptions.UNSURE },
+        // },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/491
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.TRUE },
+        //   newDecision: null,
+        //   expectedApiCalls: [deleteTagCorrectionApiCall],
+        // },
 
         {
           initialDecision: DecisionOptions.SKIP,
-          newDecision: DecisionOptions.TRUE,
+          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+          expectedApiCalls: [newTagCorrectionApiCall],
         },
-        {
-          initialDecision: DecisionOptions.SKIP,
-          newDecision: DecisionOptions.FALSE,
-        },
-        {
-          initialDecision: DecisionOptions.SKIP,
-          newDecision: DecisionOptions.SKIP,
-        },
-        {
-          initialDecision: DecisionOptions.SKIP,
-          newDecision: DecisionOptions.UNSURE,
-        },
-        { initialDecision: DecisionOptions.SKIP, newDecision: null },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/487
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.SKIP },
+        //   newDecision: { item: 0, decision: DecisionOptions.FALSE },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.SKIP },
+        //   newDecision: { item: 0, decision: DecisionOptions.SKIP },
+        // },
+        // {
+        //   initialDecision: { item: 0, decision: DecisionOptions.SKIP },
+        //   newDecision: { item: 0, decision: DecisionOptions.UNSURE },
+        // },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/493
+        // {
+        //   initialDecision: DecisionOptions.SKIP,
+        //   newDecision: DecisionOptions.SKIP,
+        //   expectedApiCalls: [],
+        // },
 
-        {
-          initialDecision: DecisionOptions.UNSURE,
-          newDecision: DecisionOptions.TRUE,
-        },
-        {
-          initialDecision: DecisionOptions.UNSURE,
-          newDecision: DecisionOptions.FALSE,
-        },
-        {
-          initialDecision: DecisionOptions.UNSURE,
-          newDecision: DecisionOptions.SKIP,
-        },
-        {
-          initialDecision: DecisionOptions.UNSURE,
-          newDecision: DecisionOptions.UNSURE,
-        },
-        { initialDecision: DecisionOptions.UNSURE, newDecision: null },
+        // TODO: https://github.com/ecoacoustics/web-components/issues/487
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: DecisionOptions.TRUE,
+        // },
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: DecisionOptions.FALSE,
+        // },
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: DecisionOptions.SKIP,
+        // },
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: DecisionOptions.UNSURE,
+        // },
+        // {
+        //   initialDecision: DecisionOptions.UNSURE,
+        //   newDecision: null,
+        // },
       ];
 
       for (const test of decisionTests) {

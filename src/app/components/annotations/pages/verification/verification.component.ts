@@ -20,7 +20,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, map, switchMap } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import {
@@ -34,7 +34,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -47,7 +47,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotation.resolver";
+import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 import { TaggingsService } from "@baw-api/tag/taggings.service";
 import {
   TagPromptComponent,
@@ -57,8 +57,9 @@ import {
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
-import { Id } from "@interfaces/apiInterfaces";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+import { TaggingCorrectionsService } from "@services/models/tag-corrections/tag-corrections.service";
+import { TaggingCorrection } from "@models/data/TaggingCorrection";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -95,6 +96,7 @@ class VerificationComponent
     private annotationsService: AnnotationService,
     private taggingsApi: TaggingsService,
     private tagsApi: TagsService,
+    private tagCorrections: TaggingCorrectionsService,
 
     private modals: NgbModal,
     private route: ActivatedRoute,
@@ -368,7 +370,12 @@ class VerificationComponent
     const audioEvent = subjectWrapper.subject as any;
     const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.addCorrectTagging(audioEvent, newTag.tag.id).pipe(
+    const correction = new TaggingCorrection({
+      audioEvent,
+      correctedTag: newTag.tag.id,
+    });
+
+    const apiRequest = this.tagCorrections.create(correction).pipe(
       map((correctTagging: Tagging) => {
         this.tagCorrectionMapping.set(audioEvent.id, correctTagging);
         return correctTagging;
@@ -394,52 +401,13 @@ class VerificationComponent
       return;
     }
 
-    // Remove the verification from the audio event and then remove the tagging
-    // that was added as part of the tag correction decision.
-    const apiRequest = this.verificationApi
-      .destroyEventVerification(audioEvent, tagToRemove)
-      .pipe(
-        switchMap(() => {
-          return this.taggingsApi.destroy(
-            targetTagging.id,
-            audioEvent.audioRecordingId,
-            audioEvent.id,
-          );
-        }),
-      );
-
-    firstValueFrom(apiRequest);
-  }
-
-  // TODO: This logic should probably be moved to a service
-  /**
-   * Corrects an incorrect tag on an audio event by verifying the existing tag
-   * as "incorrect", creating a new tag that is correct, and submitting a
-   * "correct" verification decision.
-   */
-  private addCorrectTagging(audioEvent: AudioEvent, newTagId: Id) {
-    const correctTag = new Tagging({
-      audioEventId: audioEvent.id,
-      tagId: newTagId,
+    const correction = new TaggingCorrection({
+      audioEvent,
+      correctedTag: tagToRemove.id,
     });
 
-    return this.taggingsApi
-      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
-      .pipe(
-        map((tagging: Tagging) => {
-          const correctVerification = new Verification({
-            audioEventId: audioEvent.id,
-            confirmed: ConfirmedStatus.Correct,
-            tagId: newTagId,
-          });
-
-          const verificationRequest = this.verificationApi.createOrUpdate(correctVerification);
-
-          firstValueFrom(verificationRequest);
-
-          return tagging;
-        }),
-      );
+    const apiRequest = this.tagCorrections.destroy(correction, targetTagging.id);
+    firstValueFrom(apiRequest);
   }
 
   // TODO: this function can be improved with instanceof checks once we export
@@ -491,8 +459,14 @@ class VerificationComponent
   }
 
   private addTagWhenPredicate(): WhenPredicate {
-    return (subject: SubjectWrapper) =>
-      subject.tag === null || subject.verification?.["confirmed"] === "false";
+    return (subject: SubjectWrapper) => {
+      const subjectVerification = subject.verification;
+      if (typeof subjectVerification === "symbol") {
+        return false;
+      }
+
+      return subject.tag === null || subjectVerification.confirmed === "false";
+    }
   }
 }
 

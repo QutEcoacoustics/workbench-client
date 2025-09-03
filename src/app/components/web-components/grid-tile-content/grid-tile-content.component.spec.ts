@@ -7,7 +7,7 @@ import { getElementByInnerText } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { detectChanges } from "@test/helpers/changes";

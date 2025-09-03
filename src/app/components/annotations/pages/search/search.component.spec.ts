@@ -22,7 +22,7 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";

@@ -40,7 +40,7 @@ import type { EventSummaryReport } from "@models/EventSummaryReport";
 import type { AudioEventImport } from "@models/AudioEventImport";
 import type { WebsiteStatus } from "@models/WebsiteStatus";
 import type { Annotation } from "@models/data/Annotation";
-import type { AnnotationService } from "@services/models/annotation.service";
+import type { AnnotationService } from "@services/models/annotations/annotation.service";
 import type { MediaService } from "@services/media/media.service";
 import type { AudioEventImportFile } from "@models/AudioEventImportFile";
 import type { Verification } from "@models/Verification";

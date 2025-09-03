@@ -24,7 +24,7 @@ import {
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { firstValueFrom } from "rxjs";
 import { Region } from "@models/Region";
 import { Project } from "@models/Project";
@@ -36,7 +36,7 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotation.resolver";
+import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
