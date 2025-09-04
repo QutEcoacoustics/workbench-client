@@ -33,7 +33,7 @@ import { SearchFiltersModalComponent } from "@components/annotations/components/
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -48,7 +48,6 @@ import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/deci
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
 import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
-import { TaggingsService } from "@baw-api/tag/taggings.service";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -94,7 +93,6 @@ class VerificationComponent
     private audioEventApi: ShallowAudioEventsService,
     private verificationApi: ShallowVerificationService,
     private annotationsService: AnnotationService,
-    private taggingsApi: TaggingsService,
     private tagsApi: TagsService,
     private tagCorrections: TaggingCorrectionsService,
 
@@ -250,6 +248,7 @@ class VerificationComponent
     // TODO: this is a hacky solution to get the verification grid to update
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
+    this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges.set(false);
 
@@ -289,7 +288,7 @@ class VerificationComponent
       const newTagDecision = change.newTag;
       const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
 
-      if (newTagDecision === null || newTagDecision === decisionNotRequired) {
+      if (newTagDecision === null || newTagDecision === decisionNotRequired || newTagDecision?.["confirmed"] === "skip") {
         this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
       } else if (newTagDecision) {
         // If there was a newTag (tag correction) applied in the previous
@@ -310,7 +309,7 @@ class VerificationComponent
         if (
           (newTagDecision as any).tag?.text !== oldSubjectTagCorrection?.text
         ) {
-          if (oldSubjectTagCorrection) {
+          if (oldSubjectTagCorrection && oldSubjectTagCorrection.text) {
             this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
           }
 
@@ -349,11 +348,11 @@ class VerificationComponent
 
   private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
-    const tag = subjectWrapper.tag as Tag;
+    const newTag = subjectWrapper.newTag as any;
 
     const apiRequest = this.verificationApi.destroyEventVerification(
       audioEvent,
-      tag,
+      newTag,
     );
 
     firstValueFrom(apiRequest);
@@ -460,7 +459,7 @@ class VerificationComponent
   private addTagWhenPredicate(): WhenPredicate {
     return (subject: SubjectWrapper) => {
       const subjectVerification = subject.verification;
-      if (typeof subjectVerification === "symbol") {
+      if (typeof subjectVerification === "symbol" || !subjectVerification) {
         return false;
       }
 

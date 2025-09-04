@@ -43,7 +43,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { nodeModule, testAsset } from "@test/helpers/karma";
+import { base64EncodeFlac, nodeModule, testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -66,6 +66,9 @@ import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
 import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
+import { Tagging } from "@models/Tagging";
+import { generateVerification } from "@test/fakes/Verification";
+import { generateTagging } from "@test/fakes/Tagging";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
@@ -76,6 +79,7 @@ enum DecisionOptions {
   TRUE = "true",
   FALSE = "false",
   UNSURE = "unsure",
+  CORRECT_TAG = "correct-tag",
   SKIP = "skip",
 }
 
@@ -94,7 +98,7 @@ interface TagCorrectionDecision {
 interface NewTagTest {
   testName?: string;
   initialDecision: TagCorrectionDecision | DecisionOptions.SKIP | null;
-  newDecision: TagCorrectionDecision;
+  newDecision: TagCorrectionDecision | DecisionOptions.SKIP;
   expectedApiCalls: TagCorrectionServiceCall[];
 }
 
@@ -195,9 +199,11 @@ describe("VerificationComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
+    const mockFile = await base64EncodeFlac(testAsset("example.flac"));
+
     mediaServiceSpy = spec.inject(MediaService);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(testAsset("example.flac"));
+    mediaServiceSpy.createMediaUrl.and.returnValue(mockFile);
 
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParameters(queryParameters),
@@ -213,16 +219,22 @@ describe("VerificationComponent", () => {
     mockSearchParameters.routeProjectModel = routeProject;
     mockSearchParameters.routeProjectId = routeProject.id;
 
-    Array.from({ length: 10 }).map((_, index) => {
+    defaultFakeTags = Array.from({ length: 3 }).map((_, index) => {
       const tagObject = generateTag({ id: index, text: `item ${index}` });
       return new Tag(tagObject, injector);
     });
 
-    mockAudioEventsResponse = modelData.randomArray(
-      3,
-      3,
-      () => new AudioEvent(generateAudioEvent(), injector),
-    );
+    const mockAudioEventIds = [0, 1, 2];
+    const mockTaggings = defaultFakeTags.slice(0, 3).map((tag, index) => {
+      return new Tagging(generateTagging({ tagId: tag.id, audioEventId: index }), injector);
+    });
+
+    mockAudioEventsResponse = mockAudioEventIds.map((id, index) => {
+      return new AudioEvent(
+        generateAudioEvent({ id, taggings: [mockTaggings[index]] }),
+        injector,
+      );
+    });
 
     mockAudioRecording = new AudioRecording(
       generateAudioRecording({ siteId: routeSite.id }),
@@ -230,9 +242,15 @@ describe("VerificationComponent", () => {
     );
 
     mockAnnotationResponse = new Annotation(
-      generateAnnotation({ audioRecording: mockAudioRecording }),
+      generateAnnotation({
+        audioRecording: mockAudioRecording,
+        tags: defaultFakeTags,
+        ...mockAudioEventsResponse[0],
+      }),
       injector,
     );
+
+    verificationResponse = new Verification(generateVerification(), injector);
 
     spec.component.searchParameters = signal(mockSearchParameters);
 
@@ -293,13 +311,22 @@ describe("VerificationComponent", () => {
     spyOn(verificationApiSpy, "list").and.returnValue(of([]));
     spyOn(verificationApiSpy, "show").and.returnValue(of());
 
+    spyOn(verificationApiSpy, "destroyEventVerification").and.returnValue(
+      of(undefined),
+    );
+    spyOn(verificationApiSpy, "audioEventUserVerification").and.returnValue(
+      of(verificationResponse),
+    );
+
+    taggingCorrectionApiSpy.destroy.and.returnValue(of(undefined));
+    taggingCorrectionApiSpy.create.and.returnValue(of(mockTaggings[0]));
+
     await detectChanges(spec);
 
     await requestPromises;
 
-    spec.detectChanges();
+    await detectChanges(spec);
 
-    // await waitUntil(() => verificationGrid().loaded);
     await waitUntil(() => isGridLoaded());
   }
 
@@ -349,6 +376,9 @@ describe("VerificationComponent", () => {
     // after each test
     modalsSpy?.dismissAll();
     viewport.reset();
+
+    // Remove the local storage key that prevents the bootstrap modal
+    localStorage.removeItem("oe-auto-dismiss-bootstrap");
   });
 
   const dialogShowButton = () =>
@@ -375,19 +405,18 @@ describe("VerificationComponent", () => {
 
   const tagPromptComponent = () =>
     document.querySelector<TagPromptComponent>("oe-tag-prompt");
-  const tagPromptButton = () =>
-    tagPromptComponent().shadowRoot.querySelector("button");
 
   const tagPromptTypeaheadComponent = () =>
-    tagPromptComponent().shadowRoot.querySelector("oe-typeahead-input");
-  const tagPromptTypeaheadInput = () =>
-    tagPromptTypeaheadComponent().shadowRoot.querySelector("#typeahead-input");
+    tagPromptComponent().shadowRoot.querySelector("oe-typeahead");
+
   const tagPromptTypeaheadItems = () =>
-    tagPromptTypeaheadComponent().shadowRoot.querySelectorAll(".typeahead-result-action");
+    tagPromptTypeaheadComponent().shadowRoot.querySelectorAll(
+      ".typeahead-result-action",
+    );
 
   const decisionButton = (index: number) =>
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
-      "button",
+      "[part='decision-button']",
     );
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
@@ -410,21 +439,15 @@ describe("VerificationComponent", () => {
   }
 
   function isGridLoaded() {
-    return verificationGrid().loadState === "loaded";
-    // const tiles = Array.from(verificationGridRoot().querySelectorAll("oe-verification-grid-tile"));
-    // return tiles.every((tile) => {
-    //   const root = tile.shadowRoot;
-    //   const spectrogram = root.querySelector("oe-spectrogram");
-
-    //   return spectrogram["doneFirstRender"];
-    // });
+    return verificationGrid().loaded;
   }
 
-  async function makeVerificationDecision(decision: DecisionOptions) {
+  async function clickDecisionButton(decision: DecisionOptions) {
     const decisions = [
       DecisionOptions.TRUE,
       DecisionOptions.FALSE,
       DecisionOptions.UNSURE,
+      DecisionOptions.CORRECT_TAG,
       DecisionOptions.SKIP,
     ];
 
@@ -432,9 +455,6 @@ describe("VerificationComponent", () => {
     if (index < 0) {
       throw new Error("Could not find decision button");
     }
-
-    const decisionComponent = decisionComponents()[index];
-    decisionComponent.disabled = false;
 
     const decisionButtonTarget = decisionButton(index);
     spec.click(decisionButtonTarget);
@@ -446,18 +466,13 @@ describe("VerificationComponent", () => {
     decision: TagCorrectionDecision | DecisionOptions.SKIP,
   ) {
     if (decision === DecisionOptions.SKIP) {
-      makeVerificationDecision(DecisionOptions.SKIP);
+      clickDecisionButton(DecisionOptions.SKIP);
       return;
     }
 
-    clickButton(spec, tagPromptButton());
-    await detectChanges(spec);
-
-    spec.typeInElement("item", tagPromptTypeaheadInput());
-    await detectChanges(spec);
+    await clickDecisionButton(DecisionOptions.CORRECT_TAG);
 
     clickButton(spec, tagPromptTypeaheadItems()[decision.item]);
-    await detectChanges(spec);
   }
 
   /** Uses shift + click selection to select a range */
@@ -608,7 +623,7 @@ describe("VerificationComponent", () => {
       };
 
       const verificationDeleteApiCall: VerificationServiceCall = {
-        method: "destroy",
+        method: "destroyEventVerification",
         args: [jasmine.anything()],
       };
 
@@ -616,14 +631,24 @@ describe("VerificationComponent", () => {
         const testName =
           test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
 
-        fit(testName, async () => {
+        it(testName, async () => {
           if (test.initialDecision) {
             await makeSelection(0, 0);
-            await makeVerificationDecision(test.initialDecision);
+            await clickDecisionButton(test.initialDecision);
           }
 
-          if (test.expectedApiCall.method) {
-            verificationApiSpy[test.expectedApiCall.method].calls.reset();
+          const testedMethods: (keyof ShallowVerificationService)[] = [
+            "create",
+            "update",
+            "createOrUpdate",
+            "destroy",
+            "filter",
+            "list",
+            "show",
+          ];
+
+          for (const method of testedMethods) {
+            verificationApiSpy[method].calls.reset();
           }
 
           // We make the selection after resetting calls so that if there is a
@@ -636,18 +661,8 @@ describe("VerificationComponent", () => {
           await makeSelection(0, 0);
 
           if (test.newDecision) {
-            await makeVerificationDecision(test.newDecision);
+            await clickDecisionButton(test.newDecision);
           }
-
-          const testedMethods: (keyof ShallowVerificationService)[] = [
-            "create",
-            "update",
-            "createOrUpdate",
-            "destroy",
-            "filter",
-            "list",
-            "show",
-          ];
 
           for (const method of testedMethods) {
             if (method === test.expectedApiCall.method) {
@@ -806,23 +821,48 @@ describe("VerificationComponent", () => {
       };
 
       async function runNewTagTest(test: NewTagTest): Promise<void> {
+        const newDecisionName = typeof test.newDecision === "object"
+          ? `${test.newDecision.decision}`
+          : test.newDecision;
         const testName =
-          test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
+          test.testName ?? `${test.initialDecision} -> ${newDecisionName}`;
 
         it(testName, async () => {
+          // We have to make an initial "false" verification decision so that
+          // the tag correction option is enabled.
           await makeSelection(0, 0);
+          await clickDecisionButton(DecisionOptions.FALSE);
 
           if (test.initialDecision) {
             await makeSelection(0, 0);
             await makeTagCorrectionDecision(test.initialDecision);
           }
 
+          await makeSelection(0, 0);
+
+          const testedMethods: (keyof TaggingCorrectionsService)[] = [
+            "create",
+            "destroy",
+          ];
+
+          for (const method of testedMethods) {
+            taggingCorrectionApiSpy[method].calls.reset();
+          }
+
           await makeTagCorrectionDecision(test.newDecision);
 
-          for (const apiCall of test.expectedApiCalls) {
-              expect(taggingCorrectionApiSpy[apiCall.method]).toHaveBeenCalledOnceWith(
-                ...apiCall.args,
+          for (const method of testedMethods) {
+            const expectedApiCall = test.expectedApiCalls.find(
+              (call) => call.method === method,
+            );
+
+            if (expectedApiCall) {
+              expect(taggingCorrectionApiSpy[method]).toHaveBeenCalledOnceWith(
+                ...expectedApiCall.args,
               );
+            } else {
+              expect(taggingCorrectionApiSpy[method]).not.toHaveBeenCalled();
+            }
           }
         });
       }
@@ -831,7 +871,7 @@ describe("VerificationComponent", () => {
         {
           testName: "Apply a label",
           initialDecision: null,
-          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+          newDecision: { item: 1, decision: DecisionOptions.TRUE },
           expectedApiCalls: [newTagCorrectionApiCall],
         },
         // A "false" new-tag decision is currently not implemented
@@ -844,11 +884,12 @@ describe("VerificationComponent", () => {
         {
           testName: "Skip applying a new tag",
           initialDecision: null,
-          newDecision: { item: 0, decision: DecisionOptions.SKIP },
+          newDecision: DecisionOptions.SKIP,
 
           // At the moment, we do not record that the user skipped tag
           // correction.
-          // Therefore, if the user presses the "skip" button is is purey
+          // Therefore, if the user presses the "skip" button without a
+          // decision, it has no effect.
           expectedApiCalls: [],
         },
         // TODO: https://github.com/ecoacoustics/web-components/issues/489
@@ -882,8 +923,8 @@ describe("VerificationComponent", () => {
 
         {
           testName: "Correct a label",
-          initialDecision: { item: 0, decision: DecisionOptions.TRUE },
-          newDecision: { item: 1, decision: DecisionOptions.TRUE },
+          initialDecision: { item: 1, decision: DecisionOptions.TRUE },
+          newDecision: { item: 2, decision: DecisionOptions.TRUE },
 
           // Note that because this is done in two requests, it's currently
           // possible, to change a tag correction and have the DELETE request
@@ -896,8 +937,8 @@ describe("VerificationComponent", () => {
         },
         {
           testName: "Correcting to the same label",
-          initialDecision: { item: 0, decision: DecisionOptions.TRUE },
-          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+          initialDecision: { item: 1, decision: DecisionOptions.TRUE },
+          newDecision: { item: 1, decision: DecisionOptions.TRUE },
 
           // Although the test opened the tag correction typeahead, and selected
           // a tag, we should see that no API calls are made because it selected
@@ -926,7 +967,7 @@ describe("VerificationComponent", () => {
 
         {
           initialDecision: DecisionOptions.SKIP,
-          newDecision: { item: 0, decision: DecisionOptions.TRUE },
+          newDecision: { item: 1, decision: DecisionOptions.TRUE },
           expectedApiCalls: [newTagCorrectionApiCall],
         },
         // TODO: https://github.com/ecoacoustics/web-components/issues/487
@@ -1045,7 +1086,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should populate the verification grid correctly for the first page", () => {
-        const realizedTileCount = verificationGrid().pageSize;
+        const realizedTileCount = verificationGrid().effectivePageSize;
         expect(realizedTileCount).toBeGreaterThan(0);
       });
     });
