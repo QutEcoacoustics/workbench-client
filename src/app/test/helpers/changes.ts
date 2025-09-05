@@ -5,6 +5,19 @@
 
 import { Spectator } from "@ngneat/spectator";
 
+// The correct solution here would be to import the LitElement type from the
+// "lit" package. However this would mean that we'd have to add "lit" as a dev
+// dependency for the one type, which seems a bit excessive.
+// Since we only need the updateComplete property, I have hacked together a
+// polymorphic type that describes what we need out of a LitElement.
+//
+// If you find yourself needing this type in other places, consider just adding
+// "lit" as a dev dependency and importing the type from there.
+//
+// Downsides to this approach:
+// - If the LitElement API changes, this type might become incorrect
+type PseudoLitElement = HTMLElement & { updateComplete: Promise<unknown> };
+
 /**
  * Detect changes in Angular components and Lit web components
  *
@@ -30,10 +43,11 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
       "oe-axes",
       "oe-verification-grid",
       "oe-data-source",
+      "oe-typeahead",
     ];
 
     for (const selector of webComponentSelectors) {
-      const foundElements = spectator.element.querySelectorAll<any>(selector);
+      const foundElements = spectator.element.querySelectorAll<PseudoLitElement>(selector);
 
       for (const component of foundElements) {
         await component.updateComplete;

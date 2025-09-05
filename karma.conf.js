@@ -21,7 +21,7 @@ function assetHeadersMiddlewareFactory(config) {
     });
 
     next();
-  }
+  };
 }
 
 module.exports = function (config) {
