@@ -155,17 +155,17 @@ describe("VerificationComponent", () => {
   });
 
   async function setup(queryParameters: Params = {}) {
-    // We stop the bootstrap modal from opening because while the bootstrap is
-    // open, no decisions can be made.
+    // We stop the bootstrap modal from opening because there is logic that
+    // stops decisions from being made while the bootstrap is open.
+    // I did this so that people can't accidentally make a decision by pressing
+    // a keyboard shortcut while the bootstrap modal is open.
+    //
     // I prevent the modal from opening rather than trying to close it because:
+    //
     // 1) If the modal fails to close or is slow to close, I don't want any
     //    tests to fails.
     // 2) It makes the tests faster because we don't have to wait for the modal
     //    to open and close.
-    //
-    // I have coded this into the web components so that people can't
-    // accidentally make a decision by pressing a keyboard shortcut while the
-    // bootstrap modal is open.
     setNoBootstrap();
 
     spec = createComponent({
@@ -325,9 +325,9 @@ describe("VerificationComponent", () => {
 
     await requestPromises;
 
-    await detectChanges(spec);
-
     await waitUntil(() => isGridLoaded());
+
+    await detectChanges(spec);
   }
 
   beforeEach(async () => {
@@ -377,7 +377,8 @@ describe("VerificationComponent", () => {
     modalsSpy?.dismissAll();
     viewport.reset();
 
-    // Remove the local storage key that prevents the bootstrap modal
+    // Remove the local storage key that prevents the bootstrap modal from
+    // opening to reduce side effects between tests.
     localStorage.removeItem("oe-auto-dismiss-bootstrap");
   });
 
@@ -536,7 +537,6 @@ describe("VerificationComponent", () => {
   describe("no initial search parameters", () => {
     beforeEach(async () => {
       await setup();
-      await detectChanges(spec);
     });
 
     xit("should update the search parameters when filter conditions are added", async () => {
@@ -591,8 +591,6 @@ describe("VerificationComponent", () => {
       // the component's behavior when query parameters are present
       // on load
       await setup(testedQueryParameters);
-
-      await detectChanges(spec);
     });
 
     it("should create the correct search parameter model from query string parameters", () => {

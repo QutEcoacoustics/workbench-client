@@ -73,6 +73,11 @@ export class TaggingCorrectionsService {
     );
   }
 
+  /**
+   * Destroys a tag correction by removing the verification for the corrected
+   * tag, and if there are no more verifications for that tag on the audio
+   * event, the tagging will be removed.
+   */
   public destroy(
     model: TaggingCorrection,
     taggingToRemove: Tagging["id"],
