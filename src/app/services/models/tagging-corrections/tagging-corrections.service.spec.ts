@@ -17,6 +17,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ConfirmedStatus, Verification } from "@models/Verification";
 import { generateVerification } from "@test/fakes/Verification";
+import { AudioEvent } from "@models/AudioEvent";
 import { TaggingCorrectionsService } from "./tagging-corrections.service";
 
 describe("CorrectionsService", () => {
@@ -58,8 +59,17 @@ describe("CorrectionsService", () => {
   });
 
   describe("create", () => {
-    it("should create a new tagging and verify it as 'correct'", async () => {
-      const correction = new TaggingCorrection(generateTaggingCorrection());
+    it("should create a new tagging and verify it as 'correct' if the tagging doesn't exist", async () => {
+      const audioEvent = new AudioEvent({
+        taggings: [generateTagging({ tagId: 1 })],
+      }, injector);
+
+      const correction = new TaggingCorrection(
+        generateTaggingCorrection({
+          audioEvent,
+          correctedTag: 2,
+        }),
+      );
 
       const testedRequest = spec.service.create(correction);
       await firstValueFrom(testedRequest);
@@ -80,6 +90,36 @@ describe("CorrectionsService", () => {
         correction.audioEvent.audioRecordingId,
         correction.audioEvent.id,
       );
+
+      expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
+        expectedVerification,
+      );
+    });
+
+    it("should only verify the existing tagging as 'correct' if the tagging already exists", async () => {
+      const audioEvent = new AudioEvent({
+        taggings: [generateTagging({ tagId: 1 })],
+      }, injector);
+
+      // Notice that the correctedTag has the same tagId as the existing tagging
+      // meaning that we shouldn't attempt to create a new tagging.
+      const correction = new TaggingCorrection(
+        generateTaggingCorrection({
+          audioEvent,
+          correctedTag: 1,
+        }),
+      );
+
+      const testedRequest = spec.service.create(correction);
+      await firstValueFrom(testedRequest);
+
+      const expectedVerification = new Verification({
+        audioEventId: correction.audioEvent.id,
+        confirmed: ConfirmedStatus.Correct,
+        tagId: correction.correctedTag,
+      });
+
+      expect(taggingApiSpy.create).not.toHaveBeenCalled();
 
       expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
         expectedVerification,

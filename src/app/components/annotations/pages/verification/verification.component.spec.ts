@@ -43,7 +43,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { base64EncodeFlac, nodeModule, testAsset } from "@test/helpers/karma";
+import { nodeModule, testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -199,7 +199,7 @@ describe("VerificationComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    const mockFile = await base64EncodeFlac(testAsset("example.flac"));
+    const mockFile = testAsset("example.flac");
 
     mediaServiceSpy = spec.inject(MediaService);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;

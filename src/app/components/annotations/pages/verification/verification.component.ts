@@ -458,12 +458,26 @@ class VerificationComponent
 
   private addTagWhenPredicate(): WhenPredicate {
     return (subject: SubjectWrapper) => {
+      // If there is no tag applied to the subject, we want to make the user
+      // add a new tag, so we return true here to enable the oe-tag-prompt.
+      if (subject.tag === null) {
+        return true;
+      }
+
+      // This checks if the verification is not required (symbol) or if there
+      // is no verification.
+      //
+      // TODO: We should improve the "not required" case here once we export the
+      // "decisionNotRequired" symbol from the web components.
+      // see: https://github.com/ecoacoustics/web-components/issues/500
       const subjectVerification = subject.verification;
       if (typeof subjectVerification === "symbol" || !subjectVerification) {
         return false;
       }
 
-      return subject.tag === null || subjectVerification.confirmed === "false";
+      // If the user verified the original tag as incorrect, we want to prompt
+      // them for a new tag.
+      return subjectVerification.confirmed === "false";
     }
   }
 }

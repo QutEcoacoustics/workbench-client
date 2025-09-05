@@ -10,7 +10,7 @@ var isMacOS = process.platform === "darwin";
 
 // We use custom middleware for the Karma test server so that we can append
 // headers to all served files (including static files served from /src/assets/)
-// This is different from the customHeaders config option which onl applies to
+// This is different from the customHeaders config option which only applies to
 // the iframe that the test runs in, and does not apply to other files served
 // through the karma server.
 function assetHeadersMiddlewareFactory(config) {
@@ -153,8 +153,8 @@ module.exports = function (config) {
   // other files served through the karma server.
   //
   // Additionally, we set the middleware in a separate config.set because we
-  // want to append our middleware to the existing middleware which might have
-  // been set up by other plugins such as the Angular Karma builder.
+  // want to append our middleware to existing middleware which might have been
+  // set up by other plugins such as the Angular Karma builder.
   config.set({
     middleware: ["assetHeaders"],
     plugins: config.plugins.concat([
