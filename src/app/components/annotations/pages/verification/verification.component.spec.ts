@@ -311,10 +311,10 @@ describe("VerificationComponent", () => {
     spyOn(verificationApiSpy, "list").and.returnValue(of([]));
     spyOn(verificationApiSpy, "show").and.returnValue(of());
 
-    spyOn(verificationApiSpy, "destroyEventVerification").and.returnValue(
+    spyOn(verificationApiSpy, "destroyUserVerification").and.returnValue(
       of(undefined),
     );
-    spyOn(verificationApiSpy, "audioEventUserVerification").and.returnValue(
+    spyOn(verificationApiSpy, "showUserVerification").and.returnValue(
       of(verificationResponse),
     );
 
@@ -627,7 +627,7 @@ describe("VerificationComponent", () => {
       };
 
       const verificationDeleteApiCall: VerificationServiceCall = {
-        method: "destroyEventVerification",
+        method: "destroyUserVerification",
         args: [jasmine.anything()],
       };
 

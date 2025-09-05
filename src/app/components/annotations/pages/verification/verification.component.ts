@@ -358,7 +358,7 @@ class VerificationComponent
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
     const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.verificationApi.destroyEventVerification(
+    const apiRequest = this.verificationApi.destroyUserVerification(
       audioEvent,
       newTag,
     );
@@ -464,6 +464,9 @@ class VerificationComponent
     };
   }
 
+  // TODO: This "when" predicate should not be needed once we support optional
+  // verifications in the web components.
+  // see: https://github.com/ecoacoustics/web-components/issues/444
   private tagVerificationPredicate(): WhenPredicate {
     // The user can only verify a tag if there is a tag applied to the subject.
     return (subject: SubjectWrapper) => subject.tag !== null;

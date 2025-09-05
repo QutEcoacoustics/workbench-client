@@ -27,7 +27,7 @@ describe("CorrectionsService", () => {
 
   let injector: AssociationInjector;
   let mockTagging: Tagging;
-  let mockVerification: Verification;
+  let mockVerifications: Verification[];
 
   const createService = createServiceFactory({
     service: TaggingCorrectionsService,
@@ -43,11 +43,19 @@ describe("CorrectionsService", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
     mockTagging = new Tagging(generateTagging(), injector);
-    mockVerification = new Verification(generateVerification(), injector);
+
+    mockVerifications = modelData.randomArray(
+      1,
+      5,
+      () => new Verification(generateVerification(), injector),
+    );
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
-    verificationApiSpy.destroyEventVerification.andReturn(of(undefined));
-    verificationApiSpy.createOrUpdate.andReturn(of(mockVerification));
+    verificationApiSpy.destroyUserVerification.andReturn(of(undefined));
+    verificationApiSpy.createOrUpdate.andCallFake(() => of(mockVerifications[0]));
+
+    verificationApiSpy.audioEventTagVerifications.andCallFake(() => of(mockVerifications));
+    verificationApiSpy.destroyUserVerification.andCallFake(() => of(null));
 
     taggingApiSpy = spec.inject(TaggingsService);
     taggingApiSpy.create.andReturn(of(mockTagging));
@@ -60,9 +68,12 @@ describe("CorrectionsService", () => {
 
   describe("create", () => {
     it("should create a new tagging and verify it as 'correct' if the tagging doesn't exist", async () => {
-      const audioEvent = new AudioEvent({
-        taggings: [generateTagging({ tagId: 1 })],
-      }, injector);
+      const audioEvent = new AudioEvent(
+        {
+          taggings: [generateTagging({ tagId: 1 })],
+        },
+        injector,
+      );
 
       const correction = new TaggingCorrection(
         generateTaggingCorrection({
@@ -97,9 +108,12 @@ describe("CorrectionsService", () => {
     });
 
     it("should only verify the existing tagging as 'correct' if the tagging already exists", async () => {
-      const audioEvent = new AudioEvent({
-        taggings: [generateTagging({ tagId: 1 })],
-      }, injector);
+      const audioEvent = new AudioEvent(
+        {
+          taggings: [generateTagging({ tagId: 1 })],
+        },
+        injector,
+      );
 
       // Notice that the correctedTag has the same tagId as the existing tagging
       // meaning that we shouldn't attempt to create a new tagging.
@@ -128,16 +142,21 @@ describe("CorrectionsService", () => {
   });
 
   describe("destroy", () => {
-    it("should delete both the verification and tagging", async () => {
+    it("should delete both the verification and tagging if the tagging only has one verification", async () => {
       const correction = new TaggingCorrection(generateTaggingCorrection());
       const taggingToRemove = modelData.id();
 
-      const testedRequest = spec.service.destroy(correction, taggingToRemove);
+      // Because we mock the verifications response to return an empty array,
+      // the events verifications will be empty, simulating the case where there
+      // are no more verifications attached to the tagging, and it should
+      // therefore be deleted.
+      mockVerifications = [];
 
+      const testedRequest = spec.service.destroy(correction, taggingToRemove);
       await firstValueFrom(testedRequest);
 
       expect(
-        verificationApiSpy.destroyEventVerification,
+        verificationApiSpy.destroyUserVerification,
       ).toHaveBeenCalledOnceWith(
         correction.audioEvent,
         correction.correctedTag,
@@ -149,5 +168,34 @@ describe("CorrectionsService", () => {
         correction.audioEvent.id,
       );
     });
+
+    it("should not delete the tagging if there are multiple verifications remaining on the tagging", async () => {
+      const correction = new TaggingCorrection(generateTaggingCorrection());
+      const taggingToRemove = modelData.id();
+
+      mockVerifications = [
+        new Verification(generateVerification(), injector),
+        new Verification(generateVerification(), injector),
+        new Verification(generateVerification(), injector),
+      ];
+
+      const testedRequest = spec.service.destroy(correction, taggingToRemove);
+      await firstValueFrom(testedRequest);
+
+      expect(
+        verificationApiSpy.destroyUserVerification,
+      ).toHaveBeenCalledOnceWith(
+        correction.audioEvent,
+        correction.correctedTag,
+      );
+
+      expect(taggingApiSpy.destroy).not.toHaveBeenCalled();
+    });
+
+    // TODO: Add expect the ensure that the tagging is only destroyed if it
+    // was created as part of a correction.
+    // This will require support for database backed tag corrections.
+    // see: https://github.com/QutEcoacoustics/baw-server/issues/807
+    xit("should not delete a tagging if it was created outside of a correction", async () => {});
   });
 });

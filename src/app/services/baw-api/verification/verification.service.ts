@@ -36,34 +36,34 @@ export class VerificationService
 
   public list(
     audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
+    audioEvent: IdOr<AudioEvent>,
   ): Observable<Verification[]> {
     return this.api.list(
       Verification,
-      endpoint(audioRecording, audioEvent, emptyParam, emptyParam)
+      endpoint(audioRecording, audioEvent, emptyParam, emptyParam),
     );
   }
 
   public filter(
     filters: Filters<Verification>,
     audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
+    audioEvent: IdOr<AudioEvent>,
   ): Observable<Verification[]> {
     return this.api.filter(
       Verification,
       endpoint(audioRecording, audioEvent, emptyParam, filterParam),
-      filters
+      filters,
     );
   }
 
   public show(
     model: IdOr<Verification>,
     audioRecording: IdOr<AudioRecording>,
-    audioEvent: IdOr<AudioEvent>
+    audioEvent: IdOr<AudioEvent>,
   ): Observable<Verification> {
     return this.api.show(
       Verification,
-      endpoint(audioRecording, audioEvent, model, emptyParam)
+      endpoint(audioRecording, audioEvent, model, emptyParam),
     );
   }
 }
@@ -85,7 +85,7 @@ export class ShallowVerificationService
     return this.api.filter(
       Verification,
       endpointShallow(emptyParam, filterParam),
-      filters
+      filters,
     );
   }
 
@@ -98,7 +98,7 @@ export class ShallowVerificationService
       Verification,
       endpointShallow(emptyParam, emptyParam),
       (verification) => endpointShallow(verification, emptyParam),
-      model
+      model,
     );
   }
 
@@ -106,15 +106,16 @@ export class ShallowVerificationService
     return this.api.update(
       Verification,
       endpointShallow(model, emptyParam),
-      model
+      model,
     );
   }
 
-  public destroy(model: IdOr<Verification>): Observable<void | Verification> {
+  public destroy(model: IdOr<Verification>): Observable<null> {
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
   /**
+   * @description
    * Creates a verification model if it doesn't already exist, if it already
    * exists, update the existing model.
    */
@@ -128,27 +129,28 @@ export class ShallowVerificationService
   }
 
   /**
-   * Destroys a verification model for a specific audio event + tag combination.
-   * This service method can be called without knowing the verification model or
-   * the verification ID.
+   * @description
+   * Fetches all verifications of a specific tag for an audio event.
+   * This returns verifications from **all** users.
    */
-  public destroyEventVerification(
+  public audioEventTagVerifications(
     audioEvent: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
-  ): Observable<void | Verification> {
-    return this.audioEventUserVerification(audioEvent, tag).pipe(
-      switchMap((verification) => {
-        if (!verification) {
-          return;
-        }
+  ): Observable<Verification[]> {
+    const eventId = typeof audioEvent === "number" ? audioEvent : audioEvent.id;
+    const tagId = typeof tag === "number" ? tag : tag.id;
 
-        return this.destroy(verification.id);
-      }),
-      first(),
-    );
+    const filter: Filters<Verification> = {
+      filter: {
+        and: [{ audioEventId: { eq: eventId } }, { tagId: { eq: tagId } }],
+      },
+    };
+
+    return this.filter(filter);
   }
 
   /**
+   * @description
    * Fetches a users verification model for a specific audio event + tag
    * combination.
    *
@@ -156,11 +158,11 @@ export class ShallowVerificationService
    * A verification model if the user has verified the audio event.
    * If the user has not verified the audio event, null is returned.
    */
-  public audioEventUserVerification(
-    eventModel: IdOr<AudioEvent>,
+  public showUserVerification(
+    audioEvent: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const eventId = typeof eventModel === "number" ? eventModel : eventModel.id;
+    const eventId = typeof audioEvent === "number" ? audioEvent : audioEvent.id;
     const tagId = typeof tag === "number" ? tag : tag.id;
 
     const user = this.session.currentUser;
@@ -182,7 +184,30 @@ export class ShallowVerificationService
     // therefore, it is safe to assume that there will only be one result
     // and return the first element of the array
     return this.filter(filter).pipe(
-      map((results) => (results.length > 0 ? results[0] : null))
+      map((results) => (results.length > 0 ? results[0] : null)),
+    );
+  }
+
+  /**
+   * @description
+   * Destroys the current users verification model for a specific
+   * audio event + tag combination.
+   * This service method can be called without knowing the verification model or
+   * the verification ID.
+   */
+  public destroyUserVerification(
+    audioEvent: IdOr<AudioEvent>,
+    tag: IdOr<Tag>,
+  ): Observable<void | Verification> {
+    return this.showUserVerification(audioEvent, tag).pipe(
+      switchMap((verification) => {
+        if (!verification) {
+          return;
+        }
+
+        return this.destroy(verification.id);
+      }),
+      first(),
     );
   }
 }
@@ -197,5 +222,5 @@ export const verificationResolvers = new Resolvers<
 
 export const shallowVerificationResolvers = new Resolvers<Verification, []>(
   [ShallowVerificationService],
-  "verificationId"
+  "verificationId",
 ).create("ShallowVerification");

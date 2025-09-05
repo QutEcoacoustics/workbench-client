@@ -77,16 +77,31 @@ export class TaggingCorrectionsService {
     model: TaggingCorrection,
     taggingToRemove: Tagging["id"],
   ): Observable<void | Tagging> {
-    return this.verificationApi
-      .destroyEventVerification(model.audioEvent, model.correctedTag)
-      .pipe(
-        switchMap(() => {
-          return this.taggingApi.destroy(
-            taggingToRemove,
-            model.audioEvent.audioRecordingId,
-            model.audioEvent.id,
-          );
-        }),
-      );
+    return this.verificationApi.destroyUserVerification(
+      model.audioEvent,
+      model.correctedTag,
+    ).pipe(
+      switchMap(() => this.verificationApi.audioEventTagVerifications(model.audioEvent, model.correctedTag)),
+      switchMap((newVerifications: Verification[]) => {
+        if (newVerifications.length > 0) {
+          // There are still other verifications for this tag on this audio event
+          // so we shouldn't delete the tagging.
+          return of(undefined);
+        }
+
+        // If there are no more verifications for this tag on this audio event
+        // then we can delete the tagging.
+        //
+        // TODO: Once we have support for database backed tag corrections, we
+        // should only delete the tagging if it was created as part of this
+        // correction.
+        // see: https://github.com/QutEcoacoustics/baw-server/issues/807
+        return this.taggingApi.destroy(
+          taggingToRemove,
+          model.audioEvent.audioRecordingId,
+          model.audioEvent.id,
+        );
+      }),
+    );
   }
 }
