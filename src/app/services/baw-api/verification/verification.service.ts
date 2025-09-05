@@ -19,7 +19,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tag } from "@models/Tag";
 import { Verification } from "@models/Verification";
-import { first, map, Observable, switchMap } from "rxjs";
+import { first, map, Observable, of, switchMap } from "rxjs";
 
 const verificationId: IdParamOptional<Verification> = id;
 const audioRecordingId: IdParam<AudioRecording> = id;
@@ -198,11 +198,11 @@ export class ShallowVerificationService
   public destroyUserVerification(
     audioEvent: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
-  ): Observable<void | Verification> {
+  ): Observable<Verification | null> {
     return this.showUserVerification(audioEvent, tag).pipe(
       switchMap((verification) => {
         if (!verification) {
-          return;
+          return of(null);
         }
 
         return this.destroy(verification.id);

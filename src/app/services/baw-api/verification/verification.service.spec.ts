@@ -151,6 +151,8 @@ describe("ShallowVerificationService", () => {
           ? throwError(() => mockFilterResponse)
           : of(mockFilterResponse),
       );
+
+      spyOn(api, "destroy").and.returnValue(of(null));
     });
 
     describe("audioEventUserVerification", () => {
@@ -192,6 +194,34 @@ describe("ShallowVerificationService", () => {
           spec.service.showUserVerification(mockAudioEvent, mockTag),
         );
 
+        expect(response).toBeNull();
+      });
+    });
+
+    describe("destroy user verification", () => {
+      it("should delete the verification for the current user", async () => {
+        mockFilterResponse = [mockModel];
+
+        const testedRequest = spec.service.destroyUserVerification(
+          mockAudioEvent,
+          mockTag,
+        );
+        await firstValueFrom(testedRequest);
+
+        const expectedRoute = `/verifications/${mockModel.id}`;
+        expect(api.destroy).toHaveBeenCalledOnceWith(expectedRoute);
+      });
+
+      it("should return 'null' if the user does not have a verification", async () => {
+        mockFilterResponse = [];
+
+        const testedRequest = spec.service.destroyUserVerification(
+          mockAudioEvent,
+          mockTag,
+        );
+        const response = await firstValueFrom(testedRequest);
+
+        expect(api.destroy).not.toHaveBeenCalled();
         expect(response).toBeNull();
       });
     });
