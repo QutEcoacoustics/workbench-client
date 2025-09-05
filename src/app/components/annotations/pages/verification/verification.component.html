@@ -51,18 +51,21 @@
   </template>
 
   <oe-verification
+    #verificationDecision
     verified="true"
     shortcut="Y"
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
   <oe-verification
+    #verificationDecision
     verified="false"
     shortcut="N"
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
   ></oe-verification>
   <oe-verification
+    #verificationDecision
     verified="unsure"
     shortcut="U"
     (focus)="verificationGridFocused.set(true)"

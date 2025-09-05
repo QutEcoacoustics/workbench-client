@@ -8,6 +8,7 @@ import {
   OnInit,
   signal,
   viewChild,
+  viewChildren,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -111,6 +112,8 @@ class VerificationComponent
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
+  private verificationDecisionElements =
+    viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
 
   public searchParameters = signal<AnnotationSearchParameters | null>(null);
   public hasUnsavedChanges = signal(false);
@@ -163,6 +166,11 @@ class VerificationComponent
     if (this.hasCorrectionTask()) {
       this.tagPromptElement().nativeElement.search = this.tagSearchCallback();
       this.tagPromptElement().nativeElement.when = this.addTagWhenPredicate();
+    }
+
+    const verificationDecisions = this.verificationDecisionElements();
+    for (const decisionElement of verificationDecisions) {
+      decisionElement.nativeElement.when = this.tagVerificationPredicate();
     }
   }
 
@@ -456,12 +464,17 @@ class VerificationComponent
     };
   }
 
+  private tagVerificationPredicate(): WhenPredicate {
+    // The user can only verify a tag if there is a tag applied to the subject.
+    return (subject: SubjectWrapper) => subject.tag !== null;
+  }
+
   private addTagWhenPredicate(): WhenPredicate {
     return (subject: SubjectWrapper) => {
-      // If there is no tag applied to the subject, we want to make the user
-      // add a new tag, so we return true here to enable the oe-tag-prompt.
+      // If there is no tag applied to the subject, we cannot perform a tag
+      // correction task.
       if (subject.tag === null) {
-        return true;
+        return false;
       }
 
       // This checks if the verification is not required (symbol) or if there
