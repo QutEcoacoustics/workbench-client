@@ -8,6 +8,22 @@ var maxSigned32BitInt = Math.pow(2, 31) - 1;
 var isCi = process.env.CI === "true";
 var isMacOS = process.platform === "darwin";
 
+// We use custom middleware for the Karma test server so that we can append
+// headers to all served files (including static files served from /src/assets/)
+// This is different from the customHeaders config option which onl applies to
+// the iframe that the test runs in, and does not apply to other files served
+// through the karma server.
+function assetHeadersMiddlewareFactory(config) {
+  return function (_request, response, next) {
+    var additionalHeaders = config.customHeaders || [];
+    additionalHeaders.forEach(function (header) {
+      response.setHeader(header.name, header.value);
+    });
+
+    next();
+  }
+}
+
 module.exports = function (config) {
   config.set({
     basePath: "",
@@ -64,11 +80,15 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
-    // serve these files through the karma server
+    // Serve these files through the karma server
     // by serving these files through the karma server we can fetch and test
-    // against real files during testing
+    // against real files during testing.
+    //
+    // Additionally, the old baw-client is downloaded and served through the
+    // src/assets/old-client/ directory, meaning that we need to serve the old
+    // client to test integrations
     files: [
-      { pattern: "src/assets/test-assets/*", included: false, served: true },
+      { pattern: "src/assets/*", included: false, served: true },
       {
         // TODO: this should expose all of node_modules through the karma server
         // so that we can dynamically import anything from node_modules
@@ -122,5 +142,23 @@ module.exports = function (config) {
         { name: "extra-large", size: { width: 1200, height: 1500 } },
       ],
     },
+  });
+
+  // We use a custom middleware so that assets served through the Karma server
+  // have the correct security headers to allow them to be embedded in the test
+  // runners iframe.
+  //
+  // We have to use a custom middleware because the customHeaders config option
+  // only applies to the iframe that the tests run in, and does not apply to
+  // other files served through the karma server.
+  //
+  // Additionally, we set the middleware in a separate config.set because we
+  // want to append our middleware to the existing middleware which might have
+  // been set up by other plugins such as the Angular Karma builder.
+  config.set({
+    middleware: ["assetHeaders"],
+    plugins: config.plugins.concat([
+      { "middleware:assetHeaders": ["factory", assetHeadersMiddlewareFactory] },
+    ]),
   });
 };

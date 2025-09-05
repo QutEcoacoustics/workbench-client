@@ -472,6 +472,10 @@ describe("VerificationComponent", () => {
 
     await clickDecisionButton(DecisionOptions.CORRECT_TAG);
 
+    // When the tag typeahead is initially opened, it will show a list of
+    // results based on a query without any search text.
+    // Because we mock the "filter" API request to return all tags, we can just
+    // select the item from the initial list of results.
     clickButton(spec, tagPromptTypeaheadItems()[decision.item]);
   }
 
