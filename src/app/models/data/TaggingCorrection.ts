@@ -4,10 +4,12 @@ import { Tag } from "@models/Tag";
 
 export interface ITaggingCorrection {
   audioEvent: AudioEvent;
-  correctedTag: Tag["id"];
+  incorrectTagId: Tag["id"];
+  correctTagId: Tag["id"];
 }
 
 export class TaggingCorrection extends AbstractData<ITaggingCorrection> implements ITaggingCorrection {
   public readonly audioEvent: AudioEvent;
-  public readonly correctedTag: Tag["id"];
+  public readonly incorrectTagId: Tag["id"];
+  public readonly correctTagId: Tag["id"];
 }

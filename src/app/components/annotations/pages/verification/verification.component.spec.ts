@@ -69,6 +69,7 @@ import { TaggingCorrectionsService } from "@services/models/tagging-corrections/
 import { Tagging } from "@models/Tagging";
 import { generateVerification } from "@test/fakes/Verification";
 import { generateTagging } from "@test/fakes/Tagging";
+import { ScrollService } from "@services/scroll/scroll.service";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
@@ -87,7 +88,7 @@ interface VerificationTest {
   testName?: string;
   initialDecision: DecisionOptions | null;
   newDecision: DecisionOptions;
-  expectedApiCall: VerificationServiceCall;
+  expectedApiCall: VerificationServiceCall | null;
 }
 
 interface TagCorrectionDecision {
@@ -150,7 +151,15 @@ describe("VerificationComponent", () => {
       DateTimeFilterComponent,
       WIPComponent,
     ],
-    providers: [provideMockBawApi()],
+    providers: [
+      provideMockBawApi(),
+
+      // The verification grid will automatically scroll into view once it has
+      // loaded. However, I disable this behavior for testing because it can be
+      // annoying to deal with when trying to read test stack traces and the page
+      // automatically scrolls away from what you were reading.
+      mockProvider(ScrollService),
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
   });
 
@@ -331,12 +340,6 @@ describe("VerificationComponent", () => {
   }
 
   beforeEach(async () => {
-    // The verification grid will automatically scroll into view once it has
-    // loaded. However, I disable this behavior for testing because it can be
-    // annoying to deal with when trying to read test stack traces and the page
-    // automatically scrolls away from what you were reading.
-    Element.prototype.scrollIntoView = () => {};
-
     // I explicitly set the viewport size so that the grid size is always
     // consistent no matter what size the karma browser window is
     viewport.set(viewports.extraLarge);
@@ -667,7 +670,7 @@ describe("VerificationComponent", () => {
           }
 
           for (const method of testedMethods) {
-            if (method === test.expectedApiCall.method) {
+            if (method === test.expectedApiCall?.method) {
               expect(verificationApiSpy[method]).toHaveBeenCalledOnceWith(
                 ...test.expectedApiCall.args,
               );
@@ -718,13 +721,13 @@ describe("VerificationComponent", () => {
           // decision is toggled and a DELETE api call is made.
           expectedApiCall: verificationDeleteApiCall,
         },
-        // Overwriting to a "skip" decision is not currently supported
-        // TODO: https://github.com/ecoacoustics/web-components/issues/487
-        // {
-        //   initialDecision: DecisionOptions.FALSE,
-        //   newDecision: DecisionOptions.SKIP,
-        //   expectedApiCall: verificationSkipApiCall,
-        // },
+        {
+          initialDecision: DecisionOptions.FALSE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: null,
+          // TODO: https://github.com/ecoacoustics/web-components/issues/487
+          // expectedApiCall: verificationSkipApiCall,
+        },
         {
           initialDecision: DecisionOptions.FALSE,
           newDecision: DecisionOptions.UNSURE,
@@ -742,12 +745,13 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        // TODO: https://github.com/ecoacoustics/web-components/issues/487
-        // {
-        //   initialDecision: DecisionOptions.TRUE,
-        //   newDecision: DecisionOptions.SKIP,
-        //   expectedApiCall: verificationSkipApiCall,
-        // },
+        {
+          initialDecision: DecisionOptions.TRUE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: null,
+          // TODO: https://github.com/ecoacoustics/web-components/issues/487
+          // expectedApiCall: verificationSkipApiCall,
+        },
         {
           initialDecision: DecisionOptions.TRUE,
           newDecision: DecisionOptions.UNSURE,
@@ -787,12 +791,13 @@ describe("VerificationComponent", () => {
           newDecision: DecisionOptions.FALSE,
           expectedApiCall: verificationFalseApiCall,
         },
-        // TODO: https://github.com/ecoacoustics/web-components/issues/487
-        // {
-        //   initialDecision: DecisionOptions.UNSURE,
-        //   newDecision: DecisionOptions.SKIP,
-        //   expectedApiCall: verificationSkipApiCall,
-        // },
+        {
+          initialDecision: DecisionOptions.UNSURE,
+          newDecision: DecisionOptions.SKIP,
+          expectedApiCall: null,
+          // TODO: https://github.com/ecoacoustics/web-components/issues/487
+          // expectedApiCall: verificationSkipApiCall,
+        },
         {
           initialDecision: DecisionOptions.UNSURE,
           newDecision: DecisionOptions.UNSURE,

@@ -60,6 +60,7 @@ import { Tagging } from "@models/Tagging";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { TaggingCorrection } from "@models/data/TaggingCorrection";
+import { ScrollService } from "@services/scroll/scroll.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -97,6 +98,7 @@ class VerificationComponent
     private tagsApi: TagsService,
     private tagCorrections: TaggingCorrectionsService,
 
+    private scrollService: ScrollService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
@@ -129,12 +131,14 @@ class VerificationComponent
   /**
    * A mapping of audio events and the currently applied tag correction model
    * in the form of a fully-fledged Tagging model.
+   *
    * This is useful when trying to update the correction on an audio event and
    * you need to delete a tagging that was previously applied.
+   *
    * By using a client-side map, we can cache the tagging client side and
    * prevent making another request to the api.
    */
-  private tagCorrectionMapping = new Map<AudioEvent["id"], Tagging>();
+  private sessionTagCorrections = new Map<AudioEvent["id"], Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -378,12 +382,12 @@ class VerificationComponent
 
     const correction = new TaggingCorrection({
       audioEvent,
-      correctedTag: newTag.tag.id,
+      correctTagId: newTag.tag.id,
     });
 
     const apiRequest = this.tagCorrections.create(correction).pipe(
       map((correctTagging: Tagging) => {
-        this.tagCorrectionMapping.set(audioEvent.id, correctTagging);
+        this.sessionTagCorrections.set(audioEvent.id, correctTagging);
         return correctTagging;
       }),
     );
@@ -397,7 +401,7 @@ class VerificationComponent
   ): void {
     const audioEvent = subjectWrapper.subject as any;
 
-    const targetTagging = this.tagCorrectionMapping.get(audioEvent.id);
+    const targetTagging = this.sessionTagCorrections.get(audioEvent.id);
     if (!targetTagging) {
       // This condition can trigger if users make a request to update a tagging
       // while there is an existing tagging request pending.
@@ -409,7 +413,7 @@ class VerificationComponent
 
     const correction = new TaggingCorrection({
       audioEvent,
-      correctedTag: tagToRemove.id,
+      correctTagId: tagToRemove.id,
     });
 
     const apiRequest = this.tagCorrections.destroy(correction, targetTagging.id);
@@ -430,7 +434,7 @@ class VerificationComponent
   }
 
   private scrollToVerificationGrid(): void {
-    this.verificationGridElement().nativeElement.scrollIntoView({
+    this.scrollService.scrollToElement(this.verificationGridElement(), {
       behavior: "smooth",
       block: "end",
     });

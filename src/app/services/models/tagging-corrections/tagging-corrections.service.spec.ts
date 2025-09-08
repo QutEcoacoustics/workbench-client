@@ -78,7 +78,7 @@ describe("CorrectionsService", () => {
       const correction = new TaggingCorrection(
         generateTaggingCorrection({
           audioEvent,
-          correctedTag: 2,
+          correctTagId: 2,
         }),
       );
 
@@ -87,13 +87,13 @@ describe("CorrectionsService", () => {
 
       const expectedNewTagging = new Tagging({
         audioEventId: correction.audioEvent.id,
-        tagId: correction.correctedTag,
+        tagId: correction.correctTagId,
       });
 
       const expectedVerification = new Verification({
         audioEventId: correction.audioEvent.id,
         confirmed: ConfirmedStatus.Correct,
-        tagId: correction.correctedTag,
+        tagId: correction.correctTagId,
       });
 
       expect(taggingApiSpy.create).toHaveBeenCalledOnceWith(
@@ -120,7 +120,7 @@ describe("CorrectionsService", () => {
       const correction = new TaggingCorrection(
         generateTaggingCorrection({
           audioEvent,
-          correctedTag: 1,
+          correctTagId: 1,
         }),
       );
 
@@ -130,7 +130,7 @@ describe("CorrectionsService", () => {
       const expectedVerification = new Verification({
         audioEventId: correction.audioEvent.id,
         confirmed: ConfirmedStatus.Correct,
-        tagId: correction.correctedTag,
+        tagId: correction.correctTagId,
       });
 
       expect(taggingApiSpy.create).not.toHaveBeenCalled();
@@ -159,7 +159,7 @@ describe("CorrectionsService", () => {
         verificationApiSpy.destroyUserVerification,
       ).toHaveBeenCalledOnceWith(
         correction.audioEvent,
-        correction.correctedTag,
+        correction.correctTagId,
       );
 
       expect(taggingApiSpy.destroy).toHaveBeenCalledOnceWith(
@@ -186,7 +186,7 @@ describe("CorrectionsService", () => {
         verificationApiSpy.destroyUserVerification,
       ).toHaveBeenCalledOnceWith(
         correction.audioEvent,
-        correction.correctedTag,
+        correction.correctTagId,
       );
 
       expect(taggingApiSpy.destroy).not.toHaveBeenCalled();

@@ -8,7 +8,7 @@ export function generateTaggingCorrection(
 ): Required<ITaggingCorrection> {
   return {
     audioEvent: new AudioEvent(generateAudioEvent()),
-    correctedTag: modelData.id(),
+    correctTagId: modelData.id(),
     ...data,
   };
 }
