@@ -61,6 +61,7 @@ import { AudioEventImportService } from "./audio-event-import/audio-event-import
 import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
+import { VerificationService } from "./verification/verification.service";
 
 // If you get the following error while trying to stub a service:
 //
@@ -107,6 +108,7 @@ export const mockProviders: Provider[] = [
   mockProvider(AudioEventImportFileService),
   mockProvider(AudioEventProvenanceService),
   mockProvider(SiteSettingsService),
+  mockProvider(VerificationService),
 ];
 
 export function provideMockBawApi(): (EnvironmentProviders | Provider)[] {

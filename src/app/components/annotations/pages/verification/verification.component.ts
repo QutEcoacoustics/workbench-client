@@ -8,6 +8,7 @@ import {
   OnInit,
   signal,
   viewChild,
+  viewChildren,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -20,7 +21,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, map, switchMap } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
 import {
@@ -34,7 +35,7 @@ import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
-import { AnnotationService } from "@services/models/annotation.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -47,8 +48,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotation.resolver";
-import { TaggingsService } from "@baw-api/tag/taggings.service";
+import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -57,8 +57,10 @@ import {
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
-import { Id } from "@interfaces/apiInterfaces";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
+import { ScrollService } from "@services/scroll/scroll.service";
+import { Annotation } from "@models/data/Annotation";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -77,6 +79,9 @@ const confirmedMapping = {
   skip: ConfirmedStatus.Skip,
 } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
+// TODO: This component needs a huge refactor once we improved the typing
+// exported from the web components.
+// see: https://github.com/ecoacoustics/web-components/issues/449
 @Component({
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
@@ -93,9 +98,10 @@ class VerificationComponent
     private audioEventApi: ShallowAudioEventsService,
     private verificationApi: ShallowVerificationService,
     private annotationsService: AnnotationService,
-    private taggingsApi: TaggingsService,
     private tagsApi: TagsService,
+    private tagCorrections: TaggingCorrectionsService,
 
+    private scrollService: ScrollService,
     private modals: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
@@ -111,6 +117,8 @@ class VerificationComponent
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
+  private verificationDecisionElements =
+    viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
 
   public searchParameters = signal<AnnotationSearchParameters | null>(null);
   public hasUnsavedChanges = signal(false);
@@ -126,12 +134,14 @@ class VerificationComponent
   /**
    * A mapping of audio events and the currently applied tag correction model
    * in the form of a fully-fledged Tagging model.
+   *
    * This is useful when trying to update the correction on an audio event and
    * you need to delete a tagging that was previously applied.
+   *
    * By using a client-side map, we can cache the tagging client side and
    * prevent making another request to the api.
    */
-  private tagCorrectionMapping = new Map<AudioEvent["id"], Tagging>();
+  private sessionTagCorrections = new Map<Annotation["id"], Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -163,6 +173,11 @@ class VerificationComponent
     if (this.hasCorrectionTask()) {
       this.tagPromptElement().nativeElement.search = this.tagSearchCallback();
       this.tagPromptElement().nativeElement.when = this.addTagWhenPredicate();
+    }
+
+    const verificationDecisions = this.verificationDecisionElements();
+    for (const decisionElement of verificationDecisions) {
+      decisionElement.nativeElement.when = this.tagVerificationPredicate();
     }
   }
 
@@ -288,7 +303,7 @@ class VerificationComponent
       const newTagDecision = change.newTag;
       const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
 
-      if (newTagDecision === null || newTagDecision === decisionNotRequired) {
+      if (newTagDecision === null || newTagDecision === decisionNotRequired || newTagDecision?.["confirmed"] === "skip") {
         this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
       } else if (newTagDecision) {
         // If there was a newTag (tag correction) applied in the previous
@@ -309,7 +324,7 @@ class VerificationComponent
         if (
           (newTagDecision as any).tag?.text !== oldSubjectTagCorrection?.text
         ) {
-          if (oldSubjectTagCorrection) {
+          if (oldSubjectTagCorrection && oldSubjectTagCorrection.text) {
             this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
           }
 
@@ -348,11 +363,11 @@ class VerificationComponent
 
   private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
-    const tag = subjectWrapper.tag as Tag;
+    const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.verificationApi.destroyEventVerification(
+    const apiRequest = this.verificationApi.destroyUserVerification(
       audioEvent,
-      tag,
+      newTag,
     );
 
     firstValueFrom(apiRequest);
@@ -365,12 +380,12 @@ class VerificationComponent
    * initially having an "incorrect" verification applied.
    */
   private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
-    const audioEvent = subjectWrapper.subject as any;
-    const newTag = subjectWrapper.newTag as any;
+    const annotation = subjectWrapper.subject as any as Annotation;
+    const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
-    const apiRequest = this.addCorrectTagging(audioEvent, newTag.tag.id).pipe(
+    const apiRequest = this.tagCorrections.create(annotation, newTag).pipe(
       map((correctTagging: Tagging) => {
-        this.tagCorrectionMapping.set(audioEvent.id, correctTagging);
+        this.sessionTagCorrections.set(annotation.id, correctTagging);
         return correctTagging;
       }),
     );
@@ -382,9 +397,9 @@ class VerificationComponent
     subjectWrapper: SubjectWrapper,
     tagToRemove: Tag,
   ): void {
-    const audioEvent = subjectWrapper.subject as any;
+    const annotation = subjectWrapper.subject as any as Annotation;
 
-    const targetTagging = this.tagCorrectionMapping.get(audioEvent.id);
+    const targetTagging = this.sessionTagCorrections.get(annotation.id);
     if (!targetTagging) {
       // This condition can trigger if users make a request to update a tagging
       // while there is an existing tagging request pending.
@@ -394,52 +409,8 @@ class VerificationComponent
       return;
     }
 
-    // Remove the verification from the audio event and then remove the tagging
-    // that was added as part of the tag correction decision.
-    const apiRequest = this.verificationApi
-      .destroyEventVerification(audioEvent, tagToRemove)
-      .pipe(
-        switchMap(() => {
-          return this.taggingsApi.destroy(
-            targetTagging.id,
-            audioEvent.audioRecordingId,
-            audioEvent.id,
-          );
-        }),
-      );
-
+    const apiRequest = this.tagCorrections.destroy(annotation, tagToRemove.id);
     firstValueFrom(apiRequest);
-  }
-
-  // TODO: This logic should probably be moved to a service
-  /**
-   * Corrects an incorrect tag on an audio event by verifying the existing tag
-   * as "incorrect", creating a new tag that is correct, and submitting a
-   * "correct" verification decision.
-   */
-  private addCorrectTagging(audioEvent: AudioEvent, newTagId: Id) {
-    const correctTag = new Tagging({
-      audioEventId: audioEvent.id,
-      tagId: newTagId,
-    });
-
-    return this.taggingsApi
-      .create(correctTag, audioEvent.audioRecordingId, audioEvent.id)
-      .pipe(
-        map((tagging: Tagging) => {
-          const correctVerification = new Verification({
-            audioEventId: audioEvent.id,
-            confirmed: ConfirmedStatus.Correct,
-            tagId: newTagId,
-          });
-
-          const verificationRequest = this.verificationApi.createOrUpdate(correctVerification);
-
-          firstValueFrom(verificationRequest);
-
-          return tagging;
-        }),
-      );
   }
 
   // TODO: this function can be improved with instanceof checks once we export
@@ -456,7 +427,7 @@ class VerificationComponent
   }
 
   private scrollToVerificationGrid(): void {
-    this.verificationGridElement().nativeElement.scrollIntoView({
+    this.scrollService.scrollToElement(this.verificationGridElement(), {
       behavior: "smooth",
       block: "end",
     });
@@ -490,9 +461,37 @@ class VerificationComponent
     };
   }
 
+  // TODO: This "when" predicate should not be needed once we support optional
+  // verifications in the web components.
+  // see: https://github.com/ecoacoustics/web-components/issues/444
+  private tagVerificationPredicate(): WhenPredicate {
+    // The user can only verify a tag if there is a tag applied to the subject.
+    return (subject: SubjectWrapper) => subject.tag !== null;
+  }
+
   private addTagWhenPredicate(): WhenPredicate {
-    return (subject: SubjectWrapper) =>
-      subject.tag === null || subject.verification?.["confirmed"] === "false";
+    return (subject: SubjectWrapper) => {
+      // If there is no tag applied to the subject, we cannot perform a tag
+      // correction task.
+      if (subject.tag === null) {
+        return false;
+      }
+
+      // This checks if the verification is not required (symbol) or if there
+      // is no verification.
+      //
+      // TODO: We should improve the "not required" case here once we export the
+      // "decisionNotRequired" symbol from the web components.
+      // see: https://github.com/ecoacoustics/web-components/issues/500
+      const subjectVerification = subject.verification;
+      if (typeof subjectVerification === "symbol" || !subjectVerification) {
+        return false;
+      }
+
+      // If the user verified the original tag as incorrect, we want to prompt
+      // them for a new tag.
+      return subjectVerification.confirmed === "false";
+    }
   }
 }
 

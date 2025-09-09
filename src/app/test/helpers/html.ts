@@ -25,6 +25,7 @@ export function clickButton<T>(
   }
 
   // using spectator.click() will cause a change detection cycle
+  // https://github.com/ngneat/spectator/blob/38b036c763b96ab4ebc4/projects/spectator/src/lib/base/dom-spectator.ts#L193
   spectator.click(selector);
 }
 

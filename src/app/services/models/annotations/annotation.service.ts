@@ -6,6 +6,7 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation, IAnnotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
+import { Tagging } from "@models/Tagging";
 import { firstValueFrom } from "rxjs";
 
 export type TagComparer = (a: Tag, b: Tag) => number;
@@ -24,11 +25,12 @@ export class AnnotationService {
     const tagComparer = this.makeTagComparer(priorityTags);
     const tags = audioEventTags.sort(tagComparer);
 
-    const data: Partial<IAnnotation> = {
+    const data = {
       ...audioEvent,
       tags,
       audioRecording,
-    };
+      corrections: new Map<Tag["id"], Tagging>(),
+    } as IAnnotation;
 
     return new Annotation(data);
   }
