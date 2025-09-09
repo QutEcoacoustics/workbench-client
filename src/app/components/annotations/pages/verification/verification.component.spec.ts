@@ -819,12 +819,12 @@ describe("VerificationComponent", () => {
     describe("new tag decisions", () => {
       const newTagCorrectionApiCall: TagCorrectionServiceCall = {
         method: "create",
-        args: [jasmine.anything()],
+        args: [jasmine.any(Annotation), jasmine.any(Number)],
       };
 
       const deleteTagCorrectionApiCall: TagCorrectionServiceCall = {
         method: "destroy",
-        args: [jasmine.anything(), jasmine.anything()],
+        args: [jasmine.any(Annotation), jasmine.any(Number)],
       };
 
       async function runNewTagTest(test: NewTagTest): Promise<void> {

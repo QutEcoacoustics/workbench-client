@@ -65,17 +65,19 @@ export class AudioEvent
   public readonly durationSeconds?: number;
   public readonly score?: number;
   public readonly taggings?: Tagging[];
+  public readonly provenanceId?: Id;
+  public readonly audioEventImportFileId?: Id;
+
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
   public readonly deleterId?: Id;
+
   @bawDateTime()
   public readonly createdAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
-  public readonly provenanceId?: Id;
-  public readonly audioEventImportFileId?: Id;
 
   // Associations
   @creator<AudioEvent>()

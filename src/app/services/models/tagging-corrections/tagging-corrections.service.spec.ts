@@ -8,8 +8,6 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
 import { TaggingsService } from "@baw-api/tag/taggings.service";
 import { firstValueFrom, of } from "rxjs";
-import { TaggingCorrection } from "@models/data/TaggingCorrection";
-import { generateTaggingCorrection } from "@test/fakes/data/TaggingCorrection";
 import { modelData } from "@test/helpers/faker";
 import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
@@ -17,10 +15,13 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ConfirmedStatus, Verification } from "@models/Verification";
 import { generateVerification } from "@test/fakes/Verification";
-import { AudioEvent } from "@models/AudioEvent";
+import { Annotation } from "@models/data/Annotation";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { Tag } from "@models/Tag";
+import { generateTag } from "@test/fakes/Tag";
 import { TaggingCorrectionsService } from "./tagging-corrections.service";
 
-describe("CorrectionsService", () => {
+describe("TaggingCorrectionsService", () => {
   let spec: SpectatorService<TaggingCorrectionsService>;
   let verificationApiSpy: SpyObject<ShallowVerificationService>;
   let taggingApiSpy: SpyObject<TaggingsService>;
@@ -52,9 +53,13 @@ describe("CorrectionsService", () => {
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
     verificationApiSpy.destroyUserVerification.andReturn(of(undefined));
-    verificationApiSpy.createOrUpdate.andCallFake(() => of(mockVerifications[0]));
+    verificationApiSpy.createOrUpdate.andCallFake(() =>
+      of(mockVerifications[0]),
+    );
 
-    verificationApiSpy.audioEventTagVerifications.andCallFake(() => of(mockVerifications));
+    verificationApiSpy.audioEventTagVerifications.andCallFake(() =>
+      of(mockVerifications),
+    );
     verificationApiSpy.destroyUserVerification.andCallFake(() => of(null));
 
     taggingApiSpy = spec.inject(TaggingsService);
@@ -68,38 +73,32 @@ describe("CorrectionsService", () => {
 
   describe("create", () => {
     it("should create a new tagging and verify it as 'correct' if the tagging doesn't exist", async () => {
-      const audioEvent = new AudioEvent(
-        {
+      const correctTagId = modelData.id();
+      const annotation = new Annotation(
+        generateAnnotation({
           taggings: [generateTagging({ tagId: 1 })],
-        },
+        }),
         injector,
       );
 
-      const correction = new TaggingCorrection(
-        generateTaggingCorrection({
-          audioEvent,
-          correctTagId: 2,
-        }),
-      );
-
-      const testedRequest = spec.service.create(correction);
+      const testedRequest = spec.service.create(annotation, correctTagId);
       await firstValueFrom(testedRequest);
 
       const expectedNewTagging = new Tagging({
-        audioEventId: correction.audioEvent.id,
-        tagId: correction.correctTagId,
+        audioEventId: annotation.id,
+        tagId: correctTagId,
       });
 
       const expectedVerification = new Verification({
-        audioEventId: correction.audioEvent.id,
+        audioEventId: annotation.id,
         confirmed: ConfirmedStatus.Correct,
-        tagId: correction.correctTagId,
+        tagId: correctTagId,
       });
 
       expect(taggingApiSpy.create).toHaveBeenCalledOnceWith(
         expectedNewTagging,
-        correction.audioEvent.audioRecordingId,
-        correction.audioEvent.id,
+        annotation.audioRecordingId,
+        annotation.id,
       );
 
       expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledOnceWith(
@@ -108,29 +107,23 @@ describe("CorrectionsService", () => {
     });
 
     it("should only verify the existing tagging as 'correct' if the tagging already exists", async () => {
-      const audioEvent = new AudioEvent(
-        {
-          taggings: [generateTagging({ tagId: 1 })],
-        },
+      // Notice that the correctedTag has the same tagId as the existing tagging
+      // meaning that we shouldn't attempt to create a new tagging.
+      const correctTagId = modelData.id();
+      const annotation = new Annotation(
+        generateAnnotation({
+          taggings: [generateTagging({ tagId: correctTagId })],
+        }),
         injector,
       );
 
-      // Notice that the correctedTag has the same tagId as the existing tagging
-      // meaning that we shouldn't attempt to create a new tagging.
-      const correction = new TaggingCorrection(
-        generateTaggingCorrection({
-          audioEvent,
-          correctTagId: 1,
-        }),
-      );
-
-      const testedRequest = spec.service.create(correction);
+      const testedRequest = spec.service.create(annotation, correctTagId);
       await firstValueFrom(testedRequest);
 
       const expectedVerification = new Verification({
-        audioEventId: correction.audioEvent.id,
+        audioEventId: annotation.id,
         confirmed: ConfirmedStatus.Correct,
-        tagId: correction.correctTagId,
+        tagId: correctTagId,
       });
 
       expect(taggingApiSpy.create).not.toHaveBeenCalled();
@@ -143,8 +136,17 @@ describe("CorrectionsService", () => {
 
   describe("destroy", () => {
     it("should delete both the verification and tagging if the tagging only has one verification", async () => {
-      const correction = new TaggingCorrection(generateTaggingCorrection());
-      const taggingToRemove = modelData.id();
+      const tagToRemove = new Tag(generateTag(), injector);
+      const taggingToRemove = new Tagging(generateTagging(), injector);
+
+      const correctionsMap = new Map<Tag["id"], Tagging>([
+        [tagToRemove.id, taggingToRemove],
+      ]);
+
+      const annotation = new Annotation(
+        generateAnnotation({ corrections: correctionsMap, }),
+        injector
+      );
 
       // Because we mock the verifications response to return an empty array,
       // the events verifications will be empty, simulating the case where there
@@ -152,26 +154,32 @@ describe("CorrectionsService", () => {
       // therefore be deleted.
       mockVerifications = [];
 
-      const testedRequest = spec.service.destroy(correction, taggingToRemove);
+      const testedRequest = spec.service.destroy(annotation, tagToRemove.id);
       await firstValueFrom(testedRequest);
 
       expect(
         verificationApiSpy.destroyUserVerification,
-      ).toHaveBeenCalledOnceWith(
-        correction.audioEvent,
-        correction.correctTagId,
-      );
+      ).toHaveBeenCalledOnceWith(annotation, tagToRemove.id);
 
       expect(taggingApiSpy.destroy).toHaveBeenCalledOnceWith(
         taggingToRemove,
-        correction.audioEvent.audioRecordingId,
-        correction.audioEvent.id,
+        annotation.audioRecordingId,
+        annotation.id,
       );
     });
 
     it("should not delete the tagging if there are multiple verifications remaining on the tagging", async () => {
-      const correction = new TaggingCorrection(generateTaggingCorrection());
-      const taggingToRemove = modelData.id();
+      const tagToRemove = new Tag(generateTag(), injector);
+      const taggingToRemove = new Tagging(generateTagging(), injector);
+
+      const correctionsMap = new Map<Tag["id"], Tagging>([
+        [tagToRemove.id, taggingToRemove],
+      ]);
+
+      const annotation = new Annotation(
+        generateAnnotation({ corrections: correctionsMap }),
+        injector,
+      );
 
       mockVerifications = [
         new Verification(generateVerification(), injector),
@@ -179,15 +187,12 @@ describe("CorrectionsService", () => {
         new Verification(generateVerification(), injector),
       ];
 
-      const testedRequest = spec.service.destroy(correction, taggingToRemove);
+      const testedRequest = spec.service.destroy(annotation, tagToRemove.id);
       await firstValueFrom(testedRequest);
 
       expect(
         verificationApiSpy.destroyUserVerification,
-      ).toHaveBeenCalledOnceWith(
-        correction.audioEvent,
-        correction.correctTagId,
-      );
+      ).toHaveBeenCalledOnceWith(annotation, tagToRemove.id);
 
       expect(taggingApiSpy.destroy).not.toHaveBeenCalled();
     });

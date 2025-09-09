@@ -1,4 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { ElementRef } from "@angular/core";
 import { ScrollService } from "./scroll.service";
 
 describe("ScrollServiceService", () => {
@@ -16,15 +17,46 @@ describe("ScrollServiceService", () => {
     expect(spec.service).toBeInstanceOf(ScrollService);
   });
 
-  describe("options", () => {
-    it("should merge options correctly", () => {});
+  // We test scrolling to an element rather than an ElementRef in later tests.
+  // This test is just to ensure that both types are accepted.
+  it("should be able to scroll to an ElementRef", () => {
+    const testedElement = document.createElement("div");
+    const elementRef = new ElementRef(testedElement);
 
-    it("should have the correct default options", () => {});
+    const scrollIntoViewSpy = spyOn(testedElement, "scrollIntoView");
+
+    spec.service.scrollToElement(elementRef);
+
+    expect(scrollIntoViewSpy).toHaveBeenCalledTimes(1);
   });
 
-  describe("element", () => {
-    it("should be able to scroll to an element reference", () => {});
+  describe("options", () => {
+    it("should merge options correctly", () => {
+      const testedOptions: ScrollIntoViewOptions = {
+        behavior: "auto",
+        block: "start",
+      };
 
-    it("should be able to scroll to a HTML element", () => {});
+      const testedElement = document.createElement("div");
+      const scrollIntoViewSpy = spyOn(testedElement, "scrollIntoView");
+
+      spec.service.scrollToElement(testedElement, testedOptions);
+
+      expect(scrollIntoViewSpy).toHaveBeenCalledOnceWith(testedOptions);
+    });
+
+    it("should have the correct default options", () => {
+      const defaultOptions: ScrollIntoViewOptions = {
+        behavior: "smooth",
+        block: "center",
+      };
+
+      const testedElement = document.createElement("div");
+      const scrollIntoViewSpy = spyOn(testedElement, "scrollIntoView");
+
+      spec.service.scrollToElement(testedElement);
+
+      expect(scrollIntoViewSpy).toHaveBeenCalledOnceWith(defaultOptions);
+    });
   });
 });

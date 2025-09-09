@@ -59,8 +59,8 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
-import { TaggingCorrection } from "@models/data/TaggingCorrection";
 import { ScrollService } from "@services/scroll/scroll.service";
+import { Annotation } from "@models/data/Annotation";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -79,6 +79,9 @@ const confirmedMapping = {
   skip: ConfirmedStatus.Skip,
 } as const satisfies Record<DecisionOptions, ConfirmedStatus>;
 
+// TODO: This component needs a huge refactor once we improved the typing
+// exported from the web components.
+// see: https://github.com/ecoacoustics/web-components/issues/449
 @Component({
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
@@ -138,7 +141,7 @@ class VerificationComponent
    * By using a client-side map, we can cache the tagging client side and
    * prevent making another request to the api.
    */
-  private sessionTagCorrections = new Map<AudioEvent["id"], Tagging>();
+  private sessionTagCorrections = new Map<Annotation["id"], Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -377,17 +380,12 @@ class VerificationComponent
    * initially having an "incorrect" verification applied.
    */
   private handleTagCorrectionDecision(subjectWrapper: SubjectWrapper): void {
-    const audioEvent = subjectWrapper.subject as any;
-    const newTag = subjectWrapper.newTag as any;
+    const annotation = subjectWrapper.subject as any as Annotation;
+    const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
-    const correction = new TaggingCorrection({
-      audioEvent,
-      correctTagId: newTag.tag.id,
-    });
-
-    const apiRequest = this.tagCorrections.create(correction).pipe(
+    const apiRequest = this.tagCorrections.create(annotation, newTag).pipe(
       map((correctTagging: Tagging) => {
-        this.sessionTagCorrections.set(audioEvent.id, correctTagging);
+        this.sessionTagCorrections.set(annotation.id, correctTagging);
         return correctTagging;
       }),
     );
@@ -399,9 +397,9 @@ class VerificationComponent
     subjectWrapper: SubjectWrapper,
     tagToRemove: Tag,
   ): void {
-    const audioEvent = subjectWrapper.subject as any;
+    const annotation = subjectWrapper.subject as any as Annotation;
 
-    const targetTagging = this.sessionTagCorrections.get(audioEvent.id);
+    const targetTagging = this.sessionTagCorrections.get(annotation.id);
     if (!targetTagging) {
       // This condition can trigger if users make a request to update a tagging
       // while there is an existing tagging request pending.
@@ -411,12 +409,7 @@ class VerificationComponent
       return;
     }
 
-    const correction = new TaggingCorrection({
-      audioEvent,
-      correctTagId: tagToRemove.id,
-    });
-
-    const apiRequest = this.tagCorrections.destroy(correction, targetTagging.id);
+    const apiRequest = this.tagCorrections.destroy(annotation, tagToRemove.id);
     firstValueFrom(apiRequest);
   }
 

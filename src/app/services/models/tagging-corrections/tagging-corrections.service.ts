@@ -1,17 +1,18 @@
 import { inject, Injectable } from "@angular/core";
 import { TaggingsService } from "@baw-api/tag/taggings.service";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { TaggingCorrection } from "@models/data/TaggingCorrection";
+import { Annotation } from "@models/data/Annotation";
+import { Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
 import { ConfirmedStatus, Verification } from "@models/Verification";
-import { defer, iif, map, Observable, of, switchMap } from "rxjs";
+import { defer, iif, map, Observable, of, switchMap, tap } from "rxjs";
 
 // TODO: Refactor this service with a createOrUpdate method and update methods
 // once we have database backed tag corrections.
 // I cannot do a "createOrUpdate" method right now because I cannot reliably
 // know what tags have been created as part of a correction.
 // see: https://github.com/QutEcoacoustics/baw-server/issues/807
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class TaggingCorrectionsService {
   private verificationApi = inject(ShallowVerificationService);
   private taggingApi = inject(TaggingsService);
@@ -20,13 +21,16 @@ export class TaggingCorrectionsService {
    * Adds a tag correction to an audio event by creating a new tagging and
    * immediately verifying it as correct.
    */
-  public create(model: TaggingCorrection): Observable<Tagging> {
-    const correctTagging = new Tagging({
-      audioEventId: model.audioEvent.id,
-      tagId: model.correctTagId,
-    });
+  public create(
+    model: Annotation,
+    correctTagId: Tag["id"],
+  ): Observable<Tagging> {
+    const isNewTag = !model.tagIds.has(correctTagId);
 
-    const isNewTag = !model.audioEvent.tagIds.has(model.correctTagId);
+    const correctTagging = new Tagging({
+      audioEventId: model.id,
+      tagId: correctTagId,
+    });
 
     // If multiple people are verifying the same dataset, it's likely that
     // they correct to the same tag, meaning that the tag already exists on the
@@ -40,22 +44,23 @@ export class TaggingCorrectionsService {
       defer(() =>
         this.taggingApi.create(
           correctTagging,
-          model.audioEvent.audioRecordingId,
-          model.audioEvent.id,
+          model.audioRecordingId,
+          model.id,
         ),
       ),
       defer(() => of(correctTagging)),
     ).pipe(
       switchMap((tagging: Tagging) => {
         const correctVerification = new Verification({
-          audioEventId: model.audioEvent.id,
+          audioEventId: model.id,
           confirmed: ConfirmedStatus.Correct,
-          tagId: model.correctTagId,
+          tagId: correctTagId,
         });
 
-        return this.verificationApi
-          .createOrUpdate(correctVerification)
-          .pipe(map(() => tagging));
+        return this.verificationApi.createOrUpdate(correctVerification).pipe(
+          map(() => tagging),
+          tap(() => model.addCorrection(correctTagId, tagging)),
+        );
       }),
     );
   }
@@ -66,16 +71,23 @@ export class TaggingCorrectionsService {
    * event, the tagging will be removed.
    */
   public destroy(
-    model: TaggingCorrection,
-    taggingToRemove: Tagging["id"],
+    model: Annotation,
+    tagIdToRemove: Tag["id"],
   ): Observable<void | Tagging> {
+    const taggingToRemove = model.corrections.get(tagIdToRemove);
+    if (!taggingToRemove) {
+      throw new Error(
+        `Correction for tag id '${tagIdToRemove}' not found on this annotation.`,
+      );
+    }
+
     return this.verificationApi
-      .destroyUserVerification(model.audioEvent, model.correctTagId)
+      .destroyUserVerification(model as any, tagIdToRemove)
       .pipe(
         switchMap(() =>
           this.verificationApi.audioEventTagVerifications(
-            model.audioEvent,
-            model.correctTagId,
+            model as any,
+            tagIdToRemove,
           ),
         ),
         switchMap((newVerifications: Verification[]) => {
@@ -92,11 +104,9 @@ export class TaggingCorrectionsService {
           // should only delete the tagging if it was created as part of this
           // correction.
           // see: https://github.com/QutEcoacoustics/baw-server/issues/807
-          return this.taggingApi.destroy(
-            taggingToRemove,
-            model.audioEvent.audioRecordingId,
-            model.audioEvent.id,
-          );
+          return this.taggingApi
+            .destroy(taggingToRemove, model.audioRecordingId, model.id)
+            .pipe(tap(() => model.removeCorrection(tagIdToRemove)));
         }),
       );
   }
