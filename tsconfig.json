@@ -17,7 +17,7 @@
       "dom.iterable"
     ],
     "module": "ES2020",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
     "outDir": "./dist/out-tsc",
@@ -28,6 +28,14 @@
     "target": "ES2022",
     "types": [
       "@types/gtag.js",
+
+      // TODO: This is a hack to get VsCode to recognize that jasmine is
+      // globally imported in test contexts.
+      //
+      // This was previously not needed because the jasmine types were globally
+      // imported through a convoluted tsconfig resolution.
+      // I have made it more explicit that jasmine is a global import so that
+      // we know that this hack exists.
       "jasmine"
     ],
     "paths": {

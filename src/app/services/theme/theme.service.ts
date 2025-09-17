@@ -1,4 +1,5 @@
-import { Inject, Injectable, DOCUMENT } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Inject, Injectable } from "@angular/core";
 import { hsl, rgb, HSLColor, RGBColor } from "d3-color";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
