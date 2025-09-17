@@ -120,7 +120,7 @@ describe("AudioEventCardComponent", () => {
 
     // We use "toHaveExactText" here to ensure there are no extraneous spaces
     // or newlines.
-    expect(moreInfoLink()).toHaveExactText("More information");
+    expect(listenLink()).toHaveExactText("More information");
   });
 
   it("should have the tag text and link in the info", () => {
