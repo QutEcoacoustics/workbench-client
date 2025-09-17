@@ -150,9 +150,11 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
         return;
       }
 
+      const orderBy = filters.sorting.orderBy as any;
+
       // Otherwise, use the sort from the filter observable as the default
       this.datatable.sorts = [
-        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+        { prop: orderBy, dir: filters.sorting.direction },
       ];
       this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });
@@ -216,7 +218,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     });
 
     // Set sorting whenever changed
-    this.datatable.sort.subscribe((sort): void => {
+    this.datatable.sort.subscribe((sort: DatatableSortEvent): void => {
       this.onSort(sort);
     });
   }
@@ -275,5 +277,5 @@ export interface DatatablePageEvent {
 export interface DatatableSortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: DataTableColumnDirective & { sortKey: string };
+  column: DataTableColumnDirective<any> & { sortKey: string };
 }

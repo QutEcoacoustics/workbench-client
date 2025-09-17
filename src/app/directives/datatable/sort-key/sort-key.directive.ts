@@ -8,7 +8,7 @@ import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 export class DatatableSortKeyDirective implements OnChanges {
   @Input() public sortKey: string;
 
-  public constructor(@Host() private column: DataTableColumnDirective) {}
+  public constructor(@Host() private column: DataTableColumnDirective<any>) {}
 
   public ngOnChanges(): void {
     this.column["sortKey"] = this.sortKey;

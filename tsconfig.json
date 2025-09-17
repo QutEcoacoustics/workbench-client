@@ -12,12 +12,12 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "lib": [
-      "ES2022",
+      "ESNext",
       "dom",
       "dom.iterable"
     ],
-    "module": "ES2020",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
     "outDir": "./dist/out-tsc",
@@ -25,7 +25,7 @@
     "sourceMap": true,
     "strict": false,
     "skipLibCheck": true,
-    "target": "ES2022",
+    "target": "esnext",
     "types": [
       "@types/gtag.js",
 

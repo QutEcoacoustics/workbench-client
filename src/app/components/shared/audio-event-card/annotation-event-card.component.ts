@@ -6,14 +6,13 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { MediaControlsComponent, SpectrogramComponent } from "node_modules/@ecoacoustics/web-components/@types";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
