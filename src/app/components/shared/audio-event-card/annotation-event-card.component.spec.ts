@@ -97,6 +97,11 @@ describe("AudioEventCardComponent", () => {
     spectator.query<HTMLAnchorElement>(".more-information-link");
   const tagInfoElement = () => spectator.query(".tag-information");
 
+  const scoreElement = () => spectator.query(".tag-score");
+  const noScoreElement = () => spectator.query(".no-score-placeholder");
+
+  const moreInfoLink = () => spectator.query(".more-information-link");
+
   beforeEach(() => {
     setup();
   });
@@ -119,6 +124,33 @@ describe("AudioEventCardComponent", () => {
   it("should have the tag text and link in the info", () => {
     const expectedText = mockTag.text;
     expect(tagInfoElement()).toHaveText(expectedText);
+  });
+
+  it("should display scores correctly", () => {
+    const expectedText = mockAnnotation.score?.toString();
+
+    expect(scoreElement()).toHaveExactTrimmedText(expectedText);
+    expect(noScoreElement()).not.toExist();
+  });
+
+  it("should have the correct content if there is no score", () => {
+    mockAnnotation = new Annotation(
+      generateAnnotation({
+        audioRecording: mockAudioRecording,
+        score: null,
+      }),
+      injectorSpy
+    );
+
+    spectator.setInput("annotation", mockAnnotation);
+
+    expect(noScoreElement()).toHaveExactText("No score available");
+  });
+
+  it("should have the correct 'More Information' link", () => {
+    // We use "toHaveExactText" here to ensure there are no extraneous spaces
+    // or newlines.
+    expect(moreInfoLink()).toHaveExactText("More information");
   });
 
   xit("should be able to play the spectrogram", () => {});
