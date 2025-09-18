@@ -24,17 +24,12 @@ import { Location } from "@angular/common";
 import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging } from "@baw-api/baw-api.service";
-import {
-  DecisionMadeEvent,
-  VerificationGridComponent,
-} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -44,16 +39,9 @@ import {
   IVerification,
   Verification,
 } from "@models/Verification";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
 import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
-import {
-  TagPromptComponent,
-  TypeaheadCallback,
-  WhenPredicate,
-} from "@ecoacoustics/web-components/@types";
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
@@ -61,6 +49,16 @@ import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/de
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
+import {
+  DecisionMadeEvent,
+  TagPromptComponent,
+  TypeaheadCallback,
+  VerificationGridComponent,
+  WhenPredicate,
+} from "node_modules/@ecoacoustics/web-components/@types";
+import { DecisionOptions } from "node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "node_modules/@ecoacoustics/web-components/@types/models/subject";
+import { PageFetcherContext } from "node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
