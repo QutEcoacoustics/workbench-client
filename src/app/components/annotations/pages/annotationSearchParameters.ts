@@ -382,68 +382,59 @@ export class AnnotationSearchParameters
     );
   }
 
-  private routeFilters(): InnerFilter<AudioEvent> {
-    // because this filter is constructed for audio events, but the project
-    // model is associated with the audio recording model, we need to do a
-    // association of an association filter
-    // e.g. audioRecordings.projects.id: { in: [1, 2, 3] }
-    // however, the api doesn't currently support this functionality
-    // therefore, we do a virtual join by filtering on the project/region site
-    // ids on the client.
-    const modelSiteIds = this.siteIds();
-
-    return {
-      "audioRecordings.siteId": {
-        in: modelSiteIds,
-      },
-    } as InnerFilter<AudioEvent>;
-  }
-
-  // This method gets all of the models in the route and query string
-  // parameters, and extracts their site ids.
-  // This is needed because the API doesn't support filtering audio events by
-  // projects or regions.
-  //
-  // This method will return the most specific list of site ids from the route
-  // and query string parameter models
-  //
-  // TODO: remove this method once the API supports filtering audio events by
-  // projects, and regions.
-  // see: https://github.com/QutEcoacoustics/baw-server/issues/687
-  private siteIds(): Id[] {
-    const qspSites = this.sites ? Array.from(this.sites) : [];
-
-    // We use a !== null condition here instead of a truthy assertion so that
-    // a route site if of 0 also passes this condition.
+  private siteIds(): Site["id"][] {
     if (isInstantiated(this.routeSiteId)) {
       return [this.routeSiteId];
-    } else if (qspSites.length > 0) {
-      return qspSites;
     }
 
-    // If there are no route or qsp site models, the next most specific level
-    // is the region level.
-    const qspRegions = this.regions ? Array.from(this.regions) : [];
+    return this.sites ? Array.from(this.sites) : [];
+  }
 
+  private regionIds(): Region["id"][] {
     if (isInstantiated(this.routeRegionId)) {
-      return Array.from(this.routeRegionModel.siteIds);
-    } else if (qspRegions.length > 0) {
-      return qspRegions;
+      return [this.routeRegionId];
     }
 
-    const qspProjects = this.projects ? Array.from(this.projects) : [];
+    return this.regions ? Array.from(this.regions) : [];
+  }
 
+  private projectIds(): Project["id"][] {
     if (isInstantiated(this.routeProjectId)) {
-      return Array.from(this.routeProjectModel.siteIds);
-    } else if (qspProjects.length > 0) {
-      return qspProjects;
+      return [this.routeProjectId];
     }
 
-    // This condition should never hit in regular use.
-    // We return an empty array here instead of throwing an error in the hope
-    // that the application can recover instead of crashing all work.
-    console.error("Failed to find any scoped route or qsps models");
-    return [];
+    return this.projects ? Array.from(this.projects) : [];
+  }
+
+  private routeFilters(): InnerFilter<AudioEvent> {
+    const modelSiteIds = this.siteIds();
+    if (modelSiteIds.length > 0) {
+      return {
+        "audioRecordings.siteId": {
+          in: modelSiteIds,
+        },
+      } as InnerFilter<AudioEvent>;
+    }
+
+    const modelRegionIds = this.regionIds();
+    if (modelRegionIds.length > 0) {
+      return {
+        "audioRecordings.region.id": {
+          in: modelRegionIds,
+        },
+      } as InnerFilter<AudioEvent>;
+    }
+
+    const modelProjectIds = this.projectIds();
+    if (modelProjectIds.length > 0) {
+      return {
+        "audioRecordings.project.id": {
+          in: modelProjectIds,
+        },
+      } as InnerFilter<AudioEvent>;
+    }
+
+    return {};
   }
 
   private addRouteFilters(

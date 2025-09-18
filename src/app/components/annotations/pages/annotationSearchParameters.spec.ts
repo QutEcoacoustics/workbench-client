@@ -51,7 +51,7 @@ describe("annotationSearchParameters", () => {
     const dataModel = new AnnotationSearchParameters(params, mockUser);
 
     const mockProjectId = modelData.id();
-    dataModel.routeProjectId = modelData.id();
+    dataModel.routeProjectId = mockProjectId;
 
     const mockSiteIds = modelData.ids();
     routeProject = new Project({
@@ -90,8 +90,8 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "audioRecordings.project.id": {
+                in: [routeProject.id],
               },
             },
             myUnverifiedFilters,
@@ -192,8 +192,8 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "audioRecordings.project.id": {
+                in: [routeProject.id],
               },
             },
             { score: { gteq: 0.2 } },
@@ -212,8 +212,8 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "audioRecordings.project.id": {
+                in: [routeProject.id],
               },
             },
             { score: { lteq: 0.9 } },
@@ -232,8 +232,8 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "audioRecordings.project.id": {
+                in: [routeProject.id],
               },
             },
             {
