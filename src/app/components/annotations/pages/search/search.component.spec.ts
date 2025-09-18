@@ -182,7 +182,7 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioRecordings.siteId": {
+              "sites.id": {
                 in: Array.from(mockSearchParameters.sites),
               },
             },
