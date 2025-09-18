@@ -410,7 +410,7 @@ export class AnnotationSearchParameters
     const modelSiteIds = this.siteIds();
     if (modelSiteIds.length > 0) {
       return {
-        "audioRecordings.siteId": {
+        "sites.id": {
           in: modelSiteIds,
         },
       } as InnerFilter<AudioEvent>;
@@ -419,7 +419,7 @@ export class AnnotationSearchParameters
     const modelRegionIds = this.regionIds();
     if (modelRegionIds.length > 0) {
       return {
-        "audioRecordings.region.id": {
+        "regions.id": {
           in: modelRegionIds,
         },
       } as InnerFilter<AudioEvent>;
@@ -428,7 +428,7 @@ export class AnnotationSearchParameters
     const modelProjectIds = this.projectIds();
     if (modelProjectIds.length > 0) {
       return {
-        "audioRecordings.project.id": {
+        "projects.id": {
           in: modelProjectIds,
         },
       } as InnerFilter<AudioEvent>;

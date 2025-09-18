@@ -32,7 +32,7 @@ describe("annotationSearchParameters", () => {
     const expectedFilters = {
       filter: {
         and: [
-          { "audioRecordings.siteId": { in: [] } },
+          { "sites.id": { in: [] } },
           { "verifications.id": { eq: null } },
         ],
       },
@@ -90,7 +90,7 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.project.id": {
+              "projects.id": {
                 in: [routeProject.id],
               },
             },
@@ -129,7 +129,7 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.id": { in: [11, 12, 13] } },
             { audioEventImportFileId: { in: [1, 12, 23] } },
             {
-              "audioRecordings.siteId": {
+              "sites.id": {
                 in: [6, 7, 8, 9],
               },
             },
@@ -166,7 +166,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
+            { "sites.id": { in: [6, 7, 8, 9] } },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
             {
@@ -192,7 +192,7 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.project.id": {
+              "projects.id": {
                 in: [routeProject.id],
               },
             },
@@ -212,7 +212,7 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.project.id": {
+              "projects.id": {
                 in: [routeProject.id],
               },
             },
@@ -232,7 +232,7 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.project.id": {
+              "projects.id": {
                 in: [routeProject.id],
               },
             },
