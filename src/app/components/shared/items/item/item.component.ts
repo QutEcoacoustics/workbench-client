@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -15,20 +15,20 @@ import { NgClass } from "@angular/common";
       <fa-icon
         id="icon"
         class="me-2"
-        [icon]="icon"
+        [icon]="icon()"
         [ngbTooltip]="tooltipText"
       ></fa-icon>
 
       <!-- Item name -->
-      <span id="name">{{ name }}</span>
+      <span id="name">{{ name() }}</span>
 
       <!-- Item value -->
       <span
         id="value"
         class="badge rounded text-bg-secondary float-end"
-        [ngClass]="color && 'bg-' + color"
+        [ngClass]="color() && 'bg-' + color()"
       >
-        {{ value ?? "Unknown" }}
+        {{ value() ?? "Unknown" }}
       </span>
     </div>
   `,
@@ -37,14 +37,14 @@ import { NgClass } from "@angular/common";
     imports: [FaIconComponent, NgbTooltip, NgClass]
 })
 export class ItemComponent {
-  @Input() public icon: IconProp;
-  @Input() public name: string;
-  @Input() public tooltip: () => string;
-  @Input() public value: string | number;
-  @Input() public color: string;
+  public readonly icon = input<IconProp>(undefined);
+  public readonly name = input<string>(undefined);
+  public readonly tooltip = input<() => string>(undefined);
+  public readonly value = input<string | number>(undefined);
+  public readonly color = input<string>(undefined);
 
   public get tooltipText(): string {
-    return this.tooltip?.() ?? undefined;
+    return this.tooltip()?.() ?? undefined;
   }
 }
 

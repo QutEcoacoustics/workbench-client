@@ -236,7 +236,7 @@ describe("MenuLinkComponent", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
       setup({ link: menuRoute({ ...defaultRoute, route }) });
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
+      expect(spec.query(StrongRouteDirective).strongRoute()).toEqual(route);
     });
 
     it("should set strong route active property", () => {

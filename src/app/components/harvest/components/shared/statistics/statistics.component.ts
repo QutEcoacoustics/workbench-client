@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { StatisticGroupComponent } from "./group.component";
@@ -16,7 +16,7 @@ export interface Statistic {
     selector: "baw-harvest-statistics",
     template: `
     <div class="statistics">
-      @for (statGroup of statistics; track statGroup) {
+      @for (statGroup of statistics(); track statGroup) {
         <baw-harvest-statistic-group
           [statisticGroup]="statGroup"
         ></baw-harvest-statistic-group>
@@ -38,5 +38,5 @@ export interface Statistic {
     imports: [StatisticGroupComponent]
 })
 export class StatisticsComponent {
-  @Input() public statistics: Statistic[][];
+  public readonly statistics = input<Statistic[][]>(undefined);
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { Statistic } from "./statistics.component";
 import { StatisticItemComponent } from "./item.component";
 
@@ -6,7 +6,7 @@ import { StatisticItemComponent } from "./item.component";
   selector: "baw-harvest-statistic-group",
   template: `
     <div class="card shadow">
-      @for (stat of statisticGroup; track stat) {
+      @for (stat of statisticGroup(); track stat) {
         <baw-harvest-statistic-item
           [statistic]="stat"
           >
@@ -26,5 +26,5 @@ import { StatisticItemComponent } from "./item.component";
   imports: [StatisticItemComponent]
 })
 export class StatisticGroupComponent {
-  @Input() public statisticGroup: Statistic[];
+  public readonly statisticGroup = input<Statistic[]>(undefined);
 }

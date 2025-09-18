@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -29,7 +29,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class DownloadTableComponent {
-  @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;
+  public readonly filters$ = input<BehaviorSubject<Filters<AudioRecording>>>(undefined);
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;

@@ -5,9 +5,10 @@ import {
   Input,
   ViewChild,
   ChangeDetectorRef,
-  EventEmitter,
-  Output,
   ChangeDetectionStrategy,
+  input,
+  output,
+  model
 } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -66,18 +67,18 @@ export class DateTimeFilterComponent
   }
 
   @ViewChild(NgForm) public form: NgForm;
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
+  public readonly project = input<Project>(undefined);
+  public readonly region = input<Region>(undefined);
+  public readonly site = input<Site>(undefined);
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
 
-  @Input() public disableStartDate = false;
-  @Input() public disableEndDate = false;
-  @Input() public disableStartTime = false;
-  @Input() public disableEndTime = false;
-  @Input() public disableIgnoreDaylightSavings = false;
+  public disableStartDate = input(false);
+  public readonly disableEndDate = model(false);
+  public readonly disableStartTime = model(false);
+  public readonly disableEndTime = input(false);
+  public readonly disableIgnoreDaylightSavings = input(false);
 
-  @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
+  public readonly modelChange = output<DateTimeFilterModel>();
   @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
 
   private previousFilters: FromJS<Filters<AudioRecording>>;
@@ -89,7 +90,7 @@ export class DateTimeFilterComponent
         distinctUntilChanged(),
         takeUntil(this.unsubscribe)
       )
-      .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
+      .subscribe((dateModel: DateTimeFilterModel) => this.emitFilterUpdate(dateModel));
   }
 
   // TODO: Refactor the following hacky code block
@@ -101,30 +102,30 @@ export class DateTimeFilterComponent
     this.changeDetector.detectChanges();
   }
 
-  public emitFilterUpdate(model: DateTimeFilterModel): void {
+  public emitFilterUpdate(dateModel: DateTimeFilterModel): void {
     // we should only send new filter requests when the user has not input any "bad" / incorrect values into the input fields
     // e.g. 2020-31-31 is not a valid date should display an error, and not send a new filter request
     if (!this.form.valid) {
       return;
     }
 
-    const [changed, newFilters] = this.generateFilters(this.previousFilters, model);
+    const [changed, newFilters] = this.generateFilters(this.previousFilters, dateModel);
 
     if (changed) {
       // since this component can output a model, and/or a filter
       // we need to emit both the model and the filter if they are both present
-      this.modelChange?.emit(model);
+      this.modelChange?.emit(dateModel);
       this.constructedFilters?.next(newFilters);
       this.previousFilters = fromJS(newFilters);
     }
   }
 
-  private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, model: DateTimeFilterModel): [boolean, Filters] {
+  private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, dateModel: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setModelFilters(newInnerFilters);
-    newInnerFilters = this.setDateFilters(model, newInnerFilters);
-    newInnerFilters = this.setTimeOfDayFilters(model, newInnerFilters);
+    newInnerFilters = this.setDateFilters(dateModel, newInnerFilters);
+    newInnerFilters = this.setTimeOfDayFilters(dateModel, newInnerFilters);
 
     // if there are no filters, we should allow a filter event to be emitted with zero filter conditions
     // without this check, a filter with no conditions would have an inner filter of undefined rather than zero conditions
@@ -142,23 +143,26 @@ export class DateTimeFilterComponent
   }
 
   private setModelFilters(filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
-    if (this.site) {
-      filters = filterModel<Site, AudioRecording>("sites", this.site, filters);
-    } else if (this.region) {
-      filters = filterModel<Region, AudioRecording>("regions", this.region, filters);
-    } else if (this.project) {
-      filters = filterModel<Project, AudioRecording>("projects", this.project, filters);
+    const site = this.site();
+    const region = this.region();
+    const project = this.project();
+    if (site) {
+      filters = filterModel<Site, AudioRecording>("sites", site, filters);
+    } else if (region) {
+      filters = filterModel<Region, AudioRecording>("regions", region, filters);
+    } else if (project) {
+      filters = filterModel<Project, AudioRecording>("projects", project, filters);
     }
 
     return filters;
   }
 
-  private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
-    const modelStartDate = model?.dateStartedAfter;
-    const modelEndDate = model?.dateFinishedBefore;
+  private setDateFilters(dateModel: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+    const modelStartDate = dateModel?.dateStartedAfter;
+    const modelEndDate = dateModel?.dateFinishedBefore;
 
     // there will be no additional filters if the user hasn't input any dates. Therefore, we can bail out without calculating a date filter
-    if (!model?.dateFiltering || (!modelStartDate && !modelEndDate)) {
+    if (!dateModel?.dateFiltering || (!modelStartDate && !modelEndDate)) {
       return filters;
     }
 
@@ -171,18 +175,18 @@ export class DateTimeFilterComponent
     return filterDate(filters, startDate, endDate);
   }
 
-  private setTimeOfDayFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
-    const modelStartTime = model?.timeStartedAfter;
-    const modelEndTime = model?.timeFinishedBefore;
+  private setTimeOfDayFilters(dateModel: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+    const modelStartTime = dateModel?.timeStartedAfter;
+    const modelEndTime = dateModel?.timeFinishedBefore;
 
     // we can save ourselves from calculating a new time filters (improving performance) if the user hasn't input a start time or end time
-    if (!model?.timeFiltering || (!modelStartTime && !modelEndTime)) {
+    if (!dateModel?.timeFiltering || (!modelStartTime && !modelEndTime)) {
       return filters;
     }
 
     return filterTime(
       filters,
-      model.ignoreDaylightSavings,
+      dateModel.ignoreDaylightSavings,
       modelStartTime,
       modelEndTime
     );

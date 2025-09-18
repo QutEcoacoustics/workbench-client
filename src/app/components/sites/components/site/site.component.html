@@ -1,18 +1,18 @@
 <!-- Site Details -->
-<h1>{{ site.name }}</h1>
+<h1>{{ site().name }}</h1>
 
 <div class="row mb-3">
   <div class="col-sm-4">
     <img
       class="img-thumbnail mx-auto d-block"
-      [src]="site.imageUrls"
-      [alt]="site.name + ' image'"
+      [src]="site().imageUrls"
+      [alt]="site().name + ' image'"
     />
   </div>
   <div class="col-sm-8">
     <p
       id="site_description"
-      [innerHtml]="site.descriptionHtml || defaultDescription"
+      [innerHtml]="site().descriptionHtml || defaultDescription"
     ></p>
   </div>
 </div>
@@ -56,11 +56,11 @@
         -->
         <baw-zoned-datetime
           [value]="oldestRecording?.recordedDate"
-          [timezone]="site.timezoneInformation"
+          [timezone]="site().timezoneInformation"
         /> to
         <baw-zoned-datetime
           [value]="newestRecording?.recordedDate"
-          [timezone]="site.timezoneInformation"
+          [timezone]="site().timezoneInformation"
         />.
       </p>
 
@@ -74,7 +74,7 @@
       </baw-wip>
 
       <!-- Recent Annotations Summary -->
-      <baw-site-recent-annotations [site]="site"></baw-site-recent-annotations>
+      <baw-site-recent-annotations [site]="site()"></baw-site-recent-annotations>
     }
   </div>
   <!-- Map using right column -->

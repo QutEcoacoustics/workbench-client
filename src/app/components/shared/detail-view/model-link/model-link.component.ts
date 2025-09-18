@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnChanges,
+  input
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
@@ -16,12 +16,12 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   selector: "baw-model-link",
   template: `
     <!-- Loading text -->
-    @if (model | isUnresolved) {
+    @if (model() | isUnresolved) {
       <ng-content select="#unresolved"></ng-content>
     } @else {
       <!-- Normal model with view url -->
       @if (!isGhostUser && hasViewUrl) {
-        <a [bawUrl]="model.viewUrl">
+        <a [bawUrl]="model().viewUrl">
           <ng-container *ngTemplateOutlet="modelTemplate"></ng-container>
         </a>
       }
@@ -45,20 +45,20 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   imports: [UrlDirective, NgTemplateOutlet, IsUnresolvedPipe]
 })
 export class ModelLinkComponent implements OnChanges {
-  @Input() public model: AbstractModel;
+  public readonly model = input<AbstractModel>(undefined);
 
   public isGhostUser: boolean;
   public hasViewUrl: boolean;
 
   public ngOnChanges(): void {
-    this.isGhostUser = (this.model as User).isGhost;
+    this.isGhostUser = (this.model() as User).isGhost;
     this.hasViewUrl = this.safelyDetermineViewUrl();
   }
 
   private safelyDetermineViewUrl() {
     // Some viewUrl methods return errors
     try {
-      return isInstantiated(this.model.viewUrl);
+      return isInstantiated(this.model().viewUrl);
     } catch (err) {
       return false;
     }

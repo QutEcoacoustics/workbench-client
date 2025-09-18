@@ -264,28 +264,28 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().region).toBe(defaultRegion);
+        expect(getSitesWithoutTimezones().region()).toBe(defaultRegion);
       }));
 
       it("should not pass region to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().region).toBeFalsy();
+        expect(getSitesWithoutTimezones().region()).toBeFalsy();
       }));
 
       it("should pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().site).toBe(defaultSite);
+        expect(getSitesWithoutTimezones().site()).toBe(defaultSite);
       }));
 
       it("should not pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().site).toBeFalsy();
+        expect(getSitesWithoutTimezones().site()).toBeFalsy();
       }));
     });
   });
@@ -317,8 +317,8 @@ describe("DownloadAudioRecordingsComponent", () => {
 
       const hiddenCopy = spec.query(HiddenCopyComponent);
       expect(hiddenCopy).toBeTruthy();
-      expect(hiddenCopy.tooltip).toBe("Show/Hide command");
-      expect(hiddenCopy.value).toBe(
+      expect(hiddenCopy.tooltip()).toBe("Show/Hide command");
+      expect(hiddenCopy.value()).toBe(
         `./download_audio_files.ps1 -auth_token "${authToken}"`
       );
     });

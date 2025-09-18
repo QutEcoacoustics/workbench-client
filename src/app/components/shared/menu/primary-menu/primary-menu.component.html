@@ -1,6 +1,6 @@
 <nav
   class="container navbar-dark"
-  [class.side-nav]="isSideNav"
+  [class.side-nav]="isSideNav()"
   [class.fullscreen]="menu.isFullscreen"
 >
   <!-- Left aligned navigation links -->
@@ -22,7 +22,7 @@
 
   <!-- Right aligned links -->
   <ul class="navbar-nav">
-    @if (!isSideNav) {
+    @if (!isSideNav()) {
       <baw-website-status-indicator></baw-website-status-indicator>
     }
 

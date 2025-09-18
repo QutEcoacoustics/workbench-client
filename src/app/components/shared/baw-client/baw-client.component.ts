@@ -3,9 +3,9 @@ import {
   ElementRef,
   HostListener,
   Inject,
-  Input,
   OnInit,
   ViewChild,
+  input
 } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
@@ -49,7 +49,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
    * Forces baw-client to render a specific page. The page url should be relative,
    * beginning with a `/`
    */
-  @Input() public page: string;
+  public readonly page = input<string>(undefined);
 
   public loading = false;
   public error: boolean;
@@ -94,9 +94,10 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
       return;
     }
 
-    if (isInstantiated(this.page)) {
+    const page = this.page();
+    if (isInstantiated(page)) {
       // Use page provided
-      this.updateUrl(this.page);
+      this.updateUrl(page);
       return;
     }
 

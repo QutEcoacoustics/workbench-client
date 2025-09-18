@@ -2,9 +2,9 @@ import {
   Directive,
   ElementRef,
   Inject,
-  Input,
   OnChanges,
   SimpleChanges,
+  input
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
@@ -25,11 +25,11 @@ export const notFoundImage: ImageUrl = {
 })
 export class AuthenticatedImageDirective implements OnChanges {
   /** Image src, only accessible if using [src] */
-  @Input() public src: ImageUrl[] | string;
+  public readonly src = input<ImageUrl[] | string>(undefined);
   /** Do not append auth token to image url */
-  @Input() public ignoreAuthToken: boolean;
+  public readonly ignoreAuthToken = input<boolean>(undefined);
   /** Disable authenticated image directive on image */
-  @Input() public disableAuth: boolean;
+  public readonly disableAuth = input<boolean>(undefined);
 
   private _src: ImageUrl[];
   /**
@@ -52,11 +52,12 @@ export class AuthenticatedImageDirective implements OnChanges {
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.disableAuth || typeof this.src === "string") {
+    const src = this.src();
+    if (this.disableAuth() || typeof src === "string") {
       return;
     }
 
-    this._src = this.src;
+    this._src = src;
 
     // On Component Initial Load
     if (changes.src.isFirstChange()) {
@@ -142,7 +143,7 @@ export class AuthenticatedImageDirective implements OnChanges {
   private appendAuthToken(image: ImageUrl): string {
     const url = image.url;
 
-    if (this.ignoreAuthToken || !url.startsWith(this.apiRoot)) {
+    if (this.ignoreAuthToken() || !url.startsWith(this.apiRoot)) {
       return url;
     }
 

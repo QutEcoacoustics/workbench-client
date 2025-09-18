@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { provideRouter, Router } from "@angular/router";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { UrlActiveDirective } from "./url-active.directive";
@@ -7,9 +7,9 @@ import { UrlDirective } from "./url.directive";
 @Component({
   template: `
     <a
-      [bawUrl]="url"
-      [bawUrlActive]="klass"
-      [bawUrlActiveOptions]="activeOptions"
+      [bawUrl]="url()"
+      [bawUrlActive]="klass()"
+      [bawUrlActiveOptions]="activeOptions()"
     >
       Link
     </a>
@@ -17,9 +17,11 @@ import { UrlDirective } from "./url.directive";
   imports: [UrlDirective, UrlActiveDirective],
 })
 class MockComponent {
-  @Input() public url: string;
-  @Input() public klass: string;
-  @Input() public activeOptions: { exact: boolean };
+  public readonly url = input<string>(undefined);
+  public readonly klass = input<string>(undefined);
+  public readonly activeOptions = input<{
+    exact: boolean;
+}>(undefined);
 }
 
 describe("UrlActiveDirective", () => {

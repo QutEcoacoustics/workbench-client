@@ -128,7 +128,10 @@ describe("SiteDetailsComponent", () => {
       it("should create site details component", () => {
         setup(defaultProject, defaultSite, defaultRegion);
         spec.detectChanges();
-        const { project, region, site } = spec.query(SiteComponent);
+        const { project: projectInput, region: regionInput, site: siteInput } = spec.query(SiteComponent);
+        const project = projectInput();
+        const region = regionInput();
+        const site = siteInput();
         expect(project).toEqual(defaultProject);
         expect(region).toEqual(defaultRegion);
         expect(site).toEqual(defaultSite);

@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Component, Input, NgZone } from "@angular/core";
+import { Component, NgZone, input } from "@angular/core";
 import { Params, Route, RouterModule, Routes } from "@angular/router";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
@@ -8,12 +8,12 @@ import { RouteParams, StrongRoute } from "./strongRoute";
 
 @Component({
   selector: "baw-dummy",
-  template: '<a [routerLink]="link" [queryParams]="params"></a>',
+  template: '<a [routerLink]="link()" [queryParams]="params()"></a>',
   imports: [RouterModule],
 })
 class DummyComponent {
-  @Input() public link: string | string[];
-  @Input() public params?: Params | null;
+  public readonly link = input<string | string[]>(undefined);
+  public readonly params = input<Params | null>(undefined);
 }
 
 @Component({

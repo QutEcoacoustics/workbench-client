@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, OnChanges, input } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -94,7 +94,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class RecentAudioRecordingsComponent implements OnChanges {
-  @Input() public audioRecordings!: AudioRecording[] | undefined;
+  public readonly audioRecordings = input.required<AudioRecording[] | undefined>();
 
   public columnMode = ColumnMode;
   public columns: TableColumn[];
@@ -110,7 +110,7 @@ export class RecentAudioRecordingsComponent implements OnChanges {
       ];
     }
 
-    this.rows = (this.audioRecordings ?? []).map((recording) => ({
+    this.rows = (this.audioRecordings() ?? []).map((recording) => ({
       site: recording,
       duration: recording.duration,
       uploaded: recording.recordedDate,

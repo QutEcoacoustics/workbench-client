@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 
@@ -20,15 +20,15 @@ import { NgClass } from "@angular/common";
 
       <div class="clearfix">
         <button id="cancel-btn" class="btn btn-outline-primary float-start" (click)="close()">
-          {{ cancelLabel }}
+          {{ cancelLabel() }}
         </button>
         <button
           id="next-btn"
           class="btn float-end"
-          [ngClass]="this.isDanger === 'true' ? 'btn-danger text-white' : 'btn-primary'"
+          [ngClass]="this.isDanger() === 'true' ? 'btn-danger text-white' : 'btn-primary'"
           (click)="continue()"
         >
-          {{ nextLabel }}
+          {{ nextLabel() }}
         </button>
       </div>
     </div>
@@ -36,16 +36,16 @@ import { NgClass } from "@angular/common";
   imports: [NgClass]
 })
 export class ConfirmationComponent {
-  @Input() public nextLabel: string;
-  @Input() public cancelLabel = "Cancel";
-  @Input() public isDanger;
-  @Input() public modal: NgbActiveModal;
+  public readonly nextLabel = input<string>(undefined);
+  public readonly cancelLabel = input("Cancel");
+  public readonly isDanger = input(undefined);
+  public readonly modal = input<NgbActiveModal>(undefined);
 
   public close(): void {
-    this.modal.close(false);
+    this.modal().close(false);
   }
 
   public continue(): void {
-    this.modal.close(true);
+    this.modal().close(true);
   }
 }

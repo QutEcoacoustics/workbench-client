@@ -1,13 +1,13 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core";
+import { Component, ViewEncapsulation, input } from "@angular/core";
 
 @Component({
   selector: "baw-progress",
   template: `
     <div class="progress">
-      @if (showZero) {
+      @if (showZero()) {
         <div class="progress-bar zero w-100">0%</div>
       }
-      @if (!showZero) {
+      @if (!showZero()) {
         <ng-content></ng-content>
       }
     </div>
@@ -26,5 +26,5 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
   encapsulation: ViewEncapsulation.None
 })
 export class ProgressComponent {
-  @Input() public showZero: boolean;
+  public readonly showZero = input<boolean>(undefined);
 }

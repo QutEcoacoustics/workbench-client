@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, input } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -27,14 +27,14 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
   ],
   template: `
     <div class="input-group">
-      <span class="input-group-text">{{ label }}</span>
+      <span class="input-group-text">{{ label() }}</span>
       <input
         ngbTimepicker
         class="form-control"
         placeholder="hh:mm"
         [maxLength]="inputLength"
         [class.is-invalid]="showError"
-        [required]="required"
+        [required]="required()"
         [disabled]="disabled"
         [value]="rawValue ?? ''"
         (input)="onInput($event)"
@@ -51,11 +51,11 @@ import { getErrorMessages, shouldShowError } from "../input.helpers";
 })
 export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */
-  @Input() public increment = 1800;
+  public readonly increment = input(1800);
   /** Label next to input */
-  @Input() public label: string;
+  public readonly label = input<string>(undefined);
   /** Is input required */
-  @Input() public required = false;
+  public readonly required = input(false);
   /** Is input disabled */
   @Input() public disabled = false;
 
@@ -78,7 +78,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
 
   public constructor() {
     this.errorTypes = new Map([
-      ["required", () => `${this.label} is required`],
+      ["required", () => `${this.label()} is required`],
       ["length", () => "The time should follow the format hh:mm, e.g. 15:30"],
       ["delimiter", () => "Input must include a ':'"],
       ["hour", () => "Hours must be between 00 and 24"],
@@ -194,7 +194,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
 
     if (!isInstantiated(value) || value === "") {
       // No value provided on required input
-      return this.required ? { required: true } : null;
+      return this.required() ? { required: true } : null;
     } else if (value.length !== this.inputLength) {
       // Input is not the correct length
       return { length: true };

@@ -98,8 +98,8 @@ describe("FormlyLocationInput", () => {
     longitude: number,
     latitude: number
   ) {
-    expect(map.markers.toArray()[0]["position"]["lng"]).toEqual(longitude);
-    expect(map.markers.toArray()[0]["position"]["lat"]).toEqual(latitude);
+    expect(map.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
+    expect(map.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
   }
 
   it("should create", () => {

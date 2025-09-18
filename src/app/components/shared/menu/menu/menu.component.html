@@ -1,12 +1,12 @@
 @if (hasLinks() || hasWidgets()) {
   <nav
     class="navbar navbar-expand-lg text-bg-light p-0 pt-2"
-    [class.side-nav]="isSideNav"
+    [class.side-nav]="isSideNav()"
     [class.fullscreen]="menuService.isFullscreen"
   >
     <ul class="nav align-items-center">
       <!-- Show hr on action menu when fullscreen -->
-      @if (!isSecondaryMenu() && isSideNav) {
+      @if (!isSecondaryMenu() && isSideNav()) {
         <hr class="w-100" />
       }
 

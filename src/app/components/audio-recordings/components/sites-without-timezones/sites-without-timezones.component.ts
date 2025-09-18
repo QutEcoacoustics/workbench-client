@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { isUnresolvedModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
@@ -12,9 +12,9 @@ import { UrlDirective } from "@directives/url/url.directive";
     <!-- Warn users about limitations of time of day filter -->
     @if (
         sitesWithoutTimezones(
-          site,
-          region?.sites,
-          project?.sites
+          site(),
+          region()?.sites,
+          project()?.sites
         ); as sitesWithoutTimezone
       ) {
       @if (sitesWithoutTimezone.length > 0) {
@@ -27,7 +27,7 @@ import { UrlDirective } from "@directives/url/url.directive";
             <ul class="mb-0">
               <li>
                 <a [bawUrl]="project
-                    ? siteWithoutTimezone.getViewUrl(project)
+                    ? siteWithoutTimezone.getViewUrl(project())
                     : siteWithoutTimezone.viewUrl
                   "
                 >
@@ -43,9 +43,9 @@ import { UrlDirective } from "@directives/url/url.directive";
   imports: [UrlDirective]
 })
 export class SitesWithoutTimezonesComponent {
-  @Input() public site?: Site;
-  @Input() public region?: Region;
-  @Input() public project!: Project;
+  public readonly site = input<Site>(undefined);
+  public readonly region = input<Region>(undefined);
+  public readonly project = input<Project>(undefined);
 
   public sitesWithoutTimezones(
     site?: Site,

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -35,9 +35,9 @@ import { RecentAnnotationsComponent } from "../recent-annotations/recent-annotat
   ],
 })
 class SiteComponent extends PageComponent implements OnInit {
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
+  public readonly project = input<Project>(undefined);
+  public readonly region = input<Region>(undefined);
+  public readonly site = input<Site>(undefined);
 
   public defaultDescription = "<i>No description found</i>";
   public recordings: AudioRecording[];
@@ -51,7 +51,7 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
+    this.marker = sanitizeMapMarkers(this.site().getMapMarker());
 
     this.getNewestDates();
     this.getOldestDates();
@@ -88,7 +88,7 @@ class SiteComponent extends PageComponent implements OnInit {
   ): Observable<AudioRecording[]> {
     return this.audioRecordingsApi.filterBySite(
       { sorting: { orderBy: "recordedDate", direction }, ...filters },
-      this.site,
+      this.site(),
     );
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
+import { ChangeDetectorRef, Component, OnChanges, input } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl, isImageUrl } from "@interfaces/apiInterfaces";
@@ -120,7 +120,7 @@ export class RenderFieldComponent
   extends withUnsubscribe()
   implements OnChanges
 {
-  @Input() public value: ModelView;
+  public readonly value = input<ModelView>(undefined);
   public children: ModelView[];
   public display: Display;
   public fieldStyling = FieldStyling;
@@ -132,7 +132,7 @@ export class RenderFieldComponent
   }
 
   public ngOnChanges(): void {
-    this.humanize(this.value);
+    this.humanize(this.value());
   }
 
   public isChecked(): boolean {

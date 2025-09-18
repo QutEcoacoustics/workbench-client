@@ -1,11 +1,11 @@
 import {
   Component,
-  EventEmitter,
   Input,
   OnChanges,
-  Output,
   SimpleChanges,
   TemplateRef,
+  input,
+  output
 } from "@angular/core";
 import {
   NgbTypeaheadSelectItemEvent,
@@ -58,8 +58,8 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
    * Placeholder text that is shown when the input field is empty.
    * Note: This value is not emitted at any point
    */
-  @Input() public inputPlaceholder = "";
-  @Input() public inputDisabled = false;
+  public readonly inputPlaceholder = input("");
+  public readonly inputDisabled = input(false);
   @Input() public queryOnFocus = true;
 
   // if multiple items are enabled, they will be added to the value
@@ -67,7 +67,7 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
   // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
   @Input() public value: T[] = [];
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
-  @Output() public modelChange = new EventEmitter<T[]>();
+  public readonly modelChange = output<T[]>();
 
   public inputModel: string | null;
   protected focus$ = new Subject<T[]>();

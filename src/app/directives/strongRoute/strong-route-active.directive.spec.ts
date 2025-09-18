@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { provideRouter, Router } from "@angular/router";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
@@ -9,9 +9,9 @@ import { StrongRouteDirective } from "./strong-route.directive";
 @Component({
   template: `
     <a
-      [strongRoute]="route"
-      [strongRouteActive]="klass"
-      [strongRouteActiveOptions]="activeOptions"
+      [strongRoute]="route()"
+      [strongRouteActive]="klass()"
+      [strongRouteActiveOptions]="activeOptions()"
     >
       Link
     </a>
@@ -19,9 +19,11 @@ import { StrongRouteDirective } from "./strong-route.directive";
   imports: [StrongRouteDirective, StrongRouteActiveDirective],
 })
 class MockComponent {
-  @Input() public route: StrongRoute;
-  @Input() public klass: string;
-  @Input() public activeOptions: { exact: boolean };
+  public readonly route = input<StrongRoute>(undefined);
+  public readonly klass = input<string>(undefined);
+  public readonly activeOptions = input<{
+    exact: boolean;
+}>(undefined);
 }
 
 describe("StrongRouteActiveDirective", () => {

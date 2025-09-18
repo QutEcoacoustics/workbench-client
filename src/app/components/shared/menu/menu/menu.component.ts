@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewContainerRef,
+  input
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
@@ -52,11 +53,11 @@ import { MenuLinkComponent } from "../link/link.component";
   ],
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
-  @Input() public isSideNav: boolean;
+  public readonly isSideNav = input<boolean>(undefined);
   @Input() public title?: LabelAndIcon;
-  @Input() public links!: Set<AnyMenuItem | MenuModalWithoutAction>;
-  @Input() public menuType!: MenuType;
-  @Input() public widgets?: Set<WidgetMenuItem>;
+  public readonly links = input.required<Set<AnyMenuItem | MenuModalWithoutAction>>();
+  public readonly menuType = input.required<MenuType>();
+  public readonly widgets = input<Set<WidgetMenuItem>>(Set());
   @ViewChild(WidgetDirective, { read: ViewContainerRef })
   private menuWidget!: ViewContainerRef;
 
@@ -75,9 +76,6 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.links ??= Set();
-    this.widgets ??= Set();
-
     // Get user details
     this.user = this.session.loggedInUser;
     // Filter links
@@ -95,7 +93,8 @@ export class MenuComponent implements OnChanges, AfterViewInit {
 
   /** Determine whether to show widgets */
   public hasWidgets(): boolean {
-    return isInstantiated(this.widgets) && this.widgets.count() > 0;
+    const widgets = this.widgets();
+    return isInstantiated(widgets) && widgets.count() > 0;
   }
 
   /** Determine whether to show links */
@@ -105,7 +104,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
 
   /** Is the a secondary menu */
   public isSecondaryMenu(): boolean {
-    return this.menuType === "secondary";
+    return this.menuType() === "secondary";
   }
 
   /**
@@ -122,7 +121,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private setModalActions(): Set<AnyMenuItem | MenuModal> {
     return (
       // Change modal menu item links into menu actions
-      this.links.map((link) =>
+      this.links().map((link) =>
         isMenuModal(link) ? this.createModalAction(link) : link
       )
     );
@@ -161,7 +160,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     if (!this.menuWidget) {
       return;
     }
-    this.widgets?.forEach((widget) => this.insertWidget(widget));
+    this.widgets()?.forEach((widget) => this.insertWidget(widget));
   }
 
   /**

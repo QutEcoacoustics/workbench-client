@@ -1,11 +1,10 @@
 import {
   Component,
-  EventEmitter,
-  Input,
   OnChanges,
-  Output,
   SimpleChanges,
   ViewChild,
+  input,
+  output,
 } from "@angular/core";
 import {
   GoogleMap,
@@ -49,9 +48,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.focusMarkers();
   }
 
-  @Input() public markers: List<MapMarkerOptions>;
-  @Input() public markerOptions: MapMarkerOptions;
-  @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
+  public readonly markers = input<List<MapMarkerOptions>>(undefined);
+  public readonly markerOptions = input<MapMarkerOptions>(undefined);
+  public readonly newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
@@ -103,7 +102,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.hasMarkers = false;
     this.validMarkersOptions = [];
 
-    this.markers?.forEach((marker) => {
+    this.markers()?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
         this.validMarkersOptions.push(marker);
@@ -130,19 +129,19 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
 export function sanitizeMapMarkers(
   markers: MapMarkerOptions | MapMarkerOptions[]
 ): List<MapMarkerOptions> {
-  const output: MapMarkerOptions[] = [];
+  const markerOptions: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        output.push(marker);
+        markerOptions.push(marker);
       }
     });
   } else {
     if (isMarkerValid(markers)) {
-      output.push(markers);
+       markerOptions.push(markers);
     }
   }
 
-  return List(output);
+  return List(markerOptions);
 }

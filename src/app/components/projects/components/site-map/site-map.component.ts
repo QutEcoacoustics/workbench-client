@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, OnChanges, input } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -18,11 +18,11 @@ import { switchMap, takeUntil } from "rxjs/operators";
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // TODO Implement system to change colour of selected sites
-  @Input() public selected: List<Site>;
-  @Input() public project: Project;
-  @Input() public region: Region;
+  public readonly selected = input<List<Site>>(undefined);
+  public readonly project = input<Project>(undefined);
+  public readonly region = input<Region>(undefined);
   /** Display a subset of sites from the project/region */
-  @Input() public sitesSubset: Site[] = [];
+  public readonly sitesSubset = input<Site[]>([]);
   public markers: List<MapMarkerOptions> = List([]);
 
   public constructor(private sitesApi: SitesService) {
@@ -38,8 +38,11 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     // we use a falsy assertion for sitesSubset here because if sitesSubset is undefined or the length is zero
     // we want to fetch all markers for the project/region
-    if ((this.project || this.region) && !this.sitesSubset?.length) {
-      this.getFilter(filters, this.project, this.region)
+    const project = this.project();
+    const region = this.region();
+    const sitesSubset = this.sitesSubset();
+    if ((project || region) && !sitesSubset?.length) {
+      this.getFilter(filters, project, region)
         .pipe(
           switchMap((models: Site[]) => this.getMarkers(models)),
           takeUntil(this.unsubscribe),
@@ -50,7 +53,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         });
     }
 
-    this.pushMarkers(this.sitesSubset ?? []);
+    this.pushMarkers(sitesSubset ?? []);
   }
 
   private getFilter(
@@ -58,7 +61,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     project: Project,
     region?: Region,
   ): Observable<Site[]> {
-    return this.region
+    return this.region()
       ? this.sitesApi.filterByRegion(filters, project, region)
       : this.sitesApi.filter(filters, project);
   }
@@ -73,7 +76,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // Can skip first page because initial filter produces the results
     for (let page = 2; page <= numPages; page++) {
       observables.push(
-        this.getFilter({ paging: { page } }, this.project, this.region),
+        this.getFilter({ paging: { page } }, this.project(), this.region()),
       );
     }
 

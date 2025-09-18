@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, model } from "@angular/core";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { ModalComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
@@ -41,32 +41,33 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     </div>
   `,
   imports: [AnnotationSearchFormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFiltersModalComponent implements ModalComponent {
-  @Input() public modal: NgbActiveModal;
-  @Input() public formValue: AnnotationSearchParameters;
-  @Input() public successCallback: (
-    newModel: AnnotationSearchParameters,
-  ) => void;
+  public readonly modal = input.required<NgbActiveModal>();
+  public readonly formValue = model<AnnotationSearchParameters>();
+  public readonly successCallback = input.required<(newModel: AnnotationSearchParameters) => void>();
 
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
-  @Input() public hasDecisions: boolean;
+  public readonly project = input<Project>(undefined);
+  public readonly region = input<Region>(undefined);
+  public readonly site = input<Site>(undefined);
+  public readonly hasDecisions = input<boolean>(undefined);
 
   protected isFormDirty = true;
 
   protected get isDirty(): boolean {
-    return this.isFormDirty && this.hasDecisions;
+    return this.isFormDirty && this.hasDecisions();
   }
 
   public closeModal(): void {
-    this.modal.close();
+    this.modal().close();
   }
 
   public success(): void {
     if (this.isFormDirty) {
-      this.successCallback(this.formValue);
+      const callback = this.successCallback();
+      callback(this.formValue());
+
       this.closeModal();
       return;
     }

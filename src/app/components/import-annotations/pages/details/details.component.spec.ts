@@ -371,8 +371,8 @@ describe("AnnotationsDetailsComponent", () => {
 
         expect(link).toHaveStrongRoute(verificationRoute.project);
 
-        expect(link.routeParams).toEqual(expectedResult.routeParams);
-        expect(link.queryParams).toEqual(expectedResult.queryParams);
+        expect(link.routeParams()).toEqual(expectedResult.routeParams);
+        expect(link.queryParams()).toEqual(expectedResult.queryParams);
       });
     });
   });

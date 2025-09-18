@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, OnChanges, input } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -137,7 +137,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class RecentAnnotationsComponent implements OnChanges {
-  @Input() public annotations!: AudioEvent[] | undefined;
+  public readonly annotations = input.required<AudioEvent[] | undefined>();
 
   public columnMode = ColumnMode;
   public columns: TableColumn[];
@@ -156,7 +156,7 @@ export class RecentAnnotationsComponent implements OnChanges {
       ];
     }
 
-    this.rows = (this.annotations ?? []).map((recording) => ({
+    this.rows = (this.annotations() ?? []).map((recording) => ({
       site: recording,
       user: recording,
       tags: recording,

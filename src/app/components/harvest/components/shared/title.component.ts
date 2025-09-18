@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -16,8 +16,8 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   imports: [FormsModule, FaIconComponent]
 })
 export class TitleComponent extends withUnsubscribe()  {
-  @Input() public project: Project;
-  @Input() public harvest: Harvest;
+  public readonly project = input<Project>(undefined);
+  public readonly harvest = input<Harvest>();
 
   public editingHarvestName = false;
 
@@ -30,7 +30,7 @@ export class TitleComponent extends withUnsubscribe()  {
     const newHarvestName = form.value["harvestNameInput"];
 
     if (newHarvestName !== this.harvest.name) {
-      this.harvestService.updateName(this.harvest, newHarvestName)
+      this.harvestService.updateName(this.harvest(), newHarvestName)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         error: (err: BawApiError): void => {
@@ -38,7 +38,7 @@ export class TitleComponent extends withUnsubscribe()  {
         },
       });
 
-      this.harvest.name = newHarvestName;
+      this.harvest().name = newHarvestName;
       this.notifications.success(`Successfully Renamed Upload to ${this.harvest.name}`);
     }
 

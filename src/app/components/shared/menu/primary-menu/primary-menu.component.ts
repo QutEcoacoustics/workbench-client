@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import { Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -61,7 +61,7 @@ export interface HeaderDropdown {
   ],
 })
 export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
-  @Input() public isSideNav: boolean;
+  public readonly isSideNav = input<boolean>(undefined);
 
   public links: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
   public user: User;

@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: "baw-indicator",
   template: `
     <div>
-      @switch (status) {
+      @switch (status()) {
         <!-- Success Status -->
         @case (state.success) {
           <div class="mx-auto" style="width: 14px;">
@@ -34,7 +34,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   imports: [FaIconComponent]
 })
 export class IndicatorComponent {
-  @Input() public status: Status = Status.success;
+  public readonly status = input<Status>(Status.success);
   public state = Status;
 }
 

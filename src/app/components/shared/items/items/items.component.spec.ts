@@ -31,10 +31,10 @@ describe("ItemsComponent", () => {
   }
 
   function assertItem(item: ItemComponent, data: IItem) {
-    expect(item.icon).toBe(data.icon);
-    expect(item.name).toBe(data.name);
-    expect(item.tooltip).toEqual(data.tooltip);
-    expect(item.value).toBe(data.value);
+    expect(item.icon()).toBe(data.icon);
+    expect(item.name()).toBe(data.name);
+    expect(item.tooltip()).toEqual(data.tooltip);
+    expect(item.value()).toBe(data.value);
   }
 
   beforeEach(() => {

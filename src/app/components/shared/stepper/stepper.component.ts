@@ -2,13 +2,13 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   QueryList,
   SimpleChanges,
   ViewChild,
   ViewChildren,
+  input
 } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -30,7 +30,7 @@ export interface Step {
       </div>
     
       <div #steps class="steps">
-        @for (step of stepList; track step; let i = $index) {
+        @for (step of stepList(); track step; let i = $index) {
           <div
             #step
             class="step"
@@ -59,9 +59,9 @@ export class StepperComponent
   @ViewChildren("step") public stepItems: QueryList<ElementRef<HTMLElement>>;
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input("steps") public stepList: Step[];
+  public readonly stepList = input<Step[]>(undefined, { alias: "steps" });
   /** Step to show as active, starting from 0 */
-  @Input() public activeStep: number;
+  public readonly activeStep = input<number>(undefined);
 
   private updateObservers: boolean;
   private resizeObserver: ResizeObserver;
@@ -108,7 +108,7 @@ export class StepperComponent
   }
 
   public isActive(step: number): boolean {
-    return step === this.activeStep;
+    return step === this.activeStep();
   }
 
   private destroyObservers() {
@@ -139,10 +139,10 @@ export class StepperComponent
       this.stepItems.get(this.stepItems.length - 1)
     );
     /** Show left dots if steps are hidden, and the first step is not active */
-    const showLeftDots = leftStepsNotVisible && this.activeStep !== 0;
+    const showLeftDots = leftStepsNotVisible && this.activeStep() !== 0;
     /** Show right dots if steps are hidden, and the last step is not active */
     const showRightDots =
-      rightStepsNotVisible && this.activeStep !== this.stepList.length - 1;
+      rightStepsNotVisible && this.activeStep() !== this.stepList().length - 1;
 
     // Show/Hide dots
     this.getClassList(this.leftDots).toggle(this.hiddenClass, !showLeftDots);
@@ -150,7 +150,7 @@ export class StepperComponent
   }
 
   private onWrapperResize(): void {
-    const active = this.stepItems.get(this.activeStep)?.nativeElement;
+    const active = this.stepItems.get(this.activeStep())?.nativeElement;
     // Active component is not yet rendered
     if (!active) {
       return;

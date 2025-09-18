@@ -1,9 +1,8 @@
 import {
   Component,
-  EventEmitter,
   Inject,
-  Input,
-  Output,
+  input,
+  output
 } from "@angular/core";
 import {
   MetaReviewFolder,
@@ -30,14 +29,14 @@ import { WhitespaceComponent } from "./whitespace.component";
     <div class="grid-table-item pointer" (click)="toggleFolder.emit()">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
-        [indentation]="row.indentation"
-        [isFolder]="row.isOpen"
+        [indentation]="row().indentation"
+        [isFolder]="row().isOpen"
       ></baw-meta-review-whitespace>
       <fa-layers class="fa-custom-icon me-3" [fixedWidth]="true">
         <fa-icon
-          [icon]="row.isOpen ? icons.folderOpen : icons.folderClosed"
+          [icon]="row().isOpen ? icons.folderOpen : icons.folderClosed"
         ></fa-icon>
-        @if (!row.isRoot) {
+        @if (!row().isRoot) {
         <fa-layers-counter
           class="text-light fa-custom-counter"
           [content]="report.itemsTotal ?? 0 | number"
@@ -45,7 +44,7 @@ import { WhitespaceComponent } from "./whitespace.component";
         }
       </fa-layers>
       <span>
-        {{ row.path }}
+        {{ row().path }}
       </span>
     </div>
 
@@ -54,7 +53,7 @@ import { WhitespaceComponent } from "./whitespace.component";
     <div class="grid-table-item create-mapping">
       <button
         class="btn btn-sm btn-outline-primary"
-        (click)="createMapping(row)"
+        (click)="createMapping(row())"
       >
         Change Site or UTC for folder
       </button>
@@ -67,7 +66,7 @@ import { WhitespaceComponent } from "./whitespace.component";
       } @else {
       <baw-harvest-site-selector
         class="w-100"
-        [project]="project"
+        [project]="project()"
         [site]="mapping.site"
         (siteIdChange)="setSite(mapping, $event)"
       ></baw-harvest-site-selector>
@@ -95,7 +94,7 @@ import { WhitespaceComponent } from "./whitespace.component";
 
     <!-- Issue Icons -->
     <div class="grid-table-item">
-      @if (!row.isRoot) {
+      @if (!row().isRoot) {
       <div class="icon-wrapper">
         @if (harvestItem.hasItemsInvalidFixable) {
         <span
@@ -118,7 +117,7 @@ import { WhitespaceComponent } from "./whitespace.component";
           <fa-icon [icon]="icons.errorCircle"></fa-icon>
           {{ report.itemsErrored | number }}
         </span>
-        } @if (!row.harvestItem.hasItemsInvalid) {
+        } @if (!row().harvestItem.hasItemsInvalid) {
         <fa-icon
           class="text-success pointer"
           [icon]="['fas', 'circle-check']"
@@ -144,21 +143,21 @@ import { WhitespaceComponent } from "./whitespace.component";
   ],
 })
 export class FolderRowComponent {
-  @Input() public harvest: Harvest;
-  @Input() public project: Project;
-  @Input() public row: MetaReviewFolder;
+  public readonly harvest = input<Harvest>(undefined);
+  public readonly project = input<Project>(undefined);
+  public readonly row = input<MetaReviewFolder>();
   /** Triggers when this folder is opened/closed */
-  @Output() public toggleFolder = new EventEmitter<void>();
-  @Output() public mappingsChange = new EventEmitter<void>();
+  public readonly toggleFolder = output<void>();
+  public readonly mappingsChange = output<void>();
 
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    return this.row.mapping;
+    return this.row().mapping;
   }
 
   public get harvestItem(): HarvestItem {
-    return this.row.harvestItem;
+    return this.row().harvestItem;
   }
 
   public get report(): HarvestItemReport {
@@ -182,7 +181,7 @@ export class FolderRowComponent {
       this.injector
     );
     row.mapping = mapping;
-    this.harvest.mappings.push(mapping);
+    this.harvest().mappings.push(mapping);
   }
 
   public setSite(mapping: HarvestMapping, siteId: number): void {

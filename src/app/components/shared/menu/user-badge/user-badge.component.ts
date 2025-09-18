@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, input } from "@angular/core";
 import { User } from "@models/User";
 import { DateTime } from "luxon";
 import { NgTemplateOutlet } from "@angular/common";
@@ -87,18 +87,19 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class UserBadgeComponent implements OnChanges {
-  @Input() public label: string;
-  @Input() public users: User | User[];
+  public readonly label = input<string>(undefined);
+  public readonly users = input<User | User[]>(undefined);
   @Input() public timestamp?: DateTime;
   public models: User[];
 
   public ngOnChanges(): void {
-    if (!this.users) {
+    const users = this.users();
+    if (!users) {
       this.models = [];
-    } else if (this.users instanceof Array) {
-      this.models = this.users;
+    } else if (users instanceof Array) {
+      this.models = users;
     } else {
-      this.models = [this.users];
+      this.models = [users];
     }
   }
 }

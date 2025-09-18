@@ -76,7 +76,7 @@ describe("ActionMenuComponent", () => {
   it("should set menu to action menu", () => {
     setup();
     spec.detectChanges();
-    expect(getMenu().menuType).toBe("action");
+    expect(getMenu().menuType()).toBe("action");
   });
 
   it("should display menu title", () => {
@@ -89,7 +89,7 @@ describe("ActionMenuComponent", () => {
   describe("links", () => {
     function assertLinks(links: OrderedSet<NavigableMenuItem>) {
       const menu = getMenu();
-      expect(menu.links).toEqual(links);
+      expect(menu.links()).toEqual(links);
     }
 
     it("should handle empty set of links", () => {
@@ -123,7 +123,7 @@ describe("ActionMenuComponent", () => {
   describe("widgets", () => {
     function assertWidgets(widgets: OrderedSet<WidgetMenuItem>) {
       const menu = getMenu();
-      expect(menu.widgets).toEqual(widgets);
+      expect(menu.widgets()).toEqual(widgets);
     }
 
     it("should handle single widget", () => {

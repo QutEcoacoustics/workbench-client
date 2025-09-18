@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnInit,
+  input
 } from "@angular/core";
 import {
   MetaReviewFile,
@@ -27,10 +27,10 @@ interface ValidationMessage {
     <div class="grid-table-item">
       <!-- Whitespace -->
       <baw-meta-review-whitespace
-        [indentation]="row.indentation"
+        [indentation]="row().indentation"
       ></baw-meta-review-whitespace>
       <fa-icon class="me-2" [icon]="['fas', 'file']"></fa-icon>
-      <small>{{ row.path }}</small>
+      <small>{{ row().path }}</small>
       <span
         class="badge text-bg-secondary ms-3"
         [ngbTooltip]="(report.itemsSizeBytes | number) + ' bytes'"
@@ -44,14 +44,14 @@ interface ValidationMessage {
       @if (harvestItem.hasItemsInvalid) {
         <div class="dropdown-icon">
           <fa-icon
-            [icon]="['fas', row.showValidations ? 'chevron-up' : 'chevron-down']"
-            (click)="row.showValidations = !row.showValidations"
+            [icon]="['fas', row().showValidations ? 'chevron-up' : 'chevron-down']"
+            (click)="row().showValidations = !row().showValidations"
           ></fa-icon>
         </div>
       }
 
       <div class="expander-wrapper">
-        <div class="expander" [class.expand]="row.showValidations">
+        <div class="expander" [class.expand]="row().showValidations">
           <div class="content">
             @for (validation of validationMessages; track validation) {
               <small
@@ -96,17 +96,17 @@ interface ValidationMessage {
   ]
 })
 export class FileRowComponent implements OnInit {
-  @Input() public row: MetaReviewFile;
+  public readonly row = input<MetaReviewFile>(undefined);
 
   public validationMessages: ValidationMessage[];
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    return this.row.mapping;
+    return this.row().mapping;
   }
 
   public get harvestItem(): HarvestItem {
-    return this.row.harvestItem;
+    return this.row().harvestItem;
   }
 
   public get report(): HarvestItemReport {

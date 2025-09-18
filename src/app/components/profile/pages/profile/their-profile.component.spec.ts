@@ -282,7 +282,7 @@ describe("TheirProfileComponent", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("…");
+          expect(getStatistics().items().get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {
@@ -291,19 +291,19 @@ describe("TheirProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe(numModels);
+          expect(getStatistics().items().get(position).value).toBe(numModels);
         });
 
         it("should update with Unknown when showing deleted user", async () => {
           setup(User.getDeletedUser(undefined));
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          expect(getStatistics().items().get(position).value).toBe("Unknown");
         });
 
         it("should update with Unknown when showing unknown user", async () => {
           setup(User.getUnknownUser(undefined));
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          expect(getStatistics().items().get(position).value).toBe("Unknown");
         });
 
         it("should update with Unknown on error", async () => {
@@ -314,7 +314,7 @@ describe("TheirProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          expect(getStatistics().items().get(position).value).toBe("Unknown");
         });
       });
     });

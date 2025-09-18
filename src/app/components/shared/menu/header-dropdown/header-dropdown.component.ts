@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { getRoute, MenuLink } from "@interfaces/menusInterfaces";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
@@ -16,10 +16,10 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
         ngbDropdownToggle
         id="dropdownBasic"
         class="btn btn-link nav-link dropdown-toggle border-0"
-        [innerText]="label"
+        [innerText]="label()"
       ></button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
-        @for (link of links; track link) {
+        @for (link of links(); track link) {
           <a ngbDropdownItem [href]="getHref(link)">
             {{ link.label }}
           </a>
@@ -31,8 +31,8 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
   imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
 })
 export class HeaderDropdownComponent {
-  @Input() public label: string;
-  @Input() public links: HeaderItem[];
+  public readonly label = input<string>(undefined);
+  public readonly links = input<HeaderItem[]>(undefined);
   public params: Params;
 
   public constructor(private route: ActivatedRoute) {

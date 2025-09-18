@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { NavigableMenuItem } from "@interfaces/menusInterfaces";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
@@ -19,7 +19,7 @@ import { MenuComponent } from "../menu/menu.component";
       menuType="secondary"
       [links]="links"
       [widgets]="widgets"
-      [isSideNav]="isSideNav"
+      [isSideNav]="isSideNav()"
     ></baw-menu>
   `,
   imports: [MenuComponent],
@@ -28,7 +28,7 @@ export class SecondaryMenuComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  @Input() public isSideNav: boolean;
+  public readonly isSideNav = input<boolean>(undefined);
 
   public links: Set<NavigableMenuItem | MenuModalWithoutAction>;
   public widgets: Set<WidgetMenuItem>;

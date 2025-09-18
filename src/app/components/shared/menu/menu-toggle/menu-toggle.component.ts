@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from "@angular/core";
+import { Component, OnInit, Output, input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { MenuType } from "@helpers/generalTypes";
@@ -19,10 +19,10 @@ export enum MenuState {
   template: `
     <button
       type="button"
-      [ngClass]="[alignment, 'text-' + color]"
+      [ngClass]="[alignment(), 'text-' + color()]"
       (click)="toggleMenu()"
     >
-      <span class="visually-hidden">Toggle {{ menuType }} Menu</span>
+      <span class="visually-hidden">Toggle {{ menuType() }} Menu</span>
       <fa-icon size="2x" [icon]="getIcon()"></fa-icon>
     </button>
   `,
@@ -43,9 +43,9 @@ export enum MenuState {
   imports: [NgClass, FaIconComponent]
 })
 export class MenuToggleComponent implements OnInit {
-  @Input() public menuType: MenuType;
-  @Input() public color: BootstrapColorTypes = "light";
-  @Input() public alignment: LeftOrRight = "left";
+  public readonly menuType = input<MenuType>(undefined);
+  public readonly color = input<BootstrapColorTypes>("light");
+  public readonly alignment = input<LeftOrRight>("left");
 
   @Output() public get menuToggle(): Observable<MenuState> {
     return this._menuToggle;

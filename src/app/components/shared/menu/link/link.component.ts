@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Inject, OnChanges, OnInit, input } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -24,7 +24,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
     <div
       placement="auto"
       [ngbTooltip]="tooltipContent"
-      [class.disabled]="link.disabled"
+      [class.disabled]="link().disabled"
     >
       @if (isInternalLink) {
         <!-- Internal Link -->
@@ -35,9 +35,9 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
           [strongRouteActiveOptions]="activeOptions"
           [queryParams]="queryParams | async"
           [routeParams]="routeParams | async"
-          [class.active]="link.highlight"
-          [class.disabled]="link.disabled"
-          [class.primary]="link.primaryBackground"
+          [class.active]="link().highlight"
+          [class.disabled]="link().disabled"
+          [class.primary]="link().primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
@@ -46,8 +46,8 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
         <a
           class="nav-link ps-3 py-2 rounded"
           [href]="href(routeParams | async)"
-          [class.disabled]="link.disabled"
-          [class.primary]="link.primaryBackground"
+          [class.disabled]="link().disabled"
+          [class.primary]="link().primaryBackground"
         >
           <ng-container *ngTemplateOutlet="linkDetails"></ng-container>
         </a>
@@ -56,15 +56,15 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
 
     <!-- Link Details -->
     <ng-template #linkDetails>
-      <div class="icon"><fa-icon [icon]="link.icon"></fa-icon></div>
-      <span id="label">{{ link.label }}</span>
+      <div class="icon"><fa-icon [icon]="link().icon"></fa-icon></div>
+      <span id="label">{{ link().label }}</span>
     </ng-template>
 
     <ng-template #tooltipContent>
       @if (disabledReason) {
         {{ disabledReason }}<br />
       }
-      {{ tooltip }}
+      {{ tooltip() }}
     </ng-template>
   `,
   styleUrl: "./link.component.scss",
@@ -81,8 +81,8 @@ export class MenuLinkComponent
   extends withUnsubscribe()
   implements OnInit, OnChanges
 {
-  @Input() public link: MenuRoute | MenuLink;
-  @Input() public tooltip: string;
+  public readonly link = input<MenuRoute | MenuLink>(undefined);
+  public readonly tooltip = input<string>(undefined);
 
   public queryParams: Observable<Params>;
   public routeParams: Observable<Params>;
@@ -113,21 +113,22 @@ export class MenuLinkComponent
   }
 
   public ngOnChanges(): void {
-    if (typeof this.link.disabled === "string") {
-      this.disabledReason = this.link.disabled;
+    const link = this.link();
+    if (typeof link.disabled === "string") {
+      this.disabledReason = link.disabled;
     }
   }
 
   public get isInternalLink(): boolean {
-    return isInternalRoute(this.link);
+    return isInternalRoute(this.link());
   }
 
   public get internalLink(): MenuRoute {
-    return this.link as MenuRoute;
+    return this.link() as MenuRoute;
   }
 
   public get externalLink(): MenuLink {
-    return this.link as MenuLink;
+    return this.link() as MenuLink;
   }
 
   public href(routeParams: Params): string {

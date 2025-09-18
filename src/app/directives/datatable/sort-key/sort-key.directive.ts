@@ -1,4 +1,4 @@
-import { Directive, Host, Input, OnChanges } from "@angular/core";
+import { Directive, Host, OnChanges, input } from "@angular/core";
 import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 
 @Directive({
@@ -6,11 +6,11 @@ import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
   selector: "[sortKey]",
 })
 export class DatatableSortKeyDirective implements OnChanges {
-  @Input() public sortKey: string;
+  public readonly sortKey = input<string>(undefined);
 
   public constructor(@Host() private column: DataTableColumnDirective) {}
 
   public ngOnChanges(): void {
-    this.column["sortKey"] = this.sortKey;
+    this.column["sortKey"] = this.sortKey();
   }
 }

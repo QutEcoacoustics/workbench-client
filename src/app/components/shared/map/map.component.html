@@ -3,12 +3,12 @@
     height="100%"
     width="100%"
     [options]="mapOptions"
-    (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
+    (mapClick)="markerOptions()?.draggable && newLocation.emit($event)"
   >
     @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
       <map-marker
         #markerRef="mapMarker"
-        [options]="markerOptions"
+        [options]="markerOptions()"
         [position]="individualMarkerOptions.position"
         (mapDragend)="newLocation.emit($event)"
         (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"

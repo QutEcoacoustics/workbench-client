@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -24,15 +24,15 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
     <div class="card h-100">
       <!-- Image -->
       <div class="card-image position-relative">
-        <a [bawUrl]="model.viewUrl">
-          <img [alt]="model.name + ' image'" [src]="model.imageUrls" />
+        <a [bawUrl]="model().viewUrl">
+          <img [alt]="model().name + ' image'" [src]="model().imageUrls" />
         </a>
       </div>
 
       <div class="card-body">
         <!-- Title -->
-        <a class="card-title truncate" [bawUrl]="model.viewUrl">
-          <h4 [innerText]="model.name"></h4>
+        <a class="card-title truncate" [bawUrl]="model().viewUrl">
+          <h4 [innerText]="model().name"></h4>
         </a>
 
         <!-- Description -->
@@ -40,7 +40,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
           <div class="truncate">
             <p
               [innerHtml]="
-                model.descriptionHtmlTagline ?? '<i>No description given</i>'
+                model().descriptionHtmlTagline ?? '<i>No description given</i>'
               "
             ></p>
           </div>
@@ -98,14 +98,14 @@ export class CardComponent implements OnInit {
     private licenseService: LicensesService,
   ) {}
 
-  @Input() public model: Project | Region;
+  public readonly model = input<Project | Region>(undefined);
 
   public hasNoAudio$: Observable<boolean>;
   protected isOwner: boolean;
   protected licenseText: string | undefined = undefined;
 
   public ngOnInit(): void {
-    this.isOwner = this.model.creatorId === this.session.loggedInUser?.id;
+    this.isOwner = this.model().creatorId === this.session.loggedInUser?.id;
     this.hasNoAudio$ = this.getRecordings().pipe(
       map((recordings): boolean => recordings.length === 0),
     );
@@ -114,21 +114,23 @@ export class CardComponent implements OnInit {
 
   private getRecordings(): Observable<AudioRecording[]> {
     const filters: Filters<AudioRecording> = { paging: { items: 1 } };
-    if (this.model instanceof Region) {
-      return this.recordingApi.filterByRegion(filters, this.model);
+    const model = this.model();
+    if (model instanceof Region) {
+      return this.recordingApi.filterByRegion(filters, model);
     } else {
-      return this.recordingApi.filterByProject(filters, this.model);
+      return this.recordingApi.filterByProject(filters, model);
     }
   }
 
   private async updateLicense() {
-    if (this.model.license === null) {
+    const model = this.model();
+    if (model.license === null) {
       this.licenseText = null;
       return;
     }
 
     this.licenseText = await this.licenseService.licenseText(
-      this.model.license,
+      model.license,
     );
   }
 }

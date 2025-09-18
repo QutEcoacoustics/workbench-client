@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import {
   BootstrapColorTypes,
   BootstrapScreenSizes,
@@ -20,17 +20,17 @@ import { NgClass } from "@angular/common";
   imports: [NgClass],
 })
 export class LoadingComponent implements OnInit {
-  @Input() public color: BootstrapColorTypes = "info";
-  @Input() public size: BootstrapScreenSizes = "md";
-  @Input() public type: "border" | "grower" = "border";
+  public readonly color = input<BootstrapColorTypes>("info");
+  public readonly size = input<BootstrapScreenSizes>("md");
+  public readonly type = input<"border" | "grower">("border");
 
   public spinnerClass: { [klass: string]: true };
 
   public ngOnInit(): void {
     this.spinnerClass = {
-      [`spinner-${this.type}`]: true,
-      [`spinner-${this.type}-${this.size}`]: true,
-      [`text-${this.color}`]: true,
+      [`spinner-${this.type()}`]: true,
+      [`spinner-${this.type()}-${this.size()}`]: true,
+      [`text-${this.color()}`]: true,
     };
   }
 }

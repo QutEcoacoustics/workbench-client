@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, input } from "@angular/core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { NgClass } from "@angular/common";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -14,8 +14,8 @@ import { ClipboardModule } from "ngx-clipboard";
         type="button"
         class="btn"
         container="body"
-        [ngClass]="'btn-outline-' + color"
-        [ngbTooltip]="disabled ? disabled : tooltip"
+        [ngClass]="'btn-outline-' + color()"
+        [ngbTooltip]="disabled ? disabled : tooltip()"
         [disabled]="disabled"
         [class.active]="visible"
         (click)="toggleVisibility()"
@@ -23,7 +23,7 @@ import { ClipboardModule } from "ngx-clipboard";
         <fa-icon [icon]="['fas', 'eye']"></fa-icon>
       </button>
 
-      <pre class="text-center form-control">{{ visible ? content : "..." }}@if (visible) {<ng-content></ng-content>}</pre>
+      <pre class="text-center form-control">{{ visible ? content() : "..." }}@if (visible) {<ng-content></ng-content>}</pre>
 
       <!--
         We use a manual trigger for the "Copied!" tooltip so that so that it is
@@ -44,10 +44,10 @@ import { ClipboardModule } from "ngx-clipboard";
         <button
           id="copy-btn"
           class="btn"
-          [ngClass]="'btn-outline-' + color"
+          [ngClass]="'btn-outline-' + color()"
           [disabled]="disabled"
           ngxClipboard
-          [cbContent]="value"
+          [cbContent]="value()"
           (cbOnSuccess)="copyTooltip.open()"
         >
           <fa-icon id="copy-icon" [icon]="['fas', 'copy']"></fa-icon>
@@ -79,11 +79,11 @@ import { ClipboardModule } from "ngx-clipboard";
   imports: [NgClass, NgbTooltip, FaIconComponent, ClipboardModule],
 })
 export class HiddenCopyComponent {
-  @Input() public color: BootstrapColorTypes = "secondary";
-  @Input() public tooltip: string;
+  public readonly color = input<BootstrapColorTypes>("secondary");
+  public readonly tooltip = input<string>(undefined);
   @Input() public disabled: string | undefined;
-  @Input() public value: string;
-  @Input() public content: string;
+  public readonly value = input<string>(undefined);
+  public readonly content = input<string>(undefined);
   public visible: boolean;
 
   public toggleVisibility() {

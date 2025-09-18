@@ -106,13 +106,13 @@ describe("MenuComponent", () => {
   function getMenuLinks(): MenuLinkComponent[] {
     return spec
       .queryAll(MenuLinkComponent)
-      .filter((item) => isExternalLink(item.link));
+      .filter((item) => isExternalLink(item.link()));
   }
 
   function getMenuRoutes(): MenuLinkComponent[] {
     return spec
       .queryAll(MenuLinkComponent)
-      .filter((item) => isInternalRoute(item.link));
+      .filter((item) => isInternalRoute(item.link()));
   }
 
   function setup(
@@ -323,7 +323,7 @@ describe("MenuComponent", () => {
         setup({ links: OrderedSet([defaultMenuModal]) });
         spyOnModal();
         spec.detectChanges();
-        getMenuModals()[0].link.action();
+        getMenuModals()[0].link().action();
         assertModalOpen(spec.component.formattedLinks.first() as MenuModal);
       });
 
@@ -331,7 +331,7 @@ describe("MenuComponent", () => {
         setup({ links: OrderedSet([defaultMenuModal]) });
         spyOnModal();
         spec.detectChanges();
-        const link = getMenuModals()[0].link as MenuModal;
+        const link = getMenuModals()[0].link() as MenuModal;
         link.action();
 
         mockComponentInstance.dismissModal("test dismissal");
@@ -342,7 +342,7 @@ describe("MenuComponent", () => {
         setup({ links: OrderedSet([defaultMenuModal]) });
         spyOnModal();
         spec.detectChanges();
-        const link = getMenuModals()[0].link as MenuModal;
+        const link = getMenuModals()[0].link() as MenuModal;
         link.action();
 
         mockComponentInstance.closeModal("test close");
@@ -454,13 +454,13 @@ describe("MenuComponent", () => {
     it("should set menu link", () => {
       setup({ menuType: "action", links: OrderedSet([defaultMenuLink]) });
       spec.detectChanges();
-      expect(getMenuLinks()[0].link).toEqual(defaultMenuLink);
+      expect(getMenuLinks()[0].link()).toEqual(defaultMenuLink);
     });
 
     it("should set menu route", () => {
       setup({ menuType: "action", links: OrderedSet([defaultMenuRoute]) });
       spec.detectChanges();
-      expect(getMenuRoutes()[0].link).toBe(defaultMenuRoute);
+      expect(getMenuRoutes()[0].link()).toBe(defaultMenuRoute);
     });
   });
 

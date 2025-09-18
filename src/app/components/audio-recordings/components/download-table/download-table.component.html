@@ -1,6 +1,6 @@
 <ngx-datatable
   bawDatatableDefaults
-  [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+  [bawDatatablePagination]="{ filters: filters$(), getModels: getModels }"
 >
   <ngx-datatable-column prop="id" [width]="70" [maxWidth]="70">
   </ngx-datatable-column>

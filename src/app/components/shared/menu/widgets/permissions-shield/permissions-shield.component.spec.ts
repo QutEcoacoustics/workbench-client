@@ -250,7 +250,7 @@ describe("PermissionsShieldComponent", () => {
         }
 
         function assertUsers(...users: User[]) {
-          expect(getUserBadge().users).toEqual(
+          expect(getUserBadge().users()).toEqual(
             multipleUsers ? users : users[0]
           );
         }

@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
 @Component({
   selector: "baw-meta-review-whitespace",
   template: `
-    @for (indent of indentation; track indent) {
+    @for (indent of indentation(); track indent) {
       <span class="vertical-line"></span>
       <div class="whitespace-block"></div>
     }
 
-    @if (isFolder) {
+    @if (isFolder()) {
       <span class="vertical-half-line"></span>
     }
   `,
@@ -51,6 +51,6 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WhitespaceComponent {
-  @Input() public indentation: void[];
-  @Input() public isFolder: boolean;
+  public readonly indentation = input<void[]>(undefined);
+  public readonly isFolder = input<boolean>(undefined);
 }

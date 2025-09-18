@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   ViewChild,
+  input
 } from "@angular/core";
 import { Data } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -48,7 +49,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    * If your spec contains one graph, use the `[data]` attribute instead
    */
   @Input() public datasets?: Datasets | object;
-  @Input() public options?: EmbedOptions = { actions: false };
+  public readonly options = input<EmbedOptions>({ actions: false });
   /**
    * Specifies a way to turn model values into user-facing values
    * e.g. turn a model id into its model name
@@ -62,7 +63,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    *    this.projects.find((project: Project) => project.id === projectId);
    * ```
    */
-  @Input() public formatter?: (item: unknown) => string;
+  public readonly formatter = input<(item: unknown) => string>(undefined);
 
   private vegaView: Result;
   private vegaFormatterFunction: ExpressionFunction;
@@ -138,10 +139,10 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       },
     };
 
-    if (this.formatter) {
+    if (this.formatter()) {
       this.vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
-        (datum: unknown) => this.formatter(datum)
+        (datum: unknown) => this.formatter()(datum)
       );
     }
 
@@ -150,7 +151,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       fullSpec,
       {
         ...defaultOptions,
-        ...this.options,
+        ...this.options(),
         expressionFunctions: {
           [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
         },

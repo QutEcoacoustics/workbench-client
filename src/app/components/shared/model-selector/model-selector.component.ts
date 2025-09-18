@@ -1,11 +1,11 @@
 import {
   Component,
-  EventEmitter,
   Input,
   OnInit,
-  Output,
   TemplateRef,
   ViewChild,
+  input,
+  output
 } from "@angular/core";
 import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
@@ -41,13 +41,13 @@ import { FormsModule } from "@angular/forms";
         type="text"
         class="form-select"
         container="body"
-        [placeholder]="placeholder ?? ''"
+        [placeholder]="placeholder() ?? ''"
         [ngbTypeahead]="search$"
         [resultFormatter]="formatModel"
-        [resultTemplate]="resultTemplate"
+        [resultTemplate]="resultTemplate()"
         [inputFormatter]="formatModel"
         [editable]="false"
-        [ngModel]="model"
+        [ngModel]="model()"
         (focus)="focus$.next($any($event.target).value)"
         (selectItem)="modelChange.emit($event.item)"
         (ngModelChange)="modelChange.emit($event)"
@@ -62,12 +62,12 @@ export class ModelSelectorComponent<Model extends AbstractModel>
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
 
   @Input() public label: string;
-  @Input() public placeholder: string;
-  @Input() public model: Model;
-  @Input() public getModels: (input: Model | string) => Observable<Model[]>;
-  @Input() public formatter: (model: AbstractModel) => string;
-  @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
-  @Output() public modelChange = new EventEmitter<Model>();
+  public readonly placeholder = input<string>(undefined);
+  public readonly model = input<Model>(undefined);
+  public readonly getModels = input<(input: Model | string) => Observable<Model[]>>(undefined);
+  public readonly formatter = input<(model: AbstractModel) => string>(undefined);
+  public readonly resultTemplate = input<TemplateRef<ResultTemplateContext>>(undefined);
+  public readonly modelChange = output<Model>();
 
   public focus$ = new Subject<Model>();
   public click$ = new Subject<Model>();
@@ -85,13 +85,13 @@ export class ModelSelectorComponent<Model extends AbstractModel>
       const inputFocus$ = this.focus$;
 
       return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-        switchMap((model: Model | string) => this.getModels(model))
+        switchMap((model: Model | string) => this.getModels()(model))
       );
     };
   }
 
   public formatModel = (model: AbstractModel): string =>
-    this.formatter?.(model) ??
+    this.formatter()?.(model) ??
     (model as Site | Project | Region)?.name ??
     (model as User)?.userName ??
     model.toString();

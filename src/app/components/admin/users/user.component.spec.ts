@@ -167,8 +167,8 @@ describe("AdminUserListComponent", () => {
       spec.detectChanges();
 
       const editLink = spec.queryLast(StrongRouteDirective);
-      expect(editLink.strongRoute).toEqual(theirEditMenuItem.route);
-      expect(editLink.routeParams).toEqual({ accountId: 5 });
+      expect(editLink.strongRoute()).toEqual(theirEditMenuItem.route);
+      expect(editLink.routeParams()).toEqual({ accountId: 5 });
     });
   });
 });

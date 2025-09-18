@@ -4,9 +4,9 @@ import {
   Component,
   ElementRef,
   Inject,
-  Input,
   OnInit,
   Renderer2,
+  input
 } from "@angular/core";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -34,7 +34,7 @@ import { ErrorHandlerComponent } from "../error-handler/error-handler.component"
   imports: [LoadingComponent, ErrorHandlerComponent]
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
-  @Input() public page: CMS;
+  public readonly page = input<CMS>(undefined);
   public error: BawApiError;
   public loading: boolean;
 
@@ -58,7 +58,7 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
     }
 
     this.cms
-      .get(this.page)
+      .get(this.page())
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         next: (blob) => {

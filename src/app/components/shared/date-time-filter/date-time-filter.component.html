@@ -43,7 +43,7 @@
                     dateStartedAfterForm.errors?.ngbDate?.invalid
                   "
                   [(ngModel)]="model.dateStartedAfter"
-                  [disabled]="disableStartDate"
+                  [disabled]="disableStartDate()"
                 />
                 <button
                   class="btn btn-outline-secondary"
@@ -76,7 +76,7 @@
                   "
                   [minDate]="model.dateStartedAfter"
                   [(ngModel)]="model.dateFinishedBefore"
-                  [disabled]="disableEndDate"
+                  [disabled]="disableEndDate()"
                 />
                 <button
                   class="btn btn-outline-secondary"
@@ -113,7 +113,7 @@
   }
 
   <!-- Toggle filtering by time of day -->
-  @if (!disableStartTime || !disableEndTime) {
+  @if (!disableStartTime() || !disableEndTime()) {
     <div class="form-check mt-3">
       <input
         id="time-filtering"
@@ -150,7 +150,7 @@
               name="timeStartedAfter"
               label="Start Time"
               [(ngModel)]="model.timeStartedAfter"
-              [disabled]="disableStartTime"
+              [disabled]="disableStartTime()"
             ></baw-time>
           </div>
 
@@ -161,7 +161,7 @@
               name="timeFinishedBefore"
               label="End Time"
               [(ngModel)]="model.timeFinishedBefore"
-              [disabled]="disableEndTime"
+              [disabled]="disableEndTime()"
             ></baw-time>
           </div>
         </div>
@@ -173,7 +173,7 @@
             name="ignoreDaylightSavings"
             type="checkbox"
             class="form-check-input"
-            [disabled]="!model.timeFiltering || disableIgnoreDaylightSavings"
+            [disabled]="!model.timeFiltering || disableIgnoreDaylightSavings()"
             [(ngModel)]="model.ignoreDaylightSavings"
           />
 

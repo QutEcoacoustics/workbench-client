@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnChanges,
   OnInit,
+  input
 } from "@angular/core";
 import { List } from "immutable";
 import { IItem, ItemComponent } from "../item/item.component";
@@ -53,7 +53,7 @@ import { IItem, ItemComponent } from "../item/item.component";
   imports: [ItemComponent],
 })
 export class ItemsComponent implements OnInit, OnChanges {
-  @Input() public items: List<IItem>;
+  public readonly items = input<List<IItem>>(undefined);
 
   public groupOne: List<IItem>;
   public groupTwo: List<IItem>;
@@ -65,14 +65,15 @@ export class ItemsComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges() {
-    if (!this.items) {
+    const items = this.items();
+    if (!items) {
       this.groupOne = List([]);
       this.groupTwo = List([]);
       return;
     }
 
-    const midIndex = Math.ceil(this.items.count() / 2);
-    this.groupOne = this.items.slice(0, midIndex);
-    this.groupTwo = this.items.slice(midIndex, this.items.count());
+    const midIndex = Math.ceil(items.count() / 2);
+    this.groupOne = items.slice(0, midIndex);
+    this.groupTwo = items.slice(midIndex, items.count());
   }
 }

@@ -1,5 +1,5 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, ElementRef, Input, OnInit, Renderer2 } from "@angular/core";
+import { Directive, ElementRef, OnInit, Renderer2, input } from "@angular/core";
 import {
   ActivatedRoute,
   Params,
@@ -22,17 +22,17 @@ export class StrongRouteDirective
   extends withUnsubscribe(RouterLink)
   implements OnInit
 {
-  @Input() public strongRoute: StrongRoute;
+  public readonly strongRoute = input<StrongRoute>(undefined);
   /**
    * Additional route parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public routeParams: RouteParams;
+  public readonly routeParams = input<RouteParams>(undefined);
   /**
    * Additional query parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public queryParams: Params;
+  public readonly queryParams = input<Params>(undefined);
 
   private routeState = {
     resolvedModels: {} as ResolvedModelList,
@@ -64,9 +64,9 @@ export class StrongRouteDirective
         tap(({ queryParams, params }) => {
           this.routeState.routeParams = params;
           this.routeState.queryParams = queryParams;
-          this.routerLink = this.strongRoute?.toRouterLink({
+          this.routerLink = this.strongRoute()?.toRouterLink({
             ...this.routeState.routeParams,
-            ...this.routeParams,
+            ...this.routeParams(),
           });
         }),
         tap(({ data }): void => {
@@ -102,12 +102,12 @@ export class StrongRouteDirective
     }
 
     const queryParams =
-      this.strongRoute?.queryParams(
+      this.strongRoute()?.queryParams(
         {
           ...this.routeState.routeParams,
           ...this.routeState.queryParams,
-          ...this.routeParams,
-          ...this.queryParams,
+          ...this.routeParams(),
+          ...this.queryParams(),
         },
         this.routeState.resolvedModels
       ) ?? {};

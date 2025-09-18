@@ -74,7 +74,7 @@ describe("ProjectsListComponent", () => {
   }
 
   function getCards() {
-    return getCardsComponent().models;
+    return getCardsComponent().models();
   }
 
   beforeEach(() => {

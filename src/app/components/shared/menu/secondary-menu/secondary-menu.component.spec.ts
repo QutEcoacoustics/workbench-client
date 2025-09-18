@@ -76,7 +76,7 @@ describe("SecondaryMenuComponent", () => {
   it("should set menu to secondary menu", () => {
     setup();
     spec.detectChanges();
-    expect(getMenu().menuType).toBe("secondary");
+    expect(getMenu().menuType()).toBe("secondary");
   });
 
   it("should display menu title", () => {
@@ -89,7 +89,7 @@ describe("SecondaryMenuComponent", () => {
   describe("links", () => {
     function assertLinks(links: OrderedSet<NavigableMenuItem>) {
       const menu = getMenu();
-      expect(menu.links).toEqual(links);
+      expect(menu.links()).toEqual(links);
     }
 
     it("should handle empty set of links", () => {
@@ -123,7 +123,7 @@ describe("SecondaryMenuComponent", () => {
   describe("widgets", () => {
     function assertWidgets(widgets: OrderedSet<WidgetMenuItem>) {
       const menu = getMenu();
-      expect(menu.widgets).toEqual(widgets);
+      expect(menu.widgets()).toEqual(widgets);
     }
 
     it("should handle single widget", () => {

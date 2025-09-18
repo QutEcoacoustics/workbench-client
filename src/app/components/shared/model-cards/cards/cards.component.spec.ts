@@ -70,7 +70,7 @@ describe("CardsComponent", () => {
       spec.detectChanges();
       const cards = getCards();
       expect(cards.length).toBe(1);
-      expect(cards[0].model).toEqual(defaultProject);
+      expect(cards[0].model()).toEqual(defaultProject);
     });
 
     it("should create single region card", () => {
@@ -78,7 +78,7 @@ describe("CardsComponent", () => {
       spec.detectChanges();
       const cards = getCards();
       expect(cards.length).toBe(1);
-      expect(cards[0].model).toEqual(defaultRegion);
+      expect(cards[0].model()).toEqual(defaultRegion);
     });
 
     it("should create multiple cards", () => {
@@ -88,7 +88,7 @@ describe("CardsComponent", () => {
       const cards = getCards();
       expect(cards).toHaveLength(2);
       cards.forEach((card, index) => {
-        expect(card.model).toEqual(models[index]);
+        expect(card.model()).toEqual(models[index]);
       });
     });
   });

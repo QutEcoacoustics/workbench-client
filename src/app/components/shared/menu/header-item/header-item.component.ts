@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnInit,
+  input
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
@@ -33,7 +33,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
         [id]="label + '-header-link'"
         [strongRoute]="strongRoute"
       >
-        {{ link.label }}
+        {{ link().label }}
       </a>
     </ng-template>
 
@@ -47,7 +47,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
         ></ng-container>
       } @else {
         <a class="nav-link" [id]="label + '-header-link'" [href]="href">
-          {{ link.label }}
+          {{ link().label }}
         </a>
       }
     </li>
@@ -56,7 +56,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
   imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet],
 })
 export class HeaderItemComponent implements OnInit {
-  @Input() public link: NavigableMenuItem | HeaderItem;
+  public readonly link = input<NavigableMenuItem | HeaderItem>(undefined);
 
   public hasStrongRoute: boolean;
   public label: string;
@@ -64,15 +64,15 @@ export class HeaderItemComponent implements OnInit {
   public constructor(private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.label = camelCase(this.link.label);
-    this.hasStrongRoute = isInternalRoute(this.link);
+    this.label = camelCase(this.link().label);
+    this.hasStrongRoute = isInternalRoute(this.link());
   }
 
   public get strongRoute(): StrongRoute {
-    return (this.link as MenuRoute).route;
+    return (this.link() as MenuRoute).route;
   }
 
   public get href(): string {
-    return getRoute(this.link as NavigableMenuItem, this.route.snapshot.params);
+    return getRoute(this.link() as NavigableMenuItem, this.route.snapshot.params);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, model, output } from "@angular/core";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
@@ -8,7 +8,7 @@ import { FormsModule } from "@angular/forms";
   template: `
     @if (offset) {
       <div class="utc-label">
-        <span>{{ offset }}</span>
+        <span>{{ offset() }}</span>
         <div>
           <button
             type="button"
@@ -50,21 +50,21 @@ import { FormsModule } from "@angular/forms";
   imports: [NgbTooltip, FaIconComponent, FormsModule]
 })
 export class UTCOffsetSelectorComponent {
-  @Input() public offset: string;
-  @Output() public offsetChange = new EventEmitter<string>();
+  public readonly offset = model<string>();
+  public readonly offsetChange = output<string>();
 
   public get editTooltip(): string {
     return "Change the utc offset for this recordings stored in this folder";
   }
 
   public resetSite(): void {
-    this.offset = null;
-    this.offsetChange.emit(this.offset);
+    this.offset.set(null);
+    this.offsetChange.emit(this.offset());
   }
 
   public onSelection(offset: string): void {
-    this.offset = offset;
-    this.offsetChange.emit(this.offset);
+    this.offset.set(offset);
+    this.offsetChange.emit(this.offset());
   }
 
   public get offsets(): string[] {

@@ -232,12 +232,12 @@ describe("MySitesComponent", () => {
 
       it("should create annotation link", async () => {
         await setup();
-        expect(getLink().strongRoute).toEqual(dataRequestMenuItem.route);
+        expect(getLink().strongRoute()).toEqual(dataRequestMenuItem.route);
       });
 
       it("should create annotation link query params", async () => {
         await setup();
-        expect(getLink().queryParams).toEqual({ siteId: defaultSite.id });
+        expect(getLink().queryParams()).toEqual({ siteId: defaultSite.id });
       });
     });
   });

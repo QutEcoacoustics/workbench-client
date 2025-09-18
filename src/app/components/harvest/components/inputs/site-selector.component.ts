@@ -1,10 +1,10 @@
 import {
   Component,
-  EventEmitter,
-  Input,
   OnInit,
-  Output,
   ViewChild,
+  input,
+  model,
+  output
 } from "@angular/core";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -34,7 +34,7 @@ import { UrlDirective } from "@directives/url/url.directive";
     <!-- Show site name and link if exists -->
     @if (site) {
       <div class="site-label">
-        <a [bawUrl]="site.getViewUrl(project)">{{ site.name }}</a>
+        <a [bawUrl]="site().getViewUrl(project())">{{ site().name }}</a>
         <div>
           <button
             type="button"
@@ -49,7 +49,7 @@ import { UrlDirective } from "@directives/url/url.directive";
     }
 
     <!-- Show user input if no site -->
-    <div [class.d-none]="site" class="input-group input-group-sm">
+    <div [class.d-none]="site()" class="input-group input-group-sm">
       <input
         #selector="ngbTypeahead"
         id="selector"
@@ -81,9 +81,9 @@ import { UrlDirective } from "@directives/url/url.directive";
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
-  @Input() public project: Project;
-  @Input() public site: Site | null;
-  @Output() public siteIdChange = new EventEmitter<Id | null>();
+  public readonly project = input<Project>(undefined);
+  public readonly site = model<Site | null>();
+  public readonly siteIdChange = output<Id | null>();
 
   public focus$ = new Subject<Site>();
   public click$ = new Subject<Site>();
@@ -120,7 +120,7 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
                 },
               },
             },
-            this.project
+            this.project()
           )
         )
       );
@@ -148,13 +148,13 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public onSelectItem(item: NgbTypeaheadSelectItemEvent<Site>): void {
-    this.site = item.item;
-    this.emitSite(this.site);
+    this.site.set(item.item);
+    this.emitSite(this.site());
   }
 
   public resetSite(): void {
-    this.prevValue = this.site;
-    this.site = null;
-    this.emitSite(this.site);
+    this.prevValue = this.site();
+    this.site.set(null);
+    this.emitSite(this.site());
   }
 }

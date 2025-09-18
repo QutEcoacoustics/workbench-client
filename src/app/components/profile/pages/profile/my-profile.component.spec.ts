@@ -201,7 +201,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(
+      expect(spec.query(StrongRouteDirective).strongRoute()).toEqual(
         dataRequestMenuItem.route
       );
     });
@@ -210,7 +210,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).queryParams).toEqual({
+      expect(spec.query(StrongRouteDirective).queryParams()).toEqual({
         userId: defaultUser.id,
       });
     });
@@ -319,7 +319,7 @@ describe("MyProfileComponent", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("…");
+          expect(getStatistics().items().get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {
@@ -328,7 +328,7 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe(numModels);
+          expect(getStatistics().items().get(position).value).toBe(numModels);
         });
 
         it("should update with Unknown on error", async () => {
@@ -339,7 +339,7 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          expect(getStatistics().items().get(position).value).toBe("Unknown");
         });
       });
     });

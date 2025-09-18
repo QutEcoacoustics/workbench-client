@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, input } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -23,7 +23,7 @@ export class RecentAnnotationsComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  @Input() public site: Site;
+  public readonly site = input<Site>(undefined);
 
   public recentAudioEvents: AudioEvent[];
 
@@ -45,7 +45,7 @@ export class RecentAnnotationsComponent
     this.audioEventsApi
       .filterBySite(
         { sorting: { orderBy: "updatedAt", direction: "desc" } },
-        this.site
+        this.site()
       )
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((events) => {
