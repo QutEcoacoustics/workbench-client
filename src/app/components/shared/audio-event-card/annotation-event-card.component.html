@@ -62,25 +62,21 @@
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'chart-simple']"></fa-icon>
-      <span>
+      <span class="tag-score">
         @if (annotation().score | isInstantiated) {
           {{ annotation().score | number }}
         } @else {
           <span
             class="no-score-placeholder tooltip-hint"
             [ngbTooltip]="'This event does not have a score assigned'"
-          >
-            No score available
-          </span>
+          >No score available</span>
         }
       </span>
     </span>
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [href]="annotation().viewUrl">
-        More information
-      </a>
+      <a class="more-information-link" [href]="annotation().viewUrl">More information</a>
     </span>
   </div>
 </div>
