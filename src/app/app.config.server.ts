@@ -1,5 +1,5 @@
-import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { existsSync, readFileSync } from "node:fs";
+import { provideServerRendering, withRoutes } from "@angular/ssr";
 import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
 import {
   NgHttpCachingConfig,

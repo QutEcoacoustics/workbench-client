@@ -74,6 +74,9 @@
             "type": "attribute"
           }
         ],
+        // TODO: Remove this rule once we migrate to inject()
+        // see: https://github.com/QutEcoacoustics/workbench-client/issues/2306
+        "@angular-eslint/prefer-inject": "off",
         "@angular-eslint/use-component-view-encapsulation": "error",
         "@typescript-eslint/await-thenable": "error",
         "@typescript-eslint/consistent-type-definitions": "error",

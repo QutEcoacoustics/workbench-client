@@ -1,4 +1,6 @@
-FROM node:20-alpine as BUILD_IMAGE
+# Match the node version to the installed Angular version
+# https://angular.dev/reference/versions#actively-supported-versions
+FROM node:v24-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
