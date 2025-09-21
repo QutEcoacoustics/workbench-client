@@ -233,7 +233,7 @@ describe("VerificationComponent", () => {
       return new Tag(tagObject, injector);
     });
 
-    const mockAudioEventIds = [0, 1, 2];
+    const mockAudioEventIds = Array.from({ length: 25 }).map((_, index) => index);
     const mockTaggings = defaultFakeTags.slice(0, 3).map((tag, index) => {
       return new Tagging(generateTagging({ tagId: tag.id, audioEventId: index }), injector);
     });
@@ -443,7 +443,7 @@ describe("VerificationComponent", () => {
   }
 
   function isGridLoaded() {
-    return verificationGrid().loaded;
+    return verificationGrid().loadState === "loaded";
   }
 
   async function clickDecisionButton(decision: DecisionOptions) {
@@ -1093,7 +1093,7 @@ describe("VerificationComponent", () => {
       });
 
       it("should populate the verification grid correctly for the first page", () => {
-        const realizedTileCount = verificationGrid().effectivePageSize;
+        const realizedTileCount = verificationGrid().pageSize;
         expect(realizedTileCount).toBeGreaterThan(0);
       });
     });

@@ -69,8 +69,8 @@ describe("GridTileContentComponent", () => {
     updateContext(mockAnnotation);
   }
 
-  function updateContext(model: Annotation): void {
-    spectator.component.handleContextChange({ subject: model } as any);
+  function updateContext(subject: Annotation): void {
+    spectator.component.handleContextChange({ model: { subject }} as any);
 
     contextRequestSpy = jasmine.createSpy("event");
     spectator.component.elementRef.nativeElement.addEventListener("context-request", contextRequestSpy);
