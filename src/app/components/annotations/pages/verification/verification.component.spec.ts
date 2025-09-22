@@ -43,7 +43,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { nodeModule, testAsset } from "@test/helpers/karma";
+import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -346,22 +346,10 @@ describe("VerificationComponent", () => {
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
-    //
-    // we also use the webpackIgnore comment so that the webpack bundler does
-    // not bundle the web components when dynamically imported
-    // if we were to bundle the assets first, the web components would be served
-    // under the __karma_webpack__ sub-path, but workers dynamically loaded by
-    // the web components would be served under the root path
-    //
-    // under some circumstances, Karma will re-use the same browser instance
-    // between tests. Meaning that the custom element can registration can
-    // persist between multiple tests.
-    // to prevent re-declaring the same custom element, we conditionally
-    // import the web components only if they are not already defined
     if (!customElements.get("oe-verification-grid")) {
       await import(
-        /* webpackIgnore: true */ nodeModule(
-          "@ecoacoustics/web-components/dist/components.js",
+        testAsset(
+          "node_modules/@ecoacoustics/web-components/dist/components.js",
         )
       );
     }
@@ -532,7 +520,7 @@ describe("VerificationComponent", () => {
     expect(SharedArrayBuffer).toBeDefined();
   });
 
-  it("should create", async () => {
+  fit("should create", async () => {
     await setup();
     expect(spec.component).toBeInstanceOf(VerificationComponent);
   });

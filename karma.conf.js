@@ -1,3 +1,5 @@
+var path = require("path");
+
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/6.3/config/configuration-file.html
 
@@ -93,7 +95,7 @@ module.exports = function (config) {
         // TODO: this should expose all of node_modules through the karma server
         // so that we can dynamically import anything from node_modules
         // without adding it to this list
-        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
+        pattern: "node_modules/@ecoacoustics/web-components/*",
         included: false,
         served: true,
       },
