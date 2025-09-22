@@ -75,7 +75,6 @@ import {
   VerificationStatusKey,
 } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
-import { ImportsService } from "@services/import/import.service";
 
 enum DecisionOptions {
   TRUE = "true",
@@ -112,7 +111,7 @@ interface ServiceCall<T> {
 type VerificationServiceCall = ServiceCall<ShallowVerificationService>;
 type TagCorrectionServiceCall = ServiceCall<TaggingCorrectionsService>;
 
-describe("VerificationComponent", () => {
+fdescribe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
@@ -209,7 +208,8 @@ describe("VerificationComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    const mockFile = testAsset("example.flac");
+    // const mockFile = testAsset("example.flac");
+    const mockFile = "https://oe-web-components.netlify.app/public/example.flac";
 
     mediaServiceSpy = spec.inject(MediaService);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
@@ -517,7 +517,7 @@ describe("VerificationComponent", () => {
     expect(SharedArrayBuffer).toBeDefined();
   });
 
-  fit("should create", async () => {
+  it("should create", async () => {
     await setup();
     expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
