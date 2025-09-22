@@ -347,11 +347,7 @@ describe("VerificationComponent", () => {
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
-      await import(
-        testAsset(
-          "node_modules/@ecoacoustics/web-components/dist/components.js",
-        )
-      );
+      await import("@ecoacoustics/web-components");
     }
 
     mockUser = new User(generateUser());
