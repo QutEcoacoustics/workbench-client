@@ -130,8 +130,8 @@
               "src/manifest.json",
               {
                 "glob": "**/*",
-                "input": "node_modules/@ecoacoustics/web-components",
-                "output": "@ecoacoustics/"
+                "input": "node_modules/@ecoacoustics/web-components/",
+                "output": "base/node_modules/@ecoacoustics/web-components/"
               }
             ],
             "styles": [

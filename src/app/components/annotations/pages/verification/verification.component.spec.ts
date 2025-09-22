@@ -43,7 +43,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { testAsset } from "@test/helpers/karma";
+import { nodeModule, testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -75,6 +75,7 @@ import {
   VerificationStatusKey,
 } from "../annotationSearchParameters";
 import { VerificationComponent } from "./verification.component";
+import { ImportsService } from "@services/import/import.service";
 
 enum DecisionOptions {
   TRUE = "true",
@@ -347,7 +348,7 @@ describe("VerificationComponent", () => {
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
-      await import("@ecoacoustics/web-components");
+      await import(nodeModule("@ecoacoustics/web-components/dist/components.js"));
     }
 
     mockUser = new User(generateUser());
