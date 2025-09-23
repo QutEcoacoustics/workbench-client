@@ -43,7 +43,7 @@ import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { detectChanges } from "@test/helpers/changes";
-import { nodeModule, testAsset } from "@test/helpers/karma";
+import { nodeModule } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -74,6 +74,7 @@ import {
   AnnotationSearchParameters,
   VerificationStatusKey,
 } from "../annotationSearchParameters";
+import { exampleBase64 } from "../../../../../assets/test-assets/example.base64";
 import { VerificationComponent } from "./verification.component";
 
 enum DecisionOptions {
@@ -111,7 +112,7 @@ interface ServiceCall<T> {
 type VerificationServiceCall = ServiceCall<ShallowVerificationService>;
 type TagCorrectionServiceCall = ServiceCall<TaggingCorrectionsService>;
 
-fdescribe("VerificationComponent", () => {
+describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 
@@ -208,8 +209,15 @@ fdescribe("VerificationComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
+    // We use a base64 encoded audio file rather than fetching the file through
+    // the Karma server because we encountered issues where the server would
+    // modify & corrupt the audio file when it was served.
+    // This only seemed to occur after the first test had run.
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2139#issuecomment-3322539983
+    //
+    // TODO: Remove this once we replace Karma
+    const mockFile = `data:[audio/flac];base64,${exampleBase64}`;
     // const mockFile = testAsset("example.flac");
-    const mockFile = "https://oe-web-components.netlify.app/public/example.flac";
 
     mediaServiceSpy = spec.inject(MediaService);
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
@@ -234,7 +242,7 @@ fdescribe("VerificationComponent", () => {
       return new Tag(tagObject, injector);
     });
 
-    const mockAudioEventIds = Array.from({ length: 25 }).map((_, index) => index);
+    const mockAudioEventIds = Array.from({ length: 12 }).map((_, index) => index);
     const mockTaggings = defaultFakeTags.slice(0, 3).map((tag, index) => {
       return new Tagging(generateTagging({ tagId: tag.id, audioEventId: index }), injector);
     });
@@ -368,6 +376,8 @@ fdescribe("VerificationComponent", () => {
     // Remove the local storage key that prevents the bootstrap modal from
     // opening to reduce side effects between tests.
     localStorage.removeItem("oe-auto-dismiss-bootstrap");
+
+    spec?.fixture?.destroy();
   });
 
   const dialogShowButton = () =>
@@ -794,7 +804,9 @@ fdescribe("VerificationComponent", () => {
         runVerificationTest(test);
       }
 
-      it("should make verification api calls about the entire page if nothing is selected", () => {
+      it("should make verification api calls about the entire page if nothing is selected", async () => {
+        await clickDecisionButton(DecisionOptions.TRUE),
+
         expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
           gridSize(),
         );
