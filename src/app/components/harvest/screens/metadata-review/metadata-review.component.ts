@@ -3,7 +3,6 @@ import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { newSiteMenuItem } from "@components/sites/sites.menus";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -24,67 +23,15 @@ import { FolderRowComponent } from "../../components/metadata-review/folder-row.
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
 import { ConfirmationComponent } from "../../components/modal/confirmation.component";
-
-enum RowType {
-  folder,
-  file,
-  loadMore,
-}
-
-export const metaReviewIcons = {
-  folderOpen: ["fas", "folder-open"],
-  folderClosed: ["fas", "folder-closed"],
-  successCircle: ["fas", "circle-check"],
-  success: ["fas", "check"],
-  warningCircle: ["fas", "circle-exclamation"],
-  warning: ["fas", "triangle-exclamation"],
-  failureCircle: ["fas", "xmark-circle"],
-  failure: ["fas", "xmark"],
-  errorCircle: ["fas", "xmark-circle"],
-  error: ["fas", "xmark"],
-} as const satisfies Record<string, IconProp>;
-
-export interface MetaReviewBase {
-  rowType: RowType;
-  harvestItem?: HarvestItem;
-  /**
-   * Row Mapping, if unset, this row will not be included in the mappings sent
-   * to the server
-   */
-  mapping?: HarvestMapping;
-}
-
-export interface MetaReviewItem extends MetaReviewBase {
-  path: string;
-  parentFolder?: MetaReviewFolder;
-  indentation: Array<void>;
-}
-
-export interface MetaReviewFile extends MetaReviewItem {
-  rowType: RowType.file;
-  showValidations: boolean;
-}
-
-export interface MetaReviewFolder extends MetaReviewItem {
-  rowType: RowType.folder;
-  isOpen: boolean;
-  page: number;
-  isRoot: boolean;
-}
-
-export interface MetaReviewLoadMore extends MetaReviewBase {
-  rowType: RowType.loadMore;
-  parentFolder?: MetaReviewFolder;
-  page: number;
-  isLoading: boolean;
-}
-
-export type MetaReviewRow =
-  | MetaReviewFile
-  | MetaReviewFolder
-  | MetaReviewLoadMore;
-
-export type Rows = List<MetaReviewRow>;
+import {
+  Rows,
+  MetaReviewRow,
+  MetaReviewFolder,
+  MetaReviewLoadMore,
+  RowType,
+  MetaReviewFile,
+  metaReviewIcons,
+} from "./metadata-review.types";
 
 const rootMappingPath = "";
 

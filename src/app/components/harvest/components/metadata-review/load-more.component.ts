@@ -5,8 +5,8 @@ import {
   Input,
   Output,
 } from "@angular/core";
-import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { MetaReviewLoadMore } from "@components/harvest/screens/metadata-review/metadata-review.types";
 import { WhitespaceComponent } from "./whitespace.component";
 
 @Component({
