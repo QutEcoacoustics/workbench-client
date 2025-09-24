@@ -72,7 +72,7 @@ describe("TaggingCorrectionsService", () => {
   });
 
   describe("create", () => {
-    fit("should create a new tagging and verify it as 'correct' if the tagging doesn't exist", async () => {
+    it("should create a new tagging and verify it as 'correct' if the tagging doesn't exist", async () => {
       const correctTagId = modelData.id();
       const annotation = new Annotation(
         generateAnnotation({
