@@ -112,7 +112,7 @@ interface ServiceCall<T> {
 type VerificationServiceCall = ServiceCall<ShallowVerificationService>;
 type TagCorrectionServiceCall = ServiceCall<TaggingCorrectionsService>;
 
-xdescribe("VerificationComponent", () => {
+describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
   let injector: SpyObject<AssociationInjector>;
 

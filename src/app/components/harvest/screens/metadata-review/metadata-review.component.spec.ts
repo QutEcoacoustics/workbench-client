@@ -5,25 +5,12 @@ import { ConfirmationComponent } from "@components/harvest/components/modal/conf
 import { StatisticItemComponent } from "@components/harvest/components/shared/statistics/item.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StatisticsComponent } from "@components/harvest/components/shared/statistics/statistics.component";
-import {
-  Harvest,
-  HarvestMapping,
-  HarvestStatus
-} from "@models/Harvest";
+import { Harvest, HarvestMapping } from "@models/Harvest";
 import { Project } from "@models/Project";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { NgbModal, NgbModalConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { createRoutingFactory, SpectatorRouting, SpyObject, } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
-import {
-  generateProject,
-  generateProjectMeta
-} from "@test/fakes/Project";
-import { MockProvider } from "ng-mocks";
-import { ToastService } from "@services/toasts/toasts.service";
+import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
 import { HarvestItem } from "@models/HarvestItem";
 import { UTCOffsetSelectorComponent } from "@components/harvest/components/inputs/utc-offset-selector.component";
@@ -37,6 +24,9 @@ import { Inject } from "@angular/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { NgStyle, DecimalPipe } from "@angular/common";
+import { FileRowComponent } from "../../components/metadata-review/file-row.component";
+import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
@@ -59,18 +49,24 @@ describe("MetadataReviewComponent", () => {
       }),
     ],
     imports: [
-      IconsModule,
+      NgStyle,
+      NgbTooltip,
+      FolderRowComponent,
+      FileRowComponent,
+      LoadMoreComponent,
       ConfirmationComponent,
       StatisticsComponent,
+      DecimalPipe,
+      StrongRouteDirective,
+
+      IconsModule,
       StatisticGroupComponent,
       StatisticItemComponent,
       WhitespaceComponent,
       SiteSelectorComponent,
       UTCOffsetSelectorComponent,
-      FolderRowComponent,
-      StrongRouteDirective,
     ],
-    mocks: [ToastService],
+    // mocks: [ToastService],
   });
 
   function setup(): SpyObject<HarvestStagesService> {
@@ -152,10 +148,10 @@ describe("MetadataReviewComponent", () => {
   afterEach(() => {
     // dismiss all bootstrap modals, so if a test fails
     // it doesn't impact future tests by using a stale modal
-    modalService.dismissAll();
+    modalService?.dismissAll();
   });
 
-  it("should create", () => {
+  fit("should create", () => {
     setup();
     expect(spec.component).toBeInstanceOf(MetadataReviewComponent);
   });

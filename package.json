@@ -85,7 +85,6 @@
     "@angular/cli": "19.2.6",
     "@angular/compiler-cli": "19.2.5",
     "@angular/language-service": "19.2.5",
-    "@chiragrupani/karma-chromium-edge-launcher": "^2.2.2",
     "@faker-js/faker": "^7.3.0",
     "@ngneat/spectator": "19.4.1",
     "@types/d3-color": "^3.1.0",

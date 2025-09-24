@@ -95,8 +95,8 @@ const rootMappingPath = "";
  */
 @Component({
   selector: "baw-harvest-metadata-review",
-  templateUrl: "metadata-review.component.html",
-  styleUrl: "metadata-review.component.scss",
+  templateUrl: "./metadata-review.component.html",
+  styleUrl: "./metadata-review.component.scss",
   imports: [
     NgStyle,
     NgbTooltip,
@@ -125,8 +125,6 @@ export class MetadataReviewComponent
   private userInputBuffer$ = new Subject<
     MetaReviewFolder | MetaReviewLoadMore
   >();
-
-  public icons = metaReviewIcons;
 
   public constructor(
     public modals: NgbModal,
@@ -518,14 +516,14 @@ export class MetadataReviewComponent
       [
         {
           bgColor: "warning",
-          icon: this.icons.warning,
+          icon: metaReviewIcons.warning,
           label: "Need Attention",
           value: report.itemsInvalidFixable.toLocaleString(),
         },
         {
           color: "light",
           bgColor: "danger",
-          icon: this.icons.failure,
+          icon: metaReviewIcons.failure,
           label: "Problems",
           value: report.itemsInvalidNotFixable.toLocaleString(),
         },

@@ -115,15 +115,18 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "codeCoverage": true,
             "sourceMap": false,
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
+            "aot": false,
             "karmaConfig": "karma.conf.js",
-            "builderMode": "application",
             "assets": [
               "src/favicon.ico",
               "src/assets",
