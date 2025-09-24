@@ -155,7 +155,9 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "src/**/*.html"
-            ]
+            ],
+            "ignorePath": "./.eslintignore",
+            "eslintConfig": "./.eslintrc.json"
           }
         }
       }

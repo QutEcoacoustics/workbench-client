@@ -11,7 +11,7 @@ var isCi = process.env.CI === "true";
 var isMacOS = process.platform === "darwin";
 
 // We use custom middleware for the Karma test server so that we can append
-// headers to all served files (including static files served from /src/assets/)
+// headers to all served files (including files served from /src/test-assets/)
 // This is different from the customHeaders config option which only applies to
 // the iframe that the test runs in, and does not apply to other files served
 // through the karma server.
@@ -89,6 +89,7 @@ module.exports = function (config) {
     // client to test integrations
     files: [
       { pattern: "src/assets/*", included: false, served: true },
+      { pattern: "src/test-assets/*", included: false, served: true },
       {
         // TODO: this should expose all of node_modules through the karma server
         // so that we can dynamically import anything from node_modules

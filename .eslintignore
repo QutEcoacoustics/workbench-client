@@ -1,5 +1,8 @@
+.angular/
+dist/
+
 node_modules/
 coverage/
-dist/
 src/assets/
+src/test-assets/
 baw-client/
