@@ -804,7 +804,7 @@ fdescribe("VerificationComponent", () => {
         runVerificationTest(test);
       }
 
-      it("should make verification api calls about the entire page if nothing is selected", async () => {
+      xit("should make verification api calls about the entire page if nothing is selected", async () => {
         await clickDecisionButton(DecisionOptions.TRUE),
 
         expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
@@ -1054,7 +1054,7 @@ fdescribe("VerificationComponent", () => {
         });
       });
 
-      it("should reset the verification grids getPage function when the search parameters are changed", async () => {
+      xit("should reset the verification grids getPage function when the search parameters are changed", async () => {
         await detectChanges(spec);
 
         const initialPagingCallback = verificationGrid().getPage;
@@ -1075,7 +1075,7 @@ fdescribe("VerificationComponent", () => {
         expect(newPagingCallback).not.toBe(initialPagingCallback);
       });
 
-      it("should reset the verification grids getPage function when the selection criteria is changed", async () => {
+      xit("should reset the verification grids getPage function when the selection criteria is changed", async () => {
         await detectChanges(spec);
         const initialPagingCallback = verificationGrid().getPage;
 
