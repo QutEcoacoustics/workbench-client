@@ -5,10 +5,10 @@ import { ConfirmationComponent } from "@components/harvest/components/modal/conf
 import { StatisticItemComponent } from "@components/harvest/components/shared/statistics/item.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StatisticsComponent } from "@components/harvest/components/shared/statistics/statistics.component";
-import { Harvest, HarvestMapping } from "@models/Harvest";
+import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
 import { Project } from "@models/Project";
 import { NgbModal, NgbModalConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { createRoutingFactory, SpectatorRouting, SpyObject, } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, SpectatorRouting, SpyObject, } from "@ngneat/spectator";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
@@ -42,7 +42,7 @@ describe("MetadataReviewComponent", () => {
     component: MetadataReviewComponent,
     providers: [
       provideMockBawApi(),
-      MockProvider(HarvestStagesService, {
+      mockProvider(HarvestStagesService, {
         project: defaultProject,
         harvest: defaultHarvest,
         transition: (_stage: HarvestStatus) => {}
