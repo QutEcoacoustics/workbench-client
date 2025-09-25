@@ -225,7 +225,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
     return hasCoordinates
       ? {
           position: { lat: this.getLatitude(), lng: this.getLongitude() },
-          label: this.name,
+          title: this.name,
         }
       : null;
   }

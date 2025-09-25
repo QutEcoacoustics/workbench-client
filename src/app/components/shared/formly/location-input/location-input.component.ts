@@ -125,7 +125,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
       isInstantiated(latitude) && isInstantiated(longitude)
         ? {
             position: { lat: latitude, lng: longitude },
-            label: `Position (${latitude},${longitude})`,
+            title: `Position (${latitude},${longitude})`,
           }
         : null,
     );

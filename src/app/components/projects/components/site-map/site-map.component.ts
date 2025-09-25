@@ -27,11 +27,9 @@ import { takeUntil } from "rxjs/operators";
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   public readonly selected = input<List<Site>>();
-  public readonly regions = input<Region[]>([]);
   public readonly projects = input<Project[]>([]);
-
-  /** Display a subset of sites from the project/region */
-  public readonly sitesSubset = input<Site[]>([]);
+  public readonly regions = input<Region[]>([]);
+  public readonly sites = input<Site[]>([]);
 
   private readonly sitesApi = inject(ShallowSitesService);
 
@@ -49,10 +47,10 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     // we use a falsy assertion for sitesSubset here because if sitesSubset is undefined or the length is zero
     // we want to fetch all markers for the project/region
-    if (this.sitesSubset()?.length) {
+    if (this.sites()?.length) {
       // TODO: The typing for siteSubsets shouldn't allow "undefined" values.
       // This is a sign that our typing is broken somewhere.
-      this.pushMarkers(this.sitesSubset() ?? []);
+      this.pushMarkers(this.sites() ?? []);
     } else {
       this.sitesApi
         .filter(filters)
@@ -70,8 +68,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private getFilter(): InnerFilter<Site> {
     let modelFilters: InnerFilter<Site> = {};
 
-    if (this.sitesSubset()?.length) {
-      const siteIds = this.sitesSubset().map((site) => site.id);
+    if (this.sites()?.length) {
+      const siteIds = this.sites().map((site) => site.id);
       modelFilters = filterModelIds<Site>("id", siteIds);
     } else if (this.regions()?.length) {
       const regionIds = this.regions().map((region) => region.id);

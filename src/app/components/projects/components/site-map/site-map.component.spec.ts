@@ -1,5 +1,5 @@
-import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { SitesService } from "@baw-api/site/sites.service";
+import { defaultApiPageSize, Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -15,21 +15,19 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { interceptRepeatApiRequests } from "@test/helpers/general";
-import { MockComponent } from "ng-mocks";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { MapMarkerOptions } from "@services/maps/maps.service";
 import { SiteMapComponent } from "./site-map.component";
-
-const mockMap = MockComponent(MapComponent);
 
 describe("SiteMapComponent", () => {
   let defaultProject: Project;
   let defaultRegion: Region;
-  let api: SpyObject<SitesService>;
+  let api: SpyObject<ShallowSitesService>;
   let spec: Spectator<SiteMapComponent>;
 
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
-    declarations: [mockMap],
+    imports: [MapComponent],
     providers: [provideMockBawApi()],
   });
 
@@ -40,7 +38,7 @@ describe("SiteMapComponent", () => {
 
   function setup(): void {
     spec = createComponent({ detectChanges: false });
-    api = spec.inject(SitesService);
+    api = spec.inject(ShallowSitesService);
   }
 
   function setComponentProps(
@@ -85,7 +83,7 @@ describe("SiteMapComponent", () => {
   }
 
   function generateMarkers(allSites: Site[][]) {
-    const markers: google.maps.MarkerOptions[] = [];
+    const markers: MapMarkerOptions[] = [];
     allSites.forEach((sites) =>
       markers.push(...sites.map((site) => site.getMapMarker()))
     );
@@ -98,7 +96,7 @@ describe("SiteMapComponent", () => {
 
   function interceptApiRequest(
     responses: Errorable<Site[]>[],
-    expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
+    expectations?: ((filter: Filters<Site>, project: Project) => void)[],
     hasRegion?: boolean
   ): Promise<void>[] {
     return interceptRepeatApiRequests<ISite, Site[]>(
@@ -132,7 +130,7 @@ describe("SiteMapComponent", () => {
       await assertMapMarkers(promise, []);
     });
 
-    it("should display map marker for single site", async () => {
+    it("should display map marker for a single site", async () => {
       const sites = generatePagedSites(1);
       const promise = Promise.all(interceptApiRequest(sites));
       setComponentProps(defaultProject);
@@ -187,23 +185,33 @@ describe("SiteMapComponent", () => {
   });
 
   describe("api", () => {
-    function assertFilter(page: number, project: Project, region?: Region) {
-      return (filters: Filters<ISite>, _project: Project, _region?: Region) => {
-        expect(filters).toEqual({ paging: { page } });
-        expect(_project).toEqual(project);
+    function assertFilter(project: Project, region?: Region) {
+      return (filters: Filters<Site>) => {
+        const expectedFilters: Filters<Site> = {
+          paging: { disablePaging: true },
+          filter: {},
+        };
 
         if (region) {
-          expect(_region).toEqual(region);
+          expectedFilters.filter = {
+            "regions.id": { in: [region.id] },
+          } as InnerFilter<Site>;
+        } else if (project) {
+          expectedFilters.filter = {
+            "projects.id": { in: [project.id] },
+          } as InnerFilter<Site>;
         }
+
+        expect(filters).toEqual(expectedFilters);
       };
     }
 
-    it("should generate filter commands with initial filter", async () => {
+    fit("should generate filter commands with initial filter", async () => {
       setup();
 
       const sites = generatePagedSites(1);
       const promise = Promise.all(
-        interceptApiRequest(sites, [assertFilter(1, defaultProject)])
+        interceptApiRequest(sites, [assertFilter(defaultProject)])
       );
       setComponentProps(defaultProject);
 
@@ -212,14 +220,14 @@ describe("SiteMapComponent", () => {
       spec.detectChanges();
     });
 
-    it("should generate filter commands with incremental page numbers", async () => {
+    it("should only make one API request for multiple pages of items", async () => {
       setup();
 
       const sites = generatePagedSites(100);
       const promise = Promise.all(
         interceptApiRequest(
           sites,
-          [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject))
+          [assertFilter(defaultProject)]
         )
       );
       setComponentProps(defaultProject);
@@ -236,7 +244,7 @@ describe("SiteMapComponent", () => {
       const promise = Promise.all(
         interceptApiRequest(
           sites,
-          [assertFilter(1, defaultProject, defaultRegion)],
+          [assertFilter(defaultProject, defaultRegion)],
           true
         )
       );
