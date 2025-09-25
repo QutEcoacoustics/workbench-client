@@ -21,13 +21,10 @@ import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { MockComponent } from "ng-mocks";
 import { Subject } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteComponent } from "./site.component";
-
-const mockMapComponent = MockComponent(MapComponent);
 
 // TODO This component is doing too many things. Split it into
 // smaller components to simplify tests and logic
@@ -42,7 +39,7 @@ describe("SiteComponent", () => {
 
   const createComponent = createComponentFactory({
     component: SiteComponent,
-    imports: [IconsModule, mockMapComponent],
+    imports: [IconsModule, MapComponent],
     providers: [provideMockBawApi()],
   });
 

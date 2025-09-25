@@ -11,11 +11,9 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
-import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
-
-const mockMapComponent = MockComponent(MapComponent);
 
 describe("FormlyLocationInput", () => {
   let model: any;
@@ -24,13 +22,14 @@ describe("FormlyLocationInput", () => {
 
   const createHost = createHostFactory({
     component: LocationInputComponent,
-    declarations: [mockMapComponent],
+    providers: [provideMockBawApi()],
     imports: [
+      GoogleMapsModule,
       FormsModule,
       ReactiveFormsModule,
       FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
-      GoogleMapsModule,
+      MapComponent,
     ],
   });
 

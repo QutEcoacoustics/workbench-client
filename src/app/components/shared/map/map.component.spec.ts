@@ -53,14 +53,14 @@ describe("MapComponent", () => {
   /** Causes all pending 'loadAsync' promises to resolve */
   function triggerLoadSuccess(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
-    spectator.setInput("googleMapsLoaded", mapsServiceSpy.mapsState);
+    spectator.component["googleMapsLoaded"].set(mapsServiceSpy.mapsState);
     spectator.detectChanges();
   }
 
   /** Causes all pending 'loadAsync' promises to reject */
   function triggerLoadFailure(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Failed;
-    spectator.setInput("googleMapsLoaded", mapsServiceSpy.mapsState);
+    spectator.component["googleMapsLoaded"].set(mapsServiceSpy.mapsState);
     spectator.detectChanges();
   }
 
