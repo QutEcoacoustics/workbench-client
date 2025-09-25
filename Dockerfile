@@ -1,4 +1,5 @@
-FROM node:20-alpine as BUILD_IMAGE
+# Check that this version matches the node versions in CI
+FROM node:22-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
