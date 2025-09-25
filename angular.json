@@ -115,7 +115,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "codeCoverage": true,
             "sourceMap": false,
