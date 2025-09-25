@@ -24,11 +24,13 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import { SiteMapComponent } from "./site-map.component";
 
 describe("SiteMapComponent", () => {
-  let defaultProjects: Project[];
-  let defaultRegions: Region[];
   let api: SpyObject<ShallowSitesService>;
   let spec: Spectator<SiteMapComponent>;
   let injector: AssociationInjector;
+
+  let defaultProjects: Project[];
+  let defaultRegions: Region[];
+  let defaultSites: Site[];
 
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
@@ -36,15 +38,17 @@ describe("SiteMapComponent", () => {
     providers: [provideMockBawApi()],
   });
 
-  beforeEach(() => {
-    defaultProjects = [new Project(generateProject())];
-    defaultRegions = [new Region(generateRegion())];
-  });
+  beforeEach(() => {});
 
   function setup(): void {
     spec = createComponent({ detectChanges: false });
+
     api = spec.inject(ShallowSitesService);
     injector = spec.inject(ASSOCIATION_INJECTOR);
+
+    defaultProjects = [new Project(generateProject(), injector)];
+    defaultRegions = [new Region(generateRegion(), injector)];
+    defaultSites = [new Site(generateSite(), injector)];
   }
 
   function setComponentProps(
@@ -52,11 +56,17 @@ describe("SiteMapComponent", () => {
     regions?: Region[],
     sites?: Site[],
   ): void {
-    spec.setInput({
-      projects,
-      regions,
-      sites,
-    });
+    if (projects) {
+      spec.setInput("projects", projects);
+    }
+
+    if (regions) {
+      spec.setInput("regions", regions);
+    }
+
+    if (sites) {
+      spec.setInput("sites", sites);
+    }
   }
 
   function generateSites(numSites: number, overrides: ISite = {}): Site[] {
@@ -137,68 +147,80 @@ describe("SiteMapComponent", () => {
   });
 
   describe("api", () => {
-    function assertFilter(projects: Project[], regions?: Region[]) {
-      return (filters: Filters<Site>) => {
-        const expectedFilters: Filters<Site> = {
-          paging: { disablePaging: true },
-          filter: {},
-        };
-
-        if (regions) {
-          expectedFilters.filter = {
-            "regions.id": { in: regions.map((region) => region.id) },
-          } as InnerFilter<Site>;
-        } else if (projects) {
-          expectedFilters.filter = {
-            "projects.id": { in: projects.map((project) => project.id) },
-          } as InnerFilter<Site>;
-        }
-
-        expect(filters).toEqual(expectedFilters);
-      };
+    interface FilterTestCase {
+      name: string;
+      projects?: Project[];
+      regions?: Region[];
+      sites?: Site[];
     }
 
-    it("should generate filter commands with initial filter", async () => {
+    function assertFilter(
+      projects?: Project[],
+      regions?: Region[],
+      _sites?: Site[],
+    ) {
+      const expectedFilters: Filters<Site> = {
+        paging: { disablePaging: true },
+        filter: {},
+      };
+
+      if (regions) {
+        expectedFilters.filter = {
+          "regions.id": { in: regions.map((region) => region.id) },
+        } as InnerFilter<Site>;
+      } else if (projects) {
+        expectedFilters.filter = {
+          "projects.id": { in: projects.map((project) => project.id) },
+        } as InnerFilter<Site>;
+      }
+
+      expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
+    }
+
+    async function runFilterTest(testCase: FilterTestCase) {
       setup();
 
-      const sites = generateSites(1);
+      setComponentProps(testCase.projects, testCase.regions, testCase.sites);
+
+      const sites = generateSites(20);
       const promise = interceptApiRequest(sites);
-      setComponentProps(defaultProjects);
 
       spec.detectChanges();
       await promise;
       spec.detectChanges();
 
-      assertFilter(defaultProjects);
-    });
+      assertFilter(testCase.projects, testCase.regions, testCase.sites);
+    }
 
-    it("should only make one API request for multiple pages of items", async () => {
-      setup();
+    const tests: FilterTestCase[] = [
+      {
+        name: "should use correct filter for a single project",
+        projects: defaultProjects,
+      },
+      {
+        name: "should use correct filter for a single region",
+        projects: defaultProjects,
+        regions: defaultRegions,
+      },
+      {
+        name: "should make the correct filter call for a single site",
+        projects: defaultProjects,
+        regions: defaultRegions,
+        sites: defaultSites,
+      },
+      {
+        name: "should make the correct filter when there is a site without project or region",
+        sites: defaultSites,
+      },
+      {
+        name: "should make an unfiltered api call if there are no projects, regions, or sites",
+      },
+    ];
 
-      const sites = generateSites(100);
-      const promise = interceptApiRequest(sites);
-      setComponentProps(defaultProjects);
-
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
-
-      assertFilter(defaultProjects);
-    });
-
-    it("should generate filter commands with region id", async () => {
-      setup();
-
-      const sites = generateSites(1);
-      const promise = interceptApiRequest(sites);
-
-      setComponentProps(defaultProjects, defaultRegions);
-
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
-
-      assertFilter(defaultProjects, defaultRegions);
-    });
+    for (const testCase of tests) {
+      it(testCase.name, async () => {
+        await runFilterTest(testCase);
+      });
+    }
   });
 });
