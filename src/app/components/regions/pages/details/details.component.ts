@@ -103,7 +103,7 @@ const regionKey = "region";
         <!-- Google Maps -->
         @if (hasSites()) {
           <div class="item map">
-            <baw-site-map [project]="project" [region]="region"></baw-site-map>
+            <baw-site-map [projects]="[project]" [regions]="[region]"></baw-site-map>
           </div>
         }
 

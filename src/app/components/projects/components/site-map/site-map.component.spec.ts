@@ -49,8 +49,8 @@ describe("SiteMapComponent", () => {
     sitesSubset?: Site[]
   ): void {
     spec.setInput({
-      project,
-      region,
+      projects: project,
+      regions: region,
       sitesSubset,
     });
   }

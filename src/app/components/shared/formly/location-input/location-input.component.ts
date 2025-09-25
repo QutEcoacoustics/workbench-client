@@ -121,7 +121,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
    * @param longitude Longitude
    */
   private setMarker(latitude: number, longitude: number) {
-    this.marker = sanitizeMapMarkers(
+    const markers = sanitizeMapMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
         ? {
             position: { lat: latitude, lng: longitude },
@@ -129,6 +129,8 @@ export class LocationInputComponent extends FieldType implements OnInit {
           }
         : null,
     );
+
+    this.marker = List(markers);
   }
 
   /**

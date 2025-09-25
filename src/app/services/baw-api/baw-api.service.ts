@@ -954,6 +954,15 @@ export interface Paging {
   total?: number;
   /** Maximum page number */
   maxPage?: number;
+
+  /**
+   * Whether to disable paging for the filter request and return all results
+   * that match the filter.
+   *
+   *! Warning: This may result in very large, slow responses!
+   * @default false
+   */
+  disablePaging?: boolean;
 }
 
 export interface Combinations<T> {

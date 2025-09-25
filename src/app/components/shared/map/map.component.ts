@@ -129,7 +129,7 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  */
 export function sanitizeMapMarkers(
   markers: MapMarkerOptions | MapMarkerOptions[]
-): List<MapMarkerOptions> {
+): MapMarkerOptions[] {
   const output: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
@@ -144,5 +144,5 @@ export function sanitizeMapMarkers(
     }
   }
 
-  return List(output);
+  return output;
 }
