@@ -108,7 +108,7 @@ jobs:
           cache: "npm"
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v4
         with:
           path: baw-client
 
@@ -195,7 +195,7 @@ jobs:
 
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Publish Unit Test Results
