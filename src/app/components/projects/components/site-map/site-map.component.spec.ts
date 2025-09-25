@@ -186,7 +186,7 @@ describe("SiteMapComponent", () => {
     }
 
     describe("sites", () => {
-      it("should not call the filter api if a site is provided", () => {
+      it("should not call the filter api if only a site is provided", () => {
         setup(generateSites(2));
         expect(api.filter).not.toHaveBeenCalled();
       });
