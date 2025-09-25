@@ -29,7 +29,7 @@ function assetHeadersMiddlewareFactory(config) {
 module.exports = function (config) {
   config.set({
     basePath: "",
-    frameworks: ["jasmine", "@angular-devkit/build-angular", "viewport"],
+    frameworks: ["jasmine", "viewport"],
     plugins: [
       require("karma-jasmine"),
       require("karma-viewport"),
