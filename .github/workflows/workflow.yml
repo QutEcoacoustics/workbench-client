@@ -25,6 +25,8 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v5
         with:
+          # We use an old version of node here because this step is building the
+          # old baw-client which only supports up to node version 12.
           node-version: "12"
           cache: "npm"
 
