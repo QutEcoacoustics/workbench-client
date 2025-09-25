@@ -19,7 +19,7 @@
     "test:edge": "ng test --code-coverage --browsers Edge",
     "test:all": "ng test --code-coverage --browsers Firefox,Chrome,Edge",
     "serve:ssr": "node dist/workbench-client/server/server.mjs",
-    "test:pipeline": "ng test --watch=false --code-coverage"
+    "test:pipeline": "ng test --watch=false --no-watch --code-coverage"
   },
   "private": true,
   "dependencies": {

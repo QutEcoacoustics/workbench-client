@@ -76,7 +76,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_ERROR,
-    autoWatch: true,
+    // We don't want to run tests in watch mode on CI.
+    // see: https://github.com/angular/angular-cli/issues/30506
+    autoWatch: !isCi,
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
