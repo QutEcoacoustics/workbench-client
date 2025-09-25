@@ -188,7 +188,7 @@ describe("SiteComponent", () => {
 
     it("should create site marker", () => {
       const maps = spec.query(MapComponent);
-      expect(maps.markers.toArray()).toEqual([defaultSite.getMapMarker()]);
+      expect(maps.markers().toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });
 

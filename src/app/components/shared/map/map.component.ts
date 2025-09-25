@@ -1,9 +1,9 @@
 import {
   Component,
-  EventEmitter,
-  Input,
+  input,
   OnChanges,
-  Output,
+  output,
+  signal,
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
@@ -15,6 +15,7 @@ import {
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
+  GoogleMapsState,
   MapMarkerOptions,
   MapOptions,
   MapsService,
@@ -37,7 +38,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
     this.mapService
       .loadAsync()
-      .then((success: boolean) => (this.googleMapsLoaded = success))
+      .then((success: boolean) => {
+        const newLoadState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
+        this.googleMapsLoaded.set(newLoadState);
+      })
       .catch(() => console.warn("Failed to load Google Maps"));
   }
 
@@ -49,9 +53,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.focusMarkers();
   }
 
-  @Input() public markers: List<MapMarkerOptions>;
-  @Input() public markerOptions: MapMarkerOptions;
-  @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
+  public readonly markers = input.required<List<MapMarkerOptions>>();
+  public readonly markerOptions = input<MapMarkerOptions>();
+  public newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
@@ -61,7 +65,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  protected googleMapsLoaded: boolean | null = null;
+
+  protected readonly googleMapsLoaded = signal<GoogleMapsState>(GoogleMapsState.Loading);
+  protected readonly MapLoadState = GoogleMapsState;
 
   /**
    * Runs when new markers are added/removed
@@ -103,7 +109,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.hasMarkers = false;
     this.validMarkersOptions = [];
 
-    this.markers?.forEach((marker) => {
+    this.markers()?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
         this.validMarkersOptions.push(marker);
@@ -129,20 +135,20 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  */
 export function sanitizeMapMarkers(
   markers: MapMarkerOptions | MapMarkerOptions[]
-): MapMarkerOptions[] {
-  const output: MapMarkerOptions[] = [];
+): List<MapMarkerOptions> {
+  const markerOptions: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        output.push(marker);
+        markerOptions.push(marker);
       }
     });
   } else {
     if (isMarkerValid(markers)) {
-      output.push(markers);
+      markerOptions.push(markers);
     }
   }
 
-  return output;
+  return List(markerOptions);
 }

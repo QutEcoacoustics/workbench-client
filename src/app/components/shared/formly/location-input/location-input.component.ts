@@ -130,7 +130,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
         : null,
     );
 
-    this.marker = List(markers);
+    this.marker = markers;
   }
 
   /**

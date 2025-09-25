@@ -1,14 +1,14 @@
-@if (hasMarkers && googleMapsLoaded === true) {
+@if (hasMarkers && googleMapsLoaded() === MapLoadState.Loaded) {
   <google-map
     height="100%"
     width="100%"
     [options]="mapOptions"
-    (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
+    (mapClick)="markerOptions()?.draggable && newLocation.emit($event)"
   >
     @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
       <map-marker
         #markerRef="mapMarker"
-        [options]="markerOptions"
+        [options]="markerOptions()"
         [position]="individualMarkerOptions.position"
         (mapDragend)="newLocation.emit($event)"
         (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
@@ -20,12 +20,12 @@
   </google-map>
 } @else {
   <div class="map-placeholder">
-    @if (googleMapsLoaded === false) {
+    @if (googleMapsLoaded() === MapLoadState.Failed) {
       <p class="text-danger">Failure loading map</p>
       <p class="error-hint">
         Please ensure your ad-block is not blocking Google Maps
       </p>
-    } @else if (googleMapsLoaded === null) {
+    } @else if (googleMapsLoaded() === MapLoadState.Loading) {
       <baw-loading></baw-loading>
     } @else if (!hasMarkers) {
       <p>No locations specified</p>

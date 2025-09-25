@@ -73,14 +73,10 @@ describe("FormlyLocationInput", () => {
     longitude: number | string,
     latitude: number | string
   ) {
-    const latitudeInput = getLatitudeInput();
-    const longitudeInput = getLongitudeInput();
-
-    longitudeInput.value = longitude.toString();
-    longitudeInput.dispatchEvent(new Event("input"));
-    latitudeInput.value = latitude.toString();
-    latitudeInput.dispatchEvent(new Event("input"));
-
+    // Using typeInElement dispatches the "input" event that Angular listens to
+    // https://github.com/ngneat/spectator/blob/549c63c43e9/projects/spectator/src/lib/type-in-element.ts#L18
+    spectator.typeInElement(longitude.toString(), getLongitudeInput());
+    spectator.typeInElement(latitude.toString(), getLatitudeInput());
     spectator.detectChanges();
   }
 
@@ -98,8 +94,8 @@ describe("FormlyLocationInput", () => {
     longitude: number,
     latitude: number
   ) {
-    expect(map.markers.toArray()[0]["position"]["lng"]).toEqual(longitude);
-    expect(map.markers.toArray()[0]["position"]["lat"]).toEqual(latitude);
+    expect(map.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
+    expect(map.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
   }
 
   it("should create", () => {
