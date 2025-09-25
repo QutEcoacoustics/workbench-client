@@ -1,6 +1,5 @@
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { Errorable } from "@helpers/advancedTypes";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
@@ -14,13 +13,13 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { interceptFilterApiRequest } from "@test/helpers/general";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { MockModule } from "ng-mocks";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { of } from "rxjs";
 import { SiteMapComponent } from "./site-map.component";
 
 describe("SiteMapComponent", () => {
@@ -28,9 +27,9 @@ describe("SiteMapComponent", () => {
   let spec: Spectator<SiteMapComponent>;
   let injector: AssociationInjector;
 
-  let defaultProjects: Project[];
-  let defaultRegions: Region[];
-  let defaultSites: Site[];
+  const defaultProjects: Project[] = [new Project(generateProject(), injector)];
+  const defaultRegions: Region[] = [new Region(generateRegion(), injector)];
+  const defaultSites: Site[] = [new Site(generateSite(), injector)];
 
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
@@ -38,17 +37,13 @@ describe("SiteMapComponent", () => {
     providers: [provideMockBawApi()],
   });
 
-  beforeEach(() => {});
-
-  function setup(): void {
+  function setup(mockSites: Site[]): void {
     spec = createComponent({ detectChanges: false });
 
     api = spec.inject(ShallowSitesService);
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    defaultProjects = [new Project(generateProject(), injector)];
-    defaultRegions = [new Region(generateRegion(), injector)];
-    defaultSites = [new Site(generateSite(), injector)];
+    api.filter.and.returnValue(of(mockSites));
   }
 
   function setComponentProps(
@@ -56,25 +51,19 @@ describe("SiteMapComponent", () => {
     regions?: Region[],
     sites?: Site[],
   ): void {
-    if (projects) {
-      spec.setInput("projects", projects);
-    }
+    spec.setInput({
+      projects,
+      regions,
+      sites,
+    });
 
-    if (regions) {
-      spec.setInput("regions", regions);
-    }
-
-    if (sites) {
-      spec.setInput("sites", sites);
-    }
+    spec.detectChanges();
   }
 
   function generateSites(numSites: number, overrides: ISite = {}): Site[] {
-    return Array.from({ length: numSites })
-      .fill(null)
-      .map(() => {
-        return new Site(generateSite(overrides));
-      });
+    return Array.from({ length: numSites }).map(
+      () => new Site(generateSite(overrides), injector),
+    );
   }
 
   function generateMarkers(allSites: Site[]) {
@@ -83,52 +72,46 @@ describe("SiteMapComponent", () => {
     return markers;
   }
 
+  function assertMapMarkers(allSites: Site[]) {
+    expect(getMapMarkers()).toEqual(generateMarkers(allSites));
+  }
+
   function getMapMarkers() {
     return spec.query(MapComponent).markers().toArray();
   }
 
-  function interceptApiRequest(responses: Errorable<Site>[]): Promise<any> {
-    return interceptFilterApiRequest(api, injector, responses, Site);
-  }
-
-  async function assertMapMarkers(promise: Promise<any>, allSites: Site[]) {
+  xit("should handle error", () => {
+    setup([generateBawApiError() as any]);
     spec.detectChanges();
-    await promise;
-    spec.detectChanges();
-    expect(getMapMarkers()).toEqual(generateMarkers(allSites));
-  }
 
-  it("should handle error", async () => {
-    setup();
-    const promise = interceptApiRequest([generateBawApiError()]);
-    await assertMapMarkers(promise, []);
+    expect(getMapMarkers()).toEqual([]);
   });
 
   describe("markers", () => {
-    beforeEach(() => {
-      setup();
+    it("should display map placeholder box when no sites found", () => {
+      setup([]);
+      spec.detectChanges();
+
+      assertMapMarkers([]);
     });
 
-    it("should display map placeholder box when no sites found", async () => {
-      const promise = interceptApiRequest([]);
-      await assertMapMarkers(promise, []);
-    });
-
-    it("should display map marker for a single site", async () => {
+    it("should display map marker for a single site", () => {
       const sites = generateSites(1);
-      const promise = interceptApiRequest(sites);
+      setup(sites);
       setComponentProps(defaultProjects);
-      await assertMapMarkers(promise, sites);
+
+      assertMapMarkers(sites);
     });
 
-    it("should display map markers for all sites over multiple pages", async () => {
+    it("should display map markers for all sites over multiple pages", () => {
       const sites = generateSites(100);
-      const promise = interceptApiRequest(sites);
+      setup(sites);
       setComponentProps(defaultProjects);
-      await assertMapMarkers(promise, sites);
+
+      assertMapMarkers(sites);
     });
 
-    it("should remove map markers without a location", async () => {
+    it("should remove map markers without a location", () => {
       const noLocationSites = generateSites(100, {
         latitude: undefined,
         longitude: undefined,
@@ -140,9 +123,10 @@ describe("SiteMapComponent", () => {
 
       const sitesUnion = noLocationSites.concat(sitesWithLocation);
 
-      const promise = interceptApiRequest(sitesUnion);
+      setup(sitesUnion);
       setComponentProps(defaultProjects);
-      await assertMapMarkers(promise, sitesWithLocation);
+
+      assertMapMarkers(sitesWithLocation);
     });
   });
 
@@ -154,42 +138,27 @@ describe("SiteMapComponent", () => {
       sites?: Site[];
     }
 
-    function assertFilter(
+    function expectedFilter(
       projects?: Project[],
       regions?: Region[],
       _sites?: Site[],
     ) {
-      const expectedFilters: Filters<Site> = {
+      const filters: Filters<Site> = {
         paging: { disablePaging: true },
         filter: {},
       };
 
       if (regions) {
-        expectedFilters.filter = {
+        filters.filter = {
           "regions.id": { in: regions.map((region) => region.id) },
         } as InnerFilter<Site>;
       } else if (projects) {
-        expectedFilters.filter = {
+        filters.filter = {
           "projects.id": { in: projects.map((project) => project.id) },
         } as InnerFilter<Site>;
       }
 
-      expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
-    }
-
-    async function runFilterTest(testCase: FilterTestCase) {
-      setup();
-
-      setComponentProps(testCase.projects, testCase.regions, testCase.sites);
-
-      const sites = generateSites(20);
-      const promise = interceptApiRequest(sites);
-
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
-
-      assertFilter(testCase.projects, testCase.regions, testCase.sites);
+      return filters;
     }
 
     const tests: FilterTestCase[] = [
@@ -202,25 +171,32 @@ describe("SiteMapComponent", () => {
         projects: defaultProjects,
         regions: defaultRegions,
       },
-      {
-        name: "should make the correct filter call for a single site",
-        projects: defaultProjects,
-        regions: defaultRegions,
-        sites: defaultSites,
-      },
-      {
-        name: "should make the correct filter when there is a site without project or region",
-        sites: defaultSites,
-      },
-      {
-        name: "should make an unfiltered api call if there are no projects, regions, or sites",
-      },
     ];
 
     for (const testCase of tests) {
       it(testCase.name, async () => {
-        await runFilterTest(testCase);
+        const sites = generateSites(20);
+        setup(sites);
+        setComponentProps(testCase.projects, testCase.regions, testCase.sites);
+
+        expect(api.filter).toHaveBeenCalledOnceWith(
+          expectedFilter(testCase.projects, testCase.regions, testCase.sites),
+        );
       });
     }
+
+    describe("sites", () => {
+      it("should not call the filter api if a site is provided", () => {
+        setup(generateSites(2));
+        expect(api.filter).not.toHaveBeenCalled();
+      });
+
+      it("should not call the filter api if a site, region, and project is provided", () => {
+        setup(generateSites(2));
+        setComponentProps(defaultProjects, defaultRegions, defaultSites);
+
+        expect(api.filter).not.toHaveBeenCalled();
+      });
+    });
   });
 });

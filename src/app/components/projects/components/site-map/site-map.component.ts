@@ -38,20 +38,20 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   // using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
   public ngOnChanges(): void {
-    const pagingFilters: Filters<Site> = { paging: { disablePaging: true } };
-    const innerFilters = this.getFilter();
-    const filters: Filters<Site> = {
-      ...pagingFilters,
-      ...{ filter: innerFilters },
-    };
-
     // we use a falsy assertion for sitesSubset here because if sitesSubset is undefined or the length is zero
     // we want to fetch all markers for the project/region
-    if (this.sites()?.length) {
+    if (this.sites()) {
       // TODO: The typing for siteSubsets shouldn't allow "undefined" values.
       // This is a sign that our typing is broken somewhere.
-      this.pushMarkers(this.sites() ?? []);
+      this.pushMarkers(this.sites());
     } else {
+      const pagingFilters: Filters<Site> = { paging: { disablePaging: true } };
+      const innerFilters = this.getFilter();
+      const filters: Filters<Site> = {
+        ...pagingFilters,
+        ...{ filter: innerFilters },
+      };
+
       this.sitesApi
         .filter(filters)
         .pipe(takeUntil(this.unsubscribe))
@@ -65,13 +65,31 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
+  /**
+   * Creates an API filter that will filter sites based on the provided
+   * projects, regions, and sites.
+   *
+   *! Note: These filters assume that the provided sites are a subset of the
+   * regions and the regions are a subset of the projects.
+   * Meaning that if you provide a site, and region, only the site will be used
+   * in the filter.
+   */
   private getFilter(): InnerFilter<Site> {
+    if (this.sites()?.length) {
+      // Because we assume that sites are a subset of regions and projects,
+      // there is no need to filter for any sites, because we already know the
+      // full list of sites to show.
+      // We therefore don't have to make any API calls to fetch sites.
+      //
+      // We should never reach this condition, but I throw an error so if we
+      // incorrectly try to create a filter when sites are provided, tests will
+      // fail and the dev environment will loudly complain.
+      throw new Error("Attempted to create site filter when sites were provided.");
+    }
+
     let modelFilters: InnerFilter<Site> = {};
 
-    if (this.sites()?.length) {
-      const siteIds = this.sites().map((site) => site.id);
-      modelFilters = filterModelIds<Site>("id", siteIds);
-    } else if (this.regions()?.length) {
+    if (this.regions()?.length) {
       const regionIds = this.regions().map((region) => region.id);
       modelFilters = filterModelIds<Site>("regions", regionIds);
     } else if (this.projects()?.length) {
