@@ -51,8 +51,7 @@ class SiteComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const markers = sanitizeMapMarkers(this.site.getMapMarker());
-    this.marker = markers;
+    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
 
     this.getNewestDates();
     this.getOldestDates();

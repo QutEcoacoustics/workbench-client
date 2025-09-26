@@ -18,7 +18,7 @@ import { Site } from "@models/Site";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { sanitizeMapMarkers, MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
-import { takeUntil } from "rxjs/operators";
+import { first, takeUntil } from "rxjs/operators";
 
 // TODO Implement system to change colour of selected sites
 /**
@@ -61,7 +61,10 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     this.sitesApi
       .filter(filters)
-      .pipe(takeUntil(this.unsubscribe))
+      .pipe(
+        first(),
+        takeUntil(this.unsubscribe),
+      )
       .subscribe({
         next: (siteLocations: Site[]) => this.pushMarkers(siteLocations),
         error: (err) => {
@@ -74,18 +77,9 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private modelIds<const T extends IdOr<Project | Region | Site>>(
     models: T[],
   ): Id[] {
-    let areIds = false;
-
     return models.map((model) => {
       if (typeof model === "number") {
-        areIds = true;
         return model;
-      }
-
-      if (areIds) {
-        throw new Error(
-          "Mixed model and id array provided to SiteMapComponent",
-        );
       }
 
       return model.id;
@@ -98,7 +92,11 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * enough information to create map markers without an API call.
    */
   private hasAllSiteModels(sites?: IdOr<Site>[]): sites is Site[] {
-    // If there are no inputs, we return "false" because
+    // If there are no inputs, we return "false" so that the component can do
+    // an unfiltered API call and show all sites.
+    //
+    // This is different from the case where empty arrays are provided as
+    // inputs, in which case we want to show no sites.
     if (
       this.projects() === undefined &&
       this.regions() === undefined &&
@@ -120,6 +118,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Creates an API filter that will filter sites based on the provided
    * projects, regions, and sites.
+   * Inputs are combined using OR logic.
    */
   private getFilter(): InnerFilter<Site> {
     let filter: InnerFilter<Site> = {};
