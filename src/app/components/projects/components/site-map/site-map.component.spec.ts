@@ -141,7 +141,7 @@ describe("SiteMapComponent", () => {
     function expectedFilter(
       projects?: Project[],
       regions?: Region[],
-      _sites?: Site[],
+      sites?: Site[],
     ) {
       const filters: Filters<Site> = {
         paging: { disablePaging: true },
@@ -188,13 +188,6 @@ describe("SiteMapComponent", () => {
     describe("sites", () => {
       it("should not call the filter api if only a site is provided", () => {
         setup(generateSites(2));
-        expect(api.filter).not.toHaveBeenCalled();
-      });
-
-      it("should not call the filter api if a site, region, and project is provided", () => {
-        setup(generateSites(2));
-        setComponentProps(defaultProjects, defaultRegions, defaultSites);
-
         expect(api.filter).not.toHaveBeenCalled();
       });
     });

@@ -9,7 +9,7 @@ import { BawServiceOptions, Filters } from "./baw-api.service";
 /**
  * Variable is an id or AbstractModel
  */
-export type IdOr<T extends AbstractModel> = T | Id;
+export type IdOr<T extends AbstractModel> = T | T["id"];
 
 /**
  * Variable is an id or parameter

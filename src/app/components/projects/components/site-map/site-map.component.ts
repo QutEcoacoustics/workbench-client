@@ -6,10 +6,12 @@ import {
   OnChanges,
   signal,
 } from "@angular/core";
+import { IdOr } from "@baw-api/api-common";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { filterModelIds } from "@helpers/filters/filters";
+import { filterModelIds, filterOr } from "@helpers/filters/filters";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
+import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -26,85 +28,110 @@ import { takeUntil } from "rxjs/operators";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
-  public readonly selected = input<List<Site>>();
-  public readonly projects = input<Project[]>([]);
-  public readonly regions = input<Region[]>([]);
-  public readonly sites = input<Site[]>([]);
-
   private readonly sitesApi = inject(ShallowSitesService);
+
+  public readonly selected = input<List<IdOr<Site>>>();
+  public readonly projects = input<IdOr<Project>[]>([]);
+  public readonly regions = input<IdOr<Region>[]>([]);
+  public readonly sites = input<IdOr<Site>[]>([]);
 
   protected markers = signal(List<MapMarkerOptions>());
 
   // using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
   public ngOnChanges(): void {
-    // we use a falsy assertion for sitesSubset here because if sitesSubset is undefined or the length is zero
-    // we want to fetch all markers for the project/region
-    if (this.sites()) {
-      // TODO: The typing for siteSubsets shouldn't allow "undefined" values.
-      // This is a sign that our typing is broken somewhere.
-      this.pushMarkers(this.sites());
-    } else {
-      const pagingFilters: Filters<Site> = { paging: { disablePaging: true } };
-      const innerFilters = this.getFilter();
-      const filters: Filters<Site> = {
-        ...pagingFilters,
-        ...{ filter: innerFilters },
-      };
-
-      this.sitesApi
-        .filter(filters)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe({
-          next: (sites: Site[]) => this.pushMarkers(sites),
-          error: (err) => {
-            this.markers.set(List());
-            throw new Error("Failed to load sites for map", { cause: err });
-          },
-        });
+    const sites = this.sites();
+    if (this.hasAllSiteModels(sites)) {
+      this.pushMarkers(sites);
+      return;
     }
+
+    const filters: Filters<Site> = {
+      filter: this.getFilter(),
+      paging: { disablePaging: true },
+      projection: {
+        include: ["name", "customLatitude", "customLongitude"],
+      },
+    };
+
+    this.sitesApi
+      .filter(filters)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: (siteLocations: Site[]) => this.pushMarkers(siteLocations),
+        error: (err) => {
+          this.markers.set(List());
+          throw new Error("Failed to load sites for map", { cause: err });
+        },
+      });
+  }
+
+  private modelIds<const T extends IdOr<Project | Region | Site>>(
+    models: T[],
+  ): Id[] {
+    let areIds = false;
+
+    return models.map((model) => {
+      if (typeof model === "number") {
+        areIds = true;
+        return model;
+      }
+
+      if (areIds) {
+        throw new Error(
+          "Mixed model and id array provided to SiteMapComponent",
+        );
+      }
+
+      return model.id;
+    });
+  }
+
+  private hasAllSiteModels(sites: IdOr<Site>[]): sites is Site[] {
+    return (
+      !this.projects()?.length &&
+      !this.regions()?.length &&
+      this.sites()?.length &&
+      this.sites()?.every((site) => typeof site !== "number")
+    );
   }
 
   /**
    * Creates an API filter that will filter sites based on the provided
    * projects, regions, and sites.
-   *
-   *! Note: These filters assume that the provided sites are a subset of the
-   * regions and the regions are a subset of the projects.
-   * Meaning that if you provide a site, and region, only the site will be used
-   * in the filter.
    */
   private getFilter(): InnerFilter<Site> {
-    if (this.sites()?.length) {
-      // Because we assume that sites are a subset of regions and projects,
-      // there is no need to filter for any sites, because we already know the
-      // full list of sites to show.
-      // We therefore don't have to make any API calls to fetch sites.
-      //
-      // We should never reach this condition, but I throw an error so if we
-      // incorrectly try to create a filter when sites are provided, tests will
-      // fail and the dev environment will loudly complain.
-      throw new Error("Attempted to create site filter when sites were provided.");
-    }
+    let filter: InnerFilter<Site> = {};
 
-    let modelFilters: InnerFilter<Site> = {};
+    if (this.projects()?.length) {
+      const projectIds = this.modelIds(this.projects());
+      const projectFilters = filterModelIds<Site>("projects", projectIds);
+
+      filter = filterOr(filter, projectFilters);
+    }
 
     if (this.regions()?.length) {
-      const regionIds = this.regions().map((region) => region.id);
-      modelFilters = filterModelIds<Site>("regions", regionIds);
-    } else if (this.projects()?.length) {
-      const projectIds = this.projects().map((project) => project.id);
-      modelFilters = filterModelIds<Site>("projects", projectIds);
+      const regionIds = this.modelIds(this.regions());
+      const regionFilters = filterModelIds<Site>("regions", regionIds);
+
+      filter = filterOr(filter, regionFilters);
     }
 
-    return modelFilters;
+    if (this.sites()?.length === 0) {
+      const siteIds = this.modelIds(this.sites());
+      filter = filterOr(filter, { id: { in: siteIds } });
+    }
+
+    return filter;
   }
 
   /**
    * Push new sites to markers list
    */
   private pushMarkers(sites: Site[]): void {
-    const newMarkers = sanitizeMapMarkers(sites.map((site) => site.getMapMarker()));
+    const newMarkers = sanitizeMapMarkers(
+      sites.map((site) => site.getMapMarker()),
+    );
     this.markers.update((current) => current.concat(newMarkers));
   }
 }
