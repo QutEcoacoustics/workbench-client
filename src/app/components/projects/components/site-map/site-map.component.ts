@@ -21,6 +21,11 @@ import { List } from "immutable";
 import { takeUntil } from "rxjs/operators";
 
 // TODO Implement system to change colour of selected sites
+/**
+ * @description
+ * A site map that will show the union (OR) of sites assigned to the provided
+ * projects, regions, and sites.
+ */
 @Component({
   selector: "baw-site-map",
   template: '<baw-map [markers]="markers()"></baw-map>',
@@ -30,10 +35,10 @@ import { takeUntil } from "rxjs/operators";
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);
 
-  public readonly selected = input<List<IdOr<Site>>>();
   public readonly projects = input<IdOr<Project>[]>([]);
   public readonly regions = input<IdOr<Region>[]>([]);
   public readonly sites = input<IdOr<Site>[]>([]);
+  public readonly selected = input<List<IdOr<Site>>>();
 
   protected markers = signal(List<MapMarkerOptions>());
 

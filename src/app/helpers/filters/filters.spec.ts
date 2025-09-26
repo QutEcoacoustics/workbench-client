@@ -96,7 +96,7 @@ describe("ModelFilters", () => {
       expect(realizedResult).toEqual(newFilters);
     });
 
-    it("should create an 'and' condition if there is no and condition for a newly multi conditional filter", () => {
+    it("should create an 'or' condition if there is no or condition for a newly multi conditional filter", () => {
       const baseFilters = { id: { eq: 1 } };
       const newFilters: InnerFilter<AudioRecording> = {
         recordedDate: { greaterThan: "2021-10-10" },
@@ -113,7 +113,7 @@ describe("ModelFilters", () => {
       expect(realizedResult).toEqual(expectedResult);
     });
 
-    it("should append the a condition to the 'and' block if there is an existing 'and' conditional block", () => {
+    it("should append the a condition to the 'or' block if there is an existing 'or' block", () => {
       const baseFilters: InnerFilter<AudioRecording> = {
         or: [
           { id: { eq: 1 } },
