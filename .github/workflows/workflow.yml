@@ -137,6 +137,12 @@ jobs:
 
       - name: Lint project
         run: npm run lint
+        env:
+          # We were running out of memory in the lint step, so I increased it.
+          # This is an indication that there is a memory leak somewhere, but I
+          # don't want to invest time into tracking it down right now.
+          # TODO: We should track down the memory leak and remove this hack.
+          NODE_OPTIONS: --max-old-space-size="8192"
 
   ssr:
     runs-on: ubuntu-latest

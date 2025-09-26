@@ -4,15 +4,12 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import {
-  MetaReviewFile,
-  metaReviewIcons,
-} from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass, DecimalPipe } from "@angular/common";
+import { MetaReviewFile, metaReviewIcons } from "@components/harvest/screens/metadata-review/metadata-review.types";
 import { WhitespaceComponent } from "./whitespace.component";
 
 interface ValidationMessage {
