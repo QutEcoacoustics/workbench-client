@@ -66,7 +66,6 @@ export function filterOr<T extends AbstractModel>(
   };
 }
 
-
 /**
  * Adds a new filter to an existing filter that filters by a model's id
  *
