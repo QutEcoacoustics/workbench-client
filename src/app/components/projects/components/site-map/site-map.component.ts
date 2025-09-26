@@ -35,9 +35,9 @@ import { takeUntil } from "rxjs/operators";
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);
 
-  public readonly projects = input<IdOr<Project>[]>([]);
-  public readonly regions = input<IdOr<Region>[]>([]);
-  public readonly sites = input<IdOr<Site>[]>([]);
+  public readonly projects = input<IdOr<Project>[]>();
+  public readonly regions = input<IdOr<Region>[]>();
+  public readonly sites = input<IdOr<Site>[]>();
   public readonly selected = input<List<IdOr<Site>>>();
 
   protected markers = signal(List<MapMarkerOptions>());
@@ -92,11 +92,27 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     });
   }
 
+  /**
+   * @description
+   * A method that check if all input models (projects, regions, site) have
+   * enough information to create map markers without an API call.
+   */
   private hasAllSiteModels(sites?: IdOr<Site>[]): sites is Site[] {
+    // If there are no inputs, we return "false" because
+    if (
+      this.projects() === undefined &&
+      this.regions() === undefined &&
+      this.sites() === undefined
+    ) {
+      return false;
+    }
+
+    // If there are project or region inputs, we need to make an API call.
+    // The only time that we can avoid an API call is when component consumer
+    // provides only site models with full information.
     return (
       !this.projects()?.length &&
       !this.regions()?.length &&
-      sites?.length &&
       sites?.every((site) => typeof site !== "number")
     );
   }
@@ -108,21 +124,21 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private getFilter(): InnerFilter<Site> {
     let filter: InnerFilter<Site> = {};
 
-    if (this.projects()?.length) {
+    if (this.projects()) {
       const projectIds = this.modelIds(this.projects());
       const projectFilters = filterModelIds<Site>("projects", projectIds);
 
       filter = filterOr(filter, projectFilters);
     }
 
-    if (this.regions()?.length) {
+    if (this.regions()) {
       const regionIds = this.modelIds(this.regions());
       const regionFilters = filterModelIds<Site>("regions", regionIds);
 
       filter = filterOr(filter, regionFilters);
     }
 
-    if (this.sites()?.length) {
+    if (this.sites()) {
       const siteIds = this.modelIds(this.sites());
       filter = filterOr(filter, { id: { in: siteIds } });
     }

@@ -129,6 +129,18 @@ describe("SiteMapComponent", () => {
     });
   });
 
+  // Explicitly passing in empty array is different from not providing projects,
+  // regions, or sites at all (in which case we show all sites).
+  // If no projects, regions, or sites are explicitly provided with an empty
+  // array, then we should not make any API calls and just show no sites.
+  it("should not make any api calls if only empty arrays are provided", () => {
+    setup([]);
+    setComponentProps([], [], []);
+
+    expect(api.filter).not.toHaveBeenCalled();
+    assertMapMarkers([]);
+  });
+
   describe("api", () => {
     interface FilterTestCase {
       name: string;
@@ -210,9 +222,9 @@ describe("SiteMapComponent", () => {
       },
       {
         name: "should do an unfiltered api request if no projects, regions, or sites are provided",
-        projects: [],
-        regions: [],
-        sites: [],
+        projects: undefined,
+        regions: undefined,
+        sites: undefined,
         expectedFilter: {},
       },
     ];
@@ -274,6 +286,14 @@ describe("SiteMapComponent", () => {
         };
 
         expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
+      });
+
+      it("should not make any api calls if only an empty site array is provided", () => {
+        setup([]);
+        setComponentProps(undefined, undefined, []);
+
+        expect(api.filter).not.toHaveBeenCalled();
+        assertMapMarkers([]);
       });
     });
   });
