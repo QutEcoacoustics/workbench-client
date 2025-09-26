@@ -14,12 +14,12 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { MapMarkerOptions } from "@services/maps/maps.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { MockModule } from "ng-mocks";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { of } from "rxjs";
+import { IdOr } from "@baw-api/api-common";
 import { SiteMapComponent } from "./site-map.component";
 
 describe("SiteMapComponent", () => {
@@ -30,6 +30,8 @@ describe("SiteMapComponent", () => {
   const defaultProjects: Project[] = [new Project(generateProject(), injector)];
   const defaultRegions: Region[] = [new Region(generateRegion(), injector)];
   const defaultSites: Site[] = [new Site(generateSite(), injector)];
+
+  const mapComponent = () => spec.query(MapComponent);
 
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
@@ -47,9 +49,9 @@ describe("SiteMapComponent", () => {
   }
 
   function setComponentProps(
-    projects?: Project[],
-    regions?: Region[],
-    sites?: Site[],
+    projects?: IdOr<Project>[],
+    regions?: IdOr<Region>[],
+    sites?: IdOr<Site>[],
   ): void {
     // This function will trigger change detection because setInput calls
     // detectChanges.
@@ -67,25 +69,20 @@ describe("SiteMapComponent", () => {
     );
   }
 
-  function generateMarkers(allSites: Site[]) {
-    const markers: MapMarkerOptions[] = [];
-    markers.push(...allSites.map((site) => site.getMapMarker()));
-    return markers;
-  }
-
   function assertMapMarkers(allSites: Site[]) {
-    expect(getMapMarkers()).toEqual(generateMarkers(allSites));
+    const siteMarkers = allSites.map((site) => site.getMapMarker());
+    expect(mapMarkers()).toEqual(siteMarkers);
   }
 
-  function getMapMarkers() {
-    return spec.query(MapComponent).markers().toArray();
+  function mapMarkers() {
+    return mapComponent().markers().toArray();
   }
 
-  xit("should handle error", () => {
+  it("should handle error", () => {
     setup([generateBawApiError() as any]);
     spec.detectChanges();
 
-    expect(getMapMarkers()).toEqual([]);
+    expect(mapMarkers()).toEqual([]);
   });
 
   describe("markers", () => {
@@ -94,6 +91,7 @@ describe("SiteMapComponent", () => {
       spec.detectChanges();
 
       assertMapMarkers([]);
+      expect(mapComponent().hasMarkers).toBeFalse();
     });
 
     it("should display map marker for a single site", () => {
@@ -151,7 +149,7 @@ describe("SiteMapComponent", () => {
         expectedFilter: {
           "projects.id": {
             in: defaultProjects.map((project) => project.id),
-          }
+          },
         },
       },
       {
@@ -160,7 +158,7 @@ describe("SiteMapComponent", () => {
         expectedFilter: {
           "regions.id": {
             in: defaultRegions.map((region) => region.id),
-          }
+          },
         },
       },
       {
@@ -172,12 +170,12 @@ describe("SiteMapComponent", () => {
             {
               "projects.id": {
                 in: defaultProjects.map((project) => project.id),
-              }
+              },
             },
             {
               "regions.id": {
                 in: defaultRegions.map((region) => region.id),
-              }
+              },
             },
           ],
         } as any,
@@ -195,17 +193,17 @@ describe("SiteMapComponent", () => {
             {
               "projects.id": {
                 in: defaultProjects.map((project) => project.id),
-              }
+              },
             },
             {
               "regions.id": {
                 in: defaultRegions.map((region) => region.id),
-              }
+              },
             },
             {
-              "id": {
+              id: {
                 in: defaultSites.map((site) => site.id),
-              }
+              },
             },
           ],
         } as any,
@@ -238,12 +236,103 @@ describe("SiteMapComponent", () => {
     }
 
     describe("sites", () => {
-      it("should not call the filter api if only a site is provided", () => {
-        setup(generateSites(2));
-        setComponentProps(undefined, undefined, defaultSites);
+      // If only site models are provided, then we don't need to call the API
+      // because we already have all the site information we need.
+      it("should not call the filter api if only a site model is provided", () => {
+        const sites = generateSites(2);
+        setup(sites);
+        setComponentProps(undefined, undefined, sites);
 
         expect(api.filter).not.toHaveBeenCalled();
+
+        // We should still see the markers on the map.
+        assertMapMarkers(sites);
       });
+
+      // Although only sites are provided, they are not full site models, so we
+      // do not have the lat/long information needed to place the markers on the
+      // map.
+      // Therefore, we still need to call the API to convert the site ids into
+      // site models.
+      it("should call the filter api if only site ids are provided", () => {
+        const sites = generateSites(2);
+        const siteIds = sites.map((site) => site.id);
+
+        setup(sites);
+        setComponentProps(undefined, undefined, siteIds);
+
+        const expectedFilters: Filters<Site> = {
+          filter: {
+            id: {
+              in: siteIds,
+            },
+          },
+          paging: { disablePaging: true },
+          projection: {
+            include: ["name", "customLatitude", "customLongitude"],
+          },
+        };
+
+        expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
+      });
+    });
+  });
+
+  describe("updates", () => {
+    it("should correctly replace site markers on a map", () => {
+      // I purposely make the new sites smaller than the initial sites, so
+      // if there is a bug where the markers are not cleared properly, the test
+      // will fail.
+      const initialSites = generateSites(8);
+      const newSites = generateSites(3);
+
+      setup(initialSites);
+      setComponentProps(undefined, undefined, initialSites);
+
+      // This assertion is just to make sure our test setup is correct.
+      // This behavior has been asserted in other tests.
+      assertMapMarkers(initialSites);
+
+      // On update, the site map will make a new call to the sites service to
+      // get the new sites.
+      api.filter.calls.reset();
+      api.filter.and.returnValue(of(newSites));
+
+      setComponentProps(defaultProjects, undefined, newSites);
+      assertMapMarkers(newSites);
+
+      const expectedFilters: InnerFilter<Site> = {
+        or: [
+          {
+            "projects.id": {
+              in: defaultProjects.map((project) => project.id),
+            },
+          },
+          {
+            id: {
+              in: newSites.map((site) => site.id),
+            },
+          },
+        ],
+      };
+
+      expect(api.filter).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({ filter: expectedFilters }),
+      );
+    });
+
+    it("should correctly transition from a 'no sites' state to showing sites", () => {
+      const newSites = generateSites(5);
+
+      setup([]);
+      setComponentProps(undefined, undefined, []);
+      assertMapMarkers([]);
+
+      api.filter.calls.reset();
+      api.filter.and.returnValue(of(newSites));
+
+      setComponentProps(defaultProjects, undefined, newSites);
+      assertMapMarkers(newSites);
     });
   });
 });

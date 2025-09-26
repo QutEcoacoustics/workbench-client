@@ -42,7 +42,13 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
         const newLoadState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
         this.googleMapsLoaded.set(newLoadState);
       })
-      .catch(() => console.warn("Failed to load Google Maps"));
+      .catch(() => {
+        // We issue a console warning before transitioning to the failed state
+        // so if transitioning to the failed state causes a hard error, we have
+        // a fallback log message.
+        console.warn("Failed to load Google Maps");
+        this.googleMapsLoaded.set(GoogleMapsState.Failed);
+      });
   }
 
   @ViewChild(MapInfoWindow) public info?: MapInfoWindow;

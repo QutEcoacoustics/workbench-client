@@ -137,6 +137,6 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     const newMarkers = sanitizeMapMarkers(
       sites.map((site) => site.getMapMarker()),
     );
-    this.markers.update((current) => current.concat(newMarkers));
+    this.markers.set(newMarkers);
   }
 }
