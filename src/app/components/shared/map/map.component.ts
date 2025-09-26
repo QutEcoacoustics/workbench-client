@@ -1,5 +1,6 @@
 import {
   Component,
+  inject,
   input,
   OnChanges,
   output,
@@ -21,6 +22,7 @@ import {
   MapsService,
 } from "@services/maps/maps.service";
 import { List } from "immutable";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { LoadingComponent } from "../loading/loading.component";
 
 /**
@@ -33,31 +35,8 @@ import { LoadingComponent } from "../loading/loading.component";
   imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
-  public constructor(private mapService: MapsService) {
-    super();
-
-    this.mapService
-      .loadAsync()
-      .then((success: boolean) => {
-        const newLoadState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
-        this.googleMapsLoaded.set(newLoadState);
-      })
-      .catch(() => {
-        // We issue a console warning before transitioning to the failed state
-        // so if transitioning to the failed state causes a hard error, we have
-        // a fallback log message.
-        console.warn("Failed to load Google Maps");
-        this.googleMapsLoaded.set(GoogleMapsState.Failed);
-      });
-  }
-
-  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
-
-  @ViewChild(GoogleMap)
-  private set map(value: GoogleMap) {
-    this._map = value;
-    this.focusMarkers();
-  }
+  private readonly mapService = inject(MapsService);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
   public readonly markerOptions = input<MapMarkerOptions>();
@@ -72,8 +51,39 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
 
-  protected readonly googleMapsLoaded = signal<GoogleMapsState>(GoogleMapsState.Loading);
   protected readonly MapLoadState = GoogleMapsState;
+  protected readonly googleMapsLoaded = signal<GoogleMapsState>(this.MapLoadState.Loading);
+
+  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+
+  @ViewChild(GoogleMap)
+  private set map(value: GoogleMap) {
+    this._map = value;
+    this.focusMarkers();
+  }
+
+  public constructor() {
+    super();
+
+    if (this.isServer) {
+      this.googleMapsLoaded.set(GoogleMapsState.NotLoaded);
+      return;
+    }
+
+    this.mapService
+      .loadAsync()
+      .then((success: boolean) => {
+        const newState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
+        this.googleMapsLoaded.set(newState);
+      })
+      .catch(() => {
+        // We issue a console warning before transitioning to the failed state
+        // so if transitioning to the failed state causes a hard error, we have
+        // a fallback log message.
+        console.warn("Failed to load Google Maps");
+        this.googleMapsLoaded.set(GoogleMapsState.Failed);
+      });
+  }
 
   /**
    * Runs when new markers are added/removed

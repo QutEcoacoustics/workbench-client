@@ -42,9 +42,22 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
   protected markers = signal(List<MapMarkerOptions>());
 
-  // using ngOnChanges instead of ngOnInit for reactivity
-  // this allows us to dynamically update the projects, regions, sites, etc... without destroying the entire component
+  public constructor() {
+    super();
+  }
+
+  // Using ngOnChanges instead of ngOnInit for reactivity
+  // this allows us to dynamically update the projects, regions, sites, etc...
+  // without destroying the entire component
   public ngOnChanges(): void {
+    this.refreshSiteMarkers();
+  }
+
+  /**
+   * @description
+   * Re-fetches site markers based on the current inputs
+   */
+  private refreshSiteMarkers(): void {
     const sites = this.sites();
     if (this.hasAllSiteModels(sites)) {
       this.pushMarkers(sites);

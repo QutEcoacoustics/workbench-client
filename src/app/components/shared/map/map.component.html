@@ -20,13 +20,13 @@
   </google-map>
 } @else {
   <div class="map-placeholder">
-    @if (googleMapsLoaded() === MapLoadState.Failed) {
+    @if (googleMapsLoaded() === MapLoadState.Loading || googleMapsLoaded() === MapLoadState.NotLoaded) {
+      <baw-loading></baw-loading>
+    } @else if (googleMapsLoaded() === MapLoadState.Failed) {
       <p class="text-danger">Failure loading map</p>
       <p class="error-hint">
         Please ensure your ad-block is not blocking Google Maps
       </p>
-    } @else if (googleMapsLoaded() === MapLoadState.Loading) {
-      <baw-loading></baw-loading>
     } @else if (!hasMarkers) {
       <p>No locations specified</p>
     }
