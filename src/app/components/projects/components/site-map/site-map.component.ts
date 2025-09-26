@@ -87,12 +87,12 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     });
   }
 
-  private hasAllSiteModels(sites: IdOr<Site>[]): sites is Site[] {
+  private hasAllSiteModels(sites?: IdOr<Site>[]): sites is Site[] {
     return (
       !this.projects()?.length &&
       !this.regions()?.length &&
-      this.sites()?.length &&
-      this.sites()?.every((site) => typeof site !== "number")
+      sites?.length &&
+      sites?.every((site) => typeof site !== "number")
     );
   }
 
