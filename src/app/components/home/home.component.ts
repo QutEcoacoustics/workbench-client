@@ -37,7 +37,7 @@ import { homeCategory, homeMenuItem } from "./home.menus";
     UpperCasePipe,
     TitleCasePipe,
     WithLoadingPipe,
-  ],
+],
 })
 class HomeComponent extends PageComponent implements OnInit {
   public brand: Brand;

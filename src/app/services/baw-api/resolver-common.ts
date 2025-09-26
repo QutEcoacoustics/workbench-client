@@ -394,8 +394,6 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
   const keys = Object.keys(data?.resolvers || {});
 
   if (keys.length === 0) {
-    // eslint-disable-next-line no-console
-    console.debug("resolver-common: Failed to detect any resolvers");
     return models;
   }
 

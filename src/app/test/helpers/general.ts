@@ -63,10 +63,13 @@ export function nStepObservable<T>(
           return waitOne();
         }
 
+        const value = callback();
         if (isError) {
-          subject.error(callback() as ApiErrorDetails);
+          // TODO: Improve the typing here to infer if the return type is an
+          // error from the isError parameter.
+          subject.error(value as ApiErrorDetails);
         } else {
-          subject.next(callback() as T);
+          subject.next(value as T);
         }
 
         resolve();

@@ -11,11 +11,9 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
-import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
-
-const mockMapComponent = MockComponent(MapComponent);
 
 describe("FormlyLocationInput", () => {
   let model: any;
@@ -24,13 +22,14 @@ describe("FormlyLocationInput", () => {
 
   const createHost = createHostFactory({
     component: LocationInputComponent,
-    declarations: [mockMapComponent],
+    providers: [provideMockBawApi()],
     imports: [
+      GoogleMapsModule,
       FormsModule,
       ReactiveFormsModule,
       FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
-      GoogleMapsModule,
+      MapComponent,
     ],
   });
 
@@ -73,14 +72,10 @@ describe("FormlyLocationInput", () => {
     longitude: number | string,
     latitude: number | string
   ) {
-    const latitudeInput = getLatitudeInput();
-    const longitudeInput = getLongitudeInput();
-
-    longitudeInput.value = longitude.toString();
-    longitudeInput.dispatchEvent(new Event("input"));
-    latitudeInput.value = latitude.toString();
-    latitudeInput.dispatchEvent(new Event("input"));
-
+    // Using typeInElement dispatches the "input" event that Angular listens to
+    // https://github.com/ngneat/spectator/blob/549c63c43e9/projects/spectator/src/lib/type-in-element.ts#L18
+    spectator.typeInElement(longitude.toString(), getLongitudeInput());
+    spectator.typeInElement(latitude.toString(), getLatitudeInput());
     spectator.detectChanges();
   }
 
@@ -98,8 +93,8 @@ describe("FormlyLocationInput", () => {
     longitude: number,
     latitude: number
   ) {
-    expect(map.markers.toArray()[0]["position"]["lng"]).toEqual(longitude);
-    expect(map.markers.toArray()[0]["position"]["lat"]).toEqual(latitude);
+    expect(map.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
+    expect(map.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
   }
 
   it("should create", () => {

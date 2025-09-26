@@ -1,9 +1,10 @@
 import {
   Component,
-  EventEmitter,
-  Input,
+  inject,
+  input,
   OnChanges,
-  Output,
+  output,
+  signal,
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
@@ -15,11 +16,13 @@ import {
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
+  GoogleMapsState,
   MapMarkerOptions,
   MapOptions,
   MapsService,
 } from "@services/maps/maps.service";
 import { List } from "immutable";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { LoadingComponent } from "../loading/loading.component";
 
 /**
@@ -32,26 +35,12 @@ import { LoadingComponent } from "../loading/loading.component";
   imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
-  public constructor(private mapService: MapsService) {
-    super();
+  private readonly mapService = inject(MapsService);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
-    this.mapService
-      .loadAsync()
-      .then((success: boolean) => (this.googleMapsLoaded = success))
-      .catch(() => console.warn("Failed to load Google Maps"));
-  }
-
-  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
-
-  @ViewChild(GoogleMap)
-  private set map(value: GoogleMap) {
-    this._map = value;
-    this.focusMarkers();
-  }
-
-  @Input() public markers: List<MapMarkerOptions>;
-  @Input() public markerOptions: MapMarkerOptions;
-  @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
+  public readonly markers = input.required<List<MapMarkerOptions>>();
+  public readonly markerOptions = input<MapMarkerOptions>();
+  public newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
@@ -61,7 +50,40 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
-  protected googleMapsLoaded: boolean | null = null;
+
+  protected readonly MapLoadState = GoogleMapsState;
+  protected readonly googleMapsLoaded = signal<GoogleMapsState>(this.MapLoadState.Loading);
+
+  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+
+  @ViewChild(GoogleMap)
+  private set map(value: GoogleMap) {
+    this._map = value;
+    this.focusMarkers();
+  }
+
+  public constructor() {
+    super();
+
+    if (this.isServer) {
+      this.googleMapsLoaded.set(GoogleMapsState.NotLoaded);
+      return;
+    }
+
+    this.mapService
+      .loadAsync()
+      .then((success: boolean) => {
+        const newState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
+        this.googleMapsLoaded.set(newState);
+      })
+      .catch(() => {
+        // We issue a console warning before transitioning to the failed state
+        // so if transitioning to the failed state causes a hard error, we have
+        // a fallback log message.
+        console.warn("Failed to load Google Maps");
+        this.googleMapsLoaded.set(GoogleMapsState.Failed);
+      });
+  }
 
   /**
    * Runs when new markers are added/removed
@@ -74,7 +96,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
-    this.infoContent = options.label as string;
+    this.infoContent = options.title as string;
     this.info.open(marker);
   }
 
@@ -103,7 +125,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.hasMarkers = false;
     this.validMarkersOptions = [];
 
-    this.markers?.forEach((marker) => {
+    this.markers()?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
         this.validMarkersOptions.push(marker);
@@ -130,19 +152,19 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
 export function sanitizeMapMarkers(
   markers: MapMarkerOptions | MapMarkerOptions[]
 ): List<MapMarkerOptions> {
-  const output: MapMarkerOptions[] = [];
+  const markerOptions: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        output.push(marker);
+        markerOptions.push(marker);
       }
     });
   } else {
     if (isMarkerValid(markers)) {
-      output.push(markers);
+      markerOptions.push(markers);
     }
   }
 
-  return List(output);
+  return List(markerOptions);
 }

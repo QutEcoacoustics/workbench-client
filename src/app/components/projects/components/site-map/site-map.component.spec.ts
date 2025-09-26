@@ -1,6 +1,5 @@
-import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { SitesService } from "@baw-api/site/sites.service";
-import { Errorable } from "@helpers/advancedTypes";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { ISite, Site } from "@models/Site";
@@ -14,237 +13,346 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { interceptRepeatApiRequests } from "@test/helpers/general";
-import { MockComponent } from "ng-mocks";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { MockModule } from "ng-mocks";
+import { GoogleMapsModule } from "@angular/google-maps";
+import { of } from "rxjs";
+import { IdOr } from "@baw-api/api-common";
 import { SiteMapComponent } from "./site-map.component";
 
-const mockMap = MockComponent(MapComponent);
-
 describe("SiteMapComponent", () => {
-  let defaultProject: Project;
-  let defaultRegion: Region;
-  let api: SpyObject<SitesService>;
+  let api: SpyObject<ShallowSitesService>;
   let spec: Spectator<SiteMapComponent>;
+  let injector: AssociationInjector;
+
+  const defaultProjects: Project[] = [new Project(generateProject(), injector)];
+  const defaultRegions: Region[] = [new Region(generateRegion(), injector)];
+  const defaultSites: Site[] = [new Site(generateSite(), injector)];
+
+  const mapComponent = () => spec.query(MapComponent);
 
   const createComponent = createComponentFactory({
     component: SiteMapComponent,
-    declarations: [mockMap],
+    imports: [MapComponent, MockModule(GoogleMapsModule)],
     providers: [provideMockBawApi()],
   });
 
-  beforeEach(() => {
-    defaultProject = new Project(generateProject());
-    defaultRegion = new Region(generateRegion());
-  });
-
-  function setup(): void {
+  function setup(mockSites: Site[]): void {
     spec = createComponent({ detectChanges: false });
-    api = spec.inject(SitesService);
+
+    api = spec.inject(ShallowSitesService);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
+
+    api.filter.and.returnValue(of(mockSites));
   }
 
   function setComponentProps(
-    project: Project,
-    region?: Region,
-    sitesSubset?: Site[]
+    projects?: IdOr<Project>[],
+    regions?: IdOr<Region>[],
+    sites?: IdOr<Site>[],
   ): void {
+    // This function will trigger change detection because setInput calls
+    // detectChanges.
+    // https://github.com/ngneat/spectator/blob/549c63c43e/projects/spectator/src/lib/spectator/spectator.ts#L50-L53
     spec.setInput({
-      project,
-      region,
-      sitesSubset,
+      projects,
+      regions,
+      sites,
     });
   }
 
-  function generatePagedSites(
-    numSites: number,
-    overrides: ISite = {}
-  ): Site[][] {
-    /**
-     * Calculate page number for site position. Page numbers begin from 1
-     */
-    function calculatePage(sitePosition: number) {
-      // When site position equals defaultApiPageSize, it should not
-      // go into the next page. Hence the defaultApiPageSize + 1.
-      return Math.floor(sitePosition / (defaultApiPageSize + 1)) + 1;
-    }
-
-    const maxPage = calculatePage(numSites);
-    const sites: Site[][] = [];
-
-    for (let response = 0; response < maxPage; response++) {
-      sites.push([]);
-    }
-
-    for (let id = 1; id <= numSites; id++) {
-      const site = new Site(generateSite({ id, ...overrides }));
-      const page = calculatePage(id);
-      site.addMetadata({ paging: { total: numSites, page, maxPage } });
-      sites[page - 1].push(site);
-    }
-    return sites;
-  }
-
-  function generateMarkers(allSites: Site[][]) {
-    const markers: google.maps.MarkerOptions[] = [];
-    allSites.forEach((sites) =>
-      markers.push(...sites.map((site) => site.getMapMarker()))
-    );
-    return markers;
-  }
-
-  function getMapMarkers() {
-    return spec.query(MapComponent).markers.toArray();
-  }
-
-  function interceptApiRequest(
-    responses: Errorable<Site[]>[],
-    expectations?: ((filter: Filters<ISite>, project: Project) => void)[],
-    hasRegion?: boolean
-  ): Promise<void>[] {
-    return interceptRepeatApiRequests<ISite, Site[]>(
-      hasRegion ? api.filterByRegion : api.filter,
-      responses,
-      expectations
+  function generateSites(numSites: number, overrides: ISite = {}): Site[] {
+    return Array.from({ length: numSites }).map(
+      () => new Site(generateSite(overrides), injector),
     );
   }
 
-  async function assertMapMarkers(promise: Promise<any>, allSites: Site[][]) {
-    spec.detectChanges();
-    await promise;
-    spec.detectChanges();
-    expect(getMapMarkers()).toEqual(generateMarkers(allSites));
+  function assertMapMarkers(allSites: Site[]) {
+    const siteMarkers = allSites.map((site) => site.getMapMarker());
+    expect(mapMarkers()).toEqual(siteMarkers);
   }
 
-  it("should handle error", async () => {
-    setup();
-    const promise = Promise.all(interceptApiRequest([generateBawApiError()]));
-    await assertMapMarkers(promise, []);
+  function mapMarkers() {
+    return mapComponent().markers().toArray();
+  }
+
+  it("should handle error", () => {
+    setup([generateBawApiError() as any]);
+    spec.detectChanges();
+
+    expect(mapMarkers()).toEqual([]);
   });
 
   describe("markers", () => {
-    beforeEach(() => {
-      setup();
+    it("should display map placeholder box when no sites found", () => {
+      setup([]);
+      spec.detectChanges();
+
+      assertMapMarkers([]);
+      expect(mapComponent().hasMarkers).toBeFalse();
     });
 
-    it("should display map placeholder box when no sites found", async () => {
-      const promise = Promise.all(interceptApiRequest([[]]));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, []);
+    it("should display map marker for a single site", () => {
+      const sites = generateSites(1);
+      setup(sites);
+      setComponentProps(defaultProjects);
+
+      assertMapMarkers(sites);
     });
 
-    it("should display map marker for single site", async () => {
-      const sites = generatePagedSites(1);
-      const promise = Promise.all(interceptApiRequest(sites));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, sites);
+    it("should display map markers for all sites over multiple pages", () => {
+      const sites = generateSites(100);
+      setup(sites);
+      setComponentProps(defaultProjects);
+
+      assertMapMarkers(sites);
     });
 
-    it("should display map markers for multiple sites", async () => {
-      const sites = generatePagedSites(25);
-      const promise = Promise.all(interceptApiRequest(sites));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, sites);
-    });
-
-    it("should request all pages if number of sites exceeds api page amount", async () => {
-      const sites = generatePagedSites(26);
-      const promise = Promise.all(interceptApiRequest(sites));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, sites);
-    });
-
-    it("should display map markers for all sites over multiple pages", async () => {
-      const sites = generatePagedSites(100);
-      const promise = Promise.all(interceptApiRequest(sites));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, sites);
-    });
-
-    it("should display map markers as requests return", async () => {
-      const sites = generatePagedSites(100);
-      const promises = interceptApiRequest(sites);
-      setComponentProps(defaultProject);
-
-      await assertMapMarkers(promises[0], sites.slice(0, 1));
-      await assertMapMarkers(promises[1], sites.slice(0, 2));
-      await assertMapMarkers(promises[2], sites.slice(0, 3));
-      await assertMapMarkers(promises[3], sites);
-    });
-
-    it("should sanitize map markers", async () => {
-      const sites = generatePagedSites(100, {
+    it("should remove map markers without a location", () => {
+      const noLocationSites = generateSites(100, {
         latitude: undefined,
         longitude: undefined,
         customLatitude: undefined,
         customLongitude: undefined,
       });
-      const promise = Promise.all(interceptApiRequest(sites));
-      setComponentProps(defaultProject);
-      await assertMapMarkers(promise, []);
-    });
 
-    it("should only display markers in the markersSubset", () => {});
+      const sitesWithLocation = generateSites(10);
+
+      const sitesUnion = noLocationSites.concat(sitesWithLocation);
+
+      setup(sitesUnion);
+      setComponentProps(defaultProjects);
+
+      assertMapMarkers(sitesWithLocation);
+    });
+  });
+
+  // Explicitly passing in empty array is different from not providing projects,
+  // regions, or sites at all (in which case we show all sites).
+  // If no projects, regions, or sites are explicitly provided with an empty
+  // array, then we should not make any API calls and just show no sites.
+  it("should not make any api calls if only empty arrays are provided", () => {
+    setup([]);
+    setComponentProps([], [], []);
+
+    expect(api.filter).not.toHaveBeenCalled();
+    assertMapMarkers([]);
   });
 
   describe("api", () => {
-    function assertFilter(page: number, project: Project, region?: Region) {
-      return (filters: Filters<ISite>, _project: Project, _region?: Region) => {
-        expect(filters).toEqual({ paging: { page } });
-        expect(_project).toEqual(project);
+    interface FilterTestCase {
+      name: string;
+      projects?: Project[];
+      regions?: Region[];
+      sites?: Site[];
 
-        if (region) {
-          expect(_region).toEqual(region);
-        }
-      };
+      // I use "any" here because the filtering types don't currently support
+      // associations, which would mean that I would have to manually type cast
+      // most of the expected filters.
+      expectedFilter?: InnerFilter<any>;
     }
 
-    it("should generate filter commands with initial filter", async () => {
-      setup();
+    const tests: FilterTestCase[] = [
+      {
+        name: "should use correct filter for a single project",
+        projects: defaultProjects,
+        expectedFilter: {
+          "projects.id": {
+            in: defaultProjects.map((project) => project.id),
+          },
+        },
+      },
+      {
+        name: "should use correct filter for a region",
+        regions: defaultRegions,
+        expectedFilter: {
+          "regions.id": {
+            in: defaultRegions.map((region) => region.id),
+          },
+        },
+      },
+      {
+        name: "should use correct filter for projects and regions",
+        projects: defaultProjects,
+        regions: defaultRegions,
+        expectedFilter: {
+          or: [
+            {
+              "projects.id": {
+                in: defaultProjects.map((project) => project.id),
+              },
+            },
+            {
+              "regions.id": {
+                in: defaultRegions.map((region) => region.id),
+              },
+            },
+          ],
+        } as any,
+      },
+      {
+        // Unlike only having sites, if there are also projects and regions
+        // provided, we still need to call the API to get all sites for the
+        // projects and regions.
+        name: "should use correct filter for projects, regions, and sites",
+        projects: defaultProjects,
+        regions: defaultRegions,
+        sites: defaultSites,
+        expectedFilter: {
+          or: [
+            {
+              "projects.id": {
+                in: defaultProjects.map((project) => project.id),
+              },
+            },
+            {
+              "regions.id": {
+                in: defaultRegions.map((region) => region.id),
+              },
+            },
+            {
+              id: {
+                in: defaultSites.map((site) => site.id),
+              },
+            },
+          ],
+        } as any,
+      },
+      {
+        name: "should do an unfiltered api request if no projects, regions, or sites are provided",
+        projects: undefined,
+        regions: undefined,
+        sites: undefined,
+        expectedFilter: {},
+      },
+    ];
 
-      const sites = generatePagedSites(1);
-      const promise = Promise.all(
-        interceptApiRequest(sites, [assertFilter(1, defaultProject)])
+    for (const testCase of tests) {
+      it(testCase.name, async () => {
+        const sites = generateSites(20);
+        setup(sites);
+        setComponentProps(testCase.projects, testCase.regions, testCase.sites);
+
+        const expectedFilters: Filters<Site> = {
+          filter: testCase.expectedFilter,
+          paging: { disablePaging: true },
+          projection: {
+            include: ["name", "customLatitude", "customLongitude"],
+          },
+        };
+
+        expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
+      });
+    }
+
+    describe("sites", () => {
+      // If only site models are provided, then we don't need to call the API
+      // because we already have all the site information we need.
+      it("should not call the filter api if only a site model is provided", () => {
+        const sites = generateSites(2);
+        setup(sites);
+        setComponentProps(undefined, undefined, sites);
+
+        expect(api.filter).not.toHaveBeenCalled();
+
+        // We should still see the markers on the map.
+        assertMapMarkers(sites);
+      });
+
+      // Although only sites are provided, they are not full site models, so we
+      // do not have the lat/long information needed to place the markers on the
+      // map.
+      // Therefore, we still need to call the API to convert the site ids into
+      // site models.
+      it("should call the filter api if only site ids are provided", () => {
+        const sites = generateSites(2);
+        const siteIds = sites.map((site) => site.id);
+
+        setup(sites);
+        setComponentProps(undefined, undefined, siteIds);
+
+        const expectedFilters: Filters<Site> = {
+          filter: {
+            id: {
+              in: siteIds,
+            },
+          },
+          paging: { disablePaging: true },
+          projection: {
+            include: ["name", "customLatitude", "customLongitude"],
+          },
+        };
+
+        expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
+      });
+
+      it("should not make any api calls if only an empty site array is provided", () => {
+        setup([]);
+        setComponentProps(undefined, undefined, []);
+
+        expect(api.filter).not.toHaveBeenCalled();
+        assertMapMarkers([]);
+      });
+    });
+  });
+
+  describe("updates", () => {
+    it("should correctly replace site markers on a map", () => {
+      // I purposely make the new sites smaller than the initial sites, so
+      // if there is a bug where the markers are not cleared properly, the test
+      // will fail.
+      const initialSites = generateSites(8);
+      const newSites = generateSites(3);
+
+      setup(initialSites);
+      setComponentProps(undefined, undefined, initialSites);
+
+      // This assertion is just to make sure our test setup is correct.
+      // This behavior has been asserted in other tests.
+      assertMapMarkers(initialSites);
+
+      // On update, the site map will make a new call to the sites service to
+      // get the new sites.
+      api.filter.calls.reset();
+      api.filter.and.returnValue(of(newSites));
+
+      setComponentProps(defaultProjects, undefined, newSites);
+      assertMapMarkers(newSites);
+
+      const expectedFilters: InnerFilter<Site> = {
+        or: [
+          {
+            "projects.id": {
+              in: defaultProjects.map((project) => project.id),
+            },
+          },
+          {
+            id: {
+              in: newSites.map((site) => site.id),
+            },
+          },
+        ],
+      };
+
+      expect(api.filter).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({ filter: expectedFilters }),
       );
-      setComponentProps(defaultProject);
-
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
     });
 
-    it("should generate filter commands with incremental page numbers", async () => {
-      setup();
+    it("should correctly transition from a 'no sites' state to showing sites", () => {
+      const newSites = generateSites(5);
 
-      const sites = generatePagedSites(100);
-      const promise = Promise.all(
-        interceptApiRequest(
-          sites,
-          [1, 2, 3, 4].map((page) => assertFilter(page, defaultProject))
-        )
-      );
-      setComponentProps(defaultProject);
+      setup([]);
+      setComponentProps(undefined, undefined, []);
+      assertMapMarkers([]);
 
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
-    });
+      api.filter.calls.reset();
+      api.filter.and.returnValue(of(newSites));
 
-    it("should generate filter commands with region id", async () => {
-      setup();
-
-      const sites = generatePagedSites(1);
-      const promise = Promise.all(
-        interceptApiRequest(
-          sites,
-          [assertFilter(1, defaultProject, defaultRegion)],
-          true
-        )
-      );
-      setComponentProps(defaultProject, defaultRegion);
-
-      spec.detectChanges();
-      await promise;
-      spec.detectChanges();
+      setComponentProps(defaultProjects, undefined, newSites);
+      assertMapMarkers(newSites);
     });
   });
 });
