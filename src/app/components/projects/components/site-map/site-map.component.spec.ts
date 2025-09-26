@@ -51,13 +51,14 @@ describe("SiteMapComponent", () => {
     regions?: Region[],
     sites?: Site[],
   ): void {
+    // This function will trigger change detection because setInput calls
+    // detectChanges.
+    // https://github.com/ngneat/spectator/blob/549c63c43e/projects/spectator/src/lib/spectator/spectator.ts#L50-L53
     spec.setInput({
       projects,
       regions,
       sites,
     });
-
-    spec.detectChanges();
   }
 
   function generateSites(numSites: number, overrides: ISite = {}): Site[] {
@@ -136,40 +137,85 @@ describe("SiteMapComponent", () => {
       projects?: Project[];
       regions?: Region[];
       sites?: Site[];
-    }
 
-    function expectedFilter(
-      projects?: Project[],
-      regions?: Region[],
-      sites?: Site[],
-    ) {
-      const filters: Filters<Site> = {
-        paging: { disablePaging: true },
-        filter: {},
-      };
-
-      if (regions) {
-        filters.filter = {
-          "regions.id": { in: regions.map((region) => region.id) },
-        } as InnerFilter<Site>;
-      } else if (projects) {
-        filters.filter = {
-          "projects.id": { in: projects.map((project) => project.id) },
-        } as InnerFilter<Site>;
-      }
-
-      return filters;
+      // I use "any" here because the filtering types don't currently support
+      // associations, which would mean that I would have to manually type cast
+      // most of the expected filters.
+      expectedFilter?: InnerFilter<any>;
     }
 
     const tests: FilterTestCase[] = [
       {
         name: "should use correct filter for a single project",
         projects: defaultProjects,
+        expectedFilter: {
+          "projects.id": {
+            in: defaultProjects.map((project) => project.id),
+          }
+        },
       },
       {
-        name: "should use correct filter for a single region",
+        name: "should use correct filter for a region",
+        regions: defaultRegions,
+        expectedFilter: {
+          "regions.id": {
+            in: defaultRegions.map((region) => region.id),
+          }
+        },
+      },
+      {
+        name: "should use correct filter for projects and regions",
         projects: defaultProjects,
         regions: defaultRegions,
+        expectedFilter: {
+          or: [
+            {
+              "projects.id": {
+                in: defaultProjects.map((project) => project.id),
+              }
+            },
+            {
+              "regions.id": {
+                in: defaultRegions.map((region) => region.id),
+              }
+            },
+          ],
+        } as any,
+      },
+      {
+        // Unlike only having sites, if there are also projects and regions
+        // provided, we still need to call the API to get all sites for the
+        // projects and regions.
+        name: "should use correct filter for projects, regions, and sites",
+        projects: defaultProjects,
+        regions: defaultRegions,
+        sites: defaultSites,
+        expectedFilter: {
+          or: [
+            {
+              "projects.id": {
+                in: defaultProjects.map((project) => project.id),
+              }
+            },
+            {
+              "regions.id": {
+                in: defaultRegions.map((region) => region.id),
+              }
+            },
+            {
+              "id": {
+                in: defaultSites.map((site) => site.id),
+              }
+            },
+          ],
+        } as any,
+      },
+      {
+        name: "should do an unfiltered api request if no projects, regions, or sites are provided",
+        projects: [],
+        regions: [],
+        sites: [],
+        expectedFilter: {},
       },
     ];
 
@@ -179,15 +225,23 @@ describe("SiteMapComponent", () => {
         setup(sites);
         setComponentProps(testCase.projects, testCase.regions, testCase.sites);
 
-        expect(api.filter).toHaveBeenCalledOnceWith(
-          expectedFilter(testCase.projects, testCase.regions, testCase.sites),
-        );
+        const expectedFilters: Filters<Site> = {
+          filter: testCase.expectedFilter,
+          paging: { disablePaging: true },
+          projection: {
+            include: ["name", "customLatitude", "customLongitude"],
+          },
+        };
+
+        expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
       });
     }
 
     describe("sites", () => {
       it("should not call the filter api if only a site is provided", () => {
         setup(generateSites(2));
+        setComponentProps(undefined, undefined, defaultSites);
+
         expect(api.filter).not.toHaveBeenCalled();
       });
     });

@@ -117,7 +117,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       filter = filterOr(filter, regionFilters);
     }
 
-    if (this.sites()?.length === 0) {
+    if (this.sites()?.length) {
       const siteIds = this.modelIds(this.sites());
       filter = filterOr(filter, { id: { in: siteIds } });
     }

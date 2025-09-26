@@ -6,7 +6,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { filterAnd, filterModel, filterModelIds } from "./filters";
 
 describe("ModelFilters", () => {
-  describe("addFilters", () => {
+  describe("filterAnd", () => {
     it("should return the inner filter unchanged if there is no existing filter", () => {
       const currentFilters = undefined;
       const additionalFilters = {
@@ -86,6 +86,8 @@ describe("ModelFilters", () => {
       expect(observedResult).toEqual(expectedResult);
     });
   });
+
+  describe("filterOr", () => {});
 
   it("should return an empty filter if no model is specified", () => {
     const mockModel: Project = undefined;
