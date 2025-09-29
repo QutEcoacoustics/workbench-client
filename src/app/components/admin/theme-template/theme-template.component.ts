@@ -24,8 +24,8 @@ import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
 @Component({
   selector: "baw-admin-theme-template",
-  templateUrl: "theme-template.component.html",
-  styleUrl: "theme-template.component.scss",
+  templateUrl: "./theme-template.component.html",
+  styleUrl: "./theme-template.component.scss",
   imports: [FormsModule, NgClass, TitleCasePipe],
 })
 class AdminThemeTemplateComponent

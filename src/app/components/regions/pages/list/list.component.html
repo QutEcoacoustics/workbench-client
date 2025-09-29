@@ -1,0 +1,23 @@
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+  <li [ngbNavItem]="tabs.cards">
+    <a ngbNavLink>
+      <fa-icon [icon]="['fas', 'list']"></fa-icon>
+      Cards
+    </a>
+    <ng-template ngbNavContent>
+      <baw-region-card-list></baw-region-card-list>
+    </ng-template>
+  </li>
+
+  <li [ngbNavItem]="tabs.map">
+    <a ngbNavLink>
+      <fa-icon [icon]="['fas', 'earth-oceania']"></fa-icon>
+      Map
+    </a>
+    <ng-template ngbNavContent>
+      <baw-region-map></baw-region-map>
+    </ng-template>
+  </li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>

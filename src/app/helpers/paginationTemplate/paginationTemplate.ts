@@ -178,7 +178,11 @@ export abstract class PaginationTemplate<M extends AbstractModel>
       params[queryKey] = query;
     }
 
-    this.router.navigate([], { relativeTo: this.route, queryParams: params });
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: "merge",
+    });
   }
 
   /**

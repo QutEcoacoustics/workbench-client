@@ -1,0 +1,30 @@
+<label class="input-group mb-3">
+  <span class="input-group-prepend input-group-text">Filter</span>
+  <input
+    bawDebouncedInput
+    type="text"
+    class="form-control"
+    placeholder="Filter Sites"
+    [value]="filter"
+    (valueChange)="onFilter($event)"
+  >
+</label>
+
+@if (!loading) {
+  <!-- Regions Exist -->
+  @if (models().length > 0) {
+    <baw-model-cards [models]="models()"></baw-model-cards>
+  } @else {
+    <h4 class="text-center">Your list of sites is empty</h4>
+  }
+  <!-- Regions Don't Exist -->
+}
+
+@if (displayPagination) {
+  <ngb-pagination
+    aria-label="Pagination Buttons"
+    class="mt-2 d-flex justify-content-end"
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+  ></ngb-pagination>
+}

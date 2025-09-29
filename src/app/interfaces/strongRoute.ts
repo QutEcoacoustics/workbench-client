@@ -15,6 +15,12 @@ export type RouteParams = Record<string, string | number>;
 type QSPCallback = (params?: Params, models?: ResolvedModelList) => Params;
 
 /**
+ * @description
+ * Passes through query parameters unchanged.
+ */
+export const identityQspResolver: QSPCallback = (params) => params || {};
+
+/**
  * Strong Route class. This provides a workaround for issues related to the
  * angular Routes class. This class is utilized by the PageInfo decorator to
  * dynamically create routes for the various page components.
@@ -98,7 +104,7 @@ export class StrongRoute {
   private constructor(
     parent?: StrongRoute,
     public readonly pathFragment: string = StrongRoute.rootPath,
-    public readonly queryParams: QSPCallback = () => ({}),
+    public readonly queryParams: QSPCallback = identityQspResolver,
     public readonly angularRouteConfig: Partial<Route> = {},
     isRoot?: boolean,
   ) {
@@ -148,7 +154,7 @@ export class StrongRoute {
    */
   public add(
     pathFragment: string,
-    queryParams?: QSPCallback,
+    queryParams: QSPCallback = identityQspResolver,
     angularRouteConfig?: Partial<Route>,
   ) {
     return new StrongRoute(this, pathFragment, queryParams, angularRouteConfig);
@@ -167,7 +173,7 @@ export class StrongRoute {
    */
   public addFeatureModule(
     pathFragment: string,
-    queryParams?: QSPCallback,
+    queryParams: QSPCallback = identityQspResolver,
     angularRouteConfig?: Partial<Route>,
   ) {
     return new StrongRoute(

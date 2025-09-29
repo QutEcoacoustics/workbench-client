@@ -95,8 +95,8 @@ const rootMappingPath = "";
  */
 @Component({
   selector: "baw-harvest-metadata-review",
-  templateUrl: "metadata-review.component.html",
-  styleUrl: "metadata-review.component.scss",
+  templateUrl: "./metadata-review.component.html",
+  styleUrl: "./metadata-review.component.scss",
   imports: [
     NgStyle,
     NgbTooltip,

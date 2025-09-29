@@ -155,7 +155,7 @@ class AnnotationSearchComponent
       queryParams.page = page;
     }
 
-    this.router.navigate([], { relativeTo: this.route, queryParams });
+    this.router.navigate([], { queryParams });
   }
 
   protected updateSearchParameters(model: AnnotationSearchParameters): void {

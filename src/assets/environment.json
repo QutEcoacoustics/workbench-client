@@ -26,6 +26,7 @@
       "harvestFilenameGuide": "https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
     },
     "hideProjects": false,
+    "websiteMaps": true,
     "customMenu": [
       {
         "title": "Research",

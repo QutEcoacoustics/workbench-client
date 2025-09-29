@@ -35,7 +35,7 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-analyses",
-  templateUrl: "list.component.html",
+  templateUrl: "./list.component.html",
   imports: [
     NgxDatatableModule,
     DatatableDefaultsDirective,

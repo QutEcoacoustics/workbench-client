@@ -28,8 +28,8 @@ import { LicenseInformationModalComponent } from "../modals/license-information.
  */
 @Component({
   selector: "baw-license-input",
-  templateUrl: "license-input.component.html",
-  styleUrl: "license-input.component.scss",
+  templateUrl: "./license-input.component.html",
+  styleUrl: "./license-input.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TypeaheadInputComponent,
