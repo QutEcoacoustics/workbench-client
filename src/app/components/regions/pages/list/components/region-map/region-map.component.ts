@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 
 @Component({
@@ -8,4 +8,6 @@ import { SiteMapComponent } from "@components/projects/components/site-map/site-
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SiteMapComponent],
 })
-export class RegionMapComponent { }
+export class RegionMapComponent {
+  public readonly filter = input("");
+}

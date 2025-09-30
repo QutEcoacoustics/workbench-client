@@ -2,25 +2,28 @@
   <google-map
     height="100%"
     width="100%"
+    mapId="0"
     [options]="mapOptions"
     (mapClick)="markerOptions()?.draggable && newLocation.emit($event)"
   >
-    @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
-      <map-marker
-        #markerRef="mapMarker"
-        [options]="markerOptions()"
-        [position]="individualMarkerOptions.position"
-        (mapDragend)="newLocation.emit($event)"
-        (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
-        (positionChanged)="focusMarkers()"
-        (markerInitialized)="focusMarkers()"
-      ></map-marker>
-    }
+    <map-marker-clusterer>
+      @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
+        <map-advanced-marker
+          #markerRef="mapAdvancedMarker"
+          [options]="markerOptions()"
+          [position]="individualMarkerOptions.position"
+          (mapDragend)="newLocation.emit($event)"
+          (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
+          (positionChanged)="focusMarkers()"
+          (markerInitialized)="focusMarkers()"
+        ></map-advanced-marker>
+      }
+    </map-marker-clusterer>
     <map-info-window>{{ infoContent }}</map-info-window>
   </google-map>
 } @else {
   <div class="map-placeholder">
-    @if (googleMapsLoaded() === MapLoadState.Loading || googleMapsLoaded() === MapLoadState.NotLoaded) {
+    @if (googleMapsLoaded() === MapLoadState.Loading || googleMapsLoaded() === MapLoadState.NotLoaded || fetchingData()) {
       <baw-loading></baw-loading>
     } @else if (googleMapsLoaded() === MapLoadState.Failed) {
       <p class="text-danger">Failure loading map</p>

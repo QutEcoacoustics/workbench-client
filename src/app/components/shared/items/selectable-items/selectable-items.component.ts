@@ -13,13 +13,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectableItemsComponent<T> {
-  public title = input<string>();
-  public description = input<string>();
-  public options = input<ISelectableItem<T>[]>();
-  public selection = input<T>();
-  public inline = input(false);
-  public disabled = input(false);
-  public selectionChange = output<T>();
+  public readonly title = input<string>();
+  public readonly description = input<string>();
+  public readonly options = input<ISelectableItem<T>[]>();
+  public readonly selection = input<T>();
+  public readonly inline = input(false);
+  public readonly disabled = input(false);
+  public readonly selectionChange = output<T>();
 
   protected changeSelection(item: T) {
     this.selectionChange.emit(item);

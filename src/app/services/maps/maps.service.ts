@@ -49,8 +49,17 @@ export class MapsService {
 
     this.mapsState = GoogleMapsState.Loading;
 
-    const googleMapsUrl = this.googleMapsBundleUrl();
+    const mapsError = this.embedScriptTag(this.googleMapsBundleUrl());
+    const clusterError = this.embedScriptTag(this.googleMapClusterUrl());
 
+    return Promise.race([
+      mapsError,
+      clusterError,
+      this.waitForGoogleNamespace(),
+    ]);
+  }
+
+  private embedScriptTag(src: string): Promise<boolean> {
     const node: HTMLScriptElement = document.createElement("script");
 
     const scriptErrorPromise = new Promise<boolean>((res) => {
@@ -61,17 +70,16 @@ export class MapsService {
       });
     });
 
+    // The Google maps clustering library does not support module scripts.
+    // Therefore, we have to use "async" script tags (instead of using ESM
+    // imports).
     node.id = "google-maps";
-    node.type = "text/javascript";
     node.async = true;
-    node.src = googleMapsUrl;
+    node.src = src;
 
     document.head.appendChild(node);
 
-    return Promise.race([
-      scriptErrorPromise,
-      this.waitForGoogleNamespace(),
-    ]) as Promise<boolean>;
+    return scriptErrorPromise;
   }
 
   private async waitForGoogleNamespace(): Promise<boolean> {
@@ -116,6 +124,11 @@ export class MapsService {
     }
 
     return googleMapsUrl;
+  }
+
+  private googleMapClusterUrl(): string {
+    // https://github.com/angular/components/blob/974d42f04/src/google-maps/map-marker-clusterer/README.md?plain=1#L5
+    return "https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js";
   }
 
   private logWarning(message: string): void {

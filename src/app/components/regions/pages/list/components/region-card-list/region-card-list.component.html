@@ -1,15 +1,3 @@
-<label class="input-group mb-3">
-  <span class="input-group-prepend input-group-text">Filter</span>
-  <input
-    bawDebouncedInput
-    type="text"
-    class="form-control"
-    placeholder="Filter Sites"
-    [value]="filter"
-    (valueChange)="onFilter($event)"
-  >
-</label>
-
 @if (!loading) {
   <!-- Regions Exist -->
   @if (models().length > 0) {

@@ -24,6 +24,8 @@ import { List } from "immutable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { Router } from "@angular/router";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { ConfigService } from "@services/config/config.service";
 import { RegionMapComponent } from "./components/region-map/region-map.component";
 import { RegionCardListComponent } from "./components/region-card-list/region-card-list.component";
 
@@ -47,26 +49,30 @@ export const regionsMenuItemActions = [
     FaIconComponent,
     RegionMapComponent,
     RegionCardListComponent,
+    DebouncedInputDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class RegionListComponent extends PageComponent implements OnInit {
+  protected readonly config = inject(ConfigService);
   private readonly router = inject(Router);
 
   protected readonly tabs = {
-    cards: 1,
+    tiles: 1,
     map: 2,
   } as const;
 
-  protected active = model(
+  protected readonly active = model(
     this.router.routerState.snapshot.root.queryParams["tab"] === "map"
       ? this.tabs.map
-      : this.tabs.cards,
+      : this.tabs.tiles,
   );
+
+  protected readonly filter = model("");
 
   public ngOnInit() {
     this.active.subscribe((active) => {
-      const tab = active === this.tabs.cards ? null : "map";
+      const tab = active === this.tabs.tiles ? null : "map";
       const queryParams = { tab };
 
       this.router.navigate([], {

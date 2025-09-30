@@ -19,6 +19,7 @@ import { MapMarkerOptions } from "@services/maps/maps.service";
 import { sanitizeMapMarkers, MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { first, takeUntil } from "rxjs/operators";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 // TODO Implement system to change colour of selected sites
 /**
@@ -28,19 +29,21 @@ import { first, takeUntil } from "rxjs/operators";
  */
 @Component({
   selector: "baw-site-map",
-  template: '<baw-map [markers]="markers()"></baw-map>',
+  template: '<baw-map [markers]="markers()" [fetchingData]="isFetching()"></baw-map>',
   imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public readonly projects = input<IdOr<Project>[]>();
   public readonly regions = input<IdOr<Region>[]>();
   public readonly sites = input<IdOr<Site>[]>();
   public readonly selected = input<List<IdOr<Site>>>();
 
-  protected markers = signal(List<MapMarkerOptions>());
+  protected readonly markers = signal(List<MapMarkerOptions>());
+  protected readonly isFetching = signal(true);
 
   // Using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc...
@@ -54,6 +57,13 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * Re-fetches site markers based on the current inputs
    */
   private refreshSiteMarkers(): void {
+    // We don't attempt to render the site map during SSR because the sites
+    // shown are almost always dependent on the users authenticated session,
+    // which is not available during SSR.
+    if (this.isServer) {
+      return;
+    }
+
     const sites = this.sites();
     if (this.hasAllSiteModels(sites)) {
       this.pushMarkers(sites);
@@ -68,6 +78,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       },
     };
 
+    this.isFetching.set(true);
     this.sitesApi
       .filter(filters)
       .pipe(
@@ -75,9 +86,13 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         takeUntil(this.unsubscribe),
       )
       .subscribe({
-        next: (siteLocations: Site[]) => this.pushMarkers(siteLocations),
+        next: (siteLocations: Site[]) => {
+          this.pushMarkers(siteLocations);
+          this.isFetching.set(false);
+        },
         error: (err) => {
           this.markers.set(List());
+          this.isFetching.set(false);
           throw new Error("Failed to load sites for map", { cause: err });
         },
       });

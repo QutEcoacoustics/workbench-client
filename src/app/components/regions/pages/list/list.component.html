@@ -1,23 +1,38 @@
-<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-  <li [ngbNavItem]="tabs.cards">
+<div class="region-list-chrome">
+  <label class="input-group mb-3">
+    <span class="input-group-prepend input-group-text">Filter</span>
+    <input
+      bawDebouncedInput
+      type="text"
+      class="form-control"
+      placeholder="Filter Sites"
+      [(value)]="filter"
+    >
+  </label>
+</div>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs right-aligned-tabs small-tabs">
+  <li [ngbNavItem]="tabs.tiles">
     <a ngbNavLink>
-      <fa-icon [icon]="['fas', 'list']"></fa-icon>
-      Cards
+      <fa-icon [icon]="['fas', 'table-cells-large']"></fa-icon>
+      Tiles
     </a>
     <ng-template ngbNavContent>
-      <baw-region-card-list></baw-region-card-list>
+      <baw-region-card-list [filterText]="filter()"></baw-region-card-list>
     </ng-template>
   </li>
 
-  <li [ngbNavItem]="tabs.map">
-    <a ngbNavLink>
-      <fa-icon [icon]="['fas', 'earth-oceania']"></fa-icon>
-      Map
-    </a>
-    <ng-template ngbNavContent>
-      <baw-region-map></baw-region-map>
-    </ng-template>
-  </li>
+  @if (config.settings.websiteMaps) {
+    <li [ngbNavItem]="tabs.map">
+      <a ngbNavLink>
+        <fa-icon [icon]="['fas', 'map-location-dot']"></fa-icon>
+        Map
+      </a>
+      <ng-template ngbNavContent>
+        <baw-region-map [filter]="filter()"></baw-region-map>
+      </ng-template>
+    </li>
+  }
 </ul>
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>

@@ -10,9 +10,10 @@ import {
 } from "@angular/core";
 import {
   GoogleMap,
+  MapAdvancedMarker,
   MapAnchorPoint,
   MapInfoWindow,
-  MapMarker,
+  MapMarkerClusterer,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -32,7 +33,7 @@ import { LoadingComponent } from "../loading/loading.component";
   selector: "baw-map",
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
-  imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
+  imports: [GoogleMap, MapAdvancedMarker, MapMarkerClusterer, MapInfoWindow, LoadingComponent],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
@@ -40,6 +41,8 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
   public readonly markerOptions = input<MapMarkerOptions>();
+  public readonly fetchingData = input<boolean>(false);
+
   public newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];

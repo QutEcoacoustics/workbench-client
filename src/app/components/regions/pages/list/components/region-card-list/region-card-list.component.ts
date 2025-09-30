@@ -1,12 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  signal,
-} from "@angular/core";
+import { Component, input, OnChanges, OnInit, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { Region } from "@models/Region";
 import { NgbPagination, NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
@@ -15,13 +9,14 @@ import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 @Component({
   selector: "baw-region-card-list",
   templateUrl: "./region-card-list.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DebouncedInputDirective, CardsComponent, NgbPagination],
+  imports: [CardsComponent, NgbPagination],
 })
 export class RegionCardListComponent
   extends PaginationTemplate<Region>
-  implements OnInit
+  implements OnInit, OnChanges
 {
+  public readonly filterText = input("");
+
   protected readonly models = signal<Region[]>([]);
 
   public constructor(
@@ -41,5 +36,9 @@ export class RegionCardListComponent
         this.models.set(regions);
       },
     );
+  }
+
+  public ngOnChanges(): void {
+    this.onFilter(this.filterText(), this.page);
   }
 }
