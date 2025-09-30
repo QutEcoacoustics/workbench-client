@@ -41,7 +41,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
   public readonly markerOptions = input<MapMarkerOptions>();
-  public readonly fetchingData = input<boolean>(false);
+  public readonly fetchingData = input(false);
 
   public newLocation = output<google.maps.MapMouseEvent>();
 

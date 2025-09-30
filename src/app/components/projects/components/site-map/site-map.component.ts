@@ -9,7 +9,7 @@ import {
 import { IdOr } from "@baw-api/api-common";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { filterModelIds, filterOr } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
@@ -41,6 +41,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   public readonly regions = input<IdOr<Region>[]>();
   public readonly sites = input<IdOr<Site>[]>();
   public readonly selected = input<List<IdOr<Site>>>();
+  public readonly filters = input<InnerFilter<Site>>();
 
   protected readonly markers = signal(List<MapMarkerOptions>());
   protected readonly isFetching = signal(true);
@@ -145,28 +146,28 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * Inputs are combined using OR logic.
    */
   private getFilter(): InnerFilter<Site> {
-    let filter: InnerFilter<Site> = {};
+    let siteFilters: InnerFilter<Site> = {};
 
     if (this.projects()) {
       const projectIds = this.modelIds(this.projects());
       const projectFilters = filterModelIds<Site>("projects", projectIds);
 
-      filter = filterOr(filter, projectFilters);
+      siteFilters = filterOr(siteFilters, projectFilters);
     }
 
     if (this.regions()) {
       const regionIds = this.modelIds(this.regions());
       const regionFilters = filterModelIds<Site>("regions", regionIds);
 
-      filter = filterOr(filter, regionFilters);
+      siteFilters = filterOr(siteFilters, regionFilters);
     }
 
     if (this.sites()) {
       const siteIds = this.modelIds(this.sites());
-      filter = filterOr(filter, { id: { in: siteIds } });
+      siteFilters = filterOr(siteFilters, { id: { in: siteIds } });
     }
 
-    return filter;
+    return filterAnd(siteFilters, this.filters());
   }
 
   /**
