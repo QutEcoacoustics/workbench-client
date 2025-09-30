@@ -18,6 +18,7 @@ import { Site } from "@models/Site";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { sanitizeMapMarkers, MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
+import { timer } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
@@ -29,7 +30,8 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
  */
 @Component({
   selector: "baw-site-map",
-  template: '<baw-map [markers]="markers()" [fetchingData]="isFetching()"></baw-map>',
+  template:
+    '<baw-map [markers]="markers()" [fetchingData]="isFetching()"></baw-map>',
   imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -79,24 +81,35 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       },
     };
 
-    this.isFetching.set(true);
-    this.sitesApi
+    const request$ = this.sitesApi
       .filter(filters)
-      .pipe(
-        first(),
-        takeUntil(this.unsubscribe),
-      )
-      .subscribe({
-        next: (siteLocations: Site[]) => {
-          this.pushMarkers(siteLocations);
-          this.isFetching.set(false);
-        },
-        error: (err) => {
-          this.markers.set(List());
-          this.isFetching.set(false);
-          throw new Error("Failed to load sites for map", { cause: err });
-        },
-      });
+      .pipe(first(), takeUntil(this.unsubscribe));
+
+    // For fast requests, we don't want to flash a loading state.
+    // However, if fetching takes a long time, we do want to show a loading
+    // state to inform the user that something is happening.
+    const timerSub = timer(400)
+      .pipe(takeUntil(this.unsubscribe), takeUntil(request$))
+      .subscribe(() => this.isFetching.set(true));
+
+    // takeUntil is specified above as this.unsubscribe
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    request$.subscribe({
+      next: (siteLocations: Site[]) => {
+        // cancel the timer if it hasn't fired yet
+        if (!this.isFetching()) {
+          timerSub.unsubscribe();
+        }
+        this.pushMarkers(siteLocations);
+        this.isFetching.set(false);
+      },
+      error: (err) => {
+        timerSub.unsubscribe();
+        this.markers.set(List());
+        this.isFetching.set(false);
+        throw new Error("Failed to load sites for map", { cause: err });
+      },
+    });
   }
 
   private modelIds<const T extends IdOr<Project | Region | Site>>(

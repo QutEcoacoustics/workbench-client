@@ -43,6 +43,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public readonly markerOptions = input<MapMarkerOptions>();
   public readonly fetchingData = input(false);
 
+  // Setting to "hybrid" can increase load times and looks like the map is bugged
+  public readonly mapOptions = input<MapOptions>({ mapTypeId: "satellite" });
+
   public newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];
@@ -50,8 +53,6 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public infoContent = "";
   private _map: GoogleMap;
 
-  // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions: MapOptions = { mapTypeId: "satellite" };
   public bounds: google.maps.LatLngBounds;
 
   protected readonly MapLoadState = GoogleMapsState;

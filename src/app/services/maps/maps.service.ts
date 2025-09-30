@@ -42,7 +42,7 @@ export class MapsService {
   private async embedGoogleMaps(): Promise<boolean> {
     // TODO: during SSR we might be able to render a static image of the map
     // using the StaticMapService
-    // https://developers.google.com/maps/documentation/maps-static/overview
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2442
     if (environment.testing || this.isServer) {
       return;
     }
