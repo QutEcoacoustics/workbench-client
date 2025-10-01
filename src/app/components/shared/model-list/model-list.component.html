@@ -1,4 +1,4 @@
-<div class="region-list-chrome">
+<div class="list-chrome">
   <label class="input-group mb-3">
     <span class="input-group-prepend input-group-text">Filter</span>
     <input
@@ -19,7 +19,7 @@
       Tiles
     </a>
     <ng-template ngbNavContent>
-      <ng-container [ngTemplateOutlet]="regionTiles"></ng-container>
+      <ng-container [ngTemplateOutlet]="tilesTab"></ng-container>
     </ng-template>
   </li>
 
@@ -30,7 +30,7 @@
         Map
       </a>
       <ng-template ngbNavContent>
-        <ng-container [ngTemplateOutlet]="regionMap"></ng-container>
+        <ng-container [ngTemplateOutlet]="mapTab"></ng-container>
       </ng-template>
     </li>
   }
@@ -38,7 +38,7 @@
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-<ng-template #regionTiles>
+<ng-template #tilesTab>
   @if (!loading) {
     @if (models().length > 0) {
       <!-- Regions Exist -->
@@ -59,9 +59,9 @@
   }
 </ng-template>
 
-<ng-template #regionMap>
+<ng-template #mapTab>
   <baw-site-map
-    class="region-map rounded"
+    class="geographic-map rounded"
     [filters]="mapFilter()"
   ></baw-site-map>
 </ng-template>
