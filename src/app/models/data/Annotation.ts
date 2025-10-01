@@ -2,12 +2,11 @@ import { MEDIA } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { DateTimeTimezone, Ids } from "@interfaces/apiInterfaces";
-import { AbstractModelWithoutId } from "@models/AbstractModel";
 import {
   bawDateTime,
   bawSubModelCollection,
 } from "@models/AttributeDecorators";
-import { IAudioEvent } from "@models/AudioEvent";
+import { AudioEvent, IAudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag, Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
@@ -24,10 +23,7 @@ export interface IAnnotation extends Required<IAudioEvent> {
 // contains all the information we need about an annotation
 //
 // this model is created from the AnnotationService and MediaService's
-export class Annotation
-  extends AbstractModelWithoutId<IAnnotation>
-  implements IAnnotation
-{
+export class Annotation extends AudioEvent implements IAnnotation {
   public readonly kind = "Audio Event";
   public readonly id: number;
   public readonly audioRecordingId: number;

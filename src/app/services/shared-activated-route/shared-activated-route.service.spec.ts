@@ -19,9 +19,9 @@ import {
   mockProvider,
   SpectatorService,
 } from "@ngneat/spectator";
-import { RouteOptions } from "@ngneat/spectator/lib/spectator-routing/route-options";
 import { generatePageInfo } from "@test/fakes/PageInfo";
 import { Observable, Subject } from "rxjs";
+import { RouteOptions } from "@ngneat/spectator/lib/spectator-routing/route-options";
 import { SharedActivatedRouteService } from "./shared-activated-route.service";
 
 describe("SharedActivatedRouteService", () => {

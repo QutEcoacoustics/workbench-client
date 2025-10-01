@@ -15,8 +15,8 @@ import {
   ContextSubscription,
   WithContext,
 } from "@helpers/context/context-decorators";
-import { SpectrogramComponent, MediaControlsComponent } from "node_modules/@ecoacoustics/web-components/@types";
-import { SubjectWrapper } from "node_modules/@ecoacoustics/web-components/@types/models/subject";
+import { SpectrogramComponent, MediaControlsComponent } from "@ecoacoustics/web-components/@types";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 
 export const gridTileContentSelector = "baw-grid-tile-content";
 

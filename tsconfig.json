@@ -78,6 +78,12 @@
       ],
       "@test/*": [
         "./src/app/test/*"
+      ],
+      "*": [
+        "./node_modules/*",
+      ],
+      "src/*": [
+        "./src/*"
       ]
     },
     "useDefineForClassFields": false

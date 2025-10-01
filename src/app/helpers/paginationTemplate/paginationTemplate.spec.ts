@@ -44,7 +44,9 @@ class MockComponent extends PaginationTemplate<Project> {
 }
 
 describe("PaginationTemplate", () => {
-  let api: SpyObject<ProjectsService>;
+  // I overwrite the filter method on the service so that I can test calling
+  // the service methods with additional parameters.
+  let api: SpyObject<ProjectsService & { filter: any }>;
   let spectator: SpectatorRouting<MockComponent>;
   let component: MockComponent;
 

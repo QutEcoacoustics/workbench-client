@@ -87,7 +87,6 @@
             },
             "development": {
               "optimization": false,
-              "outputHashing": "all",
               "sourceMap": true,
               "extractLicenses": true
             }
@@ -110,7 +109,8 @@
             },
             "development": {
               "host": "development.ecosounds.org",
-              "port": 4200
+              "port": 4200,
+              "ssl": true
             }
           }
         },

@@ -55,10 +55,10 @@ import {
   TypeaheadCallback,
   VerificationGridComponent,
   WhenPredicate,
-} from "node_modules/@ecoacoustics/web-components/@types";
-import { DecisionOptions } from "node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
-import { SubjectWrapper } from "node_modules/@ecoacoustics/web-components/@types/models/subject";
-import { PageFetcherContext } from "node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher";
+} from "@ecoacoustics/web-components/@types";
+import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
