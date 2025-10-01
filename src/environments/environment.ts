@@ -11,6 +11,6 @@ export const environment = {
    * and should not be modified without care
    */
   version: "<<VERSION_REPLACED_WHEN_BUILT>>",
-} as const;
+};
 
 import "zone.js/plugins/zone-error"; // Included with Angular CLI.

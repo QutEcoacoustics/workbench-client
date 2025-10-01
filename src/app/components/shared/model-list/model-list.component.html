@@ -5,7 +5,7 @@
       bawDebouncedInput
       type="text"
       class="form-control"
-      placeholder="Filter Sites"
+      [placeholder]="filterPlaceholder()"
       [value]="filter"
       (valueChange)="onFilter($event)"
     >
@@ -41,11 +41,11 @@
 <ng-template #tilesTab>
   @if (!loading) {
     @if (models().length > 0) {
-      <!-- Regions Exist -->
       <baw-model-cards [models]="models()"></baw-model-cards>
     } @else {
-      <!-- Regions Don't Exist -->
-      <h4 class="text-center">Your list of sites is empty</h4>
+      <h4 class="text-center">
+        <ng-template [ngTemplateOutlet]="noResultsTemplate()"></ng-template>
+      </h4>
     }
   }
 

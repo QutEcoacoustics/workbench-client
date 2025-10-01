@@ -123,10 +123,10 @@ export class LocationInputComponent extends FieldType implements OnInit {
   private setMarker(latitude: number, longitude: number) {
     this.marker = sanitizeMapMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
-        ? {
+        ? new google.maps.marker.AdvancedMarkerElement({
             position: { lat: latitude, lng: longitude },
             title: `Position (${latitude},${longitude})`,
-          }
+          })
         : null,
     );
   }

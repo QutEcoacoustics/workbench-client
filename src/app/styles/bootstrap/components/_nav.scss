@@ -4,5 +4,7 @@
 }
 
 .small-tabs {
-  font-size: 0.875rem;
+  // I use "em" units here instead of "rem" units so that this class is a
+  // modifier of the original font size.
+  font-size: 0.875em;
 }

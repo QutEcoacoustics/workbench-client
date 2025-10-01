@@ -6,6 +6,8 @@ import {
   OnInit,
   Inject,
   input,
+  contentChild,
+  TemplateRef,
 } from "@angular/core";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
@@ -55,6 +57,10 @@ export class ModelListComponent<Model extends ListModel>
   protected readonly siteConfig = inject(ConfigService);
 
   public readonly modelKey = input.required<string>();
+  public readonly filterPlaceholder = input("Filter");
+
+  protected readonly noResultsTemplate =
+    contentChild.required<TemplateRef<HTMLElement>>("noResultsTemplate");
 
   protected readonly tabs = {
     tiles: 1,
@@ -99,7 +105,9 @@ export class ModelListComponent<Model extends ListModel>
   private updateMapFilters(): void {
     const textFilter = this.filter;
     if (textFilter) {
-      this.mapFilter.set({ [`${this.modelKey()}.name`]: { contains: textFilter } } as any);
+      this.mapFilter.set({
+        [`${this.modelKey()}.name`]: { contains: textFilter },
+      } as any);
     } else {
       this.mapFilter.set(null);
     }

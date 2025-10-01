@@ -5,7 +5,8 @@ import { inject, InjectionToken, PLATFORM_ID } from "@angular/core";
  * Default number of milliseconds to wait when de-bouncing an input
  *
  * I chose a 200ms debounce delay because it means that worst case scenario,
- * we are sending 5 requests per second to the server.
+ * we are sending 5 requests per second to the server, which _should_ not
+ * overload the server.
  */
 export const defaultDebounceTime = 200;
 

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   inject,
   input,
   OnChanges,
@@ -33,20 +34,26 @@ import { LoadingComponent } from "../loading/loading.component";
   selector: "baw-map",
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
-  imports: [GoogleMap, MapAdvancedMarker, MapMarkerClusterer, MapInfoWindow, LoadingComponent],
+  imports: [
+    GoogleMap,
+    MapAdvancedMarker,
+    MapMarkerClusterer,
+    MapInfoWindow,
+    LoadingComponent,
+  ],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
-  public readonly markerOptions = input<MapMarkerOptions>();
+  public readonly markerOptions = input<Partial<MapMarkerOptions>>();
   public readonly fetchingData = input(false);
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public readonly mapOptions = input<MapOptions>({ mapTypeId: "satellite" });
 
-  public newLocation = output<google.maps.MapMouseEvent>();
+  public readonly newLocation = output<google.maps.MapMouseEvent>();
 
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
@@ -56,7 +63,15 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public bounds: google.maps.LatLngBounds;
 
   protected readonly MapLoadState = GoogleMapsState;
-  protected readonly googleMapsLoaded = signal<GoogleMapsState>(this.MapLoadState.Loading);
+  protected readonly mapsLoadState = signal<GoogleMapsState>(
+    this.MapLoadState.Loading,
+  );
+
+  protected readonly hasMapsLoaded = computed(() => {
+    return (
+      this.mapsLoadState() !== GoogleMapsState.Loaded || this.fetchingData()
+    );
+  });
 
   @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
 
@@ -70,22 +85,24 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     super();
 
     if (this.isServer) {
-      this.googleMapsLoaded.set(GoogleMapsState.NotLoaded);
+      this.mapsLoadState.set(GoogleMapsState.NotLoaded);
       return;
     }
 
     this.mapService
       .loadAsync()
       .then((success: boolean) => {
-        const newState = success ? GoogleMapsState.Loaded : GoogleMapsState.Failed;
-        this.googleMapsLoaded.set(newState);
+        const newState = success
+          ? GoogleMapsState.Loaded
+          : GoogleMapsState.Failed;
+        this.mapsLoadState.set(newState);
       })
       .catch(() => {
         // We issue a console warning before transitioning to the failed state
         // so if transitioning to the failed state causes a hard error, we have
         // a fallback log message.
         console.warn("Failed to load Google Maps");
-        this.googleMapsLoaded.set(GoogleMapsState.Failed);
+        this.mapsLoadState.set(GoogleMapsState.Failed);
       });
   }
 
@@ -99,7 +116,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
-  protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
+  protected addMapMarkerInfo(
+    options: MapMarkerOptions,
+    marker: MapAnchorPoint,
+  ): void {
     this.infoContent = options.title ?? "";
     this.info.open(marker);
   }
@@ -154,7 +174,7 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
+  markers: MapMarkerOptions | MapMarkerOptions[],
 ): List<MapMarkerOptions> {
   const markerOptions: MapMarkerOptions[] = [];
 

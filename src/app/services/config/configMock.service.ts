@@ -60,6 +60,7 @@ export const testApiConfig = new Configuration({
       harvestFilenameGuide: "http://broken_link",
     },
     hideProjects: false,
+    websiteMaps: true,
     customMenu: [
       {
         title: "<< content1 >>",

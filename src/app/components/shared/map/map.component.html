@@ -1,4 +1,4 @@
-@if (hasMarkers && googleMapsLoaded() === MapLoadState.Loaded && !fetchingData()) {
+@if (hasMapsLoaded()) {
   <google-map
     height="100%"
     width="100%"
@@ -23,13 +23,13 @@
   </google-map>
 } @else {
   <div class="map-placeholder">
-    @if (googleMapsLoaded() === MapLoadState.Loading || googleMapsLoaded() === MapLoadState.NotLoaded || fetchingData()) {
-      <baw-loading></baw-loading>
-    } @else if (googleMapsLoaded() === MapLoadState.Failed) {
+    @if (mapsLoadState() === MapLoadState.Failed) {
       <p class="text-danger">Failure loading map</p>
       <p class="error-hint">
         Please ensure your ad-block is not blocking Google Maps
       </p>
+    } @else if (hasMapsLoaded()) {
+      <baw-loading></baw-loading>
     } @else if (!hasMarkers) {
       <p>No locations specified</p>
     }

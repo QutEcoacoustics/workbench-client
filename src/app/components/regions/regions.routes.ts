@@ -1,8 +1,8 @@
 import { projectRoute } from "@components/projects/projects.routes";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-// When "hideProjects" is set in the environment.json, regions are not nested
-// under projects (e.g. A2O).
+// This route is accessible through the UI When "hideProjects" is set in the
+// environment.json (e.g. A2O).
 export const shallowRegionsRoute = StrongRoute.newRoot().add("regions");
 
 export const regionsRoute = projectRoute.addFeatureModule("regions");
