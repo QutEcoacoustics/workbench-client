@@ -100,7 +100,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
-    this.infoContent = options.title as string;
+    this.infoContent = options.title ?? "";
     this.info.open(marker);
   }
 

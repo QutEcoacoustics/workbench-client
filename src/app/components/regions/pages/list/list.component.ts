@@ -1,9 +1,9 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   inject,
   model,
   OnInit,
+  signal,
 } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
@@ -19,15 +19,22 @@ import {
   NgbNavLink,
   NgbNavLinkBase,
   NgbNavOutlet,
+  NgbPagination,
+  NgbPaginationConfig,
 } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { ConfigService } from "@services/config/config.service";
-import { RegionMapComponent } from "./components/region-map/region-map.component";
-import { RegionCardListComponent } from "./components/region-card-list/region-card-list.component";
+import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
+import { InnerFilter } from "@baw-api/baw-api.service";
+import { Site } from "@models/Site";
+import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
+import { Region } from "@models/Region";
+import { ShallowRegionsService } from "@baw-api/region/regions.service";
+import { CardsComponent } from "@shared/model-cards/cards/cards.component";
+import { NgTemplateOutlet } from "@angular/common";
 
 export const regionsMenuItemActions = [
   shallowNewRegionMenuItem,
@@ -38,6 +45,7 @@ export const regionsMenuItemActions = [
 @Component({
   selector: "baw-regions",
   templateUrl: "./list.component.html",
+  styleUrl: "./list.component.scss",
   imports: [
     NgbNav,
     NgbNavItem,
@@ -47,15 +55,15 @@ export const regionsMenuItemActions = [
     NgbNavContent,
     NgbNavOutlet,
     FaIconComponent,
-    RegionMapComponent,
-    RegionCardListComponent,
+    SiteMapComponent,
     DebouncedInputDirective,
+    NgTemplateOutlet,
+    NgbPagination,
+    CardsComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class RegionListComponent extends PageComponent implements OnInit {
-  protected readonly config = inject(ConfigService);
-  private readonly router = inject(Router);
+class RegionListComponent extends PaginationTemplate<Region> implements OnInit {
+  protected readonly siteConfig = inject(ConfigService);
 
   protected readonly tabs = {
     tiles: 1,
@@ -68,9 +76,33 @@ class RegionListComponent extends PageComponent implements OnInit {
       : this.tabs.tiles,
   );
 
-  protected readonly filter = model("");
+  protected readonly models = signal<Region[]>([]);
+  protected readonly mapFilter = signal<InnerFilter<Site> | null>(null);
+
+
+  public constructor(
+    router: Router,
+    route: ActivatedRoute,
+    paginationTemplate: NgbPaginationConfig,
+    regionsService: ShallowRegionsService,
+  ) {
+    super(
+      router,
+      route,
+      paginationTemplate,
+      regionsService,
+      "name",
+      () => [],
+      (regions) => {
+        this.models.set(regions);
+        this.updateMapFilters();
+      },
+    );
+  }
 
   public ngOnInit() {
+    super.ngOnInit();
+
     this.active.subscribe((active) => {
       const tab = active === this.tabs.tiles ? null : "map";
       const queryParams = { tab };
@@ -80,6 +112,15 @@ class RegionListComponent extends PageComponent implements OnInit {
         queryParamsHandling: "merge",
       });
     });
+  }
+
+  private updateMapFilters(): void {
+    const textFilter = this.filter;
+    if (textFilter) {
+      this.mapFilter.set({ "regions.name": { contains: textFilter } } as any);
+    } else {
+      this.mapFilter.set(null);
+    }
   }
 }
 

@@ -32,8 +32,14 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
   selector: "baw-site-map",
   template:
     '<baw-map [markers]="markers()" [fetchingData]="isFetching()"></baw-map>',
+  styleUrl: "./site-map.component.scss",
   imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    // You can use the "loaded" class to style the map differently after it has
+    // loaded.
+    "[class.loaded]": "!isFetching()",
+  },
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);

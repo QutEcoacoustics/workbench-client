@@ -6,7 +6,8 @@
       type="text"
       class="form-control"
       placeholder="Filter Sites"
-      [(value)]="filter"
+      [value]="filter"
+      (valueChange)="onFilter($event)"
     >
   </label>
 </div>
@@ -18,21 +19,49 @@
       Tiles
     </a>
     <ng-template ngbNavContent>
-      <baw-region-card-list [filterText]="filter()"></baw-region-card-list>
+      <ng-container [ngTemplateOutlet]="regionTiles"></ng-container>
     </ng-template>
   </li>
 
-  @if (config.settings.websiteMaps) {
+  @if (siteConfig.settings.websiteMaps) {
     <li [ngbNavItem]="tabs.map">
       <a ngbNavLink>
         <fa-icon [icon]="['fas', 'map-location-dot']"></fa-icon>
         Map
       </a>
       <ng-template ngbNavContent>
-        <baw-region-map [filter]="filter()"></baw-region-map>
+        <ng-container [ngTemplateOutlet]="regionMap"></ng-container>
       </ng-template>
     </li>
   }
 </ul>
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+<ng-template #regionTiles>
+  @if (!loading) {
+    @if (models().length > 0) {
+      <!-- Regions Exist -->
+      <baw-model-cards [models]="models()"></baw-model-cards>
+    } @else {
+      <!-- Regions Don't Exist -->
+      <h4 class="text-center">Your list of sites is empty</h4>
+    }
+  }
+
+  @if (displayPagination) {
+    <ngb-pagination
+      aria-label="Pagination Buttons"
+      class="mt-2 d-flex justify-content-end"
+      [collectionSize]="collectionSize"
+      [(page)]="page"
+    ></ngb-pagination>
+  }
+</ng-template>
+
+<ng-template #regionMap>
+  <baw-site-map
+    class="region-map rounded"
+    [filters]="mapFilter()"
+  ></baw-site-map>
+</ng-template>

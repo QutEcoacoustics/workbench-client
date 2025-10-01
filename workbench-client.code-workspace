@@ -64,6 +64,7 @@
       "lteq",
       "gteq",
       "viewports",
+      "clusterer",
     ],
     "cSpell.flagWords": [
       "yuo",
