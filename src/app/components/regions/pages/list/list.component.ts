@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import {
   shallowNewRegionMenuItem,
@@ -6,10 +6,10 @@ import {
   shallowRegionsMenuItem,
 } from "@components/regions/regions.menus";
 import { List } from "immutable";
-import { Region } from "@models/Region";
-import { ModelListComponent, modelListImports } from "@shared/model-list/model-list.component";
+import { ModelListComponent } from "@shared/model-list/model-list.component";
 import { MODEL_LIST_SERVICE } from "@shared/model-list/model-list.tokens";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
+import { PageComponent } from "@helpers/page/pageComponent";
 
 export const regionsMenuItemActions = [
   shallowNewRegionMenuItem,
@@ -19,14 +19,15 @@ export const regionsMenuItemActions = [
 
 @Component({
   selector: "baw-regions",
-  templateUrl: "../../../shared/model-list/model-list.component.html",
-  styleUrl: "../../../shared/model-list/model-list.component.scss",
-  imports: modelListImports,
+  template: `
+    <baw-model-list [modelKey]="'regions'"></baw-model-list>
+  `,
+  imports: [ModelListComponent],
   providers: [
     { provide: MODEL_LIST_SERVICE, useExisting: ShallowRegionsService },
   ],
 })
-class RegionListComponent extends ModelListComponent<Region> {}
+class RegionListComponent extends PageComponent {}
 
 RegionListComponent.linkToRoute({
   category: shallowRegionsCategory,

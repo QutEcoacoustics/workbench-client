@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -33,7 +32,7 @@ import {
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { merge, Observable, takeUntil } from "rxjs";
@@ -172,18 +171,12 @@ class ProjectDetailsComponent
   private apiReturnCount = 0;
 
   public constructor(
-    route: ActivatedRoute,
-    router: Router,
-    config: NgbPaginationConfig,
     private projectsApi: ProjectsService,
     private regionsApi: RegionsService,
     private sitesApi: SitesService,
     public notifications: ToastService,
   ) {
     super(
-      router,
-      route,
-      config,
       undefined,
       "name",
       () => [this.project.id],

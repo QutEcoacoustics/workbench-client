@@ -1,11 +1,10 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Params } from "@angular/router";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
-import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   SpectatorRouting,
@@ -25,16 +24,8 @@ const pageKey = "page";
   template: "",
 })
 class MockComponent extends PaginationTemplate<Project> {
-  public constructor(
-    router: Router,
-    route: ActivatedRoute,
-    config: NgbPaginationConfig,
-    api: ProjectsService
-  ) {
+  public constructor(api: ProjectsService) {
     super(
-      router,
-      route,
-      config,
       api,
       "id",
       () => [],

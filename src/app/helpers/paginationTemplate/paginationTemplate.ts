@@ -1,4 +1,4 @@
-import { Directive, OnInit } from "@angular/core";
+import { Directive, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import {
@@ -23,6 +23,12 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   extends PageComponent
   implements OnInit
 {
+  protected readonly router = inject(Router);
+  protected readonly route = inject(ActivatedRoute)
+
+  /** Config for pagination defaults */
+  protected readonly config = inject(NgbPaginationConfig);
+
   /**
    * Observable to wrap api request behavior
    */
@@ -64,12 +70,6 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   private _page: number;
 
   public constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    /**
-     * Config for pagination defaults
-     */
-    protected config: NgbPaginationConfig,
     /**
      * API Service which will create filter requests
      */

@@ -1,4 +1,12 @@
-import { Component, inject, model, signal, OnInit, Inject } from "@angular/core";
+import {
+  Component,
+  inject,
+  model,
+  signal,
+  OnInit,
+  Inject,
+  input,
+} from "@angular/core";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import {
@@ -10,44 +18,43 @@ import {
   NgbNavLinkBase,
   NgbNavOutlet,
   NgbPagination,
-  NgbPaginationConfig,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgTemplateOutlet } from "@angular/common";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ConfigService } from "@services/config/config.service";
-import { ActivatedRoute, Router } from "@angular/router";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ApiFilter } from "@baw-api/api-common";
 import { ListModel, MODEL_LIST_SERVICE } from "./model-list.tokens";
-
-export const modelListImports = [
-  NgbNav,
-  NgbNavItem,
-  NgbNavItemRole,
-  NgbNavLink,
-  NgbNavLinkBase,
-  NgbNavContent,
-  NgbNavOutlet,
-  FaIconComponent,
-  SiteMapComponent,
-  DebouncedInputDirective,
-  NgTemplateOutlet,
-  NgbPagination,
-  CardsComponent,
-];
 
 @Component({
   selector: "baw-model-list",
   templateUrl: "./model-list.component.html",
   styleUrl: "./model-list.component.scss",
-  imports: modelListImports,
+  imports: [
+    NgbNav,
+    NgbNavItem,
+    NgbNavItemRole,
+    NgbNavLink,
+    NgbNavLinkBase,
+    NgbNavContent,
+    NgbNavOutlet,
+    FaIconComponent,
+    SiteMapComponent,
+    DebouncedInputDirective,
+    NgTemplateOutlet,
+    NgbPagination,
+    CardsComponent,
+  ],
 })
-export class ModelListComponent<
-  Model extends ListModel,
-> extends PaginationTemplate<Model> implements OnInit {
+export class ModelListComponent<Model extends ListModel>
+  extends PaginationTemplate<Model>
+  implements OnInit
+{
   protected readonly siteConfig = inject(ConfigService);
+
+  public readonly modelKey = input.required<string>();
 
   protected readonly tabs = {
     tiles: 1,
@@ -63,17 +70,8 @@ export class ModelListComponent<
   protected readonly models = signal<Model[]>([]);
   protected readonly mapFilter = signal<InnerFilter<Model> | null>(null);
 
-
-  public constructor(
-    router: Router,
-    route: ActivatedRoute,
-    paginationTemplate: NgbPaginationConfig,
-    @Inject(MODEL_LIST_SERVICE) service: ApiFilter<Model>,
-  ) {
+  public constructor(@Inject(MODEL_LIST_SERVICE) service: ApiFilter<Model>) {
     super(
-      router,
-      route,
-      paginationTemplate,
       service,
       "name",
       () => [],
@@ -101,10 +99,9 @@ export class ModelListComponent<
   private updateMapFilters(): void {
     const textFilter = this.filter;
     if (textFilter) {
-      this.mapFilter.set({ "regions.name": { contains: textFilter } } as any);
+      this.mapFilter.set({ [`${this.modelKey()}.name`]: { contains: textFilter } } as any);
     } else {
       this.mapFilter.set(null);
     }
   }
-
 }
