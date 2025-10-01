@@ -105,9 +105,11 @@ export class ModelListComponent<Model extends ListModel>
   private updateMapFilters(): void {
     const textFilter = this.filter;
     if (textFilter) {
+      // I need to type cast the filter here because our filter types don't
+      // currently reflect that we can filter by associated models.
       this.mapFilter.set({
         [`${this.modelKey()}.name`]: { contains: textFilter },
-      } as any);
+      } as InnerFilter<Model>);
     } else {
       this.mapFilter.set(null);
     }

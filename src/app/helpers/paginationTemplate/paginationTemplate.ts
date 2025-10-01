@@ -24,7 +24,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   implements OnInit
 {
   protected readonly router = inject(Router);
-  protected readonly route = inject(ActivatedRoute)
+  protected readonly route = inject(ActivatedRoute);
 
   /** Config for pagination defaults */
   protected readonly config = inject(NgbPaginationConfig);
