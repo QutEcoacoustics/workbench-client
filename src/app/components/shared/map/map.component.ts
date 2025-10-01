@@ -69,7 +69,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   protected readonly hasMapsLoaded = computed(() => {
     return (
-      this.mapsLoadState() !== GoogleMapsState.Loaded || this.fetchingData()
+      this.mapsLoadState() === GoogleMapsState.Loaded && !this.fetchingData()
     );
   });
 

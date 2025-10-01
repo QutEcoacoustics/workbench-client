@@ -1,4 +1,4 @@
-@if (hasMapsLoaded()) {
+@if (hasMarkers && hasMapsLoaded()) {
   <google-map
     height="100%"
     width="100%"
@@ -28,7 +28,7 @@
       <p class="error-hint">
         Please ensure your ad-block is not blocking Google Maps
       </p>
-    } @else if (hasMapsLoaded()) {
+    } @else if (!hasMapsLoaded()) {
       <baw-loading></baw-loading>
     } @else if (!hasMarkers) {
       <p>No locations specified</p>

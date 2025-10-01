@@ -49,12 +49,12 @@ export class MapsService {
 
     this.mapsState = GoogleMapsState.Loading;
 
-    const mapsError = this.embedScriptTag(this.googleMapsBundleUrl());
-    const clusterError = this.embedScriptTag(this.googleMapClusterUrl());
+    const mapsImport = this.embedScriptTag(this.googleMapsBundleUrl());
+    const clusterImport = this.embedScriptTag(this.googleMapClusterUrl());
 
     return Promise.race([
-      mapsError,
-      clusterError,
+      mapsImport,
+      clusterImport,
       this.waitForGoogleNamespace(),
     ]);
   }
@@ -92,7 +92,8 @@ export class MapsService {
       if (
         typeof google !== "undefined" &&
         typeof google.maps !== "undefined" &&
-        typeof google.maps.importLibrary !== "undefined"
+        typeof google.maps.importLibrary !== "undefined" &&
+        typeof google.maps.marker.AdvancedMarkerElement !== "undefined"
       ) {
         this.mapsState = GoogleMapsState.Loaded;
         return true;
@@ -111,15 +112,12 @@ export class MapsService {
     // block the main thread while loading
     // this can improve performance and removes a warning from the dev console
     const googleMapsBaseUrl =
-      "https://maps.googleapis.com/maps/api/js?loading=async";
+      "https://maps.googleapis.com/maps/api/js?loading=async&libraries=marker";
 
     const mapsKey = this.config.keys.googleMaps;
 
     let googleMapsUrl = googleMapsBaseUrl;
     if (mapsKey) {
-      // TODO: migrate to google.maps.AdvancedMarkerElement once we bump the
-      // Angular version
-      // https://developers.google.com/maps/documentation/javascript/advanced-markers/migration
       googleMapsUrl += `&key=${mapsKey}`;
     }
 
