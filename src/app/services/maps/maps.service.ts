@@ -126,7 +126,7 @@ export class MapsService {
 
   private googleMapClusterUrl(): string {
     // https://github.com/angular/components/blob/974d42f04/src/google-maps/map-marker-clusterer/README.md?plain=1#L5
-    return "https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js";
+    return "@googlemaps/markerclusterer/dist/index.min.js";
   }
 
   private logWarning(message: string): void {
