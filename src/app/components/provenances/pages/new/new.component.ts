@@ -13,24 +13,14 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { provenancesMenuItemActions } from "../list/list.component";
 import schema from "../../provenance.schema.json";
 
 @Component({
   selector: "baw-provenances-new",
-  template: `
-    @if (!failure) {
-    <baw-form
-      title="New Provenance"
-      [model]="model"
-      [fields]="fields"
-      submitLabel="Submit"
-      [submitLoading]="loading"
-      (onSubmit)="submit($event)"
-    ></baw-form>
-    }
-  `,
-  imports: [FormComponent],
+  templateUrl: "./new.component.html",
+  imports: [FormComponent, ErrorHandlerComponent],
 })
 class ProvenanceNewComponent extends FormTemplate<AudioEventProvenance> {
   public fields = schema.fields;
