@@ -19,13 +19,7 @@ export const regionsMenuItemActions = [
 
 @Component({
   selector: "baw-regions",
-  template: `
-    <baw-model-list [modelKey]="'regions'" [filterPlaceholder]="'Filter sites'">
-      <ng-template #noResultsTemplate>
-        No sites found
-      </ng-template>
-    </baw-model-list>
-  `,
+  templateUrl: "./list.component.html",
   imports: [ModelListComponent],
   providers: [
     { provide: MODEL_LIST_SERVICE, useExisting: ShallowRegionsService },

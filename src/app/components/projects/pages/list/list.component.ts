@@ -21,20 +21,7 @@ export const projectsMenuItemActions = [
 
 @Component({
   selector: "baw-projects-list",
-  template: `
-    <baw-model-list [modelKey]="'projects'" [filterPlaceholder]="'Filter projects'">
-      <!--
-        This error message is quite generic because it can appear under multiple
-        conditions:
-          1. There are no projects in the system
-          2. The user does not have permission to view any projects
-          3. The user filtered the list to something that has no results
-      -->
-      <ng-template #noResultsTemplate>
-        No projects found
-      </ng-template>
-    </baw-model-list>
-  `,
+  templateUrl: "./list.component.html",
   imports: [ModelListComponent],
   providers: [
     { provide: MODEL_LIST_SERVICE, useExisting: ProjectsService },

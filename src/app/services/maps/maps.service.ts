@@ -125,6 +125,13 @@ export class MapsService {
   }
 
   private googleMapClusterUrl(): string {
+    // We have to import the markerclusterer library using a script tag,
+    // because it does not support ESM imports.
+    //
+    // We don't use the suggested unpkg CDN so that we don't have to establish a
+    // new connection to a third party server, and can instead serve the file
+    // from our own server (via angular.json assets), meaning that it can re-use
+    // the same keep-alive connection as the rest of the app.
     // https://github.com/angular/components/blob/974d42f04/src/google-maps/map-marker-clusterer/README.md?plain=1#L5
     return "@googlemaps/markerclusterer/dist/index.min.js";
   }

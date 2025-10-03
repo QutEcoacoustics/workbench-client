@@ -15,6 +15,7 @@ import {
   MapAnchorPoint,
   MapInfoWindow,
   MapMarkerClusterer,
+  Renderer,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -140,6 +141,37 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
     this._map.fitBounds(this.bounds);
     this._map.panToBounds(this.bounds);
+  }
+
+  protected clusterRenderer(): Renderer {
+    return {
+      render: (options: { count: number; position: google.maps.LatLng }) => {
+        const div = document.createElement("div");
+        div.className = "cluster-marker";
+        div.textContent = String(options.count);
+        return new google.maps.Marker({
+          position: options.position,
+          icon: {
+            url:
+              "data:image/svg+xml;charset=UTF-8," +
+              encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+                  <circle cx="20" cy="20" r="20" fill="var(--baw-highlight)" />
+                  <text x="20" y="25" font-size="15" fill="white" text-anchor="middle">${options.count}</text>
+                </svg>
+              `),
+            scaledSize: new google.maps.Size(40, 40),
+          },
+          label: {
+            text: String(options.count),
+            color: "white",
+            fontSize: "12px",
+            fontWeight: "bold",
+          },
+          zIndex: Number(google.maps.Marker.MAX_ZINDEX) + options.count,
+        });
+      }
+    };
   }
 
   /**

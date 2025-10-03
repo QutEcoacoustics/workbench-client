@@ -20,7 +20,7 @@ import { sanitizeMapMarkers, MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { timer } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { defaultSlowLoadTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 // TODO Implement system to change colour of selected sites
 /**
@@ -94,7 +94,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // For fast requests, we don't want to flash a loading state.
     // However, if fetching takes a long time, we do want to show a loading
     // state to inform the user that something is happening.
-    const timerSub = timer(400)
+    const timerSub = timer(defaultSlowLoadTime)
       .pipe(takeUntil(this.unsubscribe), takeUntil(request$))
       .subscribe(() => this.isFetching.set(true));
 

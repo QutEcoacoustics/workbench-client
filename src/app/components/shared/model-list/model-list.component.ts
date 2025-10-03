@@ -68,7 +68,7 @@ export class ModelListComponent<Model extends ListModel>
   } as const;
 
   protected readonly active = model(
-    this.router.routerState.snapshot.root.queryParams["tab"] === "map"
+    this.router.routerState?.snapshot?.root?.queryParams["tab"] === "map"
       ? this.tabs.map
       : this.tabs.tiles,
   );

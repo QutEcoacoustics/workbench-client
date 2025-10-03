@@ -102,7 +102,7 @@ describe("HomeComponent", () => {
   }
 
   function assertModelCardsCount(count: number) {
-    expect(getModelCards()?.models?.count() ?? 0).toBe(count);
+    expect(getModelCards()?.models()?.length ?? 0).toBe(count);
   }
 
   function getViewMoreButton(): HTMLAnchorElement {
@@ -213,7 +213,7 @@ describe("HomeComponent", () => {
         const model: any = test.generateModel();
         await test.awaitModel([model]);
         assertModelCardsCount(1);
-        expect(getModelCards().models.first()).toEqual(model);
+        expect(getModelCards().models()[0]).toEqual(model);
         expect(getViewMoreButton()).toBeTruthy();
       });
 
@@ -228,7 +228,7 @@ describe("HomeComponent", () => {
         const cards = getModelCards().models;
         assertModelCardsCount(3);
         models.forEach((model, index) =>
-          expect(cards.get(index)).toEqual(model)
+          expect(cards[index]).toEqual(model)
         );
         expect(getViewMoreButton()).toBeTruthy();
       });
