@@ -1,5 +1,4 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit, inject } from "@angular/core";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import {
   newProvenanceMenuItem,
@@ -32,13 +31,9 @@ export const provenancesMenuItemActions = [newProvenanceMenuItem];
   ],
 })
 class ProvenanceListComponent extends PageComponent implements OnInit {
-  public constructor(
-    private api: AudioEventProvenanceService,
-    private notifications: ToastService,
-    private modals: NgbModal,
-  ) {
-    super();
-  }
+  private api = inject(AudioEventProvenanceService);
+  private notifications = inject(ToastService);
+  private modals = inject(NgbModal);
 
   protected filters$: BehaviorSubject<Filters<AudioEventProvenance>>;
   private defaultFilters: Filters<AudioEventProvenance> = {
@@ -72,9 +67,14 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
     this.api
       .destroy(modelId)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(() => {
-        this.filters$.next(this.defaultFilters);
-        this.notifications.success(`Successfully destroyed ${modelName}`);
+      .subscribe({
+        next: () => {
+          this.filters$.next(this.defaultFilters);
+          this.notifications.success(`Successfully destroyed ${modelName}`);
+        },
+        error: (error) => {
+          this.notifications.error(`Failed to delete ${modelName}`);
+        },
       });
   }
 }

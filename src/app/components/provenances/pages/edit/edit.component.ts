@@ -24,20 +24,7 @@ const provenanceKey = "provenance";
 
 @Component({
   selector: "baw-provenance-edit",
-  template: `
-    @if (!failure) {
-      <baw-form
-        [title]="title"
-        [model]="model"
-        [fields]="fields"
-        [submitLoading]="loading"
-        submitLabel="Submit"
-        (onSubmit)="submit($event)"
-      ></baw-form>
-    } @else {
-      <baw-error-handler [error]="error"></baw-error-handler>
-    }
-  `,
+  templateUrl: "./edit.component.html",
   imports: [FormComponent, ErrorHandlerComponent],
 })
 class ProvenanceEditComponent
@@ -45,7 +32,6 @@ class ProvenanceEditComponent
   implements OnInit
 {
   public fields = schema.fields;
-  public title: string;
 
   private api = inject(AudioEventProvenanceService);
   protected notifications = inject(ToastService);
@@ -62,12 +48,6 @@ class ProvenanceEditComponent
 
   public ngOnInit() {
     super.ngOnInit();
-
-    if (this.failure) {
-      return;
-    }
-
-    this.title = `Edit ${this.model.name}`;
   }
 
   protected apiAction(model: Partial<AudioEventProvenance>) {
