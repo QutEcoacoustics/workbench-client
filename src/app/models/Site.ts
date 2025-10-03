@@ -223,10 +223,11 @@ export class Site extends AbstractModel<ISite> implements ISite {
       isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
 
     return hasCoordinates
-      ? new google.maps.marker.AdvancedMarkerElement({
+      ? {
           position: { lat: this.getLatitude(), lng: this.getLongitude() },
+          label: this.name,
           title: this.name,
-        })
+        }
       : null;
   }
 }

@@ -11,9 +11,9 @@ import {
 } from "@angular/core";
 import {
   GoogleMap,
-  MapAdvancedMarker,
   MapAnchorPoint,
   MapInfoWindow,
+  MapMarker,
   MapMarkerClusterer,
   Renderer,
 } from "@angular/google-maps";
@@ -37,7 +37,7 @@ import { LoadingComponent } from "../loading/loading.component";
   styleUrl: "./map.component.scss",
   imports: [
     GoogleMap,
-    MapAdvancedMarker,
+    MapMarker,
     MapMarkerClusterer,
     MapInfoWindow,
     LoadingComponent,
