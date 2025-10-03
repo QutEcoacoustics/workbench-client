@@ -1,6 +1,7 @@
 import { HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
+import { provenanceMenuItem } from "@components/provenances/provenances.menus";
 
 export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
   id?: Id;
@@ -33,7 +34,9 @@ export class AudioEventProvenance
    * Navigates to the details page of an AudioEventProvenance
    */
   public get viewUrl(): string {
-    return `/provenances/${this.id}`;
+    return provenanceMenuItem.route.format({
+      provenanceId: this.id,
+    });
   }
 
   public override toString(): string {

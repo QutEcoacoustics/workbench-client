@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   audioEventProvenanceResolvers,
@@ -34,25 +34,20 @@ const provenanceKey = "provenance";
 
 @Component({
   selector: "baw-provenance",
-  template: `
-    @if (provenance) {
-      <h1 class="provenance-name">{{ provenance.name }}</h1>
-      <baw-detail-view [model]="provenance" [fields]="fields"></baw-detail-view>
-    }
-  `,
+  templateUrl: "./details.component.html",
   imports: [DetailViewComponent],
 })
 class ProvenanceDetailsComponent extends PageComponent implements OnInit {
   public provenance: AudioEventProvenance;
   public fields = schema.fields;
 
-  public constructor(
-    protected route: ActivatedRoute,
-    private router: Router,
-    private provenancesApi: AudioEventProvenanceService,
-    public notifications: ToastService
-  ) {
-    super(route);
+  protected route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private provenancesApi = inject(AudioEventProvenanceService);
+  public notifications = inject(ToastService);
+
+  public constructor() {
+    super(inject(ActivatedRoute));
   }
 
   public ngOnInit() {

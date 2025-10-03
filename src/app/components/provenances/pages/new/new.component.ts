@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
 import {
@@ -25,15 +25,12 @@ import schema from "../../provenance.schema.json";
 class ProvenanceNewComponent extends FormTemplate<AudioEventProvenance> {
   public fields = schema.fields;
 
-  public constructor(
-    private api: AudioEventProvenanceService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
-    super(notifications, route, router, {
+  private api = inject(AudioEventProvenanceService);
+
+  public constructor() {
+    super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+      redirectUser: (model) => inject(Router).navigateByUrl(model.viewUrl),
     });
   }
 

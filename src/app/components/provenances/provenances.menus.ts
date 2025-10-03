@@ -6,6 +6,7 @@ import {
   defaultEditIcon,
   defaultNewIcon,
   isAdminPredicate,
+  isLoggedInPredicate,
 } from "src/app/app.menus";
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { provenanceRoute, provenancesRoute } from "./provenances.routes";
@@ -15,23 +16,23 @@ import { provenanceRoute, provenancesRoute } from "./provenances.routes";
 */
 export const provenancesCategory: Category = {
   label: "Provenances",
-  icon: ["fas", "fingerprint"],
+  icon: ["fas", "location-crosshairs"],
   route: provenancesRoute,
 };
 
 export const provenancesMenuItem = menuRoute({
-  icon: ["fas", "fingerprint"],
+  icon: ["fas", "location-crosshairs"],
   label: "Provenances",
   route: provenancesRoute,
   tooltip: () => "View provenances",
-  predicate: isAdminPredicate,
+  predicate: isLoggedInPredicate,
 });
 
 export const newProvenanceMenuItem = menuRoute({
   icon: defaultNewIcon,
   label: "New provenance",
   parent: provenancesMenuItem,
-  predicate: isAdminPredicate,
+  predicate: isLoggedInPredicate,
   route: provenancesRoute.add("new"),
   tooltip: () => "Create a new provenance",
 });
@@ -47,7 +48,7 @@ export const provenanceCategory: Category = {
 };
 
 export const provenanceMenuItem = menuRoute({
-  icon: ["fas", "fingerprint"],
+  icon: ["fas", "location-crosshairs"],
   label: "Provenance",
   parent: provenancesMenuItem,
   route: provenanceRoute,
