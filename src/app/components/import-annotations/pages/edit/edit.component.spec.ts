@@ -8,12 +8,15 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
-import { Subject } from "rxjs";
+import { of, Subject } from "rxjs";
 import { testFormlyFields } from "@test/helpers/formly";
 import { modelData } from "@test/helpers/faker";
 import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { Project } from "@models/Project";
+import { generateProject } from "@test/fakes/Project";
+import { fakeAsync } from "@angular/core/testing";
 import schema from "../../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
 
@@ -22,7 +25,9 @@ describe("EditAnnotationsComponent", () => {
 
   let spectator: SpectatorRouting<EditAnnotationsComponent>;
   let apiSpy: SpyObject<AudioEventImportService>;
+
   let defaultModel: AudioEventImport;
+  let defaultProject: Project;
 
   const createComponent = createRoutingFactory({
     component: EditAnnotationsComponent,
@@ -32,6 +37,7 @@ describe("EditAnnotationsComponent", () => {
     data: {
       resolvers: {
         audioEventImport: { model: defaultModel },
+        project: { model: defaultProject },
       },
     },
   });
@@ -44,15 +50,18 @@ describe("EditAnnotationsComponent", () => {
       })
     );
 
+    defaultProject = new Project(generateProject());
+
     spectator = createComponent({
       detectChanges: false,
     });
 
     apiSpy = spectator.inject(AUDIO_EVENT_IMPORT.token);
     apiSpy.update = jasmine.createSpy("update") as any;
-    apiSpy.update.and.callFake(() => new Subject());
+    apiSpy.update.and.callFake(() => of(defaultModel));
 
     spectator.component.model = defaultModel;
+    spectator.component.models.project = defaultProject;
     spectator.detectChanges();
   }
 
@@ -100,5 +109,14 @@ describe("EditAnnotationsComponent", () => {
     it("should not call the api before the form is submitted", () => {
       expect(apiSpy.update).not.toHaveBeenCalled();
     });
+
+    it("should redirect to the correct page after a successful form submission", fakeAsync(() => {
+      const projectId = spectator.component["project"].id;
+
+      spectator.component.submit(defaultModel);
+
+      const expectedUrl = `/projects/${projectId}/import_annotations/${defaultModel.id}`;
+      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(expectedUrl);
+    }));
   });
 });
