@@ -20,7 +20,7 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import {
-  getElementByInnerText,
+  getElementByTextContent,
   selectFromTypeahead,
   toggleDropdown,
   waitForDropdown,
@@ -454,7 +454,7 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     it("should emit a new model if the sort is updated to a non-default value", fakeAsync(() => {
-      const targetOption = getElementByInnerText<HTMLOptionElement>(
+      const targetOption = getElementByTextContent<HTMLOptionElement>(
         spec,
         "Score (Ascending)",
       );
@@ -466,7 +466,7 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     it("should emit a new model if the sort is updated to the default value", fakeAsync(() => {
-      const targetOption = getElementByInnerText<HTMLOptionElement>(
+      const targetOption = getElementByTextContent<HTMLOptionElement>(
         spec,
         "Created Date (Oldest First)",
       );

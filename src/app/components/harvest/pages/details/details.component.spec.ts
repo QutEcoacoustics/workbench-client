@@ -19,7 +19,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { TitleComponent } from "@components/harvest/components/shared/title.component";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { IconsModule } from "@shared/icons/icons.module";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
@@ -82,7 +82,7 @@ describe("DetailsComponent", () => {
     setup();
 
     const expectedTitle = `Project: ${defaultProject.name}`;
-    const titleElement = getElementByInnerText(spec, expectedTitle);
+    const titleElement = getElementByTextContent(spec, expectedTitle);
 
     expect(titleElement).toExist();
   });
@@ -91,7 +91,7 @@ describe("DetailsComponent", () => {
     setup();
 
     const expectedTitle = `Upload Recordings: ${defaultHarvest.name}`;
-    const titleElement = getElementByInnerText(spec, expectedTitle);
+    const titleElement = getElementByTextContent(spec, expectedTitle);
 
     expect(titleElement).toExist();
   });
