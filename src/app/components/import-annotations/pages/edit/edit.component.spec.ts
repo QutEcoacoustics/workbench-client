@@ -36,7 +36,6 @@ describe("EditAnnotationsComponent", () => {
     imports: [...testFormImports, FormComponent],
     providers: testFormProviders,
     mocks: [ToastService],
-    stubsEnabled: true,
   });
 
   function setup(): void {
@@ -44,7 +43,7 @@ describe("EditAnnotationsComponent", () => {
       generateAudioEventImport({
         name: modelData.name.jobTitle(),
         description: modelData.description(),
-      })
+      }),
     );
 
     defaultProject = new Project(generateProject());
@@ -121,12 +120,15 @@ describe("EditAnnotationsComponent", () => {
         name: modelData.name.jobTitle(),
         description: modelData.description(),
       });
-      apiSpy.update.and.callFake(() => new BehaviorSubject<AudioEventImport>(updatedModel));
+
+      apiSpy.update.and.callFake(
+        () => new BehaviorSubject<AudioEventImport>(updatedModel),
+      );
 
       spectator.component.submit(updatedModel);
 
       expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
-        updatedModel.createViewUrl(defaultProject.id)
+        updatedModel.createViewUrl(defaultProject.id),
       );
     });
   });
