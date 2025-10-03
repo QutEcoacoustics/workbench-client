@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   audioEventProvenanceResolvers,
@@ -16,6 +16,7 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { provenanceMenuItemActions } from "../details/details.component";
 import schema from "../../provenance.schema.json";
 
@@ -33,9 +34,11 @@ const provenanceKey = "provenance";
         submitLabel="Submit"
         (onSubmit)="submit($event)"
       ></baw-form>
+    } @else {
+      <baw-error-handler [error]="error"></baw-error-handler>
     }
   `,
-  imports: [FormComponent],
+  imports: [FormComponent, ErrorHandlerComponent],
 })
 class ProvenanceEditComponent
   extends FormTemplate<AudioEventProvenance>
@@ -44,13 +47,13 @@ class ProvenanceEditComponent
   public fields = schema.fields;
   public title: string;
 
-  public constructor(
-    private api: AudioEventProvenanceService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
-    super(notifications, route, router, {
+  private api = inject(AudioEventProvenanceService);
+  protected notifications = inject(ToastService);
+  protected route = inject(ActivatedRoute);
+  protected router = inject(Router);
+
+  public constructor() {
+    super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
       getModel: (models) => models[provenanceKey] as AudioEventProvenance,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),

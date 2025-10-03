@@ -22,6 +22,8 @@ import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
+import schema from "../../provenance.schema.json";
 
 export const provenanceMenuItemActions = [
   editProvenanceMenuItem,
@@ -35,29 +37,14 @@ const provenanceKey = "provenance";
   template: `
     @if (provenance) {
       <h1 class="provenance-name">{{ provenance.name }}</h1>
-      <div class="row mb-3">
-        <div class="col-sm-12">
-          <dl class="row">
-            <dt class="col-sm-3">Version</dt>
-            <dd class="col-sm-9">{{ provenance.version }}</dd>
-
-            <dt class="col-sm-3">Description</dt>
-            <dd class="col-sm-9" [innerHTML]="provenance.descriptionHtml || defaultDescription"></dd>
-
-            <dt class="col-sm-3">Score Minimum</dt>
-            <dd class="col-sm-9">{{ provenance.scoreMinimum ?? 'N/A' }}</dd>
-
-            <dt class="col-sm-3">Score Maximum</dt>
-            <dd class="col-sm-9">{{ provenance.scoreMaximum ?? 'N/A' }}</dd>
-          </dl>
-        </div>
-      </div>
+      <baw-detail-view [model]="provenance" [fields]="fields"></baw-detail-view>
     }
   `,
+  imports: [DetailViewComponent],
 })
 class ProvenanceDetailsComponent extends PageComponent implements OnInit {
-  public defaultDescription = "<i>No description found</i>";
   public provenance: AudioEventProvenance;
+  public fields = schema.fields;
 
   public constructor(
     protected route: ActivatedRoute,
