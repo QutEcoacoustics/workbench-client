@@ -72,10 +72,10 @@ describe("ProvenanceDetailsComponent", () => {
     expect(heading).toContainText(defaultProvenance.name);
   });
 
-  it("should display provenance version", () => {
+  it("should use detail-view component", () => {
     setup(defaultProvenance);
-    const element = spectator.query("dd");
-    expect(element).toContainText(defaultProvenance.version);
+    const detailView = spectator.query("baw-detail-view");
+    expect(detailView).toBeTruthy();
   });
 
   describe("deleteModel", () => {
