@@ -26,7 +26,7 @@ import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-in
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ConfigService } from "@services/config/config.service";
-import { InnerFilter } from "@baw-api/baw-api.service";
+import { AssociationKind, InnerFilter } from "@baw-api/baw-api.service";
 import { ApiFilter } from "@baw-api/api-common";
 import { associationModelFilter } from "@helpers/filters/associations";
 import { ListModel, MODEL_LIST_SERVICE } from "./model-list.tokens";
@@ -57,7 +57,7 @@ export class ModelListComponent<Model extends ListModel>
 {
   protected readonly siteConfig = inject(ConfigService);
 
-  public readonly modelKey = input.required<string>();
+  public readonly modelKey = input.required<AssociationKind>();
   public readonly filterPlaceholder = input("Filter");
 
   protected readonly noResultsTemplate =

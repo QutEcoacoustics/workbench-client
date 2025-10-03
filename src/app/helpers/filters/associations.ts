@@ -1,8 +1,8 @@
-import { InnerFilter } from "@baw-api/baw-api.service";
+import { AssociationKind, InnerFilter } from "@baw-api/baw-api.service";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { filterAnd, filterOr } from "./filters";
 
-type MergeStrategy = typeof filterAnd | typeof filterOr;
+export type MergeStrategy = typeof filterAnd | typeof filterOr;
 
 /**
  * @description
@@ -46,7 +46,7 @@ export function associationModelFilter<
   AssociationModel extends AbstractModelWithoutId,
   BaseModel extends AbstractModelWithoutId,
 >(
-  associationKey: AssociationModel["kind"],
+  associationKey: AssociationKind<AssociationModel>,
   associationFilter: InnerFilter<AssociationModel>,
   baseFilter: InnerFilter<BaseModel> = {},
   merge: MergeStrategy = filterAnd,
