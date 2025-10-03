@@ -3,13 +3,13 @@ import { AbstractModel } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
 
 export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
-  id: Id;
-  name: string;
-  version: string;
-  description: string;
+  id?: Id;
+  name?: string;
+  version?: string;
+  description?: string;
 
-  scoreMinimum: number;
-  scoreMaximum: number;
+  scoreMinimum?: number;
+  scoreMaximum?: number;
 }
 
 export class AudioEventProvenance
@@ -33,7 +33,7 @@ export class AudioEventProvenance
    * Navigates to the details page of an AudioEventProvenance
    */
   public get viewUrl(): string {
-    return "";
+    return `/provenances/${this.id}`;
   }
 
   public override toString(): string {
