@@ -28,6 +28,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ConfigService } from "@services/config/config.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
 import { ApiFilter } from "@baw-api/api-common";
+import { associationModelFilter } from "@helpers/filters/associations";
 import { ListModel, MODEL_LIST_SERVICE } from "./model-list.tokens";
 
 @Component({
@@ -105,11 +106,10 @@ export class ModelListComponent<Model extends ListModel>
   private updateMapFilters(): void {
     const textFilter = this.filter;
     if (textFilter) {
-      // I need to type cast the filter here because our filter types don't
-      // currently reflect that we can filter by associated models.
-      this.mapFilter.set({
-        [`${this.modelKey()}.name`]: { contains: textFilter },
-      } as InnerFilter<Model>);
+      const baseFilter = this.generateFilter();
+      this.mapFilter.set(
+        associationModelFilter(this.modelKey(), baseFilter.filter)
+      );
     } else {
       this.mapFilter.set(null);
     }

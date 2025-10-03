@@ -30,8 +30,12 @@ import { defaultSlowLoadTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
  */
 @Component({
   selector: "baw-site-map",
-  template:
-    '<baw-map [markers]="markers()" [fetchingData]="isFetching()"></baw-map>',
+  template: `
+    <baw-map
+      [markers]="markers()"
+      [fetchingData]="isFetching()"
+    ></baw-map>
+  `,
   styleUrl: "./site-map.component.scss",
   imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +54,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   public readonly sites = input<IdOr<Site>[]>();
   public readonly selected = input<List<IdOr<Site>>>();
   public readonly filters = input<InnerFilter<Site>>();
+  public readonly groupBy = input<string | undefined>();
 
   protected readonly markers = signal(List<MapMarkerOptions>());
   protected readonly isFetching = signal(true);

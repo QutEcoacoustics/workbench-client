@@ -1,8 +1,8 @@
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { Constructor, Writeable } from "@helpers/advancedTypes";
+import { Writeable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
+import { AbstractModel } from "@models/AbstractModel";
 
 /**
  * Adds an inner filter to the root of an existing filter in an `and` expression
@@ -156,80 +156,4 @@ export function notIn<T extends AbstractModel>(
   };
 
   return filterAnd<T>(currentFilter, additionalFilter);
-}
-
-type MergeStrategy = typeof filterAnd | typeof filterOr;
-
-/**
- * @description
- * Merges a complex inner filter for an associated model into an existing filter
- *
- * @param ctor The constructor of the associated model
- * @param associationFilter The inner filter for the associated model
- * @param baseFilter (optional)
- * A filter that the association filter will be merged into.
- * If no filter is provided, a new filter will be created.
- *
- * @example
- * ```ts
- * const sitesFilter: InnerFilter<Site> = {
- *   name: { contains: "test" }
- * };
- *
- * const projectsFilter: InnerFilter<Project> = {
- *   id: { eq: 1 }
- * };
- *
- * const combinedFilter = associationModelFilter(
- *   Project,
- *   projectsFilter
- *   sitesFilter,
- * );
- *
- * console.log(combinedFilter);
- * // Output:
- * // {
- * //   and: [
- * //     { "name": { contains: "test" } },
- * //     { "projects.id": { eq: 1 } },
- * //   ],
- * // }
- * ```
- *
- * Note that the projects filter was merged into the existing sites filter.
- */
-export function associationModelFilter<
-  AssociationModel extends AbstractModelWithoutId,
-  BaseModel extends AbstractModelWithoutId,
->(
-  associationKey: AssociationModel["kind"],
-  associationFilter: InnerFilter<AssociationModel>,
-  baseFilter: InnerFilter<BaseModel> = {},
-  merge: MergeStrategy = filterAnd,
-) {
-  // https://github.com/QutEcoacoustics/baw-server/wiki/API%3A-Filtering#advanced-filtering-for-resource
-  //
-  // Filtering a base model by an associated model field is done by prefixing
-  // the associated model's key to the field name.
-  // Therefore, we have to unwrap the association filters and prefix all of the
-  // object keys with the association key.
-  const unwrappedAssociationFilter: InnerFilter<BaseModel> = {};
-  for (const [key, value] of Object.entries(associationFilter)) {
-    if (key === "and" || key === "or" || key === "not") {
-      // recursively unwrap nested and/or/not blocks
-      unwrappedAssociationFilter[key] = value.map((item) =>
-        associationModelFilter(
-          associationKey,
-          item,
-          {},
-          // when unwrapping nested blocks, we need to use the same merge strategy
-          // as the parent block
-          merge,
-        ),
-      );
-    } else {
-      // prefix the association key to the field name
-      unwrappedAssociationFilter[`${associationKey}.${key}` as any] = value;
-    }
-  }
 }
