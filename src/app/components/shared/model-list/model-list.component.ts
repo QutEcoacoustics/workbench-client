@@ -29,6 +29,7 @@ import { ConfigService } from "@services/config/config.service";
 import { AssociationKind, InnerFilter } from "@baw-api/baw-api.service";
 import { ApiFilter } from "@baw-api/api-common";
 import { associationModelFilter } from "@helpers/filters/associations";
+import { Site } from "@models/Site";
 import { ListModel, MODEL_LIST_SERVICE } from "./model-list.tokens";
 
 @Component({
@@ -77,13 +78,17 @@ export class ModelListComponent<Model extends ListModel>
   protected readonly models = signal<Model[]>([]);
   protected readonly mapFilter = signal<InnerFilter<Model> | null>(null);
 
+  // This doesn't need to be a signal because it doesn't change after the first
+  // render.
+  protected groupBy: keyof Site;
+
   public constructor(@Inject(MODEL_LIST_SERVICE) service: ApiFilter<Model>) {
     super(
       service,
       "name",
       () => [],
-      (regions) => {
-        this.models.set(regions);
+      (fetchedModels) => {
+        this.models.set(fetchedModels);
         this.updateMapFilters();
       },
     );
@@ -91,6 +96,9 @@ export class ModelListComponent<Model extends ListModel>
 
   public ngOnInit() {
     super.ngOnInit();
+
+    const isProjectList = this.modelKey() === "project";
+    this.groupBy = isProjectList ? "projectIds" : "regionId";
 
     this.active.subscribe((active) => {
       const tab = active === this.tabs.tiles ? null : "map";

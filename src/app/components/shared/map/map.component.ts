@@ -7,6 +7,7 @@ import {
   output,
   signal,
   SimpleChanges,
+  viewChild,
   ViewChild,
 } from "@angular/core";
 import {
@@ -15,7 +16,6 @@ import {
   MapInfoWindow,
   MapMarker,
   MapMarkerClusterer,
-  Renderer,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -26,7 +26,7 @@ import {
 } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { DOCUMENT } from "@angular/common";
+import { interpolateSinebow } from "d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
 
 /**
@@ -47,7 +47,6 @@ import { LoadingComponent } from "../loading/loading.component";
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
-  private readonly document = inject(DOCUMENT);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
   public readonly markerOptions = input<Partial<MapMarkerOptions>>();
@@ -70,13 +69,24 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.MapLoadState.Loading,
   );
 
+  protected readonly groups = computed<unknown[]>(() => {
+    const groupSet = new Set<unknown>();
+    this.validMarkersOptions.forEach((marker) => {
+      if (marker.groupId !== undefined) {
+        groupSet.add(marker.groupId);
+      }
+    });
+
+    return Array.from(groupSet);
+  });
+
   protected readonly hasMapsLoaded = computed(() => {
     return (
       this.mapsLoadState() === GoogleMapsState.Loaded && !this.fetchingData()
     );
   });
 
-  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+  public readonly info = viewChild(MapInfoWindow);
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -124,7 +134,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     marker: MapAnchorPoint,
   ): void {
     this.infoContent = options.title ?? "";
-    this.info.open(marker);
+    this.info().open(marker);
   }
 
   /**
@@ -145,72 +155,28 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this._map.panToBounds(this.bounds);
   }
 
-  // https://github.com/googlemaps/js-markerclusterer/blob/9eabdf753ae9af5af1/examples/renderers.ts#L36
-  protected clusterRenderer(): Renderer {
-    const colorStops = {
-      1: "lightest",
-      5: "lighter",
-      10: "default",
-      20: "darker",
-      50: "darkest",
-      Infinity: "darkest",
-    } as const;
-
+  protected markerIcon(marker: MapMarkerOptions): google.maps.Icon | google.maps.Symbol {
     return {
-      render: (options: { count: number; position: google.maps.LatLng }) => {
-        // Find the last color stop that is less than or equal to the current count
-        const variant = Object.entries(colorStops).reduce((acc, [key, value]) => {
-          return options.count >= Number(key) ? value : acc;
-        }, "lightest");
-
-        let color = `var(--baw-highlight-${variant})`;
-        if (color === "var(--baw-highlight-default)") {
-          color = "var(--baw-highlight)";
-        }
-
-        // create svg url with fill color
-        const clusterContent = this.document.createElement("span");
-        clusterContent.style.display = "inline-block";
-        clusterContent.style.width = "2em";
-        clusterContent.style.height = "2em";
-        clusterContent.style.borderRadius = "50%";
-        clusterContent.style.backgroundColor = color;
-        clusterContent.style.color = "white";
-        clusterContent.style.display = "flex";
-        clusterContent.style.alignItems = "center";
-        clusterContent.style.justifyContent = "center";
-        clusterContent.style.fontSize = "1.25rem";
-        clusterContent.style.fontWeight = "bold";
-        clusterContent.style.border = `2px solid ${color}`;
-
-        clusterContent.innerHTML = `
-          <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-            <circle cx="120" cy="120" opacity=".4" r="70" />
-            <text
-              x="50%"
-              y="50%"
-              dominant-baseline="middle"
-              text-anchor="middle"
-              fill="white"
-              font-size="90px"
-              font-family="Arial, sans-serif"
-              font-weight="bold"
-            >
-              ${options.count}
-            </text>
-          </svg>
-        `;
-
-        return new google.maps.marker.AdvancedMarkerElement({
-          position: options.position,
-          content: clusterContent,
-          title: String(options.count),
-
-          // adjust zIndex so that the cluster is above regular markers
-          zIndex: Number(google.maps.Marker.MAX_ZINDEX) + options.count,
-        });
-      }
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor: this.markerColor(marker),
+      fillOpacity: 1,
+      strokeWeight: 0,
+      scale: 8
     };
+  }
+
+  private markerColor(marker: MapMarkerOptions): string {
+    const offset = 0;
+    const count = this.groups().length;
+    const index = this.groups().indexOf(marker.groupId);
+    if (index === -1 || count === 0) {
+      return "hsl(0, 100%, 50%)"; // Red
+    }
+
+    const scalar = (offset + (1 / count) * index ) % 1
+    const color = interpolateSinebow(scalar);
+
+    return color;
   }
 
   /**

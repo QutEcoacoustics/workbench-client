@@ -54,10 +54,11 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   public readonly sites = input<IdOr<Site>[]>();
   public readonly selected = input<List<IdOr<Site>>>();
   public readonly filters = input<InnerFilter<Site>>();
-  public readonly groupBy = input<string | undefined>();
+  public readonly groupBy = input<keyof Site | undefined>();
 
   protected readonly markers = signal(List<MapMarkerOptions>());
   protected readonly isFetching = signal(true);
+  protected readonly groups = signal<Set<unknown>>(new Set());
 
   // Using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc...
@@ -91,6 +92,10 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         include: ["name", "customLatitude", "customLongitude"],
       },
     };
+
+    if (this.groupBy()) {
+      filters.projection.include.push(this.groupBy());
+    }
 
     const request$ = this.sitesApi
       .filter(filters)
@@ -198,9 +203,28 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * Push new sites to markers list
    */
   private pushMarkers(sites: Site[]): void {
+    this.groups.set(new Set());
+
+    if (this.groupBy()) {
+      const groups = new Set<unknown>();
+      sites.forEach((site) => {
+        groups.add(site[this.groupBy()]);
+      });
+
+      this.groups.set(groups);
+    }
+
     const newMarkers = sanitizeMapMarkers(
-      sites.map((site) => site.getMapMarker()),
+      sites.map((site) => {
+        const marker = site.getMapMarker()
+        if (this.groupBy() && marker) {
+          marker.groupId = site[this.groupBy()];
+        }
+
+        return marker;
+      }),
     );
+
     this.markers.set(newMarkers);
   }
 }

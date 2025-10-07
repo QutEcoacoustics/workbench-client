@@ -11,7 +11,10 @@ export enum GoogleMapsState {
   Failed,
 }
 
-export type MapMarkerOptions = google.maps.MarkerOptions;
+export interface MapMarkerOptions extends google.maps.MarkerOptions {
+  groupId?: unknown;
+}
+
 export type MapOptions = google.maps.MapOptions;
 
 @Injectable({ providedIn: "root" })

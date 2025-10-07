@@ -6,13 +6,14 @@
     [options]="mapOptions()"
     (mapClick)="markerOptions()?.draggable && newLocation.emit($event)"
   >
-    <map-marker-clusterer [renderer]="clusterRenderer()">
+    <map-marker-clusterer>
       @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
         <map-marker
           #markerRef="mapMarker"
           [options]="markerOptions()"
           [title]="individualMarkerOptions.title"
           [position]="individualMarkerOptions.position"
+          [icon]="markerIcon(individualMarkerOptions)"
           (mapDragend)="newLocation.emit($event)"
           (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
           (positionChanged)="focusMarkers()"

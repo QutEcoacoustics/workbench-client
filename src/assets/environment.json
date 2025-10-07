@@ -1,7 +1,7 @@
 {
   "endpoints": {
     "environment": "development",
-    "apiRoot": "https://api.staging.ecosounds.org",
+    "apiRoot": "https://api.acousticobservatory.org/",
     "clientOrigin": "https://development.ecosounds.org:4200",
     "clientDir": "/",
     "oldClientOrigin": "https://api.staging.ecosounds.org",
