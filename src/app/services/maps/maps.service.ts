@@ -11,7 +11,7 @@ export enum GoogleMapsState {
   Failed,
 }
 
-export interface MapMarkerOptions extends google.maps.MarkerOptions {
+export interface MapMarkerOptions extends google.maps.marker.AdvancedMarkerElement {
   groupId?: unknown;
 }
 

@@ -8,17 +8,17 @@
   >
     <map-marker-clusterer>
       @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
-        <map-marker
-          #markerRef="mapMarker"
+        <map-advanced-marker
+          #markerRef="mapAdvancedMarker"
           [options]="markerOptions()"
           [title]="individualMarkerOptions.title"
           [position]="individualMarkerOptions.position"
-          [icon]="markerIcon(individualMarkerOptions)"
+          [content]="markerContent(individualMarkerOptions)"
           (mapDragend)="newLocation.emit($event)"
           (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
           (positionChanged)="focusMarkers()"
           (markerInitialized)="focusMarkers()"
-        ></map-marker>
+        ></map-advanced-marker>
       }
     </map-marker-clusterer>
     <map-info-window>{{ infoContent }}</map-info-window>

@@ -58,7 +58,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
   protected readonly markers = signal(List<MapMarkerOptions>());
   protected readonly isFetching = signal(true);
-  protected readonly groups = signal<Set<unknown>>(new Set());
+  protected readonly groups = signal<unknown[]>([]);
 
   // Using ngOnChanges instead of ngOnInit for reactivity
   // this allows us to dynamically update the projects, regions, sites, etc...
@@ -203,7 +203,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
    * Push new sites to markers list
    */
   private pushMarkers(sites: Site[]): void {
-    this.groups.set(new Set());
+    this.groups.set([]);
 
     if (this.groupBy()) {
       const groups = new Set<unknown>();
@@ -211,7 +211,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         groups.add(site[this.groupBy()]);
       });
 
-      this.groups.set(groups);
+      this.groups.set(Array.from(groups));
     }
 
     const newMarkers = sanitizeMapMarkers(

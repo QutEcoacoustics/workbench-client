@@ -14,8 +14,8 @@ import {
   GoogleMap,
   MapAnchorPoint,
   MapInfoWindow,
-  MapMarker,
   MapMarkerClusterer,
+  MapAdvancedMarker,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -26,7 +26,7 @@ import {
 } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { interpolateSinebow } from "d3-scale-chromatic";
+import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
 
 /**
@@ -38,7 +38,7 @@ import { LoadingComponent } from "../loading/loading.component";
   styleUrl: "./map.component.scss",
   imports: [
     GoogleMap,
-    MapMarker,
+    MapAdvancedMarker,
     MapMarkerClusterer,
     MapInfoWindow,
     LoadingComponent,
@@ -155,14 +155,15 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this._map.panToBounds(this.bounds);
   }
 
-  protected markerIcon(marker: MapMarkerOptions): google.maps.Icon | google.maps.Symbol {
-    return {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: this.markerColor(marker),
-      fillOpacity: 1,
-      strokeWeight: 0,
-      scale: 8
-    };
+  protected markerContent(marker: MapMarkerOptions): HTMLElement {
+    const color = this.markerColor(marker);
+    const pinElement = new google.maps.marker.PinElement({
+      background: color,
+      borderColor: color,
+      glyphColor: "white",
+    });
+
+    return pinElement.element;
   }
 
   private markerColor(marker: MapMarkerOptions): string {
