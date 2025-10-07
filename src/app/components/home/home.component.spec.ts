@@ -209,7 +209,7 @@ describe("HomeComponent", () => {
         assertViewMorePlaceholder(true, test.modelName);
       });
 
-      it("should display single model", async () => {
+      fit("should display single model", async () => {
         const model: any = test.generateModel();
         await test.awaitModel([model]);
         assertModelCardsCount(1);

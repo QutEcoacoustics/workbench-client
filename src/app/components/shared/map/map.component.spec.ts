@@ -7,10 +7,7 @@ import {
 } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
-import {
-  destroyGoogleMaps,
-  mockGoogleNamespace,
-} from "@test/helpers/googleMaps";
+import { destroyGoogleMaps } from "@test/helpers/googleMaps";
 import { modelData } from "@test/helpers/faker";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
@@ -65,8 +62,6 @@ describe("MapComponent", () => {
   }
 
   function setup(markers: MapMarkerOptions[] = []): void {
-    mockGoogleNamespace();
-
     spectator = createComponent({ detectChanges: false });
     mapsServiceSpy = spectator.inject(MapsService);
 

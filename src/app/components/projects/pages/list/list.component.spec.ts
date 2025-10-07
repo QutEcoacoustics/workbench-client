@@ -80,7 +80,7 @@ describe("ProjectsListComponent", () => {
       filter: {},
       paging: { disablePaging: true },
       projection: {
-        include: ["name", "customLatitude", "customLongitude"],
+        include: ["name", "customLatitude", "customLongitude", "regionId"],
       },
     };
 

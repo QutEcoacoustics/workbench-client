@@ -73,7 +73,9 @@ describe("RegionsListComponent", () => {
       filter: {},
       paging: { disablePaging: true },
       projection: {
-        include: ["name", "customLatitude", "customLongitude"],
+        // We expect that the regionId is included because we want to group on
+        // regions.
+        include: ["name", "customLatitude", "customLongitude", "regionId"],
       },
     };
 
