@@ -106,7 +106,7 @@ describe("SiteMapComponent", () => {
       assertMapMarkers(sites);
     });
 
-    fit("should display map markers for all sites over multiple pages", () => {
+    it("should display map markers for all sites over multiple pages", () => {
       const sites = generateSites(100);
       setup(sites);
       setComponentProps(defaultProjects);

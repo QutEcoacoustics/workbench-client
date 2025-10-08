@@ -31,7 +31,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
   private readonly mapsService = inject(MapsService);
 
   protected readonly asFormControl = asFormControl;
-  protected readonly marker = signal(List<MapMarkerOptions>());
+  protected readonly marker = signal<List<MapMarkerOptions> | null>(null);
 
   protected readonly latitude = signal<number | undefined>(undefined);
   protected readonly latitudeError = signal(false);
@@ -42,30 +42,33 @@ export class LocationInputComponent extends FieldType implements OnInit {
   public ngOnInit() {
     this.latitude.set(this.model["latitude"]);
     this.longitude.set(this.model["longitude"]);
-    this.updateModel(this.latitude(), this.longitude());
 
     this.formControl.setValidators(() => {
       const error = this.validateCoordinates();
       return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
+
+    this.setMarker(this.latitude(), this.longitude());
   }
 
   /**
    * Update hidden input
    */
   public updateModel(latitude?: number, longitude?: number) {
-    if (isInstantiated(latitude)) {
+    // These !== undefine checks allow setting the longitude and/or latitude to
+    // null, indicating that the value has been removed.
+    if (latitude !== undefined) {
       this.latitude.set(latitude);
     }
 
-    if (isInstantiated(longitude)) {
+    if (longitude !== undefined) {
       this.longitude.set(longitude);
     }
 
     this.formControl.setValue({
-      latitude: this.latitude,
-      longitude: this.longitude,
+      latitude: this.latitude(),
+      longitude: this.longitude(),
     });
 
     this.model["latitude"] = this.latitude();
@@ -111,9 +114,9 @@ export class LocationInputComponent extends FieldType implements OnInit {
     this.longitudeError.set(false);
 
     // XOR if latitude or longitude is set
-    if (!isInstantiated(this.latitude) !== !isInstantiated(this.longitude)) {
-      this.latitudeError.set(!isInstantiated(this.latitude));
-      this.longitudeError.set(!isInstantiated(this.longitude));
+    if (!isInstantiated(this.latitude()) !== !isInstantiated(this.longitude())) {
+      this.latitudeError.set(!isInstantiated(this.latitude()));
+      this.longitudeError.set(!isInstantiated(this.longitude()));
       return "Both latitude and longitude must be set or left empty";
     } else if (this.latitude() < -90 || this.latitude() > 90) {
       this.latitudeError.set(true);
