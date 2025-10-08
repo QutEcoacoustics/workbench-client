@@ -4,7 +4,12 @@ import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IProject, Project } from "@models/Project";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
-import { createHostFactory, mockProvider, SpectatorHost, SpyObject } from "@ngneat/spectator";
+import {
+  createHostFactory,
+  mockProvider,
+  SpectatorHost,
+  SpyObject,
+} from "@ngneat/spectator";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import { generateProject } from "@test/fakes/Project";
 import { nStepObservable } from "@test/helpers/general";
@@ -23,6 +28,9 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Site } from "@models/Site";
 import { getElementByTextContent } from "@test/helpers/html";
+import { generateSite } from "@test/fakes/Site";
+import { modelData } from "@test/helpers/faker";
+import { MapComponent } from "@shared/map/map.component";
 import { ModelListComponent } from "./model-list.component";
 import { MODEL_LIST_SERVICE } from "./model-list.tokens";
 
@@ -33,7 +41,7 @@ describe("ModelListComponent", () => {
   let projectsApi: SpyObject<ProjectsService>;
   let sitesApi: SpyObject<ShallowSitesService>;
 
-  const sitesResponse = [];
+  let sitesResponse: Site[] = [];
 
   const createComponent = createHostFactory({
     component: ModelListComponent<Project>,
@@ -105,6 +113,12 @@ describe("ModelListComponent", () => {
   }
 
   beforeEach(() => {
+    sitesResponse = modelData.randomArray(
+      5,
+      25,
+      () => new Site(generateSite()),
+    );
+
     spec = createComponent(
       `
       <baw-model-list [modelKey]="'projects'" [filterPlaceholder]="'Filter projects'">
@@ -159,8 +173,6 @@ describe("ModelListComponent", () => {
       assertCard(0, projects[0]);
     });
 
-    it("should display single project card", async () => {});
-
     it("should display multiple project cards", async () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
@@ -206,7 +218,9 @@ describe("ModelListComponent", () => {
   describe("map tab", () => {
     beforeEach(() => {
       spec.detectChanges();
-      const mapTabLink = getElementByTextContent(spec, "Map").querySelector("a");
+      const mapTabLink = getElementByTextContent(spec, "Map").querySelector(
+        "a",
+      );
 
       spec.click(mapTabLink);
       spec.detectChanges();
@@ -222,6 +236,18 @@ describe("ModelListComponent", () => {
       };
 
       expect(sitesApi.filter).toHaveBeenCalledOnceWith(expectedProjectFilters);
+    });
+
+    it("should display a map with markers for each site", () => {
+      const siteMap = spec.query(MapComponent);
+
+      const expectedSites: any[] = sitesResponse.map((site) => {
+        const marker = site.getMapMarker();
+        marker.groupId = site["regionId"];
+        return marker;
+      });
+
+      expect(siteMap.markers().toArray()).toEqual(expectedSites);
     });
   });
 
