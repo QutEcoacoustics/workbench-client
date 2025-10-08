@@ -177,15 +177,31 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     return pinElement.element;
   }
 
+  /**
+   * Takes a marker and returns a color based on its groupId.
+   * If there are no groups, or the groupId is not found, the marker will
+   * default to red.
+   */
   private markerColor(marker: MapMarkerOptions): string {
-    const offset = 0;
     const count = this.groups().length;
     const index = this.groups().indexOf(marker.groupId);
     if (index === -1 || count === 0) {
       return "hsl(0, 100%, 50%)"; // Red
     }
 
-    const scalar = (offset + (1 / count) * index ) % 1
+    // Using the total number of groups, we evenly pick spaces along the color
+    // range [0,1] to get distinct colors.
+    // By using a cyclical color scheme instead of a linear one, we hope that
+    // colors will be as distinct as possible.
+    // https://d3js.org/d3-scale-chromatic/cyclical
+    //
+    // Note that the count will always be the maximum index + 1.
+    // I purposely did this because a value of 0 and 1 are almost identical
+    // colors, so by using the count we add even padding to the beginning and
+    // the end of the picked color index.
+    // E.g. For 2 groups, the indexes will be 0 and 0.5 instead of 0 and 1,
+    // ensuring that the two colors are as far apart as possible.
+    const scalar = ((1 / count) * index) % 1
     const color = interpolateSinebow(scalar);
 
     return color;

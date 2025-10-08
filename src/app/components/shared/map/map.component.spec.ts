@@ -153,4 +153,58 @@ describe("MapComponent", () => {
       expect(getMarkers()).toHaveLength(3);
     });
   });
+
+  describe("grouping", () => {
+    const defaultGroupColor = "hsl(0, 100%, 50%)"; // Red
+
+    it("should have the same color for markers in the same group", () => {
+      const markers = modelData.randomArray(3, 3, () => {
+        const marker = new Site(generateSite()).getMapMarker()
+        marker.groupId = "same-group";
+        return marker;
+      });
+
+      setup(markers);
+      triggerLoadSuccess();
+
+      const realizedColors = spectator.component.validMarkersOptions.map((marker) => {
+        return spectator.component["markerColor"](marker);
+      });
+
+      const firstColor = realizedColors[0];
+      for (const color of realizedColors) {
+        expect(color).toEqual(firstColor);
+      }
+
+      // As a sanity check, ensure that the color is not the default "red" color
+      // and that we have actually created a distinct color for this group.
+      expect(firstColor).not.toEqual(defaultGroupColor);
+
+      // Also ensure that if we get the color of a marker without a groupId,
+      // it will be the default "red" color.
+      const noGroupColor = spectator.component["markerColor"](
+        new Site(generateSite()).getMapMarker(),
+      );
+      expect(noGroupColor).toEqual(defaultGroupColor);
+    });
+
+    // Because I have not set any groups on these markers, they should all use
+    // the default "red" color.
+    it("should use red markers when there are no groups", () => {
+      const markers = modelData.randomArray(3, 3, () =>
+        new Site(generateSite()).getMapMarker()
+      );
+
+      setup(markers);
+      triggerLoadSuccess();
+
+      const realizedColors = spectator.component.validMarkersOptions.map((marker) => {
+        return spectator.component["markerColor"](marker);
+      });
+
+      for (const color of realizedColors) {
+        expect(color).toEqual(defaultGroupColor);
+      }
+    });
+  });
 });
