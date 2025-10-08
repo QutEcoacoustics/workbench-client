@@ -1,4 +1,10 @@
-import { Component, inject, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { MapComponent, sanitizeMapMarkers } from "@shared/map/map.component";
@@ -8,83 +14,36 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "../helper";
 
 /**
- * Location Input
+ * Location input where the user can type in longitude and latitude coordinates
+ * or drag a marker on a map.
+ *
  * ! Warning, test manually after changes
- * Modifying the location through map clicks and drag are not fully tested through the unit tests and should be tested manually
+ * Modifying the location through map clicks and drag are not fully tested
+ * through the unit tests and should be tested manually.
  */
 @Component({
   selector: "baw-location-input",
-  template: `
-    <div class="form-group">
-      <label for="latitude"> Latitude {{ props.required ? " *" : "" }} </label>
-      <input
-        id="latitude"
-        type="number"
-        class="form-control"
-        [class]="{ 'is-invalid': latitudeError }"
-        [formlyAttributes]="field"
-        [(ngModel)]="latitude"
-        (ngModelChange)="updateModel()"
-      />
-
-      @if (latitudeError) {
-        <div class="invalid-feedback" style="display: block;">
-          {{ getError() }}
-        </div>
-      }
-    </div>
-
-    <div class="form-group">
-      <label for="longitude">
-        Longitude {{ props.required ? " *" : "" }}
-      </label>
-      <input
-        id="longitude"
-        type="number"
-        class="form-control"
-        [class]="{ 'is-invalid': longitudeError }"
-        [formlyAttributes]="field"
-        [(ngModel)]="longitude"
-        (ngModelChange)="updateModel()"
-      />
-
-      @if (longitudeError) {
-        <div class="invalid-feedback" style="display: block;">
-          {{ getError() }}
-        </div>
-      }
-
-      <input
-        type="hidden"
-        [id]="field.id"
-        [formControl]="asFormControl(formControl)"
-      />
-    </div>
-
-    <div class="mb-3" style="height: 400px">
-      <baw-map
-        [markers]="marker"
-        [markerOptions]="{ gmpDraggable: true }"
-        (newLocation)="updateModel($event.latLng.lng(), $event.latLng.lat())"
-      ></baw-map>
-    </div>
-  `,
-  imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
+  templateUrl: "./location-input.component.html",
+  imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationInputComponent extends FieldType implements OnInit {
   private readonly mapsService = inject(MapsService);
 
-  public asFormControl = asFormControl;
-  public latitude: number;
-  public latitudeError: boolean;
-  public longitude: number;
-  public longitudeError: boolean;
-  public marker: List<MapMarkerOptions>;
+  protected readonly asFormControl = asFormControl;
+  protected readonly marker = signal(List<MapMarkerOptions>());
+
+  protected readonly latitude = signal<number | undefined>(undefined);
+  protected readonly latitudeError = signal(false);
+
+  protected readonly longitude = signal<number | undefined>(undefined);
+  protected readonly longitudeError = signal(false);
 
   public ngOnInit() {
-    this.latitude = this.model["latitude"];
-    this.longitude = this.model["longitude"];
-    this.setMarker(this.latitude, this.longitude);
+    this.latitude.set(this.model["latitude"]);
+    this.longitude.set(this.model["longitude"]);
+    this.updateModel(this.latitude(), this.longitude());
+
     this.formControl.setValidators(() => {
       const error = this.validateCoordinates();
       return error ? { [this.field.key.toString()]: error } : null;
@@ -95,23 +54,26 @@ export class LocationInputComponent extends FieldType implements OnInit {
   /**
    * Update hidden input
    */
-  public updateModel(longitude?: number, latitude?: number) {
-    this.latitude = latitude ?? this.latitude;
-    this.longitude = longitude ?? this.longitude;
+  public updateModel(latitude?: number, longitude?: number) {
+    if (isInstantiated(latitude)) {
+      this.latitude.set(latitude);
+    }
+
+    if (isInstantiated(longitude)) {
+      this.longitude.set(longitude);
+    }
 
     this.formControl.setValue({
       latitude: this.latitude,
       longitude: this.longitude,
     });
 
-    this.model["latitude"] = this.latitude;
-    this.model["longitude"] = this.longitude;
-    this.model["customLatitude"] = this.latitude;
-    this.model["customLongitude"] = this.longitude;
+    this.model["latitude"] = this.latitude();
+    this.model["longitude"] = this.longitude();
+    this.model["customLatitude"] = this.latitude();
+    this.model["customLongitude"] = this.longitude();
 
-    this.mapsService.loadAsync().then(() => {
-      this.setMarker(this.latitude, this.longitude);
-    });
+    this.setMarker(this.latitude(), this.longitude());
   }
 
   public getError(): string {
@@ -129,7 +91,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
     // before setting the marker.
     await this.mapsService.loadAsync();
 
-    this.marker = sanitizeMapMarkers(
+    const markers = sanitizeMapMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
         ? new google.maps.marker.AdvancedMarkerElement({
             position: { lat: latitude, lng: longitude },
@@ -137,25 +99,27 @@ export class LocationInputComponent extends FieldType implements OnInit {
           })
         : null,
     );
+
+    this.marker.set(markers);
   }
 
   /**
    * Validate location values and return error if any
    */
   private validateCoordinates(): string {
-    this.latitudeError = false;
-    this.longitudeError = false;
+    this.latitudeError.set(false);
+    this.longitudeError.set(false);
 
     // XOR if latitude or longitude is set
     if (!isInstantiated(this.latitude) !== !isInstantiated(this.longitude)) {
-      this.latitudeError = !isInstantiated(this.latitude);
-      this.longitudeError = !isInstantiated(this.longitude);
+      this.latitudeError.set(!isInstantiated(this.latitude));
+      this.longitudeError.set(!isInstantiated(this.longitude));
       return "Both latitude and longitude must be set or left empty";
-    } else if (this.latitude < -90 || this.latitude > 90) {
-      this.latitudeError = true;
+    } else if (this.latitude() < -90 || this.latitude() > 90) {
+      this.latitudeError.set(true);
       return "Latitude must be between -90 and 90";
-    } else if (this.longitude < -180 || this.longitude > 180) {
-      this.longitudeError = true;
+    } else if (this.longitude() < -180 || this.longitude() > 180) {
+      this.longitudeError.set(true);
       return "Longitude must be between -180 and 180";
     }
   }

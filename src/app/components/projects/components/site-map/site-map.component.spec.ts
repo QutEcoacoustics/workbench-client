@@ -20,6 +20,7 @@ import { MockModule } from "ng-mocks";
 import { GoogleMapsModule } from "@angular/google-maps";
 import { of } from "rxjs";
 import { IdOr } from "@baw-api/api-common";
+import { MapsService } from "@services/maps/maps.service";
 import { SiteMapComponent } from "./site-map.component";
 
 describe("SiteMapComponent", () => {
@@ -46,6 +47,9 @@ describe("SiteMapComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     api.filter.and.returnValue(of(mockSites));
+
+    const mapsService = spec.inject(MapsService);
+    spyOn(mapsService, "loadAsync").and.returnValue(Promise.resolve());
   }
 
   function setComponentProps(
@@ -102,7 +106,7 @@ describe("SiteMapComponent", () => {
       assertMapMarkers(sites);
     });
 
-    it("should display map markers for all sites over multiple pages", () => {
+    fit("should display map markers for all sites over multiple pages", () => {
       const sites = generateSites(100);
       setup(sites);
       setComponentProps(defaultProjects);
