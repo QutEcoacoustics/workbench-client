@@ -64,10 +64,6 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public hasMarkers = false;
   private _map: GoogleMap;
 
-  // Caches pin elements so that markers of the same group reuse the same
-  // content element instead of creating a new one each time.
-  private readonly groupPinCache = new Map<MarkerGroup, HTMLElement>();
-
   protected readonly infoContent = signal("");
 
   protected readonly MapLoadState = GoogleMapsState;
@@ -172,15 +168,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this._map.panToBounds(this.bounds);
   }
 
+  // TODO: Implement some sort of caching so that markers of the same group can
+  // share the same element reference instead of creating a new one each time.
   protected markerContent(marker: MapMarkerOptions): HTMLElement {
-    const cachedMarker = this.groupPinCache.get(marker.groupId);
-    if (cachedMarker) {
-      return cachedMarker;
-    }
-
-    const pinElement = this.createMarkerElement(marker);
-    this.groupPinCache.set(marker.groupId, pinElement);
-    return pinElement;
+    return this.createMarkerElement(marker);
   }
 
   private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
