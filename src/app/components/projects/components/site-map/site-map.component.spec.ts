@@ -21,6 +21,7 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import { of } from "rxjs";
 import { IdOr } from "@baw-api/api-common";
 import { MapsService } from "@services/maps/maps.service";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { SiteMapComponent } from "./site-map.component";
 
 describe("SiteMapComponent", () => {
@@ -65,6 +66,15 @@ describe("SiteMapComponent", () => {
       regions,
       sites,
     });
+
+    flush();
+    spec.detectChanges();
+  }
+
+  function setGroupBy(key: string) {
+    spec.setInput("groupBy", key);
+    flush();
+    spec.detectChanges();
   }
 
   function generateSites(numSites: number, overrides: ISite = {}): Site[] {
@@ -82,39 +92,39 @@ describe("SiteMapComponent", () => {
     return mapComponent().markers().toArray();
   }
 
-  it("should handle error", () => {
+  it("should handle error", fakeAsync(() => {
     setup([generateBawApiError() as any]);
     spec.detectChanges();
 
     expect(mapMarkers()).toEqual([]);
-  });
+  }));
 
   describe("markers", () => {
-    it("should display map placeholder box when no sites found", () => {
+    it("should display map placeholder box when no sites found", fakeAsync(() => {
       setup([]);
       spec.detectChanges();
 
       assertMapMarkers([]);
       expect(mapComponent().hasMarkers).toBeFalse();
-    });
+    }));
 
-    it("should display map marker for a single site", () => {
+    it("should display map marker for a single site", fakeAsync(() => {
       const sites = generateSites(1);
       setup(sites);
       setComponentProps(defaultProjects);
 
       assertMapMarkers(sites);
-    });
+    }));
 
-    it("should display map markers for all sites over multiple pages", () => {
+    it("should display map markers for all sites over multiple pages", fakeAsync(() => {
       const sites = generateSites(100);
       setup(sites);
       setComponentProps(defaultProjects);
 
       assertMapMarkers(sites);
-    });
+    }));
 
-    it("should remove map markers without a location", () => {
+    it("should remove map markers without a location", fakeAsync(() => {
       const noLocationSites = generateSites(100, {
         latitude: undefined,
         longitude: undefined,
@@ -130,20 +140,20 @@ describe("SiteMapComponent", () => {
       setComponentProps(defaultProjects);
 
       assertMapMarkers(sitesWithLocation);
-    });
+    }));
   });
 
   // Explicitly passing in empty array is different from not providing projects,
   // regions, or sites at all (in which case we show all sites).
   // If no projects, regions, or sites are explicitly provided with an empty
   // array, then we should not make any API calls and just show no sites.
-  it("should not make any api calls if only empty arrays are provided", () => {
+  it("should not make any api calls if only empty arrays are provided", fakeAsync(() => {
     setup([]);
     setComponentProps([], [], []);
 
     expect(api.filter).not.toHaveBeenCalled();
     assertMapMarkers([]);
-  });
+  }));
 
   describe("api", () => {
     interface FilterTestCase {
@@ -234,7 +244,7 @@ describe("SiteMapComponent", () => {
     ];
 
     for (const testCase of tests) {
-      it(testCase.name, async () => {
+      it(testCase.name, fakeAsync(() => {
         const sites = generateSites(20);
         setup(sites);
         setComponentProps(testCase.projects, testCase.regions, testCase.sites);
@@ -248,13 +258,13 @@ describe("SiteMapComponent", () => {
         };
 
         expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
-      });
+      }));
     }
 
     describe("sites", () => {
       // If only site models are provided, then we don't need to call the API
       // because we already have all the site information we need.
-      it("should not call the filter api if only a site model is provided", () => {
+      it("should not call the filter api if only a site model is provided", fakeAsync(() => {
         const sites = generateSites(2);
         setup(sites);
         setComponentProps(undefined, undefined, sites);
@@ -263,14 +273,14 @@ describe("SiteMapComponent", () => {
 
         // We should still see the markers on the map.
         assertMapMarkers(sites);
-      });
+      }));
 
       // Although only sites are provided, they are not full site models, so we
       // do not have the lat/long information needed to place the markers on the
       // map.
       // Therefore, we still need to call the API to convert the site ids into
       // site models.
-      it("should call the filter api if only site ids are provided", () => {
+      it("should call the filter api if only site ids are provided", fakeAsync(() => {
         const sites = generateSites(2);
         const siteIds = sites.map((site) => site.id);
 
@@ -290,20 +300,20 @@ describe("SiteMapComponent", () => {
         };
 
         expect(api.filter).toHaveBeenCalledOnceWith(expectedFilters);
-      });
+      }));
 
-      it("should not make any api calls if only an empty site array is provided", () => {
+      it("should not make any api calls if only an empty site array is provided", fakeAsync(() => {
         setup([]);
         setComponentProps(undefined, undefined, []);
 
         expect(api.filter).not.toHaveBeenCalled();
         assertMapMarkers([]);
-      });
+      }));
     });
   });
 
   describe("updates", () => {
-    it("should correctly replace site markers on a map", () => {
+    it("should correctly replace site markers on a map", fakeAsync(() => {
       // I purposely make the new sites smaller than the initial sites, so
       // if there is a bug where the markers are not cleared properly, the test
       // will fail.
@@ -343,9 +353,9 @@ describe("SiteMapComponent", () => {
       expect(api.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({ filter: expectedFilters }),
       );
-    });
+    }));
 
-    it("should correctly transition from a 'no sites' state to showing sites", () => {
+    it("should correctly transition from a 'no sites' state to showing sites", fakeAsync(() => {
       const newSites = generateSites(5);
 
       setup([]);
@@ -357,15 +367,15 @@ describe("SiteMapComponent", () => {
 
       setComponentProps(defaultProjects, undefined, newSites);
       assertMapMarkers(newSites);
-    });
+    }));
   });
 
   describe("grouping", () => {
-    it("should include grouping identifier in filter projection", () => {
+    it("should include grouping identifier in filter projection", fakeAsync(() => {
       setup(generateSites(2));
 
       api.filter.calls.reset();
-      spec.setInput("groupBy", "regionId");
+      setGroupBy("regionId");
 
       expect(api.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({
@@ -374,9 +384,9 @@ describe("SiteMapComponent", () => {
           }),
         }),
       );
-    });
+    }));
 
-    it("should correctly group sites by the groupBy input", () => {
+    it("should correctly group sites by the groupBy input", fakeAsync(() => {
       const sites = [
         new Site(generateSite({ regionId: 1 }), injector),
         new Site(generateSite({ regionId: 1 }), injector),
@@ -387,7 +397,7 @@ describe("SiteMapComponent", () => {
       ];
 
       setup(sites);
-      spec.setInput("groupBy", "regionId");
+      setGroupBy("regionId");
 
       const markers = mapMarkers();
 
@@ -395,6 +405,6 @@ describe("SiteMapComponent", () => {
 
       const markerGroups = markers.map((marker) => marker.groupId);
       expect(markerGroups).toEqual([ 1, 1, 2, 2, 3, 4 ]);
-    });
+    }));
   });
 });
