@@ -29,6 +29,8 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
 
+type MarkerGroup = unknown;
+
 /**
  * Google Maps Wrapper Component
  */
@@ -49,7 +51,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
-  public readonly markerOptions = input<Partial<MapMarkerOptions>>();
+  public readonly markerOptions = input<google.maps.marker.AdvancedMarkerElementOptions>();
   public readonly fetchingData = input(false);
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
@@ -62,6 +64,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public hasMarkers = false;
   private _map: GoogleMap;
 
+  // Caches pin elements so that markers of the same group reuse the same
+  // content element instead of creating a new one each time.
+  private readonly groupPinCache = new Map<MarkerGroup, HTMLElement>();
+
   protected readonly infoContent = signal("");
 
   protected readonly MapLoadState = GoogleMapsState;
@@ -69,8 +75,8 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.MapLoadState.Loading,
   );
 
-  protected readonly groups = computed<unknown[]>(() => {
-    const groupSet = new Set<unknown>();
+  protected readonly groups = computed<MarkerGroup[]>(() => {
+    const groupSet = new Set<MarkerGroup>();
     this.validMarkersOptions.forEach((marker) => {
       if (marker.groupId !== undefined) {
         groupSet.add(marker.groupId);
@@ -167,6 +173,17 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   protected markerContent(marker: MapMarkerOptions): HTMLElement {
+    const cachedMarker = this.groupPinCache.get(marker.groupId);
+    if (cachedMarker) {
+      return cachedMarker;
+    }
+
+    const pinElement = this.createMarkerElement(marker);
+    this.groupPinCache.set(marker.groupId, pinElement);
+    return pinElement;
+  }
+
+  private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
     const color = this.markerColor(marker);
     const pinElement = new google.maps.marker.PinElement({
       background: color,

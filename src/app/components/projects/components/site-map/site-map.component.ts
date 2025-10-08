@@ -15,7 +15,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { MapMarkerOptions } from "@services/maps/maps.service";
+import { MapMarkerOptions, MapsService } from "@services/maps/maps.service";
 import { sanitizeMapMarkers, MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { timer } from "rxjs";
@@ -47,6 +47,7 @@ import { defaultSlowLoadTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);
+  private readonly mapsService = inject(MapsService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public readonly projects = input<IdOr<Project>[]>();
@@ -82,6 +83,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     const sites = this.sites();
     if (this.hasAllSiteModels(sites)) {
       this.pushMarkers(sites);
+      this.isFetching.set(false);
       return;
     }
 
@@ -112,10 +114,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     request$.subscribe({
       next: (siteLocations: Site[]) => {
-        // cancel the timer if it hasn't fired yet
-        if (!this.isFetching()) {
-          timerSub.unsubscribe();
-        }
+        timerSub.unsubscribe();
         this.pushMarkers(siteLocations);
         this.isFetching.set(false);
       },
@@ -202,7 +201,9 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Push new sites to markers list
    */
-  private pushMarkers(sites: Site[]): void {
+  private async pushMarkers(sites: Site[]) {
+    await this.mapsService.loadAsync();
+
     this.groups.set([]);
 
     if (this.groupBy()) {

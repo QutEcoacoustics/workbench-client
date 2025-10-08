@@ -65,12 +65,13 @@ export class ModelListComponent<Model extends ListModel>
     contentChild.required<TemplateRef<HTMLElement>>("noResultsTemplate");
 
   protected readonly tabs = {
-    tiles: 1,
-    map: 2,
+    tiles: "tiles",
+    map: "map",
   } as const;
 
   protected readonly active = model(
-    this.router.routerState?.snapshot?.root?.queryParams["tab"] === "map"
+    this.router.routerState?.snapshot?.root?.queryParams["tab"] ===
+      this.tabs.map
       ? this.tabs.map
       : this.tabs.tiles,
   );
@@ -101,7 +102,7 @@ export class ModelListComponent<Model extends ListModel>
     this.groupBy = isProjectList ? "projectIds" : "regionId";
 
     this.active.subscribe((active) => {
-      const tab = active === this.tabs.tiles ? null : "map";
+      const tab = active === this.tabs.tiles ? null : this.tabs.map;
       const queryParams = { tab };
 
       this.router.navigate([], {
@@ -116,7 +117,7 @@ export class ModelListComponent<Model extends ListModel>
     if (textFilter) {
       const baseFilter = this.generateFilter();
       this.mapFilter.set(
-        associationModelFilter(this.modelKey(), baseFilter.filter)
+        associationModelFilter(this.modelKey(), baseFilter.filter),
       );
     } else {
       this.mapFilter.set(null);

@@ -4,7 +4,7 @@
     width="100%"
     mapId="0"
     [options]="mapOptions()"
-    (mapClick)="markerOptions()?.draggable && newLocation.emit($event)"
+    (mapClick)="markerOptions()?.gmpDraggable && newLocation.emit($event)"
   >
     <map-marker-clusterer>
       @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {

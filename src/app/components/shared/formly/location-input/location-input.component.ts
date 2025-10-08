@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { MapComponent, sanitizeMapMarkers } from "@shared/map/map.component";
 import { List } from "immutable";
-import { MapMarkerOptions } from "@services/maps/maps.service";
+import { MapMarkerOptions, MapsService } from "@services/maps/maps.service";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "../helper";
 
@@ -64,7 +64,7 @@ import { asFormControl } from "../helper";
     <div class="mb-3" style="height: 400px">
       <baw-map
         [markers]="marker"
-        [markerOptions]="{ draggable: true }"
+        [markerOptions]="{ gmpDraggable: true }"
         (newLocation)="updateModel($event.latLng.lng(), $event.latLng.lat())"
       ></baw-map>
     </div>
@@ -72,6 +72,8 @@ import { asFormControl } from "../helper";
   imports: [FormsModule, FormlyModule, ReactiveFormsModule, MapComponent]
 })
 export class LocationInputComponent extends FieldType implements OnInit {
+  private readonly mapsService = inject(MapsService);
+
   public asFormControl = asFormControl;
   public latitude: number;
   public latitudeError: boolean;
@@ -107,7 +109,9 @@ export class LocationInputComponent extends FieldType implements OnInit {
     this.model["customLatitude"] = this.latitude;
     this.model["customLongitude"] = this.longitude;
 
-    this.setMarker(this.latitude, this.longitude);
+    this.mapsService.loadAsync().then(() => {
+      this.setMarker(this.latitude, this.longitude);
+    });
   }
 
   public getError(): string {
@@ -120,7 +124,11 @@ export class LocationInputComponent extends FieldType implements OnInit {
    * @param latitude Latitude
    * @param longitude Longitude
    */
-  private setMarker(latitude: number, longitude: number) {
+  private async setMarker(latitude: number, longitude: number) {
+    // If the map has not been initialized yet, wait for it to load
+    // before setting the marker.
+    await this.mapsService.loadAsync();
+
     this.marker = sanitizeMapMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
         ? new google.maps.marker.AdvancedMarkerElement({
