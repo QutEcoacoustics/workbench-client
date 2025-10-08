@@ -29,7 +29,7 @@ class MockComponent extends PaginationTemplate<Project> {
       api,
       "id",
       () => [],
-      () => {}
+      () => {},
     );
   }
 }
@@ -53,13 +53,13 @@ describe("PaginationTemplate", () => {
   function interceptFilter(
     models: Project[] = [],
     error?: BawApiError,
-    expectations?: (filters: Filters, ...args: any[]) => void
+    expectations?: (filters: Filters, ...args: any[]) => void,
   ) {
     const subject = new Subject<Project[]>();
     const promise = nStepObservable(
       subject,
       () => (error ? error : models),
-      !!error
+      !!error,
     );
     api.filter.andCallFake((filters: Filters, ...args: any[]) => {
       expectations?.(filters, args);
@@ -356,27 +356,42 @@ describe("PaginationTemplate", () => {
 
     it("should not write page number to QSP on first page", () => {
       component["updateQueryParams"](1);
-      assertQueryParams({});
+      assertQueryParams({
+        [pageKey]: null,
+        [queryKey]: null,
+      });
     });
 
     it("should write page number to QSP when greater than first page", () => {
       component["updateQueryParams"](2);
-      assertQueryParams({ [pageKey]: 2 });
+      assertQueryParams({
+        [pageKey]: 2,
+        [queryKey]: null,
+      });
     });
 
     it("should not write filter to QSP when undefined", () => {
       component["updateQueryParams"](1, undefined);
-      assertQueryParams({});
+      assertQueryParams({
+        [pageKey]: null,
+        [queryKey]: null,
+      });
     });
 
     it("should not write filter to QSP when empty string", () => {
       component["updateQueryParams"](1, "");
-      assertQueryParams({});
+      assertQueryParams({
+        [pageKey]: null,
+        [queryKey]: null,
+      });
     });
 
     it("should write filter to QSP when filter supplied", () => {
       component["updateQueryParams"](1, "custom filter");
-      assertQueryParams({ [queryKey]: "custom filter" });
+      assertQueryParams({
+        [pageKey]: null,
+        [queryKey]: "custom filter",
+      });
     });
 
     it("should write both page number and filter to QSP", () => {
