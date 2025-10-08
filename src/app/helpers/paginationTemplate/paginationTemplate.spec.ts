@@ -344,6 +344,7 @@ describe("PaginationTemplate", () => {
       expect(component["router"].navigate).toHaveBeenCalledWith([], {
         relativeTo: component["route"],
         queryParams: params,
+        queryParamsHandling: "merge",
       });
     }
 

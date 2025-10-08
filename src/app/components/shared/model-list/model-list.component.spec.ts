@@ -21,6 +21,8 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { Site } from "@models/Site";
+import { getElementByTextContent } from "@test/helpers/html";
 import { ModelListComponent } from "./model-list.component";
 import { MODEL_LIST_SERVICE } from "./model-list.tokens";
 
@@ -202,8 +204,24 @@ describe("ModelListComponent", () => {
   });
 
   describe("map tab", () => {
+    beforeEach(() => {
+      spec.detectChanges();
+      const mapTabLink = getElementByTextContent(spec, "Map").querySelector("a");
+
+      spec.click(mapTabLink);
+      spec.detectChanges();
+    });
+
     it("should make the correct api calls when loading the 'map' tab", () => {
-      expect(sitesApi).toHaveBeenCalledOnceWith();
+      const expectedProjectFilters: Filters<Site> = {
+        filter: {},
+        paging: { disablePaging: true },
+        projection: {
+          include: ["name", "customLatitude", "customLongitude", "regionId"],
+        },
+      };
+
+      expect(sitesApi.filter).toHaveBeenCalledOnceWith(expectedProjectFilters);
     });
   });
 
