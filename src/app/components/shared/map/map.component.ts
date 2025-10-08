@@ -16,7 +16,6 @@ import {
   MapInfoWindow,
   MapMarkerClusterer,
   MapAdvancedMarker,
-  MapMarker,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -29,7 +28,6 @@ import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
-import { Observable, Subject } from "rxjs";
 
 /**
  * Google Maps Wrapper Component

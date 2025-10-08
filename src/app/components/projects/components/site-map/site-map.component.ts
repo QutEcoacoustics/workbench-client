@@ -30,6 +30,11 @@ import { defaultSlowLoadTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
  */
 @Component({
   selector: "baw-site-map",
+  host: {
+    // You can use the "loaded" class to style the map differently after it has
+    // loaded.
+    "[class.loaded]": "!isFetching()",
+  },
   template: `
     <baw-map
       [markers]="markers()"
@@ -39,11 +44,6 @@ import { defaultSlowLoadTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
   styleUrl: "./site-map.component.scss",
   imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    // You can use the "loaded" class to style the map differently after it has
-    // loaded.
-    "[class.loaded]": "!isFetching()",
-  },
 })
 export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   private readonly sitesApi = inject(ShallowSitesService);
