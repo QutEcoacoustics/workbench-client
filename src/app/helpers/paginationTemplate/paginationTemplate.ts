@@ -173,9 +173,14 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     const params = {};
     if (page > 1) {
       params[pageKey] = page;
+    } else {
+      params[pageKey] = null;
     }
+
     if (query) {
       params[queryKey] = query;
+    } else {
+      params[queryKey] = null;
     }
 
     this.router.navigate([], {
