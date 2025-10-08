@@ -25,7 +25,7 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-analysis",
-  templateUrl: "details.component.html",
+  templateUrl: "./details.component.html",
   imports: [DetailViewComponent],
 })
 class AnalysisJobComponent

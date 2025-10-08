@@ -10,6 +10,10 @@ export function mockGoogleNamespace(): void {
   window.google = {
     maps: {
       LatLngBounds: MockLatLngBounds,
+      marker: {
+        PinElement: jasmine.createSpy("PinElement"),
+        AdvancedMarkerElement: MockAdvancedMarkerElement,
+      },
       Marker: jasmine.createSpy("Marker"),
       Map: jasmine.createSpy("Map"),
       InfoWindow: jasmine.createSpy("InfoWindow"),
@@ -22,4 +26,10 @@ export function mockGoogleNamespace(): void {
 
 class MockLatLngBounds {
   public extend = jasmine.createSpy("extend");
+}
+
+class MockAdvancedMarkerElement {
+  public constructor(data: Record<PropertyKey, unknown>) {
+    Object.assign(this, data);
+  }
 }

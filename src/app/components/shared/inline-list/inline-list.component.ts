@@ -20,10 +20,10 @@ import { AbstractModel } from "@models/AbstractModel";
   imports: [NgTemplateOutlet],
 })
 export class InlineListComponent {
-  public items = input.required<AbstractModel[]>();
-  public withLoading = input(false);
-  public emptyTemplate = input<TemplateRef<NgIfContext<boolean>>>();
-  public itemKey = input<string>();
+  public readonly items = input.required<AbstractModel[]>();
+  public readonly withLoading = input(false);
+  public readonly emptyTemplate = input<TemplateRef<NgIfContext<boolean>>>();
+  public readonly itemKey = input<string>();
 
   protected itemText(item: AbstractModel): string {
     if (isInstantiated(this.itemKey())) {

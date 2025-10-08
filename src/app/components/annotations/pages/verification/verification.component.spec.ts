@@ -14,7 +14,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { CUSTOM_ELEMENTS_SCHEMA, signal } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { modelData } from "@test/helpers/faker";
@@ -261,7 +261,7 @@ describe("VerificationComponent", () => {
 
     verificationResponse = new Verification(generateVerification(), injector);
 
-    spec.component.searchParameters = signal(mockSearchParameters);
+    spec.component.searchParameters.set(mockSearchParameters);
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
     taggingCorrectionApiSpy = spec.inject(TaggingCorrectionsService);

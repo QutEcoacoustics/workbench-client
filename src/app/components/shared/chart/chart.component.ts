@@ -27,7 +27,7 @@ const customFormatterName = "customFormatter";
   template: `
     <div #chartContainer class="chartContainer marks">Chart loading</div>
   `,
-  styleUrl: "chart.component.scss"
+  styleUrl: "./chart.component.scss"
 })
 export class ChartComponent implements AfterViewInit, OnDestroy {
   public constructor() {}

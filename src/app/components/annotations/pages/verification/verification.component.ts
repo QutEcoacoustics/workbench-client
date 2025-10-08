@@ -111,24 +111,24 @@ class VerificationComponent
     super();
   }
 
-  private searchFiltersModal =
+  private readonly searchFiltersModal =
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
-  private verificationGridElement =
+  private readonly verificationGridElement =
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
-  private tagPromptElement =
+  private readonly tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
-  private verificationDecisionElements =
+  private readonly verificationDecisionElements =
     viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
 
-  public searchParameters = signal<AnnotationSearchParameters | null>(null);
-  public hasUnsavedChanges = signal(false);
-  protected verificationGridFocused = signal(true);
-  protected hasCorrectionTask = signal(false);
-  private doneInitialScroll = signal(false);
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public readonly hasUnsavedChanges = signal(false);
+  protected readonly verificationGridFocused = signal(true);
+  protected readonly hasCorrectionTask = signal(false);
+  private readonly doneInitialScroll = signal(false);
 
-  public project = signal<Project | null>(null);
-  public region = signal<Region | null>(null);
-  public site = signal<Site | null>(null);
+  public readonly project = signal<Project | null>(null);
+  public readonly region = signal<Region | null>(null);
+  public readonly site = signal<Site | null>(null);
 
   // TODO: Remove this once the corrections endpoint is finished
   /**

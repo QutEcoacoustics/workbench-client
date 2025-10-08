@@ -1,8 +1,9 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { List } from "immutable";
 import { CardComponent } from "../card/card.component";
+
+type CardModel = Project | Region;
 
 /**
  * Cards Component
@@ -14,7 +15,7 @@ import { CardComponent } from "../card/card.component";
   selector: "baw-model-cards",
   template: `
     <div class="row">
-      @for (model of models ?? []; track model) {
+      @for (model of models() ?? []; track model) {
         <baw-card [model]="model"></baw-card>
       }
       <div id="content">
@@ -24,7 +25,8 @@ import { CardComponent } from "../card/card.component";
   `,
   styleUrl: "./cards.component.scss",
   imports: [CardComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardsComponent {
-  @Input() public models: List<Project | Region>;
+  public readonly models = input<CardModel[]>();
 }

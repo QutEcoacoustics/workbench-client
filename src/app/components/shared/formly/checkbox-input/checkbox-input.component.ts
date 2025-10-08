@@ -21,7 +21,7 @@ import { asFormControl } from "../helper";
       <label class="custom-control-label" [for]="id + '-checkbox'"></label>
     </div>
   `,
-  styleUrl: "checkbox-input.component.scss",
+  styleUrl: "./checkbox-input.component.scss",
   imports: [FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class CheckboxInputComponent extends FieldType {

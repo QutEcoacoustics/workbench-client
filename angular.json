@@ -34,6 +34,11 @@
               "src/manifest.json",
               {
                 "glob": "**/*",
+                "input": "node_modules/@googlemaps/markerclusterer/dist/",
+                "output": "@googlemaps/markerclusterer/dist/"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/@ecoacoustics/web-components/dist/assets",
                 "output": "assets/"
               }

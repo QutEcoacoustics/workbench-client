@@ -1,0 +1,13 @@
+<baw-model-list [modelKey]="'regions'" [filterPlaceholder]="'Filter sites'">
+  <!--
+    This error message is quite generic because it can appear under multiple
+    conditions:
+      1. There are no regions in the system
+      2. The user does not have permission to view any regions
+      3. The user filtered the list to something that has no results
+  -->
+
+  <ng-template #noResultsTemplate>
+    No sites found
+  </ng-template>
+</baw-model-list>

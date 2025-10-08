@@ -16,7 +16,7 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { fakeAsync } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
@@ -220,7 +220,7 @@ describe("AnnotationSearchComponent", () => {
       spec.component.loading = false;
       spec.detectChanges();
 
-      const element = getElementByInnerText(spec, expectedText);
+      const element = getElementByTextContent(spec, expectedText);
       expect(element).toExist();
     });
 
@@ -231,7 +231,7 @@ describe("AnnotationSearchComponent", () => {
       spec.component.loading = true;
       spec.detectChanges();
 
-      const element = getElementByInnerText(spec, expectedText);
+      const element = getElementByTextContent(spec, expectedText);
       expect(element).not.toExist();
     });
 

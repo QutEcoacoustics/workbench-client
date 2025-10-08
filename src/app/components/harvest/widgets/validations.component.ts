@@ -14,7 +14,7 @@ import { SafePipe } from "../../../pipes/safe/safe.pipe";
 
 @Component({
   selector: "baw-harvest-issue-widget",
-  templateUrl: "validations.component.html",
+  templateUrl: "./validations.component.html",
   styles: [
     `
       hr {

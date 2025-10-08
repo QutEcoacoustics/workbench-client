@@ -930,6 +930,15 @@ type AssociationKeys<Model extends AbstractModel> = KeysOfType<
   number | string | Set<string> | Set<number>
 >;
 
+/**
+ * @description
+ * Searches through all models to get all possible associations that a model
+ * could have.
+ * Note that this does not guarantee that a model will have an association for
+ * the given key, only that the association "kind" exists.
+ */
+export type AssociationKind<T extends AbstractModelWithoutId = AbstractModelWithoutId> = Lowercase<T["kind"]>;
+
 export type Direction = "desc" | "asc";
 
 /**
