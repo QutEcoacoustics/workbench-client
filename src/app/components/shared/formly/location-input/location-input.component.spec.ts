@@ -12,7 +12,6 @@ import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { MapsService } from "@services/maps/maps.service";
 import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
 
@@ -23,7 +22,9 @@ describe("FormlyLocationInput", () => {
 
   const createHost = createHostFactory({
     component: LocationInputComponent,
-    providers: [provideMockBawApi()],
+    providers: [
+      provideMockBawApi(),
+    ],
     imports: [
       GoogleMapsModule,
       FormsModule,
@@ -56,9 +57,6 @@ describe("FormlyLocationInput", () => {
         },
       }
     );
-
-    const mapsService = spec.inject(MapsService);
-    spyOn(mapsService, "loadAsync").and.returnValue(Promise.resolve());
 
     spec.detectChanges();
   }
