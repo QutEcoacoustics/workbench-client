@@ -59,18 +59,17 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   public readonly newLocation = output<google.maps.MapMouseEvent>();
 
+  public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
   private _map: GoogleMap;
 
-  public bounds: google.maps.LatLngBounds;
+  protected readonly infoContent = signal("");
 
   protected readonly MapLoadState = GoogleMapsState;
   protected readonly mapsLoadState = signal<GoogleMapsState>(
     this.MapLoadState.Loading,
   );
-
-  public infoContent = signal("");
 
   protected readonly groups = computed<unknown[]>(() => {
     const groupSet = new Set<unknown>();

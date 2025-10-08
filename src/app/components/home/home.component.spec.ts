@@ -48,6 +48,7 @@ describe("HomeComponent", () => {
       UpperCasePipe,
       TitleCasePipe,
       WithLoadingPipe,
+      CardsComponent,
     ],
     providers: [provideMockConfig(), provideMockBawApi()],
   });
@@ -151,14 +152,14 @@ describe("HomeComponent", () => {
     return spec;
   }, CMS.home); */
 
-  [
+  const testCases = [
     {
       test: "projects",
       api: () => projectApi,
       modelName: "Project",
       hideProjects: false,
       awaitModel: awaitProjects,
-      generateModel: () => new Project(generateProject()),
+      generateModel: () => new Project(generateProject(), injector),
       link: projectsMenuItem.route,
     },
     {
@@ -167,10 +168,12 @@ describe("HomeComponent", () => {
       modelName: "Site",
       hideProjects: true,
       awaitModel: awaitRegions,
-      generateModel: () => new Region(generateRegion()),
+      generateModel: () => new Region(generateRegion(), injector),
       link: shallowRegionsMenuItem.route,
     },
-  ].forEach((test) => {
+  ];
+
+  testCases.forEach((test) => {
     describe(`${test.test} api`, () => {
       beforeEach(() => {
         handleCms();
@@ -209,7 +212,7 @@ describe("HomeComponent", () => {
         assertViewMorePlaceholder(true, test.modelName);
       });
 
-      fit("should display single model", async () => {
+      it("should display single model", async () => {
         const model: any = test.generateModel();
         await test.awaitModel([model]);
         assertModelCardsCount(1);
@@ -225,7 +228,7 @@ describe("HomeComponent", () => {
         ];
         await test.awaitModel(models);
 
-        const cards = getModelCards().models;
+        const cards = getModelCards().models();
         assertModelCardsCount(3);
         models.forEach((model, index) =>
           expect(cards[index]).toEqual(model)
