@@ -31,6 +31,7 @@ import { getElementByTextContent } from "@test/helpers/html";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { MapComponent } from "@shared/map/map.component";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { ModelListComponent } from "./model-list.component";
 import { MODEL_LIST_SERVICE } from "./model-list.tokens";
 
@@ -216,15 +217,18 @@ describe("ModelListComponent", () => {
   });
 
   describe("map tab", () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       spec.detectChanges();
       const mapTabLink = getElementByTextContent(spec, "Map").querySelector(
         "a",
       );
 
       spec.click(mapTabLink);
+
       spec.detectChanges();
-    });
+      flush();
+      spec.detectChanges();
+    }));
 
     it("should make the correct api calls when loading the 'map' tab", () => {
       const expectedProjectFilters: Filters<Site> = {
