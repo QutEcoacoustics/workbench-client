@@ -355,4 +355,42 @@ describe("SiteMapComponent", () => {
       assertMapMarkers(newSites);
     });
   });
+
+  describe("grouping", () => {
+    it("should include grouping identifier in filter projection", () => {
+      setup(generateSites(2));
+
+      api.filter.calls.reset();
+      spec.setInput("groupBy", "regionId");
+
+      expect(api.filter).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({
+          projection: jasmine.objectContaining({
+            include: jasmine.arrayContaining(["regionId"]),
+          }),
+        }),
+      );
+    });
+
+    it("should correctly group sites by the groupBy input", () => {
+      const sites = [
+        new Site(generateSite({ regionId: 1 }), injector),
+        new Site(generateSite({ regionId: 1 }), injector),
+        new Site(generateSite({ regionId: 2 }), injector),
+        new Site(generateSite({ regionId: 2 }), injector),
+        new Site(generateSite({ regionId: 3 }), injector),
+        new Site(generateSite({ regionId: 4 }), injector),
+      ];
+
+      setup(sites);
+      spec.setInput("groupBy", "regionId");
+
+      const markers = mapMarkers();
+
+      expect(markers).toHaveLength(6);
+
+      const markerGroups = markers.map((marker) => marker.groupId);
+      expect(markerGroups).toEqual([ 1, 1, 2, 2, 3, 4 ]);
+    });
+  });
 });
