@@ -16,6 +16,7 @@ import {
   MapInfoWindow,
   MapMarkerClusterer,
   MapAdvancedMarker,
+  MapMarker,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -28,6 +29,7 @@ import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
+import { Observable, Subject } from "rxjs";
 
 /**
  * Google Maps Wrapper Component
@@ -59,7 +61,6 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
-  public infoContent = "";
   private _map: GoogleMap;
 
   public bounds: google.maps.LatLngBounds;
@@ -68,6 +69,8 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   protected readonly mapsLoadState = signal<GoogleMapsState>(
     this.MapLoadState.Loading,
   );
+
+  public infoContent = signal("");
 
   protected readonly groups = computed<unknown[]>(() => {
     const groupSet = new Set<unknown>();
@@ -129,11 +132,22 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
+  protected initMarker(
+    options: MapMarkerOptions,
+    marker: MapAdvancedMarker,
+  ): void {
+    marker.advancedMarker.addEventListener("pointerover", () => {
+      this.addMapMarkerInfo(options, marker);
+    });
+
+    this.focusMarkers();
+  }
+
   protected addMapMarkerInfo(
     options: MapMarkerOptions,
     marker: MapAnchorPoint,
   ): void {
-    this.infoContent = options.title ?? "";
+    this.infoContent.set(options.title ?? "");
     this.info().open(marker);
   }
 
