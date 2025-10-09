@@ -70,6 +70,8 @@ import { Tagging } from "@models/Tagging";
 import { generateVerification } from "@test/fakes/Verification";
 import { generateTagging } from "@test/fakes/Tagging";
 import { ScrollService } from "@services/scroll/scroll.service";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { ConfigService } from "@services/config/config.service";
 import {
   AnnotationSearchParameters,
   VerificationStatusKey,
@@ -154,6 +156,7 @@ describe("VerificationComponent", () => {
     ],
     providers: [
       provideMockBawApi(),
+      provideMockConfig(),
 
       // The verification grid will automatically scroll into view once it has
       // loaded. However, I disable this behavior for testing because it can be
@@ -530,6 +533,12 @@ describe("VerificationComponent", () => {
   it("should create", async () => {
     await setup();
     expect(spec.component).toBeInstanceOf(VerificationComponent);
+  });
+
+  fit("should set the loading timeout to the value in the environment.json config", async () => {
+    await setup();
+    const expectedTimeout = spec.inject(ConfigService).environment.browserTimeout;
+    expect(verificationGrid().loadingTimeout).toEqual(expectedTimeout);
   });
 
   describe("no initial search parameters", () => {
