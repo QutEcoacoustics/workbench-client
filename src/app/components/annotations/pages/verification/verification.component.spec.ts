@@ -74,7 +74,7 @@ import {
   AnnotationSearchParameters,
   VerificationStatusKey,
 } from "../annotationSearchParameters";
-import { exampleBase64 } from "../../../../../test-assets/example.base64";
+import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
 enum DecisionOptions {

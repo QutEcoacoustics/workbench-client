@@ -14,7 +14,7 @@ import { detectChanges } from "@test/helpers/changes";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { exampleBase64 } from "src/test-assets/example.base64";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
