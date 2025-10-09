@@ -535,7 +535,7 @@ describe("VerificationComponent", () => {
     expect(spec.component).toBeInstanceOf(VerificationComponent);
   });
 
-  fit("should set the loading timeout to the value in the environment.json config", async () => {
+  it("should set the loading timeout to the value in the environment.json config", async () => {
     await setup();
     const expectedTimeout = spec.inject(ConfigService).environment.browserTimeout;
     expect(verificationGrid().loadingTimeout).toEqual(expectedTimeout);
