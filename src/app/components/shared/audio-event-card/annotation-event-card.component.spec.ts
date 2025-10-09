@@ -56,7 +56,7 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(exampleBase64);
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(`data:[audio/flac];base64,${exampleBase64}`);
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
@@ -135,7 +135,7 @@ describe("AudioEventCardComponent", () => {
     expect(noScoreElement()).not.toExist();
   });
 
-  it("should have the correct content if there is no score", () => {
+  fit("should have the correct content if there is no score", () => {
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,

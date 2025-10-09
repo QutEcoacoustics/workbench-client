@@ -78,7 +78,7 @@ describe("AnnotationSearchComponent", () => {
       }),
       mockProvider(MediaService, {
         // createMediaUrl: () => testAsset("example.flac"),
-        createMediaUrl: () => exampleBase64,
+        createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
       }),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

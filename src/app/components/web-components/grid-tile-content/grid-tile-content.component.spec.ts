@@ -57,7 +57,7 @@ describe("GridTileContentComponent", () => {
     //   .and.returnValue(testAsset("example.flac"));
     mockAudioRecording.getMediaUrl = jasmine
       .createSpy("getSplittableUrl")
-      .and.returnValue(exampleBase64);
+      .and.returnValue(`data:[audio/flac];base64,${exampleBase64}`);
 
     mockAnnotation = new Annotation(
       generateAnnotation({
