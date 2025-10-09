@@ -6,6 +6,12 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { LoadingComponent } from "./loading.component";
 
+interface LoadingComponentProps {
+  color: BootstrapColorTypes;
+  size: BootstrapScreenSizes;
+  type: "border" | "grower";
+}
+
 describe("LoadingComponent", () => {
   let spec: Spectator<LoadingComponent>;
   const createComponent = createComponentFactory({
@@ -13,11 +19,11 @@ describe("LoadingComponent", () => {
     imports: [NgbModule],
   });
 
-  function getSpinner(klass: string) {
-    return spec.query(`#spinner.${klass}`);
+  function getSpinner(className: string) {
+    return spec.query(`#spinner.${className}`);
   }
 
-  function setup(props: Partial<LoadingComponent>) {
+  function setup(props: Partial<LoadingComponentProps>) {
     spec = createComponent({
       detectChanges: false,
       props,

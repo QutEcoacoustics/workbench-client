@@ -424,7 +424,7 @@ describe("AddAnnotationsComponent", () => {
         const expectedRowValues = [
           `1:${i + 1}`,
           // event.audioRecordingId.toLocaleString(),
-          "Loading...",
+          "",
           event.startTimeSeconds.toLocaleString(),
           event.endTimeSeconds.toLocaleString(),
           event.lowFrequencyHertz.toLocaleString(),
