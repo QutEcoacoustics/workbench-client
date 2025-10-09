@@ -1,0 +1,61 @@
+<div class="overlay alert alert-light shadow m-3">
+  <div
+    class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
+  >
+    <h3 class="h4 text-dark">Event Map</h3>
+    <button class="btn btn-secondary" (click)="openSearchFiltersModal()">
+      Edit Filters
+    </button>
+  </div>
+
+  <div>
+    <p class="text-muted">
+      Map showing the locations of audio events matching the current filters.
+    </p>
+
+    <hr />
+
+    <div class="species-list">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Species</th>
+            <th scope="col">Count</th>
+            <th scope="col">Last Detected</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td scope="row">Abbots Babbler</td>
+            <td>52</td>
+            <td>22/11/2024 09:54</td>
+          </tr>
+
+          <tr>
+            <td scope="row">Common Cuckoo</td>
+            <td>13</td>
+            <td>21/11/2024 16:21</td>
+          </tr>
+
+          <tr>
+            <td scope="row">Eastern Whipbird</td>
+            <td>8</td>
+            <td>20/11/2024 11:03</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<baw-map [markers]="markers()"></baw-map>
+
+<ng-template #searchFiltersModal let-filtersModal>
+  <baw-search-filters-modal
+    [modal]="filtersModal"
+    [hasDecisions]="false"
+    [successCallback]="updateSearchFilters.bind(this)"
+    [formValue]="searchParameters()"
+  ></baw-search-filters-modal>
+</ng-template>

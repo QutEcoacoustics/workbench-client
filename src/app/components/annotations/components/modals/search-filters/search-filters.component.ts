@@ -1,4 +1,11 @@
-import { Component, Input } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  input,
+  model,
+  signal,
+} from "@angular/core";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { ModalComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
@@ -26,7 +33,7 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
           id="exit-btn"
           class="btn btn-outline-primary me-2"
           (click)="closeModal()"
-          [disabled]="!this.isFormDirty"
+          [disabled]="!this.isFormDirty()"
         >
           Exit without updating
         </button>
@@ -41,32 +48,33 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
     </div>
   `,
   imports: [AnnotationSearchFormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFiltersModalComponent implements ModalComponent {
-  @Input() public modal: NgbActiveModal;
-  @Input() public formValue: AnnotationSearchParameters;
-  @Input() public successCallback: (
-    newModel: AnnotationSearchParameters,
-  ) => void;
+  public readonly formValue = model.required<AnnotationSearchParameters>();
+  public readonly modal = input<NgbActiveModal>();
 
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
-  @Input() public hasDecisions: boolean;
+  // TODO: Migrate this to a signal once we add support for signals to the
+  // ModalComponent interface.
+  @Input()
+  public successCallback: (newModel: AnnotationSearchParameters) => void;
 
-  protected isFormDirty = true;
+  public readonly project = input<Project>();
+  public readonly region = input<Region>();
+  public readonly site = input<Site>();
+  public readonly hasDecisions = input(false);
 
-  protected get isDirty(): boolean {
-    return this.isFormDirty && this.hasDecisions;
-  }
+  protected readonly isFormDirty = signal(true);
 
   public closeModal(): void {
-    this.modal.close();
+    this.modal().close();
   }
 
   public success(): void {
-    if (this.isFormDirty) {
-      this.successCallback(this.formValue);
+    if (this.isFormDirty()) {
+      const callback = this.successCallback;
+      callback(this.formValue());
+
       this.closeModal();
       return;
     }

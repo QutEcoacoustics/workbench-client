@@ -263,7 +263,7 @@ export class AnnotationSearchParameters
     return Array.from(this.tags ?? []);
   }
 
-  @hasOne<AnnotationSearchParameters, Tag>(TAG, "taskTag")
+  @hasOne(TAG, "taskTag")
   public taskTagModel?: Tag;
 
   public get taskBehavior(): TaskBehaviorKey {
@@ -285,27 +285,24 @@ export class AnnotationSearchParameters
     }
   }
 
-  @hasMany<AnnotationSearchParameters, AudioRecording>(
-    AUDIO_RECORDING,
-    "audioRecordings",
-  )
+  @hasMany(AUDIO_RECORDING, "audioRecordings")
   public audioRecordingModels?: AudioRecording[];
-  @hasMany<AnnotationSearchParameters, Project>(PROJECT, "projects")
+  @hasMany(PROJECT, "projects")
   public projectModels?: Project[];
-  @hasMany<AnnotationSearchParameters, Region>(SHALLOW_REGION, "regions")
+  @hasMany(SHALLOW_REGION, "regions")
   public regionModels?: Region[];
-  @hasMany<AnnotationSearchParameters, Site>(SHALLOW_SITE, "sites")
+  @hasMany(SHALLOW_SITE, "sites")
   public siteModels?: Site[];
-  @hasMany<AnnotationSearchParameters, Tag>(TAG, "tags")
+  @hasMany(TAG, "tags")
   public tagModels?: Tag[];
 
   // TODO: use resolvers here once the association resolver decorators return a promise
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
-  // @hasOne<AnnotationSearchParameters, Project>(PROJECT, "routeProjectId")
+  // @hasOne(PROJECT, "routeProjectId")
   public routeProjectModel?: Project;
-  // @hasOne<AnnotationSearchParameters, Region>(SHALLOW_REGION, "routeRegionId")
+  // @hasOne(SHALLOW_REGION, "routeRegionId")
   public routeRegionModel?: Region;
-  // @hasOne<AnnotationSearchParameters, Site>(SHALLOW_SITE, "routeSiteId")
+  // @hasOne(SHALLOW_SITE, "routeSiteId")
   public routeSiteModel?: Site;
 
   public get recordingDateStartedAfter(): DateTime | null {

@@ -1,0 +1,12 @@
+:host {
+  position: relative;
+
+  // We use "display: contents" here so that any styles applied to the host can
+  // be inherited by the baw-map.
+  display: contents;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 10;
+}

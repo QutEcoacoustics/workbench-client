@@ -70,11 +70,11 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public readonly isFirstVersion?: boolean;
 
   // Associations
-  @creator<Script>()
+  @creator()
   public creator?: User;
-  @hasOne<Script, Script>(SCRIPT, "groupId")
+  @hasOne(SCRIPT, "groupId")
   public group?: Script;
-  @hasOne<Script, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {
