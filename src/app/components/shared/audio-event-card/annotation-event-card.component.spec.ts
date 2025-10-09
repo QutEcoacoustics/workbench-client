@@ -135,7 +135,7 @@ describe("AudioEventCardComponent", () => {
     expect(noScoreElement()).not.toExist();
   });
 
-  fit("should have the correct content if there is no score", () => {
+  it("should have the correct content if there is no score", () => {
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
