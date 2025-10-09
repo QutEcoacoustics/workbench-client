@@ -39,6 +39,7 @@
 <oe-verification-grid
   #verificationGrid
   id="verification-grid"
+  [loadingTimeout]="loadingTimeout"
   (grid-loaded)="handleGridLoaded()"
   (decision-made)="handleDecision($event)"
   (focus)="verificationGridFocused.set(true)"

@@ -61,6 +61,7 @@ import { TaggingCorrectionsService } from "@services/models/tagging-corrections/
 import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import { ConfigService } from "@services/config/config.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -106,6 +107,7 @@ class VerificationComponent
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private config: ConfigService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
@@ -126,9 +128,11 @@ class VerificationComponent
   protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
 
-  public readonly project = signal<Project | null>(null);
-  public readonly region = signal<Region | null>(null);
-  public readonly site = signal<Site | null>(null);
+  protected readonly project = signal<Project | null>(null);
+  protected readonly region = signal<Region | null>(null);
+  protected readonly site = signal<Site | null>(null);
+
+  protected readonly loadingTimeout = this.config.environment.browserTimeout;
 
   // TODO: Remove this once the corrections endpoint is finished
   /**
