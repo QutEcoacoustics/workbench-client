@@ -39,6 +39,7 @@
 <oe-verification-grid
   #verificationGrid
   id="verification-grid"
+  [loadingTimeout]="loadingTimeout"
   (grid-loaded)="handleGridLoaded()"
   (decision-made)="handleDecision($event)"
   (focus)="verificationGridFocused.set(true)"
@@ -47,7 +48,21 @@
   autofocus
 >
   <template>
-    <baw-grid-tile-content></baw-grid-tile-content>
+    <div class="tile-spacing">
+      <oe-subject-tag></oe-subject-tag>
+      <oe-media-controls for="spectrogram"></oe-media-controls>
+    </div>
+
+    <oe-axes>
+      <oe-indicator>
+        <oe-spectrogram id="spectrogram" color-map="grayscale"></oe-spectrogram>
+      </oe-indicator>
+    </oe-axes>
+
+    <div class="tile-block">
+      <oe-task-meter></oe-task-meter>
+      <baw-grid-tile-content></baw-grid-tile-content>
+    </div>
   </template>
 
   <oe-verification

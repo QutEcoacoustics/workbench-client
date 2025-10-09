@@ -28,7 +28,6 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -39,6 +38,7 @@ import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -77,7 +77,8 @@ describe("AnnotationSearchComponent", () => {
         filter: () => of(),
       }),
       mockProvider(MediaService, {
-        createMediaUrl: () => testAsset("example.flac"),
+        // createMediaUrl: () => testAsset("example.flac"),
+        createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
       }),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

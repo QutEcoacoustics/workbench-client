@@ -23,11 +23,11 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
-import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AudioEventCardComponent", () => {
@@ -56,7 +56,7 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(`data:[audio/flac];base64,${exampleBase64}`);
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);

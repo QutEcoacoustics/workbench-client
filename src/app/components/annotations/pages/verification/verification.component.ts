@@ -34,7 +34,6 @@ import { SearchFiltersModalComponent } from "@components/annotations/components/
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -61,6 +60,8 @@ import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/de
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import { ConfigService } from "@services/config/config.service";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -106,6 +107,7 @@ class VerificationComponent
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private config: ConfigService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super();
@@ -126,9 +128,11 @@ class VerificationComponent
   protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
 
-  public readonly project = signal<Project | null>(null);
-  public readonly region = signal<Region | null>(null);
-  public readonly site = signal<Site | null>(null);
+  protected readonly project = signal<Project | null>(null);
+  protected readonly region = signal<Region | null>(null);
+  protected readonly site = signal<Site | null>(null);
+
+  protected readonly loadingTimeout = this.config.environment.browserTimeout;
 
   // TODO: Remove this once the corrections endpoint is finished
   /**
@@ -260,10 +264,8 @@ class VerificationComponent
       return;
     }
 
-    // TODO: this is a hacky solution to get the verification grid to update
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
-    this.verificationGridElement().nativeElement.subjects = [];
     this.updateUrlParameters();
     this.hasUnsavedChanges.set(false);
 
@@ -466,7 +468,9 @@ class VerificationComponent
   // see: https://github.com/ecoacoustics/web-components/issues/444
   private tagVerificationPredicate(): WhenPredicate {
     // The user can only verify a tag if there is a tag applied to the subject.
-    return (subject: SubjectWrapper) => subject.tag !== null;
+    return (subject: SubjectWrapper) => {
+      return subject.tag !== null;
+    }
   }
 
   private addTagWhenPredicate(): WhenPredicate {

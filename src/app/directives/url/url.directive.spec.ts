@@ -39,7 +39,7 @@ describe("UrlDirective", () => {
 
   function assertRoute(link: string) {
     const href = spec.query<HTMLAnchorElement>("a").href;
-    const url = new URL(href, document.baseURI);
+    const url = new URL(href, window.location.origin);
     expect(url.pathname + url.search).toBe(link);
   }
 

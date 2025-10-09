@@ -19,7 +19,7 @@
     "test:edge": "ng test --code-coverage --browsers Edge",
     "test:all": "ng test --code-coverage --browsers Firefox,Chrome,Edge",
     "serve:ssr": "node dist/workbench-client/server/server.mjs",
-    "test:pipeline": "ng test --watch=false --code-coverage"
+    "test:pipeline": "ng test --watch=false --no-watch --code-coverage"
   },
   "private": true,
   "dependencies": {
@@ -37,7 +37,7 @@
     "@angular/platform-server": "19.2.5",
     "@angular/router": "19.2.5",
     "@angular/ssr": "19.2.6",
-    "@ecoacoustics/web-components": "^5.2.2",
+    "@ecoacoustics/web-components": "^6.0.3",
     "@fortawesome/angular-fontawesome": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
@@ -87,7 +87,6 @@
     "@angular/cli": "19.2.6",
     "@angular/compiler-cli": "19.2.5",
     "@angular/language-service": "19.2.5",
-    "@chiragrupani/karma-chromium-edge-launcher": "^2.2.2",
     "@faker-js/faker": "^7.3.0",
     "@ngneat/spectator": "19.4.1",
     "@types/d3-color": "^3.1.0",
