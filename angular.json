@@ -120,20 +120,27 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/custom-webpack:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "codeCoverage": true,
             "sourceMap": false,
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
+            "aot": false,
             "karmaConfig": "karma.conf.js",
-            "customWebpackConfig": {
-              "path": "./webpack.config.js"
-            },
             "assets": [
+              "src/favicon.ico",
               "src/assets",
-              "src/manifest.json"
+              "src/manifest.json",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@ecoacoustics/web-components/",
+                "output": "base/node_modules/@ecoacoustics/web-components/"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -153,7 +160,9 @@
             "lintFilePatterns": [
               "src/**/*.ts",
               "src/**/*.html"
-            ]
+            ],
+            "ignorePath": "./.eslintignore",
+            "eslintConfig": "./.eslintrc.json"
           }
         }
       }

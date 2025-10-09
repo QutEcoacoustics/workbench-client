@@ -8,9 +8,9 @@ import { map, Observable, startWith } from "rxjs";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AsyncPipe } from "@angular/common";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { metaReviewIcons } from "../screens/metadata-review/metadata-review.component";
 import { HarvestStagesService } from "../services/harvest-stages.service";
 import { SafePipe } from "../../../pipes/safe/safe.pipe";
+import { metaReviewIcons } from "../screens/metadata-review/metadata-review.types";
 
 @Component({
   selector: "baw-harvest-issue-widget",
