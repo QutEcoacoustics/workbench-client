@@ -10,17 +10,13 @@ import { siteResolvers } from "@baw-api/site/sites.service";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Params } from "@angular/router";
 import { Paging } from "@baw-api/baw-api.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { regionResolvers } from "@baw-api/region/regions.service";
 import { FiltersWarningModalComponent } from "@components/annotations/components/modals/filters-warning/filters-warning.component";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
-import {
-  NgbModal,
-  NgbPaginationConfig,
-  NgbPagination,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Annotation } from "@models/data/Annotation";
@@ -65,17 +61,11 @@ class AnnotationSearchComponent
 {
   public constructor(
     protected audioEventApi: ShallowAudioEventsService,
-    protected route: ActivatedRoute,
-    protected router: Router,
-    protected config: NgbPaginationConfig,
     protected modals: NgbModal,
     protected annotationService: AnnotationService,
     @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
   ) {
     super(
-      router,
-      route,
-      config,
       audioEventApi,
       "id",
       () => [],
@@ -155,7 +145,7 @@ class AnnotationSearchComponent
       queryParams.page = page;
     }
 
-    this.router.navigate([], { relativeTo: this.route, queryParams });
+    this.router.navigate([], { queryParams });
   }
 
   protected updateSearchParameters(model: AnnotationSearchParameters): void {

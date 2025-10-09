@@ -11,7 +11,10 @@ export enum GoogleMapsState {
   Failed,
 }
 
-export type MapMarkerOptions = google.maps.MarkerOptions;
+export interface MapMarkerOptions extends google.maps.marker.AdvancedMarkerElement {
+  groupId?: unknown;
+}
+
 export type MapOptions = google.maps.MapOptions;
 
 @Injectable({ providedIn: "root" })
@@ -42,15 +45,24 @@ export class MapsService {
   private async embedGoogleMaps(): Promise<boolean> {
     // TODO: during SSR we might be able to render a static image of the map
     // using the StaticMapService
-    // https://developers.google.com/maps/documentation/maps-static/overview
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2442
     if (environment.testing || this.isServer) {
       return;
     }
 
     this.mapsState = GoogleMapsState.Loading;
 
-    const googleMapsUrl = this.googleMapsBundleUrl();
+    const mapsImport = this.embedScriptTag(this.googleMapsBundleUrl());
+    const clusterImport = this.embedScriptTag(this.googleMapClusterUrl());
 
+    return Promise.race([
+      mapsImport,
+      clusterImport,
+      this.waitForGoogleNamespace(),
+    ]);
+  }
+
+  private embedScriptTag(src: string): Promise<boolean> {
     const node: HTMLScriptElement = document.createElement("script");
 
     const scriptErrorPromise = new Promise<boolean>((res) => {
@@ -61,17 +73,16 @@ export class MapsService {
       });
     });
 
+    // The Google maps clustering library does not support module scripts.
+    // Therefore, we have to use "async" script tags (instead of using ESM
+    // imports).
     node.id = "google-maps";
-    node.type = "text/javascript";
     node.async = true;
-    node.src = googleMapsUrl;
+    node.src = src;
 
     document.head.appendChild(node);
 
-    return Promise.race([
-      scriptErrorPromise,
-      this.waitForGoogleNamespace(),
-    ]) as Promise<boolean>;
+    return scriptErrorPromise;
   }
 
   private async waitForGoogleNamespace(): Promise<boolean> {
@@ -84,7 +95,8 @@ export class MapsService {
       if (
         typeof google !== "undefined" &&
         typeof google.maps !== "undefined" &&
-        typeof google.maps.importLibrary !== "undefined"
+        typeof google.maps.importLibrary !== "undefined" &&
+        typeof google.maps.marker.AdvancedMarkerElement !== "undefined"
       ) {
         this.mapsState = GoogleMapsState.Loaded;
         return true;
@@ -103,19 +115,28 @@ export class MapsService {
     // block the main thread while loading
     // this can improve performance and removes a warning from the dev console
     const googleMapsBaseUrl =
-      "https://maps.googleapis.com/maps/api/js?loading=async";
+      "https://maps.googleapis.com/maps/api/js?loading=async&libraries=marker";
 
     const mapsKey = this.config.keys.googleMaps;
 
     let googleMapsUrl = googleMapsBaseUrl;
     if (mapsKey) {
-      // TODO: migrate to google.maps.AdvancedMarkerElement once we bump the
-      // Angular version
-      // https://developers.google.com/maps/documentation/javascript/advanced-markers/migration
       googleMapsUrl += `&key=${mapsKey}`;
     }
 
     return googleMapsUrl;
+  }
+
+  private googleMapClusterUrl(): string {
+    // We have to import the markerclusterer library using a script tag,
+    // because it does not support ESM imports.
+    //
+    // We don't use the suggested unpkg CDN so that we don't have to establish a
+    // new connection to a third party server, and can instead serve the file
+    // from our own server (via angular.json assets), meaning that it can re-use
+    // the same keep-alive connection as the rest of the app.
+    // https://github.com/angular/components/blob/974d42f04/src/google-maps/map-marker-clusterer/README.md?plain=1#L5
+    return "@googlemaps/markerclusterer/dist/index.min.js";
   }
 
   private logWarning(message: string): void {

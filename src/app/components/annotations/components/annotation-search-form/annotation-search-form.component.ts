@@ -85,17 +85,17 @@ export class AnnotationSearchFormComponent implements OnInit {
     });
   }
 
-  public searchParameters = model.required<AnnotationSearchParameters>();
-  public searchParametersChange = output<AnnotationSearchParameters>();
+  public readonly searchParameters = model.required<AnnotationSearchParameters>();
+  public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
   private recordingsTypeahead = viewChild<
     TypeaheadInputComponent<AudioRecording>
   >("recordingsTypeahead");
 
-  protected recordingDateTimeFilters = signal<DateTimeFilterModel>({});
+  protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
-  protected hideAdvancedFilters = signal(true);
+  protected readonly hideAdvancedFilters = signal(true);
 
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions = signal<ISelectableItem<VerificationStatusKey>[]>([

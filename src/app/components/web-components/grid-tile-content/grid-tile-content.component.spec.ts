@@ -3,7 +3,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
@@ -81,8 +81,8 @@ describe("GridTileContentComponent", () => {
     spectator.detectChanges();
   }
 
-  const listenLink = () => getElementByInnerText(spectator, "Go To Source");
-  const contextButton = () => getElementByInnerText(spectator, "Show More");
+  const listenLink = () => getElementByTextContent(spectator, "Go To Source");
+  const contextButton = () => getElementByTextContent(spectator, "Show More");
   const contextCloseButton = () => spectator.query("#close-btn");
   const contextCard = () => spectator.query(".context-card");
   const spectrogram = () =>

@@ -1,26 +1,35 @@
 import {
   Component,
-  EventEmitter,
-  Input,
+  computed,
+  inject,
+  input,
   OnChanges,
-  Output,
+  output,
+  signal,
   SimpleChanges,
+  viewChild,
   ViewChild,
 } from "@angular/core";
 import {
   GoogleMap,
   MapAnchorPoint,
   MapInfoWindow,
-  MapMarker,
+  MapMarkerClusterer,
+  MapAdvancedMarker,
 } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
+  GoogleMapsState,
   MapMarkerOptions,
   MapOptions,
   MapsService,
 } from "@services/maps/maps.service";
 import { List } from "immutable";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { LoadingComponent } from "../loading/loading.component";
+
+type MarkerGroup = unknown;
 
 /**
  * Google Maps Wrapper Component
@@ -29,19 +38,57 @@ import { LoadingComponent } from "../loading/loading.component";
   selector: "baw-map",
   templateUrl: "./map.component.html",
   styleUrl: "./map.component.scss",
-  imports: [GoogleMap, MapMarker, MapInfoWindow, LoadingComponent],
+  imports: [
+    GoogleMap,
+    MapAdvancedMarker,
+    MapMarkerClusterer,
+    MapInfoWindow,
+    LoadingComponent,
+  ],
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
-  public constructor(private mapService: MapsService) {
-    super();
+  private readonly mapService = inject(MapsService);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
-    this.mapService
-      .loadAsync()
-      .then((success: boolean) => (this.googleMapsLoaded = success))
-      .catch(() => console.warn("Failed to load Google Maps"));
-  }
+  public readonly markers = input.required<List<MapMarkerOptions>>();
+  public readonly markerOptions = input<google.maps.marker.AdvancedMarkerElementOptions>();
+  public readonly fetchingData = input(false);
 
-  @ViewChild(MapInfoWindow) public info?: MapInfoWindow;
+  // Setting to "hybrid" can increase load times and looks like the map is bugged
+  public readonly mapOptions = input<MapOptions>({ mapTypeId: "satellite" });
+
+  public readonly newLocation = output<google.maps.MapMouseEvent>();
+
+  public bounds: google.maps.LatLngBounds;
+  public validMarkersOptions: MapMarkerOptions[];
+  public hasMarkers = false;
+  private _map: GoogleMap;
+
+  protected readonly infoContent = signal("");
+
+  protected readonly MapLoadState = GoogleMapsState;
+  protected readonly mapsLoadState = signal<GoogleMapsState>(
+    this.MapLoadState.Loading,
+  );
+
+  protected readonly groups = computed<MarkerGroup[]>(() => {
+    const groupSet = new Set<MarkerGroup>();
+    this.validMarkersOptions.forEach((marker) => {
+      if (marker.groupId !== undefined) {
+        groupSet.add(marker.groupId);
+      }
+    });
+
+    return Array.from(groupSet);
+  });
+
+  protected readonly hasMapsLoaded = computed(() => {
+    return (
+      this.mapsLoadState() === GoogleMapsState.Loaded && !this.fetchingData()
+    );
+  });
+
+  public readonly info = viewChild(MapInfoWindow);
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -49,19 +96,30 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.focusMarkers();
   }
 
-  @Input() public markers: List<MapMarkerOptions>;
-  @Input() public markerOptions: MapMarkerOptions;
-  @Output() public newLocation = new EventEmitter<google.maps.MapMouseEvent>();
+  public constructor() {
+    super();
 
-  public validMarkersOptions: MapMarkerOptions[];
-  public hasMarkers = false;
-  public infoContent = "";
-  private _map: GoogleMap;
+    if (this.isServer) {
+      this.mapsLoadState.set(GoogleMapsState.NotLoaded);
+      return;
+    }
 
-  // Setting to "hybrid" can increase load times and looks like the map is bugged
-  public mapOptions: MapOptions = { mapTypeId: "satellite" };
-  public bounds: google.maps.LatLngBounds;
-  protected googleMapsLoaded: boolean | null = null;
+    this.mapService
+      .loadAsync()
+      .then((success: boolean) => {
+        const newState = success
+          ? GoogleMapsState.Loaded
+          : GoogleMapsState.Failed;
+        this.mapsLoadState.set(newState);
+      })
+      .catch(() => {
+        // We issue a console warning before transitioning to the failed state
+        // so if transitioning to the failed state causes a hard error, we have
+        // a fallback log message.
+        console.warn("Failed to load Google Maps");
+        this.mapsLoadState.set(GoogleMapsState.Failed);
+      });
+  }
 
   /**
    * Runs when new markers are added/removed
@@ -73,9 +131,23 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
-  protected addMapMarkerInfo(options: MapMarkerOptions, marker: MapAnchorPoint): void {
-    this.infoContent = options.label as string;
-    this.info.open(marker);
+  protected initMarker(
+    options: MapMarkerOptions,
+    marker: MapAdvancedMarker,
+  ): void {
+    marker.advancedMarker.addEventListener("pointerover", () => {
+      this.addMapMarkerInfo(options, marker);
+    });
+
+    this.focusMarkers();
+  }
+
+  protected addMapMarkerInfo(
+    options: MapMarkerOptions,
+    marker: MapAnchorPoint,
+  ): void {
+    this.infoContent.set(options.title ?? "");
+    this.info().open(marker);
   }
 
   /**
@@ -96,6 +168,53 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this._map.panToBounds(this.bounds);
   }
 
+  // TODO: Implement some sort of caching so that markers of the same group can
+  // share the same element reference instead of creating a new one each time.
+  protected markerContent(marker: MapMarkerOptions): HTMLElement {
+    return this.createMarkerElement(marker);
+  }
+
+  private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
+    const color = this.markerColor(marker);
+    const pinElement = new google.maps.marker.PinElement({
+      background: color,
+      borderColor: color,
+      glyphColor: "white",
+    });
+
+    return pinElement.element;
+  }
+
+  /**
+   * Takes a marker and returns a color based on its groupId.
+   * If there are no groups, or the groupId is not found, the marker will
+   * default to red.
+   */
+  private markerColor(marker: MapMarkerOptions): string {
+    const count = this.groups().length;
+    const index = this.groups().indexOf(marker.groupId);
+    if (index === -1 || count === 0) {
+      return "hsl(0, 100%, 50%)"; // Red
+    }
+
+    // Using the total number of groups, we evenly pick spaces along the color
+    // range [0,1] to get distinct colors.
+    // By using a cyclical color scheme instead of a linear one, we hope that
+    // colors will be as distinct as possible.
+    // https://d3js.org/d3-scale-chromatic/cyclical
+    //
+    // Note that the count will always be the maximum index + 1.
+    // I purposely did this because a value of 0 and 1 are almost identical
+    // colors, so by using the count we add even padding to the beginning and
+    // the end of the picked color index.
+    // E.g. For 2 groups, the indexes will be 0 and 0.5 instead of 0 and 1,
+    // ensuring that the two colors are as far apart as possible.
+    const scalar = ((1 / count) * index) % 1
+    const color = interpolateSinebow(scalar);
+
+    return color;
+  }
+
   /**
    * Extracts valid markers into `validMarkers`
    */
@@ -103,7 +222,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this.hasMarkers = false;
     this.validMarkersOptions = [];
 
-    this.markers?.forEach((marker) => {
+    this.markers()?.forEach((marker) => {
       if (isMarkerValid(marker)) {
         this.hasMarkers = true;
         this.validMarkersOptions.push(marker);
@@ -128,21 +247,21 @@ function isMarkerValid(marker: MapMarkerOptions): boolean {
  * Handles sanitization of map markers so change detection will run properly
  */
 export function sanitizeMapMarkers(
-  markers: MapMarkerOptions | MapMarkerOptions[]
+  markers: MapMarkerOptions | MapMarkerOptions[],
 ): List<MapMarkerOptions> {
-  const output: MapMarkerOptions[] = [];
+  const markerOptions: MapMarkerOptions[] = [];
 
   if (markers instanceof Array) {
     markers.forEach((marker) => {
       if (isMarkerValid(marker)) {
-        output.push(marker);
+        markerOptions.push(marker);
       }
     });
   } else {
     if (isMarkerValid(markers)) {
-      output.push(markers);
+      markerOptions.push(markers);
     }
   }
 
-  return List(output);
+  return List(markerOptions);
 }

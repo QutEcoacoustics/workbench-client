@@ -1,4 +1,4 @@
-import { fakeAsync, tick } from "@angular/core/testing";
+import { fakeAsync, flush } from "@angular/core/testing";
 import {
   FormControl,
   FormGroup,
@@ -11,26 +11,27 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
-import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
-
-const mockMapComponent = MockComponent(MapComponent);
 
 describe("FormlyLocationInput", () => {
   let model: any;
   let formGroup: FormGroup;
-  let spectator: SpectatorHost<LocationInputComponent>;
+  let spec: SpectatorHost<LocationInputComponent>;
 
   const createHost = createHostFactory({
     component: LocationInputComponent,
-    declarations: [mockMapComponent],
+    providers: [
+      provideMockBawApi(),
+    ],
     imports: [
+      GoogleMapsModule,
       FormsModule,
       ReactiveFormsModule,
       FormlyModule.forRoot(formlyConfig),
       FormlyBootstrapModule,
-      GoogleMapsModule,
+      MapComponent,
     ],
   });
 
@@ -38,7 +39,7 @@ describe("FormlyLocationInput", () => {
     formGroup = new FormGroup({ input: new FormControl("") });
     model = {};
 
-    spectator = createHost(
+    spec = createHost(
       `
       <form [formGroup]="formGroup">
         <baw-location-input [field]="field"></baw-location-input>
@@ -56,103 +57,104 @@ describe("FormlyLocationInput", () => {
         },
       }
     );
-    spectator.detectChanges();
 
-    return spectator;
+    spec.detectChanges();
   }
 
-  beforeEach(() => setup());
+  beforeEach(() => {
+    setup();
+  });
 
-  const getLatitudeInput = () => spectator.query<HTMLInputElement>("#latitude");
+  const getLatitudeInput = () => spec.query<HTMLInputElement>("#latitude");
   const getLongitudeInput = () =>
-    spectator.query<HTMLInputElement>("#longitude");
+    spec.query<HTMLInputElement>("#longitude");
   const getErrorElements = () =>
-    spectator.queryAll<HTMLDivElement>(".invalid-feedback");
+    spec.queryAll<HTMLDivElement>(".invalid-feedback");
 
   function updateMarkerThroughInput(
+    latitude: number | string,
     longitude: number | string,
-    latitude: number | string
   ) {
-    const latitudeInput = getLatitudeInput();
-    const longitudeInput = getLongitudeInput();
+    // Using typeInElement dispatches the "input" event that Angular listens to
+    // https://github.com/ngneat/spectator/blob/549c63c43e9/projects/spectator/src/lib/type-in-element.ts#L18
+    spec.typeInElement(latitude.toString(), getLatitudeInput());
+    spec.typeInElement(longitude.toString(), getLongitudeInput());
 
-    longitudeInput.value = longitude.toString();
-    longitudeInput.dispatchEvent(new Event("input"));
-    latitudeInput.value = latitude.toString();
-    latitudeInput.dispatchEvent(new Event("input"));
-
-    spectator.detectChanges();
+    spec.detectChanges();
+    flush();
+    spec.detectChanges();
   }
 
   /**
    * Changes the markers position by directly editing the model.
    * This is used to initialize the marker to the correct position, when the input field might not work
    */
-  function explicitlySetMarker(longitude: number, latitude: number) {
-    spectator.component.updateModel(longitude, latitude);
-    spectator.detectChanges();
+  function explicitlySetMarker(latitude: number, longitude: number) {
+    spec.component.updateModel(latitude, longitude);
+
+    spec.detectChanges();
+    flush();
+    spec.detectChanges();
   }
 
   function assertMapModelCoordinates(
     map: MapComponent,
+    latitude: number,
     longitude: number,
-    latitude: number
   ) {
-    expect(map.markers.toArray()[0]["position"]["lng"]).toEqual(longitude);
-    expect(map.markers.toArray()[0]["position"]["lat"]).toEqual(latitude);
+    expect(map.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
+    expect(map.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
   }
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(LocationInputComponent);
+    expect(spec.component).toBeInstanceOf(LocationInputComponent);
   });
 
   it("should display the position of the marker in input boxes", fakeAsync(() => {
-    const defaultLongitudeValue = modelData.longitude();
     const defaultLatitudeValue = modelData.latitude();
+    const defaultLongitudeValue = modelData.longitude();
 
-    explicitlySetMarker(defaultLongitudeValue, defaultLatitudeValue);
+    explicitlySetMarker(defaultLatitudeValue, defaultLongitudeValue);
 
-    tick();
-
-    expect(getLongitudeInput().value).toEqual(defaultLongitudeValue.toString());
     expect(getLatitudeInput().value).toEqual(defaultLatitudeValue.toString());
+    expect(getLongitudeInput().value).toEqual(defaultLongitudeValue.toString());
   }));
 
-  it("should update the marker model if the location is updated through the input field/form", () => {
-    const map = spectator.query(MapComponent);
-    const defaultLongitudeValue = modelData.longitude();
+  it("should update the marker model if the location is updated through the input field/form", fakeAsync(() => {
+    const map = spec.query(MapComponent);
     const defaultLatitudeValue = modelData.latitude();
+    const defaultLongitudeValue = modelData.longitude();
 
     // set the markers to a starting position
-    explicitlySetMarker(defaultLongitudeValue, defaultLatitudeValue);
+    explicitlySetMarker(defaultLatitudeValue, defaultLongitudeValue);
 
     // change the markers location through the input field
-    const updatedLongitudeValue = modelData.longitude();
     const updatedLatitudeValue = modelData.latitude();
+    const updatedLongitudeValue = modelData.longitude();
 
-    updateMarkerThroughInput(updatedLongitudeValue, updatedLatitudeValue);
+    updateMarkerThroughInput(updatedLatitudeValue, updatedLongitudeValue);
 
     // assert that the marker location has changed to the new location
-    assertMapModelCoordinates(map, updatedLongitudeValue, updatedLatitudeValue);
-  });
+    assertMapModelCoordinates(map, updatedLatitudeValue, updatedLongitudeValue);
+  }));
 
-  it("should update the marker model if the marker is dragged", () => {
-    const map = spectator.query(MapComponent);
-    const defaultLongitudeValue = modelData.longitude();
+  it("should update the marker model if the marker is dragged", fakeAsync(() => {
+    const map = spec.query(MapComponent);
     const defaultLatitudeValue = modelData.latitude();
+    const defaultLongitudeValue = modelData.longitude();
 
     // spy on the updateModel method so that we can assert later that it was called
     // with the correct parameters
-    explicitlySetMarker(defaultLongitudeValue, defaultLatitudeValue);
-    spyOn<any>(spectator.component, "updateModel").and.callThrough();
+    explicitlySetMarker(defaultLatitudeValue, defaultLongitudeValue);
+    spyOn<any>(spec.component, "updateModel").and.callThrough();
 
     // simulate moving the marker to a new position
-    const updatedLongitude = modelData.longitude();
     const updatedLatitude = modelData.latitude();
+    const updatedLongitude = modelData.longitude();
     // simulate dragging and dropping the marker by sending a drag event to the map
     const newPosition: google.maps.LatLng = {
-      lng: () => updatedLongitude,
       lat: () => updatedLatitude,
+      lng: () => updatedLongitude,
       equals: () => null,
       toJSON: () => null,
       toUrlValue: () => null,
@@ -164,47 +166,49 @@ describe("FormlyLocationInput", () => {
       stop: () => {},
     });
 
-    spectator.detectChanges();
+    spec.detectChanges();
+    flush();
+    spec.detectChanges();
 
-    expect(spectator.component.updateModel).toHaveBeenCalledWith(
+    expect(spec.component.updateModel).toHaveBeenCalledWith(
+      newPosition.lat(),
       newPosition.lng(),
-      newPosition.lat()
     );
-    assertMapModelCoordinates(map, updatedLongitude, updatedLatitude);
-  });
+    assertMapModelCoordinates(map, updatedLatitude, updatedLongitude);
+  }));
 
-  it("should emit 'null' if both the input fields are empty", () => {
-    const expectedValue = { longitude: null, latitude: null };
+  it("should emit 'null' if both the input fields are empty", fakeAsync(() => {
+    const expectedValue = { latitude: null, longitude: null };
     updateMarkerThroughInput("", "");
 
-    expect(spectator.component.formControl.value).toEqual(expectedValue);
-  });
+    expect(spec.component.formControl.value).toEqual(expectedValue);
+  }));
 
-  it("should display an error if there is a longitude but no latitude", () => {
+  it("should display an error if there is a longitude but no latitude", fakeAsync(() => {
     const expectedError =
       "Both latitude and longitude must be set or left empty";
     const longitude = modelData.longitude();
 
-    updateMarkerThroughInput(longitude, "");
+    updateMarkerThroughInput("", longitude);
 
     expect(getErrorElements()).toEqual(
       jasmine.arrayContaining([
         jasmine.objectContaining({ innerText: expectedError }),
       ])
     );
-  });
+  }));
 
-  it("should display an error if there is a latitude but no longitude", () => {
+  it("should display an error if there is a latitude but no longitude", fakeAsync(() => {
     const expectedError =
       "Both latitude and longitude must be set or left empty";
     const latitude = modelData.latitude();
 
-    updateMarkerThroughInput("", latitude);
+    updateMarkerThroughInput(latitude, "");
 
     expect(getErrorElements()).toEqual(
       jasmine.arrayContaining([
         jasmine.objectContaining({ innerText: expectedError }),
       ])
     );
-  });
+  }));
 });

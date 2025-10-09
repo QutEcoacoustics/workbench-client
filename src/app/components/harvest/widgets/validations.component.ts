@@ -14,7 +14,7 @@ import { metaReviewIcons } from "../screens/metadata-review/metadata-review.type
 
 @Component({
   selector: "baw-harvest-issue-widget",
-  templateUrl: "validations.component.html",
+  templateUrl: "./validations.component.html",
   styles: [
     `
       hr {

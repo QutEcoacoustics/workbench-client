@@ -120,12 +120,14 @@ export function waitForDropdown<T>(spectator: Spectator<T>): void {
   spectator.tick(1_000);
 }
 
-export function getElementByInnerText<T extends HTMLElement>(
+export function getElementByTextContent<T extends HTMLElement>(
   spectator: Spectator<unknown> | SpectatorHost<unknown>,
-  text: string
+  text: string,
 ): T | undefined {
+  // We use textContent here instead of innerText because innerText causes a
+  // reflow.
   return spectator.debugElement.query(
-    (element) => element.nativeElement.innerText === text
+    (element) => element.nativeElement.textContent.trim() === text
   )?.nativeElement;
 }
 

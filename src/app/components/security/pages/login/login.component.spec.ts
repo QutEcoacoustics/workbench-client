@@ -16,7 +16,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import { ToastComponent } from "@shared/toast/toast.component";
-import { clickButton, getElementByInnerText } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { Component } from "@angular/core";
@@ -69,9 +69,9 @@ describe("LoginComponent", () => {
   const communicationsDismissButton = () =>
     spec.query<HTMLButtonElement>(".btn-close");
   const communicationsYesButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "Yes");
+    getElementByTextContent<HTMLButtonElement>(spec, "Yes");
   const communicationsNoButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "No");
+    getElementByTextContent<HTMLButtonElement>(spec, "No");
 
   const usernameField = () =>
     spec.query<HTMLInputElement>("[autocomplete='username']");

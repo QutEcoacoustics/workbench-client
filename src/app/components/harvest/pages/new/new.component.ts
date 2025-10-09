@@ -20,7 +20,7 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-harvest-new",
-  templateUrl: "new.component.html",
+  templateUrl: "./new.component.html",
   imports: [TitleComponent],
 })
 class HarvestNewComponent extends PageComponent implements OnInit {

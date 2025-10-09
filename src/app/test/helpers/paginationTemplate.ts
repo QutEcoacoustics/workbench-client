@@ -31,13 +31,13 @@ export function assertPaginationTemplate<
       it("should have filter input", () => {
         const filter = getFilterInput();
         expect(filter).toBeTruthy();
-        expect(filter["value"]).toBe("");
+        expect(filter).toHaveValue("");
       });
 
       it("should set filter default value", () => {
         spectator.component.filter = "Custom Filter";
         spectator.detectChanges();
-        expect(getFilterInput()["value"]).toBe("Custom Filter");
+        expect(getFilterInput()).toHaveValue("Custom Filter");
       });
 
       it("should trigger onFilter events", () => {

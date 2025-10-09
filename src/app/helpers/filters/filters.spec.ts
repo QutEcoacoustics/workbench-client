@@ -3,10 +3,10 @@ import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioRecording } from "@models/AudioRecording";
-import { filterAnd, filterModel, filterModelIds } from "./filters";
+import { filterAnd, filterModel, filterModelIds, filterOr } from "./filters";
 
 describe("ModelFilters", () => {
-  describe("addFilters", () => {
+  describe("filterAnd", () => {
     it("should return the inner filter unchanged if there is no existing filter", () => {
       const currentFilters = undefined;
       const additionalFilters = {
@@ -84,6 +84,91 @@ describe("ModelFilters", () => {
 
       const observedResult = filterAnd(currentFilters, additionalFilters);
       expect(observedResult).toEqual(expectedResult);
+    });
+  });
+
+  describe("filterOr", () => {
+    it("should return the inner filter unchanged if there is no existing filter", () => {
+      const baseFilters = undefined;
+      const newFilters = { id: { eq: 1 } };
+
+      const realizedResult = filterOr(baseFilters, newFilters);
+      expect(realizedResult).toEqual(newFilters);
+    });
+
+    it("should create an 'or' condition if there is no or condition for a newly multi conditional filter", () => {
+      const baseFilters = { id: { eq: 1 } };
+      const newFilters: InnerFilter<AudioRecording> = {
+        recordedDate: { greaterThan: "2021-10-10" },
+      };
+
+      const expectedResult: InnerFilter<AudioRecording> = {
+        or: [
+          { id: { eq: 1 } },
+          { recordedDate: { greaterThan: "2021-10-10" } },
+        ],
+      };
+
+      const realizedResult = filterOr(baseFilters, newFilters);
+      expect(realizedResult).toEqual(expectedResult);
+    });
+
+    it("should append the a condition to the 'or' block if there is an existing 'or' block", () => {
+      const baseFilters: InnerFilter<AudioRecording> = {
+        or: [
+          { id: { eq: 1 } },
+          { recordedDate: { greaterThan: "2021-10-10" } },
+        ],
+      };
+
+      const newFilters: InnerFilter<AudioRecording> = {
+        durationSeconds: { gt: 1_000 },
+      };
+
+      const expectedResult: InnerFilter<AudioRecording> = {
+        or: [
+          { id: { eq: 1 } },
+          { recordedDate: { greaterThan: "2021-10-10" } },
+          { durationSeconds: { gt: 1_000 } },
+        ],
+      };
+
+      const observedResult = filterOr(baseFilters, newFilters);
+      expect(observedResult).toEqual(expectedResult);
+    });
+
+    it("should interact with 'and' conditions correctly", () => {
+      const baseFilters: InnerFilter<AudioRecording> = {
+        or: [
+          { id: { eq: 1 } },
+          {
+            and: [
+              { recordedDate: { greaterThan: "2021-10-10" } },
+              { durationSeconds: { gt: 1_000 } },
+            ],
+          },
+        ],
+      };
+
+      const newFilters: InnerFilter<AudioRecording> = {
+        siteId: { in: [1, 2, 3] },
+      };
+
+      const expectedResult: InnerFilter<AudioRecording> = {
+        or: [
+          { id: { eq: 1 } },
+          {
+            and: [
+              { recordedDate: { greaterThan: "2021-10-10" } },
+              { durationSeconds: { gt: 1_000 } },
+            ],
+          },
+          { siteId: { in: [1, 2, 3] } },
+        ],
+      };
+
+      const realizedResult = filterOr(baseFilters, newFilters);
+      expect(realizedResult).toEqual(expectedResult);
     });
   });
 

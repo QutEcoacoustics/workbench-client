@@ -34,13 +34,13 @@ export class GridTileContentComponent implements WithContext {
   public readonly elementRef = inject(ElementRef);
   public readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  private contextSpectrogram =
+  private readonly contextSpectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("contextSpectrogram");
-  private contextMediaControls =
+  private readonly contextMediaControls =
     viewChild<ElementRef<MediaControlsComponent>>("contextMediaControls");
 
-  protected model = signal<Annotation>(undefined);
-  protected contextExpanded = signal(false);
+  protected readonly model = signal<Annotation>(undefined);
+  protected readonly contextExpanded = signal(false);
 
   protected get listenLink(): string {
     return this.model()?.viewUrl;

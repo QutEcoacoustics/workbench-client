@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -7,15 +7,13 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { MapMarkerOptions } from "@services/maps/maps.service";
-import { sanitizeMapMarkers , MapComponent } from "@shared/map/map.component";
-import { List } from "immutable";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { WIPComponent } from "@shared/wip/wip.component";
+import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { RecentAnnotationsComponent } from "../recent-annotations/recent-annotations.component";
 
 /**
@@ -31,10 +29,12 @@ import { RecentAnnotationsComponent } from "../recent-annotations/recent-annotat
     ZonedDateTimeComponent,
     WIPComponent,
     RecentAnnotationsComponent,
-    MapComponent,
-  ],
+    SiteMapComponent
+],
 })
 class SiteComponent extends PageComponent implements OnInit {
+  private readonly audioRecordingsApi = inject(AudioRecordingsService);
+
   @Input() public project: Project;
   @Input() public region: Region;
   @Input() public site: Site;
@@ -43,16 +43,13 @@ class SiteComponent extends PageComponent implements OnInit {
   public recordings: AudioRecording[];
   public oldestRecording: AudioRecording;
   public newestRecording: AudioRecording;
-  public marker: List<MapMarkerOptions>;
   public recentAudioEvents: AudioEvent[];
 
-  public constructor(private audioRecordingsApi: AudioRecordingsService) {
+  public constructor() {
     super();
   }
 
-  public ngOnInit(): void {
-    this.marker = sanitizeMapMarkers(this.site.getMapMarker());
-
+  public ngOnInit() {
     this.getNewestDates();
     this.getOldestDates();
   }
