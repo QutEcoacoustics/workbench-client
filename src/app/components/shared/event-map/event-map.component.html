@@ -51,13 +51,27 @@
 
 <baw-map [markers]="markers()">
   <ng-template #markerTemplate let-marker="marker">
-    <div>
-      <img src="../../../../assets/images/user/user-512.png" alt="">
-
-      <p>
-        {{ marker | json }}
-      </p>
-    </div>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      (click)="markerClicked(marker)"
+    >
+      <circle cx="20" cy="20" r="20" fill="var(--baw-highlight-lighter)" />
+      <circle cx="20" cy="20" r="16" fill="var(--baw-highlight)" />
+      <text
+        x="20"
+        y="25"
+        text-anchor="middle"
+        font-size="12"
+        fill="var(--baw-highlight-contrast)"
+        letter-spacing="0.75px"
+        font-weight="bold"
+      >
+        {{ marker.count }}
+      </text>
+    </svg>
   </ng-template>
 </baw-map>
 

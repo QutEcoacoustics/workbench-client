@@ -19,9 +19,9 @@ export class GroupedAudioEventsService implements ApiFilter<AudioEventGroup> {
     _filters: Filters<AudioEventGroup>,
   ): Observable<AudioEventGroup[]> {
     return of([
-      new AudioEventGroup({ siteId: 3605, eventCount: 42, latitude: -27.4975, longitude: 153.0136 }),
+      new AudioEventGroup({ siteId: 3605, eventCount: 67, latitude: -27.4975, longitude: 153.0136 }),
       new AudioEventGroup({ siteId: 3606, eventCount: 42, latitude: -27.4773, longitude: 153.0271 }),
-      new AudioEventGroup({ siteId: 3873, eventCount: 42, latitude: 4.522871, longitude: 6.118915 }),
+      new AudioEventGroup({ siteId: 3873, eventCount: 9, latitude: 4.522871, longitude: 6.118915 }),
     ]);
 
     // return this.api.filter(AudioEventGroup, endpoint(), filters);

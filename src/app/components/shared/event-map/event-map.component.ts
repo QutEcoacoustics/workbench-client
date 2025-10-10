@@ -20,13 +20,12 @@ import { first, takeUntil } from "rxjs";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
-import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: "baw-event-map",
   templateUrl: "./event-map.component.html",
   styleUrl: "./event-map.component.scss",
-  imports: [MapComponent, SearchFiltersModalComponent, JsonPipe],
+  imports: [MapComponent, SearchFiltersModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapComponent extends withUnsubscribe() implements OnChanges {
@@ -57,6 +56,10 @@ export class EventMapComponent extends withUnsubscribe() implements OnChanges {
     this.updateMarkers();
   }
 
+  protected markerClicked(marker: MapMarkerOptions): void {
+    console.log(marker);
+  }
+
   private async updateMarkers() {
     const filters = this.eventFilters();
     this.groupedEventsService.filter(filters).pipe(
@@ -69,6 +72,8 @@ export class EventMapComponent extends withUnsubscribe() implements OnChanges {
             lat: toNumber(group.latitude),
             lng: toNumber(group.longitude),
           },
+          count: group.eventCount,
+          siteId: group.siteId,
         };
       });
 

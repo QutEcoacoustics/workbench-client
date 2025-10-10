@@ -185,10 +185,6 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   // TODO: Implement some sort of caching so that markers of the same group can
   // share the same element reference instead of creating a new one each time.
   protected markerContent(marker: MapMarkerOptions): HTMLElement {
-    return this.createPinElement(marker);
-  }
-
-  private createPinElement(marker: MapMarkerOptions): HTMLElement {
     const customTemplate = this.markerTemplate()?.elementRef?.nativeElement;
     if (customTemplate) {
       const container = this.viewContainer.createEmbeddedView(
@@ -198,6 +194,12 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
       return container.rootNodes[0] as HTMLElement;
     }
 
+    // If the consumer has not provided a custom template in the default slot,
+    // we render a pin element with a color based on the marker's group.
+    return this.createPinElement(marker);
+  }
+
+  private createPinElement(marker: MapMarkerOptions): HTMLElement {
     const color = this.markerColor(marker);
     const pinElement = new google.maps.marker.PinElement({
       background: color,
