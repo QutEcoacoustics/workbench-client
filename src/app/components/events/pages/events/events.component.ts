@@ -4,6 +4,7 @@ import {
   ElementRef,
   inject,
   model,
+  OnInit,
   signal,
   viewChild,
 } from "@angular/core";
@@ -25,11 +26,18 @@ import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AsyncPipe } from "@angular/common";
+import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import { ActivatedRoute } from "@angular/router";
+import { retrieveResolvers } from "@baw-api/resolver-common";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
+const annotationsKey = "annotations";
 
 @Component({
   selector: "baw-events-map-page",
@@ -43,13 +51,16 @@ const siteKey = "site";
     AsyncPipe,
   ],
 })
-class EventsPageComponent extends PageComponent {
+class EventsPageComponent extends PageComponent implements OnInit {
   private readonly groupedEventsService = inject(GroupedAudioEventsService);
   private readonly audioEventsApi = inject(ShallowAudioEventsService);
   private readonly modals = inject(NgbModal);
+  private readonly route = inject(ActivatedRoute);
+  private readonly injector = inject(ASSOCIATION_INJECTOR);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
-  protected readonly searchParameters = model<AnnotationSearchParameters>({} as any);
+  protected readonly searchParameters =
+    model<AnnotationSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
     const filters = {};
@@ -63,6 +74,27 @@ class EventsPageComponent extends PageComponent {
 
   private readonly searchFiltersModal =
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
+
+  public ngOnInit(): void {
+    const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    this.searchParameters.update((current) => {
+      const newModel =
+        current ?? (models[annotationsKey] as AnnotationSearchParameters);
+      newModel.injector = this.injector;
+
+      newModel.routeProjectModel ??= models[projectKey] as Project;
+
+      if (models[regionKey]) {
+        newModel.routeRegionModel ??= models[regionKey] as Region;
+      }
+
+      if (models[siteKey]) {
+        newModel.routeSiteModel ??= models[siteKey] as Site;
+      }
+
+      return newModel;
+    });
+  }
 
   protected handleSiteClicked(siteId: Site["id"]): void {
     const filters: Filters<AudioEvent> = {
@@ -84,7 +116,6 @@ class EventsPageComponent extends PageComponent {
       .subscribe((events) => {
         this.focusedEvents.set(events);
       });
-
   }
 
   protected openSearchFiltersModal(): void {
@@ -100,6 +131,7 @@ function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
+      [annotationsKey]: annotationResolvers.showOptional,
     },
     fullscreen: true,
   };
