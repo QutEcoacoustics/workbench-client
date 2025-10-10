@@ -28,9 +28,9 @@
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
 
       @if (annotation().tags.length > 0) {
-        @for (text of annotation().tags; track text; let isLast = $last) {
+        @for (tag of annotation().tags; track tag; let isLast = $last) {
           <span>
-            <a [href]="text.viewUrl">{{ text.text }}</a>
+            <a [href]="tag.viewUrl">{{ tag.text }}</a>
             @if (!isLast) {, }
           </span>
         }

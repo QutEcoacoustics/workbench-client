@@ -13,39 +13,49 @@
       Map showing the locations of audio events matching the current filters.
     </p>
 
-    <hr />
+    @if (focusedSiteId() !== null) {
+      @if (focusedEvents().length > 0) {
+        <div class="species-list">
+          <hr />
 
-    <div class="species-list">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">Species</th>
-            <th scope="col">Count</th>
-            <th scope="col">Last Detected</th>
-          </tr>
-        </thead>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Species</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
 
-        <tbody>
-          <tr>
-            <td scope="row">Abbots Babbler</td>
-            <td>52</td>
-            <td>22/11/2024 09:54</td>
-          </tr>
-
-          <tr>
-            <td scope="row">Common Cuckoo</td>
-            <td>13</td>
-            <td>21/11/2024 16:21</td>
-          </tr>
-
-          <tr>
-            <td scope="row">Eastern Whipbird</td>
-            <td>8</td>
-            <td>20/11/2024 11:03</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            <tbody>
+              @for (event of focusedEvents(); track event.id) {
+                <tr>
+                  <td>
+                    <baw-inline-list
+                      [items]="event.tags"
+                      [itemKey]="'text'"
+                      [emptyTemplate]="noTagsTemplate"
+                    ></baw-inline-list>
+                  </td>
+                  <td>
+                    @if (event.score !== undefined && event.score !== null) {
+                      {{ event.score }}
+                    } @else {
+                      <i>No Score</i>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="alert alert-warning">
+          <strong class="fw-normal">
+            No events found for this site with the current filters.
+          </strong>
+        </div>
+      }
+    }
   </div>
 </div>
 
@@ -83,3 +93,5 @@
     [formValue]="searchParameters()"
   ></baw-search-filters-modal>
 </ng-template>
+
+<ng-template #noTagsTemplate>No Tags</ng-template>
