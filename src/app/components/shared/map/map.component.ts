@@ -1,14 +1,17 @@
 import {
   Component,
   computed,
+  contentChild,
   inject,
   input,
   OnChanges,
   output,
   signal,
   SimpleChanges,
+  TemplateRef,
   viewChild,
   ViewChild,
+  ViewContainerRef,
 } from "@angular/core";
 import {
   GoogleMap,
@@ -33,6 +36,9 @@ type MarkerGroup = unknown;
 
 /**
  * Google Maps Wrapper Component
+ *
+ * @slot marker
+ * A template for markers
  */
 @Component({
   selector: "baw-map",
@@ -49,13 +55,15 @@ type MarkerGroup = unknown;
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly viewContainer = inject(ViewContainerRef);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
-  public readonly markerOptions = input<google.maps.marker.AdvancedMarkerElementOptions>();
-  public readonly fetchingData = input(false);
+  public readonly markerOptions =
+    input<google.maps.marker.AdvancedMarkerElementOptions>();
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public readonly mapOptions = input<MapOptions>({ mapTypeId: "satellite" });
+  public readonly fetchingData = input(false);
 
   public readonly newLocation = output<google.maps.MapMouseEvent>();
 
@@ -88,7 +96,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     );
   });
 
-  public readonly info = viewChild(MapInfoWindow);
+  private readonly info = viewChild(MapInfoWindow);
+  public readonly markerTemplate =
+    contentChild<TemplateRef<google.maps.marker.PinElement>>("markerTemplate");
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -175,6 +185,12 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
+    const customTemplate = this.markerTemplate().elementRef.nativeElement;
+    if (customTemplate) {
+      const container = this.viewContainer.createEmbeddedView(this.markerTemplate());
+      return container.rootNodes[0] as HTMLElement;
+    }
+
     const color = this.markerColor(marker);
     const pinElement = new google.maps.marker.PinElement({
       background: color,
@@ -209,7 +225,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     // the end of the picked color index.
     // E.g. For 2 groups, the indexes will be 0 and 0.5 instead of 0 and 1,
     // ensuring that the two colors are as far apart as possible.
-    const scalar = ((1 / count) * index) % 1
+    const scalar = ((1 / count) * index) % 1;
     const color = interpolateSinebow(scalar);
 
     return color;
