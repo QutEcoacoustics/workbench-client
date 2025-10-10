@@ -1,6 +1,8 @@
 @use "bootstrap" as *;
 
 :host {
+  position: relative;
+
   height: 100%;
 }
 
@@ -12,4 +14,9 @@
   min-height: 40rem;
 
   contain: content;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 10;
 }

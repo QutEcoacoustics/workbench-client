@@ -1,4 +1,84 @@
-<div class="search-overlay">
+<div class="overlay alert alert-light shadow m-3">
+  <div
+    class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
+  >
+    <h3 class="h4 text-dark fw-bold">Event Map</h3>
+    <button class="btn btn-primary" (click)="openSearchFiltersModal()">
+      <fa-icon [icon]="['fas', 'filter']" class="me-1"></fa-icon>
+      Edit Filters
+    </button>
+  </div>
+
+  <div>
+    <p class="text-muted">
+      Map showing the locations of audio events matching the current filters.
+    </p>
+
+    @if (focusedEvents() !== null) {
+      @if (focusedEvents().length > 0) {
+        <div class="species-list">
+          <hr />
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Species</th>
+                <th scope="col">Score</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (event of focusedEvents(); track event.id) {
+                <tr>
+                  <td>
+                    <baw-inline-list
+                      [items]="event.tags"
+                      [itemKey]="'text'"
+                      [emptyTemplate]="noTagsTemplate"
+                    ></baw-inline-list>
+                  </td>
+                  <td>
+                    @if (event.score !== undefined && event.score !== null) {
+                      {{ event.score }}
+                    } @else {
+                      <i>No Score</i>
+                    }
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-secondary me-1">View</button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                      Preview
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="alert alert-warning">
+          <strong class="fw-normal">
+            No events found for this site with the current filters.
+          </strong>
+        </div>
+      }
+    }
+  </div>
 </div>
 
-<baw-event-map class="event-map" [eventFilters]="{}"></baw-event-map>
+<baw-event-map
+  class="event-map"
+  [events]="(eventGroups() | async) ?? []"
+  (siteClicked)="handleSiteClicked($event)"
+></baw-event-map>
+
+<ng-template #searchFiltersModal let-filtersModal>
+  <baw-search-filters-modal
+    [modal]="filtersModal"
+    [hasDecisions]="false"
+    [(formValue)]="searchParameters"
+  ></baw-search-filters-modal>
+</ng-template>
+
+<ng-template #noTagsTemplate>No Tags</ng-template>
