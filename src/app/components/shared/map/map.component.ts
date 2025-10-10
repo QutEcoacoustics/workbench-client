@@ -34,6 +34,10 @@ import { LoadingComponent } from "../loading/loading.component";
 
 type MarkerGroup = unknown;
 
+interface MarkerTemplate {
+  marker: MapMarkerOptions;
+}
+
 /**
  * Google Maps Wrapper Component
  *
@@ -98,7 +102,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   private readonly info = viewChild(MapInfoWindow);
   public readonly markerTemplate =
-    contentChild<TemplateRef<google.maps.marker.PinElement>>("markerTemplate");
+    contentChild<TemplateRef<MarkerTemplate>>("markerTemplate");
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -181,13 +185,16 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   // TODO: Implement some sort of caching so that markers of the same group can
   // share the same element reference instead of creating a new one each time.
   protected markerContent(marker: MapMarkerOptions): HTMLElement {
-    return this.createMarkerElement(marker);
+    return this.createPinElement(marker);
   }
 
-  private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
-    const customTemplate = this.markerTemplate().elementRef.nativeElement;
+  private createPinElement(marker: MapMarkerOptions): HTMLElement {
+    const customTemplate = this.markerTemplate()?.elementRef?.nativeElement;
     if (customTemplate) {
-      const container = this.viewContainer.createEmbeddedView(this.markerTemplate());
+      const container = this.viewContainer.createEmbeddedView(
+        this.markerTemplate(),
+        { marker },
+      );
       return container.rootNodes[0] as HTMLElement;
     }
 

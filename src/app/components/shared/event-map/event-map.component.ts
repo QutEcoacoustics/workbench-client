@@ -20,12 +20,13 @@ import { first, takeUntil } from "rxjs";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: "baw-event-map",
   templateUrl: "./event-map.component.html",
   styleUrl: "./event-map.component.scss",
-  imports: [MapComponent, SearchFiltersModalComponent],
+  imports: [MapComponent, SearchFiltersModalComponent, JsonPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapComponent extends withUnsubscribe() implements OnChanges {
@@ -57,21 +58,19 @@ export class EventMapComponent extends withUnsubscribe() implements OnChanges {
   }
 
   private async updateMarkers() {
-    // If the map has not been initialized yet, wait for it to load
-    // before setting the marker.
-    await this.mapsService.loadAsync();
-
     const filters = this.eventFilters();
     this.groupedEventsService.filter(filters).pipe(
       first(),
       takeUntil(this.unsubscribe),
     ).subscribe((groups) => {
-      const newMarkers = groups.map((group) => new google.maps.marker.AdvancedMarkerElement({
-        position: {
-          lat: toNumber(group.latitude),
-          lng: toNumber(group.longitude),
-        },
-      }));
+      const newMarkers = groups.map((group) => {
+        return  {
+          position: {
+            lat: toNumber(group.latitude),
+            lng: toNumber(group.longitude),
+          },
+        };
+      });
 
       this.markers.set(List(newMarkers));
     });

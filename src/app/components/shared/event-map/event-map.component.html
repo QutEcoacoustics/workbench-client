@@ -50,8 +50,14 @@
 </div>
 
 <baw-map [markers]="markers()">
-  <ng-template #markerTemplate>
-    <img src="../../../../assets/images/user/user-512.png" alt="">
+  <ng-template #markerTemplate let-marker="marker">
+    <div>
+      <img src="../../../../assets/images/user/user-512.png" alt="">
+
+      <p>
+        {{ marker | json }}
+      </p>
+    </div>
   </ng-template>
 </baw-map>
 
