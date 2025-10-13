@@ -67,7 +67,16 @@
           </table>
 
           <div class="text-center">
-            <a class="btn btn-sm btn-outline-primary">
+            <a
+              class="btn btn-sm btn-outline-primary"
+              [strongRoute]="moreEventsUrl"
+              [queryParams]="searchParameters()"
+              [routeParams]="{
+                projectId: searchParameters().routeProjectId,
+                regionId: searchParameters().routeRegionId,
+                siteId: searchParameters().routeSiteId,
+              }"
+            >
               Show More
             </a>
           </div>

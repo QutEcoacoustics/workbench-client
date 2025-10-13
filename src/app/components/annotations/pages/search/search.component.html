@@ -43,11 +43,9 @@
     <div class="annotations-grid my-2">
       @for (verificationModel of searchResults; track $index) {
         @if (verificationModel) {
-          <div>
-            <baw-annotation-event-card
-              [annotation]="verificationModel"
-            ></baw-annotation-event-card>
-          </div>
+          <baw-annotation-event-card
+            [annotation]="verificationModel"
+          ></baw-annotation-event-card>
         }
       }
     </div>

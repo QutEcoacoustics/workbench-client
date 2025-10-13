@@ -34,6 +34,9 @@ import { Region } from "@models/Region";
 import { EventModalComponent } from "@shared/event-modal/event-modal.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { Id } from "@interfaces/apiInterfaces";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { annotationSearchRoute } from "@components/annotations/annotation.routes";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 import { eventMapResolvers } from "./events.resolver";
 
@@ -60,6 +63,7 @@ enum FocusFetchState {
     NgbTooltip,
     AsyncPipe,
     UrlDirective,
+    StrongRouteDirective,
   ],
 })
 class EventsPageComponent extends PageComponent implements OnInit {
@@ -88,6 +92,26 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   private readonly searchFiltersModal =
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
+
+  protected get moreEventsUrl() {
+    const searchParams = this.searchParameters();
+
+    // We use isInstantiated instead of a truthy check because a project with an
+    // id of 0 is valid but would fail a truthy assertion.
+    if (isInstantiated(searchParams.routeProjectId)) {
+      return annotationSearchRoute.project;
+    } else if (isInstantiated(searchParams.routeRegionId)) {
+      if (isInstantiated(searchParams.routeSiteId)) {
+        return annotationSearchRoute.siteAndRegion;
+      } else {
+        return annotationSearchRoute.region;
+      }
+    } else if (isInstantiated(searchParams.routeSiteId)) {
+      return annotationSearchRoute.site;
+    }
+
+    throw new Error("Cannot determine correct annotation search route");
+  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
