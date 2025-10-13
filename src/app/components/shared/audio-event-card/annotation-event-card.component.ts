@@ -14,6 +14,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { UrlDirective } from "@directives/url/url.directive";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -29,6 +30,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     IsUnresolvedPipe,
     isInstantiatedPipe,
     DecimalPipe,
+    UrlDirective,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

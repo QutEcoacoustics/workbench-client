@@ -21,8 +21,8 @@ function makeEventsReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "bullseye"],
-    label: "Events Map",
-    tooltip: () => "Events Map",
+    label: "Annotation Map",
+    tooltip: () => "Annotation Map",
     route: eventsRoute[subRoute],
     parent,
   });

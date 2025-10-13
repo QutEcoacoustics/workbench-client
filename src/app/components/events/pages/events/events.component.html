@@ -2,7 +2,7 @@
   <div
     class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
   >
-    <h3 class="h4 text-dark fw-bold">Event Map</h3>
+    <h3 class="h4 text-dark fw-bold">Annotation Map</h3>
     <button class="btn btn-primary" (click)="openSearchFiltersModal()">
       <fa-icon [icon]="['fas', 'filter']" class="me-1"></fa-icon>
       Edit Filters
@@ -46,15 +46,31 @@
                     }
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-secondary me-1">View</button>
-                    <button class="btn btn-sm btn-outline-secondary">
-                      Preview
+                    <button
+                      class="btn btn-sm btn-secondary me-1"
+                      [ngbTooltip]="'View Event'"
+                      [strongRoute]=""
+                    >
+                      <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      [ngbTooltip]="'Preview Event'"
+                      (click)="previewEvent(event)"
+                    >
+                      <fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
                     </button>
                   </td>
                 </tr>
               }
             </tbody>
           </table>
+
+          <div class="text-center">
+            <button class="btn btn-sm btn-outline-primary">
+              Show More
+            </button>
+          </div>
         </div>
       } @else {
         <div class="alert alert-warning">

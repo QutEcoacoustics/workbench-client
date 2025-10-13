@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  position: relative;
+}
+
 // There used to be a spectrogram component bug where the spectrograms initial
 // inline-flex size would be the default size of the html <canvas> element.
 // This would make all of the spectrograms a uniform size.
@@ -10,7 +15,8 @@
 // size (because that is the shape I initially designed the UI around).
 oe-axes {
   display: block;
-  width: 332px;
+  min-width: 332px;
+  width: 100%;
 
   // I am trialing using content-visibility so that spectrograms down the page
   // don't have to paint until the user starts to scroll.
@@ -37,8 +43,29 @@ oe-axes {
   width: min-content;
 }
 
+.spectrogram-container {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto;
+
+  & > oe-axes {
+    min-height: initial;
+    flex: 1 1 auto;
+  }
+
+  oe-spectrogram {
+    height: 100%;
+  }
+}
+
 .card-container {
-  max-width: min-content;
+  display: flex;
+  flex-direction: column;
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .card-header {
@@ -50,6 +77,10 @@ oe-axes {
     max-width: 210px;
     align-content: center;
   }
+}
+
+.card-body {
+  flex: 0 0 auto;
 }
 
 .no-score-placeholder {

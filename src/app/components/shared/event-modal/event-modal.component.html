@@ -1,0 +1,7 @@
+@let resolvedAnnotation = annotation() | async;
+@if (resolvedAnnotation) {
+  <baw-annotation-event-card
+    id="event-card"
+    [annotation]="resolvedAnnotation"
+  ></baw-annotation-event-card>
+}

@@ -15,7 +15,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { EventMapComponent } from "@shared/event-map/event-map.component";
 import { AudioEvent } from "@models/AudioEvent";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -27,11 +27,12 @@ import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AsyncPipe } from "@angular/common";
 import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
+import { EventModalComponent } from "@shared/event-modal/event-modal.component";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 
 const projectKey = "project";
@@ -48,6 +49,7 @@ const annotationsKey = "annotations";
     InlineListComponent,
     SearchFiltersModalComponent,
     FaIconComponent,
+    NgbTooltip,
     AsyncPipe,
   ],
 })
@@ -56,6 +58,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
   private readonly audioEventsApi = inject(ShallowAudioEventsService);
   private readonly modals = inject(NgbModal);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly injector = inject(ASSOCIATION_INJECTOR);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
@@ -98,9 +101,6 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected handleSiteClicked(siteId: Site["id"]): void {
     const filters: Filters<AudioEvent> = {
-      projection: {
-        include: ["id", "score", "taggings"],
-      },
       paging: {
         items: 5,
       },
@@ -120,6 +120,19 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected openSearchFiltersModal(): void {
     this.modals.open(this.searchFiltersModal(), { size: "xl" });
+  }
+
+  protected previewEvent(event: AudioEvent): void {
+    const modalRef = this.modals.open(EventModalComponent, { size: "xl" });
+    modalRef.componentInstance.modal = modalRef;
+    modalRef.componentInstance.event = event;
+  }
+
+  private focusSite(siteId: Site["id"]): void {
+    this.router.navigate([], {
+      queryParams: { focused: siteId },
+      queryParamsHandling: "merge",
+    });
   }
 }
 

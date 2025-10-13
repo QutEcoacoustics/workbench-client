@@ -84,7 +84,7 @@
             <ng-template let-value="value" ngx-datatable-cell-template>
               <a
                 class="btn btn-sm btn-primary"
-                [href]="value.viewUrl"
+                [bawUrl]="value.viewUrl"
               >
                 View
               </a>
@@ -158,7 +158,7 @@
               -->
                 <a
                   class="btn btn-sm btn-primary"
-                  [href]="value.path"
+                  [bawUrl]="value.path"
                   target="_blank"
                 >
                   Download

@@ -76,6 +76,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public hasMarkers = false;
   private _map: GoogleMap;
 
+  protected readonly infoOptions = signal<google.maps.InfoWindowOptions>({});
   protected readonly infoContent = signal("");
 
   protected readonly MapLoadState = GoogleMapsState;
@@ -160,7 +161,11 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     options: MapMarkerOptions,
     marker: MapAnchorPoint,
   ): void {
-    this.infoContent.set(options.title ?? "");
+    this.infoContent.set("");
+    this.infoOptions.set({
+      headerContent: `${options.title}`,
+    });
+
     this.info().open(marker);
   }
 

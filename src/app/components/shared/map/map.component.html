@@ -20,7 +20,7 @@
         ></map-advanced-marker>
       }
     </map-marker-clusterer>
-    <map-info-window>{{ infoContent() }}</map-info-window>
+    <map-info-window [options]="infoOptions()">{{ infoContent() }}</map-info-window>
   </google-map>
 } @else {
   <div class="map-placeholder">
