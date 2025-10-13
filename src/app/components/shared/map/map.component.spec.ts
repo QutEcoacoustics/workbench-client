@@ -129,6 +129,43 @@ describe("MapComponent", () => {
       expect(getInfoWindow()).toExist();
     });
 
+    it("should have the correct info window option on hover", () => {
+      const marker = new Site(generateSite()).getMapMarker();
+
+      setup([marker]);
+      triggerLoadSuccess();
+
+      const mapMarker = spectator.query("map-advanced-marker");
+      expect(mapMarker).toExist();
+
+      spectator.dispatchMouseEvent(mapMarker, "pointerover");
+
+      const infoWindow = getInfoWindow();
+      expect(infoWindow).toExist();
+      expect(infoWindow.options.headerContent).toBe(marker.title);
+    });
+
+    // We should see that the info window headerContent is set to an empty
+    // string.
+    // If the title is not empty, we are not correctly handling the "null" case
+    // for a marker that does not have a title.
+    it("should have the correct info window options if there is no title", () => {
+      const marker = new Site(generateSite()).getMapMarker();
+      marker.title = null;
+
+      setup([marker]);
+      triggerLoadSuccess();
+
+      const mapMarker = spectator.query("map-advanced-marker");
+      expect(mapMarker).toExist();
+
+      spectator.dispatchMouseEvent(mapMarker, "pointerover");
+
+      const infoWindow = getInfoWindow();
+      expect(infoWindow).toExist();
+      expect(infoWindow.options.headerContent).toBe("");
+    });
+
     // These tests are currently disabled because we don't want to/ actually
     // load Google Maps in the tests, and mocking the Google Maps component is
     // a maintenance burden
