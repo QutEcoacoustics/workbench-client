@@ -15,7 +15,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { EventMapComponent } from "@shared/event-map/event-map.component";
 import { AudioEvent } from "@models/AudioEvent";
-import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgbCollapse, NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -64,6 +64,7 @@ enum FocusFetchState {
     AsyncPipe,
     UrlDirective,
     StrongRouteDirective,
+    NgbCollapse,
   ],
 })
 class EventsPageComponent extends PageComponent implements OnInit {
@@ -76,7 +77,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected readonly FocusFetchState = FocusFetchState;
   protected readonly trayFetchState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
-  protected readonly trayOpen = signal(true);
+  protected readonly isTrayOpen = model(true);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
@@ -152,6 +153,10 @@ class EventsPageComponent extends PageComponent implements OnInit {
     const modalRef = this.modals.open(EventModalComponent, { size: "xl" });
     modalRef.componentInstance.modal = modalRef;
     modalRef.componentInstance.event = event;
+  }
+
+  protected toggleTray(): void {
+    this.isTrayOpen.update((value) => !value);
   }
 
   private focusSite(siteId: Id<Site>): void {

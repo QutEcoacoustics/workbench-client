@@ -6,8 +6,7 @@
 $header-height: 56px;
 
 #verification-grid {
-  // this should be be 100dvh subtracting the height of the header
-  height: calc(100vh - #{$header-height});
+  height: calc(100dvh - #{$header-height});
 }
 
 .header-content {
