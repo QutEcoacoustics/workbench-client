@@ -1,7 +1,31 @@
 @let resolvedAnnotation = annotation() | async;
-@if (resolvedAnnotation) {
-  <baw-annotation-event-card
-    id="event-card"
-    [annotation]="resolvedAnnotation"
-  ></baw-annotation-event-card>
-}
+
+<div class="modal-header">
+  <h4 class="modal-title">
+    @if (resolvedAnnotation.tags.length > 0) {
+      @for (tag of resolvedAnnotation.tags; track tag; let isLast = $last) {
+        <span>
+          <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
+          @if (!isLast) {, }
+        </span>
+      }
+    } @else {
+      Audio Event
+    }
+  </h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="closeModal()"
+  ></button>
+</div>
+
+<div class="modal-body modal-large">
+  @if (resolvedAnnotation) {
+    <baw-annotation-event-card
+      id="event-card"
+      [annotation]="resolvedAnnotation"
+    ></baw-annotation-event-card>
+  }
+</div>

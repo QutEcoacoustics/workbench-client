@@ -1,4 +1,4 @@
-import { Latitude, Longitude } from "@interfaces/apiInterfaces";
+import { Id, Latitude, Longitude } from "@interfaces/apiInterfaces";
 import { SITE } from "@baw-api/ServiceTokens";
 import { AbstractModelWithoutId } from "./AbstractModel";
 import { Site } from "./Site";
@@ -12,7 +12,7 @@ export class AudioEventGroup
 {
   public readonly kind = "Audio Event Group";
 
-  public readonly siteId: Site["id"];
+  public readonly siteId: Id<Site>;
   public readonly eventCount: number;
   public readonly latitude: Latitude;
   public readonly longitude: Longitude;

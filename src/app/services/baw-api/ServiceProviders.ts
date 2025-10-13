@@ -2,6 +2,7 @@ import { AnnotationService } from "@services/models/annotations/annotation.servi
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
 import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import { EventMapResolver, eventMapResolvers } from "@components/events/pages/events/events.resolver";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -343,6 +344,11 @@ const serviceList = [
   {
     serviceToken: Tokens.SITE_SETTINGS,
     service: SiteSettingsService,
+  },
+  {
+    serviceToken: Tokens.EVENT_MAP_PARAMETERS,
+    service: EventMapResolver,
+    resolvers: eventMapResolvers,
   },
 ] satisfies ServiceProvider<unknown>[];
 

@@ -107,8 +107,8 @@ export interface IAnnotationSearchParameters {
 
   sort: SortingKey;
   taskTag: Id;
-  verificationStatus: VerificationStatusKey;
   taskBehavior: TaskBehaviorKey;
+  verificationStatus: VerificationStatusKey;
 }
 
 // we exclude project, region, and site from the serialization table because
@@ -379,7 +379,7 @@ export class AnnotationSearchParameters
     );
   }
 
-  private siteIds(): Site["id"][] {
+  private siteIds(): Id<Site>[] {
     if (isInstantiated(this.routeSiteId)) {
       return [this.routeSiteId];
     }
@@ -387,7 +387,7 @@ export class AnnotationSearchParameters
     return this.sites ? Array.from(this.sites) : [];
   }
 
-  private regionIds(): Region["id"][] {
+  private regionIds(): Id<Region>[] {
     if (isInstantiated(this.routeRegionId)) {
       return [this.routeRegionId];
     }
@@ -395,7 +395,7 @@ export class AnnotationSearchParameters
     return this.regions ? Array.from(this.regions) : [];
   }
 
-  private projectIds(): Project["id"][] {
+  private projectIds(): Id<Project>[] {
     if (isInstantiated(this.routeProjectId)) {
       return [this.routeProjectId];
     }

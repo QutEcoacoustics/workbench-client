@@ -1,20 +1,20 @@
 import { inject, Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { lastValueFrom } from "rxjs";
+import { EventMapSearchParameters } from "./eventMapSearchParameters";
 
 @Injectable({ providedIn: "root" })
-class AnnotationsSearchResolver
-  implements Resolve<{ model: AnnotationSearchParameters }>
+export class EventMapResolver
+  implements Resolve<{ model: EventMapSearchParameters }>
 {
   private readonly session = inject(BawSessionService);
   private readonly security = inject(SecurityService);
 
   public async resolve(
     route: ActivatedRouteSnapshot,
-  ): Promise<{ model: AnnotationSearchParameters }> {
+  ): Promise<{ model: EventMapSearchParameters }> {
     const routeProjectId = route.params["projectId"];
     const routeRegionId = route.params["regionId"];
     const routeSiteId = route.params["siteId"];
@@ -33,17 +33,17 @@ class AnnotationsSearchResolver
     }
 
     return {
-      model: new AnnotationSearchParameters(data, this.session.loggedInUser),
+      model: new EventMapSearchParameters(data, this.session.loggedInUser),
     };
   }
 }
 
-export const annotationResolvers = {
-  showOptional: "annotationSearchParametersResolver",
+export const eventMapResolvers = {
+  showOptional: "eventMapSearchParametersResolver",
   providers: [
     {
-      provide: "annotationSearchParametersResolver",
-      useClass: AnnotationsSearchResolver,
+      provide: "eventMapSearchParametersResolver",
+      useClass: EventMapResolver,
       deps: [BawSessionService, SecurityService],
     },
   ],

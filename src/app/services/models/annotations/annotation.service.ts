@@ -29,7 +29,7 @@ export class AnnotationService {
       ...audioEvent,
       tags,
       audioRecording,
-      corrections: new Map<Tag["id"], Tagging>(),
+      corrections: new Map<Id<Tag>, Tagging>(),
     } as IAnnotation;
 
     return new Annotation(data);

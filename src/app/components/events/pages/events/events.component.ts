@@ -26,19 +26,27 @@ import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
 import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AsyncPipe } from "@angular/common";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 import { ActivatedRoute, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { EventModalComponent } from "@shared/event-modal/event-modal.component";
+import { UrlDirective } from "@directives/url/url.directive";
+import { Id } from "@interfaces/apiInterfaces";
 import { eventCategories, eventMenuitems } from "../../events.menus";
+import { eventMapResolvers } from "./events.resolver";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const annotationsKey = "annotations";
+const searchParametersKey = "eventMapSearchParameters";
+
+enum FocusFetchState {
+  Fetching,
+  Failed,
+  Loaded,
+}
 
 @Component({
   selector: "baw-events-map-page",
@@ -51,6 +59,7 @@ const annotationsKey = "annotations";
     FaIconComponent,
     NgbTooltip,
     AsyncPipe,
+    UrlDirective,
   ],
 })
 class EventsPageComponent extends PageComponent implements OnInit {
@@ -61,6 +70,8 @@ class EventsPageComponent extends PageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly injector = inject(ASSOCIATION_INJECTOR);
 
+  protected readonly FocusFetchState = FocusFetchState;
+  protected readonly focusState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
     model<AnnotationSearchParameters | null>(null);
@@ -82,7 +93,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update((current) => {
       const newModel =
-        current ?? (models[annotationsKey] as AnnotationSearchParameters);
+        current ?? (models[searchParametersKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -99,7 +110,28 @@ class EventsPageComponent extends PageComponent implements OnInit {
     });
   }
 
-  protected handleSiteClicked(siteId: Site["id"]): void {
+  protected handleSiteClicked(siteId: Id<Site>): void {
+    this.focusSite(siteId);
+  }
+
+  protected openSearchFiltersModal(): void {
+    this.modals.open(this.searchFiltersModal(), { size: "xl" });
+  }
+
+  protected previewEvent(event: AudioEvent): void {
+    const modalRef = this.modals.open(EventModalComponent, { size: "xl" });
+    modalRef.componentInstance.modal = modalRef;
+    modalRef.componentInstance.event = event;
+  }
+
+  private focusSite(siteId: Id<Site>): void {
+    // We set the query parameter before the filter request so that if the
+    // request fails, the user can refresh the page to try again.
+    this.router.navigate([], {
+      queryParams: { focused: siteId },
+      queryParamsHandling: "merge",
+    });
+
     const filters: Filters<AudioEvent> = {
       paging: {
         items: 5,
@@ -117,23 +149,6 @@ class EventsPageComponent extends PageComponent implements OnInit {
         this.focusedEvents.set(events);
       });
   }
-
-  protected openSearchFiltersModal(): void {
-    this.modals.open(this.searchFiltersModal(), { size: "xl" });
-  }
-
-  protected previewEvent(event: AudioEvent): void {
-    const modalRef = this.modals.open(EventModalComponent, { size: "xl" });
-    modalRef.componentInstance.modal = modalRef;
-    modalRef.componentInstance.event = event;
-  }
-
-  private focusSite(siteId: Site["id"]): void {
-    this.router.navigate([], {
-      queryParams: { focused: siteId },
-      queryParamsHandling: "merge",
-    });
-  }
 }
 
 function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
@@ -144,7 +159,7 @@ function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationResolvers.showOptional,
+      [searchParametersKey]: eventMapResolvers.showOptional,
     },
     fullscreen: true,
   };

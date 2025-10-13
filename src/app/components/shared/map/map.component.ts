@@ -71,6 +71,12 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
   public readonly newLocation = output<google.maps.MapMouseEvent>();
 
+  /**
+   * An event that can is emitted when the marker is clicked with the mouse or
+   * through a keyboard event.
+   */
+  public readonly markerClicked = output<MapMarkerOptions>();
+
   public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
@@ -152,6 +158,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   ): void {
     marker.advancedMarker.addEventListener("pointerover", () => {
       this.addMapMarkerInfo(options, marker);
+      this.handleMarkerClick(options);
     });
 
     this.focusMarkers();
@@ -185,6 +192,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
     this._map.fitBounds(this.bounds);
     this._map.panToBounds(this.bounds);
+  }
+
+  protected handleMarkerClick(marker: MapMarkerOptions): void {
+    this.markerClicked.emit(marker);
   }
 
   // TODO: Implement some sort of caching so that markers of the same group can

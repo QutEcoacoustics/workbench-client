@@ -46,13 +46,13 @@
                     }
                   </td>
                   <td>
-                    <button
+                    <a
                       class="btn btn-sm btn-secondary me-1"
                       [ngbTooltip]="'View Event'"
-                      [strongRoute]=""
+                      [bawUrl]="event.viewUrl"
                     >
                       <fa-icon [icon]="['fas', 'eye']"></fa-icon>
-                    </button>
+                    </a>
                     <button
                       class="btn btn-sm btn-outline-secondary"
                       [ngbTooltip]="'Preview Event'"
@@ -67,9 +67,9 @@
           </table>
 
           <div class="text-center">
-            <button class="btn btn-sm btn-outline-primary">
+            <a class="btn btn-sm btn-outline-primary">
               Show More
-            </button>
+            </a>
           </div>
         </div>
       } @else {

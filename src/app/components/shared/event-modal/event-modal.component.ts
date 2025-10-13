@@ -1,11 +1,11 @@
 import { AsyncPipe } from "@angular/common";
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   Input,
 } from "@angular/core";
+import { UrlDirective } from "@directives/url/url.directive";
 import { ModalComponent } from "@menu/widget.component";
 import { AudioEvent } from "@models/AudioEvent";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -16,12 +16,13 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
   selector: "baw-event-modal",
   templateUrl: "./event-modal.component.html",
   styleUrl: "./event-modal.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AnnotationEventCardComponent, AsyncPipe],
+  imports: [AnnotationEventCardComponent, AsyncPipe, UrlDirective],
 })
 export class EventModalComponent implements ModalComponent {
   private readonly annotationService = inject(AnnotationService);
 
+  // TODO: Migrate these to input signals once the ModalComponent interface
+  // supports signals.
   @Input() public modal: NgbActiveModal;
   @Input() public event: AudioEvent;
 

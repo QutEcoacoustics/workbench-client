@@ -62,6 +62,7 @@ import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { ConfigService } from "@services/config/config.service";
+import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
@@ -145,7 +146,7 @@ class VerificationComponent
    * By using a client-side map, we can cache the tagging client side and
    * prevent making another request to the api.
    */
-  private sessionTagCorrections = new Map<Annotation["id"], Tagging>();
+  private sessionTagCorrections = new Map<Id<Annotation>, Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

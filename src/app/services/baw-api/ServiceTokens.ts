@@ -166,3 +166,4 @@ export const VERIFICATION = new ServiceToken<VerificationService, Verification>(
 export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService, Verification>("S_VERIFICATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
 export const SITE_SETTINGS = new ServiceToken<SiteSettingsService, SiteSetting>("SITE_SETTINGS");
+export const EVENT_MAP_PARAMETERS = new ServiceToken<AnnotationService, Annotation>("EVENT_MAP_PARAMETERS");

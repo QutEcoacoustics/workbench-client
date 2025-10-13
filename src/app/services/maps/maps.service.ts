@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import { sleep } from "@helpers/timing/sleep";
+import { Id } from "@interfaces/apiInterfaces";
 import { Site } from "@models/Site";
 import { ConfigService } from "@services/config/config.service";
 import { defaultDebounceTime, IS_SERVER_PLATFORM } from "src/app/app.helper";
@@ -14,7 +15,7 @@ export enum GoogleMapsState {
 
 export interface MapMarkerOptions extends google.maps.marker.AdvancedMarkerElementOptions {
   groupId?: unknown;
-  siteId?: Site["id"];
+  siteId?: Id<Site>;
 }
 
 export type MapOptions = google.maps.MapOptions;

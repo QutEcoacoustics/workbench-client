@@ -13,17 +13,23 @@ const annotationSearchRouteQueryParamResolver = (
 ) =>
   params
     ? {
+        audioRecordings: params.audioRecordings,
+        tags: params.tags,
+        importFiles: params.importFiles,
+        score: params.score,
+
         projects: params.projects,
         regions: params.regions,
-        sites: params.sties,
-        tags: params.tags,
-        onlyUnverified: params.onlyUnverified,
-        score: params.score,
-        importFiles: params.importFiles,
-        sort: params.sort,
-        verificationStatus: params.verificationStatus,
+        sites: params.sites,
+
         date: params.date,
         time: params.time,
+
+        sort: params.sort,
+
+        taskTag: params.taskTag,
+        taskBehavior: params.taskBehavior,
+        verificationStatus: params.verificationStatus,
       }
     : {};
 

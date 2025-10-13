@@ -12,6 +12,7 @@ import { MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
 import { Site } from "@models/Site";
 import { AudioEventGroup } from "@models/AudioEventGroup";
+import { Id } from "@interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-event-map",
@@ -23,9 +24,9 @@ import { AudioEventGroup } from "@models/AudioEventGroup";
 export class EventMapComponent {
   public readonly events = input.required<AudioEventGroup[]>();
 
-  public readonly siteClicked = output<Site["id"]>();
+  public readonly siteClicked = output<Id<Site>>();
 
-  protected readonly focusedSiteId = signal<Site["id"] | null>(null);
+  protected readonly focusedSiteId = signal<Id<Site> | null>(null);
   protected readonly markers = computed(() => {
     const newMarkers = this.events().map((group) => {
       return {
@@ -48,7 +49,6 @@ export class EventMapComponent {
       return;
     }
 
-    this.focusedSiteId.set(focusedSite);
     this.siteClicked.emit(focusedSite);
   }
 }
