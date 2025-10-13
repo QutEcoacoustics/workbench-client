@@ -24,7 +24,6 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { AsyncPipe } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
@@ -39,6 +38,7 @@ import { annotationSearchRoute } from "@components/annotations/annotation.routes
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 import { eventMapResolvers } from "./events.resolver";
+import { EventMapSearchParameters } from "./eventMapSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -75,10 +75,12 @@ class EventsPageComponent extends PageComponent implements OnInit {
   private readonly injector = inject(ASSOCIATION_INJECTOR);
 
   protected readonly FocusFetchState = FocusFetchState;
-  protected readonly focusState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
+  protected readonly trayFetchState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
+  protected readonly trayOpen = signal(true);
+
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
-    model<AnnotationSearchParameters | null>(null);
+    model<EventMapSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
     const filters = {};
@@ -117,7 +119,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update((current) => {
       const newModel =
-        current ?? (models[searchParametersKey] as AnnotationSearchParameters);
+        current ?? (models[searchParametersKey] as EventMapSearchParameters);
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -128,6 +130,10 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
       if (models[siteKey]) {
         newModel.routeSiteModel ??= models[siteKey] as Site;
+      }
+
+      if (isInstantiated(newModel.focused)) {
+        this.focusSite(newModel.focused);
       }
 
       return newModel;
