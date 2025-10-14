@@ -1,4 +1,4 @@
-import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { GoogleMap, GoogleMapsModule, MapAdvancedMarker, MapInfoWindow } from "@angular/google-maps";
 import { Site } from "@models/Site";
 import {
   createComponentFactory,
@@ -36,7 +36,7 @@ describe("MapComponent", () => {
   }
 
   function getMarkers() {
-    return spectator.queryAll(MapMarker);
+    return spectator.queryAll(MapAdvancedMarker);
   }
 
   function getLoadingComponent(): LoadingComponent {
@@ -52,6 +52,12 @@ describe("MapComponent", () => {
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
     spectator.component["mapsLoadState"].set(mapsServiceSpy.mapsState);
     spectator.detectChanges();
+
+    const markers = getMarkers();
+    for (const marker of markers) {
+      marker.advancedMarker = new google.maps.marker.AdvancedMarkerElement();
+      marker.markerInitialized.emit(marker.advancedMarker);
+    }
   }
 
   /** Causes all pending 'loadAsync' promises to reject */
@@ -120,13 +126,7 @@ describe("MapComponent", () => {
       expect(getMap()).toExist();
     });
 
-    it("should use the custom markerTemplate if present", () => {});
-
-    // These tests are currently disabled because we don't want to/ actually
-    // load Google Maps in the tests, and mocking the Google Maps component is
-    // a maintenance burden
-    // TODO: we should find a way to mock these tests
-    xit("should display single site", () => {
+    it("should display single site", () => {
       const markers = [new Site(generateSite()).getMapMarker()];
 
       setup(markers);
@@ -135,7 +135,7 @@ describe("MapComponent", () => {
       expect(getMarkers().length).toBeTruthy();
     });
 
-    xit("should display multiple markers", () => {
+    it("should display multiple markers", () => {
       const markers = modelData.randomArray(3, 3, () =>
         new Site(generateSite()).getMapMarker()
       );
@@ -145,9 +145,11 @@ describe("MapComponent", () => {
 
       expect(getMarkers()).toHaveLength(3);
     });
+
+    it("should use the custom markerTemplate if present", () => {});
   });
 
-  xdescribe("hover info window", () => {
+  describe("hover info window", () => {
     it("should have info window", () => {
       const markers = [new Site(generateSite()).getMapMarker()];
 
@@ -163,10 +165,11 @@ describe("MapComponent", () => {
       setup([marker]);
       triggerLoadSuccess();
 
-      const mapMarker = spectator.query("map-advanced-marker");
+      const mapMarker = getMarkers()[0];
       expect(mapMarker).toExist();
 
-      spectator.dispatchMouseEvent(mapMarker, "pointerover");
+      mapMarker.advancedMarker.dispatchEvent(new Event("pointerover"));
+      spectator.detectChanges();
 
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
@@ -193,6 +196,8 @@ describe("MapComponent", () => {
       expect(infoWindow).toExist();
       expect(infoWindow.options.headerContent).toBe("");
     });
+
+    it("should use the custom markerHoverTemplate", () => {});
   });
 
   describe("grouping", () => {

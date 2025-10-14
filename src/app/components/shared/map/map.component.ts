@@ -90,7 +90,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   protected readonly infoOptions = computed<google.maps.InfoWindowOptions>(
     () => {
       return {
-        headerContent: this.focusedMarker()?.title || "",
+        headerContent: this.focusedMarker()?.title ?? "",
       };
     },
   );
