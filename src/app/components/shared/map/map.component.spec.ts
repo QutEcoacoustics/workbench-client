@@ -72,6 +72,14 @@ describe("MapComponent", () => {
     spectator.detectChanges();
   }
 
+  function hoverMarker(index: number) {
+    const mapMarker = getMarkers()[index];
+    expect(mapMarker).toExist();
+
+    mapMarker.advancedMarker.dispatchEvent(new Event("pointerover"));
+    spectator.detectChanges();
+  }
+
   function setup(markers: MapMarkerOptions[] = [], content = ""): void {
     const hostTemplate = `<baw-map [markers]="markers">${content}</baw-map>`;
 
@@ -190,15 +198,11 @@ describe("MapComponent", () => {
       setup([marker]);
       triggerLoadSuccess();
 
-      const mapMarker = getMarkers()[0];
-      expect(mapMarker).toExist();
-
-      mapMarker.advancedMarker.dispatchEvent(new Event("pointerover"));
-      spectator.detectChanges();
+      hoverMarker(0);
 
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
-      expect(infoWindow.options.headerContent).toBe(marker.title);
+      expect(infoWindow.options.headerContent).toEqual(marker.title);
     });
 
     // We should see that the info window headerContent is set to an empty
@@ -212,17 +216,31 @@ describe("MapComponent", () => {
       setup([marker]);
       triggerLoadSuccess();
 
-      const mapMarker = spectator.query("map-advanced-marker");
-      expect(mapMarker).toExist();
-
-      spectator.dispatchMouseEvent(mapMarker, "pointerover");
+      hoverMarker(0);
 
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
-      expect(infoWindow.options.headerContent).toBe("");
+      expect(infoWindow.options.headerContent).toEqual("");
     });
 
-    it("should use the custom markerHoverTemplate", () => {});
+    it("should use the custom markerHoverTemplate", () => {
+      const marker = new Site(generateSite()).getMapMarker();
+
+      const contentTemplate = `
+        <ng-template #markerHoverTemplate let-marker="marker">
+          <p id="custom-marker-title">{{ marker?.title }}</p>
+          <img id="marker-image" href="${modelData.imageUrl()}" />
+        </ng-template>
+      `;
+
+      setup([marker], contentTemplate);
+      triggerLoadSuccess();
+
+      hoverMarker(0);
+
+      expect(spectator.query("#marker-image")).toExist();
+      expect(spectator.query("#custom-marker-title")).toHaveText(marker.title);
+    });
   });
 
   describe("grouping", () => {
