@@ -20,23 +20,18 @@
   </div>
 
   <div class="card-header">
-    <oe-media-controls #mediaControls></oe-media-controls>
+    <oe-media-controls #mediaControls [for]="'dasd'"></oe-media-controls>
   </div>
 
   <div class="card-body">
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
 
-      @if (annotation().tags.length > 0) {
-        @for (tag of annotation().tags; track tag; let isLast = $last) {
-          <span>
-            <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
-            @if (!isLast) {, }
-          </span>
-        }
-      } @else {
-        <i>No tags</i>
-      }
+      <baw-inline-list
+        [items]="annotation().tags"
+        [itemKey]="'text'"
+        [emptyTemplate]="noTagsTemplate"
+      ></baw-inline-list>
     </span>
 
     <span class="info-line">
@@ -80,3 +75,7 @@
     </span>
   </div>
 </div>
+
+<ng-template #noTagsTemplate>
+  <i>No Tags</i>
+</ng-template>

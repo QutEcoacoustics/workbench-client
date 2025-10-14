@@ -2,16 +2,11 @@
 
 <div class="modal-header">
   <h4 class="modal-title">
-    @if (resolvedAnnotation.tags.length > 0) {
-      @for (tag of resolvedAnnotation.tags; track tag; let isLast = $last) {
-        <span>
-          <a [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
-          @if (!isLast) {, }
-        </span>
-      }
-    } @else {
-      Audio Event
-    }
+    <baw-inline-list
+      [items]="resolvedAnnotation.tags"
+      [itemKey]="'text'"
+      [emptyTemplate]="defaultTitleTemplate"
+    ></baw-inline-list>
   </h4>
   <button
     type="button"
@@ -29,3 +24,7 @@
     ></baw-annotation-event-card>
   }
 </div>
+
+<ng-template #defaultTitleTemplate>
+  Annotation
+</ng-template>
