@@ -1,16 +1,21 @@
-import { GoogleMap, GoogleMapsModule, MapAdvancedMarker, MapInfoWindow } from "@angular/google-maps";
-import { Site } from "@models/Site";
 import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+  GoogleMap,
+  GoogleMapsModule,
+  MapAdvancedMarker,
+  MapInfoWindow,
+} from "@angular/google-maps";
+import { Site } from "@models/Site";
+import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
 import { generateSite } from "@test/fakes/Site";
 import { List } from "immutable";
 import { destroyGoogleMaps } from "@test/helpers/googleMaps";
 import { modelData } from "@test/helpers/faker";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { GoogleMapsState, MapMarkerOptions, MapsService } from "@services/maps/maps.service";
+import {
+  GoogleMapsState,
+  MapMarkerOptions,
+  MapsService,
+} from "@services/maps/maps.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModule } from "ng-mocks";
 import { provideMockConfig } from "@services/config/provide-configMock";
@@ -18,10 +23,10 @@ import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
 describe("MapComponent", () => {
-  let spectator: Spectator<MapComponent>;
+  let spectator: SpectatorHost<MapComponent>;
   let mapsServiceSpy: SpyObject<MapsService>;
 
-  const createComponent = createComponentFactory({
+  const createComponent = createHostFactory({
     component: MapComponent,
     imports: [MockModule(GoogleMapsModule)],
     providers: [provideMockConfig(), provideMockBawApi()],
@@ -67,13 +72,18 @@ describe("MapComponent", () => {
     spectator.detectChanges();
   }
 
-  function setup(markers: MapMarkerOptions[] = []): void {
-    spectator = createComponent({ detectChanges: false });
+  function setup(markers: MapMarkerOptions[] = [], content = ""): void {
+    const hostTemplate = `<baw-map [markers]="markers">${content}</baw-map>`;
+
+    spectator = createComponent(hostTemplate, {
+      hostProps: {
+        markers: List(markers),
+      },
+      detectChanges: false,
+    });
     mapsServiceSpy = spectator.inject(MapsService);
 
-    // when ng-spectator's setInput is used it will call detectChanges, meaning
-    // that this will be the first change detection cycle
-    spectator.setInput("markers", List(markers));
+    spectator.detectChanges();
 
     if (markers.length) {
       spectator.component.hasMarkers = true;
@@ -137,7 +147,7 @@ describe("MapComponent", () => {
 
     it("should display multiple markers", () => {
       const markers = modelData.randomArray(3, 3, () =>
-        new Site(generateSite()).getMapMarker()
+        new Site(generateSite()).getMapMarker(),
       );
 
       setup(markers);
@@ -146,7 +156,22 @@ describe("MapComponent", () => {
       expect(getMarkers()).toHaveLength(3);
     });
 
-    it("should use the custom markerTemplate if present", () => {});
+    it("should use the custom markerTemplate if present", () => {
+      const markers = [new Site(generateSite()).getMapMarker()];
+
+      const contentTemplate = `
+        <ng-template #markerTemplate let-marker="marker">
+          <div id="marker-title">{{ marker.title }}</div>
+          <img id="marker-image" href="${modelData.imageUrl()}" />
+        </ng-template>
+      `;
+
+      setup(markers, contentTemplate);
+      triggerLoadSuccess();
+
+      expect(spectator.query("#marker-title")).toHaveText(markers[0].title);
+      expect(spectator.query("#marker-image")).toExist();
+    });
   });
 
   describe("hover info window", () => {
@@ -205,7 +230,7 @@ describe("MapComponent", () => {
 
     it("should have the same color for markers in the same group", () => {
       const markers = modelData.randomArray(3, 3, () => {
-        const marker = new Site(generateSite()).getMapMarker()
+        const marker = new Site(generateSite()).getMapMarker();
         marker.groupId = "same-group";
         return marker;
       });
@@ -213,9 +238,11 @@ describe("MapComponent", () => {
       setup(markers);
       triggerLoadSuccess();
 
-      const realizedColors = spectator.component.validMarkersOptions.map((marker) => {
-        return spectator.component["markerColor"](marker);
-      });
+      const realizedColors = spectator.component.validMarkersOptions.map(
+        (marker) => {
+          return spectator.component["markerColor"](marker);
+        },
+      );
 
       const firstColor = realizedColors[0];
       for (const color of realizedColors) {
@@ -238,15 +265,17 @@ describe("MapComponent", () => {
     // the default "red" color.
     it("should use red markers when there are no groups", () => {
       const markers = modelData.randomArray(3, 3, () =>
-        new Site(generateSite()).getMapMarker()
+        new Site(generateSite()).getMapMarker(),
       );
 
       setup(markers);
       triggerLoadSuccess();
 
-      const realizedColors = spectator.component.validMarkersOptions.map((marker) => {
-        return spectator.component["markerColor"](marker);
-      });
+      const realizedColors = spectator.component.validMarkersOptions.map(
+        (marker) => {
+          return spectator.component["markerColor"](marker);
+        },
+      );
 
       for (const color of realizedColors) {
         expect(color).toEqual(defaultGroupColor);
