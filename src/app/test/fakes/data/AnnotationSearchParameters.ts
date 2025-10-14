@@ -59,9 +59,6 @@ export function generateAnnotationSearchUrlParameters(data?: Params): Params {
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
     taskTag: modelData.id().toString(),
-    verificationStatus: modelData.helpers.arrayElement(
-      ["unverified-for-me", "unverified", "any"],
-    ),
     taskBehavior: modelData.helpers.arrayElement(
       ["verify", "verify-and-correct-tag"],
     ),
