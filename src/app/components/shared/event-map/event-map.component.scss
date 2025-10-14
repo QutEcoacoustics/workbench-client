@@ -5,3 +5,8 @@
   // be inherited by the baw-map.
   display: contents;
 }
+
+.marker-hover-template {
+  display: flex;
+  gap: 0.5rem;
+}

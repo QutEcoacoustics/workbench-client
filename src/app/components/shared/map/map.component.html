@@ -7,7 +7,10 @@
     (mapClick)="markerOptions()?.gmpDraggable && newLocation.emit($event)"
   >
     <map-marker-clusterer>
-      @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
+      @for (
+        individualMarkerOptions of validMarkersOptions;
+        track individualMarkerOptions
+      ) {
         <map-advanced-marker
           #markerRef="mapAdvancedMarker"
           [options]="markerOptions()"
@@ -20,7 +23,12 @@
         ></map-advanced-marker>
       }
     </map-marker-clusterer>
-    <map-info-window [options]="infoOptions()">{{ infoContent() }}</map-info-window>
+    <map-info-window [options]="infoOptions()">
+      <ng-container
+        [ngTemplateOutlet]="markerHoverTemplate()"
+        [ngTemplateOutletContext]="{ marker: focusedMarker() }"
+      ></ng-container>
+    </map-info-window>
   </google-map>
 } @else {
   <div class="map-placeholder">

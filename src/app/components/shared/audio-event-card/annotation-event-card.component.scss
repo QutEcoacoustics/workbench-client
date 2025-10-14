@@ -62,13 +62,7 @@ oe-axes, oe-indicator, oe-spectrogram {
   display: flex block;
   flex-direction: column;
 
-  position: relative;
-  min-width: fit-content;
-
-  min-height: fit-content;
-  height: 100%;
-
-  flex-grow: 1;
+  flex: 1 1 0;
 }
 
 .card-header {

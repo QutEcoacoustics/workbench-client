@@ -21,8 +21,17 @@
         letter-spacing="0.75px"
         font-weight="bold"
       >
-        {{ marker.count }}
+        {{ marker?.count }}
       </text>
     </svg>
+  </ng-template>
+
+  <ng-template #markerHoverTemplate let-marker="marker">
+    <div class="marker-hover-template">
+      <a class="btn btn-sm btn-secondary" [bawUrl]="marker?.viewUrl">
+        View site
+      </a>
+      <button class="btn btn-sm btn-outline-secondary" href="#">Share</button>
+    </div>
   </ng-template>
 </baw-map>

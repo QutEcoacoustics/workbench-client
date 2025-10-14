@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   contentChild,
@@ -30,6 +31,7 @@ import {
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
+import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../loading/loading.component";
 
 type MarkerGroup = unknown;
@@ -54,7 +56,9 @@ interface MarkerTemplate {
     MapMarkerClusterer,
     MapInfoWindow,
     LoadingComponent,
+    NgTemplateOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
@@ -82,8 +86,14 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public hasMarkers = false;
   private _map: GoogleMap;
 
-  protected readonly infoOptions = signal<google.maps.InfoWindowOptions>({});
-  protected readonly infoContent = signal("");
+  protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);
+  protected readonly infoOptions = computed<google.maps.InfoWindowOptions>(
+    () => {
+      return {
+        headerContent: this.focusedMarker()?.title || "",
+      };
+    },
+  );
 
   protected readonly MapLoadState = GoogleMapsState;
   protected readonly mapsLoadState = signal<GoogleMapsState>(
@@ -108,8 +118,21 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   });
 
   private readonly info = viewChild(MapInfoWindow);
+
+  /**
+   * A content template that is used to render the marker.
+   */
   public readonly markerTemplate =
     contentChild<TemplateRef<MarkerTemplate>>("markerTemplate");
+
+  /**
+   * A content template that is used to show additional information above the
+   * marker when hovered.
+   * This appears an info window/tooltip when the marker is hovered.
+   */
+  public readonly markerHoverTemplate = contentChild<
+    TemplateRef<MarkerTemplate>
+  >("markerHoverTemplate");
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -158,6 +181,9 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   ): void {
     marker.advancedMarker.addEventListener("pointerover", () => {
       this.addMapMarkerInfo(options, marker);
+    });
+
+    marker.advancedMarker.addEventListener("click", () => {
       this.handleMarkerClick(options);
     });
 
@@ -168,11 +194,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     options: MapMarkerOptions,
     marker: MapAnchorPoint,
   ): void {
-    this.infoContent.set("");
-    this.infoOptions.set({
-      headerContent: `${options.title}`,
-    });
-
+    this.focusedMarker.set(options);
     this.info().open(marker);
   }
 

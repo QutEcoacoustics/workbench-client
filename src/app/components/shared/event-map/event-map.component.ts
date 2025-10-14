@@ -13,12 +13,13 @@ import { List } from "immutable";
 import { Site } from "@models/Site";
 import { AudioEventGroup } from "@models/AudioEventGroup";
 import { Id } from "@interfaces/apiInterfaces";
+import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-event-map",
   templateUrl: "./event-map.component.html",
   styleUrl: "./event-map.component.scss",
-  imports: [MapComponent],
+  imports: [MapComponent, UrlDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapComponent {
@@ -49,6 +50,7 @@ export class EventMapComponent {
       return;
     }
 
+    this.focusedSiteId.set(focusedSite);
     this.siteClicked.emit(focusedSite);
   }
 }
