@@ -15,7 +15,12 @@ describe("EventMapComponent", () => {
   });
 
   beforeEach(() => {
-    spec = createComponent({ detectChanges: false });
+    spec = createComponent({
+      props: {
+        events: [],
+      },
+      detectChanges: false,
+    });
     spec.detectChanges();
   });
 

@@ -21,6 +21,7 @@ import { fakeAsync, tick } from "@angular/core/testing";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
+import { getElementByTextContent } from "@test/helpers/html";
 import { AnnotationsListComponent } from "./list.component";
 
 describe("AnnotationsListComponent", () => {
@@ -96,12 +97,6 @@ describe("AnnotationsListComponent", () => {
     spectator.detectChanges();
   }
 
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text,
-    )?.nativeElement as T;
-  }
-
   const viewImportButton = (): HTMLButtonElement =>
     spectator.query<HTMLButtonElement>("[name='view-button']");
   const deleteImportButton = (): HTMLButtonElement =>
@@ -140,8 +135,10 @@ describe("AnnotationsListComponent", () => {
   it("should show created dates in the users local timezone", () => {
     const expectedLocalTime = "2022-11-05 04:12:31";
 
-    const importCreatedColumn =
-      getElementByInnerText<HTMLTableCellElement>(expectedLocalTime);
+    const importCreatedColumn = getElementByTextContent<HTMLTableCellElement>(
+      spectator,
+      expectedLocalTime,
+    );
 
     expect(importCreatedColumn).toExist();
   });

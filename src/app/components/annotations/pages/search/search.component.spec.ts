@@ -183,8 +183,28 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
+              "audioRecordings.id": {
+                in: Array.from(mockSearchParameters.audioRecordings),
+              },
+            },
+            {
+              "audioEventImportFileId": {
+                in: Array.from(mockSearchParameters.importFiles),
+              },
+            },
+            {
               "sites.id": {
                 in: Array.from(mockSearchParameters.sites),
+              },
+            },
+            {
+              "score": {
+                gteq: mockSearchParameters.scoreLowerBound,
+              },
+            },
+            {
+              "score": {
+                lteq: mockSearchParameters.scoreUpperBound,
               },
             },
             {
@@ -198,7 +218,7 @@ describe("AnnotationSearchComponent", () => {
                   ],
                 },
               ],
-            }
+            },
           ],
         },
         sorting: {

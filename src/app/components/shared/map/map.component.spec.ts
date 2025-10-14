@@ -120,8 +120,7 @@ describe("MapComponent", () => {
       expect(getMap()).toExist();
     });
 
-    fit("should use the custom markerTemplate if present", () => {
-    });
+    it("should use the custom markerTemplate if present", () => {});
 
     // These tests are currently disabled because we don't want to/ actually
     // load Google Maps in the tests, and mocking the Google Maps component is
