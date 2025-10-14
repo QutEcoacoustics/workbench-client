@@ -120,6 +120,36 @@ describe("MapComponent", () => {
       expect(getMap()).toExist();
     });
 
+    it("should use the custom markerTemplate if present", () => {
+      const markers = [new Site(generateSite()).getMapMarker()];
+    });
+
+    // These tests are currently disabled because we don't want to/ actually
+    // load Google Maps in the tests, and mocking the Google Maps component is
+    // a maintenance burden
+    // TODO: we should find a way to mock these tests
+    xit("should display single site", () => {
+      const markers = [new Site(generateSite()).getMapMarker()];
+
+      setup(markers);
+      triggerLoadSuccess();
+
+      expect(getMarkers().length).toBeTruthy();
+    });
+
+    xit("should display multiple markers", () => {
+      const markers = modelData.randomArray(3, 3, () =>
+        new Site(generateSite()).getMapMarker()
+      );
+
+      setup(markers);
+      triggerLoadSuccess();
+
+      expect(getMarkers()).toHaveLength(3);
+    });
+  });
+
+  describe("hover info window", () => {
     it("should have info window", () => {
       const markers = [new Site(generateSite()).getMapMarker()];
 
@@ -164,30 +194,6 @@ describe("MapComponent", () => {
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
       expect(infoWindow.options.headerContent).toBe("");
-    });
-
-    // These tests are currently disabled because we don't want to/ actually
-    // load Google Maps in the tests, and mocking the Google Maps component is
-    // a maintenance burden
-    // TODO: we should find a way to mock these tests
-    xit("should display single site", () => {
-      const markers = [new Site(generateSite()).getMapMarker()];
-
-      setup(markers);
-      triggerLoadSuccess();
-
-      expect(getMarkers().length).toBeTruthy();
-    });
-
-    xit("should display multiple markers", () => {
-      const markers = modelData.randomArray(3, 3, () =>
-        new Site(generateSite()).getMapMarker()
-      );
-
-      setup(markers);
-      triggerLoadSuccess();
-
-      expect(getMarkers()).toHaveLength(3);
     });
   });
 
