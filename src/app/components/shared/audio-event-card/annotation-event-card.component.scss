@@ -1,8 +1,6 @@
 :host {
-  display: flex block;
+  display: block;
   position: relative;
-
-  flex-direction: column;
 }
 
 oe-axes {
@@ -56,6 +54,8 @@ oe-axes, oe-indicator, oe-spectrogram {
   flex-direction: column;
 
   flex: 1 1 auto;
+
+  min-height: 0;
 }
 
 .card-container {
@@ -63,6 +63,8 @@ oe-axes, oe-indicator, oe-spectrogram {
   flex-direction: column;
 
   flex: 1 1 0;
+
+  height: 100%;
 }
 
 .card-header {
