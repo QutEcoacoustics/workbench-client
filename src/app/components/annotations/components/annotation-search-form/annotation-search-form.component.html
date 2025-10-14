@@ -153,39 +153,43 @@
         (modelChange)="updateSubModel('audioRecordings', $event)"
       ></baw-typeahead-input>
 
-      <!-- Tags to verify moved to advanced filters -->
-      <baw-typeahead-input
-        id="task-tag-input"
-        label="Tag to Verify"
-        [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
-        [searchCallback]="tagsApi.typeaheadCallback()"
-        [resultTemplate]="tagsTypeaheadTemplate"
-        [multipleInputs]="false"
-        [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
-        (modelChange)="updateTaskTag($event)"
-      ></baw-typeahead-input>
+      @if (showVerificationFilters()) {
+        <!-- Tags to verify moved to advanced filters -->
+        <baw-typeahead-input
+          id="task-tag-input"
+          label="Tag to Verify"
+          [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
+          [searchCallback]="tagsApi.typeaheadCallback()"
+          [resultTemplate]="tagsTypeaheadTemplate"
+          [multipleInputs]="false"
+          [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
+          (modelChange)="updateTaskTag($event)"
+        ></baw-typeahead-input>
+      }
     </div>
   </div>
 
-  <div class="mt-2">
-    <label class="form-label w-100">Show annotations that</label>
-    <baw-selectable-items
-      [options]="verifiedStatusOptions()"
-      [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
-      [inline]="true"
-      (selectionChange)="updateParameterProperty('verificationStatus', $event)"
-    ></baw-selectable-items>
-  </div>
+  @if (showVerificationFilters()) {
+    <div class="mt-2">
+      <label class="form-label w-100">Show annotations that</label>
+      <baw-selectable-items
+        [options]="verifiedStatusOptions()"
+        [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
+        [inline]="true"
+        (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+      ></baw-selectable-items>
+    </div>
 
-  <div class="mt-2">
-    <label class="form-label w-100">Task Behavior</label>
-    <baw-selectable-items
-      [options]="taskBehaviorOptions"
-      [selection]="searchParameters().taskBehavior ?? 'verify'"
-      [inline]="true"
-      (selectionChange)="updateParameterProperty('taskBehavior', $event)"
-    ></baw-selectable-items>
-  </div>
+    <div class="mt-2">
+      <label class="form-label w-100">Task Behavior</label>
+      <baw-selectable-items
+        [options]="taskBehaviorOptions"
+        [selection]="searchParameters().taskBehavior ?? 'verify'"
+        [inline]="true"
+        (selectionChange)="updateParameterProperty('taskBehavior', $event)"
+      ></baw-selectable-items>
+    </div>
+  }
 
   <label class="form-label mt-2 w-100">
     Sort by

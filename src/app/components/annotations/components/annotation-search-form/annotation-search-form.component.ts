@@ -1,5 +1,4 @@
-import { Component, computed, model, OnInit, output, signal, viewChild } from "@angular/core";
-import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, OnInit, output, signal, viewChild } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -65,17 +64,17 @@ enum ScoreRangeBounds {
     NgbTooltip,
     FormsModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationSearchFormComponent implements OnInit {
-  public constructor(
-    protected recordingsApi: AudioRecordingsService,
-    protected audioEventsApi: AudioEventsService,
-    protected projectsApi: ProjectsService,
-    protected regionsApi: ShallowRegionsService,
-    protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService,
-    protected session: BawSessionService,
-  ) {
+  protected readonly recordingsApi = inject(AudioRecordingsService);
+  protected readonly projectsApi = inject(ProjectsService);
+  protected readonly regionsApi = inject(ShallowRegionsService);
+  protected readonly sitesApi = inject(ShallowSitesService);
+  protected readonly tagsApi = inject(TagsService);
+  private readonly session = inject(BawSessionService);
+
+  public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.session.authTrigger.subscribe(() => {
       this.verifiedStatusOptions.update((current) => {
@@ -85,6 +84,11 @@ export class AnnotationSearchFormComponent implements OnInit {
     });
   }
 
+  // Having a boolean input to show/hide verification filters is a smell that
+  // the component architecture could be improved.
+  // However, this is a minor issue and can be addressed later if needed.
+  // TODO: Perhaps refactor this component into two separate components.
+  public readonly showVerificationFilters = input(true);
   public readonly searchParameters = model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
