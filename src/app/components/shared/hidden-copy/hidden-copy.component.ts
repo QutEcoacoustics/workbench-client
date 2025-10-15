@@ -18,7 +18,7 @@ export class HiddenCopyComponent {
   public readonly value = input<string>();
   public readonly content = input<string>();
 
-  protected readonly visible = signal(false);
+  public readonly visible = signal(false);
 
   protected toggleVisibility() {
     this.visible.update((visible) => !visible);
