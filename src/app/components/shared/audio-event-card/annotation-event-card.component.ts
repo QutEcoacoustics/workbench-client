@@ -6,10 +6,12 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import { MediaControlsComponent } from "@ecoacoustics/web-components/@types/components/media-controls/media-controls";
 import { Annotation } from "@models/data/Annotation";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types";
+import {
+  MediaControlsComponent,
+  SpectrogramComponent,
+} from "@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
@@ -32,8 +34,8 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     isInstantiatedPipe,
     DecimalPipe,
     UrlDirective,
-    InlineListComponent
-],
+    InlineListComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationEventCardComponent {
@@ -50,7 +52,8 @@ export class AnnotationEventCardComponent {
 
   public constructor() {
     effect(() => {
-      this.mediaControls().nativeElement.for = this.spectrogramRef().nativeElement;
+      this.mediaControls().nativeElement.for =
+        this.spectrogramRef().nativeElement;
     });
   }
 }

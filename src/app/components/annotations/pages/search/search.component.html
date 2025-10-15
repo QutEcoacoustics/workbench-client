@@ -18,7 +18,10 @@
     </a> -->
 
     <baw-can [ifLoggedIn]="true">
-      <button class="verify-button btn btn-primary" (click)="navigateToVerificationGrid()">
+      <button
+        class="verify-button btn btn-primary"
+        (click)="navigateToVerificationGrid()"
+      >
         Verify This List
       </button>
     </baw-can>
@@ -35,32 +38,33 @@
       <p>
         Displaying
         <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-        events.
+        <span class="fw-bold">all {{ paginationInformation?.total }}</span>
+        audio events.
       </p>
-    }
 
-    <div class="annotations-grid my-2">
-      @for (verificationModel of searchResults; track $index) {
-        @if (verificationModel) {
-          <baw-annotation-event-card
-            [annotation]="verificationModel"
-          ></baw-annotation-event-card>
-        }
+      @if (searchResults.length === 0) {
+        <h2 class="no-results-error">No annotations found</h2>
+      } @else {
+        <div class="annotations-grid my-2">
+          @for (verificationModel of searchResults; track verificationModel.id) {
+            <baw-annotation-event-card
+              [annotation]="verificationModel"
+            ></baw-annotation-event-card>
+          }
+        </div>
       }
-    </div>
 
-    @if (searchResults.length === 0 && !loading) {
-      <h2 class="no-results-error">No annotations found</h2>
-      } @if(displayPagination) {
-      <ngb-pagination
-        class="d-flex justify-content-center mt-4"
-        [collectionSize]="paginationInformation?.total ?? 0"
-        [(page)]="page"
-      ></ngb-pagination>
+      @if (displayPagination) {
+        <ngb-pagination
+          class="d-flex justify-content-center mt-4"
+          [collectionSize]="paginationInformation?.total ?? 0"
+          [(page)]="page"
+        ></ngb-pagination>
+      }
     }
+  } @else {
+    <baw-error-handler [error]="error"></baw-error-handler>
   }
-  <baw-error-handler [error]="error"></baw-error-handler>
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>
