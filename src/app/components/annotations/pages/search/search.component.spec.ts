@@ -4,7 +4,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { Params, Router } from "@angular/router";
+import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
@@ -68,7 +68,6 @@ describe("AnnotationSearchComponent", () => {
     imports: [IconsModule, AnnotationSearchFormComponent],
     providers: [
       provideMockBawApi(),
-      mockProvider(Router),
       mockProvider(AnnotationService, {
         show: () => mockAnnotationResponse,
       }),
