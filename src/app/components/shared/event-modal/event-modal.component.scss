@@ -1,3 +1,8 @@
-#event-card {
+#card-container {
+  position: relative;
   height: 600px;
+}
+
+#event-card {
+  height: 100%;
 }
