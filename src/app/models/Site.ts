@@ -19,6 +19,8 @@ import {
   ImageUrl,
   Param,
   TimezoneInformation,
+  Latitude,
+  Longitude,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { creator, hasMany, updater } from "./AssociationDecorators";
@@ -43,10 +45,10 @@ export interface ISite extends HasAllUsers, HasDescription {
   locationObfuscated?: boolean;
   projectIds?: Ids | Id[];
   regionId?: Id;
-  latitude?: number;
-  customLatitude?: number;
-  longitude?: number;
-  customLongitude?: number;
+  latitude?: Latitude;
+  customLatitude?: Latitude;
+  longitude?: Longitude;
+  customLongitude?: Longitude;
   tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
   notes?: Hash;
@@ -83,11 +85,11 @@ export class Site extends AbstractModel<ISite> implements ISite {
   @bawPersistAttr()
   public readonly regionId?: Id;
   @bawPersistAttr()
-  public readonly latitude?: number;
-  public readonly customLatitude?: number;
+  public readonly latitude?: Latitude;
+  public readonly customLatitude?: Latitude;
   @bawPersistAttr()
-  public readonly longitude?: number;
-  public readonly customLongitude?: number;
+  public readonly longitude?: Longitude;
+  public readonly customLongitude?: Longitude;
   @bawPersistAttr()
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;

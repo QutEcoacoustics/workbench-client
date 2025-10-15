@@ -15,7 +15,7 @@ import { regionResolvers } from "@baw-api/region/regions.service";
 import { siteResolvers } from "@baw-api/site/sites.service";
 import { EventMapComponent } from "@shared/event-map/event-map.component";
 import { AudioEvent } from "@models/AudioEvent";
-import { NgbCollapse, NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -64,7 +64,6 @@ enum FocusFetchState {
     AsyncPipe,
     UrlDirective,
     StrongRouteDirective,
-    NgbCollapse,
   ],
 })
 class EventsPageComponent extends PageComponent implements OnInit {

@@ -6,7 +6,6 @@ import {
   output,
   signal,
 } from "@angular/core";
-import { toNumber } from "@helpers/typing/toNumber";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
@@ -25,15 +24,15 @@ import { UrlDirective } from "@directives/url/url.directive";
 export class EventMapComponent {
   public readonly events = input.required<AudioEventGroup[]>();
 
-  public readonly siteClicked = output<Id<Site>>();
+  public readonly siteFocused = output<Id<Site>>();
 
   protected readonly focusedSiteId = signal<Id<Site> | null>(null);
   protected readonly markers = computed(() => {
     const newMarkers = this.events().map((group) => {
       return {
         position: {
-          lat: toNumber(group.latitude),
-          lng: toNumber(group.longitude),
+          lat: group.latitude,
+          lng: group.longitude,
         },
         title: `${group.eventCount} Events`,
         count: group.eventCount,
@@ -51,6 +50,6 @@ export class EventMapComponent {
     }
 
     this.focusedSiteId.set(focusedSite);
-    this.siteClicked.emit(focusedSite);
+    this.siteFocused.emit(focusedSite);
   }
 }

@@ -4,7 +4,12 @@ import { AbstractModelWithoutId } from "./AbstractModel";
 import { Site } from "./Site";
 import { hasOne } from "./AssociationDecorators";
 
-export interface IAudioEventGroup {}
+export interface IAudioEventGroup {
+  siteId: Id<Site>;
+  eventCount: number;
+  latitude: Latitude;
+  longitude: Longitude;
+}
 
 export class AudioEventGroup
   extends AbstractModelWithoutId<IAudioEventGroup>

@@ -118,12 +118,12 @@ export function toRelative(
 /**
  * BAW API Latitude
  */
-export type Latitude = string;
+export type Latitude = number;
 
 /**
  * BAW API Longitude
  */
-export type Longitude = string;
+export type Longitude = number;
 
 /**
  * A concent enum that can be used to determine if a user has given concent

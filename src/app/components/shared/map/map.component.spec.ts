@@ -23,7 +23,7 @@ import { MapComponent } from "./map.component";
 
 // Disabled because google maps bundle interferes with other tests
 describe("MapComponent", () => {
-  let spectator: SpectatorHost<MapComponent>;
+  let spec: SpectatorHost<MapComponent>;
   let mapsServiceSpy: SpyObject<MapsService>;
 
   const createComponent = createHostFactory({
@@ -33,30 +33,30 @@ describe("MapComponent", () => {
   });
 
   function getMap() {
-    return spectator.query(GoogleMap);
+    return spec.query(GoogleMap);
   }
 
   function getInfoWindow() {
-    return spectator.query(MapInfoWindow);
+    return spec.query(MapInfoWindow);
   }
 
   function getMarkers() {
-    return spectator.queryAll(MapAdvancedMarker);
+    return spec.queryAll(MapAdvancedMarker);
   }
 
   function getLoadingComponent(): LoadingComponent {
-    return spectator.query(LoadingComponent);
+    return spec.query(LoadingComponent);
   }
 
   function placeholderElement() {
-    return spectator.query<HTMLDivElement>("div.map-placeholder");
+    return spec.query<HTMLDivElement>("div.map-placeholder");
   }
 
   /** Causes all pending 'loadAsync' promises to resolve */
   function triggerLoadSuccess(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
-    spectator.component["mapsLoadState"].set(mapsServiceSpy.mapsState);
-    spectator.detectChanges();
+    spec.component["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    spec.detectChanges();
 
     const markers = getMarkers();
     for (const marker of markers) {
@@ -68,8 +68,8 @@ describe("MapComponent", () => {
   /** Causes all pending 'loadAsync' promises to reject */
   function triggerLoadFailure(): void {
     mapsServiceSpy.mapsState = GoogleMapsState.Failed;
-    spectator.component["mapsLoadState"].set(mapsServiceSpy.mapsState);
-    spectator.detectChanges();
+    spec.component["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    spec.detectChanges();
   }
 
   function hoverMarker(index: number) {
@@ -77,25 +77,33 @@ describe("MapComponent", () => {
     expect(mapMarker).toExist();
 
     mapMarker.advancedMarker.dispatchEvent(new Event("pointerover"));
-    spectator.detectChanges();
+    spec.detectChanges();
+  }
+
+  function clickMarker(index: number) {
+    const mapMarker = getMarkers()[index];
+    expect(mapMarker).toExist();
+
+    mapMarker.advancedMarker.dispatchEvent(new Event("click"));
+    spec.detectChanges();
   }
 
   function setup(markers: MapMarkerOptions[] = [], content = ""): void {
     const hostTemplate = `<baw-map [markers]="markers">${content}</baw-map>`;
 
-    spectator = createComponent(hostTemplate, {
+    spec = createComponent(hostTemplate, {
       hostProps: {
         markers: List(markers),
       },
       detectChanges: false,
     });
-    mapsServiceSpy = spectator.inject(MapsService);
+    mapsServiceSpy = spec.inject(MapsService);
 
-    spectator.detectChanges();
+    spec.detectChanges();
 
     if (markers.length) {
-      spectator.component.hasMarkers = true;
-      spectator.detectChanges();
+      spec.component.hasMarkers = true;
+      spec.detectChanges();
     }
   }
 
@@ -105,7 +113,7 @@ describe("MapComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spectator.component).toBeInstanceOf(MapComponent);
+    expect(spec.component).toBeInstanceOf(MapComponent);
   });
 
   describe("loading/error messages", () => {
@@ -177,8 +185,8 @@ describe("MapComponent", () => {
       setup(markers, contentTemplate);
       triggerLoadSuccess();
 
-      expect(spectator.query("#marker-title")).toHaveText(markers[0].title);
-      expect(spectator.query("#marker-image")).toExist();
+      expect(spec.query("#marker-title")).toHaveText(markers[0].title);
+      expect(spec.query("#marker-image")).toExist();
     });
   });
 
@@ -238,8 +246,8 @@ describe("MapComponent", () => {
 
       hoverMarker(0);
 
-      expect(spectator.query("#marker-image")).toExist();
-      expect(spectator.query("#custom-marker-title")).toHaveText(marker.title);
+      expect(spec.query("#marker-image")).toExist();
+      expect(spec.query("#custom-marker-title")).toHaveText(marker.title);
     });
   });
 
@@ -256,9 +264,9 @@ describe("MapComponent", () => {
       setup(markers);
       triggerLoadSuccess();
 
-      const realizedColors = spectator.component.validMarkersOptions.map(
+      const realizedColors = spec.component.validMarkersOptions.map(
         (marker) => {
-          return spectator.component["markerColor"](marker);
+          return spec.component["markerColor"](marker);
         },
       );
 
@@ -273,7 +281,7 @@ describe("MapComponent", () => {
 
       // Also ensure that if we get the color of a marker without a groupId,
       // it will be the default "red" color.
-      const noGroupColor = spectator.component["markerColor"](
+      const noGroupColor = spec.component["markerColor"](
         new Site(generateSite()).getMapMarker(),
       );
       expect(noGroupColor).toEqual(defaultGroupColor);
@@ -289,15 +297,30 @@ describe("MapComponent", () => {
       setup(markers);
       triggerLoadSuccess();
 
-      const realizedColors = spectator.component.validMarkersOptions.map(
+      const realizedColors = spec.component.validMarkersOptions.map(
         (marker) => {
-          return spectator.component["markerColor"](marker);
+          return spec.component["markerColor"](marker);
         },
       );
 
       for (const color of realizedColors) {
         expect(color).toEqual(defaultGroupColor);
       }
+    });
+  });
+
+  describe("events", () => {
+    it("should emit a 'markerClicked' event when a marker is clicked", () => {
+      const marker = new Site(generateSite()).getMapMarker();
+
+      setup([marker]);
+      triggerLoadSuccess();
+
+      const clickSpy = spyOn(spec.component.markerClicked, "emit");
+
+      clickMarker(0);
+
+      expect(clickSpy).toHaveBeenCalledOnceWith(marker);
     });
   });
 });

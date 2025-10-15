@@ -6,7 +6,7 @@ import { AudioEventGroup } from "@models/AudioEventGroup";
 import { Observable, of } from "rxjs";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const endpoint = stringTemplate`/site/group/audio_events/`;
+const endpoint = stringTemplate`/site/group/audio_events`;
 
 // TODO: Finish this implementation once the server endpoint is complete
 // see: https://github.com/QutEcoacoustics/baw-server/issues/852
