@@ -23,7 +23,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, Location } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -72,6 +72,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly injector = inject(ASSOCIATION_INJECTOR);
+  private readonly location = inject(Location);
 
   protected readonly FocusFetchState = FocusFetchState;
   protected readonly trayFetchState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
@@ -167,6 +168,14 @@ protected updateSearchParameters(newParams: EventMapSearchParameters): void {
     if (isInstantiated(newFocusedSite)) {
       this.focusSite(newFocusedSite);
     }
+
+    this.updateUrlParameters();
+  }
+
+  private updateUrlParameters(): void {
+    const queryParams = this.searchParameters().toQueryParams();
+    const urlTree = this.router.createUrlTree([], { queryParams });
+    this.location.replaceState(urlTree.toString());
   }
 
   private focusSite(siteId: Id<Site>): void {
