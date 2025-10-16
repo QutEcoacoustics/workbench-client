@@ -35,9 +35,6 @@ export class EventMapSearchParameters
 
   public constructor(queryStringParameters: Params = {}) {
     super(queryStringParameters);
-
-    // For some reason this.focused is not being set by the super call
-    console.log(this.focused);
   }
 
   public toQueryParams(): Params {

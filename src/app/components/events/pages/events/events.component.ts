@@ -78,10 +78,10 @@ class EventsPageComponent extends PageComponent implements OnInit {
     signal<AnnotationSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
-    const filters = this.annotationSearchParameters().toFilter?.() ?? {};
+    const searchFilters = this.annotationSearchParameters().toFilter?.() ?? {};
 
     const request = this.groupedEventsService
-      .filterGroupBy(filters)
+      .filterGroupBy({ filter: searchFilters.filter })
       .pipe(first(), takeUntil(this.unsubscribe));
 
     return firstValueFrom(request);

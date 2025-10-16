@@ -116,6 +116,7 @@ import {
   VerificationService,
 } from "./verification/verification.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
+import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -344,6 +345,10 @@ const serviceList = [
   {
     serviceToken: Tokens.SITE_SETTINGS,
     service: SiteSettingsService,
+  },
+  {
+    serviceToken: Tokens.GROUPED_AUDIO_EVENTS,
+    service: GroupedAudioEventsService,
   },
   {
     serviceToken: Tokens.EVENT_MAP_PARAMETERS,

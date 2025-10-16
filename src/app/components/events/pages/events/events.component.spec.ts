@@ -13,9 +13,15 @@ import { generateSite } from "@test/fakes/Site";
 import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
+import { of } from "rxjs";
+import { AudioEventGroup } from "@models/AudioEventGroup";
+import { Location } from "@angular/common";
 
 describe("EventsPageComponent", () => {
   let spec: SpectatorRouting<EventsPageComponent>;
+
+  let groupedEventsService: GroupedAudioEventsService;
 
   let project: Project;
   let region: Region;
@@ -24,24 +30,31 @@ describe("EventsPageComponent", () => {
   let eventMapSearchParameters: EventMapSearchParameters;
   let annotationSearchParameters: AnnotationSearchParameters;
 
+  const mockAudioEvents = [
+    new AudioEventGroup({
+      siteId: 3605,
+      eventCount: 67,
+      latitude: -27.4975,
+      longitude: 153.0136,
+    }),
+    new AudioEventGroup({
+      siteId: 3606,
+      eventCount: 42,
+      latitude: -27.4773,
+      longitude: 153.0271,
+    }),
+    new AudioEventGroup({
+      siteId: 3873,
+      eventCount: 9,
+      latitude: 4.522871,
+      longitude: 6.118915,
+    }),
+  ];
+
   const createComponent = createRoutingFactory({
     component: EventsPageComponent,
     providers: [provideMockBawApi()],
     imports: [IconsModule],
-    data: {
-      resolvers: {
-        project: "resolver",
-        region: "resolver",
-        site: "resolver",
-        eventMapSearchParameters: "resolver",
-        annotationSearchParameters: "resolver",
-      },
-      project,
-      region,
-      site,
-      eventMapSearchParameters,
-      annotationSearchParameters,
-    },
   });
 
   function setup(queryParams: Params = {}): void {
@@ -50,11 +63,33 @@ describe("EventsPageComponent", () => {
     site = new Site(generateSite());
 
     eventMapSearchParameters = new EventMapSearchParameters(queryParams);
-    annotationSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(),
-    );
+    annotationSearchParameters = new AnnotationSearchParameters(queryParams);
 
-    spec = createComponent({ queryParams });
+    spec = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: {
+          project: "resolver",
+          region: "resolver",
+          site: "resolver",
+          eventMapSearchParameters: "resolver",
+          annotationSearchParameters: "resolver",
+        },
+        project: { model: project },
+        region: { model: region },
+        site: { model: site },
+        eventMapSearchParameters: { model: eventMapSearchParameters },
+        annotationSearchParameters: { model: annotationSearchParameters },
+      },
+      queryParams,
+    });
+
+    groupedEventsService = spec.inject(GroupedAudioEventsService);
+    groupedEventsService.filterGroupBy = jasmine
+      .createSpy("filterGroupBy")
+      .and.returnValue(of(mockAudioEvents));
+
+    spec.detectChanges();
   }
 
   assertPageInfo(EventsPageComponent, "Annotation Map");
@@ -65,17 +100,61 @@ describe("EventsPageComponent", () => {
   });
 
   describe("api calls", () => {
-    it("should make the correct api call without query parameters", () => {
+    it("should make the correct api call with no query parameters", () => {
+      setup();
+
+      const expectedFilters = { filter: {} };
+
+      expect(groupedEventsService.filterGroupBy).toHaveBeenCalledOnceWith(
+        expectedFilters,
+      );
+    });
+
+    it("should make the correct api call with query parameters", () => {
+      setup(generateAnnotationSearchUrlParameters());
+
+      const expectedFilters = {
+        filter: {
+          and: [
+            { "tags.id": { in: annotationSearchParameters.tags } },
+            {
+              "audioRecordings.id": {
+                in: annotationSearchParameters.audioRecordings,
+              },
+            },
+            {
+              audioEventImportFileId: {
+                in: annotationSearchParameters.importFiles,
+              },
+            },
+            { "sites.id": { in: annotationSearchParameters.sites } },
+            { score: { gteq: annotationSearchParameters.scoreLowerBound } },
+            { score: { lteq: annotationSearchParameters.scoreUpperBound } },
+          ],
+        },
+      };
+
       // Note that there are no "verification status" filter conditions because
       // the page component should set
       // annotationSearchParameters.includeVerificationParams to false.
+      //
+      // We should not be using the sorting conditions from the annotation
+      // search
+      expect(groupedEventsService.filterGroupBy).toHaveBeenCalledOnceWith(
+        expectedFilters,
+      );
     });
-
-    it("should make the correct api call with query parameters", () => {});
   });
 
   describe("focusing sites", () => {
-    it("should set the 'focused' url parameter when a site is clicked", () => {});
+    it("should set the 'focused' url parameter when a site is clicked", () => {
+      setup();
+
+      const location = spec.inject(Location).path();
+      const expectedLocation = `/events?focused=${site.id}`;
+
+      expect(location).toEqual(expectedLocation);
+    });
 
     it("should show audio events from the focused site in the overlay", () => {});
 
@@ -83,7 +162,7 @@ describe("EventsPageComponent", () => {
 
     it("should have the correct action links", () => {});
 
-    it("should correctly open the annotation preview modal",() => {});
+    it("should correctly open the annotation preview modal", () => {});
   });
 
   describe("filtering", () => {

@@ -150,6 +150,7 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+    console.log(models);
     this.searchParameters.update((current) => {
       const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
