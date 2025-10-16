@@ -63,4 +63,39 @@ describe("EventsPageComponent", () => {
     setup();
     expect(spec.component).toBeInstanceOf(EventsPageComponent);
   });
+
+  describe("api calls", () => {
+    it("should make the correct api call without query parameters", () => {
+      // Note that there are no "verification status" filter conditions because
+      // the page component should set
+      // annotationSearchParameters.includeVerificationParams to false.
+    });
+
+    it("should make the correct api call with query parameters", () => {});
+  });
+
+  describe("focusing sites", () => {
+    it("should set the 'focused' url parameter when a site is clicked", () => {});
+
+    it("should show audio events from the focused site in the overlay", () => {});
+
+    it("should have the correct 'show more' link in the overlay", () => {});
+
+    it("should have the correct action links", () => {});
+
+    it("should correctly open the annotation preview modal",() => {});
+  });
+
+  describe("filtering", () => {
+    // This test asserts that the search parameters are correctly parsed and
+    // transferred to the annotation search form, but does not assert that the
+    // annotation search form inputs are correctly populated because that is
+    // already tested within the annotation search form component tests.
+    it("should automatically populate the annotation search form from the url parameters", () => {
+    });
+
+    it("should make an api call with the correct parameters when filters are applied", () => {});
+
+    it("should retain the 'focused' parameter after annotation search parameters", () => {});
+  });
 });
