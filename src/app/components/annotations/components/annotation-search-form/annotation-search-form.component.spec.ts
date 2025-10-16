@@ -4,11 +4,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import {
-  AnnotationSearchParameters,
-  IAnnotationSearchParameters,
-  SortingKey,
-} from "./annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -42,6 +37,11 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import {
+  AnnotationSearchParameters,
+  IAnnotationSearchParameters,
+  SortingKey,
+} from "./annotationSearchParameters";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {

@@ -12,7 +12,6 @@ import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
-  deserializeParamsToObject,
   IQueryStringParameterSpec,
   jsBoolean,
   jsNumber,

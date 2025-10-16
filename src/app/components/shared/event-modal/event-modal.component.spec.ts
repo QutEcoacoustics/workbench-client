@@ -1,10 +1,14 @@
-import { createComponentFactory, mockProvider, Spectator } from "@ngneat/spectator";
-import { EventModalComponent } from "./event-modal.component";
+import {
+  createComponentFactory,
+  mockProvider,
+  Spectator,
+} from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
+import { EventModalComponent } from "./event-modal.component";
 
 describe("EventModalComponent", () => {
   let spec: Spectator<EventModalComponent>;

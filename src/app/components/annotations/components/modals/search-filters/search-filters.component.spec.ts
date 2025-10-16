@@ -11,8 +11,8 @@ import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
 import { of } from "rxjs";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { SearchFiltersModalComponent } from "./search-filters.component";
 import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
+import { SearchFiltersModalComponent } from "./search-filters.component";
 
 describe("SearchFiltersModalComponent", () => {
   let spec: Spectator<SearchFiltersModalComponent>;

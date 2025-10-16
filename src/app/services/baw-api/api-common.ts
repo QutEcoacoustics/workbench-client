@@ -4,8 +4,8 @@ import { Id, Param } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { InjectionToken } from "@angular/core";
-import { BawServiceOptions, Filters } from "./baw-api.service";
 import { AbstractData } from "@models/AbstractData";
+import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
  * Variable is an id or AbstractModel

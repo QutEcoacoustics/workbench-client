@@ -15,13 +15,7 @@ import type {
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
-import {
-  ApiFilter,
-  ApiFilterShow,
-  ApiList,
-  ApiShow,
-  IdOr,
-} from "./api-common";
+import { ApiFilter, ApiFilterShow, ApiList, ApiShow } from "./api-common";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**

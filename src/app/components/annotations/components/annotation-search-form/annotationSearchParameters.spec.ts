@@ -1,6 +1,6 @@
 import { modelData } from "@test/helpers/faker";
 import { Project } from "@models/Project";
-import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
+import { Filters, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Params } from "@angular/router";
 import { DateTime } from "luxon";

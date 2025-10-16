@@ -47,7 +47,9 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -150,7 +152,6 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    console.log(models);
     this.searchParameters.update((current) => {
       const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;

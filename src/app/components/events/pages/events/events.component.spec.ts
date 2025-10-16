@@ -1,9 +1,7 @@
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Params } from "@angular/router";
-import { EventsPageComponent } from "./events.component";
 import { Project } from "@models/Project";
-import { EventMapSearchParameters } from "./eventMapSearchParameters";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
@@ -17,6 +15,8 @@ import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped
 import { of } from "rxjs";
 import { AudioEventGroup } from "@models/AudioEventGroup";
 import { Location } from "@angular/common";
+import { EventMapSearchParameters } from "./eventMapSearchParameters";
+import { EventsPageComponent } from "./events.component";
 
 describe("EventsPageComponent", () => {
   let spec: SpectatorRouting<EventsPageComponent>;

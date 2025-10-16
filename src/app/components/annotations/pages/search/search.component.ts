@@ -32,9 +32,11 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
-import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 
 const projectKey = "project";
 const regionKey = "region";

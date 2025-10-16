@@ -14,11 +14,6 @@ import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import {
-  AnnotationSearchParameters,
-  TaskBehaviorKey,
-  VerificationStatusKey,
-} from "./annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -53,6 +48,11 @@ import {
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
 import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
+import {
+  AnnotationSearchParameters,
+  TaskBehaviorKey,
+  VerificationStatusKey,
+} from "./annotationSearchParameters";
 
 enum ScoreRangeBounds {
   Lower,
