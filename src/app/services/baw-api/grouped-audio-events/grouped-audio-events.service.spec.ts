@@ -1,5 +1,5 @@
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { mockServiceProviders, validateApiFilter } from "@test/helpers/api-common";
+import { mockServiceProviders, validateApiFilter, validateApiFilterGroupBy } from "@test/helpers/api-common";
 import { AudioEventGroup } from "@models/AudioEventGroup";
 import { GroupedAudioEventsService } from "./grouped-audio-events.service";
 
@@ -17,7 +17,7 @@ xdescribe("GroupedAudioEventsService", () => {
     spec = createService();
   });
 
-  validateApiFilter(
+  validateApiFilterGroupBy(
     () => spec,
     AudioEventGroup,
     "/site/group/audio_events"

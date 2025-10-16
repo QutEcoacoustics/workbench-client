@@ -38,11 +38,14 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 import { eventMapResolvers } from "./events.resolver";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
+import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const searchParametersKey = "eventMapSearchParameters";
+const annotationSearchParametersKey = "annotationSearchParameters";
 
 enum FocusFetchState {
   Fetching,
@@ -81,6 +84,8 @@ class EventsPageComponent extends PageComponent implements OnInit {
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
     signal<EventMapSearchParameters | null>(null);
+  protected readonly annotationSearchParameters =
+    signal<AnnotationSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
     const filters = this.searchParameters().toFilter() ?? {};
@@ -96,7 +101,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
 
   protected get moreEventsUrl() {
-    const searchParams = this.searchParameters();
+    const searchParams = this.annotationSearchParameters();
 
     // We use isInstantiated instead of a truthy check because a project with an
     // id of 0 is valid but would fail a truthy assertion.
@@ -117,9 +122,9 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters.update((current) => {
+    this.annotationSearchParameters.update((current) => {
       const newModel =
-        current ?? (models[searchParametersKey] as EventMapSearchParameters);
+        current ?? (models[annotationSearchParametersKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -132,8 +137,15 @@ class EventsPageComponent extends PageComponent implements OnInit {
         newModel.routeSiteModel ??= models[siteKey] as Site;
       }
 
+      return newModel;
+    });
+
+    this.searchParameters.update((current) => {
+      const newModel =
+        current ?? (models[searchParametersKey] as EventMapSearchParameters);
+
       if (isInstantiated(newModel.focused)) {
-        this.focusSite(newModel.focused);
+        this.handleSiteFocused(newModel.focused);
       }
 
       return newModel;
@@ -214,6 +226,7 @@ function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
       [searchParametersKey]: eventMapResolvers.showOptional,
+      [annotationSearchParametersKey]: annotationResolvers.showOptional,
     },
     fullscreen: true,
   };

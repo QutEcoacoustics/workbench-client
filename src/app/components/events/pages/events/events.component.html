@@ -83,9 +83,9 @@
               [strongRoute]="moreEventsUrl"
               [queryParams]="searchParameters()"
               [routeParams]="{
-                projectId: searchParameters().routeProjectId,
-                regionId: searchParameters().routeRegionId,
-                siteId: searchParameters().routeSiteId,
+                projectId: annotationSearchParameters().routeProjectId,
+                regionId: annotationSearchParameters().routeRegionId,
+                siteId: annotationSearchParameters().routeSiteId,
               }"
             >
               Show More
@@ -116,7 +116,7 @@
     [showVerificationFilters]="false"
     [showSortingFilters]="false"
     [successCallback]="updateSearchParameters.bind(this)"
-    [formValue]="searchParameters()"
+    [formValue]="annotationSearchParameters()"
   ></baw-search-filters-modal>
 </ng-template>
 

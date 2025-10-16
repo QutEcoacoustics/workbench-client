@@ -27,7 +27,7 @@ import { AbstractData } from "@models/AbstractData";
 import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
-import { IParameterModel } from "@models/data/parametersModel";
+import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import {
   AssociationInjector,
   HasAssociationInjector,
@@ -147,32 +147,12 @@ const deserializationTable: IQueryStringParameterSpec<
 };
 
 export class AnnotationSearchParameters
-  extends AbstractData
+  extends ParameterModel<AudioEvent>(deserializationTable)
   implements
     IAnnotationSearchParameters,
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
-  public constructor(
-    protected queryStringParameters: Params = {},
-    public user?: User,
-    public injector?: AssociationInjector,
-  ) {
-    const deserializedObject: IAnnotationSearchParameters =
-      deserializeParamsToObject<IAnnotationSearchParameters>(
-        queryStringParameters,
-        deserializationTable,
-      );
-
-    const objectData = {};
-    const objectKeys = Object.keys(deserializedObject);
-    for (const key of objectKeys) {
-      objectData[key] = deserializedObject[key];
-    }
-
-    super(objectData);
-  }
-
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
   public importFiles: CollectionIds;
@@ -203,6 +183,14 @@ export class AnnotationSearchParameters
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
   private _taskBehavior: TaskBehaviorKey;
+
+  public constructor(
+    protected queryStringParameters: Params = {},
+    public user?: User,
+    public injector?: AssociationInjector,
+  ) {
+    super(queryStringParameters);
+  }
 
   public get sort(): SortingKey {
     return this._sort;

@@ -150,7 +150,7 @@ export interface ApiFilterGroupBy<
    * Get a list of grouped models filtered by conditions.
    */
   filterGroupBy(
-    model: Filters<Model>,
+    filter: Pick<Filters<Model>, "filter">,
     ...urlParameters: Parameters
   ): Observable<ReturnedModel[]>;
 }

@@ -578,9 +578,9 @@ describe("AnnotationSearchFormComponent", () => {
       // We assert that inputs like the "sort by" dropdown is still visible to
       // assert that we haven't hard failed or hidden the entire form
       expect(sortingDropdown()).toBeVisible();
+      expect(verificationStatusElement()).toBeVisible();
 
       expect(taskBehaviorElement()).not.toExist();
-      expect(verificationStatusElement()).not.toExist();
       expect(taskTagTypeahead()).not.toExist();
 
       // We want to assert that if we re-enable the verification filters,
@@ -588,7 +588,6 @@ describe("AnnotationSearchFormComponent", () => {
       spec.setInput("showVerificationFilters", true);
 
       expect(taskBehaviorElement()).toExist();
-      expect(verificationStatusElement()).toExist();
       expect(taskTagTypeahead()).toExist();
     }));
   });
@@ -602,13 +601,13 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     it("should hide the correct inputs when 'showSortingFilters' is set", fakeAsync(() => {
-      setup()
-      spec.setInput("showSortingFilters", false)
+      setup();
+      spec.setInput("showSortingFilters", false);
 
-      expect(sortingDropdown()).not.toExist()
+      expect(sortingDropdown()).not.toExist();
 
-      spec.setInput("showSortingFilters", true)
-      expect(sortingDropdown()).toExist()
+      spec.setInput("showSortingFilters", true);
+      expect(sortingDropdown()).toBeVisible();
     }));
   });
 });

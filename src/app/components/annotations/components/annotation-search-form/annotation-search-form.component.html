@@ -169,7 +169,6 @@
     </div>
   </div>
 
-  @if (showVerificationFilters()) {
     <div class="mt-2">
       <label class="form-label w-100">Show annotations that</label>
       <baw-selectable-items
@@ -180,6 +179,7 @@
       ></baw-selectable-items>
     </div>
 
+  @if (showVerificationFilters()) {
     <div class="mt-2">
       <label class="form-label w-100">Task Behavior</label>
       <baw-selectable-items

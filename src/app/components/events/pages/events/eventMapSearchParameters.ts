@@ -1,19 +1,15 @@
 import { Params } from "@angular/router";
+import { Filters } from "@baw-api/baw-api.service";
 import {
-  AnnotationSearchParameters,
-  IAnnotationSearchParameters,
-} from "@components/annotations/pages/annotationSearchParameters";
-import {
-  deserializeParamsToObject,
   IQueryStringParameterSpec,
   jsNumber,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { Id } from "@interfaces/apiInterfaces";
-import { AssociationInjector } from "@models/ImplementsInjector";
+import { AudioEvent } from "@models/AudioEvent";
+import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { Site } from "@models/Site";
-import { User } from "@models/User";
 
-export interface IEventMapSearchParameters extends IAnnotationSearchParameters {
+export interface IEventMapSearchParameters {
   focused: Id<Site> | null;
 }
 
@@ -32,27 +28,20 @@ const deserializationTable: IQueryStringParameterSpec<
 };
 
 export class EventMapSearchParameters
-  extends AnnotationSearchParameters
-  implements IEventMapSearchParameters
+  extends ParameterModel<AudioEvent>(deserializationTable)
+  implements IEventMapSearchParameters, IParameterModel<AudioEvent>
 {
   public focused: Id<Site> | null = null;
 
-  public constructor(
-    protected queryStringParameters: Params = {},
-    public user?: User,
-    public injector?: AssociationInjector,
-  ) {
-    super(queryStringParameters, user, injector);
+  public constructor(queryStringParameters: Params = {}) {
+    super(queryStringParameters);
+  }
 
-    const deserializedObject: IEventMapSearchParameters =
-      deserializeParamsToObject<IEventMapSearchParameters>(
-        queryStringParameters,
-        deserializationTable,
-      );
+  public toQueryParams(): Params {
+    return {};
+  }
 
-    const objectKeys = Object.keys(deserializedObject);
-    for (const key of objectKeys) {
-      this[key] = deserializedObject[key];
-    }
+  public toFilter(): Filters<AudioEvent, keyof AudioEvent> {
+    return {};
   }
 }
