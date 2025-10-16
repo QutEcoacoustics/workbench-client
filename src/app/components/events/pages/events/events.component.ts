@@ -83,10 +83,10 @@ class EventsPageComponent extends PageComponent implements OnInit {
     signal<EventMapSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
-    const filters = {};
+    const filters = this.searchParameters().toFilter() ?? {};
 
     const request = this.groupedEventsService
-      .filter(filters)
+      .filterGroupBy(filters as any)
       .pipe(first(), takeUntil(this.unsubscribe));
 
     return firstValueFrom(request);
