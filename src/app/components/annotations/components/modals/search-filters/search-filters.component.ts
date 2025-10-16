@@ -5,13 +5,13 @@ import {
   model,
   signal,
 } from "@angular/core";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { ModalComponent } from "@menu/widget.component";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
+import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
 
 @Component({
   selector: "baw-search-filters-modal",

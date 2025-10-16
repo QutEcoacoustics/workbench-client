@@ -39,8 +39,8 @@ import { AnnotationSearchFormComponent } from "@components/annotations/component
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
 import { AnnotationSearchComponent } from "./search.component";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 describe("AnnotationSearchComponent", () => {
   const responsePageSize = 24;

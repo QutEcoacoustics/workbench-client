@@ -8,7 +8,7 @@ import {
   AnnotationSearchParameters,
   IAnnotationSearchParameters,
   SortingKey,
-} from "@components/annotations/pages/annotationSearchParameters";
+} from "./annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";

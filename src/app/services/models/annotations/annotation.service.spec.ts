@@ -15,11 +15,11 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateTag } from "@test/fakes/Tag";
 import { AnnotationService } from "./annotation.service";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;

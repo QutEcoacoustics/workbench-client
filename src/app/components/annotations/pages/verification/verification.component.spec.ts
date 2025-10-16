@@ -72,12 +72,9 @@ import { generateTagging } from "@test/fakes/Tagging";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { ConfigService } from "@services/config/config.service";
-import {
-  AnnotationSearchParameters,
-  VerificationStatusKey,
-} from "../annotationSearchParameters";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
+import { AnnotationSearchParameters, VerificationStatusKey } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 enum DecisionOptions {
   TRUE = "true",

@@ -38,8 +38,8 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { eventCategories, eventMenuitems } from "../../events.menus";
 import { eventMapResolvers } from "./events.resolver";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -214,7 +214,7 @@ function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
       [searchParametersKey]: eventMapResolvers.showOptional,
-      [annotationSearchParametersKey]: annotationResolvers.showOptional,
+      [annotationSearchParametersKey]: annotationSearchParametersResolvers.showOptional,
     },
     fullscreen: true,
   };

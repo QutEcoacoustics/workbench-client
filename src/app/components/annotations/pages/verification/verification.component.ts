@@ -47,7 +47,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -63,7 +63,7 @@ import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { ConfigService } from "@services/config/config.service";
 import { Id } from "@interfaces/apiInterfaces";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -510,7 +510,7 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationResolvers.showOptional,
+      [annotationsKey]: annotationSearchParametersResolvers.showOptional,
     },
     fullscreen: true,
     renderMode: RenderMode.Client,

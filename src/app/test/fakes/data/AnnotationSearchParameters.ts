@@ -3,7 +3,7 @@ import {
   IAnnotationSearchParameters,
   SortingKey,
   sortingOptions,
-} from "@components/annotations/pages/annotationSearchParameters";
+} from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 
 export function generateAnnotationSearchParameters(
@@ -36,12 +36,15 @@ export function generateAnnotationSearchParameters(
       Object.keys(sortingOptions) as SortingKey[],
     ),
     taskTag: modelData.id(),
-    verificationStatus: modelData.helpers.arrayElement(
-      ["unverified-for-me", "unverified", "any"],
-    ),
-    taskBehavior: modelData.helpers.arrayElement(
-      ["verify", "verify-and-correct-tag"],
-    ),
+    verificationStatus: modelData.helpers.arrayElement([
+      "unverified-for-me",
+      "unverified",
+      "any",
+    ]),
+    taskBehavior: modelData.helpers.arrayElement([
+      "verify",
+      "verify-and-correct-tag",
+    ]),
     ...data,
   };
 }
@@ -59,9 +62,10 @@ export function generateAnnotationSearchUrlParameters(data?: Params): Params {
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
     taskTag: modelData.id().toString(),
-    taskBehavior: modelData.helpers.arrayElement(
-      ["verify", "verify-and-correct-tag"],
-    ),
+    taskBehavior: modelData.helpers.arrayElement([
+      "verify",
+      "verify-and-correct-tag",
+    ]),
     ...data,
   };
 }

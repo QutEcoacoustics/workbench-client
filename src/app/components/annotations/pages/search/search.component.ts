@@ -32,9 +32,9 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -230,7 +230,7 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationResolvers.showOptional,
+      [annotationsKey]: annotationSearchParametersResolvers.showOptional,
     },
     // We use client rendering because:
     // 1. We are rendering spectrograms, and we should not be trying to render

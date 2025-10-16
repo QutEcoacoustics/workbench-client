@@ -2,11 +2,11 @@ import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { lastValueFrom } from "rxjs";
 
 @Injectable({ providedIn: "root" })
-class AnnotationsSearchResolver
+class AnnotationsSearchParametersResolver
   implements Resolve<{ model: AnnotationSearchParameters }>
 {
   private readonly session = inject(BawSessionService);
@@ -38,12 +38,12 @@ class AnnotationsSearchResolver
   }
 }
 
-export const annotationResolvers = {
+export const annotationSearchParametersResolvers = {
   showOptional: "annotationSearchParametersResolver",
   providers: [
     {
       provide: "annotationSearchParametersResolver",
-      useClass: AnnotationsSearchResolver,
+      useClass: AnnotationsSearchParametersResolver,
       deps: [BawSessionService, SecurityService],
     },
   ],

@@ -18,7 +18,7 @@ import {
   AnnotationSearchParameters,
   TaskBehaviorKey,
   VerificationStatusKey,
-} from "@components/annotations/pages/annotationSearchParameters";
+} from "./annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
