@@ -23,7 +23,6 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
-import { AbstractData } from "@models/AbstractData";
 import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -188,6 +187,15 @@ export class AnnotationSearchParameters
     protected queryStringParameters: Params = {},
     public user?: User,
     public injector?: AssociationInjector,
+
+    // This is a hack so that we can use the annotation search parameters on
+    // the event map page without having to worry about verification parameters
+    // being included in the filter request.
+    //
+    // TODO: Remove this once verification parameters are seperated from the
+    // search parameters.
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
+    public includeVerificationParams = true
   ) {
     super(queryStringParameters);
   }
@@ -348,7 +356,17 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
-    filter = this.addVerificationFilters(filter);
+
+    // On some pages, e.g. the event map page, we don't want to filter on
+    // the verification status query string parameter, and just want to include
+    // all events that match the filter condition.
+    //
+    // TODO: Remove this condition once verification parameters are separated
+    // from the search parameters.
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
+    if (this.includeVerificationParams) {
+      filter = this.addVerificationFilters(filter);
+    }
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.

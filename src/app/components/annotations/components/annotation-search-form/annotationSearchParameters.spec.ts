@@ -1,6 +1,6 @@
 import { modelData } from "@test/helpers/faker";
 import { Project } from "@models/Project";
-import { Filters, Sorting } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { Params } from "@angular/router";
 import { DateTime } from "luxon";
@@ -255,6 +255,36 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
+
+  it("should not include verification filters when includeVerificationParams is false", () => {
+    const testedParameters: Params = {
+      // The verificationStatus qsp would normally produce a lot of verification
+      // filter conditions, however, because we disable verification params,
+      // we should only see the score filter.
+      verificationStatus: "unverified",
+      score: "0.1,0.9",
+    };
+
+    const dataModel = new AnnotationSearchParameters(
+      testedParameters,
+      mockUser,
+      undefined,
+      false,
+    );
+
+    const expectedFilters: Filters<AudioEvent> = {
+      filter: {
+        and: [
+          { score: { gteq: 0.1 } },
+          { score: { lteq: 0.9 } },
+        ],
+      },
+      sorting: defaultSorting,
+    };
+
+    const realizedFilters = dataModel.toFilter();
+    expect(realizedFilters).toEqual(expectedFilters);
+  });
 
   describe("tag priority", () => {
     it("should handle an empty array of tags", () => {

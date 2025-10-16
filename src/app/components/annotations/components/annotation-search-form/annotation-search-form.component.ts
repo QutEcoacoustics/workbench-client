@@ -96,7 +96,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   // Having a boolean input to show/hide verification filters is a smell that
   // the component architecture could be improved.
   // However, this is a minor issue and can be addressed later if needed.
-  // TODO: Perhaps refactor this component into two separate components.
+  // TODO: We should refactor this component into two separate components.
+  // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
   public readonly showVerificationFilters = input(true);
   public readonly showSortingFilters = input(true);
 
@@ -109,9 +110,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   >("recordingsTypeahead");
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
+  protected readonly hideAdvancedFilters = signal(true);
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
-  protected readonly hideAdvancedFilters = signal(true);
 
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions = signal<
