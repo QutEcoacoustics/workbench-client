@@ -175,6 +175,19 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     }
   }
 
+  public focusMarker(marker: MapMarkerOptions): void {
+    if (!this._map || !isMarkerValid(marker)) {
+      return;
+    }
+
+    const position = new google.maps.LatLng(
+      marker.position.lat as number,
+      marker.position.lng as number,
+    );
+    this._map.panTo(position);
+    this._map.zoom = 15;
+  }
+
   protected initMarker(
     options: MapMarkerOptions,
     marker: MapAdvancedMarker,
