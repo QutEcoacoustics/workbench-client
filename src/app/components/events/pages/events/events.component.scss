@@ -23,4 +23,6 @@
 .overlay {
   position: absolute;
   z-index: 10;
+
+  contain: content;
 }

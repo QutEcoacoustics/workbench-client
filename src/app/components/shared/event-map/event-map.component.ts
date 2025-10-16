@@ -12,13 +12,12 @@ import { List } from "immutable";
 import { Site } from "@models/Site";
 import { AudioEventGroup } from "@models/AudioEventGroup";
 import { Id } from "@interfaces/apiInterfaces";
-import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-event-map",
   templateUrl: "./event-map.component.html",
   styleUrl: "./event-map.component.scss",
-  imports: [MapComponent, UrlDirective],
+  imports: [MapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapComponent {
