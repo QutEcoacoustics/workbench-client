@@ -89,6 +89,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   // However, this is a minor issue and can be addressed later if needed.
   // TODO: Perhaps refactor this component into two separate components.
   public readonly showVerificationFilters = input(true);
+  public readonly showSortingFilters = input(true);
+
   public readonly searchParameters = model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 

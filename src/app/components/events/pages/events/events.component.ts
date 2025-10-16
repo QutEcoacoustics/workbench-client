@@ -140,7 +140,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
     });
   }
 
-  protected handleSiteClicked(siteId: Id<Site>): void {
+  protected handleSiteFocused(siteId: Id<Site>): void {
     this.focusSite(siteId);
   }
 

@@ -103,11 +103,11 @@ describe("EventMapComponent", () => {
       const event = new AudioEventGroup(generateAudioEventGroup());
       setup([event]);
 
-      const siteClickedSpy = spyOn(spec.component.siteFocused, "emit");
+      const siteFocusedSpy = spyOn(spec.component.siteFocused, "emit");
 
       clickMarker(0);
 
-      expect(siteClickedSpy).toHaveBeenCalledWith(event.siteId);
+      expect(siteFocusedSpy).toHaveBeenCalledWith(event.siteId);
     });
 
     it("should not emit 'site clicked' when an already focused marker is clicked", () => {
@@ -119,9 +119,9 @@ describe("EventMapComponent", () => {
       // Because we previously clicked the marker, the marker should now be
       // focused, meaning that any subsequent clicks should not emit the
       // siteFocused event.
-      const siteClickedSpy = spyOn(spec.component.siteFocused, "emit");
+      const siteFocusedSpy = spyOn(spec.component.siteFocused, "emit");
       clickMarker(0);
-      expect(siteClickedSpy).not.toHaveBeenCalled();
+      expect(siteFocusedSpy).not.toHaveBeenCalled();
     });
   });
 });

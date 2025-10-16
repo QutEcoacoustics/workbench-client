@@ -106,7 +106,7 @@
 <baw-event-map
   class="event-map"
   [events]="(eventGroups() | async) ?? []"
-  (siteClicked)="handleSiteClicked($event)"
+  (siteFocused)="handleSiteFocused($event)"
 ></baw-event-map>
 
 <ng-template #searchFiltersModal let-filtersModal>
@@ -114,6 +114,7 @@
     [modal]="filtersModal"
     [hasDecisions]="false"
     [showVerificationFilters]="false"
+    [showSortingFilters]="false"
     [(formValue)]="searchParameters"
   ></baw-search-filters-modal>
 </ng-template>

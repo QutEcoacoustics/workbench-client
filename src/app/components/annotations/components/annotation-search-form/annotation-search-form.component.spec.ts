@@ -95,7 +95,9 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sortingDropdown = () => spec.query("#sort-input");
 
-  function setup(params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {}): Promise<any> {
+  function setup(
+    params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {},
+  ): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -556,31 +558,57 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   describe("showVerificationFilters", () => {
+    const taskBehaviorElement = () =>
+      getElementByTextContent(spec, "Task Behavior");
+    const verificationStatusElement = () =>
+      getElementByTextContent(spec, "Show annotations that");
+
     it("should show verification filters by default", fakeAsync(() => {
       setup();
+
       expect(spec.component.showVerificationFilters()).toBeTrue();
+      expect(taskBehaviorElement()).toExist();
+      expect(verificationStatusElement()).toExist();
     }));
 
     it("should hide the correct inputs when 'showVerificationFilters' is set", fakeAsync(() => {
       setup();
-
       spec.setInput("showVerificationFilters", false);
 
       // We assert that inputs like the "sort by" dropdown is still visible to
       // assert that we haven't hard failed or hidden the entire form
       expect(sortingDropdown()).toBeVisible();
 
-      expect(getElementByTextContent(spec, "Task Behavior")).not.toExist();
-      expect(getElementByTextContent(spec, "Show annotations that")).not.toExist();
+      expect(taskBehaviorElement()).not.toExist();
+      expect(verificationStatusElement()).not.toExist();
       expect(taskTagTypeahead()).not.toExist();
 
       // We want to assert that if we re-enable the verification filters,
       // they will be in the correct state.
       spec.setInput("showVerificationFilters", true);
 
-      expect(getElementByTextContent(spec, "Task Behavior")).toExist();
-      expect(getElementByTextContent(spec, "Show annotations that")).toExist();
+      expect(taskBehaviorElement()).toExist();
+      expect(verificationStatusElement()).toExist();
       expect(taskTagTypeahead()).toExist();
+    }));
+  });
+
+  describe("showSortingFilters", () => {
+    it("should show sorting filters by default", fakeAsync(() => {
+      setup();
+
+      expect(spec.component.showSortingFilters()).toBeTrue();
+      expect(sortingDropdown()).toExist();
+    }));
+
+    it("should hide the correct inputs when 'showSortingFilters' is set", fakeAsync(() => {
+      setup()
+      spec.setInput("showSortingFilters", false)
+
+      expect(sortingDropdown()).not.toExist()
+
+      spec.setInput("showSortingFilters", true)
+      expect(sortingDropdown()).toExist()
     }));
   });
 });

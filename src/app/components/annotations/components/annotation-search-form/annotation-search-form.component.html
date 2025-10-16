@@ -191,22 +191,24 @@
     </div>
   }
 
-  <label class="form-label mt-2 w-100">
-    Sort by
-    <select
-      id="sort-input"
-      class="form-select"
-      placeholder="Created Date (Oldest First)"
-      [value]="searchParameters().sort ?? 'created-asc'"
-      (change)="updateParameterProperty('sort', $any($event).target.value)"
-    >
-      <option value="created-asc">Created Date (Oldest First)</option>
-      <option value="created-desc">Created Date (Newest First)</option>
+  @if (showSortingFilters()) {
+    <label class="form-label mt-2 w-100">
+      Sort by
+      <select
+        id="sort-input"
+        class="form-select"
+        placeholder="Created Date (Oldest First)"
+        [value]="searchParameters().sort ?? 'created-asc'"
+        (change)="updateParameterProperty('sort', $any($event).target.value)"
+      >
+        <option value="created-asc">Created Date (Oldest First)</option>
+        <option value="created-desc">Created Date (Newest First)</option>
 
-      <option value="score-asc">Score (Ascending)</option>
-      <option value="score-desc">Score (Descending)</option>
-    </select>
-  </label>
+        <option value="score-asc">Score (Ascending)</option>
+        <option value="score-desc">Score (Descending)</option>
+      </select>
+    </label>
+  }
 </form>
 
 <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
