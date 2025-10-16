@@ -44,8 +44,7 @@ export class SearchFiltersModalComponent implements ModalComponent {
 
   public success(): void {
     if (this.isFormDirty()) {
-      const callback = this.successCallback;
-      callback(this.formValue());
+      this.successCallback(this.formValue());
 
       this.closeModal();
       return;

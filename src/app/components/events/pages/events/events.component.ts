@@ -3,7 +3,6 @@ import {
   computed,
   ElementRef,
   inject,
-  model,
   OnInit,
   signal,
   viewChild,
@@ -76,11 +75,11 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected readonly FocusFetchState = FocusFetchState;
   protected readonly trayFetchState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
-  protected readonly isTrayOpen = model(true);
+  protected readonly isTrayOpen = signal(true);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
-    model<EventMapSearchParameters | null>(null);
+    signal<EventMapSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
     const filters = {};
@@ -156,6 +155,18 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected toggleTray(): void {
     this.isTrayOpen.update((value) => !value);
+  }
+
+protected updateSearchParameters(newParams: EventMapSearchParameters): void {
+    this.searchParameters.set(newParams);
+
+    // We use the searchParameters modal as the source of truth instead of the
+    // newParams argument so that if the search parameters class rejects the
+    // update (for some reason), we don't try to focus on an invalid site.
+    const newFocusedSite = this.searchParameters().focused;
+    if (isInstantiated(newFocusedSite)) {
+      this.focusSite(newFocusedSite);
+    }
   }
 
   private focusSite(siteId: Id<Site>): void {

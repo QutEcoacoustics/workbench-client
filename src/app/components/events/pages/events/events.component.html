@@ -115,7 +115,8 @@
     [hasDecisions]="false"
     [showVerificationFilters]="false"
     [showSortingFilters]="false"
-    [(formValue)]="searchParameters"
+    [successCallback]="updateSearchParameters.bind(this)"
+    [formValue]="searchParameters()"
   ></baw-search-filters-modal>
 </ng-template>
 
