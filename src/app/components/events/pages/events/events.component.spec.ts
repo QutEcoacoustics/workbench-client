@@ -91,8 +91,7 @@ describe("EventsPageComponent", () => {
     // transferred to the annotation search form, but does not assert that the
     // annotation search form inputs are correctly populated because that is
     // already tested within the annotation search form component tests.
-    it("should automatically populate the annotation search form from the url parameters", () => {
-    });
+    it("should automatically populate the annotation search form from the url parameters", () => {});
 
     it("should make an api call with the correct parameters when filters are applied", () => {});
 
