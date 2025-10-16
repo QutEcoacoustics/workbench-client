@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   Input,
   input,
@@ -18,7 +17,6 @@ import { AnnotationSearchFormComponent } from "../../annotation-search-form/anno
   selector: "baw-search-filters-modal",
   templateUrl: "./search-filters.component.html",
   imports: [AnnotationSearchFormComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFiltersModalComponent implements ModalComponent {
   public readonly formValue = model.required<AnnotationSearchParameters>();

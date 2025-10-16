@@ -24,7 +24,7 @@ const eventRouteQueryParamResolver = (params) =>
         date: params.date,
         time: params.time,
 
-        sort: params.sort,
+        focused: params.focused,
       }
     : {};
 

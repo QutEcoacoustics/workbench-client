@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, OnInit, output, signal, viewChild } from "@angular/core";
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  model,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+} from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
@@ -64,7 +74,6 @@ enum ScoreRangeBounds {
     NgbTooltip,
     FormsModule,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationSearchFormComponent implements OnInit {
   protected readonly recordingsApi = inject(AudioRecordingsService);
@@ -91,7 +100,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   public readonly showVerificationFilters = input(true);
   public readonly showSortingFilters = input(true);
 
-  public readonly searchParameters = model.required<AnnotationSearchParameters>();
+  public readonly searchParameters =
+    model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
   private recordingsTypeahead = viewChild<
@@ -104,8 +114,14 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly hideAdvancedFilters = signal(true);
 
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions = signal<ISelectableItem<VerificationStatusKey>[]>([
-    { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
+  protected verifiedStatusOptions = signal<
+    ISelectableItem<VerificationStatusKey>[]
+  >([
+    {
+      label: "have not been verified by me",
+      value: "unverified-for-me",
+      disabled: true,
+    },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
   ]);
@@ -171,7 +187,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
-      "id": { in: Array.from(tagIds) },
+      id: { in: Array.from(tagIds) },
     };
 
     return createSearchCallback(this.tagsApi, "text", filters);
@@ -278,41 +294,35 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
-      this.searchParameters.update((current) => {
-        if (
-          dateTimeModel.dateStartedAfter ||
+    this.searchParameters.update((current) => {
+      if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
+        current.recordingDate = [
+          dateTimeModel.dateStartedAfter
+            ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+            : null,
           dateTimeModel.dateFinishedBefore
-        ) {
-          current.recordingDate = [
-            dateTimeModel.dateStartedAfter
-              ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-              : null,
-            dateTimeModel.dateFinishedBefore
-              ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-              : null,
-          ];
-        }
+            ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+            : null,
+        ];
+      }
 
-        if (
-          dateTimeModel.timeStartedAfter ||
-          dateTimeModel.timeFinishedBefore
-        ) {
-          current.recordingTime = [
-            dateTimeModel.timeStartedAfter,
-            dateTimeModel.timeFinishedBefore,
-          ];
-        }
+      if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
+        current.recordingTime = [
+          dateTimeModel.timeStartedAfter,
+          dateTimeModel.timeFinishedBefore,
+        ];
+      }
 
-        if (!dateTimeModel.dateFiltering) {
-          current.recordingDate = null;
-        }
+      if (!dateTimeModel.dateFiltering) {
+        current.recordingDate = null;
+      }
 
-        if (!dateTimeModel.timeFiltering) {
-          current.recordingTime = null;
-        }
+      if (!dateTimeModel.timeFiltering) {
+        current.recordingTime = null;
+      }
 
-        return current;
-      });
+      return current;
+    });
 
     this.emitUpdate();
   }
@@ -338,7 +348,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParameters.update((current) => {
       current.score = currentScore;
       return current;
-    })
+    });
 
     this.emitUpdate();
   }
@@ -348,8 +358,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   >(key: T, value: AnnotationSearchParameters[T]) {
     this.searchParameters.update((current) => {
       current[key] = value;
-      return current
-    })
+      return current;
+    });
 
     this.emitUpdate();
   }

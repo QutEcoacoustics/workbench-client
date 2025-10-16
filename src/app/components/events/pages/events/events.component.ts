@@ -24,7 +24,7 @@ import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.ser
 import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
 import { AsyncPipe, Location } from "@angular/common";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { Project } from "@models/Project";
@@ -46,12 +46,6 @@ const regionKey = "region";
 const siteKey = "site";
 const searchParametersKey = "eventMapSearchParameters";
 const annotationSearchParametersKey = "annotationSearchParameters";
-
-enum FocusFetchState {
-  Fetching,
-  Failed,
-  Loaded,
-}
 
 @Component({
   selector: "baw-events-map-page",
@@ -77,10 +71,6 @@ class EventsPageComponent extends PageComponent implements OnInit {
   private readonly injector = inject(ASSOCIATION_INJECTOR);
   private readonly location = inject(Location);
 
-  protected readonly FocusFetchState = FocusFetchState;
-  protected readonly trayFetchState = signal<FocusFetchState>(this.FocusFetchState.Loaded);
-  protected readonly isTrayOpen = signal(true);
-
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
     signal<EventMapSearchParameters | null>(null);
@@ -88,10 +78,10 @@ class EventsPageComponent extends PageComponent implements OnInit {
     signal<AnnotationSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
-    const filters = this.searchParameters().toFilter() ?? {};
+    const filters = this.annotationSearchParameters().toFilter() ?? {};
 
     const request = this.groupedEventsService
-      .filterGroupBy(filters as any)
+      .filterGroupBy(filters)
       .pipe(first(), takeUntil(this.unsubscribe));
 
     return firstValueFrom(request);
@@ -166,37 +156,35 @@ class EventsPageComponent extends PageComponent implements OnInit {
     modalRef.componentInstance.event = event;
   }
 
-  protected toggleTray(): void {
-    this.isTrayOpen.update((value) => !value);
-  }
-
-protected updateSearchParameters(newParams: EventMapSearchParameters): void {
-    this.searchParameters.set(newParams);
-
-    // We use the searchParameters modal as the source of truth instead of the
-    // newParams argument so that if the search parameters class rejects the
-    // update (for some reason), we don't try to focus on an invalid site.
-    const newFocusedSite = this.searchParameters().focused;
-    if (isInstantiated(newFocusedSite)) {
-      this.focusSite(newFocusedSite);
-    }
-
+  protected updateSearchParameters(newParams: AnnotationSearchParameters): void {
+    this.annotationSearchParameters.set(newParams);
     this.updateUrlParameters();
   }
 
   private updateUrlParameters(): void {
-    const queryParams = this.searchParameters().toQueryParams();
+    const queryParams: Params = {
+      ...this.searchParameters().toQueryParams(),
+      ...this.annotationSearchParameters().toQueryParams(),
+    };
+
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
   }
 
   private focusSite(siteId: Id<Site>): void {
-    // We set the query parameter before the filter request so that if the
-    // request fails, the user can refresh the page to try again.
-    this.router.navigate([], {
-      queryParams: { focused: siteId },
-      queryParamsHandling: "merge",
-    });
+    if (isInstantiated(this.searchParameters())) {
+      // We set the query parameter before the filter request so that if the
+      // request fails, the user can refresh the page to try again.
+      this.searchParameters.update((params) => {
+        if (params) {
+          params.focused = siteId;
+        }
+
+        return params;
+      });
+
+      this.updateUrlParameters();
+    }
 
     const filters: Filters<AudioEvent> = {
       paging: {

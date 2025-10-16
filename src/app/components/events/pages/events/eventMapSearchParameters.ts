@@ -31,14 +31,19 @@ export class EventMapSearchParameters
   extends ParameterModel<AudioEvent>(deserializationTable)
   implements IEventMapSearchParameters, IParameterModel<AudioEvent>
 {
-  public focused: Id<Site> | null = null;
+  public focused: Id<Site>;
 
   public constructor(queryStringParameters: Params = {}) {
     super(queryStringParameters);
+
+    // For some reason this.focused is not being set by the super call
+    console.log(this.focused);
   }
 
   public toQueryParams(): Params {
-    return {};
+    return {
+      focused: this.focused,
+    };
   }
 
   public toFilter(): Filters<AudioEvent, keyof AudioEvent> {
