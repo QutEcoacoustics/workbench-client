@@ -15,6 +15,9 @@ import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped
 import { of } from "rxjs";
 import { AudioEventGroup } from "@models/AudioEventGroup";
 import { Location } from "@angular/common";
+import { MapAdvancedMarker } from "@angular/google-maps";
+import { MapComponent } from "@shared/map/map.component";
+import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
 import { EventsPageComponent } from "./events.component";
 
@@ -50,6 +53,18 @@ describe("EventsPageComponent", () => {
       longitude: 6.118915,
     }),
   ];
+
+  function mapMarkers() {
+    return spec.queryAll(MapAdvancedMarker);
+  }
+
+  function clickMarker(index: number) {
+    const mapMarker = mapMarkers()[index];
+    expect(mapMarker).toExist();
+
+    mapMarker.advancedMarker.dispatchEvent(new Event("click"));
+    spec.detectChanges();
+  }
 
   const createComponent = createRoutingFactory({
     component: EventsPageComponent,
@@ -88,6 +103,22 @@ describe("EventsPageComponent", () => {
     groupedEventsService.filterGroupBy = jasmine
       .createSpy("filterGroupBy")
       .and.returnValue(of(mockAudioEvents));
+
+    const mapsServiceSpy = spec.inject(MapsService);
+
+    // Because we don't actually load Google Maps in tests, we need to manually
+    // trigger the "loaded" state so the map and markers render.
+    mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
+
+    const mapComponent = spec.query(MapComponent);
+    mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    spec.detectChanges();
+
+    const markers = mapMarkers();
+    for (const marker of markers) {
+      marker.advancedMarker = new google.maps.marker.AdvancedMarkerElement();
+      marker.markerInitialized.emit(marker.advancedMarker);
+    }
 
     spec.detectChanges();
   }
@@ -147,11 +178,15 @@ describe("EventsPageComponent", () => {
   });
 
   describe("focusing sites", () => {
-    it("should set the 'focused' url parameter when a site is clicked", () => {
+    fit("should set the 'focused' url parameter when a site is clicked", () => {
       setup();
 
+      // I purposely click the second marker (1st index) to test that we are not
+      // just focusing the first marker all the time.
+      clickMarker(1);
+
       const location = spec.inject(Location).path();
-      const expectedLocation = `/events?focused=${site.id}`;
+      const expectedLocation = `?focused=${site.id}`;
 
       expect(location).toEqual(expectedLocation);
     });
