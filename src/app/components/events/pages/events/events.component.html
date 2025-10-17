@@ -41,7 +41,7 @@
 
             <tbody>
               @for (event of focusedEvents(); track event.id) {
-                <tr>
+                <tr class="audio-event-row">
                   <td>
                     <baw-inline-list
                       [items]="event.tags"
@@ -58,14 +58,14 @@
                   </td>
                   <td>
                     <a
-                      class="btn btn-sm btn-secondary me-1"
+                      class="view-event btn btn-sm btn-secondary me-1"
                       [ngbTooltip]="'View Event'"
                       [bawUrl]="event.viewUrl"
                     >
                       <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     </a>
                     <button
-                      class="btn btn-sm btn-outline-secondary"
+                      class="preview-event btn btn-sm btn-outline-secondary"
                       [ngbTooltip]="'Preview Event'"
                       (click)="previewEvent(event)"
                     >

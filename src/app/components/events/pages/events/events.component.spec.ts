@@ -1,6 +1,6 @@
-import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Params } from "@angular/router";
+import { Params, Router } from "@angular/router";
 import { Project } from "@models/Project";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { Region } from "@models/Region";
@@ -14,11 +14,22 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
 import { of } from "rxjs";
 import { AudioEventGroup } from "@models/AudioEventGroup";
-import { Location } from "@angular/common";
-import { MapAdvancedMarker } from "@angular/google-maps";
+import { GoogleMapsModule, MapAdvancedMarker } from "@angular/google-maps";
 import { MapComponent } from "@shared/map/map.component";
 import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
 import { fakeAsync, flush } from "@angular/core/testing";
+import { MockModule } from "ng-mocks";
+import { AudioEvent } from "@models/AudioEvent";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { modelData } from "@test/helpers/faker";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
+import { annotationSearchRoute } from "@components/annotations/annotation.routes";
+import { Filters } from "@baw-api/baw-api.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import { EventModalComponent } from "@shared/event-modal/event-modal.component";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
 import { EventsPageComponent } from "./events.component";
 
@@ -30,9 +41,13 @@ describe("EventsPageComponent", () => {
   let project: Project;
   let region: Region;
   let site: Site;
+  let audioEvents: AudioEvent[];
 
   let eventMapSearchParameters: EventMapSearchParameters;
   let annotationSearchParameters: AnnotationSearchParameters;
+
+  let routerSpy: Router;
+  let modalSpy: NgbModal;
 
   const mockAudioEvents = [
     new AudioEventGroup({
@@ -59,6 +74,10 @@ describe("EventsPageComponent", () => {
     return spec.queryAll(MapAdvancedMarker);
   }
 
+  function audioEventRows() {
+    return spec.queryAll(".audio-event-row");
+  }
+
   function clickMarker(index: number) {
     const mapMarker = mapMarkers()[index];
     expect(mapMarker).toExist();
@@ -69,8 +88,11 @@ describe("EventsPageComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: EventsPageComponent,
-    providers: [provideMockBawApi()],
-    imports: [IconsModule],
+    imports: [IconsModule, MapComponent, MockModule(GoogleMapsModule)],
+    providers: [
+      provideMockBawApi(),
+      mockProvider(AnnotationService),
+    ],
   });
 
   function setup(queryParams: Params = {}): void {
@@ -80,6 +102,10 @@ describe("EventsPageComponent", () => {
 
     eventMapSearchParameters = new EventMapSearchParameters(queryParams);
     annotationSearchParameters = new AnnotationSearchParameters(queryParams);
+
+    // These would typically be set by the annotationSearchParameters resolver
+    // but since we are mocking the resolver, we have to set them here.
+    annotationSearchParameters.routeProjectId = project.id;
 
     spec = createComponent({
       detectChanges: false,
@@ -100,21 +126,33 @@ describe("EventsPageComponent", () => {
       queryParams,
     });
 
+    routerSpy = spec.inject(Router);
+
+    // inject the NgbModal service so that we can
+    // dismiss all modals at the end of every test
+    modalSpy = spec.inject(NgbModal);
+    spyOn(modalSpy, "open").and.callThrough();
+
     groupedEventsService = spec.inject(GroupedAudioEventsService);
     groupedEventsService.filterGroupBy = jasmine
       .createSpy("filterGroupBy")
       .and.returnValue(of(mockAudioEvents));
 
+    const injector = spec.inject(ASSOCIATION_INJECTOR);
+
+    audioEvents = modelData.randomArray(
+      1,
+      25,
+      () => new AudioEvent(generateAudioEvent(), injector),
+    );
+
+    const audioEventSpy = spec.inject(ShallowAudioEventsService);
+    audioEventSpy.filterBySite.and.returnValue(of(audioEvents));
+
     // Because we don't actually load Google Maps in tests, we need to manually
     // trigger the "loaded" state so the map and markers render.
     const mapsServiceSpy = spec.inject(MapsService);
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
-
-    // I set the load state to the service's state so that if the service
-    // rejects the load state update (for some reason), the map component won't
-    // incorrectly think that maps are loaded.
-    const mapComponent = spec.query(MapComponent);
-    mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
     spec.detectChanges();
 
     // We have to flush the microtask queue so that the async pipe that awaits
@@ -122,7 +160,12 @@ describe("EventsPageComponent", () => {
     flush();
     spec.detectChanges();
 
+    // I set the load state to the service's state so that if the service
+    // rejects the load state update (for some reason), the map component won't
+    // incorrectly think that maps are loaded.
+    const mapComponent = spec.query(MapComponent);
     mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    spec.detectChanges();
 
     const markers = mapMarkers();
     for (const marker of markers) {
@@ -133,25 +176,42 @@ describe("EventsPageComponent", () => {
     spec.detectChanges();
   }
 
-  assertPageInfo(EventsPageComponent, "Annotation Map");
-
-  it("should create", () => {
-    setup();
-    expect(spec.component).toBeInstanceOf(EventsPageComponent);
+  afterEach(() => {
+    // dismiss all bootstrap modals, so if a test fails
+    // it doesn't impact future tests by using a stale modal
+    modalSpy?.dismissAll();
   });
 
+  assertPageInfo(EventsPageComponent, "Annotation Map");
+
+  it("should create", fakeAsync(() => {
+    setup();
+    expect(spec.component).toBeInstanceOf(EventsPageComponent);
+  }));
+
   describe("api calls", () => {
-    it("should make the correct api call with no query parameters", () => {
+    it("should make the correct api call with no query parameters", fakeAsync(() => {
       setup();
 
-      const expectedFilters = { filter: {} };
+      // Notice that we still include the project filter because the event map
+      // in these tests is always scoped within a project.
+      //
+      // I have to use a type cast here because our filter conditions do not
+      // support model associations.
+      // TODO: Remove this type cast once our filter typings support
+      // associations.
+      const expectedFilters = {
+        filter: {
+          "projects.id": { in: [project.id] },
+        },
+      } as Filters<AudioEvent>;
 
       expect(groupedEventsService.filterGroupBy).toHaveBeenCalledOnceWith(
         expectedFilters,
       );
-    });
+    }));
 
-    it("should make the correct api call with query parameters", () => {
+    it("should make the correct api call with query parameters", fakeAsync(() => {
       setup(generateAnnotationSearchUrlParameters());
 
       const expectedFilters = {
@@ -184,30 +244,82 @@ describe("EventsPageComponent", () => {
       expect(groupedEventsService.filterGroupBy).toHaveBeenCalledOnceWith(
         expectedFilters,
       );
-    });
+    }));
   });
 
   describe("focusing sites", () => {
-    fit("should set the 'focused' url parameter when a site is clicked", fakeAsync(() => {
+    it("should set the 'focused' url parameter when a site is clicked", fakeAsync(() => {
       setup();
 
       // I purposely click the second marker (1st index) to test that we are not
       // just focusing the first marker all the time.
-      clickMarker(1);
+      const testedGroup = 1;
+      clickMarker(testedGroup);
 
-      const location = spec.inject(Location).path();
-      const expectedLocation = `?focused=${site.id}`;
+      const expectedSiteId = mockAudioEvents[testedGroup].siteId;
 
-      expect(location).toEqual(expectedLocation);
+      expect(routerSpy.createUrlTree).toHaveBeenCalledWith([], {
+        queryParams: jasmine.objectContaining({
+          focused: expectedSiteId,
+        }),
+      });
     }));
 
-    it("should show audio events from the focused site in the overlay", () => {});
+    it("should show audio events from the focused site in the overlay", fakeAsync(() => {
+      setup();
+      clickMarker(0);
 
-    it("should have the correct 'show more' link in the overlay", () => {});
+      const eventRows = audioEventRows();
+      expect(eventRows).toHaveLength(audioEvents.length);
+    }));
 
-    it("should have the correct action links", () => {});
+    it("should have the correct 'show more' link in the overlay", fakeAsync(() => {
+      setup();
+      clickMarker(0);
 
-    it("should correctly open the annotation preview modal", () => {});
+      const showMoreLink = getElementByTextContent(
+        spec,
+        "Show More",
+      ).querySelector("a");
+
+      // We should not see the "focused" url parameter in the "show more" link
+      // because it is not a valid url parameter for the annotation search page.
+      expect(showMoreLink).toHaveStrongRoute(
+        annotationSearchRoute.project,
+        {
+          queryParams: annotationSearchParameters.toQueryParams(),
+          routeParams: {
+            projectId: project.id,
+            regionId: region.id,
+            siteId: site.id,
+          },
+        },
+      );
+    }));
+
+    it("should have the correct action links", fakeAsync(() => {
+      setup();
+      clickMarker(0);
+
+      // Because the query selector will find the first matching element, we
+      // expect that the first "view event" link corresponds to the first audio
+      // event in our mocked audio events.
+      const viewEventLink = spec.query(".audio-event-row a.view-event");
+      expect(viewEventLink).toHaveUrl(audioEvents[0].viewUrl);
+    }));
+
+    it("should correctly open the annotation preview modal", fakeAsync(() => {
+      setup();
+      clickMarker(0);
+
+      const previewButton = spec.query(".preview-event");
+      clickButton(spec, previewButton);
+
+      expect(modalSpy.open).toHaveBeenCalledOnceWith(
+        EventModalComponent,
+        jasmine.any(Object),
+      );
+    }));
   });
 
   describe("filtering", () => {
@@ -215,10 +327,10 @@ describe("EventsPageComponent", () => {
     // transferred to the annotation search form, but does not assert that the
     // annotation search form inputs are correctly populated because that is
     // already tested within the annotation search form component tests.
-    it("should automatically populate the annotation search form from the url parameters", () => {});
+    it("should automatically populate the annotation search form from the url parameters", fakeAsync(() => {}));
 
-    it("should make an api call with the correct parameters when filters are applied", () => {});
+    it("should make an api call with the correct parameters when filters are applied", fakeAsync(() => {}));
 
-    it("should retain the 'focused' parameter after annotation search parameters", () => {});
+    it("should retain the 'focused' parameter after annotation search parameters", fakeAsync(() => {}));
   });
 });

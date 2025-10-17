@@ -171,7 +171,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
     };
 
     const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString());
+    this.location.replaceState(`${urlTree}`);
   }
 
   private focusSite(siteId: Id<Site>): void {

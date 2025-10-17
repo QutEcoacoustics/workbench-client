@@ -3,6 +3,7 @@ import { siteMenuItem } from "@components/sites/sites.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
+import { isAdminPredicate } from "src/app/app.menus";
 import { eventsRoute, EventsRoute } from "./events.routes";
 
 export type EventMenuRoutes = Record<EventsRoute, MenuRoute>;
@@ -23,6 +24,9 @@ function makeEventsReportMenuItem(
     icon: ["fas", "bullseye"],
     label: "Annotation Map",
     tooltip: () => "Annotation Map",
+    // TODO: Remove this predicate once the we have an API backed event-map
+    // see: https://github.com/QutEcoacoustics/baw-server/issues/852
+    predicate: isAdminPredicate,
     route: eventsRoute[subRoute],
     parent,
   });
