@@ -1,4 +1,8 @@
-import { createRoutingFactory, mockProvider, SpectatorRouting } from "@ngneat/spectator";
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Params, Router } from "@angular/router";
 import { Project } from "@models/Project";
@@ -24,12 +28,19 @@ import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
-import { clickButton, getElementByTextContent } from "@test/helpers/html";
+import {
+  clickButton,
+  getElementByTextContent,
+  selectFromTypeahead,
+} from "@test/helpers/html";
 import { annotationSearchRoute } from "@components/annotations/annotation.routes";
 import { Filters } from "@baw-api/baw-api.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { EventModalComponent } from "@shared/event-modal/event-modal.component";
+import { Tag } from "@models/Tag";
+import { generateTag } from "@test/fakes/Tag";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
 import { EventsPageComponent } from "./events.component";
 
@@ -42,6 +53,7 @@ describe("EventsPageComponent", () => {
   let region: Region;
   let site: Site;
   let audioEvents: AudioEvent[];
+  let tags: Tag[];
 
   let eventMapSearchParameters: EventMapSearchParameters;
   let annotationSearchParameters: AnnotationSearchParameters;
@@ -78,6 +90,19 @@ describe("EventsPageComponent", () => {
     return spec.queryAll(".audio-event-row");
   }
 
+  function annotationSearchForm(): HTMLElement {
+    // We use a document query instead of spec.query here because ng-bootstrap
+    // modals are attached to the document body, not within the component's
+    // template, meaning that ng-neat spectator queries cannot find them.
+    return document.querySelector("baw-annotation-search-form");
+  }
+
+  function openSearchForm() {
+    const toggleButton = getElementByTextContent(spec, "Edit Filters");
+    clickButton(spec, toggleButton);
+    flush();
+  }
+
   function clickMarker(index: number) {
     const mapMarker = mapMarkers()[index];
     expect(mapMarker).toExist();
@@ -89,10 +114,7 @@ describe("EventsPageComponent", () => {
   const createComponent = createRoutingFactory({
     component: EventsPageComponent,
     imports: [IconsModule, MapComponent, MockModule(GoogleMapsModule)],
-    providers: [
-      provideMockBawApi(),
-      mockProvider(AnnotationService),
-    ],
+    providers: [provideMockBawApi(), mockProvider(AnnotationService)],
   });
 
   function setup(queryParams: Params = {}): void {
@@ -146,8 +168,13 @@ describe("EventsPageComponent", () => {
       () => new AudioEvent(generateAudioEvent(), injector),
     );
 
+    tags = modelData.randomArray(1, 25, () => new Tag(generateTag(), injector));
+
     const audioEventSpy = spec.inject(ShallowAudioEventsService);
     audioEventSpy.filterBySite.and.returnValue(of(audioEvents));
+
+    const tagSpy = spec.inject(TagsService);
+    tagSpy.typeaheadCallback.andReturn(() => of(tags));
 
     // Because we don't actually load Google Maps in tests, we need to manually
     // trigger the "loaded" state so the map and markers render.
@@ -284,17 +311,14 @@ describe("EventsPageComponent", () => {
 
       // We should not see the "focused" url parameter in the "show more" link
       // because it is not a valid url parameter for the annotation search page.
-      expect(showMoreLink).toHaveStrongRoute(
-        annotationSearchRoute.project,
-        {
-          queryParams: annotationSearchParameters.toQueryParams(),
-          routeParams: {
-            projectId: project.id,
-            regionId: region.id,
-            siteId: site.id,
-          },
+      expect(showMoreLink).toHaveStrongRoute(annotationSearchRoute.project, {
+        queryParams: annotationSearchParameters.toQueryParams(),
+        routeParams: {
+          projectId: project.id,
+          regionId: region.id,
+          siteId: site.id,
         },
-      );
+      });
     }));
 
     it("should have the correct action links", fakeAsync(() => {
@@ -327,10 +351,61 @@ describe("EventsPageComponent", () => {
     // transferred to the annotation search form, but does not assert that the
     // annotation search form inputs are correctly populated because that is
     // already tested within the annotation search form component tests.
-    it("should automatically populate the annotation search form from the url parameters", fakeAsync(() => {}));
+    it("should automatically populate the annotation search form from the url parameters", fakeAsync(() => {
+      setup(generateAnnotationSearchUrlParameters());
+      openSearchForm();
 
-    it("should make an api call with the correct parameters when filters are applied", fakeAsync(() => {}));
+      const form = annotationSearchForm();
 
-    it("should retain the 'focused' parameter after annotation search parameters", fakeAsync(() => {}));
+      // We can use Angular's global ng object to get the component instance
+      // from the HTML element.
+      // This is a bit of a hack, but I don't have the time to figure out a better
+      // way right now.
+      //
+      // Additionally, I have contained the hack within this test so that if
+      // Angular removes this global object in the future, it only breaks this
+      // test.
+      const componentInstance = (window as any).ng.getComponent(form);
+
+      expect(componentInstance.searchParameters()).toEqual(
+        annotationSearchParameters,
+      );
+    }));
+
+    it("should retain the 'focused' parameter after updating the annotation search parameters", fakeAsync(() => {
+      const testedMarker = 0;
+
+      setup(generateAnnotationSearchUrlParameters());
+      clickMarker(testedMarker);
+      openSearchForm();
+
+      const focusedSiteId = mockAudioEvents[testedMarker].siteId;
+
+      const form = annotationSearchForm();
+      const tagsTypeahead = form.querySelector("#tags-input");
+
+      selectFromTypeahead(spec, tagsTypeahead, tags[0].text);
+
+      const updateButton = document.querySelector<HTMLButtonElement>(
+        "#update-filters-btn",
+      );
+
+      clickButton(spec, updateButton);
+
+      // We expect that the annotationSearchParameters now include the newly
+      // selected tag.
+      expect(spec.component["annotationSearchParameters"]().tags).toContain(
+        tags[0].id,
+      );
+
+      const expectedQueryParams = generateAnnotationSearchUrlParameters();
+      expectedQueryParams.focused = mockAudioEvents[0].siteId;
+
+      expect(routerSpy.createUrlTree).toHaveBeenCalledWith([], {
+        queryParams: jasmine.objectContaining({
+          focused: focusedSiteId,
+        }),
+      });
+    }));
   });
 });
