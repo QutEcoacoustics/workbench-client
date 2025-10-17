@@ -18,6 +18,7 @@ import { Location } from "@angular/common";
 import { MapAdvancedMarker } from "@angular/google-maps";
 import { MapComponent } from "@shared/map/map.component";
 import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { EventMapSearchParameters } from "./eventMapSearchParameters";
 import { EventsPageComponent } from "./events.component";
 
@@ -104,15 +105,24 @@ describe("EventsPageComponent", () => {
       .createSpy("filterGroupBy")
       .and.returnValue(of(mockAudioEvents));
 
-    const mapsServiceSpy = spec.inject(MapsService);
-
     // Because we don't actually load Google Maps in tests, we need to manually
     // trigger the "loaded" state so the map and markers render.
+    const mapsServiceSpy = spec.inject(MapsService);
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
 
+    // I set the load state to the service's state so that if the service
+    // rejects the load state update (for some reason), the map component won't
+    // incorrectly think that maps are loaded.
     const mapComponent = spec.query(MapComponent);
     mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
     spec.detectChanges();
+
+    // We have to flush the microtask queue so that the async pipe that awaits
+    // the api response evaluates.
+    flush();
+    spec.detectChanges();
+
+    mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
 
     const markers = mapMarkers();
     for (const marker of markers) {
@@ -178,7 +188,7 @@ describe("EventsPageComponent", () => {
   });
 
   describe("focusing sites", () => {
-    fit("should set the 'focused' url parameter when a site is clicked", () => {
+    fit("should set the 'focused' url parameter when a site is clicked", fakeAsync(() => {
       setup();
 
       // I purposely click the second marker (1st index) to test that we are not
@@ -189,7 +199,7 @@ describe("EventsPageComponent", () => {
       const expectedLocation = `?focused=${site.id}`;
 
       expect(location).toEqual(expectedLocation);
-    });
+    }));
 
     it("should show audio events from the focused site in the overlay", () => {});
 
