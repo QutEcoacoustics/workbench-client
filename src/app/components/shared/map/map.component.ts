@@ -85,7 +85,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
-  protected readonly clusterRenderer = ClusterRenderer;
+  protected readonly clusterRenderer = new ClusterRenderer();
   private _map: GoogleMap;
 
   protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);
