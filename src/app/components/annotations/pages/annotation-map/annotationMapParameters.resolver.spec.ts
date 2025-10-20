@@ -1,3 +1,3 @@
-describe("AnnotationMapParametersReolver", () => {
+describe("AnnotationMapParametersResolver", () => {
   it("should create", () => {});
 });
