@@ -33,6 +33,7 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../loading/loading.component";
+import { ClusterRenderer } from "./clusterRenderer";
 
 type MarkerGroup = unknown;
 
@@ -84,6 +85,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
+  protected readonly clusterRenderer = ClusterRenderer;
   private _map: GoogleMap;
 
   protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);

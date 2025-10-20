@@ -99,7 +99,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   // TODO: We should refactor this component into two separate components.
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
   public readonly showVerificationFilters = input(true);
-  public readonly showSortingFilters = input(true);
 
   public readonly searchParameters =
     model.required<AnnotationSearchParameters>();

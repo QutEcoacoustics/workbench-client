@@ -34,6 +34,21 @@
     @if (focusedEvents() !== null) {
       <hr />
 
+      <!--
+        We use bootstrap hiding/showing instead of Angular control flow +
+        bootstrap modal so that resizing the window from a small screen to a
+        large screen correctly updates to including / omitting these compact
+        versions without any JavaScript.
+      -->
+      <div class="d-md-none">
+        <button (click)="defocusSite()">
+          <fa-icon
+            class="text-sm"
+            [icon]="['fas', 'square-xmark']"
+          ></fa-icon>
+        </button>
+      </div>
+
       @if (focusedEvents().length > 0) {
         <div class="species-list">
           <table class="table table-sm table-striped">
@@ -122,7 +137,6 @@
     [modal]="filtersModal"
     [hasDecisions]="false"
     [showVerificationFilters]="false"
-    [showSortingFilters]="false"
     [successCallback]="updateSearchParameters.bind(this)"
     [formValue]="annotationSearchParameters()"
   ></baw-search-filters-modal>

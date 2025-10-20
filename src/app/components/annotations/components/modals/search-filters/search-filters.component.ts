@@ -32,7 +32,6 @@ export class SearchFiltersModalComponent implements ModalComponent {
   public readonly site = input<Site>();
   public readonly hasDecisions = input(false);
   public readonly showVerificationFilters = input(true);
-  public readonly showSortingFilters = input(true);
 
   protected readonly isFormDirty = signal(true);
 

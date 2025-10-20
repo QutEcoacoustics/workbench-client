@@ -16,6 +16,7 @@ export enum GoogleMapsState {
 export interface MapMarkerOptions extends google.maps.marker.AdvancedMarkerElementOptions {
   groupId?: unknown;
   siteId?: Id<Site>;
+  clusterWeight?: number;
 }
 
 export type MapOptions = google.maps.MapOptions;

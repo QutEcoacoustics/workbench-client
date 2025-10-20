@@ -591,23 +591,4 @@ describe("AnnotationSearchFormComponent", () => {
       expect(taskTagTypeahead()).toExist();
     }));
   });
-
-  describe("showSortingFilters", () => {
-    it("should show sorting filters by default", fakeAsync(() => {
-      setup();
-
-      expect(spec.component.showSortingFilters()).toBeTrue();
-      expect(sortingDropdown()).toExist();
-    }));
-
-    it("should hide the correct inputs when 'showSortingFilters' is set", fakeAsync(() => {
-      setup();
-      spec.setInput("showSortingFilters", false);
-
-      expect(sortingDropdown()).not.toExist();
-
-      spec.setInput("showSortingFilters", true);
-      expect(sortingDropdown()).toBeVisible();
-    }));
-  });
 });

@@ -23,7 +23,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { AsyncPipe, Location } from "@angular/common";
+import { AsyncPipe, Location, NgTemplateOutlet } from "@angular/common";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -62,6 +62,7 @@ const annotationSearchParametersKey = "annotationSearchParameters";
     AsyncPipe,
     UrlDirective,
     StrongRouteDirective,
+    NgTemplateOutlet,
   ],
 })
 class AnnotationMapPageComponent extends PageComponent implements OnInit {
@@ -159,6 +160,34 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     modalRef.componentInstance.event = event;
   }
 
+  protected focusSite(siteId: Id<Site>): void {
+    // We set the query parameter before the filter request so that if the
+    // request fails, the user can refresh the page to try again.
+    this.searchParameters.update((params) => {
+      if (params) {
+        params.focused = siteId;
+      }
+
+      return params;
+    });
+
+    this.updateUrlParameters();
+    this.updateFocusedEvents();
+  }
+
+  /**
+    * De-focus' the current site and hides the event table modal on mobile
+    * devices.
+    */
+  protected defocusSite(): void {
+    this.searchParameters.update((current) => {
+      current.focused = null;
+      return current;
+    });
+
+    this.updateUrlParameters();
+  }
+
   protected updateSearchParameters(newParams: AnnotationSearchParameters): void {
     this.annotationSearchParameters.set(newParams);
     this.updateUrlParameters();
@@ -173,21 +202,6 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(`${urlTree}`);
 
-    this.updateFocusedEvents();
-  }
-
-  private focusSite(siteId: Id<Site>): void {
-    // We set the query parameter before the filter request so that if the
-    // request fails, the user can refresh the page to try again.
-    this.searchParameters.update((params) => {
-      if (params) {
-        params.focused = siteId;
-      }
-
-      return params;
-    });
-
-    this.updateUrlParameters();
     this.updateFocusedEvents();
   }
 

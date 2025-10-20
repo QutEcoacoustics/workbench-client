@@ -35,6 +35,7 @@ export class EventMapComponent {
         },
         title: `${group.eventCount} Events`,
         count: group.eventCount,
+        clusterWeight: group.eventCount,
         siteId: group.siteId,
       };
     });
