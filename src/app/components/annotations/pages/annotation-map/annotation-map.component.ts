@@ -134,15 +134,15 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     });
 
     this.searchParameters.update((current) => {
-      const newModel =
-        current ?? (models[searchParametersKey] as AnnotationMapParameters);
-
-      if (isInstantiated(newModel.focused)) {
-        this.handleSiteFocused(newModel.focused);
-      }
-
-      return newModel;
+      return current ?? (models[searchParametersKey] as AnnotationMapParameters);
     });
+
+    // We use isInstantiated instead of a truthy check because a focused site id
+    // of 0 is valid but would fail a truthy assertion.
+    const initialFocusedSite = this.searchParameters().focused;
+    if (isInstantiated(initialFocusedSite)) {
+      this.handleSiteFocused(initialFocusedSite);
+    }
   }
 
   protected handleSiteFocused(siteId: Id<Site>): void {
@@ -172,24 +172,28 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(`${urlTree}`);
+
+    this.updateFocusedEvents();
   }
 
   private focusSite(siteId: Id<Site>): void {
-    if (isInstantiated(this.searchParameters())) {
-      // We set the query parameter before the filter request so that if the
-      // request fails, the user can refresh the page to try again.
-      this.searchParameters.update((params) => {
-        if (params) {
-          params.focused = siteId;
-        }
+    // We set the query parameter before the filter request so that if the
+    // request fails, the user can refresh the page to try again.
+    this.searchParameters.update((params) => {
+      if (params) {
+        params.focused = siteId;
+      }
 
-        return params;
-      });
+      return params;
+    });
 
-      this.updateUrlParameters();
-    }
+    this.updateUrlParameters();
+    this.updateFocusedEvents();
+  }
 
+  private updateFocusedEvents(): void {
     const filters: Filters<AudioEvent> = {
+      filter: this.annotationSearchParameters().toFilter()?.filter ?? {},
       paging: {
         items: 5,
       },
@@ -200,7 +204,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     };
 
     this.audioEventsApi
-      .filterBySite(filters, siteId)
+      .filterBySite(filters, this.searchParameters().focused)
       .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((events) => {
         this.focusedEvents.set(events);

@@ -5,6 +5,7 @@
     class="btn btn-primary p-3 py-2"
     (click)="openSearchFiltersModal()"
     [ngbTooltip]="'Edit Filters'"
+    container="body"
   >
     <fa-icon [icon]="['fas', 'filter']"></fa-icon>
   </button>
@@ -66,6 +67,7 @@
                       class="view-event btn btn-sm btn-secondary me-1"
                       [ngbTooltip]="'View Annotation'"
                       [bawUrl]="event.viewUrl"
+                      container="body"
                     >
                       <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     </a>
@@ -73,6 +75,7 @@
                       class="preview-event btn btn-sm btn-outline-secondary"
                       [ngbTooltip]="'Preview Annotation'"
                       (click)="previewEvent(event)"
+                      container="body"
                     >
                       <fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
                     </button>
