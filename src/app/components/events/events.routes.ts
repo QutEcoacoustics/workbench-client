@@ -9,7 +9,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 // readable and meaningful to the the user.
 const eventsRouteName = "annotation-map";
 
-const eventRouteQueryParamResolver = (params) =>
+const annotationMapRouteQueryParamResolver = (params) =>
   params
     ? {
         audioRecordings: params.audioRecordings,
@@ -28,16 +28,16 @@ const eventRouteQueryParamResolver = (params) =>
       }
     : {};
 
-export type EventsRoute = "project" | "region" | "site" | "siteAndRegion";
-export type EventsStrongRoutes = Record<EventsRoute, StrongRoute>;
+export type AnnotationMapRoute = "project" | "region" | "site" | "siteAndRegion";
+export type AnnotationMapStrongRoutes = Record<AnnotationMapRoute, StrongRoute>;
 
-export const eventsRoute: EventsStrongRoutes = {
+export const annotationMapRoute: AnnotationMapStrongRoutes = {
   /** /project/:projectId/site/:siteId/annotation-map */
-  site: siteRoute.add(eventsRouteName, eventRouteQueryParamResolver),
+  site: siteRoute.add(eventsRouteName, annotationMapRouteQueryParamResolver),
   /** /project/:projectId/region/:regionId/site/:siteId/annotation-map */
-  siteAndRegion: pointRoute.add(eventsRouteName, eventRouteQueryParamResolver),
+  siteAndRegion: pointRoute.add(eventsRouteName, annotationMapRouteQueryParamResolver),
   /** /project/:projectId/region/:regionId/annotation-map */
-  region: regionRoute.add(eventsRouteName, eventRouteQueryParamResolver),
+  region: regionRoute.add(eventsRouteName, annotationMapRouteQueryParamResolver),
   /** /project/:projectId/annotation-map */
-  project: projectRoute.add(eventsRouteName, eventRouteQueryParamResolver),
+  project: projectRoute.add(eventsRouteName, annotationMapRouteQueryParamResolver),
 };

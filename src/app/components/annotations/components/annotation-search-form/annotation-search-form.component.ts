@@ -118,11 +118,12 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected verifiedStatusOptions = signal<
     ISelectableItem<VerificationStatusKey>[]
   >([
-    {
-      label: "have not been verified by me",
-      value: "unverified-for-me",
-      disabled: true,
-    },
+    // I disabled prettier for this line because prettier wants to reformat the
+    // "unverified-for-me" line so that each property is on its own line.
+    // However, I believe this makes the code less readable because it breaks
+    // the convention of the other options where each option is on its own line.
+    // prettier-ignore
+    { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
   ]);

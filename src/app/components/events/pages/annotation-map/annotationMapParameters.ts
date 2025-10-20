@@ -9,27 +9,19 @@ import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { Site } from "@models/Site";
 
-export interface IEventMapSearchParameters {
+export interface IAnnotationMapParameters {
   focused: Id<Site> | null;
 }
 
-// we exclude project, region, and site from the serialization table because
-// we do not want them emitted in the query string
 const serializationTable: IQueryStringParameterSpec<
-  Partial<IEventMapSearchParameters>
+  Partial<IAnnotationMapParameters>
 > = {
   focused: jsNumber,
 };
 
-const deserializationTable: IQueryStringParameterSpec<
-  Partial<IEventMapSearchParameters>
-> = {
-  ...serializationTable,
-};
-
-export class EventMapSearchParameters
-  extends ParameterModel<AudioEvent>(deserializationTable)
-  implements IEventMapSearchParameters, IParameterModel<AudioEvent>
+export class AnnotationMapParameters
+  extends ParameterModel<AudioEvent>(serializationTable)
+  implements IAnnotationMapParameters, IParameterModel<AudioEvent>
 {
   public focused: Id<Site>;
 

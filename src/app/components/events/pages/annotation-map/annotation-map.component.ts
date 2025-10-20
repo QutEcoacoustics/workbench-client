@@ -39,20 +39,20 @@ import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { eventCategories, eventMenuitems } from "../../events.menus";
-import { eventMapResolvers } from "./events.resolver";
-import { EventMapSearchParameters } from "./eventMapSearchParameters";
+import { annotationMapCategories, annotationMapMenuitems } from "../../events.menus";
+import { annotationMapParameterResolvers } from "./annotationMapParameters.resolver";
+import { AnnotationMapParameters } from "./annotationMapParameters";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const searchParametersKey = "eventMapSearchParameters";
+const searchParametersKey = "annotationMapParameters";
 const annotationSearchParametersKey = "annotationSearchParameters";
 
 @Component({
   selector: "baw-events-map-page",
-  templateUrl: "./events.component.html",
-  styleUrl: "./events.component.scss",
+  templateUrl: "./annotation-map.component.html",
+  styleUrl: "./annotation-map.component.scss",
   imports: [
     EventMapComponent,
     InlineListComponent,
@@ -64,7 +64,7 @@ const annotationSearchParametersKey = "annotationSearchParameters";
     StrongRouteDirective,
   ],
 })
-class EventsPageComponent extends PageComponent implements OnInit {
+class AnnotationMapPageComponent extends PageComponent implements OnInit {
   private readonly groupedEventsService = inject(GroupedAudioEventsService);
   private readonly audioEventsApi = inject(ShallowAudioEventsService);
   private readonly modals = inject(NgbModal);
@@ -75,7 +75,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
   protected readonly searchParameters =
-    signal<EventMapSearchParameters | null>(null);
+    signal<AnnotationMapParameters | null>(null);
   protected readonly annotationSearchParameters =
     signal<AnnotationSearchParameters | null>(null);
 
@@ -135,7 +135,7 @@ class EventsPageComponent extends PageComponent implements OnInit {
 
     this.searchParameters.update((current) => {
       const newModel =
-        current ?? (models[searchParametersKey] as EventMapSearchParameters);
+        current ?? (models[searchParametersKey] as AnnotationMapParameters);
 
       if (isInstantiated(newModel.focused)) {
         this.handleSiteFocused(newModel.focused);
@@ -208,24 +208,24 @@ class EventsPageComponent extends PageComponent implements OnInit {
   }
 }
 
-function getPageInfo(subRoute: keyof typeof eventMenuitems.map): IPageInfo {
+function getPageInfo(subRoute: keyof typeof annotationMapMenuitems.map): IPageInfo {
   return {
-    pageRoute: eventMenuitems.map[subRoute],
-    category: eventCategories.map[subRoute],
+    pageRoute: annotationMapMenuitems.map[subRoute],
+    category: annotationMapCategories.map[subRoute],
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [searchParametersKey]: eventMapResolvers.showOptional,
+      [searchParametersKey]: annotationMapParameterResolvers.showOptional,
       [annotationSearchParametersKey]: annotationSearchParametersResolvers.showOptional,
     },
     fullscreen: true,
   };
 }
 
-EventsPageComponent.linkToRoute(getPageInfo("project"))
+AnnotationMapPageComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { EventsPageComponent };
+export { AnnotationMapPageComponent };

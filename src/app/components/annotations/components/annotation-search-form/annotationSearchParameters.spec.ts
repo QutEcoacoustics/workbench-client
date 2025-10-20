@@ -286,6 +286,42 @@ describe("annotationSearchParameters", () => {
     expect(realizedFilters).toEqual(expectedFilters);
   });
 
+  it("should not include sorting body when includeSortingParams is false", () => {
+    const testedParameters: Params = {
+      // We have included the verificationStatus qsp to check that when
+      // includeSortingParams is set to false, the verification filters are
+      // still emitted.
+      verificationStatus: "unverified",
+      score: "0.1,0.9",
+    };
+
+    const dataModel = new AnnotationSearchParameters(
+      testedParameters,
+      mockUser,
+      undefined,
+      true,
+      false,
+    );
+
+    const expectedFilters: Filters<AudioEvent> = {
+      filter: {
+        and: [
+          { score: { gteq: 0.1 } },
+          { score: { lteq: 0.9 } },
+          {
+            or: [
+              { "verifications.confirmed": { eq: null } },
+              { "verifications.confirmed": { eq: "skip" } },
+            ],
+          },
+        ],
+      },
+    };
+
+    const realizedFilters = dataModel.toFilter();
+    expect(realizedFilters).toEqual(expectedFilters);
+  });
+
   describe("tag priority", () => {
     it("should handle an empty array of tags", () => {
       const dataModel = createParameterModel();

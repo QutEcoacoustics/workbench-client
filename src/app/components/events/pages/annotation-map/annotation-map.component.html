@@ -1,3 +1,4 @@
+<!-- This menu is only visible on mobile / small screen devices -->
 <div class="overlay mobile-menu-toggle m-2 d-block d-md-none">
   <button
     type="button"
@@ -9,7 +10,11 @@
   </button>
 </div>
 
-<div class="overlay alert alert-light shadow m-3 d-none d-md-block">
+<!--
+  This menu will be shown on larger (non mobile) devices and includes extra
+  information such as the list of focused events.
+-->
+<div class="desktop-overlay overlay alert alert-light shadow m-3 d-none d-md-block">
   <div
     class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
   >
@@ -22,7 +27,7 @@
 
   <div>
     <p class="text-muted">
-      Map showing the locations of audio events matching the current filters.
+      Click on a marker to view annotations.
     </p>
 
     @if (focusedEvents() !== null) {
@@ -59,14 +64,14 @@
                   <td>
                     <a
                       class="view-event btn btn-sm btn-secondary me-1"
-                      [ngbTooltip]="'View Event'"
+                      [ngbTooltip]="'View Annotation'"
                       [bawUrl]="event.viewUrl"
                     >
                       <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     </a>
                     <button
                       class="preview-event btn btn-sm btn-outline-secondary"
-                      [ngbTooltip]="'Preview Event'"
+                      [ngbTooltip]="'Preview Annotation'"
                       (click)="previewEvent(event)"
                     >
                       <fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
@@ -95,7 +100,7 @@
       } @else {
         <div class="alert alert-warning">
           <strong class="fw-normal">
-            No events found for this site with the current filters.
+            No annotations at this site match the current search filters.
           </strong>
         </div>
       }

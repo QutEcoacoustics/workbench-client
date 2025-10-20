@@ -30,7 +30,7 @@ import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { eventMenuitems } from "@components/events/events.menus";
+import { annotationMapMenuitems } from "@components/events/events.menus";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -39,7 +39,7 @@ import {
 import { SiteComponent } from "../../components/site/site.component";
 
 export const siteMenuItemActions = [
-  eventMenuitems.map.site,
+  annotationMapMenuitems.map.site,
   deleteSiteModal,
   visualizeMenuItem,
   siteAnnotationsModal,
@@ -51,7 +51,7 @@ export const siteMenuItemActions = [
 ];
 
 export const pointMenuItemActions = [
-  eventMenuitems.map.siteAndRegion,
+  annotationMapMenuitems.map.siteAndRegion,
   deletePointModal,
   visualizeMenuItem,
   pointAnnotationsModal,

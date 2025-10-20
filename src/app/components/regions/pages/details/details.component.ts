@@ -35,7 +35,7 @@ import { takeUntil } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
-import { eventMenuitems } from "@components/events/events.menus";
+import { annotationMapMenuitems } from "@components/events/events.menus";
 import { SiteMapComponent } from "../../../projects/components/site-map/site-map.component";
 import { SiteCardComponent } from "../../../projects/components/site-card/site-card.component";
 
@@ -49,7 +49,7 @@ export const regionMenuItemActions = [
   reportMenuItems.new.region,
   annotationMenuItems.search.region,
   regionAnnotationsModal,
-  eventMenuitems.map.region,
+  annotationMapMenuitems.map.region,
 ];
 
 const projectKey = "project";

@@ -1,5 +1,5 @@
-import { EventsPageComponent } from "./pages/events/events.component";
+import { AnnotationMapPageComponent } from "./pages/annotation-map/annotation-map.component";
 
 export const eventPageComponents = [
-  EventsPageComponent,
+  AnnotationMapPageComponent,
 ];

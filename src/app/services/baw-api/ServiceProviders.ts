@@ -4,7 +4,6 @@ import { Provider } from "@angular/core";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
-import { EventMapResolver, eventMapResolvers } from "@components/events/pages/events/events.resolver";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -119,6 +118,7 @@ import {
 } from "./verification/verification.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
+import { AnnotationMapParametersResolver, annotationMapParameterResolvers } from "@components/events/pages/annotation-map/annotationMapParameters.resolver";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -354,8 +354,8 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.EVENT_MAP_PARAMETERS,
-    service: EventMapResolver,
-    resolvers: eventMapResolvers,
+    service: AnnotationMapParametersResolver,
+    resolvers: annotationMapParameterResolvers,
   },
 ] satisfies ServiceProvider<unknown>[];
 

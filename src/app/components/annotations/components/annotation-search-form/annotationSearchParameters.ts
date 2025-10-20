@@ -194,7 +194,8 @@ export class AnnotationSearchParameters
     // TODO: Remove this once verification parameters are seperated from the
     // search parameters.
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-    public includeVerificationParams = true
+    public includeVerificationParams = true,
+    public includeSortingParams = true,
   ) {
     super(queryStringParameters);
   }
@@ -365,6 +366,15 @@ export class AnnotationSearchParameters
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
     if (this.includeVerificationParams) {
       filter = this.addVerificationFilters(filter);
+    }
+
+    // On the event map page, we don't want to use a sorting parameter.
+    // I have used an early return here instead of returning undefined or null
+    // from the sortingFilters() method so that both the
+    // includeVerificationParams and includeSortingParams conditions located
+    // next to each other for clarity.
+    if (!this.includeSortingParams) {
+      return { filter };
     }
 
     // If the "sort" query string parameter is not set, this.sortingFilters()

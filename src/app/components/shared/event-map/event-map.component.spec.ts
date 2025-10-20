@@ -82,7 +82,7 @@ describe("EventMapComponent", () => {
         };
 
         expect(realized.position).toEqual(expected);
-        expect(realized.title).toBe(`${targetEvent.eventCount} Events`);
+        expect(realized.title).toEqual(`${targetEvent.eventCount} Events`);
       }
     });
 

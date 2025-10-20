@@ -4,20 +4,20 @@ import { pointMenuItem } from "@components/sites/points.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { isAdminPredicate } from "src/app/app.menus";
-import { eventsRoute, EventsRoute } from "./events.routes";
+import { annotationMapRoute, AnnotationMapRoute } from "./events.routes";
 
-export type EventMenuRoutes = Record<EventsRoute, MenuRoute>;
+export type EventMenuRoutes = Record<AnnotationMapRoute, MenuRoute>;
 
-function makeEventsCategory(subRoute: EventsRoute): Category {
+function makeAnnotationMapCategory(subRoute: AnnotationMapRoute): Category {
   return {
     icon: ["fas", "bullseye"],
     label: "Events",
-    route: eventsRoute[subRoute],
+    route: annotationMapRoute[subRoute],
   };
 }
 
-function makeEventsReportMenuItem(
-  subRoute: EventsRoute,
+function makeAnnotationMapMenuItem(
+  subRoute: AnnotationMapRoute,
   parent?: MenuRoute
 ): MenuRoute {
   return menuRoute({
@@ -27,33 +27,33 @@ function makeEventsReportMenuItem(
     // TODO: Remove this predicate once the we have an API backed event-map
     // see: https://github.com/QutEcoacoustics/baw-server/issues/852
     predicate: isAdminPredicate,
-    route: eventsRoute[subRoute],
+    route: annotationMapRoute[subRoute],
     parent,
   });
 }
 
-const eventMapRoutes: EventMenuRoutes = {
+const annotationMapRoutes: EventMenuRoutes = {
   /** /project/:projectId/site/:siteId/events */
-  site: makeEventsReportMenuItem("site", siteMenuItem),
+  site: makeAnnotationMapMenuItem("site", siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/events */
-  siteAndRegion: makeEventsReportMenuItem("siteAndRegion", pointMenuItem),
+  siteAndRegion: makeAnnotationMapMenuItem("siteAndRegion", pointMenuItem),
   /** /project/:projectId/region/:regionId/events */
-  region: makeEventsReportMenuItem("region", regionMenuItem),
+  region: makeAnnotationMapMenuItem("region", regionMenuItem),
   /** /project/:projectId/events */
-  project: makeEventsReportMenuItem("project", projectMenuItem),
+  project: makeAnnotationMapMenuItem("project", projectMenuItem),
 };
 
-const eventMapCategory = {
-  site: makeEventsCategory("site"),
-  siteAndRegion: makeEventsCategory("siteAndRegion"),
-  region: makeEventsCategory("region"),
-  project: makeEventsCategory("project"),
+const annotationMapCategory = {
+  site: makeAnnotationMapCategory("site"),
+  siteAndRegion: makeAnnotationMapCategory("siteAndRegion"),
+  region: makeAnnotationMapCategory("region"),
+  project: makeAnnotationMapCategory("project"),
 };
 
-export const eventCategories = {
-  map: eventMapCategory,
+export const annotationMapCategories = {
+  map: annotationMapCategory,
 };
 
-export const eventMenuitems = {
-  map: eventMapRoutes,
+export const annotationMapMenuitems = {
+  map: annotationMapRoutes,
 };

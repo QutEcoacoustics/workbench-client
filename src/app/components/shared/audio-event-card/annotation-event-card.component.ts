@@ -1,7 +1,7 @@
 import {
+  AfterViewInit,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
-  effect,
   ElementRef,
   input,
   viewChild,
@@ -38,7 +38,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AnnotationEventCardComponent {
+export class AnnotationEventCardComponent implements AfterViewInit {
   public readonly annotation = input.required<Annotation>();
 
   // Note that there is no { static: true } option for viewChild signals.
@@ -47,13 +47,12 @@ export class AnnotationEventCardComponent {
   // https://github.com/angular/angular/issues/54376
   private readonly mediaControls =
     viewChild<ElementRef<MediaControlsComponent>>("mediaControls");
-  private readonly spectrogramRef =
+  private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
-  public constructor() {
-    effect(() => {
-      this.mediaControls().nativeElement.for =
-        this.spectrogramRef().nativeElement;
-    });
+  public ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.mediaControls().nativeElement.for = this.spectrogram().nativeElement;
+    }, 0);
   }
 }

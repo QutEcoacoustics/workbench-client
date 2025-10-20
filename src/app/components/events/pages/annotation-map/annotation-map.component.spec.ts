@@ -41,11 +41,11 @@ import { EventModalComponent } from "@shared/event-modal/event-modal.component";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { EventMapSearchParameters } from "./eventMapSearchParameters";
-import { EventsPageComponent } from "./events.component";
+import { AnnotationMapParameters } from "./annotationMapParameters";
+import { AnnotationMapPageComponent } from "./annotation-map.component";
 
-describe("EventsPageComponent", () => {
-  let spec: SpectatorRouting<EventsPageComponent>;
+describe("AnnotationMapPageComponent", () => {
+  let spec: SpectatorRouting<AnnotationMapPageComponent>;
 
   let groupedEventsService: GroupedAudioEventsService;
 
@@ -55,7 +55,7 @@ describe("EventsPageComponent", () => {
   let audioEvents: AudioEvent[];
   let tags: Tag[];
 
-  let eventMapSearchParameters: EventMapSearchParameters;
+  let eventMapSearchParameters: AnnotationMapParameters;
   let annotationSearchParameters: AnnotationSearchParameters;
 
   let routerSpy: Router;
@@ -112,7 +112,7 @@ describe("EventsPageComponent", () => {
   }
 
   const createComponent = createRoutingFactory({
-    component: EventsPageComponent,
+    component: AnnotationMapPageComponent,
     imports: [IconsModule, MapComponent, MockModule(GoogleMapsModule)],
     providers: [provideMockBawApi(), mockProvider(AnnotationService)],
   });
@@ -122,7 +122,7 @@ describe("EventsPageComponent", () => {
     region = new Region(generateRegion());
     site = new Site(generateSite());
 
-    eventMapSearchParameters = new EventMapSearchParameters(queryParams);
+    eventMapSearchParameters = new AnnotationMapParameters(queryParams);
     annotationSearchParameters = new AnnotationSearchParameters(queryParams);
 
     // These would typically be set by the annotationSearchParameters resolver
@@ -209,11 +209,11 @@ describe("EventsPageComponent", () => {
     modalSpy?.dismissAll();
   });
 
-  assertPageInfo(EventsPageComponent, "Annotation Map");
+  assertPageInfo(AnnotationMapPageComponent, "Annotation Map");
 
   it("should create", fakeAsync(() => {
     setup();
-    expect(spec.component).toBeInstanceOf(EventsPageComponent);
+    expect(spec.component).toBeInstanceOf(AnnotationMapPageComponent);
   }));
 
   describe("api calls", () => {
