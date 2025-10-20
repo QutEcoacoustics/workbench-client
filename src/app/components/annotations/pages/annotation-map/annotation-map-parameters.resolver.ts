@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
-import { BawSessionService } from "@baw-api/baw-session.service";
-import { SecurityService } from "@baw-api/security/security.service";
 import { AnnotationMapParameters } from "./annotationMapParameters";
 
 @Injectable({ providedIn: "root" })
@@ -23,7 +21,7 @@ export const annotationMapParameterResolvers = {
     {
       provide: "annotationMapParametersResolver",
       useClass: AnnotationMapParametersResolver,
-      deps: [BawSessionService, SecurityService],
+      deps: [],
     },
   ],
 };

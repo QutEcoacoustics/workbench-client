@@ -118,7 +118,7 @@ import {
 } from "./verification/verification.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
-import { annotationMapParameterResolvers, AnnotationMapParametersResolver } from "@components/annotations/pages/annotation-map/annotationMapParameters.resolver";
+import { annotationMapParameterResolvers, AnnotationMapParametersResolver } from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;

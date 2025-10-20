@@ -39,7 +39,7 @@ import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { annotationMapParameterResolvers } from "./annotationMapParameters.resolver";
+import { annotationMapParameterResolvers } from "./annotation-map-parameters.resolver";
 import { AnnotationMapParameters } from "./annotationMapParameters";
 import { annotationCategories, annotationMenuItems } from "@components/annotations/annotation.menu";
 
