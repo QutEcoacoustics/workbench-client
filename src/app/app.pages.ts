@@ -28,7 +28,6 @@ import { Type } from "@angular/core";
 import { homePageComponents } from "@components/home/home.pages";
 import { errorPageComponents } from "@components/error/error.pages";
 import { statisticPageComponents } from "@components/statistics/statistics.pages";
-import { eventPageComponents } from "@components/events/events.pages";
 
 // For some reason, if we use the spread operator here instead of .flat(), the
 // imported components will be tree shaken away and will not be included in the
@@ -58,7 +57,6 @@ export const appPageComponents: Type<PageComponent>[] = [
   statisticPageComponents,
   websiteStatusPageComponents,
   visualizePageComponents,
-  eventPageComponents,
 
   // There was previously a comment here saying that these two must be last, but
   // didn't provide any explanation as to why they must be last.

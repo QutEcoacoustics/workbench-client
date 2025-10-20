@@ -39,9 +39,9 @@ import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { annotationMapCategories, annotationMapMenuitems } from "../../events.menus";
 import { annotationMapParameterResolvers } from "./annotationMapParameters.resolver";
 import { AnnotationMapParameters } from "./annotationMapParameters";
+import { annotationCategories, annotationMenuItems } from "@components/annotations/annotation.menu";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -208,10 +208,10 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   }
 }
 
-function getPageInfo(subRoute: keyof typeof annotationMapMenuitems.map): IPageInfo {
+function getPageInfo(subRoute: keyof typeof annotationMenuItems.map): IPageInfo {
   return {
-    pageRoute: annotationMapMenuitems.map[subRoute],
-    category: annotationMapCategories.map[subRoute],
+    pageRoute: annotationMenuItems.map[subRoute],
+    category: annotationCategories.map[subRoute],
     resolvers: {
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,

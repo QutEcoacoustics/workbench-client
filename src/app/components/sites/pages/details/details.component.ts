@@ -30,7 +30,6 @@ import { ConfigService } from "@services/config/config.service";
 import { shallowRegionsRoute } from "@components/regions/regions.routes";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { annotationMapMenuitems } from "@components/events/events.menus";
 import {
   editSiteMenuItem,
   siteMenuItem,
@@ -39,7 +38,7 @@ import {
 import { SiteComponent } from "../../components/site/site.component";
 
 export const siteMenuItemActions = [
-  annotationMapMenuitems.map.site,
+  annotationMenuItems.map.site,
   deleteSiteModal,
   visualizeMenuItem,
   siteAnnotationsModal,
@@ -51,7 +50,6 @@ export const siteMenuItemActions = [
 ];
 
 export const pointMenuItemActions = [
-  annotationMapMenuitems.map.siteAndRegion,
   deletePointModal,
   visualizeMenuItem,
   pointAnnotationsModal,
@@ -60,6 +58,7 @@ export const pointMenuItemActions = [
   audioRecordingMenuItems.batch.siteAndRegion,
   reportMenuItems.new.siteAndRegion,
   annotationMenuItems.search.siteAndRegion,
+  annotationMenuItems.map.siteAndRegion,
 ];
 
 const projectKey = "project";
