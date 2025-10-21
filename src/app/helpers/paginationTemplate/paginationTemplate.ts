@@ -56,6 +56,16 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public loading: boolean;
   /**
+   * Tracks whether we are currently waiting for the first api request to
+   * complete.
+   * This is useful because if you have no results because you are still waiting
+   * for the API to return the initial results, we don't want to show a
+   * "no results" message.
+   * However, if we have already done a request and there are no results, we can
+   * conclude that there are actually no results to show.
+   */
+  public doneInitialLoad = false;
+  /**
    * Tracks the current user filter input
    */
   public filter: string;
@@ -124,10 +134,12 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
           this.displayPagination = this.collectionSize > defaultApiPageSize;
           this.apiUpdate(models);
+          this.doneInitialLoad = true;
         },
         error: (error: BawApiError) => {
           this.error = error;
           this.loading = false;
+          this.doneInitialLoad = true;
         },
       });
 
