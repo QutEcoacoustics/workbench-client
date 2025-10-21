@@ -6,7 +6,10 @@
     [options]="mapOptions()"
     (mapClick)="markerOptions()?.gmpDraggable && newLocation.emit($event)"
   >
-    <map-marker-clusterer [renderer]="clusterRenderer">
+    <map-marker-clusterer
+      [renderer]="clusterRenderer"
+      [algorithm]="clusterAlgorithm"
+    >
       @for (
         individualMarkerOptions of validMarkersOptions;
         track individualMarkerOptions

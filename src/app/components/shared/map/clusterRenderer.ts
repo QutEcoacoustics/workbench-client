@@ -18,18 +18,18 @@ export class ClusterRenderer implements Renderer {
     for (const marker of markers) {
       // If there is no clusterWeight on the marker, we default to using a weight
       // of one.
-      clusterWeight += (marker as MapMarkerOptions).clusterWeight ?? 1;
+      clusterWeight += (marker as any).clusterWeight ?? 1;
     }
 
     const svg = `
-      <svg fill="var(--baw-highlight)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="50" height="50">
+      <svg fill="var(--baw-primary)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="50" height="50">
         <circle cx="120" cy="120" opacity=".6" r="70" />
         <circle cx="120" cy="120" opacity=".3" r="90" />
         <circle cx="120" cy="120" opacity=".2" r="110" />
         <text
           x="50%"
           y="50%"
-          fill="var(--baw-highlight-contrast)"
+          fill="var(--baw-primary-contrast)"
           text-anchor="middle"
           font-size="50"
           dominant-baseline="middle"

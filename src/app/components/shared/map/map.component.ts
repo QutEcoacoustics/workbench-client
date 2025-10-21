@@ -21,6 +21,7 @@ import {
   MapMarkerClusterer,
   MapAdvancedMarker,
 } from "@angular/google-maps";
+import type { Algorithm, Renderer } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   GoogleMapsState,
@@ -34,12 +35,17 @@ import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
 import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../loading/loading.component";
 import { ClusterRenderer } from "./clusterRenderer";
+import { WeightedSuperClusterAlgorithm } from "./weightedSuperClusterAlgorithm";
 
 type MarkerGroup = unknown;
 
 interface MarkerTemplate {
   marker: MapMarkerOptions;
 }
+
+type WeightedAdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement & {
+  clusterWeight?: number;
+};
 
 /**
  * Google Maps Wrapper Component
@@ -85,7 +91,10 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
-  protected readonly clusterRenderer = new ClusterRenderer();
+  protected readonly clusterRenderer: Renderer =
+    new ClusterRenderer() as unknown as Renderer;
+  protected readonly clusterAlgorithm: Algorithm =
+    new WeightedSuperClusterAlgorithm() as unknown as Algorithm;
   private _map: GoogleMap;
 
   protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);
@@ -181,6 +190,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     options: MapMarkerOptions,
     marker: MapAdvancedMarker,
   ): void {
+    this.applyClusterWeight(options, marker);
     marker.advancedMarker.addEventListener("pointerover", () => {
       this.addMapMarkerInfo(options, marker);
     });
@@ -190,6 +200,18 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     });
 
     this.focusMarkers();
+  }
+
+  private applyClusterWeight(
+    options: MapMarkerOptions,
+    marker: MapAdvancedMarker,
+  ): void {
+    const weight = options.clusterWeight ?? 1;
+    const advancedMarker = marker.advancedMarker as WeightedAdvancedMarkerElement;
+
+    if (advancedMarker) {
+      advancedMarker.clusterWeight = weight;
+    }
   }
 
   protected addMapMarkerInfo(
