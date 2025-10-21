@@ -19,7 +19,7 @@ import { Site } from "./Site";
 import { Region } from "./Region";
 import { EventGroup } from "./AudioEventProvenance/EventGroup";
 import { IAudioEventSummaryReportStatistics } from "./AudioEventProvenance/ReportStatistics";
-import { IEventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
+import { EventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
 import { Tag } from "./Tag";
 import { AudioEventProvenance } from "./AudioEventProvenance";
 
@@ -33,7 +33,7 @@ export interface IEventSummaryReport {
   regionIds: CollectionIds;
   tagIds: CollectionIds;
   provenanceIds: CollectionIds;
-  graphs: IEventSummaryGraphs;
+  graphs: EventSummaryGraphs;
 }
 
 //! the api endpoint associated with this model is not currently implemented. Therefore this model is a draft and subject to change
@@ -52,7 +52,7 @@ export class EventSummaryReport
   public readonly siteIds: CollectionIds;
   @bawCollection()
   public readonly regionIds: CollectionIds;
-  public readonly graphs: IEventSummaryGraphs;
+  public readonly graphs: EventSummaryGraphs;
   @bawCollection()
   public readonly tagIds: CollectionIds;
   @bawCollection()

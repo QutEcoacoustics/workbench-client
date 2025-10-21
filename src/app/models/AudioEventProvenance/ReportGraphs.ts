@@ -1,37 +1,37 @@
 import { Id, Param } from "@interfaces/apiInterfaces";
 
-export interface IEventSummaryGraphs {
-  accumulationData: IAccumulationGraphData[];
-  speciesCompositionData: ISpeciesCompositionGraphData[];
-  analysisConfidenceData: IAnalysisCoverageGraphData[];
-  coverageData: ITimeSeriesGraph;
+export interface EventSummaryGraphs {
+  accumulationData: AccumulationGraphData[];
+  speciesCompositionData: SpeciesCompositionGraphData[];
+  analysisConfidenceData: AnalysisCoverageGraphData[];
+  coverageData: TimeSeriesGraph;
 }
 
-interface IDateRange {
+export interface DateRange {
   startDate: Param;
   endDate: Param;
 }
 
-interface ITimeSeriesGraph {
-  failedAnalysisCoverage: IDateRange[];
-  analysisCoverage: IDateRange[];
-  missingAnalysisCoverage: IDateRange[];
-  recordingCoverage: IDateRange[];
+interface TimeSeriesGraph {
+  failedAnalysisCoverage: DateRange[];
+  analysisCoverage: DateRange[];
+  missingAnalysisCoverage: DateRange[];
+  recordingCoverage: DateRange[];
 }
 
-interface IAccumulationGraphData {
+interface AccumulationGraphData {
   date: Param;
   count: number;
   error: number;
 }
 
-interface ISpeciesCompositionGraphData {
+interface SpeciesCompositionGraphData {
   date: Param;
   tagId: Id;
   ratio: number;
 }
 
-interface IAnalysisCoverageGraphData {
+interface AnalysisCoverageGraphData {
   date: Param;
   audioCoverage: number;
   analysisCoverage: number;

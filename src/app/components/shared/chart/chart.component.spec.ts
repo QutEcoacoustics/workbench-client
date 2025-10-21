@@ -28,9 +28,11 @@ describe("ChartComponent", () => {
   ): void {
     spectator = createComponent({ detectChanges: false });
 
-    spectator.component.spec = defaultSpec;
-    spectator.component.data = defaultData;
-    spectator.component.datasets = defaultDataset;
+    spectator.setInput({
+      spec: defaultSpec,
+      data: defaultData,
+      datasets: defaultDataset,
+    });
 
     // we spy on the DOM's window element so that we can test for resize events
     windowSpy = spyOn(window, "dispatchEvent");

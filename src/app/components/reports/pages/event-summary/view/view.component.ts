@@ -1,8 +1,13 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
+  signal,
+  TemplateRef,
+  viewChild,
   ViewChild,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -54,7 +59,8 @@ import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
 import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
 import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
 import confidencePlotSchema from "./confidencePlot.schema.json";
-import coveragePlotSchema from "./coveragePlot.schema.json";
+import { CoverageMapComponent } from "@shared/coverage-map/coverage-map.component";
+import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -80,59 +86,56 @@ const reportKey = "report";
     IsUnresolvedPipe,
     TimePipe,
     DateTimePipe,
+    CoverageMapComponent
   ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
-  public constructor(
-    protected eventSummaryReportApi: EventSummaryReportService,
-    protected session: BawSessionService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private modalService: NgbModal
-  ) {
-    super();
-  }
+  protected readonly eventSummaryReportApi = inject(EventSummaryReportService);
+  protected readonly session = inject(BawSessionService);
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly modalService = inject(NgbModal);
 
-  public parameterDataModel: EventSummaryReportParameters;
-  public report: EventSummaryReport;
-  public user: User;
-  public project: Project;
-  public region?: Region;
-  public site?: Site;
+  protected readonly parameterDataModel = signal<EventSummaryReportParameters | null>(null);
+  protected readonly report = signal<EventSummaryReport | null>(null);
+  private readonly project = signal<Project | null>(null);
+  private readonly region = signal<Region | undefined>(undefined);
+  private readonly site = signal<Site | undefined>(undefined);
 
-  protected coveragePlotSchema = Map(coveragePlotSchema);
-  protected confidencePlotSchema = Map(confidencePlotSchema);
-  protected speciesAccumulationCurveSchema = Map(
+  protected readonly confidencePlotSchema = Map(confidencePlotSchema);
+  protected readonly speciesAccumulationCurveSchema = Map(
     speciesAccumulationCurveSchema
   );
-  protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
-  protected chartTypes = Chart;
+  protected readonly speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
+  protected readonly chartTypes = Chart;
 
   public filters$: BehaviorSubject<Filters<any>> = new BehaviorSubject({
     paging: { page: 1 },
     sorting: { direction: "asc", orderBy: "tag" },
   });
 
-  @ViewChild("printingModal") public printingModal: ElementRef;
-  @ViewChild("compositionChart") public compositionChart: ChartComponent;
+  protected readonly compositionChart = viewChild<ChartComponent>("compositionChart");
+  private readonly printingModal = viewChild<ElementRef>("printingModal");
 
   public ngOnInit(): void {
-    // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
+    // We can use "as" here to provide stronger typing because the data property
+    // is a standard object type without any typing.
     const models: ResolvedModelList = retrieveResolvers(
       this.route.snapshot.data as IPageInfo
     );
 
-    this.project = models[projectKey] as Project;
-    this.region = models[regionKey] as Region;
-    this.site = models[siteKey] as Site;
-    this.report = models[reportKey]?.[0] as EventSummaryReport;
-    this.parameterDataModel = models[
-      reportKey
-    ]?.[1] as EventSummaryReportParameters;
+    this.project.set(models[projectKey] as Project);
+    this.region.set(models[regionKey] as Region);
+    this.site.set(models[siteKey] as Site);
+    this.report.set(models[reportKey]?.[0] as EventSummaryReport);
+    this.parameterDataModel.set(
+      models[reportKey]?.[1] as EventSummaryReportParameters,
+    );
   }
 
-  // we override ctrl + P (most browsers default for window.print shortcut) so we can show a help modal
+  // We override ctrl + P (most browsers default for window.print shortcut)
+  // so we can show a help modal.
   @HostListener("document:keydown", ["$event"])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.ctrlKey && event.key === "p") {
@@ -141,23 +144,24 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     }
   }
 
-  public getModels = (_filters: any): Observable<any> =>
-    new Observable((subscriber) => subscriber.next(this.report.eventGroups));
+  public getModels = (_filters: any): Observable<EventGroup[]> =>
+    new Observable((subscriber) => subscriber.next(this.report().eventGroups));
 
   protected vegaTagTextFormatter = (tagId: number): string =>
-    this.parameterDataModel.tagModels.find(
+    this.parameterDataModel().tagModels.find(
       (tagModel: Tag) => tagModel.id === tagId
     )?.text;
 
   protected openPrintModal(): void {
     if (this.shouldUsePrintModal()) {
-      this.modalService.open(this.printingModal);
+      this.modalService.open(this.printingModal());
     } else {
       this.printPage();
     }
   }
 
-  // we have to declare a function like this because we can't call window.print() from an angular template
+  // We have to declare a function like this because we can't call
+  // window.print() from an angular template.
   protected printPage(): void {
     window.print();
   }
@@ -179,34 +183,35 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   }
 
   protected filteredSites(): Site[] {
-    // the most common case is when the user has selected sites using the site selector
-    if (this.report.sites.length > 0) {
-      return this.report.sites;
+    // The most common case is when the user has selected sites using the site
+    // selector.
+    if (this.report().sites.length > 0) {
+      return this.report().sites;
     }
 
-    // if the user didn't select any sites, the report will default to all sites
-    if (this.site) {
-      return [this.site];
-    } else if (this.region) {
-      return this.region.sites;
+    // If the user didn't select any sites, the report will default to all sites
+    if (this.site()) {
+      return [this.site()];
+    } else if (this.region()) {
+      return this.region().sites;
     }
 
-    return this.project.sites;
+    return this.project().sites;
   }
 
   protected shouldShowChart(chart: Chart): boolean {
     // we should display all charts if a subset hasn't been specified
-    if (!this.parameterDataModel.charts) {
+    if (!this.parameterDataModel().charts) {
       return true;
     }
 
-    return this.parameterDataModel.charts.includes(chart);
+    return this.parameterDataModel().charts.includes(chart);
   }
 
   protected toggleChart(chart: Chart, show: boolean): void {
     // if the report is generated without any charts parameters, the report will default to rendering all charts
-    if (!this.parameterDataModel.charts) {
-      this.parameterDataModel.charts = [
+    if (!this.parameterDataModel().charts) {
+      this.parameterDataModel().charts = [
         Chart.speciesCompositionCurve,
         Chart.speciesAccumulationCurve,
         Chart.falseColorSpectrograms,
@@ -214,17 +219,17 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     }
 
     if (show) {
-      this.parameterDataModel.charts.push(chart);
+      this.parameterDataModel().charts.push(chart);
     } else {
-      this.parameterDataModel.charts = this.parameterDataModel.charts.filter(
+      this.parameterDataModel().charts = this.parameterDataModel().charts.filter(
         (item: Chart) => item !== chart
       );
     }
 
-    if (this.parameterDataModel.charts.length === 0) {
-      this.parameterDataModel.charts = [];
-    } else if (this.parameterDataModel.charts.length === 3) {
-      this.parameterDataModel.charts = null;
+    if (this.parameterDataModel().charts.length === 0) {
+      this.parameterDataModel().charts = [];
+    } else if (this.parameterDataModel().charts.length === 3) {
+      this.parameterDataModel().charts = null;
     }
 
     this.updateQueryStringParameters();
@@ -232,7 +237,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   /** updates the query string parameters to the data models value */
   private updateQueryStringParameters(): void {
-    const queryParams = this.parameterDataModel.toQueryParams();
+    const queryParams = this.parameterDataModel().toQueryParams();
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
   }
