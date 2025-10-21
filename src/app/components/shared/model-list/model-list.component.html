@@ -39,12 +39,14 @@
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
 <ng-template #tilesTab>
-  @if (models().length > 0) {
-    <baw-model-cards [models]="models()"></baw-model-cards>
-  } @else {
-    <h4 class="text-center">
-      <ng-template [ngTemplateOutlet]="noResultsTemplate()"></ng-template>
-    </h4>
+  @if (!doneInitialLoad) {
+    @if (models().length > 0) {
+      <baw-model-cards [models]="models()"></baw-model-cards>
+    } @else {
+      <h4 class="text-center">
+        <ng-template [ngTemplateOutlet]="noResultsTemplate()"></ng-template>
+      </h4>
+    }
   }
 
   @if (displayPagination) {
