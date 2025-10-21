@@ -1,11 +1,13 @@
 import { Cluster, Marker, SuperClusterAlgorithm } from "@googlemaps/markerclusterer";
 import type { ClusterFeature } from "supercluster";
 
+type MarkerWeight = number;
+
 export type WeightedClusterMarker = Marker & {
-  clusterWeight?: number;
+  clusterWeight?: MarkerWeight;
 };
 
-function getMarkerWeight(marker: Marker): number {
+function getMarkerWeight(marker: Marker): MarkerWeight {
   const weightedMarker = marker as WeightedClusterMarker;
   return weightedMarker.clusterWeight ?? 1;
 }

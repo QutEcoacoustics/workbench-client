@@ -15,7 +15,7 @@
   This menu will be shown on larger (non mobile) devices and includes extra
   information such as the list of focused events.
 -->
-<div class="desktop-overlay overlay alert alert-light shadow m-3 d-none d-md-block">
+<div class="desktop-overlay overlay alert alert-light shadow m-3">
   <div
     class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
   >
@@ -40,12 +40,9 @@
         large screen correctly updates to including / omitting these compact
         versions without any JavaScript.
       -->
-      <div class="d-md-none">
-        <button (click)="defocusSite()">
-          <fa-icon
-            class="text-sm"
-            [icon]="['fas', 'square-xmark']"
-          ></fa-icon>
+      <div class="d-inline-block md-d-none">
+        <button class="btn btn-danger" (click)="defocusSite()">
+          Close
         </button>
       </div>
 
