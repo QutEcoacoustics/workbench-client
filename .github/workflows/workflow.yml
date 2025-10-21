@@ -161,6 +161,12 @@ jobs:
       - name: Checkout Workbench Client
         uses: nschloe/action-cached-lfs-checkout@v1
 
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "npm"
+
       - name: Lint project
         run: npm run lint
         env:
