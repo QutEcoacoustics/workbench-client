@@ -1,15 +1,16 @@
 import { HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawPersistAttr } from "./AttributeDecorators";
+import { provenanceMenuItem } from "@components/provenances/provenances.menus";
 
 export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
-  id: Id;
-  name: string;
-  version: string;
-  description: string;
+  id?: Id;
+  name?: string;
+  version?: string;
+  description?: string;
 
-  scoreMinimum: number;
-  scoreMaximum: number;
+  scoreMinimum?: number;
+  scoreMaximum?: number;
 }
 
 export class AudioEventProvenance
@@ -33,8 +34,9 @@ export class AudioEventProvenance
    * Navigates to the details page of an AudioEventProvenance
    */
   public get viewUrl(): string {
-    console.warn("AudioEventProvenance.viewUrl is not implemented");
-    return "";
+    return provenanceMenuItem.route.format({
+      provenanceId: this.id,
+    });
   }
 
   public override toString(): string {
