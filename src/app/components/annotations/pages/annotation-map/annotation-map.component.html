@@ -11,40 +11,40 @@
   </button>
 </div>
 
-<!--
-  This menu will be shown on larger (non mobile) devices and includes extra
-  information such as the list of focused events.
--->
-<div class="desktop-overlay overlay alert alert-light shadow m-3">
+<div
+  class="desktop-overlay overlay alert alert-light shadow m-3"
+  [class.hide-on-mobile]="focusedEvents() === null"
+>
   <div
     class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
   >
     <h3 class="h4 mb-0 text-dark fw-bold">Annotations</h3>
-    <button class="btn btn-primary" (click)="openSearchFiltersModal()">
+    <button
+      class="btn btn-primary hide-on-mobile"
+      (click)="openSearchFiltersModal()"
+    >
       <fa-icon [icon]="['fas', 'filter']" class="me-1"></fa-icon>
       Edit Filters
     </button>
+
+    <!--
+      We use bootstrap hiding/showing instead of Angular control flow +
+      bootstrap modal so that resizing the window from a small screen to a
+      large screen correctly updates to including / omitting these compact
+      versions without any JavaScript.
+    -->
+    <div class="hide-on-desktop">
+      <button class="btn btn-danger text-white" (click)="defocusSite()">
+        Close
+      </button>
+    </div>
   </div>
 
   <div>
-    <p class="text-muted">
-      Click on a marker to view annotations.
-    </p>
+    <p class="text-muted">Click on a marker to view annotations.</p>
 
     @if (focusedEvents() !== null) {
       <hr />
-
-      <!--
-        We use bootstrap hiding/showing instead of Angular control flow +
-        bootstrap modal so that resizing the window from a small screen to a
-        large screen correctly updates to including / omitting these compact
-        versions without any JavaScript.
-      -->
-      <div class="d-inline-block md-d-none">
-        <button class="btn btn-danger" (click)="defocusSite()">
-          Close
-        </button>
-      </div>
 
       @if (focusedEvents().length > 0) {
         <div class="species-list">

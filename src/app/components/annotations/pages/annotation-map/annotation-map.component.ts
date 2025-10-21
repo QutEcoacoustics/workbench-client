@@ -62,7 +62,6 @@ const annotationSearchParametersKey = "annotationSearchParameters";
     AsyncPipe,
     UrlDirective,
     StrongRouteDirective,
-    NgTemplateOutlet,
   ],
 })
 class AnnotationMapPageComponent extends PageComponent implements OnInit {
@@ -180,12 +179,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     * devices.
     */
   protected defocusSite(): void {
-    this.searchParameters.update((current) => {
-      current.focused = null;
-      return current;
-    });
-
-    this.updateUrlParameters();
+    this.focusedEvents.set(null);
   }
 
   protected updateSearchParameters(newParams: AnnotationSearchParameters): void {
