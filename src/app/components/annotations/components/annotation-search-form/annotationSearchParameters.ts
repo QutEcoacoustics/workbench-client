@@ -194,8 +194,11 @@ export class AnnotationSearchParameters
     // TODO: Remove this once verification parameters are seperated from the
     // search parameters.
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-    public includeVerificationParams = true,
-    public includeSortingParams = true,
+    /**
+     * A parameter that determines what the default verification filter and qsp
+     * behavior is if there is no explicit qsp for verification status.
+     */
+    public defaultVerificationStatus: VerificationStatusKey = "any",
   ) {
     super(queryStringParameters);
   }
@@ -232,9 +235,10 @@ export class AnnotationSearchParameters
 
   public set verificationStatus(value: string) {
     if (this.isVerificationStatusKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we use
-      // "unverified-for-me" as the default if there is no "sort" query string parameter.
-      if (value === "unverified-for-me") {
+      // So that we can minimize the number of query string parameters, we have
+      // a default value for the verification status if there is no explicit
+      // query string parameter.
+      if (value === this.defaultVerificationStatus) {
         this._verificationStatus = null;
       } else {
         this._verificationStatus = value;
@@ -269,8 +273,8 @@ export class AnnotationSearchParameters
   public set taskBehavior(value: string) {
     if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
       // So that we can minimize the number of query string parameters, we use
-      // "unverified-for-me" as the default if there is no "taskBehavior" query
-      // string parameter.
+      // "verify" as the default if there is no "taskBehavior" query string
+      // parameter.
       if (value === "verify") {
         this._taskBehavior = null;
       } else {
@@ -364,17 +368,8 @@ export class AnnotationSearchParameters
     // TODO: Remove this condition once verification parameters are separated
     // from the search parameters.
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-    if (this.includeVerificationParams) {
+    if (this.defaultVerificationStatus) {
       filter = this.addVerificationFilters(filter);
-    }
-
-    // On the event map page, we don't want to use a sorting parameter.
-    // I have used an early return here instead of returning undefined or null
-    // from the sortingFilters() method so that both the
-    // includeVerificationParams and includeSortingParams conditions located
-    // next to each other for clarity.
-    if (!this.includeSortingParams) {
-      return { filter };
     }
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
@@ -540,10 +535,9 @@ export class AnnotationSearchParameters
   }
 
   private addVerificationFilters(initialFilter: InnerFilter<AudioEvent>) {
-    const defaultKey = "unverified-for-me" satisfies VerificationStatusKey;
     const statusKey = this.isVerificationStatusKey(this.verificationStatus)
       ? this.verificationStatus
-      : defaultKey;
+      : this.defaultVerificationStatus;
 
     const filters = this.verificationStatusOptions.get(statusKey);
 

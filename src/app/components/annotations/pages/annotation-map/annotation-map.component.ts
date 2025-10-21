@@ -118,7 +118,6 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
       const newModel =
         current ?? (models[annotationSearchParametersKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
-      newModel.includeVerificationParams = false;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
 

@@ -256,72 +256,6 @@ describe("annotationSearchParameters", () => {
     });
   }
 
-  it("should not include verification filters when includeVerificationParams is false", () => {
-    const testedParameters: Params = {
-      // The verificationStatus qsp would normally produce a lot of verification
-      // filter conditions, however, because we disable verification params,
-      // we should only see the score filter.
-      verificationStatus: "unverified",
-      score: "0.1,0.9",
-    };
-
-    const dataModel = new AnnotationSearchParameters(
-      testedParameters,
-      mockUser,
-      undefined,
-      false,
-    );
-
-    const expectedFilters: Filters<AudioEvent> = {
-      filter: {
-        and: [
-          { score: { gteq: 0.1 } },
-          { score: { lteq: 0.9 } },
-        ],
-      },
-      sorting: defaultSorting,
-    };
-
-    const realizedFilters = dataModel.toFilter();
-    expect(realizedFilters).toEqual(expectedFilters);
-  });
-
-  it("should not include sorting body when includeSortingParams is false", () => {
-    const testedParameters: Params = {
-      // We have included the verificationStatus qsp to check that when
-      // includeSortingParams is set to false, the verification filters are
-      // still emitted.
-      verificationStatus: "unverified",
-      score: "0.1,0.9",
-    };
-
-    const dataModel = new AnnotationSearchParameters(
-      testedParameters,
-      mockUser,
-      undefined,
-      true,
-      false,
-    );
-
-    const expectedFilters: Filters<AudioEvent> = {
-      filter: {
-        and: [
-          { score: { gteq: 0.1 } },
-          { score: { lteq: 0.9 } },
-          {
-            or: [
-              { "verifications.confirmed": { eq: null } },
-              { "verifications.confirmed": { eq: "skip" } },
-            ],
-          },
-        ],
-      },
-    };
-
-    const realizedFilters = dataModel.toFilter();
-    expect(realizedFilters).toEqual(expectedFilters);
-  });
-
   describe("tag priority", () => {
     it("should handle an empty array of tags", () => {
       const dataModel = createParameterModel();
@@ -340,5 +274,11 @@ describe("annotationSearchParameters", () => {
       const realizedResult = dataModel.tagPriority;
       expect(realizedResult).toEqual([3, 1, 2, 4]);
     });
+  });
+
+  describe("default verification status", () => {
+    it("should default to 'any'", () => {});
+
+    it("should correctly override to 'unverified-to-me'", () => {});
   });
 });

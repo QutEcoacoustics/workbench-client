@@ -155,6 +155,7 @@ class VerificationComponent
     this.searchParameters.update((current) => {
       const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
+      newModel.defaultVerificationStatus = "unverified-for-me";
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
 

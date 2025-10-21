@@ -32,9 +32,7 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 
@@ -82,7 +80,7 @@ class AnnotationSearchComponent
                 this.searchParameters.tagPriority,
               ),
           ),
-        )
+        );
 
         if (newResults.length === 0) {
           this.paginationInformation = { total: 0, items: 0, page: 1 };
@@ -101,8 +99,9 @@ class AnnotationSearchComponent
     this.pageSize = 24;
   }
 
-  public broadFilterWarningModal =
-    viewChild<ElementRef<FiltersWarningModalComponent>>("broadSearchWarningModal");
+  public broadFilterWarningModal = viewChild<
+    ElementRef<FiltersWarningModalComponent>
+  >("broadSearchWarningModal");
 
   public searchParameters: AnnotationSearchParameters;
   public searchResults: Annotation[] = [];
