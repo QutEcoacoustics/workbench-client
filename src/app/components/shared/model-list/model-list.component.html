@@ -39,7 +39,7 @@
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
 <ng-template #tilesTab>
-  @if (!doneInitialLoad) {
+  @if (doneInitialLoad) {
     @if (models().length > 0) {
       <baw-model-cards [models]="models()"></baw-model-cards>
     } @else {
