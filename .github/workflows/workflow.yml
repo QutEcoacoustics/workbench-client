@@ -152,7 +152,8 @@ jobs:
         shell: pwsh
         run: ./scripts/ssr-tests.ps1
 
-  # Linting is in its own job instead of in the test matrix so that
+  # Linting is in its own job instead of in the test matrix so that it only runs
+  # once per workflow invocation, saving compute resources and cost.
   lint:
     runs-on: ubuntu-latest
 
