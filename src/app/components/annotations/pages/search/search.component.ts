@@ -38,6 +38,9 @@ import {
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  VerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/verification-filters/verification-filters.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 
 const projectKey = "project";
@@ -57,6 +60,7 @@ const verificationParametersKey = "verificationParameters";
     NgbPagination,
     ErrorHandlerComponent,
     FiltersWarningModalComponent,
+    VerificationFiltersModalComponent,
     LoadingComponent,
   ],
 })
@@ -108,6 +112,10 @@ class AnnotationSearchComponent
   public broadFilterWarningModal = viewChild<
     ElementRef<FiltersWarningModalComponent>
   >("broadSearchWarningModal");
+
+  public verificationFiltersModal = viewChild<
+    ElementRef<VerificationFiltersModalComponent>
+  >("verificationFiltersModal");
 
   public searchParameters: AnnotationSearchParameters;
   public verificationParameters: VerificationParameters;
@@ -165,6 +173,26 @@ class AnnotationSearchComponent
   protected updateSearchParameters(model: AnnotationSearchParameters): void {
     this.searchParameters = model;
     this.updateQueryParams(this.page);
+  }
+
+  protected updateVerificationParameters(model: VerificationParameters): void {
+    this.verificationParameters = model;
+  }
+
+  protected async createVerificationTask(): Promise<void> {
+    const modalRef = this.modals.open(this.verificationFiltersModal(), { size: "lg" });
+    const result = await modalRef.result.catch((_) => false);
+
+    if (!result) {
+      // I purposely include a log here so that if we ever encounter a bug in
+      // production where a verification task cannot be created, we have a log
+      // to indicate that the user cancelled the operation.
+      // eslint-disable-next-line no-console
+      console.debug("User cancelled verification task creation");
+      return;
+    }
+
+    this.verificationParameters = result;
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {

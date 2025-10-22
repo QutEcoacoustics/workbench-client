@@ -1,4 +1,4 @@
-import { Component, Input, input, model, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, input, model, signal } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "@menu/widget.component";
 import { VerificationParameters } from "../../verification-form/verificationParameters";
@@ -8,8 +8,9 @@ import { VerificationFormComponent } from "../../verification-form/verification-
   selector: "baw-verification-filters-modal",
   templateUrl: "./verification-filters.component.html",
   imports: [VerificationFormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchFiltersModalComponent implements ModalComponent {
+export class VerificationFiltersModalComponent implements ModalComponent {
   public readonly formValue = model.required<VerificationParameters>();
   public readonly modal = input<NgbActiveModal>();
 

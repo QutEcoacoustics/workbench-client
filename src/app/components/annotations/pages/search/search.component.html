@@ -5,7 +5,7 @@
     #annotationSearchForm
     [searchParameters]="searchParameters"
     (searchParametersChange)="updateSearchParameters($event)"
-  ></baw-annotation-search-form>
+  />
 
   <div class="mt-2">
     <!--
@@ -20,7 +20,7 @@
     <baw-can [ifLoggedIn]="true">
       <button
         class="verify-button btn btn-primary"
-        (click)="navigateToVerificationGrid()"
+        (click)="createVerificationTask()"
       >
         Verify This List
       </button>
@@ -33,7 +33,7 @@
 <div>
   @if (!error) {
     @if (loading) {
-      <baw-loading></baw-loading>
+      <baw-loading />
     } @else {
       <p>
         Displaying
@@ -47,9 +47,7 @@
       } @else {
         <div class="annotations-grid my-2">
           @for (verificationModel of searchResults; track verificationModel.id) {
-            <baw-annotation-event-card
-              [annotation]="verificationModel"
-            ></baw-annotation-event-card>
+            <baw-annotation-event-card [annotation]="verificationModel" />
           }
         </div>
       }
@@ -59,11 +57,11 @@
           class="d-flex justify-content-center mt-4"
           [collectionSize]="paginationInformation?.total ?? 0"
           [(page)]="page"
-        ></ngb-pagination>
+        />
       }
     }
   } @else {
-    <baw-error-handler [error]="error"></baw-error-handler>
+    <baw-error-handler [error]="error" />
   }
 </div>
 
@@ -71,5 +69,12 @@
   <baw-filters-warning-modal
     [modal]="warningModal"
     [itemCount]="paginationInformation.total"
-  ></baw-filters-warning-modal>
+  />
+</ng-template>
+
+<ng-template #verificationFiltersModal let-filtersModal>
+  <baw-verification-filters-modal
+    [modal]="filtersModal"
+    [formValue]="verificationParameters"
+  />
 </ng-template>

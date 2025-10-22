@@ -7,13 +7,13 @@ import {
   jsString,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { Id, Ids } from "@interfaces/apiInterfaces";
-import { hasOne } from "@models/AssociationDecorators";
+import { hasMany, hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { verificationStatusOptions } from "../annotation-search-form/annotationSearchParameters";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { verificationStatusOptions } from "../annotation-search-form/annotationSearchParameters";
 
 // The verification status options map can be found in the
 // AnnotationSearchParameter's getters.
@@ -107,6 +107,9 @@ export class VerificationParameters
       console.error(`Invalid select key: "${value}"`);
     }
   }
+
+  @hasMany(TAG, "tags")
+  public tagModels?: Tag[];
 
   @hasOne(TAG, "taskTag")
   public taskTagModel?: Tag;

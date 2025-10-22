@@ -2,7 +2,11 @@
   <baw-typeahead-input
     id="task-tag-input"
     label="Tag to Verify"
-    [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
+    [inputPlaceholder]="
+      searchParameters().tagModels.length > 0
+        ? $any(searchParameters().tagModels)
+        : 'First Tag'
+    "
     [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     [multipleInputs]="false"
@@ -16,7 +20,46 @@
       [options]="taskBehaviorOptions"
       [selection]="searchParameters().taskBehavior ?? 'verify'"
       [inline]="true"
-      (selectionChange)="updateParameterProperty('taskBehavior', $event)"
+      (selectionChange)="updateTaskBehavior($event)"
     />
   </div>
+
+  <div class="mt-2">
+    <label class="form-label w-100">Verification Task</label>
+    <baw-selectable-items
+      [options]="verifiedStatusOptions"
+      [selection]="searchParameters().verificationStatus"
+      [inline]="true"
+      (selectionChange)="updateVerificationStatus($event)"
+    />
+
+    @switch (searchParameters().verificationStatus) {
+      <!--
+        By default, we show annotations that only you have not verified.
+        Therefore, the verificationStatus parameter will be "null".
+        -->
+      @case (null) {
+        <p>
+          <b>Participate in consensus building.</b>
+        </p>
+
+        <p>
+          Show me annotations that other others may have already verified, but
+          I haven't seen.
+        </p>
+      }
+
+      @case ("unverified") {
+        <p>
+          <b>Participate in annotating as much as we can.</b>
+        </p>
+
+        <p>Show me annotations that no one else has verified.</p>
+      }
+    }
+  </div>
 </form>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
+</ng-template>
