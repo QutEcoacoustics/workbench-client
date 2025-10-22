@@ -6,6 +6,7 @@ import {
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { isUnresolvedModel } from "@models/AbstractModel";
 import { Tag } from "@models/Tag";
+import { FormsModule } from "@angular/forms";
 import { TypeaheadInputComponent } from "../../../shared/typeahead-input/typeahead-input.component";
 import {
   TaskBehaviorKey,
@@ -14,11 +15,11 @@ import {
 } from "./verificationParameters";
 
 @Component({
-  selector: "baw-verification-search-form",
+  selector: "baw-verification-form",
   templateUrl: "./verification-form.component.html",
-  imports: [TypeaheadInputComponent, SelectableItemsComponent],
+  imports: [FormsModule, TypeaheadInputComponent, SelectableItemsComponent],
 })
-export class VerificationSearchFormComponent {
+export class VerificationFormComponent {
   public readonly searchParameters = model.required<VerificationParameters>();
   public readonly searchParametersChange = output<VerificationParameters>();
 

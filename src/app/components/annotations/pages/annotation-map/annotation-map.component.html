@@ -7,7 +7,7 @@
     [ngbTooltip]="'Edit Filters'"
     container="body"
   >
-    <fa-icon [icon]="['fas', 'filter']"></fa-icon>
+    <fa-icon [icon]="['fas', 'filter']" />
   </button>
 </div>
 
@@ -23,7 +23,7 @@
       class="btn btn-primary hide-on-mobile"
       (click)="openSearchFiltersModal()"
     >
-      <fa-icon [icon]="['fas', 'filter']" class="me-1"></fa-icon>
+      <fa-icon [icon]="['fas', 'filter']" class="me-1" />
       Edit Filters
     </button>
 
@@ -65,7 +65,7 @@
                       [items]="event.tags"
                       [itemKey]="'text'"
                       [emptyTemplate]="noTagsTemplate"
-                    ></baw-inline-list>
+                    />
                   </td>
                   <td>
                     @if (event.score !== undefined && event.score !== null) {
@@ -81,7 +81,7 @@
                       [bawUrl]="event.viewUrl"
                       container="body"
                     >
-                      <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                      <fa-icon [icon]="['fas', 'eye']" />
                     </a>
                     <button
                       class="preview-event btn btn-sm btn-outline-secondary"
@@ -89,7 +89,7 @@
                       (click)="previewEvent(event)"
                       container="body"
                     >
-                      <fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
+                      <fa-icon [icon]="['fas', 'magnifying-glass']" />
                     </button>
                   </td>
                 </tr>
@@ -127,16 +127,15 @@
   class="event-map"
   [events]="(eventGroups() | async) ?? []"
   (siteFocused)="handleSiteFocused($event)"
-></baw-event-map>
+/>
 
 <ng-template #searchFiltersModal let-filtersModal>
   <baw-search-filters-modal
     [modal]="filtersModal"
     [hasDecisions]="false"
-    [showVerificationFilters]="false"
     [successCallback]="updateSearchParameters.bind(this)"
     [formValue]="annotationSearchParameters()"
-  ></baw-search-filters-modal>
+  />
 </ng-template>
 
 <ng-template #noTagsTemplate>No Tags</ng-template>

@@ -165,18 +165,6 @@
     >
   </div>
 
-  @if (showVerificationFilters()) {
-    <div class="mt-2">
-      <label class="form-label w-100">Task Behavior</label>
-      <baw-selectable-items
-        [options]="taskBehaviorOptions"
-        [selection]="searchParameters().taskBehavior ?? 'verify'"
-        [inline]="true"
-        (selectionChange)="updateParameterProperty('taskBehavior', $event)"
-      />
-    </div>
-  }
-
   <label class="form-label mt-2 w-100">
     Sort by
     <select

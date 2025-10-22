@@ -1,21 +1,22 @@
-<!-- Tags to verify moved to advanced filters -->
-<baw-typeahead-input
-  id="task-tag-input"
-  label="Tag to Verify"
-  [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
-  [searchCallback]="tagsApi.typeaheadCallback()"
-  [resultTemplate]="tagsTypeaheadTemplate"
-  [multipleInputs]="false"
-  [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
-  (modelChange)="updateTaskTag($event)"
-/>
-
-<div class="mt-2">
-  <label class="form-label w-100">Task Behavior</label>
-  <baw-selectable-items
-    [options]="taskBehaviorOptions"
-    [selection]="searchParameters().taskBehavior ?? 'verify'"
-    [inline]="true"
-    (selectionChange)="updateParameterProperty('taskBehavior', $event)"
+<form #form="ngForm">
+  <baw-typeahead-input
+    id="task-tag-input"
+    label="Tag to Verify"
+    [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
+    [searchCallback]="tagsApi.typeaheadCallback()"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    [multipleInputs]="false"
+    [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
+    (modelChange)="updateTaskTag($event)"
   />
-</div>
+
+  <div class="mt-2">
+    <label class="form-label w-100">Task Behavior</label>
+    <baw-selectable-items
+      [options]="taskBehaviorOptions"
+      [selection]="searchParameters().taskBehavior ?? 'verify'"
+      [inline]="true"
+      (selectionChange)="updateParameterProperty('taskBehavior', $event)"
+    />
+  </div>
+</form>
