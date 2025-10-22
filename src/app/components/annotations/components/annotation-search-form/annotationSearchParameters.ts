@@ -22,7 +22,7 @@ import {
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
-import { hasMany, hasOne } from "@models/AssociationDecorators";
+import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
@@ -36,6 +36,7 @@ import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
+import { VerificationStatusKey } from "../verification-form/verificationParameters";
 
 export type SortingKey =
   | "score-asc"
@@ -63,13 +64,29 @@ export const sortingOptions = new Map([
   }],
 ]) satisfies Map<SortingKey, Sorting<keyof AudioEvent>>;
 
-// The verification status options map can be found in the
-// AnnotationSearchParameter's getters.
-// I have to use a getter because some of the filter conditions depend on the
-// session state.
-export type VerificationStatusKey = "unverified-for-me" | "unverified" | "any";
-
-export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
+export function verificationStatusOptions(user?: User) {
+  return new Map([
+    ["unverified-for-me", {
+      or: [
+        { "verifications.creatorId": { notEq: user?.id ?? null } },
+        { "verifications.id": { eq: null } },
+        {
+          and: [
+            { "verifications.creatorId": { eq: user?.id ?? null } },
+            { "verifications.confirmed": { eq: "skip" } },
+          ],
+        },
+      ],
+    }],
+    ["unverified", {
+      or: [
+        { "verifications.confirmed": { eq: null } },
+        { "verifications.confirmed": { eq: "skip" } },
+      ],
+    }],
+    ["any", null],
+  ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
+}
 
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
@@ -104,16 +121,16 @@ export interface IAnnotationSearchParameters {
   eventTime: MonoTuple<Duration, 2>;
 
   sort: SortingKey;
-  taskTag: Id;
-  taskBehavior: TaskBehaviorKey;
+
+  // These typings are imported from the VerificationSearchParameters so that
+  // the same "verificationStatus" parameter can be used on for both annotation
+  //search and the verification parameters.
   verificationStatus: VerificationStatusKey;
 }
 
 // we exclude project, region, and site from the serialization table because
 // we do not want them emitted in the query string
-const serializationTable: IQueryStringParameterSpec<
-  Partial<IAnnotationSearchParameters>
-> = {
+const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
   audioRecordings: jsNumberArray,
   tags: jsNumberArray,
   importFiles: jsNumberArray,
@@ -129,14 +146,10 @@ const serializationTable: IQueryStringParameterSpec<
   sites: jsNumberArray,
 
   sort: jsString,
-  taskTag: jsNumber,
   verificationStatus: jsString,
-  taskBehavior: jsString,
 };
 
-const deserializationTable: IQueryStringParameterSpec<
-  Partial<IAnnotationSearchParameters>
-> = {
+const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
   ...serializationTable,
 
   routeProjectId: jsNumber,
@@ -176,29 +189,15 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  public taskTag: Id;
-
   private _sort: SortingKey;
   private _verificationStatus: VerificationStatusKey;
-  private _taskBehavior: TaskBehaviorKey;
+
+  private readonly defaultVerificationStatus: VerificationStatusKey = "any";
 
   public constructor(
     protected queryStringParameters: Params = {},
     public user?: User,
     public injector?: AssociationInjector,
-
-    // This is a hack so that we can use the annotation search parameters on
-    // the event map page without having to worry about verification parameters
-    // being included in the filter request.
-    //
-    // TODO: Remove this once verification parameters are seperated from the
-    // search parameters.
-    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-    /**
-     * A parameter that determines what the default verification filter and qsp
-     * behavior is if there is no explicit qsp for verification status.
-     */
-    public defaultVerificationStatus: VerificationStatusKey = "any",
   ) {
     super(queryStringParameters);
   }
@@ -242,43 +241,6 @@ export class AnnotationSearchParameters
         this._verificationStatus = null;
       } else {
         this._verificationStatus = value;
-      }
-    } else {
-      console.error(`Invalid select key: "${value}"`);
-    }
-  }
-
-  // We cannot use a set here because we use the index of tags as the priority.
-  // Meaning that if we used a set, we could not use indexOf to find the
-  // priority of a tag.
-  // While we could convert to an Array for the indexOf call, I'd like to
-  // convert as early as possible so we don't have types changing depending on
-  // the context.
-  public get tagPriority(): Id[] {
-    if (isInstantiated(this.taskTag)) {
-      const uniqueIds = new Set([this.taskTag, ...this.tags ?? []]);
-      return Array.from(uniqueIds);
-    }
-
-    return Array.from(this.tags ?? []);
-  }
-
-  @hasOne(TAG, "taskTag")
-  public taskTagModel?: Tag;
-
-  public get taskBehavior(): TaskBehaviorKey {
-    return this._taskBehavior;
-  }
-
-  public set taskBehavior(value: string) {
-    if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we use
-      // "verify" as the default if there is no "taskBehavior" query string
-      // parameter.
-      if (value === "verify") {
-        this._taskBehavior = null;
-      } else {
-        this._taskBehavior = value;
       }
     } else {
       console.error(`Invalid select key: "${value}"`);
@@ -329,30 +291,6 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
-  private get verificationStatusOptions() {
-    return new Map([
-      ["unverified-for-me", {
-        or: [
-          { "verifications.creatorId": { notEq: this.user?.id ?? null } },
-          { "verifications.id": { eq: null } },
-          {
-            and: [
-              { "verifications.creatorId": { eq: this.user?.id ?? null } },
-              { "verifications.confirmed": { eq: "skip" } },
-            ],
-          },
-        ],
-      }],
-      ["unverified", {
-        or: [
-          { "verifications.confirmed": { eq: null } },
-          { "verifications.confirmed": { eq: "skip" } },
-        ],
-      }],
-      ["any", null],
-    ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
-  }
-
   // TODO: fix up this function
   public toFilter(): Filters<AudioEvent> {
     let filter = this.tagFilters();
@@ -360,17 +298,7 @@ export class AnnotationSearchParameters
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
-
-    // On some pages, e.g. the event map page, we don't want to filter on
-    // the verification status query string parameter, and just want to include
-    // all events that match the filter condition.
-    //
-    // TODO: Remove this condition once verification parameters are separated
-    // from the search parameters.
-    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-    if (this.defaultVerificationStatus) {
-      filter = this.addVerificationFilters(filter);
-    }
+    filter = this.addVerificationFilters(filter);
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -539,7 +467,7 @@ export class AnnotationSearchParameters
       ? this.verificationStatus
       : this.defaultVerificationStatus;
 
-    const filters = this.verificationStatusOptions.get(statusKey);
+    const filters = verificationStatusOptions(this.user).get(statusKey);
 
     return filterAnd(initialFilter, filters);
   }
@@ -571,11 +499,6 @@ export class AnnotationSearchParameters
   }
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {
-    return this.verificationStatusOptions.has(key as any);
-  }
-
-  private isTaskBehaviorKey(key: string): key is TaskBehaviorKey {
-    const validOptions: TaskBehaviorKey[] = ["verify-and-correct-tag", "verify"];
-    return validOptions.some((option) => option === key);
+    return verificationStatusOptions(this.user).has(key as any);
   }
 }

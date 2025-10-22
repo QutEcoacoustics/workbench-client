@@ -16,7 +16,7 @@ export class AnnotationService {
   private readonly tagsApi = inject(TagsService);
   private readonly audioRecordingsApi = inject(AudioRecordingsService);
 
-  public async show(audioEvent: AudioEvent, priorityTags: Id[]): Promise<Annotation> {
+  public async show(audioEvent: AudioEvent, priorityTags: Id<Tag>[]): Promise<Annotation> {
     const audioRecording = await this.showAudioRecording(audioEvent);
     const audioEventTags = await this.showTags(audioEvent);
 

@@ -1,55 +1,7 @@
 import { Params } from "@angular/router";
-import {
-  IAnnotationSearchParameters,
-  SortingKey,
-  sortingOptions,
-} from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAnnotationSearchParameters(
-  data?: Partial<IAnnotationSearchParameters>,
-): Required<IAnnotationSearchParameters> {
-  return {
-    audioRecordings: modelData.ids(),
-    tags: modelData.ids(),
-    importFiles: modelData.ids(),
-    daylightSavings: modelData.bool(),
-    recordingDate: [modelData.dateTime(), modelData.dateTime()],
-    recordingTime: [modelData.time(), modelData.time()],
-
-    score: [modelData.datatype.number(), modelData.datatype.number()],
-
-    projects: modelData.ids(),
-    regions: modelData.ids(),
-    sites: modelData.ids(),
-
-    routeProjectId: modelData.id(),
-    routeRegionId: modelData.id(),
-    routeSiteId: modelData.id(),
-
-    eventDate: [modelData.dateTime(), modelData.dateTime()],
-    eventTime: [modelData.time(), modelData.time()],
-    sort: modelData.helpers.arrayElement(
-      // We need to type cast Object.keys here because lib.d's implementation of
-      // Object.keys does not maintain object structural typing, and will return
-      // string[], which incorrectly broadens the type.
-      Object.keys(sortingOptions) as SortingKey[],
-    ),
-    taskTag: modelData.id(),
-    verificationStatus: modelData.helpers.arrayElement([
-      "unverified-for-me",
-      "unverified",
-      "any",
-    ]),
-    taskBehavior: modelData.helpers.arrayElement([
-      "verify",
-      "verify-and-correct-tag",
-    ]),
-    ...data,
-  };
-}
-
-export function generateAnnotationSearchUrlParameters(data?: Params): Params {
+export function generateAnnotationSearchUrlParams(data?: Params): Params {
   return {
     audioRecordings: modelData.ids().join(","),
     tags: modelData.ids().join(","),
@@ -61,11 +13,6 @@ export function generateAnnotationSearchUrlParameters(data?: Params): Params {
     sites: modelData.ids().join(","),
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
-    taskTag: modelData.id().toString(),
-    taskBehavior: modelData.helpers.arrayElement([
-      "verify",
-      "verify-and-correct-tag",
-    ]),
     ...data,
   };
 }

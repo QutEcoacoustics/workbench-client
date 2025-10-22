@@ -4,7 +4,7 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
   signal,
   viewChild,
@@ -66,6 +66,8 @@ import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services
 import { ConfigService } from "@services/config/config.service";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -74,7 +76,8 @@ interface PagingContext extends PageFetcherContext {
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const annotationsKey = "annotations";
+const searchParametersKey = "searchParameters";
+const verificationParametersKey = "verificationParameters";
 
 const confirmedMapping = {
   true: ConfirmedStatus.Correct,
@@ -98,23 +101,19 @@ class VerificationComponent
   extends PageComponent
   implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
-  public constructor(
-    private audioEventApi: ShallowAudioEventsService,
-    private verificationApi: ShallowVerificationService,
-    private annotationsService: AnnotationService,
-    private tagsApi: TagsService,
-    private tagCorrections: TaggingCorrectionsService,
+  private readonly audioEventApi = inject(ShallowAudioEventsService);
+  private readonly verificationApi = inject(ShallowVerificationService);
+  private readonly annotationsService = inject(AnnotationService);
+  private readonly tagsApi = inject(TagsService);
+  private readonly tagCorrections = inject(TaggingCorrectionsService);
 
-    private scrollService: ScrollService,
-    private modals: NgbModal,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private config: ConfigService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
-    super();
-  }
+  private readonly scrollService = inject(ScrollService);
+  private readonly modals = inject(NgbModal);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly config = inject(ConfigService);
+  private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
 
   private readonly searchFiltersModal =
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
@@ -126,6 +125,8 @@ class VerificationComponent
     viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
 
   public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public readonly verificationParameters = signal<VerificationParameters | null>(null);
+
   public readonly hasUnsavedChanges = signal(false);
   protected readonly verificationGridFocused = signal(true);
   protected readonly hasCorrectionTask = signal(false);
@@ -153,9 +154,8 @@ class VerificationComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update((current) => {
-      const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
+      const newModel = current ?? (models[searchParametersKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
-      newModel.defaultVerificationStatus = "unverified-for-me";
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
 
@@ -170,8 +170,14 @@ class VerificationComponent
       return newModel;
     });
 
+    this.verificationParameters.update((current) => {
+      const newModel = current ?? (models[searchParametersKey] as VerificationParameters);
+      newModel.injector = this.injector;
+      return newModel;
+    });
+
     this.hasCorrectionTask.set(
-      this.searchParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -249,7 +255,7 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.searchParameters().tagPriority,
+            this.verificationParameters().tagPriority,
           ),
         ),
       );
@@ -274,7 +280,7 @@ class VerificationComponent
     this.hasUnsavedChanges.set(false);
 
     this.hasCorrectionTask.set(
-      this.searchParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -513,7 +519,8 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationSearchParametersResolvers.showOptional,
+      [searchParametersKey]: annotationSearchParametersResolvers.showOptional,
+      [verificationParametersKey]: verificationParametersResolvers.showOptional,
     },
     fullscreen: true,
     renderMode: RenderMode.Client,

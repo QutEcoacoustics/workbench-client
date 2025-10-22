@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
   viewChild,
 } from "@angular/core";
@@ -32,14 +32,19 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const annotationsKey = "annotations";
+const searchParametersKey = "searchParameters";
+const verificationParametersKey = "verificationParameters";
 
 @Component({
   selector: "baw-annotations-search",
@@ -59,11 +64,12 @@ class AnnotationSearchComponent
   extends PaginationTemplate<AudioEvent>
   implements OnInit
 {
+  protected readonly modals = inject(NgbModal);
+  private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
+
   public constructor(
-    protected audioEventApi: ShallowAudioEventsService,
-    protected modals: NgbModal,
-    protected annotationService: AnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
+    protected readonly audioEventApi: ShallowAudioEventsService,
+    protected readonly annotationService: AnnotationService,
   ) {
     super(
       audioEventApi,
@@ -77,7 +83,7 @@ class AnnotationSearchComponent
             async (result) =>
               await annotationService.show(
                 result,
-                this.searchParameters.tagPriority,
+                this.verificationParameters.tagPriority,
               ),
           ),
         );
@@ -104,6 +110,8 @@ class AnnotationSearchComponent
   >("broadSearchWarningModal");
 
   public searchParameters: AnnotationSearchParameters;
+  public verificationParameters: VerificationParameters;
+
   public searchResults: Annotation[] = [];
   protected paginationInformation: Paging;
   protected verificationRoute: StrongRoute;
@@ -111,9 +119,14 @@ class AnnotationSearchComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters ??= models[
-      annotationsKey
+      searchParametersKey
     ] as AnnotationSearchParameters;
     this.searchParameters.injector = this.injector;
+
+    this.verificationParameters ??= models[
+      verificationParametersKey
+    ] as VerificationParameters;
+    this.verificationParameters.injector = this.injector;
 
     this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
     if (models[regionKey]) {
@@ -231,7 +244,8 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationSearchParametersResolvers.showOptional,
+      [searchParametersKey]: annotationSearchParametersResolvers.showOptional,
+      [verificationParametersKey]: verificationParametersResolvers.showOptional,
     },
     // We use client rendering because:
     // 1. We are rendering spectrograms, and we should not be trying to render

@@ -21,7 +21,7 @@ import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
@@ -151,7 +151,7 @@ describe("AnnotationSearchComponent", () => {
     mockUser = new User(generateUser());
 
     mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(),
+      generateAnnotationSearchUrlParams(),
       mockUser,
     );
     mockSearchParameters.routeProjectModel = routeProject;

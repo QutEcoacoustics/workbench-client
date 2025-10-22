@@ -1,7 +1,7 @@
 import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -42,7 +42,7 @@ describe("SearchFiltersModalComponent", () => {
 
     mockUser = new User(generateUser());
     const searchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(),
+      generateAnnotationSearchUrlParams(),
       mockUser,
       injector,
     );

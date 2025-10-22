@@ -2,7 +2,6 @@ import {
   Component,
   computed,
   inject,
-  input,
   model,
   OnInit,
   output,
@@ -47,12 +46,9 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
-import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
-import {
-  AnnotationSearchParameters,
-  TaskBehaviorKey,
-  VerificationStatusKey,
-} from "./annotationSearchParameters";
+import { AbstractModel } from "@models/AbstractModel";
+import { VerificationStatusKey } from "../verification-form/verificationParameters";
+import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 enum ScoreRangeBounds {
   Lower,
@@ -93,13 +89,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     });
   }
 
-  // Having a boolean input to show/hide verification filters is a smell that
-  // the component architecture could be improved.
-  // However, this is a minor issue and can be addressed later if needed.
-  // TODO: We should refactor this component into two separate components.
-  // see: https://github.com/QutEcoacoustics/workbench-client/issues/2477
-  public readonly showVerificationFilters = input(true);
-
   public readonly searchParameters =
     model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
@@ -127,11 +116,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "are verified or unverified", value: "any" },
   ]);
 
-  protected taskBehaviorOptions: ISelectableItem<TaskBehaviorKey>[] = [
-    { label: "verify", value: "verify" },
-    { label: "verify and correct tag", value: "verify-and-correct-tag" },
-  ];
-
   protected project = computed(() => this.searchParameters().routeProjectModel);
   protected region = computed(() => this.searchParameters().routeRegionModel);
   protected site = computed(() => this.searchParameters().routeSiteModel);
@@ -146,7 +130,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "taskTag",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -195,19 +178,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   /**
-   * A callable predicate that can be used in the template to check if the user
-   * has explicitly defined a tag they are performing a verification task on.
-   */
-  protected hasTaskTag(): boolean {
-    const taskTag = this.searchParameters().taskTagModel;
-
-    const isResolved = !isUnresolvedModel(taskTag);
-    const instantiated = isInstantiated(taskTag);
-
-    return isResolved && instantiated;
-  }
-
-  /**
    * Creates a filter condition to fetch models scoped to the current route
    * models.
    * This can be used in the typeahead's where you need to provide search
@@ -236,7 +206,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = null;
-        current.taskTag = null;
         return current;
       });
     } else {
@@ -279,15 +248,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
       current[key as any] = ids;
-      return current;
-    });
-
-    this.emitUpdate();
-  }
-
-  protected updateTaskTag(newTaskTags: Tag[]): void {
-    this.searchParameters.update((current) => {
-      current.taskTag = newTaskTags[0]?.id ?? null;
       return current;
     });
 

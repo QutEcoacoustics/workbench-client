@@ -14,7 +14,7 @@ export interface IAnnotationMapParameters {
 }
 
 const serializationTable: IQueryStringParameterSpec<
-  Partial<IAnnotationMapParameters>
+  IAnnotationMapParameters
 > = {
   focused: jsNumber,
 };

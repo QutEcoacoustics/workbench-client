@@ -12,7 +12,7 @@ import { Site } from "@models/Site";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { IconsModule } from "@shared/icons/icons.module";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
@@ -239,7 +239,7 @@ describe("AnnotationMapPageComponent", () => {
     }));
 
     it("should make the correct api call with query parameters", fakeAsync(() => {
-      setup(generateAnnotationSearchUrlParameters());
+      setup(generateAnnotationSearchUrlParams());
 
       const expectedFilters = {
         filter: {
@@ -352,7 +352,7 @@ describe("AnnotationMapPageComponent", () => {
     // annotation search form inputs are correctly populated because that is
     // already tested within the annotation search form component tests.
     it("should automatically populate the annotation search form from the url parameters", fakeAsync(() => {
-      setup(generateAnnotationSearchUrlParameters());
+      setup(generateAnnotationSearchUrlParams());
       openSearchForm();
 
       const form = annotationSearchForm();
@@ -375,7 +375,7 @@ describe("AnnotationMapPageComponent", () => {
     it("should retain the 'focused' parameter after updating the annotation search parameters", fakeAsync(() => {
       const testedMarker = 0;
 
-      setup(generateAnnotationSearchUrlParameters());
+      setup(generateAnnotationSearchUrlParams());
       clickMarker(testedMarker);
       openSearchForm();
 
@@ -398,7 +398,7 @@ describe("AnnotationMapPageComponent", () => {
         tags[0].id,
       );
 
-      const expectedQueryParams = generateAnnotationSearchUrlParameters();
+      const expectedQueryParams = generateAnnotationSearchUrlParams();
       expectedQueryParams.focused = mockAudioEvents[0].siteId;
 
       expect(routerSpy.createUrlTree).toHaveBeenCalledWith([], {

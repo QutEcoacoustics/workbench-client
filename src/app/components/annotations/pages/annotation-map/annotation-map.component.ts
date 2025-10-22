@@ -23,7 +23,7 @@ import { Filters } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { first, firstValueFrom, takeUntil } from "rxjs";
 import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { AsyncPipe, Location, NgTemplateOutlet } from "@angular/common";
+import { AsyncPipe, Location } from "@angular/common";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -39,9 +39,9 @@ import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { annotationCategories, annotationMenuItems } from "@components/annotations/annotation.menu";
 import { annotationMapParameterResolvers } from "./annotation-map-parameters.resolver";
 import { AnnotationMapParameters } from "./annotationMapParameters";
-import { annotationCategories, annotationMenuItems } from "@components/annotations/annotation.menu";
 
 const projectKey = "project";
 const regionKey = "region";

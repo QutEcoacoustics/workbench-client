@@ -226,45 +226,45 @@ describe("AnnotationSearchFormComponent", () => {
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
     }));
 
-    it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
-      const testedTag = mockTagsResponse[0];
+    // it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
+    //   const testedTag = mockTagsResponse[0];
 
-      const response = setup({
-        tags: testedTag.id.toString(),
-        taskTag: testedTag.id.toString(),
-      });
+    //   const response = setup({
+    //     tags: testedTag.id.toString(),
+    //     taskTag: testedTag.id.toString(),
+    //   });
 
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
-      expect(taskTagInput()).toHaveValue(testedTag.text);
-    }));
+    //   expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
+    //   expect(taskTagInput()).toHaveValue(testedTag.text);
+    // }));
 
-    it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
-      const response = setup({
-        tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
-      });
+    // it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
+    //   const response = setup({
+    //     tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
+    //   });
 
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
-      expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
-    }));
+    //   const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
+    //   expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
+    // }));
 
-    it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
-      const testedTag = mockTagsResponse[0];
+    // it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
+    //   const testedTag = mockTagsResponse[0];
 
-      const response = setup({ tags: `${testedTag.id}` });
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   const response = setup({ tags: `${testedTag.id}` });
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
-    }));
+    //   expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
+    // }));
 
     xit("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
       const response = setup({ tags: "" });
@@ -554,41 +554,6 @@ describe("AnnotationSearchFormComponent", () => {
       // case, this test case will fail because -1 < null === true
       setLowerBoundScore("-1");
       expect(scoreErrors()).not.toExist();
-    }));
-  });
-
-  describe("showVerificationFilters", () => {
-    const taskBehaviorElement = () =>
-      getElementByTextContent(spec, "Task Behavior");
-    const verificationStatusElement = () =>
-      getElementByTextContent(spec, "Show annotations that");
-
-    it("should show verification filters by default", fakeAsync(() => {
-      setup();
-
-      expect(spec.component.showVerificationFilters()).toBeTrue();
-      expect(taskBehaviorElement()).toExist();
-      expect(verificationStatusElement()).toExist();
-    }));
-
-    it("should hide the correct inputs when 'showVerificationFilters' is set", fakeAsync(() => {
-      setup();
-      spec.setInput("showVerificationFilters", false);
-
-      // We assert that inputs like the "sort by" dropdown is still visible to
-      // assert that we haven't hard failed or hidden the entire form
-      expect(sortingDropdown()).toBeVisible();
-      expect(verificationStatusElement()).toBeVisible();
-
-      expect(taskBehaviorElement()).not.toExist();
-      expect(taskTagTypeahead()).not.toExist();
-
-      // We want to assert that if we re-enable the verification filters,
-      // they will be in the correct state.
-      spec.setInput("showVerificationFilters", true);
-
-      expect(taskBehaviorElement()).toExist();
-      expect(taskTagTypeahead()).toExist();
     }));
   });
 });

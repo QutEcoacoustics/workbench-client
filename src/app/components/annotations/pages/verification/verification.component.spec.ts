@@ -35,7 +35,7 @@ import { Annotation } from "@models/data/Annotation";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -74,8 +74,8 @@ import { provideMockConfig } from "@services/config/provide-configMock";
 import { ConfigService } from "@services/config/config.service";
 import {
   AnnotationSearchParameters,
-  VerificationStatusKey,
 } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
@@ -227,7 +227,7 @@ describe("VerificationComponent", () => {
     mediaServiceSpy.createMediaUrl.and.returnValue(mockFile);
 
     mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(queryParameters),
+      generateAnnotationSearchUrlParams(queryParameters),
       mockUser,
       injector,
     );

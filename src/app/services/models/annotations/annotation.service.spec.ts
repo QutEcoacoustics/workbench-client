@@ -128,7 +128,7 @@ describe("AnnotationService", () => {
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
 
-      const realizedResult = await spec.service.show(testedEvent, dataModel.tagPriority);
+      const realizedResult = await spec.service.show(testedEvent, Array.from(dataModel.tags));
 
       const realizedIds = realizedResult.tags.map(tag => tag.id);
       expect(realizedIds).toEqual(expectedIds);
