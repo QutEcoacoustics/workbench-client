@@ -18,9 +18,7 @@
           "builder": "@angular/build:application",
           "defaultConfiguration": "development",
           "options": {
-            "outputPath": {
-              "base": "dist/workbench-client"
-            },
+            "outputPath": "dist/workbench-client",
             "index": "src/index.html",
             "polyfills": [
               "src/polyfills.ts"
@@ -59,6 +57,7 @@
             ],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
+            "prerender": false,
             "ssr": {
               "entry": "src/server.ts"
             }

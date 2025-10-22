@@ -9,7 +9,7 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { environment } from "src/environments/environment";
 import { assetRoot } from "./config.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class ConfigMockService {
   public get environment() {
     return new Proxy(environment, {});

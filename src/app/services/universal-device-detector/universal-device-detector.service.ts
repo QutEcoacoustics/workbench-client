@@ -3,7 +3,7 @@ import { Request } from "express";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { isPlatformServer } from "@angular/common";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class UniversalDeviceDetectorService extends DeviceDetectorService {
   public constructor(
     @Inject(PLATFORM_ID) platformId: any,

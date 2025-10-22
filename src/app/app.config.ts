@@ -1,4 +1,4 @@
-import { APP_ID, ApplicationConfig, importProvidersFrom } from "@angular/core";
+import { APP_ID, ApplicationConfig, importProvidersFrom, provideNgReflectAttributes } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import {
   provideRouter,
@@ -14,6 +14,8 @@ import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { provideClientHydration } from "@angular/platform-browser";
 import { provideBawApi } from "@baw-api/provide-baw-api";
+import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
+import { environment } from "src/environments/environment";
 import { appPageComponents } from "./app.pages";
 import { clientRoutes } from "./app.routes";
 import { defaultSlowLoadTime } from "./app.helper";
@@ -43,12 +45,17 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(appLibraryImports),
     menuProviders,
 
+    // This should only activate in dev & testing.
+    // TODO: Migrate our tests to use property assertions instead of relying on
+    // ng-reflect attributes.
+    provideNgReflectAttributes(),
+
     provideConfig(),
     provideBawApi(),
     appLibraryImports,
 
     // Timeout API requests after set period
-    // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
+    providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     {

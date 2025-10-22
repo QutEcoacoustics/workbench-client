@@ -30,7 +30,7 @@ export interface IDefaultMenu {
  */
 export const DEFAULT_MENU = new InjectionToken<IDefaultMenu>("DEFAULT_MENU");
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class DefaultMenu {
   public static getMenu(config: ConfigService): IDefaultMenu {
     return {

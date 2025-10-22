@@ -9,7 +9,7 @@ const CACHE_LOGGING = new HttpContextToken<boolean>(() => false);
 export const withCacheLogging = (context = new HttpContext()) =>
   context.set(CACHE_LOGGING, true);
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class CacheLoggingService implements HttpInterceptor {
   public constructor(
     @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings

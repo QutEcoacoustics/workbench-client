@@ -2,10 +2,14 @@ import { fakeAsync } from "@angular/core/testing";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { DatatableComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { selectDatatablePage, sortDatatableByColumn } from "@test/helpers/datatable";
+import {
+  DataTableColumnDirective,
+  DatatableComponent,
+  NgxDatatableModule,
+} from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
+import { gotoDatatablePage, sortDatatableColumn } from "@test/helpers/datatable";
 import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
@@ -163,7 +167,7 @@ describe("DatatablePaginationDirective", () => {
       setup({ filters: {}, getModels: getModels(delayMs) } as any);
       flushGetModels();
       assertLoading(false);
-      selectDatatablePage(spec, 3);
+      gotoDatatablePage(spec, 3);
       assertLoading(true);
       flushGetModels();
     }));
@@ -174,7 +178,7 @@ describe("DatatablePaginationDirective", () => {
       setup({ filters: {}, getModels: getModels(delayMs) } as any);
       flushGetModels();
       assertLoading(false);
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertLoading(true);
       flushGetModels();
     }));
@@ -234,7 +238,7 @@ describe("DatatablePaginationDirective", () => {
     it("should update on page event", () => {
       generateModels({ numModels: 25, totalModels: 100 });
       setup({ filters: {}, getModels: getModels() } as any);
-      selectDatatablePage(spec, 2);
+      gotoDatatablePage(spec, 2);
       assertPage(2);
     });
 
@@ -243,7 +247,7 @@ describe("DatatablePaginationDirective", () => {
       const filters$ = new BehaviorSubject<Filters<MockModel>>({});
       generateModels({ numModels: 25, totalModels: 100 });
       setup({ filters: filters$, getModels: getModels() } as any);
-      selectDatatablePage(spec, 3);
+      gotoDatatablePage(spec, 3);
       assertPage(3);
       filters$.next({ filter: { id: { eq: 1 } } });
       assertPage(1);
@@ -252,9 +256,9 @@ describe("DatatablePaginationDirective", () => {
     it("should reset to 0 on sort change", () => {
       generateModels({ numModels: 25, totalModels: 100 });
       setup({ filters: {}, getModels: getModels() } as any);
-      selectDatatablePage(spec, 2);
+      gotoDatatablePage(spec, 2);
       assertPage(2);
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertPage(1);
     });
   });
@@ -283,7 +287,7 @@ describe("DatatablePaginationDirective", () => {
       `,
         { hostProps: { filters: {}, getModels: getModels() } }
       );
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertSort("sortKey");
     });
 
@@ -300,7 +304,7 @@ describe("DatatablePaginationDirective", () => {
       `,
         { hostProps: { filters: {}, getModels: getModels() } }
       );
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertSort("id");
     });
 
@@ -322,7 +326,7 @@ describe("DatatablePaginationDirective", () => {
           },
         }
       );
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertSort("id");
     });
 
@@ -344,7 +348,7 @@ describe("DatatablePaginationDirective", () => {
           },
         }
       );
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertSort("id");
     });
 
@@ -366,7 +370,7 @@ describe("DatatablePaginationDirective", () => {
           },
         }
       );
-      sortDatatableByColumn(spec, 0);
+      sortDatatableColumn(spec, 0);
       assertSort("sortKey");
     });
   });
