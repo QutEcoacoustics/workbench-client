@@ -1,9 +1,15 @@
-import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationMapParameterResolvers,
+} from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import {
+  verificationParametersResolvers,
+} from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -118,7 +124,6 @@ import {
 } from "./verification/verification.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
-import { annotationMapParameterResolvers, AnnotationMapParametersResolver } from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -328,7 +333,6 @@ const serviceList = [
   {
     serviceToken: Tokens.ANNOTATION,
     service: AnnotationService,
-    resolvers: annotationSearchParametersResolvers,
   },
   {
     serviceToken: Tokens.MEDIA,
@@ -352,12 +356,13 @@ const serviceList = [
     serviceToken: Tokens.GROUPED_AUDIO_EVENTS,
     service: GroupedAudioEventsService,
   },
-  {
-    serviceToken: Tokens.EVENT_MAP_PARAMETERS,
-    service: AnnotationMapParametersResolver,
-    resolvers: annotationMapParameterResolvers,
-  },
 ] satisfies ServiceProvider<unknown>[];
+
+const resolverProviders = [
+  annotationMapParameterResolvers,
+  annotationSearchParametersResolvers,
+  verificationParametersResolvers,
+];
 
 const services = serviceList.map(({ service }) => service) satisfies Provider[];
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
@@ -371,5 +376,9 @@ serviceList.forEach(({ resolvers }) => {
     serviceResolvers.push(...resolvers.providers);
   }
 });
+
+for (const resolver of resolverProviders) {
+  serviceResolvers.push(...resolver.providers);
+}
 
 export { services, serviceTokens, serviceResolvers };

@@ -168,4 +168,3 @@ export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService,
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
 export const SITE_SETTINGS = new ServiceToken<SiteSettingsService, SiteSetting>("SITE_SETTINGS");
 export const GROUPED_AUDIO_EVENTS = new ServiceToken<GroupedAudioEventsService, AudioEvent>("GROUPED_AUDIO_EVENTS");
-export const EVENT_MAP_PARAMETERS = new ServiceToken<AnnotationService, Annotation>("EVENT_MAP_PARAMETERS");
