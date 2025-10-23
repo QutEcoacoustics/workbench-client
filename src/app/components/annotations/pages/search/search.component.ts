@@ -1,8 +1,10 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
   OnInit,
+  signal,
   viewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -32,15 +34,11 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
-import {
-  VerificationFiltersModalComponent,
-} from "@components/annotations/components/modals/verification-filters/verification-filters.component";
+import { VerificationFiltersModalComponent } from "@components/annotations/components/modals/verification-filters/verification-filters.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { mergeParameters } from "@helpers/parameters/merge";
 import { filterAnd } from "@helpers/filters/filters";
@@ -84,26 +82,28 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.loading = true;
 
-        this.searchResults = await Promise.all(
+        const results = await Promise.all(
           newResults.map(
             async (result) =>
               await annotationService.show(
                 result,
-                this.verificationParameters.tagPriority,
+                this.verificationParameters().tagPriority,
               ),
           ),
         );
 
+        this.searchResults.set(results);
+
         if (newResults.length === 0) {
-          this.paginationInformation = { total: 0, items: 0, page: 1 };
+          this.paginationInformation.set({ total: 0, items: 0, page: 1 });
         } else {
-          this.paginationInformation = newResults[0].getMetadata().paging;
+          this.paginationInformation.set(newResults[0].getMetadata().paging);
         }
 
         this.loading = false;
       },
-      () => this.searchParameters.toFilter().filter,
-      () => this.searchParameters.toFilter().sorting,
+      () => this.searchParameters().toFilter().filter,
+      () => this.searchParameters().toFilter().sorting,
     );
 
     // we make the page size an even number so that the page of results is more
@@ -111,40 +111,55 @@ class AnnotationSearchComponent
     this.pageSize = 24;
   }
 
-  public broadFilterWarningModal = viewChild<
+  public readonly broadFilterWarningModal = viewChild<
     ElementRef<FiltersWarningModalComponent>
   >("broadSearchWarningModal");
 
-  public verificationFiltersModal = viewChild<
+  public readonly verificationFiltersModal = viewChild<
     ElementRef<VerificationFiltersModalComponent>
   >("verificationFiltersModal");
 
-  public searchParameters: AnnotationSearchParameters;
-  public verificationParameters: VerificationParameters;
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public readonly verificationParameters = signal<VerificationParameters | null>(null);
 
-  public searchResults: Annotation[] = [];
-  protected paginationInformation: Paging;
-  protected verificationRoute: StrongRoute;
+  public readonly searchResults = signal<Annotation[]>([]);
+  public readonly paginationInformation = signal<Paging>({});
+
+  // This is not a signal because it does not need to be reactive.
+  private verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      searchParametersKey
-    ] as AnnotationSearchParameters;
-    this.searchParameters.injector = this.injector;
 
-    this.verificationParameters ??= models[
-      verificationParametersKey
-    ] as VerificationParameters;
-    this.verificationParameters.injector = this.injector;
+    this.searchParameters.update(() => {
+      const newModel = models[
+        searchParametersKey
+      ] as AnnotationSearchParameters;
 
-    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
-    if (models[regionKey]) {
-      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
-    }
-    if (models[siteKey]) {
-      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
-    }
+      newModel.injector = this.injector;
+
+      newModel.routeProjectModel = models[projectKey] as Project;
+
+      if (models[regionKey]) {
+        newModel.routeRegionModel = models[regionKey] as Region;
+      }
+
+      if (models[siteKey]) {
+        newModel.routeSiteModel = models[siteKey] as Site;
+      }
+
+      return newModel;
+    });
+
+    this.verificationParameters.update(() => {
+      const newModel = models[
+        verificationParametersKey
+      ] as VerificationParameters;
+
+      newModel.injector = this.injector;
+
+      return newModel;
+    });
 
     this.verificationRoute = this.verifyAnnotationsRoute();
 
@@ -161,7 +176,7 @@ class AnnotationSearchComponent
   // TODO: the correct fix here would be to add support for any length query
   // string parameters to the pagination template
   protected override updateQueryParams(page: number): void {
-    const queryParams: Params = this.searchParameters.toQueryParams();
+    const queryParams: Params = this.searchParameters().toQueryParams();
 
     // we have this condition so that undefined page numbers and
     // the first (default) page number is not shown in the query parameters
@@ -173,16 +188,14 @@ class AnnotationSearchComponent
   }
 
   protected updateSearchParameters(model: AnnotationSearchParameters): void {
-    this.searchParameters = model;
+    this.searchParameters.set(model);
     this.updateQueryParams(this.page);
   }
 
-  protected updateVerificationParameters(model: VerificationParameters): void {
-    this.verificationParameters = model;
-  }
-
   protected async createVerificationTask(): Promise<void> {
-    const modalRef = this.modals.open(this.verificationFiltersModal(), { size: "lg" });
+    const modalRef = this.modals.open(this.verificationFiltersModal(), {
+      size: "lg",
+    });
     const result = await modalRef.result.catch((_) => false);
 
     if (!result) {
@@ -194,13 +207,13 @@ class AnnotationSearchComponent
       return;
     }
 
-    this.verificationParameters = result;
+    this.verificationParameters.set(result);
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {
     const queryParams = mergeParameters(
-      this.searchParameters.toQueryParams(),
-      this.verificationParameters.toQueryParams(),
+      this.searchParameters().toQueryParams(),
+      this.verificationParameters().toQueryParams(),
     );
 
     const numberOfParameters = Object.keys(queryParams).length;
@@ -209,8 +222,8 @@ class AnnotationSearchComponent
     // user wanted to create a verification task over all annotations in the
     // project, region or site
     if (numberOfParameters === 0) {
-      const verificationFilters = this.verificationParameters.toFilter();
-      const searchFilters = this.searchParameters.toFilter({
+      const verificationFilters = this.verificationParameters().toFilter();
+      const searchFilters = this.searchParameters().toFilter({
         includeVerification: false,
       });
 
@@ -251,12 +264,13 @@ class AnnotationSearchComponent
       }
     }
 
+    const searchParameters = this.searchParameters();
     this.router.navigate(
       [
         this.verificationRoute.toRouterLink({
-          projectId: this.searchParameters.routeProjectId,
-          regionId: this.searchParameters.routeRegionId,
-          siteId: this.searchParameters.routeSiteId,
+          projectId: searchParameters.routeProjectId,
+          regionId: searchParameters.routeRegionId,
+          siteId: searchParameters.routeSiteId,
         }),
       ],
       { queryParams },
@@ -264,11 +278,13 @@ class AnnotationSearchComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.searchParameters.routeSiteId) {
-      return this.searchParameters.routeSiteModel.isPoint
+    const searchParameters = this.searchParameters();
+
+    if (searchParameters.routeSiteId) {
+      return searchParameters.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.searchParameters.routeRegionId) {
+    } else if (searchParameters.routeRegionId) {
       return annotationMenuItems.verify.region.route;
     }
 

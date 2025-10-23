@@ -21,6 +21,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 import { AnnotationService } from "./annotation.service";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
@@ -113,7 +114,7 @@ describe("AnnotationService", () => {
       // specified that we want to verify tag 3.
       // Therefore, when the tags are ordered from highest priority to lowest,
       // we should see that tag 3 is preferred.
-      const dataModel = new AnnotationSearchParameters({
+      const dataModel = new VerificationParameters({
         tags: "1,2,3,4",
         taskTag: "3",
       });
@@ -149,9 +150,9 @@ describe("AnnotationService", () => {
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
 
-      const realizedResult = await spec.service.show(testedEvent, Array.from(dataModel.tags));
-
+      const realizedResult = await spec.service.show(testedEvent, dataModel.tagPriority);
       const realizedIds = realizedResult.tags.map((tag) => tag.id);
+
       expect(realizedIds).toEqual(expectedIds);
     });
   });

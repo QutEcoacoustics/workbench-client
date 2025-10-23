@@ -161,9 +161,9 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters.update((current) => {
-      const newModel =
-        current ?? (models[searchParametersKey] as AnnotationSearchParameters);
+    console.log(models);
+    this.searchParameters.update(() => {
+      const newModel = models[searchParametersKey] as AnnotationSearchParameters;
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -179,10 +179,8 @@ class VerificationComponent
       return newModel;
     });
 
-    this.verificationParameters.update((current) => {
-      const newModel =
-        current ??
-        (models[verificationParametersKey] as VerificationParameters);
+    this.verificationParameters.update(() => {
+      const newModel = models[verificationParametersKey] as VerificationParameters;
       newModel.injector = this.injector;
       return newModel;
     });

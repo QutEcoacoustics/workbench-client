@@ -4,6 +4,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
   jsNumber,
+  jsNumberArray,
   jsString,
   serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
@@ -29,12 +30,16 @@ export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
 export interface IVerificationParameters {
   taskBehavior: TaskBehaviorKey;
   verificationStatus: VerificationStatusKey;
+
+  tags: Ids<Tag>;
   taskTag: Id<Tag>;
 }
 
 const serializationTable: IQueryStringParameterSpec<IVerificationParameters> = {
   verificationStatus: jsString,
   taskBehavior: jsString,
+
+  tags: jsNumberArray,
   taskTag: jsNumber,
 };
 
@@ -44,8 +49,9 @@ export class VerificationParameters
 {
   public _taskBehavior: TaskBehaviorKey;
   public _verificationStatus: VerificationStatusKey = "unverified-for-me";
-  public taskTag: Id<Tag>;
+
   public tags: Ids<Tag>;
+  public taskTag: Id<Tag>;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -62,12 +68,14 @@ export class VerificationParameters
   // convert as early as possible so we don't have types changing depending on
   // the context.
   public get tagPriority(): Id<Tag>[] {
+    const baseTags = this.tags ?? [];
+
     if (isInstantiated(this.taskTag)) {
-      const uniqueIds = new Set([this.taskTag, ...(this.tags ?? [])]);
+      const uniqueIds = new Set([this.taskTag, ...baseTags]);
       return Array.from(uniqueIds);
     }
 
-    return Array.from(this.tags ?? []);
+    return Array.from(baseTags);
   }
 
   public get taskBehavior(): TaskBehaviorKey {

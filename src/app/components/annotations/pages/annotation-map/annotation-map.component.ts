@@ -35,11 +35,12 @@ import { Id } from "@interfaces/apiInterfaces";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { annotationSearchRoute } from "@components/annotations/annotation.routes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { annotationCategories, annotationMenuItems } from "@components/annotations/annotation.menu";
+import {
+  annotationCategories,
+  annotationMenuItems,
+} from "@components/annotations/annotation.menu";
 import { annotationMapParameterResolvers } from "./annotation-map-parameters.resolver";
 import { AnnotationMapParameters } from "./annotationMapParameters";
 
@@ -74,8 +75,9 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   private readonly location = inject(Location);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
-  protected readonly searchParameters =
-    signal<AnnotationMapParameters | null>(null);
+  protected readonly searchParameters = signal<AnnotationMapParameters | null>(
+    null,
+  );
   protected readonly annotationSearchParameters =
     signal<AnnotationSearchParameters | null>(null);
 
@@ -114,27 +116,28 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.annotationSearchParameters.update((current) => {
-      const newModel =
-        current ?? (models[annotationSearchParametersKey] as AnnotationSearchParameters);
+    this.annotationSearchParameters.update(() => {
+      const newModel = models[
+        annotationSearchParametersKey
+      ] as AnnotationSearchParameters;
       newModel.injector = this.injector;
 
-      newModel.routeProjectModel ??= models[projectKey] as Project;
+      newModel.routeProjectModel = models[projectKey] as Project;
 
       if (models[regionKey]) {
-        newModel.routeRegionModel ??= models[regionKey] as Region;
+        newModel.routeRegionModel = models[regionKey] as Region;
       }
 
       if (models[siteKey]) {
-        newModel.routeSiteModel ??= models[siteKey] as Site;
+        newModel.routeSiteModel = models[siteKey] as Site;
       }
 
       return newModel;
     });
 
-    this.searchParameters.update((current) => {
-      return current ?? (models[searchParametersKey] as AnnotationMapParameters);
-    });
+    this.searchParameters.set(
+      models[searchParametersKey] as AnnotationMapParameters,
+    );
 
     // We use isInstantiated instead of a truthy check because a focused site id
     // of 0 is valid but would fail a truthy assertion.
@@ -174,14 +177,16 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   }
 
   /**
-    * De-focus' the current site and hides the event table modal on mobile
-    * devices.
-    */
+   * De-focus' the current site and hides the event table modal on mobile
+   * devices.
+   */
   protected defocusSite(): void {
     this.focusedEvents.set(null);
   }
 
-  protected updateSearchParameters(newParams: AnnotationSearchParameters): void {
+  protected updateSearchParameters(
+    newParams: AnnotationSearchParameters,
+  ): void {
     this.annotationSearchParameters.set(newParams);
     this.updateUrlParameters();
   }
@@ -219,7 +224,9 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   }
 }
 
-function getPageInfo(subRoute: keyof typeof annotationMenuItems.map): IPageInfo {
+function getPageInfo(
+  subRoute: keyof typeof annotationMenuItems.map,
+): IPageInfo {
   return {
     pageRoute: annotationMenuItems.map[subRoute],
     category: annotationCategories.map[subRoute],
@@ -228,7 +235,8 @@ function getPageInfo(subRoute: keyof typeof annotationMenuItems.map): IPageInfo 
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
       [searchParametersKey]: annotationMapParameterResolvers.showOptional,
-      [annotationSearchParametersKey]: annotationSearchParametersResolvers.showOptional,
+      [annotationSearchParametersKey]:
+        annotationSearchParametersResolvers.showOptional,
     },
     fullscreen: true,
   };

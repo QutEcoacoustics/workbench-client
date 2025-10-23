@@ -3,7 +3,7 @@
 <div>
   <baw-annotation-search-form
     #annotationSearchForm
-    [searchParameters]="searchParameters"
+    [searchParameters]="searchParameters()"
     (searchParametersChange)="updateSearchParameters($event)"
   />
 
@@ -37,16 +37,16 @@
     } @else {
       <p>
         Displaying
-        <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span>
+        <span class="fw-bold">{{ searchResults().length }}</span> of
+        <span class="fw-bold">all {{ paginationInformation()?.total }}</span>
         audio events.
       </p>
 
-      @if (searchResults.length === 0) {
+      @if (searchResults().length === 0) {
         <h2 class="no-results-error">No annotations found</h2>
       } @else {
         <div class="annotations-grid my-2">
-          @for (verificationModel of searchResults; track verificationModel.id) {
+          @for (verificationModel of searchResults(); track verificationModel.id) {
             <baw-annotation-event-card [annotation]="verificationModel" />
           }
         </div>
@@ -55,7 +55,7 @@
       @if (displayPagination) {
         <ngb-pagination
           class="d-flex justify-content-center mt-4"
-          [collectionSize]="paginationInformation?.total ?? 0"
+          [collectionSize]="paginationInformation()?.total ?? 0"
           [(page)]="page"
         />
       }
@@ -68,14 +68,14 @@
 <ng-template #broadSearchWarningModal let-warningModal>
   <baw-filters-warning-modal
     [modal]="warningModal"
-    [itemCount]="paginationInformation.total"
+    [itemCount]="paginationInformation().total"
   />
 </ng-template>
 
 <ng-template #verificationFiltersModal let-filtersModal>
   <baw-verification-filters-modal
     [modal]="filtersModal"
-    [formValue]="verificationParameters"
+    [formValue]="verificationParameters()"
     [successCallback]="navigateToVerificationGrid.bind(this)"
   />
 </ng-template>
