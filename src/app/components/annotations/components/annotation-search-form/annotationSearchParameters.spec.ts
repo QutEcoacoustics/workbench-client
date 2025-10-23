@@ -256,26 +256,6 @@ describe("annotationSearchParameters", () => {
     });
   }
 
-  // describe("tag priority", () => {
-  //   it("should handle an empty array of tags", () => {
-  //     const dataModel = createParameterModel();
-  //     const realizedResult = dataModel.tagPriority;
-  //     expect(realizedResult).toEqual([]);
-  //   });
-
-  //   it("should handle an array of tags with no task tag", () => {
-  //     const dataModel = createParameterModel({ tags: "1,2,3,4" });
-  //     const realizedResult = dataModel.tagPriority;
-  //     expect(realizedResult).toEqual([1, 2, 3, 4]);
-  //   });
-
-  //   it("should handle an array of tags with a task tag", () => {
-  //     const dataModel = createParameterModel({ tags: "1,2,3,4", taskTag: "3" });
-  //     const realizedResult = dataModel.tagPriority;
-  //     expect(realizedResult).toEqual([3, 1, 2, 4]);
-  //   });
-  // });
-
   describe("default verification status", () => {
     it("should default to 'any'", () => {});
 
