@@ -33,30 +33,19 @@
       (selectionChange)="updateVerificationStatus($event)"
     />
 
-    @switch (searchParameters().verificationStatus) {
-      <!--
-        By default, we show annotations that only you have not verified.
-        Therefore, the verificationStatus parameter will be "null".
-        -->
-      @case ("unverified-for-me") {
-        <p>
-          <b>Participate in consensus building.</b>
-        </p>
+    <p class="text-muted">
+      @switch (searchParameters().verificationStatus) {
+        @case ("unverified-for-me") {
+            Participate in consensus building by showing me annotations that other
+            others may have already verified, but I haven't seen.
+        }
 
-        <p>
-          Show me annotations that other others may have already verified, but
-          I haven't seen.
-        </p>
+        @case ("unverified") {
+            Participate in annotating as much of the dataset as possible by only
+            showing me annotations that no one has verified.
+        }
       }
-
-      @case ("unverified") {
-        <p>
-          <b>Participate in annotating as much as we can.</b>
-        </p>
-
-        <p>Show me annotations that no one else has verified.</p>
-      }
-    }
+    </p>
   </div>
 </form>
 

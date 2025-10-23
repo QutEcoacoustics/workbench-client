@@ -108,6 +108,7 @@ export class VerificationParameters
   public taskTagModel?: Tag;
 
   public toQueryParams(): Params {
+    console.log(this);
     return serializeObjectToParams<IVerificationParameters>(
       this,
       serializationTable,

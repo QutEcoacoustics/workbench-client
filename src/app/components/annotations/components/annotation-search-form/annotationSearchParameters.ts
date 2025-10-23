@@ -298,7 +298,7 @@ export class AnnotationSearchParameters
     );
   }
 
-  public toFilter({ includeVerification = false } = {}): Filters<AudioEvent> {
+  public toFilter({ includeVerification = true } = {}): Filters<AudioEvent> {
     let filter = this.tagFilters();
     filter = this.addRecordingFilters(filter);
     filter = this.annotationImportFilters(filter);

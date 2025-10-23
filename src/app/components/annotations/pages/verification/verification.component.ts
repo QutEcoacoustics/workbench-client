@@ -23,7 +23,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters, InnerFilter, Paging, Sorting } from "@baw-api/baw-api.service";
+import {
+  Filters,
+  InnerFilter,
+  Paging,
+  Sorting,
+} from "@baw-api/baw-api.service";
 import {
   DecisionMadeEvent,
   VerificationGridComponent,
@@ -47,9 +52,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -122,11 +125,15 @@ class VerificationComponent
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private readonly tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
-  private readonly verificationDecisionElements =
-    viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
+  private readonly verificationDecisionElements = viewChildren<
+    ElementRef<TagPromptComponent>
+  >("verificationDecision");
 
-  public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
-  public readonly verificationParameters = signal<VerificationParameters | null>(null);
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(
+    null,
+  );
+  public readonly verificationParameters =
+    signal<VerificationParameters | null>(null);
 
   public readonly hasUnsavedChanges = signal(false);
   protected readonly verificationGridFocused = signal(true);
@@ -155,7 +162,8 @@ class VerificationComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update((current) => {
-      const newModel = current ?? (models[searchParametersKey] as AnnotationSearchParameters);
+      const newModel =
+        current ?? (models[searchParametersKey] as AnnotationSearchParameters);
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -172,7 +180,9 @@ class VerificationComponent
     });
 
     this.verificationParameters.update((current) => {
-      const newModel = current ?? (models[verificationParametersKey] as VerificationParameters);
+      const newModel =
+        current ??
+        (models[verificationParametersKey] as VerificationParameters);
       newModel.injector = this.injector;
       return newModel;
     });
@@ -316,7 +326,11 @@ class VerificationComponent
       const newTagDecision = change.newTag;
       const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
 
-      if (newTagDecision === null || newTagDecision === decisionNotRequired || newTagDecision?.["confirmed"] === "skip") {
+      if (
+        newTagDecision === null ||
+        newTagDecision === decisionNotRequired ||
+        newTagDecision?.["confirmed"] === "skip"
+      ) {
         this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
       } else if (newTagDecision) {
         // If there was a newTag (tag correction) applied in the previous
@@ -447,19 +461,21 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const searchFilters = this.searchParameters().toFilter();
     const verificationFilters = this.verificationParameters().toFilter();
+    const searchFilters = this.searchParameters().toFilter({
+      includeVerification: false,
+    });
 
     const paging: Paging = { page };
 
     const filter = filterAnd<AudioEvent>(
-      searchFilters.filter,
       verificationFilters.filter,
+      searchFilters.filter,
     );
 
     const sorting: Sorting<keyof AudioEvent> = {
-      ...searchFilters.sorting,
       ...verificationFilters.sorting,
+      ...searchFilters.sorting,
     };
 
     return { paging, filter, sorting };
@@ -490,7 +506,7 @@ class VerificationComponent
     // The user can only verify a tag if there is a tag applied to the subject.
     return (subject: SubjectWrapper) => {
       return subject.tag !== null;
-    }
+    };
   }
 
   private addTagWhenPredicate(): WhenPredicate {
@@ -515,12 +531,12 @@ class VerificationComponent
       // If the user verified the original tag as incorrect, we want to prompt
       // them for a new tag.
       return subjectVerification.confirmed === "false";
-    }
+    };
   }
 }
 
 function getPageInfo(
-  subRoute: keyof typeof annotationMenuItems.verify
+  subRoute: keyof typeof annotationMenuItems.verify,
 ): IPageInfo {
   return {
     pageRoute: annotationMenuItems.verify[subRoute],

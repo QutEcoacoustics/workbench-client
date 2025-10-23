@@ -43,6 +43,7 @@ import {
 } from "@components/annotations/components/modals/verification-filters/verification-filters.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 import { mergeParameters } from "@helpers/parameters/merge";
+import { filterAnd } from "@helpers/filters/filters";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -197,21 +198,31 @@ class AnnotationSearchComponent
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {
-    const queryParameters = mergeParameters(
+    const queryParams = mergeParameters(
       this.searchParameters.toQueryParams(),
       this.verificationParameters.toQueryParams(),
     );
 
-    const numberOfParameters = Object.keys(queryParameters).length;
+    const numberOfParameters = Object.keys(queryParams).length;
 
     // if the user has not added any search filters, we want to confirm that the
     // user wanted to create a verification task over all annotations in the
     // project, region or site
     if (numberOfParameters === 0) {
+      const verificationFilters = this.verificationParameters.toFilter();
+      const searchFilters = this.searchParameters.toFilter({
+        includeVerification: false,
+      });
+
+      const filter = filterAnd<AudioEvent>(
+        verificationFilters.filter,
+        searchFilters.filter,
+      );
+
       // if the verification task has less than 1,000 annotations, we don't need
       // to show an error modal
       const request = this.audioEventApi.filter({
-        filter: this.searchParameters.toFilter().filter,
+        filter: filter,
         paging: { items: 1 },
       });
 
@@ -239,8 +250,6 @@ class AnnotationSearchComponent
         }
       }
     }
-
-    const queryParams = this.searchParameters.toQueryParams();
 
     this.router.navigate(
       [
