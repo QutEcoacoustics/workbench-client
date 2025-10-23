@@ -47,6 +47,7 @@ export const regionMenuItemActions = [
   audioRecordingMenuItems.batch.region,
   reportMenuItems.new.region,
   annotationMenuItems.search.region,
+  annotationMenuItems.map.region,
   regionAnnotationsModal,
 ];
 

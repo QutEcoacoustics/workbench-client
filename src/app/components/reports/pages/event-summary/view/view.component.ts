@@ -43,6 +43,7 @@ import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/da
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
+import { UrlDirective } from "@directives/url/url.directive";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
@@ -80,7 +81,8 @@ const reportKey = "report";
     IsUnresolvedPipe,
     TimePipe,
     DateTimePipe,
-  ],
+    UrlDirective
+],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
   public constructor(

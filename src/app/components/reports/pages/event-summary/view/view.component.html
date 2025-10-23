@@ -271,7 +271,7 @@
         <tr>
           <td scope="row">
             @if (!(item.tag | isUnresolved)) {
-              <a [href]="item.tag?.viewUrl">
+              <a [bawUrl]="item.tag?.viewUrl">
                 {{ item.tag?.text }}
               </a>
             }
@@ -279,9 +279,7 @@
 
           <td>
             @if (!(item.tag | isUnresolved)) {
-              <a
-                [href]="item.provenance?.viewUrl"
-                >
+              <a [bawUrl]="item.provenance?.viewUrl">
                 {{ item.provenance?.name }}
               </a>
             }

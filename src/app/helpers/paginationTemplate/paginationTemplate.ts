@@ -153,6 +153,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * and update the page to match
    */
   private updateFromUrl() {
+    console.log("updateFromUrl called");
     const params = this.route.snapshot.queryParams;
     this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;

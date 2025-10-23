@@ -70,10 +70,8 @@ export class ModelListComponent<Model extends ListModel>
   } as const;
 
   protected readonly active = model(
-    this.router.routerState?.snapshot?.root?.queryParams["tab"] ===
-      this.tabs.map
-      ? this.tabs.map
-      : this.tabs.tiles,
+    this.router.routerState?.snapshot?.root?.queryParams["tab"] ??
+      this.tabs.tiles,
   );
 
   protected readonly models = signal<Model[]>([]);
@@ -102,7 +100,7 @@ export class ModelListComponent<Model extends ListModel>
     this.groupBy = isProjectList ? "projectIds" : "regionId";
 
     this.active.subscribe((active) => {
-      const tab = active === this.tabs.tiles ? null : this.tabs.map;
+      const tab = active === this.tabs.tiles ? null : active;
       const queryParams = { tab };
 
       this.router.navigate([], {

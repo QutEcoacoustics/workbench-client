@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   input,
   OnInit,
   viewChild,
@@ -44,10 +45,7 @@ interface CanPredicate {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IfLoggedInComponent implements OnInit, AfterViewInit {
-  public constructor(
-    public session: BawSessionService,
-    public elementRef: ElementRef
-  ) {}
+  protected readonly session = inject(BawSessionService);
 
   public ifLoggedIn = input<boolean>();
 

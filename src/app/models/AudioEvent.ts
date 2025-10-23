@@ -80,17 +80,17 @@ export class AudioEvent
   public readonly deletedAt?: DateTimeTimezone;
 
   // Associations
-  @creator<AudioEvent>()
+  @creator()
   public creator?: User;
-  @updater<AudioEvent>()
+  @updater()
   public updater?: User;
-  @deleter<AudioEvent>()
+  @deleter()
   public deleter?: User;
-  @hasOne<AudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne<AudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
-  @hasMany<AudioEvent, Tag>(TAG, "tagIds")
+  @hasMany(TAG, "tagIds")
   public tags?: Tag[];
 
   public constructor(audioEvent: IAudioEvent, injector?: AssociationInjector) {

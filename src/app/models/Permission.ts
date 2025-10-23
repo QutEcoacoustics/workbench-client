@@ -37,13 +37,13 @@ export class Permission
   public allowLoggedIn?: boolean;
 
   // Associations
-  @hasOne<Permission, Project>(PROJECT, "projectId")
+  @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @hasOne<Permission, User>(ACCOUNT, "userId")
+  @hasOne(ACCOUNT, "userId")
   public user?: User;
-  @creator<Permission>()
+  @creator()
   public creator?: User;
-  @updater<Permission>()
+  @updater()
   public updater?: User;
 
   public get viewUrl(): string {

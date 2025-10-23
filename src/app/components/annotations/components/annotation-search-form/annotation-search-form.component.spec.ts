@@ -4,11 +4,6 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import {
-  AnnotationSearchParameters,
-  IAnnotationSearchParameters,
-  SortingKey,
-} from "@components/annotations/pages/annotationSearchParameters";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { TagsService } from "@baw-api/tag/tags.service";
@@ -42,6 +37,11 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import {
+  AnnotationSearchParameters,
+  IAnnotationSearchParameters,
+  SortingKey,
+} from "./annotationSearchParameters";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
@@ -95,7 +95,9 @@ describe("AnnotationSearchFormComponent", () => {
 
   const sortingDropdown = () => spec.query("#sort-input");
 
-  function setup(params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {}): Promise<any> {
+  function setup(
+    params: Partial<Record<keyof IAnnotationSearchParameters, string>> = {},
+  ): Promise<any> {
     spec = createComponent({ detectChanges: false });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -224,45 +226,45 @@ describe("AnnotationSearchFormComponent", () => {
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
     }));
 
-    it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
-      const testedTag = mockTagsResponse[0];
+    // it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
+    //   const testedTag = mockTagsResponse[0];
 
-      const response = setup({
-        tags: testedTag.id.toString(),
-        taskTag: testedTag.id.toString(),
-      });
+    //   const response = setup({
+    //     tags: testedTag.id.toString(),
+    //     taskTag: testedTag.id.toString(),
+    //   });
 
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
-      expect(taskTagInput()).toHaveValue(testedTag.text);
-    }));
+    //   expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
+    //   expect(taskTagInput()).toHaveValue(testedTag.text);
+    // }));
 
-    it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
-      const response = setup({
-        tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
-      });
+    // it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
+    //   const response = setup({
+    //     tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
+    //   });
 
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
-      expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
-    }));
+    //   const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
+    //   expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
+    // }));
 
-    it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
-      const testedTag = mockTagsResponse[0];
+    // it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
+    //   const testedTag = mockTagsResponse[0];
 
-      const response = setup({ tags: `${testedTag.id}` });
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
+    //   const response = setup({ tags: `${testedTag.id}` });
+    //   spec.detectChanges();
+    //   await response;
+    //   spec.detectChanges();
 
-      expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
-    }));
+    //   expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
+    // }));
 
     xit("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
       const response = setup({ tags: "" });

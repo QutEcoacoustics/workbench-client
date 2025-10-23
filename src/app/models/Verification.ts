@@ -54,9 +54,9 @@ export class Verification
   @updater()
   public updater?: User;
 
-  @hasOne<Verification, Tag>(TAG, "tagId")
+  @hasOne(TAG, "tagId")
   public tag?: Tag;
-  @hasOne<Verification, AudioEvent>(AUDIO_EVENT, "audioEventId")
+  @hasOne(AUDIO_EVENT, "audioEventId")
   public audioEvent?: AudioEvent;
 
   public get viewUrl(): string {

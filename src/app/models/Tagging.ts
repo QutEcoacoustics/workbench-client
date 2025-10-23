@@ -31,12 +31,12 @@ export class Tagging extends AbstractModel<ITagging> implements ITagging {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @creator<Tagging>()
+  @creator()
   public creator?: User;
-  @updater<Tagging>()
+  @updater()
   public updater?: User;
   // TODO Add association with AudioEvent
-  @hasOne<Tagging, Tag>(TAG, "tagId")
+  @hasOne(TAG, "tagId")
   public tag?: Tag;
 
   public get viewUrl(): string {

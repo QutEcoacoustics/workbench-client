@@ -201,9 +201,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
   /**
    * Push new sites to markers list
    */
-  private async pushMarkers(sites: Site[]) {
-    await this.mapsService.loadAsync();
-
+  private pushMarkers(sites: Site[]) {
     this.groups.set([]);
 
     if (this.groupBy()) {

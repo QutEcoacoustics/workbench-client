@@ -4,7 +4,6 @@ import { adminOrphanMenuItem } from "@components/admin/orphan/orphans.menus";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
 import { pointRoute } from "@components/sites/points.routes";
 import { siteRoute } from "@components/sites/sites.routes";
-import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { assetRoot } from "@services/config/config.service";
 import { MapMarkerOptions } from "@services/maps/maps.service";
@@ -20,6 +19,8 @@ import {
   ImageUrl,
   Param,
   TimezoneInformation,
+  Latitude,
+  Longitude,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel, UnresolvedModel } from "./AbstractModel";
 import { creator, hasMany, updater } from "./AssociationDecorators";
@@ -44,10 +45,10 @@ export interface ISite extends HasAllUsers, HasDescription {
   locationObfuscated?: boolean;
   projectIds?: Ids | Id[];
   regionId?: Id;
-  latitude?: number;
-  customLatitude?: number;
-  longitude?: number;
-  customLongitude?: number;
+  latitude?: Latitude;
+  customLatitude?: Latitude;
+  longitude?: Longitude;
+  customLongitude?: Longitude;
   tzinfoTz?: string;
   timezoneInformation?: TimezoneInformation;
   notes?: Hash;
@@ -84,11 +85,11 @@ export class Site extends AbstractModel<ISite> implements ISite {
   @bawPersistAttr()
   public readonly regionId?: Id;
   @bawPersistAttr()
-  public readonly latitude?: number;
-  public readonly customLatitude?: number;
+  public readonly latitude?: Latitude;
+  public readonly customLatitude?: Latitude;
   @bawPersistAttr()
-  public readonly longitude?: number;
-  public readonly customLongitude?: number;
+  public readonly longitude?: Longitude;
+  public readonly customLongitude?: Longitude;
   @bawPersistAttr()
   public readonly tzinfoTz?: string;
   public readonly timezoneInformation?: TimezoneInformation;
@@ -127,10 +128,6 @@ export class Site extends AbstractModel<ISite> implements ISite {
 
   public get adminViewUrl(): string {
     return adminOrphanMenuItem.route.format({ siteId: this.id });
-  }
-
-  public get visualizeUrl(): string {
-    return visualizeMenuItem.route.format(undefined, { siteId: this.id });
   }
 
   public getAudioRecordingsUrl(projectId: IdOr<Project>): string {
@@ -223,10 +220,10 @@ export class Site extends AbstractModel<ISite> implements ISite {
       isInstantiated(this.getLatitude()) && isInstantiated(this.getLongitude());
 
     return hasCoordinates
-      ? new google.maps.marker.AdvancedMarkerElement({
+      ? {
           position: { lat: this.getLatitude(), lng: this.getLongitude() },
           title: this.name,
-        })
+        }
       : null;
   }
 }

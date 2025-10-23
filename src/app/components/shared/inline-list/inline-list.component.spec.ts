@@ -1,6 +1,9 @@
 import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { modelData } from "@test/helpers/faker";
+import { provideRouter } from "@angular/router";
+import { listenRecordingMenuItem } from "@components/listen/listen.menus";
+import { getElementByTextContent } from "@test/helpers/html";
 import { InlineListComponent } from "./inline-list.component";
 
 describe("InlineListComponent", () => {
@@ -9,7 +12,7 @@ describe("InlineListComponent", () => {
 
   const createComponent = createHostFactory({
     component: InlineListComponent,
-    providers: [provideMockBawApi()],
+    providers: [provideMockBawApi(), provideRouter([])],
   });
 
   function setup(initialItems: any[], itemKey?: string): void {
@@ -21,19 +24,18 @@ describe("InlineListComponent", () => {
       <baw-inline-list [items]="items" [itemKey]="itemKey" [emptyTemplate]="emptyTemplate"></baw-inline-list>
     `;
 
-    spec = createComponent(
-      testBedTemplate,
-      {
-        hostProps: {
-          items: initialItems,
-          itemKey,
-        },
+    spec = createComponent(testBedTemplate, {
+      hostProps: {
+        items: initialItems,
+        itemKey,
       },
-    );
+    });
   }
 
   beforeEach(() => {
-    defaultTestItems = modelData.randomArray(5, 10, () => modelData.name.firstName());
+    defaultTestItems = modelData.randomArray(5, 10, () =>
+      modelData.name.firstName(),
+    );
 
     // by not specifying an item key, the component will default to using the stringified value of the item
     // in the case of a string, this is the same as the item itself
@@ -42,12 +44,6 @@ describe("InlineListComponent", () => {
 
   const inlineListElements = (): HTMLSpanElement[] =>
     spec.queryAll<HTMLSpanElement>("span");
-
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spec.debugElement.query(
-      (el) => el.nativeElement.innerText === text
-    ).nativeElement;
-  }
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(InlineListComponent);
@@ -69,8 +65,12 @@ describe("InlineListComponent", () => {
   });
 
   it("should navigate to the item's view page when an item is clicked", () => {
-    const itemViewUrl = "https://example.com/";
+    const audioRecordingId = modelData.id();
+
     const name = "test";
+    const itemViewUrl = listenRecordingMenuItem.route.toRouterLink({
+      audioRecordingId,
+    });
 
     const item = { name, viewUrl: itemViewUrl } as any;
 
@@ -78,10 +78,11 @@ describe("InlineListComponent", () => {
     spec.setHostInput("itemKey", "name");
 
     const itemElement: HTMLSpanElement =
-      getElementByInnerText<HTMLSpanElement>("test");
+      getElementByTextContent<HTMLSpanElement>(spec, "test");
     const itemLink: HTMLAnchorElement = itemElement.querySelector("a");
 
-    expect(itemLink.href).toEqual(itemViewUrl);
+    const expectedUrl = new URL(itemViewUrl, window.location.origin);
+    expect(itemLink.href).toEqual(expectedUrl.href);
   });
 
   it("should use the item's itemKey for the items display text", () => {
@@ -90,7 +91,7 @@ describe("InlineListComponent", () => {
     spec.setHostInput("items", [item]);
     spec.setHostInput("itemKey", "itemKey");
 
-    const itemElement = getElementByInnerText("item key");
+    const itemElement = getElementByTextContent(spec, "item key");
     expect(itemElement).toExist();
   });
 
@@ -100,15 +101,14 @@ describe("InlineListComponent", () => {
     spec.setHostInput("items", [item]);
     spec.setHostInput("itemKey", undefined);
 
-    const itemElement = getElementByInnerText("items tostring");
+    const itemElement = getElementByTextContent(spec, "items tostring");
     expect(itemElement).toExist();
   });
 
   it("should use the empty template if no items are provided", () => {
     spec.setHostInput("items", []);
 
-    const emptyTemplateItem: HTMLSpanElement =
-      spec.query("#template-span");
+    const emptyTemplateItem: HTMLSpanElement = spec.query("#template-span");
     expect(emptyTemplateItem).toExist();
   });
 

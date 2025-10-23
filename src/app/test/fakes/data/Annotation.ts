@@ -3,6 +3,7 @@ import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { AudioRecording } from "@models/AudioRecording";
 import { Tagging } from "@models/Tagging";
+import { Id } from "@interfaces/apiInterfaces";
 import { generateAudioEvent } from "../AudioEvent";
 import { generateTag } from "../Tag";
 import { generateAudioRecording } from "../AudioRecording";
@@ -26,7 +27,7 @@ export function generateAnnotation(
   });
 
   const tags = modelData.randomArray(0, 10, () => new Tag(generateTag()));
-  const corrections = new Map<Tag["id"], Tagging>();
+  const corrections = new Map<Id<Tag>, Tagging>();
 
   const annotationPartial = {
     audioRecording,

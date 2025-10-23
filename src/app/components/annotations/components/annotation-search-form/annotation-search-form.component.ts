@@ -1,15 +1,18 @@
-import { Component, computed, model, OnInit, output, signal, viewChild } from "@angular/core";
-import { AudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import {
+  Component,
+  computed,
+  inject,
+  model,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+} from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import {
-  AnnotationSearchParameters,
-  TaskBehaviorKey,
-  VerificationStatusKey,
-} from "@components/annotations/pages/annotationSearchParameters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -43,7 +46,9 @@ import {
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
 import { Tag } from "@models/Tag";
-import { AbstractModel, isUnresolvedModel } from "@models/AbstractModel";
+import { AbstractModel } from "@models/AbstractModel";
+import { VerificationStatusKey } from "../verification-form/verificationParameters";
+import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 enum ScoreRangeBounds {
   Lower,
@@ -67,15 +72,14 @@ enum ScoreRangeBounds {
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
-  public constructor(
-    protected recordingsApi: AudioRecordingsService,
-    protected audioEventsApi: AudioEventsService,
-    protected projectsApi: ProjectsService,
-    protected regionsApi: ShallowRegionsService,
-    protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService,
-    protected session: BawSessionService,
-  ) {
+  protected readonly recordingsApi = inject(AudioRecordingsService);
+  protected readonly projectsApi = inject(ProjectsService);
+  protected readonly regionsApi = inject(ShallowRegionsService);
+  protected readonly sitesApi = inject(ShallowSitesService);
+  protected readonly tagsApi = inject(TagsService);
+  private readonly session = inject(BawSessionService);
+
+  public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.session.authTrigger.subscribe(() => {
       this.verifiedStatusOptions.update((current) => {
@@ -85,7 +89,8 @@ export class AnnotationSearchFormComponent implements OnInit {
     });
   }
 
-  public readonly searchParameters = model.required<AnnotationSearchParameters>();
+  public readonly searchParameters =
+    model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
   private recordingsTypeahead = viewChild<
@@ -93,21 +98,23 @@ export class AnnotationSearchFormComponent implements OnInit {
   >("recordingsTypeahead");
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
+  protected readonly hideAdvancedFilters = signal(true);
   protected createSearchCallback = createSearchCallback;
   protected createIdSearchCallback = createIdSearchCallback;
-  protected readonly hideAdvancedFilters = signal(true);
 
   protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions = signal<ISelectableItem<VerificationStatusKey>[]>([
+  protected verifiedStatusOptions = signal<
+    ISelectableItem<VerificationStatusKey>[]
+  >([
+    // I disabled prettier for this line because prettier wants to reformat the
+    // "unverified-for-me" line so that each property is on its own line.
+    // However, I believe this makes the code less readable because it breaks
+    // the convention of the other options where each option is on its own line.
+    // prettier-ignore
     { label: "have not been verified by me", value: "unverified-for-me", disabled: true },
     { label: "have not been verified by anyone", value: "unverified" },
     { label: "are verified or unverified", value: "any" },
   ]);
-
-  protected taskBehaviorOptions: ISelectableItem<TaskBehaviorKey>[] = [
-    { label: "verify", value: "verify" },
-    { label: "verify and correct tag", value: "verify-and-correct-tag" },
-  ];
 
   protected project = computed(() => this.searchParameters().routeProjectModel);
   protected region = computed(() => this.searchParameters().routeRegionModel);
@@ -123,7 +130,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "taskTag",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -165,23 +171,10 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
-      "id": { in: Array.from(tagIds) },
+      id: { in: Array.from(tagIds) },
     };
 
     return createSearchCallback(this.tagsApi, "text", filters);
-  }
-
-  /**
-   * A callable predicate that can be used in the template to check if the user
-   * has explicitly defined a tag they are performing a verification task on.
-   */
-  protected hasTaskTag(): boolean {
-    const taskTag = this.searchParameters().taskTagModel;
-
-    const isResolved = !isUnresolvedModel(taskTag);
-    const instantiated = isInstantiated(taskTag);
-
-    return isResolved && instantiated;
   }
 
   /**
@@ -213,7 +206,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = null;
-        current.taskTag = null;
         return current;
       });
     } else {
@@ -262,51 +254,36 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.emitUpdate();
   }
 
-  protected updateTaskTag(newTaskTags: Tag[]): void {
+  protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     this.searchParameters.update((current) => {
-      current.taskTag = newTaskTags[0]?.id ?? null;
+      if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
+        current.recordingDate = [
+          dateTimeModel.dateStartedAfter
+            ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
+            : null,
+          dateTimeModel.dateFinishedBefore
+            ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
+            : null,
+        ];
+      }
+
+      if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
+        current.recordingTime = [
+          dateTimeModel.timeStartedAfter,
+          dateTimeModel.timeFinishedBefore,
+        ];
+      }
+
+      if (!dateTimeModel.dateFiltering) {
+        current.recordingDate = null;
+      }
+
+      if (!dateTimeModel.timeFiltering) {
+        current.recordingTime = null;
+      }
+
       return current;
     });
-
-    this.emitUpdate();
-  }
-
-  protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
-      this.searchParameters.update((current) => {
-        if (
-          dateTimeModel.dateStartedAfter ||
-          dateTimeModel.dateFinishedBefore
-        ) {
-          current.recordingDate = [
-            dateTimeModel.dateStartedAfter
-              ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
-              : null,
-            dateTimeModel.dateFinishedBefore
-              ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
-              : null,
-          ];
-        }
-
-        if (
-          dateTimeModel.timeStartedAfter ||
-          dateTimeModel.timeFinishedBefore
-        ) {
-          current.recordingTime = [
-            dateTimeModel.timeStartedAfter,
-            dateTimeModel.timeFinishedBefore,
-          ];
-        }
-
-        if (!dateTimeModel.dateFiltering) {
-          current.recordingDate = null;
-        }
-
-        if (!dateTimeModel.timeFiltering) {
-          current.recordingTime = null;
-        }
-
-        return current;
-      });
 
     this.emitUpdate();
   }
@@ -332,7 +309,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParameters.update((current) => {
       current.score = currentScore;
       return current;
-    })
+    });
 
     this.emitUpdate();
   }
@@ -342,8 +319,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   >(key: T, value: AnnotationSearchParameters[T]) {
     this.searchParameters.update((current) => {
       current[key] = value;
-      return current
-    })
+      return current;
+    });
 
     this.emitUpdate();
   }

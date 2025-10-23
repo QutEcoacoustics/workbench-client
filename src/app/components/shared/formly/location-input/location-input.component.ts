@@ -89,17 +89,13 @@ export class LocationInputComponent extends FieldType implements OnInit {
    * @param latitude Latitude
    * @param longitude Longitude
    */
-  private async setMarker(latitude: number, longitude: number) {
-    // If the map has not been initialized yet, wait for it to load
-    // before setting the marker.
-    await this.mapsService.loadAsync();
-
+  private setMarker(latitude: number, longitude: number) {
     const markers = sanitizeMapMarkers(
       isInstantiated(latitude) && isInstantiated(longitude)
-        ? new google.maps.marker.AdvancedMarkerElement({
+        ? {
             position: { lat: latitude, lng: longitude },
             title: `Position (${latitude},${longitude})`,
-          })
+          }
         : null,
     );
 

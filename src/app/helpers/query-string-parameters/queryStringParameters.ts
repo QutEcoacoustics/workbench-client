@@ -3,9 +3,9 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { toNumber } from "@helpers/typing/toNumber";
 import { DateTime, Duration } from "luxon";
 
-export type IQueryStringParameterSpec<T = Record<string, unknown>> = {
+export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
   [K in keyof T]: ISerializationTechnique;
-};
+}>;
 
 interface ISerializationTechnique {
   serialize: (value: any) => string;
@@ -65,7 +65,7 @@ export const jsStringArray = {
 /** Converts an object to an Angular `Params` object with stringified values */
 export function serializeObjectToParams<T>(
   queryStringParameters: T,
-  spec: IQueryStringParameterSpec<Partial<T>>
+  spec: IQueryStringParameterSpec<Partial<T>>,
 ): Params {
   const resultParameter: Params = {};
 
@@ -98,7 +98,7 @@ export function serializeObjectToParams<T>(
 
         resultParameter[key] = paramValue;
       }
-    }
+    },
   );
 
   return resultParameter;
@@ -107,7 +107,7 @@ export function serializeObjectToParams<T>(
 /** Converts a Angular `Params` object to an object with instantiated types and objects */
 export function deserializeParamsToObject<T>(
   queryString: Params,
-  spec: IQueryStringParameterSpec
+  spec: IQueryStringParameterSpec,
 ): T {
   const returnedObject = {};
 

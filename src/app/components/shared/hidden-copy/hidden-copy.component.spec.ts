@@ -15,10 +15,13 @@ describe("HiddenCopyComponent", () => {
     imports: [IconsModule, NgbTooltipModule, ClipboardModule],
   });
 
-  function setup(props: Partial<HiddenCopyComponent> = {}) {
-    props.value ??= "value";
-    props.content ??= "content";
-    props.tooltip ??= "tooltip";
+  function setup(props  = {}) {
+    props = {
+      value: "value",
+      content: "content",
+      tooltip: "tooltip",
+      ...props
+    };
 
     spec = createHost(`
       <baw-hidden-copy
@@ -81,9 +84,9 @@ describe("HiddenCopyComponent", () => {
     it("should toggle visibility on click", () => {
       setup({});
       getVisibilityButton().click();
-      expect(spec.component.visible).toBe(true);
+      expect(spec.component.visible()).toBe(true);
       getVisibilityButton().click();
-      expect(spec.component.visible).toBe(false);
+      expect(spec.component.visible()).toBe(false);
     });
   });
 

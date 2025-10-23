@@ -28,9 +28,10 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
+import { provideRouter } from "@angular/router";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
-describe("AudioEventCardComponent", () => {
+describe("AnnotationEventCardComponent", () => {
   let spectator: Spectator<AnnotationEventCardComponent>;
   let injectorSpy: SpyObject<AssociationInjector>;
 
@@ -47,7 +48,7 @@ describe("AudioEventCardComponent", () => {
   const createComponent = createComponentFactory({
     component: AnnotationEventCardComponent,
     imports: [IconsModule],
-    providers: [provideMockBawApi()],
+    providers: [provideMockBawApi(), provideRouter([])],
   });
 
   function setup(): void {
@@ -56,13 +57,15 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(`data:[audio/flac];base64,${exampleBase64}`);
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(
+      `data:[audio/flac];base64,${exampleBase64}`,
+    );
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
     mockAudioRecording = new AudioRecording(
       generateAudioRecording(),
-      injectorSpy
+      injectorSpy,
     );
     mockAnnotation = new Annotation(
       generateAnnotation({
@@ -72,7 +75,7 @@ describe("AudioEventCardComponent", () => {
         endTimeSeconds: 5,
         tags: [mockTag],
       }),
-      injectorSpy
+      injectorSpy,
     );
 
     audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);
@@ -141,7 +144,7 @@ describe("AudioEventCardComponent", () => {
         audioRecording: mockAudioRecording,
         score: null,
       }),
-      injectorSpy
+      injectorSpy,
     );
 
     spectator.setInput("annotation", mockAnnotation);

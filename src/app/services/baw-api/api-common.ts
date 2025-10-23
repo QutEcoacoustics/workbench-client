@@ -1,9 +1,10 @@
 import { PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Param } from "@interfaces/apiInterfaces";
-import { AbstractModel } from "@models/AbstractModel";
+import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
 import { Observable } from "rxjs";
 import { InjectionToken } from "@angular/core";
+import { AbstractData } from "@models/AbstractData";
 import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
@@ -125,18 +126,33 @@ export interface ApiFilter<M extends AbstractModel, P extends any[] = []> {
 /**
  * API Show functionality
  */
-export interface ApiShow<
-  M extends AbstractModel,
-  P extends any[] = [],
-  I extends IdOr<M> = IdOr<M>
-> {
+export interface ApiShow<M extends AbstractModel, P extends any[] = [] > {
   /**
    * Get individual model
    *
    * @param model Model or model id to retrieve
    * @param urlParameters URL parameter values
    */
-  show(model: M | I, ...urlParameters: P): Observable<M>;
+  show(model: M | IdOr<M>, ...urlParameters: P): Observable<M>;
+}
+
+/**
+ * An endpoint that groups models given a filter condition.
+ * These endpoints do not return database-backed models. Therefore they cannot
+ * have an id.
+ */
+export interface ApiFilterGroupBy<
+  Model extends AbstractModel,
+  ReturnedModel extends AbstractModelWithoutId | AbstractData,
+  Parameters extends unknown[] = [],
+> {
+  /**
+   * Get a list of grouped models filtered by conditions.
+   */
+  filterGroupBy(
+    filter: Pick<Filters<Model>, "filter">,
+    ...urlParameters: Parameters
+  ): Observable<ReturnedModel[]>;
 }
 
 /**
