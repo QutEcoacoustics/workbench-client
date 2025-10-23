@@ -5,6 +5,7 @@ import {
   IQueryStringParameterSpec,
   jsNumber,
   jsString,
+  serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { hasMany, hasOne } from "@models/AssociationDecorators";
@@ -14,6 +15,8 @@ import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { verificationStatusOptions } from "../annotation-search-form/annotationSearchParameters";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { filterAnd } from "@helpers/filters/filters";
 
 // The verification status options map can be found in the
 // AnnotationSearchParameter's getters.
@@ -40,12 +43,9 @@ export class VerificationParameters
   implements IVerificationParameters, IParameterModel<AudioEvent>
 {
   public _taskBehavior: TaskBehaviorKey;
-  public _verificationStatus: VerificationStatusKey;
+  public _verificationStatus: VerificationStatusKey = "unverified-for-me";
   public taskTag: Id<Tag>;
   public tags: Ids<Tag>;
-
-  private readonly defaultVerificationStatus: VerificationStatusKey = "unverified-for-me";
-
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -94,17 +94,10 @@ export class VerificationParameters
   }
 
   public set verificationStatus(value: string) {
-    if (this.isVerificationStatusKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we have
-      // a default value for the verification status if there is no explicit
-      // query string parameter.
-      if (value === this.defaultVerificationStatus) {
-        this._verificationStatus = null;
-      } else {
-        this._verificationStatus = value;
-      }
+    if (this.isVerificationStatusKey(value)) {
+      this._verificationStatus = value;
     } else {
-      console.error(`Invalid select key: "${value}"`);
+      console.error(`Invalid verification status: "${value}"`);
     }
   }
 
@@ -113,6 +106,21 @@ export class VerificationParameters
 
   @hasOne(TAG, "taskTag")
   public taskTagModel?: Tag;
+
+  public toQueryParams(): Params {
+    return serializeObjectToParams<IVerificationParameters>(
+      this,
+      serializationTable,
+    );
+  }
+
+  public toFilter(): Filters<AudioEvent> {
+    const filter = verificationStatusOptions(this.user).get(
+      this.verificationStatus,
+    );
+
+    return { filter };
+  }
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {
     return verificationStatusOptions(this.user).has(key as any);

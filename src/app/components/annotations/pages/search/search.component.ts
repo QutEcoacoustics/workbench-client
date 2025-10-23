@@ -42,6 +42,7 @@ import {
   VerificationFiltersModalComponent,
 } from "@components/annotations/components/modals/verification-filters/verification-filters.component";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
+import { mergeParameters } from "@helpers/parameters/merge";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -196,7 +197,11 @@ class AnnotationSearchComponent
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {
-    const queryParameters = this.searchParameters.toQueryParams();
+    const queryParameters = mergeParameters(
+      this.searchParameters.toQueryParams(),
+      this.verificationParameters.toQueryParams(),
+    );
+
     const numberOfParameters = Object.keys(queryParameters).length;
 
     // if the user has not added any search filters, we want to confirm that the

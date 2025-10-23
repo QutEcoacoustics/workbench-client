@@ -7,7 +7,9 @@ import {
 import { AbstractData } from "@models/AbstractData";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 
-export interface IParameterModel<T extends AbstractModelWithoutId> {
+export interface IParameterModel<
+  T extends AbstractModelWithoutId = AbstractModelWithoutId,
+> {
   toQueryParams(): Params;
   toFilter(): Filters<T, keyof T>;
 }

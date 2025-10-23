@@ -291,14 +291,23 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
-  // TODO: fix up this function
-  public toFilter(): Filters<AudioEvent> {
+  public toQueryParams(): Params {
+    return serializeObjectToParams<IAnnotationSearchParameters>(
+      this,
+      serializationTable,
+    );
+  }
+
+  public toFilter({ includeVerification = false } = {}): Filters<AudioEvent> {
     let filter = this.tagFilters();
     filter = this.addRecordingFilters(filter);
     filter = this.annotationImportFilters(filter);
     filter = this.addRouteFilters(filter);
     filter = this.addEventFilters(filter);
-    filter = this.addVerificationFilters(filter);
+
+    if (includeVerification) {
+      filter = this.addVerificationFilters(filter);
+    }
 
     // If the "sort" query string parameter is not set, this.sortingFilters()
     // will return undefined.
@@ -308,13 +317,6 @@ export class AnnotationSearchParameters
     }
 
     return { filter, sorting };
-  }
-
-  public toQueryParams(): Params {
-    return serializeObjectToParams<IAnnotationSearchParameters>(
-      this,
-      serializationTable,
-    );
   }
 
   private siteIds(): Id<Site>[] {

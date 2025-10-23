@@ -23,7 +23,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters, Paging } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
   DecisionMadeEvent,
   VerificationGridComponent,
@@ -68,6 +68,7 @@ import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import { filterAnd } from "@helpers/filters/filters";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -171,7 +172,7 @@ class VerificationComponent
     });
 
     this.verificationParameters.update((current) => {
-      const newModel = current ?? (models[searchParametersKey] as VerificationParameters);
+      const newModel = current ?? (models[verificationParametersKey] as VerificationParameters);
       newModel.injector = this.injector;
       return newModel;
     });
@@ -446,13 +447,22 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const paging: Paging = { page };
-    const routeFilters = this.searchParameters().toFilter();
+    const searchFilters = this.searchParameters().toFilter();
+    const verificationFilters = this.verificationParameters().toFilter();
 
-    return {
-      paging,
-      ...routeFilters,
+    const paging: Paging = { page };
+
+    const filter = filterAnd<AudioEvent>(
+      searchFilters.filter,
+      verificationFilters.filter,
+    );
+
+    const sorting: Sorting<keyof AudioEvent> = {
+      ...searchFilters.sorting,
+      ...verificationFilters.sorting,
     };
+
+    return { paging, filter, sorting };
   }
 
   private updateUrlParameters(): void {
