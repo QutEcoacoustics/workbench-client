@@ -155,15 +155,17 @@
     </div>
   </div>
 
-  <div class="mt-2">
-    <label class="form-label w-100">Show annotations that</label>
-    <baw-selectable-items
-      [options]="verifiedStatusOptions()"
-      [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
-      [inline]="true"
-      (selectionChange)="updateParameterProperty('verificationStatus', $event)"
-    />
-  </div>
+  @if (showVerificationOptions()) {
+    <div class="mt-2">
+      <label class="form-label w-100">Show annotations that</label>
+      <baw-selectable-items
+        [options]="verifiedStatusOptions()"
+        [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
+        [inline]="true"
+        (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+      />
+    </div>
+  }
 
   <label class="form-label mt-2 w-100">
     Sort by

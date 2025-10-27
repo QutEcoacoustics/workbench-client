@@ -3,7 +3,14 @@
 </div>
 
 <div class="filters-modal-body modal-body modal-large">
-  <baw-annotation-search-form [(searchParameters)]="formValue" />
+  <baw-annotation-search-form
+    [(searchParameters)]="searchFormValue"
+    [showVerificationOptions]="true"
+  />
+
+  <hr />
+
+  <baw-verification-form [(verificationParameters)]="verificationFormValue" />
 </div>
 
 <div class="modal-footer justify-content-end">
@@ -15,11 +22,7 @@
     >
       Exit without updating
     </button>
-    <button
-      id="update-filters-btn"
-      class="btn btn-primary"
-      (click)="success()"
-    >
+    <button id="update-filters-btn" class="btn btn-primary" (click)="success()">
       Update search filters
     </button>
   </div>

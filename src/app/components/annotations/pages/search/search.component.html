@@ -46,8 +46,8 @@
         <h2 class="no-results-error">No annotations found</h2>
       } @else {
         <div class="annotations-grid my-2">
-          @for (verificationModel of searchResults(); track verificationModel.id) {
-            <baw-annotation-event-card [annotation]="verificationModel" />
+          @for (annotationModel of searchResults(); track annotationModel.id) {
+            <baw-annotation-event-card [annotation]="annotationModel" />
           }
         </div>
       }

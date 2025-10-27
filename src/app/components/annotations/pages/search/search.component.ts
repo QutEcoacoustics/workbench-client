@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
@@ -34,14 +33,18 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
-import { VerificationFiltersModalComponent } from "@components/annotations/components/modals/verification-filters/verification-filters.component";
-import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
+import {
+  VerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/verification-filters/verification-filters.component";
 import { mergeParameters } from "@helpers/parameters/merge";
 import { filterAnd } from "@helpers/filters/filters";
+import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -70,11 +73,12 @@ class AnnotationSearchComponent
 {
   protected readonly modals = inject(NgbModal);
   private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
+  private readonly audioEventApi = inject(ShallowAudioEventsService);
 
-  public constructor(
-    protected readonly audioEventApi: ShallowAudioEventsService,
-    protected readonly annotationService: AnnotationService,
-  ) {
+  public constructor() {
+    const audioEventApi = inject(ShallowAudioEventsService);
+    const annotationService = inject(AnnotationService);
+
     super(
       audioEventApi,
       "id",
@@ -119,8 +123,11 @@ class AnnotationSearchComponent
     ElementRef<VerificationFiltersModalComponent>
   >("verificationFiltersModal");
 
-  public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
-  public readonly verificationParameters = signal<VerificationParameters | null>(null);
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(
+    null,
+  );
+  public readonly verificationParameters =
+    signal<VerificationParameters | null>(null);
 
   public readonly searchResults = signal<Annotation[]>([]);
   public readonly paginationInformation = signal<Paging>({});
@@ -190,6 +197,7 @@ class AnnotationSearchComponent
   protected updateSearchParameters(model: AnnotationSearchParameters): void {
     this.searchParameters.set(model);
     this.updateQueryParams(this.page);
+    this.updateFromUrl();
   }
 
   protected async createVerificationTask(): Promise<void> {

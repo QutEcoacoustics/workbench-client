@@ -23,12 +23,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import {
-  Filters,
-  InnerFilter,
-  Paging,
-  Sorting,
-} from "@baw-api/baw-api.service";
+import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
   DecisionMadeEvent,
   VerificationGridComponent,
@@ -52,7 +47,9 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -72,6 +69,8 @@ import { AnnotationSearchParameters } from "@components/annotations/components/a
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { filterAnd } from "@helpers/filters/filters";
+import { SearchVerificationFiltersModalComponent } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -97,7 +96,7 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
-  imports: [FaIconComponent, NgbTooltip, SearchFiltersModalComponent],
+  imports: [FaIconComponent, NgbTooltip, SearchVerificationFiltersModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -161,7 +160,6 @@ class VerificationComponent
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    console.log(models);
     this.searchParameters.update(() => {
       const newModel = models[searchParametersKey] as AnnotationSearchParameters;
       newModel.injector = this.injector;
@@ -232,12 +230,7 @@ class VerificationComponent
   }
 
   protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    if (!this.hasUnsavedChanges()) {
-      this.searchParameters.set(newModel);
-      this.updateGridCallback();
-      return;
-    }
-
+    this.searchParameters.set(newModel);
     this.updateGridCallback();
   }
 
@@ -286,7 +279,6 @@ class VerificationComponent
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
     this.updateUrlParameters();
-    this.hasUnsavedChanges.set(false);
 
     this.hasCorrectionTask.set(
       this.verificationParameters().taskBehavior === "verify-and-correct-tag",
@@ -480,7 +472,11 @@ class VerificationComponent
   }
 
   private updateUrlParameters(): void {
-    const queryParams = this.searchParameters().toQueryParams();
+    const queryParams = mergeParameters(
+      this.searchParameters().toQueryParams(),
+      this.verificationParameters().toQueryParams(),
+    );
+
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
   }

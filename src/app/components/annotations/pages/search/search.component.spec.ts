@@ -14,9 +14,9 @@ import { Site } from "@models/Site";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { fakeAsync, flush, tick } from "@angular/core/testing";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { getElementByTextContent } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
@@ -40,9 +40,9 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { AnnotationSearchComponent } from "./search.component";
 import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {
   const responsePageSize = 24;
@@ -163,7 +163,7 @@ describe("AnnotationSearchComponent", () => {
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
-    spec.click(target);
+    clickButton(spec, target);
   }
 
   beforeEach(fakeAsync(() => {
@@ -240,10 +240,7 @@ describe("AnnotationSearchComponent", () => {
       expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
     });
 
-    fit("should make the correct api calls when 'verification status' is changed", () => {
-      audioEventsSpy.filter.calls.reset();
-      clickVerificationStatusFilter("unverified-for-me");
-
+    it("should make the correct api calls when 'verification status' is changed", () => {
       const expectedBody: Filters<AudioEvent> = {
         paging: {
           page: 1,
@@ -300,6 +297,9 @@ describe("AnnotationSearchComponent", () => {
           direction: "asc",
         },
       };
+
+      audioEventsSpy.filter.calls.reset();
+      clickVerificationStatusFilter("unverified-for-me");
 
       expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
     });

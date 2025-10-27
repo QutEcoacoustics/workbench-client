@@ -3,7 +3,7 @@
 </div>
 
 <div class="filters-modal-body modal-body modal-large">
-  <baw-verification-form [(searchParameters)]="formValue" />
+  <baw-verification-form [(verificationParameters)]="formValue" />
 </div>
 
 <div class="modal-footer justify-content-end">
@@ -12,7 +12,6 @@
       id="exit-btn"
       class="btn btn-outline-primary me-2"
       (click)="closeModal()"
-      [disabled]="!this.isFormDirty()"
     >
       Cancel
     </button>

@@ -20,6 +20,7 @@ import {
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
+  withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
@@ -145,8 +146,11 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
   regions: jsNumberArray,
   sites: jsNumberArray,
 
-  sort: jsString,
-  verificationStatus: jsString,
+  sort: withDefault(jsString, "created-asc"),
+
+  // Unlike the verification parameters, we want to show all audio events when
+  // only using the annotation search parameters by default.
+  verificationStatus: withDefault(jsString, "any"),
 };
 
 const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
@@ -189,10 +193,8 @@ export class AnnotationSearchParameters
   public eventDate: MonoTuple<DateTime, 2>;
   public eventTime: MonoTuple<Duration, 2>;
 
-  private _sort: SortingKey;
-  private _verificationStatus: VerificationStatusKey;
-
-  private readonly defaultVerificationStatus: VerificationStatusKey = "any";
+  public verificationStatus: VerificationStatusKey;
+  public sort: SortingKey;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -200,51 +202,6 @@ export class AnnotationSearchParameters
     public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
-  }
-
-  public get sort(): SortingKey {
-    return this._sort;
-  }
-
-  /**
-   * A getter/setter pair that will reject incorrect sorting values.
-   * This setter can soft reject by logging an error and not updating the
-   * underlying value.
-   */
-  public set sort(value: string) {
-    // We have a !isInstantiated condition here so that the sorting value can be
-    // explicitly nullified/removed after creation.
-    if (this.isSortingKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we use
-      // upload-date-asc as the default if there is no "sort" query string
-      // parameter.
-      if (value === "created-asc") {
-        this._sort = null;
-      } else {
-        this._sort = value;
-      }
-    } else {
-      console.error(`Invalid sorting key: "${value}"`);
-    }
-  }
-
-  public get verificationStatus(): VerificationStatusKey {
-    return this._verificationStatus;
-  }
-
-  public set verificationStatus(value: string) {
-    if (this.isVerificationStatusKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we have
-      // a default value for the verification status if there is no explicit
-      // query string parameter.
-      if (value === this.defaultVerificationStatus) {
-        this._verificationStatus = null;
-      } else {
-        this._verificationStatus = value;
-      }
-    } else {
-      console.error(`Invalid select key: "${value}"`);
-    }
   }
 
   @hasMany(AUDIO_RECORDING, "audioRecordings")
@@ -465,20 +422,33 @@ export class AnnotationSearchParameters
   }
 
   private addVerificationFilters(initialFilter: InnerFilter<AudioEvent>) {
-    const statusKey = this.isVerificationStatusKey(this.verificationStatus)
-      ? this.verificationStatus
-      : this.defaultVerificationStatus;
+    const defaultVerificationStatus = "any" satisfies VerificationStatusKey;
+
+    const isValidKey = this.isVerificationStatusKey(this.verificationStatus);
+    const statusKey = isValidKey ? this.verificationStatus : defaultVerificationStatus;
+    if (!isValidKey) {
+      console.warn(
+        `Invalid verification status key provided: '${this.verificationStatus}'. Falling back to '${statusKey}'.`,
+      );
+    }
 
     const filters = verificationStatusOptions(this.user).get(statusKey);
 
     return filterAnd(initialFilter, filters);
   }
 
+  private isVerificationStatusKey(key: string): key is VerificationStatusKey {
+    return verificationStatusOptions(this.user).has(key as any);
+  }
+
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
     const defaultSortKey = "created-asc" satisfies SortingKey;
-    const sortingKey = this.isSortingKey(this.sort)
-      ? this.sort
-      : defaultSortKey;
+
+    const isValidKey = this.isSortingKey(this.sort);
+    const sortingKey = isValidKey ? this.sort : defaultSortKey;
+    if (!isValidKey) {
+      console.warn(`Invalid sorting key provided: '${this.sort}'. Falling back to '${sortingKey}'.`);
+    }
 
     // If the sortingKey does not exist in the sortingOptions, this function
     // will return "undefined".
@@ -498,9 +468,5 @@ export class AnnotationSearchParameters
     // would return true, and would attempt to serialize a function when
     // creating the filter request body.
     return sortingOptions.has(key as any);
-  }
-
-  private isVerificationStatusKey(key: string): key is VerificationStatusKey {
-    return verificationStatusOptions(this.user).has(key as any);
   }
 }

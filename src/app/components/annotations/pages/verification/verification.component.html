@@ -101,10 +101,10 @@
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>
-  <baw-search-filters-modal
+  <baw-search-verification-filters-modal
     [modal]="filtersModal"
-    [formValue]="searchParameters()"
-    [hasDecisions]="hasUnsavedChanges()"
+    [searchFormValue]="searchParameters()"
+    [verificationFormValue]="verificationParameters()"
     [successCallback]="requestModelUpdate.bind(this)"
   />
 </ng-template>

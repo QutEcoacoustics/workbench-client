@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, input, model, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  input,
+  model,
+} from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "@menu/widget.component";
 import { VerificationParameters } from "../../verification-form/verificationParameters";
@@ -19,20 +25,12 @@ export class VerificationFiltersModalComponent implements ModalComponent {
   @Input()
   public successCallback: (newModel: VerificationParameters) => void;
 
-  protected readonly isFormDirty = signal(true);
-
   public closeModal(): void {
     this.modal().close();
   }
 
   public success(): void {
-    if (this.isFormDirty()) {
-      this.successCallback(this.formValue());
-
-      this.closeModal();
-      return;
-    }
-
+    this.successCallback(this.formValue());
     this.closeModal();
   }
 }

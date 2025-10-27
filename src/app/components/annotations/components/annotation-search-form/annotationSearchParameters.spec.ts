@@ -88,15 +88,10 @@ describe("annotationSearchParameters", () => {
       inputParams: undefined,
       expectedFilters: () => ({
         filter: {
-          and: [
-            {
-              "projects.id": {
-                in: [routeProject.id],
-              },
-            },
-            myUnverifiedFilters,
-          ],
-        },
+          "projects.id": {
+            in: [routeProject.id],
+          },
+        } as any,
         sorting: defaultSorting,
       }),
     },
@@ -197,7 +192,6 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { gteq: 0.2 } },
-            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -217,7 +211,6 @@ describe("annotationSearchParameters", () => {
               },
             },
             { score: { lteq: 0.9 } },
-            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,

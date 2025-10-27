@@ -36,8 +36,8 @@ import {
 export class VerificationFormComponent {
   protected readonly tagsApi = inject(TagsService);
 
-  public readonly searchParameters = model.required<VerificationParameters>();
-  public readonly searchParametersChange = output<VerificationParameters>();
+  public readonly verificationParameters = model.required<VerificationParameters>();
+  public readonly verificationParametersChange = output<VerificationParameters>();
 
   protected readonly verifiedStatusOptions: ISelectableItem<VerificationStatusKey>[] =
     [
@@ -55,7 +55,7 @@ export class VerificationFormComponent {
    * has explicitly defined a tag they are performing a verification task on.
    */
   protected hasTaskTag(): boolean {
-    const taskTag = this.searchParameters().taskTagModel;
+    const taskTag = this.verificationParameters().taskTagModel;
 
     const isResolved = !isUnresolvedModel(taskTag);
     const instantiated = isInstantiated(taskTag);
@@ -64,7 +64,7 @@ export class VerificationFormComponent {
   }
 
   protected updateTaskTag(newTaskTags: Tag[]): void {
-    this.searchParameters.update((current) => {
+    this.verificationParameters.update((current) => {
       current.taskTag = newTaskTags[0]?.id ?? null;
       return current;
     });
@@ -73,20 +73,20 @@ export class VerificationFormComponent {
   }
 
   protected updateTaskBehavior(newBehavior: TaskBehaviorKey): void {
-    this.searchParameters.update((current) => {
+    this.verificationParameters.update((current) => {
       current.taskBehavior = newBehavior;
       return current;
     });
   }
 
   protected updateVerificationStatus(newStatus: VerificationStatusKey): void {
-    this.searchParameters.update((current) => {
+    this.verificationParameters.update((current) => {
       current.verificationStatus = newStatus;
       return current;
     });
   }
 
   private emitUpdate() {
-    this.searchParametersChange.emit(this.searchParameters());
+    this.verificationParametersChange.emit(this.verificationParameters());
   }
 }

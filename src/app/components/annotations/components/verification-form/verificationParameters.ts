@@ -7,6 +7,7 @@ import {
   jsNumberArray,
   jsString,
   serializeObjectToParams,
+  withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { Id, Ids } from "@interfaces/apiInterfaces";
 import { hasMany, hasOne } from "@models/AssociationDecorators";
@@ -15,9 +16,8 @@ import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { Filters } from "@baw-api/baw-api.service";
 import { verificationStatusOptions } from "../annotation-search-form/annotationSearchParameters";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { filterAnd } from "@helpers/filters/filters";
 
 // The verification status options map can be found in the
 // AnnotationSearchParameter's getters.
@@ -36,22 +36,21 @@ export interface IVerificationParameters {
 }
 
 const serializationTable: IQueryStringParameterSpec<IVerificationParameters> = {
-  verificationStatus: jsString,
-  taskBehavior: jsString,
-
   tags: jsNumberArray,
   taskTag: jsNumber,
+
+  verificationStatus: withDefault(jsString, "unverified-for-me"),
+  taskBehavior: withDefault(jsString, "verify"),
 };
 
 export class VerificationParameters
   extends ParameterModel<AudioEvent>(serializationTable)
   implements IVerificationParameters, IParameterModel<AudioEvent>
 {
-  public _taskBehavior: TaskBehaviorKey;
-  public _verificationStatus: VerificationStatusKey = "unverified-for-me";
-
   public tags: Ids<Tag>;
   public taskTag: Id<Tag>;
+  public taskBehavior: TaskBehaviorKey;
+  public verificationStatus: VerificationStatusKey;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -78,37 +77,6 @@ export class VerificationParameters
     return Array.from(baseTags);
   }
 
-  public get taskBehavior(): TaskBehaviorKey {
-    return this._taskBehavior;
-  }
-
-  public set taskBehavior(value: string) {
-    if (this.isTaskBehaviorKey(value) || !isInstantiated(value)) {
-      // So that we can minimize the number of query string parameters, we use
-      // "verify" as the default if there is no "taskBehavior" query string
-      // parameter.
-      if (value === "verify") {
-        this._taskBehavior = null;
-      } else {
-        this._taskBehavior = value;
-      }
-    } else {
-      console.error(`Invalid select key: "${value}"`);
-    }
-  }
-
-  public get verificationStatus(): VerificationStatusKey {
-    return this._verificationStatus;
-  }
-
-  public set verificationStatus(value: string) {
-    if (this.isVerificationStatusKey(value)) {
-      this._verificationStatus = value;
-    } else {
-      console.error(`Invalid verification status: "${value}"`);
-    }
-  }
-
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
 
@@ -116,7 +84,6 @@ export class VerificationParameters
   public taskTagModel?: Tag;
 
   public toQueryParams(): Params {
-    console.log(this);
     return serializeObjectToParams<IVerificationParameters>(
       this,
       serializationTable,
@@ -129,17 +96,5 @@ export class VerificationParameters
     );
 
     return { filter };
-  }
-
-  private isVerificationStatusKey(key: string): key is VerificationStatusKey {
-    return verificationStatusOptions(this.user).has(key as any);
-  }
-
-  private isTaskBehaviorKey(key: string): key is TaskBehaviorKey {
-    const validOptions: TaskBehaviorKey[] = [
-      "verify-and-correct-tag",
-      "verify",
-    ];
-    return validOptions.some((option) => option === key);
   }
 }

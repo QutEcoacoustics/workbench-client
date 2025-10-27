@@ -10,6 +10,7 @@ export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
 interface ISerializationTechnique {
   serialize: (value: any) => string;
   deserialize: (value: string) => any;
+  hasDefault?: boolean;
 }
 
 export const luxonDate = {
@@ -62,24 +63,23 @@ export const jsStringArray = {
   deserialize: queryStringArray,
 };
 
-/** Converts an object to an Angular `Params` object with stringified values */
+/**
+ * Converts a structured parameter model into an Angular `Params` object with
+ * stringified values.
+ *
+ * You should be using this when creating query string parameters.
+ */
 export function serializeObjectToParams<T>(
   queryStringParameters: T,
   spec: IQueryStringParameterSpec<Partial<T>>,
 ): Params {
   const resultParameter: Params = {};
 
-  // under our current typescript config, queryString can be undefined
-  // TODO: remove as part of https://github.com/QutEcoacoustics/workbench-client/issues/2066
-  if (!isInstantiated(queryStringParameters)) {
-    return resultParameter;
-  }
-
   // We iterate over the spec instead of using Object.entries on the
   // queryStringParameter model so that the qsp model can contain getters which
   // would not be returned by Object.entries.
   Object.entries(spec).forEach(
-    ([key, serializationTechnique]: [string, ISerializationTechnique]) => {
+    ([key, serializer]: [string, ISerializationTechnique]) => {
       const value = queryStringParameters[key];
 
       // null and undefined values are omitted when used on angular HTTPParams
@@ -90,8 +90,8 @@ export function serializeObjectToParams<T>(
         return;
       }
 
-      if (serializationTechnique) {
-        const paramValue = serializationTechnique.serialize(value);
+      if (serializer) {
+        const paramValue = serializer.serialize(value);
         if (!isInstantiated(paramValue)) {
           return;
         }
@@ -104,28 +104,57 @@ export function serializeObjectToParams<T>(
   return resultParameter;
 }
 
-/** Converts a Angular `Params` object to an object with instantiated types and objects */
+/**
+ * Converts an object to an Angular `Params` object with stringified values into
+ * a structured parameter model with computed types and objects.
+ *
+ * You should be using this when reading query string parameters.
+ */
 export function deserializeParamsToObject<T>(
   queryString: Params,
   spec: IQueryStringParameterSpec,
 ): T {
   const returnedObject = {};
 
-  // under our current typescript config, queryString can be undefined
-  // TODO: remove as part of https://github.com/QutEcoacoustics/workbench-client/issues/2066
-  if (!isInstantiated(queryString)) {
-    return returnedObject as T;
-  }
-
-  Object.entries(queryString).forEach(([key, value]: [string, string]) => {
-    if (key in spec) {
-      const deserializationTechnique = spec[key];
-
-      returnedObject[key] = deserializationTechnique.deserialize(value);
+  Object.entries(spec).forEach(([key, serializer]) => {
+    const qspValue = queryString[key];
+    if (!qspValue && !serializer.hasDefault) {
+      return;
     }
+
+    returnedObject[key]  = serializer.deserialize(qspValue);
   });
 
   return returnedObject as T;
+}
+
+export function withDefault(
+  serializationTechnique: ISerializationTechnique,
+  defaultValue: any,
+): ISerializationTechnique {
+  return {
+    serialize: (value: any) => {
+      // If the current value is the default value, we omit it from the query
+      // string to reduce clutter in the URL.
+      if (value === defaultValue) {
+        return null;
+      }
+
+      if (!isInstantiated(value)) {
+        return serializationTechnique.serialize(defaultValue);
+      }
+
+      return serializationTechnique.serialize(value);
+    },
+    deserialize: (value: string) => {
+      if (!isInstantiated(value) || value === "") {
+        return defaultValue;
+      }
+
+      return serializationTechnique.deserialize(value);
+    },
+    hasDefault: true,
+  };
 }
 
 // individual serialization techniques for data types

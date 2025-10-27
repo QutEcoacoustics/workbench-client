@@ -12,7 +12,6 @@ export function generateVerificationUrlParams(data?: Params): Params {
     verificationStatus: modelData.helpers.arrayElement<VerificationStatusKey>([
       "unverified-for-me",
       "unverified",
-      "any",
     ]),
     ...data,
   };

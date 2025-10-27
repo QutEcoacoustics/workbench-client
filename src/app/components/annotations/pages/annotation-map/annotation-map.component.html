@@ -132,7 +132,6 @@
 <ng-template #searchFiltersModal let-filtersModal>
   <baw-search-filters-modal
     [modal]="filtersModal"
-    [hasDecisions]="false"
     [successCallback]="updateSearchParameters.bind(this)"
     [formValue]="annotationSearchParameters()"
   />

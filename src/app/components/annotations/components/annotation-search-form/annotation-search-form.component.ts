@@ -2,6 +2,7 @@ import {
   Component,
   computed,
   inject,
+  input,
   model,
   OnInit,
   output,
@@ -92,6 +93,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   public readonly searchParameters =
     model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
+
+  public readonly showVerificationOptions = input<boolean>(true);
 
   private recordingsTypeahead = viewChild<
     TypeaheadInputComponent<AudioRecording>
