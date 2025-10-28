@@ -35,7 +35,9 @@ import { Id } from "@interfaces/apiInterfaces";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { annotationSearchRoute } from "@components/annotations/annotation.routes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import {
   annotationCategories,

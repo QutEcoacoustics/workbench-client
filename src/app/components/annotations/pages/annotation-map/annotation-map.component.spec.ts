@@ -41,10 +41,9 @@ import { EventModalComponent } from "@shared/event-modal/event-modal.component";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { nStepObservable } from "@test/helpers/general";
 import { AnnotationMapParameters } from "./annotationMapParameters";
 import { AnnotationMapPageComponent } from "./annotation-map.component";
-import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
-import { nStepObservable } from "@test/helpers/general";
 
 describe("AnnotationMapPageComponent", () => {
   let spec: SpectatorRouting<AnnotationMapPageComponent>;

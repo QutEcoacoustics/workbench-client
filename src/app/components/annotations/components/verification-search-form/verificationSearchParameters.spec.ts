@@ -1,7 +1,7 @@
+import { Params } from "@angular/router";
 import { VerificationParameters } from "../verification-form/verificationParameters";
 import { generateUser } from "@test/fakes/User";
 import { User } from "@models/User";
-import { Params } from "@angular/router";
 
 describe("VerificationSearchParameters", () => {
   let mockUser: User;

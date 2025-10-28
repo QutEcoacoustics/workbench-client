@@ -77,9 +77,9 @@ import {
   VerificationParameters,
   VerificationStatusKey,
 } from "@components/annotations/components/verification-form/verificationParameters";
+import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
-import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
 
 enum DecisionOptions {
   TRUE = "true",
@@ -833,9 +833,9 @@ describe("VerificationComponent", () => {
       }
 
       xit("should make verification api calls about the entire page if nothing is selected", async () => {
-        await clickDecisionButton(DecisionOptions.TRUE),
-          expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
-            gridSize(),
+        await clickDecisionButton(DecisionOptions.TRUE);
+        expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+          gridSize(),
           );
       });
     });

@@ -108,7 +108,7 @@ describe("annotationSearchParameters", () => {
         sites: "6,7,8,9",
 
         taskTag: "5",
-        verificationStatus: "any",
+        verificationStatus: "unverified-by-me",
       },
       expectedFilters: () => ({
         filter: {
@@ -130,6 +130,7 @@ describe("annotationSearchParameters", () => {
             },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
+            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,

@@ -18,7 +18,6 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateTag } from "@test/fakes/Tag";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { modelData } from "@test/helpers/faker";
 import { AnnotationService } from "./annotation.service";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";

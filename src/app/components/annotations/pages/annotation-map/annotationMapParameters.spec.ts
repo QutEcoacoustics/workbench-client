@@ -1,6 +1,6 @@
 import { generateAnnotationMapUrlParameters } from "@test/fakes/data/AnnotationMapParameters";
-import { AnnotationMapParameters } from "./annotationMapParameters";
 import { modelData } from "@test/helpers/faker";
+import { AnnotationMapParameters } from "./annotationMapParameters";
 
 describe("AnnotationMapParameters", () => {
   it("should create", () => {

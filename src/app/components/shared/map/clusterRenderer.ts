@@ -1,5 +1,4 @@
 import { ClusterStats, Renderer, Cluster } from "@googlemaps/markerclusterer"
-import { MapMarkerOptions } from "@services/maps/maps.service";
 
 // Adapted from the @googlemaps/js-markerclusterer default cluster renderer
 // https://github.com/googlemaps/js-markerclusterer/blob/8acb046d9b5/src/renderer.ts#L107

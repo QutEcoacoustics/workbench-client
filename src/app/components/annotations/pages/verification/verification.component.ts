@@ -69,7 +69,9 @@ import { AnnotationSearchParameters } from "@components/annotations/components/a
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { filterAnd } from "@helpers/filters/filters";
-import { SearchVerificationFiltersModalComponent } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import {
+  SearchVerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
 import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {

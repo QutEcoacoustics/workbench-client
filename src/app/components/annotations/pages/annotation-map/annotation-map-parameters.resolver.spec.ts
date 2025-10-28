@@ -1,7 +1,7 @@
-import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
-import { AnnotationMapParametersResolver } from "./annotation-map-parameters.resolver";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { modelData } from "@test/helpers/faker";
+import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { AnnotationMapParametersResolver } from "./annotation-map-parameters.resolver";
 
 describe("AnnotationMapParametersResolver", () => {
   let spec: SpectatorService<AnnotationMapParametersResolver>;

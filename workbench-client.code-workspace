@@ -113,7 +113,8 @@
       "xabikos.jasminesnippets",
       "aaron-bond.better-comments",
       "esbenp.prettier-vscode",
-      "editorconfig.editorconfig"
+      "editorconfig.editorconfig",
+      "redhat.vscode-yaml",
     ]
   }
 }

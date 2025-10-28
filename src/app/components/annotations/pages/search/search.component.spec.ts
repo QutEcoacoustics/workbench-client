@@ -14,7 +14,7 @@ import { Site } from "@models/Site";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
