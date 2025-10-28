@@ -432,12 +432,12 @@ export class AnnotationSearchParameters
   private addVerificationFilters(initialFilter: InnerFilter<AudioEvent>) {
     const defaultVerificationStatus = "any" satisfies VerificationStatusKey;
 
-    const isValidKey = this.isVerificationStatusKey(this.verificationStatus);
-    const statusKey = isValidKey ? this.verificationStatus : defaultVerificationStatus;
-    if (!isValidKey) {
+    let statusKey = this.verificationStatus;
+    if (!this.isVerificationStatusKey(statusKey)) {
       console.warn(
-        `Invalid verification status key provided: '${this.verificationStatus}'. Falling back to '${statusKey}'.`,
+        `Invalid verification status key provided: '${statusKey}'. Falling back to '${defaultVerificationStatus}'.`,
       );
+      statusKey = defaultVerificationStatus;
     }
 
     const filters = verificationStatusOptions(this.user).get(statusKey);
@@ -452,12 +452,12 @@ export class AnnotationSearchParameters
   private sortingFilters(): Sorting<keyof AudioEvent> | undefined {
     const defaultSortKey = "created-asc" satisfies SortingKey;
 
-    const isValidKey = this.isSortingKey(this.sort);
-    const sortingKey = isValidKey ? this.sort : defaultSortKey;
-    if (!isValidKey) {
+    let sortingKey = this.sort;
+    if (!this.isSortingKey(sortingKey)) {
       console.warn(
-        `Invalid sorting key provided: '${this.sort}'. Falling back to '${sortingKey}'.`,
+        `Invalid sorting key provided: '${this.sort}'. Falling back to '${defaultSortKey}'.`,
       );
+      sortingKey = defaultSortKey;
     }
 
     // If the sortingKey does not exist in the sortingOptions, this function
