@@ -219,6 +219,12 @@ function createModelDecorator<
     });
   }
 
+  const backingFieldKey = "_" + identifierKey.toString();
+
+  function invalidateBackingField(parent: Parent) {
+    parent[backingFieldKey] = undefined;
+  }
+
   /**
    * Get the associated model for a target model
    *
@@ -228,8 +234,7 @@ function createModelDecorator<
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
     // Check for any backing models
-    const backingFieldKey = "_" + identifierKey.toString();
-    if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
+    if (parent[backingFieldKey] !== undefined) {
       return parent[backingFieldKey];
     }
 
@@ -291,6 +296,18 @@ function createModelDecorator<
     Object.defineProperty(target, associationKey, {
       get(this: Parent) {
         return getAssociatedModel(this);
+      },
+      configurable: true,
+    });
+
+    let identifierValue: any;
+    Object.defineProperty(target, identifierKey, {
+      get(this: Parent) {
+        return identifierValue;
+      },
+      set(this: Parent, newValue: any) {
+        identifierValue = newValue;
+        invalidateBackingField(this);
       },
       configurable: true,
     });
