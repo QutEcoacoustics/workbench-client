@@ -83,7 +83,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
   public readonly newLocation = output<google.maps.MapMouseEvent>();
 
   /**
-   * An event that can is emitted when the marker is clicked with the mouse or
+   * An event that is emitted when the marker is clicked with the mouse or
    * through a keyboard event.
    */
   public readonly markerClicked = output<MapMarkerOptions>();
