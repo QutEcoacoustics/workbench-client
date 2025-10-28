@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { lastValueFrom } from "rxjs";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { lastValueFrom } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 class AnnotationsSearchParametersResolver

@@ -19,8 +19,8 @@ import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateTag } from "@test/fakes/Tag";
 import { modelData } from "@test/helpers/faker";
-import { AnnotationService } from "./annotation.service";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;

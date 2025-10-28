@@ -17,11 +17,22 @@ export class ClusterRenderer implements Renderer {
     for (const marker of markers) {
       // If there is no clusterWeight on the marker, we default to using a weight
       // of one.
-      clusterWeight += (marker as any).clusterWeight ?? 1;
+      clusterWeight += (marker as any).clusterWeight;
     }
 
+    // This SVG uses styling attribute instead of CSS because the SVG is
+    // rendered inside of the google-maps "shadow DOM"
+    // (component style encapsulation), meaning that I'd have to break this
+    // style encapsulation to style it via CSS.
+    // see: https://github.com/QutEcoacoustics/workbench-client/pull/2462#discussion_r2467510013
     const svg = `
-      <svg fill="var(--baw-primary)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="50" height="50">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 240 240"
+        width="50"
+        height="50"
+        fill="var(--baw-primary)"
+      >
         <circle cx="120" cy="120" opacity=".6" r="70" />
         <circle cx="120" cy="120" opacity=".3" r="90" />
         <circle cx="120" cy="120" opacity=".2" r="110" />

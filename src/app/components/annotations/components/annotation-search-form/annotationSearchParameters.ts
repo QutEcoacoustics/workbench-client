@@ -67,24 +67,30 @@ export const sortingOptions = new Map([
 
 export function verificationStatusOptions(user?: User) {
   return new Map([
-    ["unverified-for-me", {
-      or: [
-        { "verifications.creatorId": { notEq: user?.id ?? null } },
-        { "verifications.id": { eq: null } },
-        {
-          and: [
-            { "verifications.creatorId": { eq: user?.id ?? null } },
-            { "verifications.confirmed": { eq: "skip" } },
-          ],
-        },
-      ],
-    }],
-    ["unverified", {
-      or: [
-        { "verifications.confirmed": { eq: null } },
-        { "verifications.confirmed": { eq: "skip" } },
-      ],
-    }],
+    [
+      "unverified-for-me",
+      {
+        or: [
+          { "verifications.creatorId": { notEq: user?.id ?? null } },
+          { "verifications.id": { eq: null } },
+          {
+            and: [
+              { "verifications.creatorId": { eq: user?.id ?? null } },
+              { "verifications.confirmed": { eq: "skip" } },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "unverified",
+      {
+        or: [
+          { "verifications.confirmed": { eq: null } },
+          { "verifications.confirmed": { eq: "skip" } },
+        ],
+      },
+    ],
     ["any", null],
   ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
 }
@@ -131,35 +137,37 @@ export interface IAnnotationSearchParameters {
 
 // we exclude project, region, and site from the serialization table because
 // we do not want them emitted in the query string
-const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
-  audioRecordings: jsNumberArray,
-  tags: jsNumberArray,
-  importFiles: jsNumberArray,
-  daylightSavings: jsBoolean,
-  recordingDate: luxonDateArray,
-  recordingTime: luxonDurationArray,
-  score: jsNumberArray,
+const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
+  {
+    audioRecordings: jsNumberArray,
+    tags: jsNumberArray,
+    importFiles: jsNumberArray,
+    daylightSavings: jsBoolean,
+    recordingDate: luxonDateArray,
+    recordingTime: luxonDurationArray,
+    score: jsNumberArray,
 
-  // because the serialization of route parameters is handled by the angular
-  // router, we only want to serialize the model filter query string parameters
-  projects: jsNumberArray,
-  regions: jsNumberArray,
-  sites: jsNumberArray,
+    // because the serialization of route parameters is handled by the angular
+    // router, we only want to serialize the model filter query string parameters
+    projects: jsNumberArray,
+    regions: jsNumberArray,
+    sites: jsNumberArray,
 
-  sort: withDefault(jsString, "created-asc"),
+    sort: withDefault(jsString, "created-asc"),
 
-  // Unlike the verification parameters, we want to show all audio events when
-  // only using the annotation search parameters by default.
-  verificationStatus: withDefault(jsString, "any"),
-};
+    // Unlike the verification parameters, we want to show all audio events when
+    // only using the annotation search parameters by default.
+    verificationStatus: withDefault(jsString, "any"),
+  };
 
-const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> = {
-  ...serializationTable,
+const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
+  {
+    ...serializationTable,
 
-  routeProjectId: jsNumber,
-  routeRegionId: jsNumber,
-  routeSiteId: jsNumber,
-};
+    routeProjectId: jsNumber,
+    routeRegionId: jsNumber,
+    routeSiteId: jsNumber,
+  };
 
 export class AnnotationSearchParameters
   extends ParameterModel<AudioEvent>(deserializationTable)
@@ -447,7 +455,9 @@ export class AnnotationSearchParameters
     const isValidKey = this.isSortingKey(this.sort);
     const sortingKey = isValidKey ? this.sort : defaultSortKey;
     if (!isValidKey) {
-      console.warn(`Invalid sorting key provided: '${this.sort}'. Falling back to '${sortingKey}'.`);
+      console.warn(
+        `Invalid sorting key provided: '${this.sort}'. Falling back to '${sortingKey}'.`,
+      );
     }
 
     // If the sortingKey does not exist in the sortingOptions, this function
