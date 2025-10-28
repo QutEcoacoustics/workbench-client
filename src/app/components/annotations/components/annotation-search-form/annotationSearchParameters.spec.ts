@@ -108,7 +108,7 @@ describe("annotationSearchParameters", () => {
         sites: "6,7,8,9",
 
         taskTag: "5",
-        verificationStatus: "unverified-by-me",
+        verificationStatus: "unverified-for-me",
       },
       expectedFilters: () => ({
         filter: {
@@ -249,10 +249,4 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
-
-  describe("default verification status", () => {
-    it("should default to 'any'", () => {});
-
-    it("should correctly override to 'unverified-to-me'", () => {});
-  });
 });
