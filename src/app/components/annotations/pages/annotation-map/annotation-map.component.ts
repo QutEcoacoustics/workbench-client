@@ -206,6 +206,13 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   }
 
   private updateFocusedEvents(): void {
+    // If we do not have a focused site, we do not load the events because
+    // otherwise it would be loading events for all sites which does not make
+    // much from a ux standpoint.
+    if (!isInstantiated(this.searchParameters().focused)) {
+      return;
+    }
+
     const filters: Filters<AudioEvent> = {
       filter: this.annotationSearchParameters().toFilter()?.filter ?? {},
       paging: {

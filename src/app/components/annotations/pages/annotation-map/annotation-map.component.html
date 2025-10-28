@@ -101,7 +101,7 @@
             <a
               class="btn btn-sm btn-outline-primary"
               [strongRoute]="moreEventsUrl"
-              [queryParams]="searchParameters()"
+              [queryParams]="searchParameters().toQueryParams()"
               [routeParams]="{
                 projectId: annotationSearchParameters().routeProjectId,
                 regionId: annotationSearchParameters().routeRegionId,
