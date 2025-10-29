@@ -197,6 +197,16 @@ function createModelDecorator<
   failureValue: any,
 ) {
   /**
+   * To prevent making duplicate API calls for an association when the value has
+   * not changed, the backing field can be returned if the identifier value has
+   * not changed since the last API call.
+   *
+   * This variable stores the last known identifier value so that we can compare
+   * it against the current identifier value in the parent model.
+   */
+  let storedIdentifierValue: unknown | null = null;
+
+  /**
    * Update the backing field which stores the last known value of the child model/s
    *
    * @param parent Parent model
@@ -214,20 +224,12 @@ function createModelDecorator<
       | Readonly<UnresolvedModel[]>
       | Subscription
   ) {
+    storedIdentifierValue = parent[identifierKey];
+
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
       configurable: true,
     });
-  }
-
-  const backingFieldKey = "_" + identifierKey.toString();
-
-  function invalidateBackingField(parent: Parent) {
-    if (!Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
-      return;
-    }
-
-    updateBackingField(parent, backingFieldKey, undefined);
   }
 
   /**
@@ -239,10 +241,24 @@ function createModelDecorator<
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
     // Check for any backing models
-    if (parent[backingFieldKey] !== undefined) {
+    const backingFieldKey = "_" + identifierKey.toString();
+    if (
+      Object.prototype.hasOwnProperty.call(parent, backingFieldKey) &&
+
+      // We check the storedIdentifierValue so that if the identifier value
+      // changes in the parent model, we don't return a stale backing value
+      // from a previous identifier value.
+      //
+      // We use Object.is instead of === so that if there is a bug in the client
+      // that causes an identifier value to end up as NaN, this condition still
+      // passes, and we don't end up making a potentially infinite number of API
+      // calls.
+      // Note: I have never seen this happen in practice, but I handle this case
+      // as a defensive programming measure so that the client does not end up
+      // flooding the API because of a bug in the client code.
+      Object.is(storedIdentifierValue, parent[identifierKey])
+    ) {
       return parent[backingFieldKey];
-    } else if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
-      return unresolvedValue;
     }
 
     // the injector should be an AssociationInjector that was provided by the
@@ -300,39 +316,6 @@ function createModelDecorator<
   }
 
   return (target: Parent, associationKey: string) => {
-    const desc = Object.getOwnPropertyDescriptor(
-      target,
-      identifierKey
-    );
-
-    const identifierBackingKey = "$" + identifierKey.toString();
-    function updateIdentifierBackingField(newValue: any) {
-      Object.defineProperty(target, identifierBackingKey, {
-        value: newValue,
-        configurable: true,
-      });
-    }
-
-    updateIdentifierBackingField(target[identifierKey]);
-
-    Object.defineProperty(target, identifierKey, {
-      get(this: Parent) {
-        if (desc?.get) {
-          return desc.get.call(this);
-        }
-
-        return this[identifierBackingKey];
-      },
-      set(this: Parent, newValue: Parent[typeof identifierKey]) {
-        invalidateBackingField(this);
-        updateIdentifierBackingField(newValue);
-
-        if (desc?.set) {
-          desc.set.call(this, newValue);
-        }
-      },
-    });
-
     Object.defineProperty(target, associationKey, {
       get(this: Parent) {
         return getAssociatedModel(this);
