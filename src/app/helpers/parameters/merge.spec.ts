@@ -28,4 +28,13 @@ describe("mergeParameters", () => {
       country: "Australia",
     });
   });
+
+  it("should be able to overwrite a parameter with 'null'", () => {
+    const base: Params = { greeting: "hello", name: "world" };
+    const override: Params = { name: null };
+
+    const result = mergeParameters(base, override);
+
+    expect(result).toEqual({ greeting: "hello", name: null });
+  });
 });

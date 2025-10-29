@@ -98,7 +98,11 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
-  imports: [FaIconComponent, NgbTooltip, SearchVerificationFiltersModalComponent],
+  imports: [
+    FaIconComponent,
+    NgbTooltip,
+    SearchVerificationFiltersModalComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -163,7 +167,9 @@ class VerificationComponent
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     this.searchParameters.update(() => {
-      const newModel = models[searchParametersKey] as AnnotationSearchParameters;
+      const newModel = models[
+        searchParametersKey
+      ] as AnnotationSearchParameters;
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -180,7 +186,9 @@ class VerificationComponent
     });
 
     this.verificationParameters.update(() => {
-      const newModel = models[verificationParametersKey] as VerificationParameters;
+      const newModel = models[
+        verificationParametersKey
+      ] as VerificationParameters;
       newModel.injector = this.injector;
       return newModel;
     });
@@ -231,8 +239,13 @@ class VerificationComponent
     this.modals.open(this.searchFiltersModal(), { size: "xl" });
   }
 
-  protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    this.searchParameters.set(newModel);
+  protected requestModelUpdate(models: {
+    searchParameters: AnnotationSearchParameters;
+    verificationParameters: VerificationParameters;
+  }): void {
+    this.searchParameters.set(models.searchParameters);
+    this.verificationParameters.set(models.verificationParameters);
+
     this.updateGridCallback();
   }
 
@@ -474,9 +487,16 @@ class VerificationComponent
   }
 
   private updateUrlParameters(): void {
+    const searchParameters = this.searchParameters().toQueryParams({
+      includeVerification: false,
+    });
+
+    const verificationParameters =
+      this.verificationParameters().toQueryParams();
+
     const queryParams = mergeParameters(
-      this.searchParameters().toQueryParams(),
-      this.verificationParameters().toQueryParams(),
+      searchParameters,
+      verificationParameters,
     );
 
     const urlTree = this.router.createUrlTree([], { queryParams });

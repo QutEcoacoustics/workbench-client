@@ -87,7 +87,22 @@ export function verificationStatusOptions(user?: User) {
       {
         or: [
           { "verifications.confirmed": { eq: null } },
-          { "verifications.confirmed": { eq: "skip" } },
+          {
+            and: [
+              // We only want to include verifications that have been skipped
+              // once.
+              // We do this so that if a user skips a verification, during a
+              // "have not been verified by anyone" search, we want to show it
+              // to users until someone has actually verified it.
+              //
+              // If there are other verifications that are not "skip", then we
+              // do not want to include this audio event in the results.
+              { "verifications.confirmed": { eq: "skip" } },
+              { "verifications.confirmed": { notEq: "correct" } },
+              { "verifications.confirmed": { notEq: "incorrect" } },
+              { "verifications.confirmed": { notEq: "unsure" } },
+            ],
+          },
         ],
       },
     ],
@@ -256,11 +271,17 @@ export class AnnotationSearchParameters
     return this.score ? this.score[1] : null;
   }
 
-  public toQueryParams(): Params {
-    return serializeObjectToParams<IAnnotationSearchParameters>(
+  public toQueryParams({ includeVerification = true } = {}): Params {
+    const params = serializeObjectToParams<IAnnotationSearchParameters>(
       this,
       serializationTable,
     );
+
+    if (!includeVerification) {
+      delete params["verificationStatus"];
+    }
+
+    return params;
   }
 
   public toFilter({ includeVerification = true } = {}): Filters<AudioEvent> {
