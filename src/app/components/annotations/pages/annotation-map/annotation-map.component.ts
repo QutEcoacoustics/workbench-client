@@ -38,7 +38,9 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import {
+  AnnotationSearchParameters,
+} from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import {
   annotationCategories,
   annotationMenuItems,
@@ -49,7 +51,7 @@ import { AnnotationMapParameters } from "./annotationMapParameters";
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const searchParametersKey = "annotationMapParameters";
+const mapParametersKey = "annotationMapParameters";
 const annotationSearchParametersKey = "annotationSearchParameters";
 
 @Component({
@@ -138,7 +140,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     });
 
     this.mapParameters.set(
-      models[searchParametersKey] as AnnotationMapParameters,
+      models[mapParametersKey] as AnnotationMapParameters,
     );
 
     // We use isInstantiated instead of a truthy check because a focused site id
@@ -243,7 +245,7 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [searchParametersKey]: annotationMapParameterResolvers.showOptional,
+      [mapParametersKey]: annotationMapParameterResolvers.showOptional,
       [annotationSearchParametersKey]:
         annotationSearchParametersResolvers.showOptional,
     },
