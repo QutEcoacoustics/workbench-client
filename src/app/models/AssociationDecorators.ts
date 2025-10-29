@@ -42,7 +42,6 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
-
 /**
  * Abstract model parameter decorator which automates the process
  * of retrieving models request linked by a group of ids in the parent model.
@@ -203,7 +202,7 @@ function createModelDecorator<
    * This variable stores the last known identifier value so that we can compare
    * it against the current identifier value in the parent model.
    */
-  const storedIdentifierKey = "~" + identifierKey.toString();
+  const storedIdentifierKey = Symbol("storedIdentifier_" + identifierKey.toString());
   const backingFieldKey = "_" + identifierKey.toString();
 
   /**
@@ -223,8 +222,10 @@ function createModelDecorator<
       | Readonly<UnresolvedModel[]>
       | Subscription
   ) {
+    // We use Object.defineProperty so that the property is not enumerable
+    // and does not show up in JSON.stringify calls.
     Object.defineProperty(parent, storedIdentifierKey, {
-      value: parent[identifierKey],
+      value: JSON.stringify(parent[identifierKey]),
       configurable: true,
     });
 
@@ -256,7 +257,11 @@ function createModelDecorator<
       // Note: I have never seen this happen in practice, but I handle this case
       // as a defensive programming measure so that the client does not end up
       // flooding the API because of a bug in the client code.
-      Object.is(parent[storedIdentifierKey], parent[identifierKey])
+      // Object.is(parent[storedIdentifierKey], parent[identifierKey])
+      //
+      // TODO: Remove this JSON.stringify hack that was used to get pages like
+      // the statistics page working that eagerly destroy and recreate models.
+      parent[storedIdentifierKey] === JSON.stringify(parent[identifierKey])
     ) {
       return parent[backingFieldKey];
     }
