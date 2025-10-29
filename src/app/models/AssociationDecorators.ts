@@ -223,7 +223,11 @@ function createModelDecorator<
   const backingFieldKey = "_" + identifierKey.toString();
 
   function invalidateBackingField(parent: Parent) {
-    parent[backingFieldKey] = undefined;
+    if (!Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
+      return;
+    }
+
+    updateBackingField(parent, backingFieldKey, undefined);
   }
 
   /**
@@ -237,6 +241,8 @@ function createModelDecorator<
     // Check for any backing models
     if (parent[backingFieldKey] !== undefined) {
       return parent[backingFieldKey];
+    } else if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
+      return unresolvedValue;
     }
 
     // the injector should be an AssociationInjector that was provided by the
@@ -294,23 +300,41 @@ function createModelDecorator<
   }
 
   return (target: Parent, associationKey: string) => {
-    // I have to store the identifier value outside of the underlying model
-    // because if it was stored on the model, changing it would re-trigger the
-    // setter, causing an infinite loop.
-    let identifierValue: any;
+    const desc = Object.getOwnPropertyDescriptor(
+      target,
+      identifierKey
+    );
+
+    const identifierBackingKey = "$" + identifierKey.toString();
+    function updateIdentifierBackingField(this: Parent, newValue: any) {
+      Object.defineProperty(this, identifierBackingKey, {
+        get: function () {
+          console.log("getting backing field", identifierKey, newValue);
+          return newValue;
+        },
+        configurable: true,
+      });
+
+      console.log(this[identifierBackingKey], "set backing field", identifierKey, newValue);
+    }
+
+    updateIdentifierBackingField.call(target, target[identifierKey]);
+
     Object.defineProperty(target, identifierKey, {
-      get(this: Parent) {
-        return identifierValue;
-      },
-      set(this: Parent, newValue: Parent[typeof identifierKey]) {
-        if (newValue === identifierValue) {
-          return;
+      get: function (this: Parent) {
+        if (desc?.get) {
+          return desc.get.call(this);
         }
 
-        console.log("invalidating");
-
+        return this[identifierBackingKey];
+      },
+      set: function (this: Parent, newValue: Parent[typeof identifierKey]) {
         invalidateBackingField(this);
-        identifierValue = newValue;
+        updateIdentifierBackingField.call(this, newValue);
+
+        if (desc?.set) {
+          desc.set.call(this, newValue);
+        }
       },
     });
 
