@@ -103,8 +103,7 @@ export function hasMany<
 >(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  routeParams: ReadonlyArray<keyof Parent> = [],
-  failureValue: any = [],
+  routeParams: ReadonlyArray<keyof Parent> = []
 ) {
   // we use multiple show (GET) requests in the hasMany associations so when
   // multiple models have the same associated models in a hasMany relationship
@@ -134,7 +133,7 @@ export function hasMany<
     routeParams,
     modelRequester,
     UnresolvedModel.many,
-    failureValue,
+    []
   );
 }
 
@@ -165,7 +164,7 @@ export function hasOne<
     (service, parent: Parent, params: Params) =>
       service.show(parent[identifierKey] as any, ...params),
     UnresolvedModel.one,
-    failureValue,
+    failureValue
   );
 }
 
@@ -194,7 +193,7 @@ function createModelDecorator<
     params: Params
   ) => Observable<Child | Child[]>,
   unresolvedValue: Readonly<UnresolvedModel> | Readonly<UnresolvedModel[]>,
-  failureValue: any,
+  failureValue: any
 ) {
   /**
    * To prevent making duplicate API calls for an association when the value has
@@ -204,7 +203,8 @@ function createModelDecorator<
    * This variable stores the last known identifier value so that we can compare
    * it against the current identifier value in the parent model.
    */
-  let storedIdentifierValue: unknown | null = null;
+  const storedIdentifierKey = "~" + identifierKey.toString();
+  const backingFieldKey = "_" + identifierKey.toString();
 
   /**
    * Update the backing field which stores the last known value of the child model/s
@@ -215,7 +215,6 @@ function createModelDecorator<
    */
   function updateBackingField(
     parent: Parent,
-    backingFieldKey: string,
     child:
       | Child
       | Child[]
@@ -224,7 +223,10 @@ function createModelDecorator<
       | Readonly<UnresolvedModel[]>
       | Subscription
   ) {
-    storedIdentifierValue = parent[identifierKey];
+    Object.defineProperty(parent, storedIdentifierKey, {
+      value: parent[identifierKey],
+      configurable: true,
+    });
 
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
@@ -240,8 +242,6 @@ function createModelDecorator<
   function getAssociatedModel(
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
-    // Check for any backing models
-    const backingFieldKey = "_" + identifierKey.toString();
     if (
       Object.prototype.hasOwnProperty.call(parent, backingFieldKey) &&
 
@@ -256,7 +256,7 @@ function createModelDecorator<
       // Note: I have never seen this happen in practice, but I handle this case
       // as a defensive programming measure so that the client does not end up
       // flooding the API because of a bug in the client code.
-      Object.is(storedIdentifierValue, parent[identifierKey])
+      Object.is(parent[storedIdentifierKey], parent[identifierKey])
     ) {
       return parent[backingFieldKey];
     }
@@ -296,11 +296,11 @@ function createModelDecorator<
     const service = injector.get(serviceToken.token);
 
     // Set initial value for field
-    updateBackingField(parent, backingFieldKey, unresolvedValue);
+    updateBackingField(parent, unresolvedValue);
 
     // Load value from API (note: because of caching, this can be instant)
     apiRequest(service, parent, parameters).subscribe({
-      next: (model) => updateBackingField(parent, backingFieldKey, model),
+      next: (model) => updateBackingField(parent, model),
       error: (error) => {
         console.error(`${parent} failed to load ${identifierKey.toString()}.`, {
           target: parent,
@@ -308,7 +308,7 @@ function createModelDecorator<
           identifier,
           error,
         });
-        updateBackingField(parent, backingFieldKey, failureValue);
+        updateBackingField(parent, failureValue);
       },
     });
 
