@@ -9,10 +9,15 @@ export class ScrollService {
     const element =
       elementRef instanceof ElementRef ? elementRef.nativeElement : elementRef;
 
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      ...options,
+    // scrollIntoView causes a reflow.
+    // Therefore, we wrap it in a requestAnimationFrame to allow the browser to
+    // batch the reflow with other DOM changes.
+    requestAnimationFrame(() => {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        ...options,
+      });
     });
   }
 }

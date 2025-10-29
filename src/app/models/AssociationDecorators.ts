@@ -103,7 +103,8 @@ export function hasMany<
 >(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
   identifierKeys?: KeysOfType<Parent, Id[] | Set<Id>>,
-  routeParams: ReadonlyArray<keyof Parent> = []
+  routeParams: ReadonlyArray<keyof Parent> = [],
+  failureValue: any = [],
 ) {
   // we use multiple show (GET) requests in the hasMany associations so when
   // multiple models have the same associated models in a hasMany relationship
@@ -133,7 +134,7 @@ export function hasMany<
     routeParams,
     modelRequester,
     UnresolvedModel.many,
-    []
+    failureValue,
   );
 }
 
@@ -164,7 +165,7 @@ export function hasOne<
     (service, parent: Parent, params: Params) =>
       service.show(parent[identifierKey] as any, ...params),
     UnresolvedModel.one,
-    failureValue
+    failureValue,
   );
 }
 
@@ -193,7 +194,7 @@ function createModelDecorator<
     params: Params
   ) => Observable<Child | Child[]>,
   unresolvedValue: Readonly<UnresolvedModel> | Readonly<UnresolvedModel[]>,
-  failureValue: any
+  failureValue: any,
 ) {
   /**
    * Update the backing field which stores the last known value of the child model/s
@@ -293,21 +294,29 @@ function createModelDecorator<
   }
 
   return (target: Parent, associationKey: string) => {
-    Object.defineProperty(target, associationKey, {
-      get(this: Parent) {
-        return getAssociatedModel(this);
-      },
-      configurable: true,
-    });
-
+    // I have to store the identifier value outside of the underlying model
+    // because if it was stored on the model, changing it would re-trigger the
+    // setter, causing an infinite loop.
     let identifierValue: any;
     Object.defineProperty(target, identifierKey, {
       get(this: Parent) {
         return identifierValue;
       },
-      set(this: Parent, newValue: any) {
-        identifierValue = newValue;
+      set(this: Parent, newValue: Parent[typeof identifierKey]) {
+        if (newValue === identifierValue) {
+          return;
+        }
+
+        console.log("invalidating");
+
         invalidateBackingField(this);
+        identifierValue = newValue;
+      },
+    });
+
+    Object.defineProperty(target, associationKey, {
+      get(this: Parent) {
+        return getAssociatedModel(this);
       },
       configurable: true,
     });

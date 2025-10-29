@@ -232,22 +232,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     key: keyof AnnotationSearchParameters,
     subModels: T[],
   ): void {
-    // if the subModels array is empty, the user has not selected any models
-    // we should set the search parameter to null so that it is not emitted
-    if (subModels.length === 0) {
-      this.searchParameters.update((current) => {
-        // TODO: We should add a TypeScript helper that can extract only
-        // writable keys from a partially-writable type.
-        // This "as any" cast is a workaround to bypass TypeScript not allowing
-        // us to set readonly keys (such as "kind").
-        current[key as any] = null;
-        return current;
-      });
-
-      this.emitUpdate();
-      return;
-    }
-
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
       current[key as any] = ids;

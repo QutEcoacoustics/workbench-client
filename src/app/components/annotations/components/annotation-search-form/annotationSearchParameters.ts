@@ -346,6 +346,10 @@ export class AnnotationSearchParameters
   }
 
   private tagFilters(): InnerFilter<AudioEvent> {
+    if (!isInstantiated(this.tags) || Array.from(this.tags).length === 0) {
+      return {};
+    }
+
     const tagFilters = filterModelIds<Tag>("tags", this.tags);
     return tagFilters;
   }
@@ -371,6 +375,13 @@ export class AnnotationSearchParameters
     //   this.recordingTimeFinishedBefore
     // );
 
+    if (
+      !isInstantiated(this.audioRecordings) ||
+      Array.from(this.audioRecordings).length === 0
+    ) {
+      return dateFilter;
+    }
+
     const recordingFilter = filterModelIds(
       "audioRecordings",
       this.audioRecordings,
@@ -383,7 +394,10 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    if (!isInstantiated(this.importFiles)) {
+    if (
+      !isInstantiated(this.importFiles) ||
+      Array.from(this.importFiles).length === 0
+    ) {
       return initialFilter;
     }
 

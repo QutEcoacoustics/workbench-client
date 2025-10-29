@@ -114,7 +114,11 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     const selectedItem = event.item;
 
     if (this.multipleInputs) {
-      this.value.push(selectedItem);
+      // We have to use the spread operator because array.push does not work on
+      // arrays created by getters.
+      // By spreading into a new array, we create a new array that does not have
+      // this limitation.
+      this.value = [...this.value, selectedItem];
       this.modelChange.emit(this.value);
 
       this.inputModel = null;
