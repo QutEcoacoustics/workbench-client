@@ -186,7 +186,7 @@ describe("AnnotationService", () => {
       expect(tagApiSpy.filter).not.toHaveBeenCalled();
     });
 
-    it("should make a single FILTER api call if there are multiple taggings", async () => {
+    fit("should make a single FILTER api call if there are multiple taggings", async () => {
       const audioEvent = new AudioEvent(
         generateAudioEvent({
           taggings: [

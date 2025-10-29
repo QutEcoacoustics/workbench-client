@@ -306,31 +306,26 @@ function createModelDecorator<
     );
 
     const identifierBackingKey = "$" + identifierKey.toString();
-    function updateIdentifierBackingField(this: Parent, newValue: any) {
-      Object.defineProperty(this, identifierBackingKey, {
-        get: function () {
-          console.log("getting backing field", identifierKey, newValue);
-          return newValue;
-        },
+    function updateIdentifierBackingField(newValue: any) {
+      Object.defineProperty(target, identifierBackingKey, {
+        value: newValue,
         configurable: true,
       });
-
-      console.log(this[identifierBackingKey], "set backing field", identifierKey, newValue);
     }
 
-    updateIdentifierBackingField.call(target, target[identifierKey]);
+    updateIdentifierBackingField(target[identifierKey]);
 
     Object.defineProperty(target, identifierKey, {
-      get: function (this: Parent) {
+      get(this: Parent) {
         if (desc?.get) {
           return desc.get.call(this);
         }
 
         return this[identifierBackingKey];
       },
-      set: function (this: Parent, newValue: Parent[typeof identifierKey]) {
+      set(this: Parent, newValue: Parent[typeof identifierKey]) {
         invalidateBackingField(this);
-        updateIdentifierBackingField.call(this, newValue);
+        updateIdentifierBackingField(newValue);
 
         if (desc?.set) {
           desc.set.call(this, newValue);
