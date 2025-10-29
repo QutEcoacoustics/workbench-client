@@ -77,7 +77,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   private readonly location = inject(Location);
 
   protected readonly focusedEvents = signal<AudioEvent[] | null>(null);
-  protected readonly searchParameters = signal<AnnotationMapParameters | null>(
+  protected readonly mapParameters = signal<AnnotationMapParameters | null>(
     null,
   );
   protected readonly annotationSearchParameters =
@@ -137,13 +137,13 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
       return newModel;
     });
 
-    this.searchParameters.set(
+    this.mapParameters.set(
       models[searchParametersKey] as AnnotationMapParameters,
     );
 
     // We use isInstantiated instead of a truthy check because a focused site id
     // of 0 is valid but would fail a truthy assertion.
-    const initialFocusedSite = this.searchParameters().focused;
+    const initialFocusedSite = this.mapParameters().focused;
     if (isInstantiated(initialFocusedSite)) {
       this.handleSiteFocused(initialFocusedSite);
     }
@@ -166,7 +166,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   protected focusSite(siteId: Id<Site>): void {
     // We set the query parameter before the filter request so that if the
     // request fails, the user can refresh the page to try again.
-    this.searchParameters.update((params) => {
+    this.mapParameters.update((params) => {
       if (params) {
         params.focused = siteId;
       }
@@ -195,7 +195,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
   private updateUrlParameters(): void {
     const queryParams: Params = {
-      ...this.searchParameters().toQueryParams(),
+      ...this.mapParameters().toQueryParams(),
       ...this.annotationSearchParameters().toQueryParams(),
     };
 
@@ -209,7 +209,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     // If we do not have a focused site, we do not load the events because
     // otherwise it would be loading events for all sites which does not make
     // much from a ux standpoint.
-    if (!isInstantiated(this.searchParameters().focused)) {
+    if (!isInstantiated(this.mapParameters().focused)) {
       return;
     }
 
@@ -225,7 +225,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     };
 
     this.audioEventsApi
-      .filterBySite(filters, this.searchParameters().focused)
+      .filterBySite(filters, this.mapParameters().focused)
       .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((events) => {
         this.focusedEvents.set(events);
