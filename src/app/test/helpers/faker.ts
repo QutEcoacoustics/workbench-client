@@ -23,7 +23,9 @@ const specialCharRegex = /[^\w\s]/gi;
 function* idIterator(): Generator<number, number, unknown> {
   // To retain some randomness in the tests, we start the ID generator from a
   // random number between 0 and 100.
-  const startingId = faker.datatype.number(100);
+  const maxStartingId = 100;
+  const startingId = faker.datatype.number(maxStartingId);
+
   let lastId = startingId;
 
   while (true) {
@@ -42,7 +44,8 @@ function* idIterator(): Generator<number, number, unknown> {
 }
 
 /**
- * Generates random and unique ids for models that can be used in tests.
+ * Generates spare, unique, and incrementing ids for models that can be used in
+ * tests.
  * This generator ensures that ids do not collide within a single test run,
  * reducing the flakiness of tests that rely on unique ids.
  */
