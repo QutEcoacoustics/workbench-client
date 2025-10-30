@@ -53,5 +53,9 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
     }
   }
 
+  // We use whenStable here to ensure that all async operations
+  // (like Promises or Observables) are completed before proceeding.
+  await spectator.fixture.whenStable();
+
   spectator.detectChanges();
 }
