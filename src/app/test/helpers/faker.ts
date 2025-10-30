@@ -20,6 +20,34 @@ import spdxLicenseListFull from "spdx-license-list/full";
 
 const specialCharRegex = /[^\w\s]/gi;
 
+function* idIterator(): Generator<number, number, unknown> {
+  // To retain some randomness in the tests, we start the ID generator from a
+  // random number between 0 and 100.
+  const startingId = faker.datatype.number(100);
+  let lastId = startingId;
+
+  while (true) {
+    // So that IDs do not follow a predictable sequence (which could mask bugs),
+    // we increment by a random offset between 1 and 10.
+    const randomOffset = faker.datatype.number({
+      min: 1,
+      max: 10,
+    });
+
+    // We have to set the lastId before yielding so that the next iteration
+    // uses the updated value.
+    lastId += randomOffset;
+    yield lastId;
+  }
+}
+
+/**
+ * Generates random and unique ids for models that can be used in tests.
+ * This generator ensures that ids do not collide within a single test run,
+ * reducing the flakiness of tests that rely on unique ids.
+ */
+const idGenerator = idIterator();
+
 export const modelData = {
   permissionLevel: () =>
     faker.helpers.arrayElement<PermissionLevel>([
@@ -46,8 +74,10 @@ export const modelData = {
   },
   hash: () => "SHA256::" + modelData.hexaDecimal(256 / 4).substring(2),
   html: () => "hello <b>world</b>",
-  id: (id?: Id) => (id ? id : faker.datatype.number(25)),
-  ids: () => randomArray(1, 5, () => faker.datatype.number(100)),
+  // We use ?? here instead of || or ? because 0 is a falsy value that we do not
+  // want to generate a random id for.
+  id: (id?: Id) => id ?? idGenerator.next().value,
+  ids: () => randomArray(1, 5, () => modelData.id()),
   imageUrl: () => faker.image.imageUrl(),
   imageUrls,
   licenseName: () =>
