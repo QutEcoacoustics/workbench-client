@@ -26,5 +26,5 @@ describe("unwrapPotentialSignal", () => {
     baseSignal.set(25);
 
     expect(unwrapPotentialSignal(computedSignal)).toEqual(50);
-  })
+  });
 });
