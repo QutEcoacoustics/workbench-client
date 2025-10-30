@@ -33,6 +33,7 @@ import { sendAudioRoute } from "@components/send-audio/send-audio.menus";
 import { pointsRoute } from "@components/sites/points.routes";
 import { sitesRoute } from "@components/sites/sites.routes";
 import { statisticsRoute } from "@components/statistics/statistics.menus";
+import { provenancesRoute } from "@components/provenances/provenances.routes";
 import { visualizeRoute } from "@components/visualize/visualize.routes";
 import { websiteStatusRoute } from "@components/website-status/website-status.routes";
 import {
@@ -82,6 +83,7 @@ const routes: StrongRoute[] = [
   sendAudioRoute,
   sitesRoute,
   pointsRoute,
+  provenancesRoute,
   statisticsRoute,
   websiteStatusRoute,
   visualizeRoute,
