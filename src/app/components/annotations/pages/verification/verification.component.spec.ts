@@ -9,7 +9,7 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Params, Router } from "@angular/router";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -81,7 +81,7 @@ import { generateVerificationUrlParams } from "@test/fakes/data/verificationPara
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
-enum DecisionOptions {
+const enum DecisionOptions {
   TRUE = "true",
   FALSE = "false",
   UNSURE = "unsure",
@@ -1118,6 +1118,42 @@ describe("VerificationComponent", () => {
         const realizedTileCount = verificationGrid().pageSize;
         expect(realizedTileCount).toBeGreaterThan(0);
       });
+    });
+  });
+
+  describe("navigation confirmations", () => {
+    beforeEach(async () => {
+      await setup();
+    });
+
+    it("should not show a navigation confirmation if the user has not made a decision", () => {
+      expect(spec.component.confirmNavigation).toBeFalse();
+    });
+
+    it("should show a navigation confirmation if the user has made a decision", async () => {
+      await makeSelection(0, 0);
+      await clickDecisionButton(DecisionOptions.TRUE);
+
+      expect(spec.component.confirmNavigation).toBeTrue();
+      expect(spec.component.blockNavigation()).toBeFalse();
+      expect(spec.component.confirmNavigationMessage()).toEqual(
+        "Are you sure you want to leave this page?",
+      );
+    });
+
+    it("should show an alert if the user tries to navigate away while requests are still processing", async () => {
+      // Mock the verification api to return an observable that never completes
+      // so that the component thinks that there are still requests processing.
+      verificationApiSpy.createOrUpdate.and.returnValue(new Observable(() => {}));
+
+      await makeSelection(0, 0);
+      await clickDecisionButton(DecisionOptions.TRUE);
+
+      expect(spec.component.confirmNavigation).toBeTrue();
+      expect(spec.component.blockNavigation()).toBeTrue();
+      expect(spec.component.confirmNavigationMessage()).toEqual(
+        "Some changes are still being saved. Please wait one moment.",
+      );
     });
   });
 });
