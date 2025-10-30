@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
   inject,
@@ -21,7 +22,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom, map, tap } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
@@ -31,7 +32,7 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
-import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { WithNavigationConfirmation } from "@guards/confirmation/confirmation.guard";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
@@ -78,6 +79,11 @@ interface PagingContext extends PageFetcherContext {
   page: number;
 }
 
+const enum NavigationMessages {
+  default = "Are you sure you want to leave this page?",
+  unsavedChanges = "Some changes are still being saved. Please wait one moment.",
+}
+
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
@@ -108,7 +114,7 @@ const confirmedMapping = {
 })
 class VerificationComponent
   extends PageComponent
-  implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
+  implements OnInit, AfterViewInit, WithNavigationConfirmation
 {
   private readonly audioEventApi = inject(ShallowAudioEventsService);
   private readonly verificationApi = inject(ShallowVerificationService);
@@ -140,7 +146,23 @@ class VerificationComponent
   public readonly verificationParameters =
     signal<VerificationParameters | null>(null);
 
-  public readonly hasUnsavedChanges = signal(false);
+  /**
+   * A count of how many requests are currently waiting for a response.
+   * We use this to determine if we need to show an "unsaved changes" navigation
+   * warning if all verification/tagging decisions have not been processed yet.
+   */
+  private readonly pendingRequests = signal(0);
+
+  public confirmNavigation = false;
+  public readonly confirmNavigationMessage = computed<NavigationMessages>(() =>
+    this.pendingRequests() > 0
+      ? NavigationMessages.unsavedChanges
+      : NavigationMessages.default,
+  );
+  public readonly confirmationHardBlock = computed<boolean>(
+    () => this.pendingRequests() > 0,
+  );
+
   protected readonly verificationGridFocused = signal(true);
   protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
@@ -306,7 +328,11 @@ class VerificationComponent
       return;
     }
 
-    this.hasUnsavedChanges.set(true);
+    // If the user has not made any decisions yet, we do not set the
+    // confirmNavigation flag so that if they are exploring the website without
+    // making any decisions, the page does not stop their flow by asking for
+    // navigation confirmation.
+    this.confirmNavigation = true;
 
     // TODO: We should be updating the annotation models here after updates.
     // see: https://github.com/QutEcoacoustics/workbench-client/pull/2384#discussion_r2261893642
@@ -384,7 +410,11 @@ class VerificationComponent
 
     const verification = new Verification(verificationData, this.injector);
 
-    const apiRequest = this.verificationApi.createOrUpdate(verification);
+    this.incrementPendingRequests();
+
+    const apiRequest = this.verificationApi
+      .createOrUpdate(verification)
+      .pipe(this.withDecrementPendingRequests());
 
     // I use firstValueFrom so that the observable is evaluated
     // but I don't have to subscribe or unsubscribe.
@@ -397,10 +427,11 @@ class VerificationComponent
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
     const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.verificationApi.destroyUserVerification(
-      audioEvent,
-      newTag,
-    );
+    this.incrementPendingRequests();
+
+    const apiRequest = this.verificationApi
+      .destroyUserVerification(audioEvent, newTag)
+      .pipe(this.withDecrementPendingRequests());
 
     firstValueFrom(apiRequest);
   }
@@ -415,11 +446,14 @@ class VerificationComponent
     const annotation = subjectWrapper.subject as any as Annotation;
     const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
+    this.incrementPendingRequests();
+
     const apiRequest = this.tagCorrections.create(annotation, newTag).pipe(
       map((correctTagging: Tagging) => {
         this.sessionTagCorrections.set(annotation.id, correctTagging);
         return correctTagging;
       }),
+      this.withDecrementPendingRequests(),
     );
 
     firstValueFrom(apiRequest);
@@ -441,7 +475,12 @@ class VerificationComponent
       return;
     }
 
-    const apiRequest = this.tagCorrections.destroy(annotation, tagToRemove.id);
+    this.incrementPendingRequests();
+
+    const apiRequest = this.tagCorrections
+      .destroy(annotation, tagToRemove.id)
+      .pipe(this.withDecrementPendingRequests());
+
     firstValueFrom(apiRequest);
   }
 
@@ -548,6 +587,25 @@ class VerificationComponent
       // them for a new tag.
       return subjectVerification.confirmed === "false";
     };
+  }
+
+  /**
+   * An rxjs pipe operator that decrements the pending requests counter
+   * after a request emits a value or errors.
+   */
+  private withDecrementPendingRequests() {
+    return tap({
+      next: () => this.decrementPendingRequests(),
+      error: () => this.decrementPendingRequests(),
+    });
+  }
+
+  private incrementPendingRequests(): void {
+    this.pendingRequests.update((value) => value + 1);
+  }
+
+  private decrementPendingRequests() {
+    this.pendingRequests.update((value) => value - 1);
   }
 }
 

@@ -7,6 +7,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { UnsavedInputGuard } from "@guards/input/input.guard";
 import { RenderMode, ServerRoute } from "@angular/ssr";
 import { getPageInfos } from "./pageComponent";
+import { NavigationConfirmationGuard } from "@guards/confirmation/confirmation.guard";
 
 export function splitIndexedStrongRoutes(
   routes: Record<string, StrongRoute>,
@@ -52,7 +53,11 @@ function createClientRoute(strongRoute: StrongRoute): Option<Route> {
         path: "",
         pathMatch: "full",
         component: pageInfo.component,
-        canDeactivate: [FormTouchedGuard, UnsavedInputGuard],
+        canDeactivate: [
+          FormTouchedGuard,
+          UnsavedInputGuard,
+          NavigationConfirmationGuard,
+        ],
       },
       {
         path: "",
