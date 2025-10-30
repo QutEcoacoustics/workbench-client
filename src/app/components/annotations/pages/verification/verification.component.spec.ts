@@ -500,9 +500,6 @@ describe("VerificationComponent", () => {
 
   /** Uses shift + click selection to select a range */
   async function makeSelection(start: number, end: number) {
-    // Resize the viewport to make the grid tiles visible
-    //! Smell: I should not have to resize the karma viewport
-    viewport.set(viewports.large);
     await waitUntil(() => gridTiles().length > 0);
     const targetGridTiles = gridTiles();
 
