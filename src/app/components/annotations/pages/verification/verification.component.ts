@@ -48,7 +48,9 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -68,7 +70,9 @@ import { AnnotationSearchParameters } from "@components/annotations/components/a
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { filterAnd } from "@helpers/filters/filters";
-import { SearchVerificationFiltersModalComponent } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import {
+  SearchVerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
 import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {
