@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
 import {
-  PotentiallySignal,
+  SignalOr,
   unwrapPotentialSignal,
 } from "@helpers/signals/signals";
 
 export interface UnsavedInputCheckingComponent {
-  hasUnsavedChanges: PotentiallySignal<boolean>;
+  hasUnsavedChanges: SignalOr<boolean>;
 }
 
 /**

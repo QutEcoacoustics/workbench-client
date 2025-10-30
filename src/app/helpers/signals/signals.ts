@@ -6,7 +6,7 @@ import { isSignal, Signal } from "@angular/core";
  * This is useful for route guards and directives that want to work in static,
  * zone.js, and signal-based components/environments.
  */
-export type PotentiallySignal<T> = T | Signal<T>;
+export type SignalOr<T> = T | Signal<T>;
 
 /**
  * Allows you to unwrap a value that may be a signal or a direct value.

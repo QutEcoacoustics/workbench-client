@@ -22,7 +22,7 @@ import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { firstValueFrom, map, tap } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
@@ -48,9 +48,7 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -70,9 +68,7 @@ import { AnnotationSearchParameters } from "@components/annotations/components/a
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { filterAnd } from "@helpers/filters/filters";
-import {
-  SearchVerificationFiltersModalComponent,
-} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import { SearchVerificationFiltersModalComponent } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
 import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {
@@ -159,7 +155,7 @@ class VerificationComponent
       ? NavigationMessages.unsavedChanges
       : NavigationMessages.default,
   );
-  public readonly confirmationHardBlock = computed<boolean>(
+  public readonly blockNavigation = computed<boolean>(
     () => this.pendingRequests() > 0,
   );
 
@@ -410,11 +406,9 @@ class VerificationComponent
 
     const verification = new Verification(verificationData, this.injector);
 
-    this.incrementPendingRequests();
-
-    const apiRequest = this.verificationApi
-      .createOrUpdate(verification)
-      .pipe(this.withDecrementPendingRequests());
+    const apiRequest = this.trackPendingRequests(
+      this.verificationApi.createOrUpdate(verification),
+    );
 
     // I use firstValueFrom so that the observable is evaluated
     // but I don't have to subscribe or unsubscribe.
@@ -427,11 +421,9 @@ class VerificationComponent
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
     const newTag = subjectWrapper.newTag as any;
 
-    this.incrementPendingRequests();
-
-    const apiRequest = this.verificationApi
-      .destroyUserVerification(audioEvent, newTag)
-      .pipe(this.withDecrementPendingRequests());
+    const apiRequest = this.trackPendingRequests(
+      this.verificationApi.destroyUserVerification(audioEvent, newTag),
+    );
 
     firstValueFrom(apiRequest);
   }
@@ -446,14 +438,13 @@ class VerificationComponent
     const annotation = subjectWrapper.subject as any as Annotation;
     const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
-    this.incrementPendingRequests();
-
-    const apiRequest = this.tagCorrections.create(annotation, newTag).pipe(
-      map((correctTagging: Tagging) => {
-        this.sessionTagCorrections.set(annotation.id, correctTagging);
-        return correctTagging;
-      }),
-      this.withDecrementPendingRequests(),
+    const apiRequest = this.trackPendingRequests(
+      this.tagCorrections.create(annotation, newTag).pipe(
+        map((correctTagging: Tagging) => {
+          this.sessionTagCorrections.set(annotation.id, correctTagging);
+          return correctTagging;
+        }),
+      ),
     );
 
     firstValueFrom(apiRequest);
@@ -475,11 +466,9 @@ class VerificationComponent
       return;
     }
 
-    this.incrementPendingRequests();
-
-    const apiRequest = this.tagCorrections
-      .destroy(annotation, tagToRemove.id)
-      .pipe(this.withDecrementPendingRequests());
+    const apiRequest = this.trackPendingRequests(
+      this.tagCorrections.destroy(annotation, tagToRemove.id),
+    );
 
     firstValueFrom(apiRequest);
   }
@@ -589,15 +578,15 @@ class VerificationComponent
     };
   }
 
-  /**
-   * An rxjs pipe operator that decrements the pending requests counter
-   * after a request emits a value or errors.
-   */
-  private withDecrementPendingRequests() {
-    return tap({
+  private trackPendingRequests<T extends Observable<unknown>>(request$: T): T {
+    this.incrementPendingRequests();
+
+    request$.subscribe({
       next: () => this.decrementPendingRequests(),
       error: () => this.decrementPendingRequests(),
     });
+
+    return request$;
   }
 
   private incrementPendingRequests(): void {

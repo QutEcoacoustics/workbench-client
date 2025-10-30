@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
-import { PotentiallySignal, unwrapPotentialSignal } from "@helpers/signals/signals";
+import { SignalOr, unwrapPotentialSignal } from "@helpers/signals/signals";
 
 /**
  * Allows interaction with the confirmation.guard to confirm navigation away
@@ -16,7 +16,7 @@ export interface WithNavigationConfirmation {
    *
    * @default false
    */
-  confirmNavigation?: PotentiallySignal<boolean>;
+  confirmNavigation?: SignalOr<boolean>;
 
   /**
    * A custom message to show in the confirmation dialog.
@@ -24,7 +24,7 @@ export interface WithNavigationConfirmation {
    *
    * @default "Are you sure you want to leave this page?"
    */
-  confirmNavigationMessage?: PotentiallySignal<string>;
+  confirmNavigationMessage?: SignalOr<string>;
 
   /**
    * Whether to hard block navigation without confirmation.
@@ -33,10 +33,13 @@ export interface WithNavigationConfirmation {
    * instead of a confirmation dialog.
    * This should only be used in extreme cases where navigation must not be
    * allowed or we need to wait for something to complete on the main thread.
+   * Note that blocking user navigation is generally considered a bad user
+   * experience and browser restrictions sometime cause the browser to ignore
+   * repeated attempts to block navigation using an alert dialog.
    *
    * @default false
    */
-  confirmationHardBlock?: PotentiallySignal<boolean>;
+  blockNavigation?: SignalOr<boolean>;
 }
 
 /**
@@ -73,7 +76,7 @@ export class NavigationConfirmationGuard
       unwrapPotentialSignal(component.confirmNavigationMessage) ??
       "Are you sure you want to leave this page?";
 
-    const hardBlock = unwrapPotentialSignal(component.confirmationHardBlock);
+    const hardBlock = unwrapPotentialSignal(component.blockNavigation);
     if (hardBlock) {
       alert(confirmationMessage);
       return false;

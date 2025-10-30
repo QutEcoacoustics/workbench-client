@@ -1135,7 +1135,7 @@ describe("VerificationComponent", () => {
       await clickDecisionButton(DecisionOptions.TRUE);
 
       expect(spec.component.confirmNavigation).toBeTrue();
-      expect(spec.component.confirmationHardBlock()).toBeFalse();
+      expect(spec.component.blockNavigation()).toBeFalse();
       expect(spec.component.confirmNavigationMessage()).toEqual(
         "Are you sure you want to leave this page?",
       );
@@ -1150,7 +1150,7 @@ describe("VerificationComponent", () => {
       await clickDecisionButton(DecisionOptions.TRUE);
 
       expect(spec.component.confirmNavigation).toBeTrue();
-      expect(spec.component.confirmationHardBlock()).toBeTrue();
+      expect(spec.component.blockNavigation()).toBeTrue();
       expect(spec.component.confirmNavigationMessage()).toEqual(
         "Some changes are still being saved. Please wait one moment.",
       );
