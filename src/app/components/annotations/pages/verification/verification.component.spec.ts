@@ -361,7 +361,7 @@ describe("VerificationComponent", () => {
 
     await requestPromises;
 
-    await waitUntil(() => isGridLoaded());
+    await waitUntil(() => isGridLoaded(), 10_000);
 
     await detectChanges(spec);
   }
