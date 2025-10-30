@@ -23,7 +23,7 @@
     class="filter-button btn btn-sm btn-secondary"
     (click)="openSearchFiltersModal()"
   >
-    <fa-icon [icon]="['fas', 'filter']"></fa-icon>
+    <fa-icon [icon]="['fas', 'filter']" />
   </button>
 </div>
 
@@ -61,7 +61,7 @@
 
     <div class="tile-block">
       <oe-task-meter></oe-task-meter>
-      <baw-grid-tile-content></baw-grid-tile-content>
+      <baw-grid-tile-content />
     </div>
   </template>
 
@@ -101,10 +101,10 @@
 </oe-verification-grid>
 
 <ng-template #searchFiltersModal let-filtersModal>
-  <baw-search-filters-modal
+  <baw-search-verification-filters-modal
     [modal]="filtersModal"
-    [formValue]="searchParameters()"
-    [hasDecisions]="hasUnsavedChanges()"
+    [searchFormValue]="searchParameters()"
+    [verificationFormValue]="verificationParameters()"
     [successCallback]="requestModelUpdate.bind(this)"
-  ></baw-search-filters-modal>
+  />
 </ng-template>

@@ -32,4 +32,18 @@ class MockAdvancedMarkerElement {
   public constructor(data: Record<PropertyKey, unknown>) {
     Object.assign(this, data);
   }
+
+  private eventListeners: Record<string, (...args: any[]) => any> = {};
+
+  public addEventListener(
+    eventName: string,
+    handler: (...args: any[]) => any,
+  ): void {
+    this.eventListeners[eventName] = handler;
+  }
+
+  public dispatchEvent(event: Event, ...args: any[]): void {
+    const eventName = event.type;
+    this.eventListeners[eventName]?.(...args);
+  }
 }

@@ -233,7 +233,7 @@ describe("AnnotationsDetailsComponent", () => {
     spec.detectChanges();
 
     expectedAudioEventTable = mockAudioEvents.map((event) => ({
-      "Audio Recording": event.audioRecording?.id.toString(),
+      "Audio Recording": event.audioRecording?.id?.toString(),
       "Created At": event.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
       Tags: mockTagModel.text,
       Provenance: mockProvenance.name,

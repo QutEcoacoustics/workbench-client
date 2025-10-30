@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h4 class="modal-title">New Verification Task</h4>
+</div>
+
+<div class="filters-modal-body modal-body modal-large">
+  <baw-verification-form [(verificationParameters)]="formValue" />
+</div>
+
+<div class="modal-footer justify-content-end">
+  <div class="mt-2">
+    <button
+      id="exit-btn"
+      class="btn btn-outline-primary me-2"
+      (click)="closeModal()"
+    >
+      Cancel
+    </button>
+    <button
+      id="update-filters-btn"
+      class="btn btn-primary"
+      (click)="success()"
+    >
+      Start Verification
+    </button>
+  </div>
+</div>

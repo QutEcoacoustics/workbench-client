@@ -317,8 +317,8 @@ describe("DownloadAudioRecordingsComponent", () => {
 
       const hiddenCopy = spec.query(HiddenCopyComponent);
       expect(hiddenCopy).toBeTruthy();
-      expect(hiddenCopy.tooltip).toBe("Show/Hide command");
-      expect(hiddenCopy.value).toBe(
+      expect(hiddenCopy.tooltip()).toBe("Show/Hide command");
+      expect(hiddenCopy.value()).toBe(
         `./download_audio_files.ps1 -auth_token "${authToken}"`
       );
     });

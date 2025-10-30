@@ -8,7 +8,7 @@ import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { Region } from "@models/Region";
 import { generateRegion } from "@test/fakes/Region";
-import { generateEventSummaryReportUrlParameters } from "@test/fakes/data/EventSummaryReportParameters";
+import { generateEventSummaryReportUrlParams } from "@test/fakes/data/EventSummaryReportParameters";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import {
@@ -58,7 +58,7 @@ describe("ViewEventReportComponent", () => {
       generateEventSummaryReport()
     );
     defaultParameterDataModel = new EventSummaryReportParameters(
-      generateEventSummaryReportUrlParameters()
+      generateEventSummaryReportUrlParams()
     );
 
     setup();

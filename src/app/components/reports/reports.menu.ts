@@ -30,7 +30,7 @@ function makeNewReportCategory(subRoute: ReportRoute): Category {
 
 function makeViewEventReportMenuItem(
   subRoute: ReportRoute,
-  parent?: MenuRoute
+  parent?: MenuRoute,
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-lines"],
@@ -44,7 +44,7 @@ function makeViewEventReportMenuItem(
 
 function makeNewEventReportMenuItem(
   subRoute: ReportRoute,
-  parent?: MenuRoute
+  parent?: MenuRoute,
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-circle-plus"],
@@ -71,7 +71,7 @@ const newReportMenuItem: ReportMenuRoutes = {
   /** /project/:projectId/site/:siteId/reports/event-summary/new */
   site: makeNewEventReportMenuItem("site", siteMenuItem),
   /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary/new */
-  siteAndRegion: makeNewEventReportMenuItem("siteAndRegion",pointMenuItem),
+  siteAndRegion: makeNewEventReportMenuItem("siteAndRegion", pointMenuItem),
   /** /project/:projectId/region/:regionId/reports/event-summary/new */
   region: makeNewEventReportMenuItem("region", regionMenuItem),
   /** /project/:projectId/reports/event-summary/new */

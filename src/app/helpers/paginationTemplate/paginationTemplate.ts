@@ -152,7 +152,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Read the previous filter query and page number from the url,
    * and update the page to match
    */
-  private updateFromUrl() {
+  protected updateFromUrl() {
     const params = this.route.snapshot.queryParams;
     this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;

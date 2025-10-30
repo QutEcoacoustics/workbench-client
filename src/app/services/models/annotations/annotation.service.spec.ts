@@ -15,11 +15,11 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateTag } from "@test/fakes/Tag";
 import { modelData } from "@test/helpers/faker";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
@@ -113,7 +113,7 @@ describe("AnnotationService", () => {
       // specified that we want to verify tag 3.
       // Therefore, when the tags are ordered from highest priority to lowest,
       // we should see that tag 3 is preferred.
-      const dataModel = new AnnotationSearchParameters({
+      const dataModel = new VerificationParameters({
         tags: "1,2,3,4",
         taskTag: "3",
       });
@@ -149,12 +149,9 @@ describe("AnnotationService", () => {
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
 
-      const realizedResult = await spec.service.show(
-        testedEvent,
-        dataModel.tagPriority,
-      );
-
+      const realizedResult = await spec.service.show(testedEvent, dataModel.tagPriority);
       const realizedIds = realizedResult.tags.map((tag) => tag.id);
+
       expect(realizedIds).toEqual(expectedIds);
     });
   });

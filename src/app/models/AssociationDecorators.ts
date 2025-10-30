@@ -42,7 +42,6 @@ export function deleter<Parent extends ImplementsAssociations & HasDeleter>() {
   return hasOne<Parent, User>(ACCOUNT, key as any);
 }
 
-
 /**
  * Abstract model parameter decorator which automates the process
  * of retrieving models request linked by a group of ids in the parent model.
@@ -196,6 +195,17 @@ function createModelDecorator<
   failureValue: any
 ) {
   /**
+   * To prevent making duplicate API calls for an association when the value has
+   * not changed, the backing field can be returned if the identifier value has
+   * not changed since the last API call.
+   *
+   * This variable stores the last known identifier value so that we can compare
+   * it against the current identifier value in the parent model.
+   */
+  const storedIdentifierKey = Symbol("storedIdentifier_" + identifierKey.toString());
+  const backingFieldKey = "_" + identifierKey.toString();
+
+  /**
    * Update the backing field which stores the last known value of the child model/s
    *
    * @param parent Parent model
@@ -204,7 +214,6 @@ function createModelDecorator<
    */
   function updateBackingField(
     parent: Parent,
-    backingFieldKey: string,
     child:
       | Child
       | Child[]
@@ -213,6 +222,13 @@ function createModelDecorator<
       | Readonly<UnresolvedModel[]>
       | Subscription
   ) {
+    // We use Object.defineProperty so that the property is not enumerable
+    // and does not show up in JSON.stringify calls.
+    Object.defineProperty(parent, storedIdentifierKey, {
+      value: JSON.stringify(parent[identifierKey]),
+      configurable: true,
+    });
+
     Object.defineProperty(parent, backingFieldKey, {
       value: child,
       configurable: true,
@@ -227,9 +243,26 @@ function createModelDecorator<
   function getAssociatedModel(
     parent: Parent
   ): Readonly<AbstractModel | AbstractModel[]> {
-    // Check for any backing models
-    const backingFieldKey = "_" + identifierKey.toString();
-    if (Object.prototype.hasOwnProperty.call(parent, backingFieldKey)) {
+    if (
+      Object.prototype.hasOwnProperty.call(parent, backingFieldKey) &&
+
+      // We check the storedIdentifierValue so that if the identifier value
+      // changes in the parent model, we don't return a stale backing value
+      // from a previous identifier value.
+      //
+      // We use Object.is instead of === so that if there is a bug in the client
+      // that causes an identifier value to end up as NaN, this condition still
+      // passes, and we don't end up making a potentially infinite number of API
+      // calls.
+      // Note: I have never seen this happen in practice, but I handle this case
+      // as a defensive programming measure so that the client does not end up
+      // flooding the API because of a bug in the client code.
+      // Object.is(parent[storedIdentifierKey], parent[identifierKey])
+      //
+      // TODO: Remove this JSON.stringify hack that was used to get pages like
+      // the statistics page working that eagerly destroy and recreate models.
+      parent[storedIdentifierKey] === JSON.stringify(parent[identifierKey])
+    ) {
       return parent[backingFieldKey];
     }
 
@@ -268,11 +301,11 @@ function createModelDecorator<
     const service = injector.get(serviceToken.token);
 
     // Set initial value for field
-    updateBackingField(parent, backingFieldKey, unresolvedValue);
+    updateBackingField(parent, unresolvedValue);
 
     // Load value from API (note: because of caching, this can be instant)
     apiRequest(service, parent, parameters).subscribe({
-      next: (model) => updateBackingField(parent, backingFieldKey, model),
+      next: (model) => updateBackingField(parent, model),
       error: (error) => {
         console.error(`${parent} failed to load ${identifierKey.toString()}.`, {
           target: parent,
@@ -280,7 +313,7 @@ function createModelDecorator<
           identifier,
           error,
         });
-        updateBackingField(parent, backingFieldKey, failureValue);
+        updateBackingField(parent, failureValue);
       },
     });
 

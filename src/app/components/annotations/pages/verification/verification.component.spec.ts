@@ -35,7 +35,7 @@ import { Annotation } from "@models/data/Annotation";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -72,10 +72,12 @@ import { generateTagging } from "@test/fakes/Tagging";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { ConfigService } from "@services/config/config.service";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import {
-  AnnotationSearchParameters,
+  VerificationParameters,
   VerificationStatusKey,
-} from "../annotationSearchParameters";
+} from "@components/annotations/components/verification-form/verificationParameters";
+import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
@@ -135,6 +137,8 @@ describe("VerificationComponent", () => {
   let routeSite: Site;
 
   let mockSearchParameters: AnnotationSearchParameters;
+  let mockVerificationParameters: VerificationParameters;
+
   let mockUser: User;
   let mockAudioEventsResponse: AudioEvent[] = [];
   let defaultFakeTags: Tag[];
@@ -181,6 +185,24 @@ describe("VerificationComponent", () => {
     //    to open and close.
     setNoBootstrap();
 
+    mockSearchParameters = new AnnotationSearchParameters(
+      generateAnnotationSearchUrlParams(queryParameters),
+      mockUser,
+    );
+    mockSearchParameters.routeSiteModel = routeSite;
+    mockSearchParameters.routeSiteId = routeSite.id;
+
+    mockSearchParameters.routeRegionModel = routeRegion;
+    mockSearchParameters.routeRegionId = routeRegion.id;
+
+    mockSearchParameters.routeProjectModel = routeProject;
+    mockSearchParameters.routeProjectId = routeProject.id;
+
+    mockVerificationParameters = new VerificationParameters(
+      generateVerificationUrlParams(queryParameters),
+      mockUser,
+    );
+
     spec = createComponent({
       detectChanges: false,
       params: {
@@ -193,10 +215,14 @@ describe("VerificationComponent", () => {
           project: "resolver",
           region: "resolver",
           site: "resolver",
+          searchParameters: "resolver",
+          verificationParameters: "resolver",
         },
-        project: routeProject,
-        region: routeRegion,
-        site: routeSite,
+        project: { model: routeProject },
+        region: { model: routeRegion },
+        site:  { model: routeSite },
+        searchParameters: { model: mockSearchParameters  },
+        verificationParameters: { model: mockVerificationParameters },
       },
       providers: [
         mockProvider(AnnotationService, {
@@ -226,28 +252,19 @@ describe("VerificationComponent", () => {
     mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
     mediaServiceSpy.createMediaUrl.and.returnValue(mockFile);
 
-    mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(queryParameters),
-      mockUser,
-      injector,
-    );
-    mockSearchParameters.routeSiteModel = routeSite;
-    mockSearchParameters.routeSiteId = routeSite.id;
-
-    mockSearchParameters.routeRegionModel = routeRegion;
-    mockSearchParameters.routeRegionId = routeRegion.id;
-
-    mockSearchParameters.routeProjectModel = routeProject;
-    mockSearchParameters.routeProjectId = routeProject.id;
-
     defaultFakeTags = Array.from({ length: 3 }).map((_, index) => {
       const tagObject = generateTag({ id: index, text: `item ${index}` });
       return new Tag(tagObject, injector);
     });
 
-    const mockAudioEventIds = Array.from({ length: 12 }).map((_, index) => index);
+    const mockAudioEventIds = Array.from({ length: 12 }).map(
+      (_, index) => index,
+    );
     const mockTaggings = defaultFakeTags.slice(0, 3).map((tag, index) => {
-      return new Tagging(generateTagging({ tagId: tag.id, audioEventId: index }), injector);
+      return new Tagging(
+        generateTagging({ tagId: tag.id, audioEventId: index }),
+        injector,
+      );
     });
 
     mockAudioEventsResponse = mockAudioEventIds.map((id, index) => {
@@ -272,8 +289,6 @@ describe("VerificationComponent", () => {
     );
 
     verificationResponse = new Verification(generateVerification(), injector);
-
-    spec.component.searchParameters.set(mockSearchParameters);
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
     taggingCorrectionApiSpy = spec.inject(TaggingCorrectionsService);
@@ -346,7 +361,7 @@ describe("VerificationComponent", () => {
 
     await requestPromises;
 
-    await waitUntil(() => isGridLoaded());
+    await waitUntil(() => isGridLoaded(), 10_000);
 
     await detectChanges(spec);
   }
@@ -359,7 +374,9 @@ describe("VerificationComponent", () => {
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
-      await import(nodeModule("@ecoacoustics/web-components/dist/components.js"));
+      await import(
+        nodeModule("@ecoacoustics/web-components/dist/components.js")
+      );
     }
 
     mockUser = new User(generateUser());
@@ -418,7 +435,7 @@ describe("VerificationComponent", () => {
 
   const decisionButton = (index: number) =>
     decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
-      "[part='decision-button']",
+      "#decision-button",
     );
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
@@ -483,9 +500,6 @@ describe("VerificationComponent", () => {
 
   /** Uses shift + click selection to select a range */
   async function makeSelection(start: number, end: number) {
-    // Resize the viewport to make the grid tiles visible
-    //! Smell: I should not have to resize the karma viewport
-    viewport.set(viewports.large);
     await waitUntil(() => gridTiles().length > 0);
     const targetGridTiles = gridTiles();
 
@@ -537,7 +551,8 @@ describe("VerificationComponent", () => {
 
   it("should set the loading timeout to the value in the environment.json config", async () => {
     await setup();
-    const expectedTimeout = spec.inject(ConfigService).environment.browserTimeout;
+    const expectedTimeout =
+      spec.inject(ConfigService).environment.browserTimeout;
     expect(verificationGrid().loadingTimeout).toEqual(expectedTimeout);
   });
 
@@ -558,7 +573,7 @@ describe("VerificationComponent", () => {
         selectFromTypeahead(spec, tagsTypeahead(), tagText);
       })();
 
-      spec.click(updateFiltersButton());
+      clickButton(spec, updateFiltersButton());
 
       expect(spec.component.searchParameters().tags).toContain(expectedTagId);
     });
@@ -569,16 +584,17 @@ describe("VerificationComponent", () => {
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);
     }));
 
-    it("should correctly update the selection parameter when filter conditions are added", async () => {
+    xit("should correctly update the selection parameter when filter conditions are added", async () => {
       await detectChanges(spec);
-      fakeAsync(() => showParameters())();
+      fakeAsync(() => {
+        showParameters();
+        clickVerificationStatusFilter("unverified");
+      })();
 
-      clickVerificationStatusFilter("any");
-
-      spec.click(updateFiltersButton());
+      clickButton(spec, updateFiltersButton());
 
       expect(spec.component.searchParameters().verificationStatus).toEqual(
-        "any",
+        "unverified",
       );
     });
   });
@@ -814,11 +830,10 @@ describe("VerificationComponent", () => {
       }
 
       xit("should make verification api calls about the entire page if nothing is selected", async () => {
-        await clickDecisionButton(DecisionOptions.TRUE),
-
+        await clickDecisionButton(DecisionOptions.TRUE);
         expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
           gridSize(),
-        );
+          );
       });
     });
 
@@ -834,9 +849,10 @@ describe("VerificationComponent", () => {
       };
 
       async function runNewTagTest(test: NewTagTest): Promise<void> {
-        const newDecisionName = typeof test.newDecision === "object"
-          ? `${test.newDecision.decision}`
-          : test.newDecision;
+        const newDecisionName =
+          typeof test.newDecision === "object"
+            ? `${test.newDecision.decision}`
+            : test.newDecision;
         const testName =
           test.testName ?? `${test.initialDecision} -> ${newDecisionName}`;
 

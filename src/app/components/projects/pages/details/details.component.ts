@@ -59,6 +59,7 @@ export const projectMenuItemActions = [
   annotationMenuItems.search.project,
   analysesMenuItem,
   annotationsImportMenuItem,
+  annotationMenuItems.map.project,
 ];
 
 const projectKey = "project";

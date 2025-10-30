@@ -19,6 +19,7 @@ import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
+import { Id } from "@interfaces/apiInterfaces";
 import { TaggingCorrectionsService } from "./tagging-corrections.service";
 
 describe("TaggingCorrectionsService", () => {
@@ -139,7 +140,7 @@ describe("TaggingCorrectionsService", () => {
       const tagToRemove = new Tag(generateTag(), injector);
       const taggingToRemove = new Tagging(generateTagging(), injector);
 
-      const correctionsMap = new Map<Tag["id"], Tagging>([
+      const correctionsMap = new Map<Id<Tag>, Tagging>([
         [tagToRemove.id, taggingToRemove],
       ]);
 
@@ -172,7 +173,7 @@ describe("TaggingCorrectionsService", () => {
       const tagToRemove = new Tag(generateTag(), injector);
       const taggingToRemove = new Tagging(generateTagging(), injector);
 
-      const correctionsMap = new Map<Tag["id"], Tagging>([
+      const correctionsMap = new Map<Id<Tag>, Tagging>([
         [tagToRemove.id, taggingToRemove],
       ]);
 

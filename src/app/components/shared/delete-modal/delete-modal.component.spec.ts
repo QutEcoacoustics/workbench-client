@@ -4,6 +4,7 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { getElementByTextContent } from "@test/helpers/html";
 import { DeleteModalComponent } from "./delete-modal.component";
 
 describe("ConfirmationModalComponent", () => {
@@ -33,18 +34,14 @@ describe("ConfirmationModalComponent", () => {
     ).and.returnValue(mockPageComponent);
   }
 
-  beforeEach(() => setup());
-
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (el) => el.nativeElement.innerText === text
-    ).nativeElement as T;
-  }
+  beforeEach(() => {
+    setup();
+  });
 
   const getDeleteButton = () =>
-    getElementByInnerText<HTMLAnchorElement>("Delete");
+    getElementByTextContent<HTMLAnchorElement>(spectator, "Delete");
   const getCancelButton = () =>
-    getElementByInnerText<HTMLAnchorElement>("Cancel");
+    getElementByTextContent<HTMLAnchorElement>(spectator, "Cancel");
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(DeleteModalComponent);
@@ -52,19 +49,19 @@ describe("ConfirmationModalComponent", () => {
 
   it("should invoke the success callback when the delete button is clicked", () => {
     spyOn(spectator.component, "successCallback").and.stub();
-    getDeleteButton().click();
+    spectator.click(getDeleteButton());
     expect(spectator.component.successCallback).toHaveBeenCalledTimes(1);
   });
 
   it("should close the modal when the cancel button is clicked", () => {
     spyOn(spectator.component, "closeModal").and.stub();
-    getCancelButton().click();
+    spectator.click(getCancelButton());
     expect(spectator.component.closeModal).toHaveBeenCalledWith(false);
   });
 
   it("should close the modal when the delete button is clicked", () => {
     spyOn(spectator.component, "closeModal").and.stub();
-    getDeleteButton().click();
+    spectator.click(getDeleteButton());
     expect(spectator.component.closeModal).toHaveBeenCalledWith(true);
   });
 });

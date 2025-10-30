@@ -15,13 +15,7 @@ import type {
 import httpStatus from "http-status";
 import { Observable, of } from "rxjs";
 import { catchError, first, map } from "rxjs/operators";
-import {
-  ApiFilter,
-  ApiFilterShow,
-  ApiList,
-  ApiShow,
-  IdOr,
-} from "./api-common";
+import { ApiFilter, ApiFilterShow, ApiList, ApiShow } from "./api-common";
 import { BawApiService, unknownErrorCode } from "./baw-api.service";
 
 /**
@@ -40,7 +34,7 @@ export abstract class BawResolver<
     | BawApiService<ServiceModel>
     | ApiList<ServiceModel, ServiceParams>
     | ApiFilter<ServiceModel, ServiceParams>
-    | ApiShow<ServiceModel, ServiceParams, IdOr<ServiceModel>>
+    | ApiShow<ServiceModel, ServiceParams>
     | ApiFilterShow<ServiceModel, ServiceParams>,
   ResolverName = { customResolver: string }
 > {
@@ -164,8 +158,8 @@ export class Resolvers<
   Model extends AbstractModel,
   Params extends any[],
   Service extends ApiList<Model, Params> &
-    ApiShow<Model, Params, IdOr<Model>> = ApiList<Model, Params> &
-    ApiShow<Model, Params, IdOr<Model>>
+    ApiShow<Model, Params> = ApiList<Model, Params> &
+    ApiShow<Model, Params>
 > {
   public constructor(
     private serviceDeps: Type<Service>[],
@@ -256,11 +250,7 @@ export class ListResolver<
 export class ShowResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
-    Model,
-    Params,
-    IdOr<Model>
-  >
+  Service extends ApiShow<Model, Params> = ApiShow<Model, Params>
 > extends BawResolver<Model, Model, Params, Service, { show: string }> {
   public constructor(
     deps: Type<Service>[],
@@ -301,11 +291,7 @@ export class ShowResolver<
 export class ShowOptionalResolver<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params, IdOr<Model>> = ApiShow<
-    Model,
-    Params,
-    IdOr<Model>
-  >
+  Service extends ApiShow<Model, Params> = ApiShow<Model, Params>,
 > extends BawResolver<Model, Model, Params, Service, { showOptional: string }> {
   public constructor(
     deps: Type<Service>[],

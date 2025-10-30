@@ -3,7 +3,6 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
 import { DateTime, Duration } from "luxon";
-import { Id } from "../interfaces/apiInterfaces";
 import {
   Capability,
   CapabilityKey,
@@ -414,7 +413,7 @@ export abstract class AbstractModel<
   Model = Record<string, any>
 > extends AbstractModelWithoutId<Model> {
   /** Model ID */
-  public readonly id?: Id;
+  public readonly id?: number;
 
   /**
    * Convert model to string.

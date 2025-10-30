@@ -3,9 +3,9 @@
 <div>
   <baw-annotation-search-form
     #annotationSearchForm
-    [searchParameters]="searchParameters"
+    [searchParameters]="searchParameters()"
     (searchParametersChange)="updateSearchParameters($event)"
-  ></baw-annotation-search-form>
+  />
 
   <div class="mt-2">
     <!--
@@ -13,12 +13,15 @@
       we should uncomment this buttons functionality
       see: https://github.com/QutEcoacoustics/baw-server/issues/688
     -->
-    <!-- <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
+    <!-- <a class="btn btn-secondary me-2" [bawUrl]="downloadAnnotationsUrl()">
       Download Annotations
     </a> -->
 
     <baw-can [ifLoggedIn]="true">
-      <button class="verify-button btn btn-primary" (click)="navigateToVerificationGrid()">
+      <button
+        class="verify-button btn btn-primary"
+        (click)="createVerificationTask()"
+      >
         Verify This List
       </button>
     </baw-can>
@@ -30,44 +33,49 @@
 <div>
   @if (!error) {
     @if (loading) {
-      <baw-loading></baw-loading>
+      <baw-loading />
     } @else {
       <p>
         Displaying
-        <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-        events.
+        <span class="fw-bold">{{ searchResults().length }}</span> of
+        <span class="fw-bold">all {{ paginationInformation()?.total }}</span>
+        audio events.
       </p>
-    }
 
-    <div class="annotations-grid my-2">
-      @for (verificationModel of searchResults; track $index) {
-        @if (verificationModel) {
-          <div>
-            <baw-annotation-event-card
-              [annotation]="verificationModel"
-            ></baw-annotation-event-card>
-          </div>
-        }
+      @if (searchResults().length === 0) {
+        <h2 class="no-results-error">No annotations found</h2>
+      } @else {
+        <div class="annotations-grid my-2">
+          @for (annotationModel of searchResults(); track annotationModel.id) {
+            <baw-annotation-event-card [annotation]="annotationModel" />
+          }
+        </div>
       }
-    </div>
 
-    @if (searchResults.length === 0 && !loading) {
-      <h2 class="no-results-error">No annotations found</h2>
-      } @if(displayPagination) {
-      <ngb-pagination
-        class="d-flex justify-content-center mt-4"
-        [collectionSize]="paginationInformation?.total ?? 0"
-        [(page)]="page"
-      ></ngb-pagination>
+      @if (displayPagination) {
+        <ngb-pagination
+          class="d-flex justify-content-center mt-4"
+          [collectionSize]="paginationInformation()?.total ?? 0"
+          [(page)]="page"
+        />
+      }
     }
+  } @else {
+    <baw-error-handler [error]="error" />
   }
-  <baw-error-handler [error]="error"></baw-error-handler>
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>
   <baw-filters-warning-modal
     [modal]="warningModal"
-    [itemCount]="paginationInformation.total"
-  ></baw-filters-warning-modal>
+    [itemCount]="paginationInformation().total"
+  />
+</ng-template>
+
+<ng-template #verificationFiltersModal let-filtersModal>
+  <baw-verification-filters-modal
+    [modal]="filtersModal"
+    [formValue]="verificationParameters()"
+    [successCallback]="navigateToVerificationGrid.bind(this)"
+  />
 </ng-template>

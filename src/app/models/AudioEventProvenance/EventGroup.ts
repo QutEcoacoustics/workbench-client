@@ -25,9 +25,9 @@ export class EventGroup
   public score: IEventScore;
 
   // associations
-  @hasOne<EventGroup, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
-  @hasOne<EventGroup, Tag>(TAG, "tagId")
+  @hasOne(TAG, "tagId")
   public tag?: Tag;
 
   public get viewUrl(): string {

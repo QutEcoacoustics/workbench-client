@@ -4,7 +4,7 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
   signal,
   viewChild,
@@ -23,7 +23,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { firstValueFrom, map } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters, Paging } from "@baw-api/baw-api.service";
+import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
   DecisionMadeEvent,
   VerificationGridComponent,
@@ -47,7 +47,9 @@ import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subje
 import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
   TagPromptComponent,
   TypeaheadCallback,
@@ -62,7 +64,15 @@ import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { ConfigService } from "@services/config/config.service";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { Id } from "@interfaces/apiInterfaces";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import { filterAnd } from "@helpers/filters/filters";
+import {
+  SearchVerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -71,7 +81,8 @@ interface PagingContext extends PageFetcherContext {
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const annotationsKey = "annotations";
+const searchParametersKey = "searchParameters";
+const verificationParametersKey = "verificationParameters";
 
 const confirmedMapping = {
   true: ConfirmedStatus.Correct,
@@ -87,7 +98,11 @@ const confirmedMapping = {
   selector: "baw-verification",
   templateUrl: "./verification.component.html",
   styleUrl: "./verification.component.scss",
-  imports: [FaIconComponent, NgbTooltip, SearchFiltersModalComponent],
+  imports: [
+    FaIconComponent,
+    NgbTooltip,
+    SearchVerificationFiltersModalComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -95,23 +110,19 @@ class VerificationComponent
   extends PageComponent
   implements OnInit, AfterViewInit, UnsavedInputCheckingComponent
 {
-  public constructor(
-    private audioEventApi: ShallowAudioEventsService,
-    private verificationApi: ShallowVerificationService,
-    private annotationsService: AnnotationService,
-    private tagsApi: TagsService,
-    private tagCorrections: TaggingCorrectionsService,
+  private readonly audioEventApi = inject(ShallowAudioEventsService);
+  private readonly verificationApi = inject(ShallowVerificationService);
+  private readonly annotationsService = inject(AnnotationService);
+  private readonly tagsApi = inject(TagsService);
+  private readonly tagCorrections = inject(TaggingCorrectionsService);
 
-    private scrollService: ScrollService,
-    private modals: NgbModal,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private config: ConfigService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
-    super();
-  }
+  private readonly scrollService = inject(ScrollService);
+  private readonly modals = inject(NgbModal);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly config = inject(ConfigService);
+  private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
 
   private readonly searchFiltersModal =
     viewChild<ElementRef<SearchFiltersModalComponent>>("searchFiltersModal");
@@ -119,10 +130,16 @@ class VerificationComponent
     viewChild<ElementRef<VerificationGridComponent>>("verificationGrid");
   private readonly tagPromptElement =
     viewChild<ElementRef<TagPromptComponent>>("tagPrompt");
-  private readonly verificationDecisionElements =
-    viewChildren<ElementRef<TagPromptComponent>>("verificationDecision");
+  private readonly verificationDecisionElements = viewChildren<
+    ElementRef<TagPromptComponent>
+  >("verificationDecision");
 
-  public readonly searchParameters = signal<AnnotationSearchParameters | null>(null);
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(
+    null,
+  );
+  public readonly verificationParameters =
+    signal<VerificationParameters | null>(null);
+
   public readonly hasUnsavedChanges = signal(false);
   protected readonly verificationGridFocused = signal(true);
   protected readonly hasCorrectionTask = signal(false);
@@ -145,12 +162,14 @@ class VerificationComponent
    * By using a client-side map, we can cache the tagging client side and
    * prevent making another request to the api.
    */
-  private sessionTagCorrections = new Map<Annotation["id"], Tagging>();
+  private sessionTagCorrections = new Map<Id<Annotation>, Tagging>();
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters.update((current) => {
-      const newModel = current ?? (models[annotationsKey] as AnnotationSearchParameters);
+    this.searchParameters.update(() => {
+      const newModel = models[
+        searchParametersKey
+      ] as AnnotationSearchParameters;
       newModel.injector = this.injector;
 
       newModel.routeProjectModel ??= models[projectKey] as Project;
@@ -166,8 +185,16 @@ class VerificationComponent
       return newModel;
     });
 
+    this.verificationParameters.update(() => {
+      const newModel = models[
+        verificationParametersKey
+      ] as VerificationParameters;
+      newModel.injector = this.injector;
+      return newModel;
+    });
+
     this.hasCorrectionTask.set(
-      this.searchParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -212,12 +239,12 @@ class VerificationComponent
     this.modals.open(this.searchFiltersModal(), { size: "xl" });
   }
 
-  protected requestModelUpdate(newModel: AnnotationSearchParameters) {
-    if (!this.hasUnsavedChanges()) {
-      this.searchParameters.set(newModel);
-      this.updateGridCallback();
-      return;
-    }
+  protected requestModelUpdate(models: {
+    searchParameters: AnnotationSearchParameters;
+    verificationParameters: VerificationParameters;
+  }): void {
+    this.searchParameters.set(models.searchParameters);
+    this.verificationParameters.set(models.verificationParameters);
 
     this.updateGridCallback();
   }
@@ -245,7 +272,7 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.searchParameters().tagPriority,
+            this.verificationParameters().tagPriority,
           ),
         ),
       );
@@ -267,10 +294,9 @@ class VerificationComponent
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
     this.updateUrlParameters();
-    this.hasUnsavedChanges.set(false);
 
     this.hasCorrectionTask.set(
-      this.searchParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -305,7 +331,11 @@ class VerificationComponent
       const newTagDecision = change.newTag;
       const oldSubjectTagCorrection: Tag | undefined = oldSubject.newTag?.tag;
 
-      if (newTagDecision === null || newTagDecision === decisionNotRequired || newTagDecision?.["confirmed"] === "skip") {
+      if (
+        newTagDecision === null ||
+        newTagDecision === decisionNotRequired ||
+        newTagDecision?.["confirmed"] === "skip"
+      ) {
         this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
       } else if (newTagDecision) {
         // If there was a newTag (tag correction) applied in the previous
@@ -436,17 +466,39 @@ class VerificationComponent
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const paging: Paging = { page };
-    const routeFilters = this.searchParameters().toFilter();
+    const verificationFilters = this.verificationParameters().toFilter();
+    const searchFilters = this.searchParameters().toFilter({
+      includeVerification: false,
+    });
 
-    return {
-      paging,
-      ...routeFilters,
+    const paging: Paging = { page };
+
+    const filter = filterAnd<AudioEvent>(
+      verificationFilters.filter,
+      searchFilters.filter,
+    );
+
+    const sorting: Sorting<keyof AudioEvent> = {
+      ...verificationFilters.sorting,
+      ...searchFilters.sorting,
     };
+
+    return { paging, filter, sorting };
   }
 
   private updateUrlParameters(): void {
-    const queryParams = this.searchParameters().toQueryParams();
+    const searchParameters = this.searchParameters().toQueryParams({
+      includeVerification: false,
+    });
+
+    const verificationParameters =
+      this.verificationParameters().toQueryParams();
+
+    const queryParams = mergeParameters(
+      searchParameters,
+      verificationParameters,
+    );
+
     const urlTree = this.router.createUrlTree([], { queryParams });
     this.location.replaceState(urlTree.toString());
   }
@@ -470,7 +522,7 @@ class VerificationComponent
     // The user can only verify a tag if there is a tag applied to the subject.
     return (subject: SubjectWrapper) => {
       return subject.tag !== null;
-    }
+    };
   }
 
   private addTagWhenPredicate(): WhenPredicate {
@@ -495,12 +547,12 @@ class VerificationComponent
       // If the user verified the original tag as incorrect, we want to prompt
       // them for a new tag.
       return subjectVerification.confirmed === "false";
-    }
+    };
   }
 }
 
 function getPageInfo(
-  subRoute: keyof typeof annotationMenuItems.verify
+  subRoute: keyof typeof annotationMenuItems.verify,
 ): IPageInfo {
   return {
     pageRoute: annotationMenuItems.verify[subRoute],
@@ -509,7 +561,8 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationResolvers.showOptional,
+      [searchParametersKey]: annotationSearchParametersResolvers.showOptional,
+      [verificationParametersKey]: verificationParametersResolvers.showOptional,
     },
     fullscreen: true,
     renderMode: RenderMode.Client,

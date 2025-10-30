@@ -7,25 +7,52 @@ import { StrongRoute } from "@interfaces/strongRoute";
 
 const annotationsRouteName = "annotations";
 const verificationRouteName = "verify";
+const annotationMapRouteName = "map";
 
 const annotationSearchRouteQueryParamResolver = (
   params: Record<string, string>,
 ) =>
   params
     ? {
+        audioRecordings: params.audioRecordings,
+        tags: params.tags,
+        importFiles: params.importFiles,
+        score: params.score,
+
         projects: params.projects,
         regions: params.regions,
-        sites: params.sties,
-        tags: params.tags,
-        onlyUnverified: params.onlyUnverified,
-        score: params.score,
-        importFiles: params.importFiles,
-        sort: params.sort,
-        verificationStatus: params.verificationStatus,
+        sites: params.sites,
+
         date: params.date,
         time: params.time,
+
+        sort: params.sort,
+
+        taskTag: params.taskTag,
+        taskBehavior: params.taskBehavior,
+        verificationStatus: params.verificationStatus,
       }
     : {};
+
+const annotationMapRouteQueryParamResolver = (params) =>
+  params
+    ? {
+        audioRecordings: params.audioRecordings,
+        tags: params.tags,
+        importFiles: params.importFiles,
+        score: params.score,
+
+        projects: params.projects,
+        regions: params.regions,
+        sites: params.sites,
+
+        date: params.date,
+        time: params.time,
+
+        focused: params.focused,
+      }
+    : {};
+
 
 export type AnnotationRoute = "project" | "region" | "site" | "siteAndRegion";
 export type AnnotationStrongRoute = Record<AnnotationRoute, StrongRoute>;
@@ -81,3 +108,27 @@ export const verificationRoute: AnnotationStrongRoute = {
     { canActivate: verificationRouteGuards },
   ),
 };
+
+export const annotationMapRoute: AnnotationStrongRoute = {
+  /** /project/:projectId/site/:siteId/annotations/map */
+  site: annotationSearchRoute.site.add(
+    annotationMapRouteName,
+    annotationMapRouteQueryParamResolver,
+  ),
+  /** /project/:projectId/region/:regionId/site/:siteId/annotations/map */
+  siteAndRegion: annotationSearchRoute.siteAndRegion.add(
+    annotationMapRouteName,
+    annotationMapRouteQueryParamResolver,
+  ),
+  /** /project/:projectId/region/:regionId/annotations/map */
+  region: annotationSearchRoute.region.add(
+    annotationMapRouteName,
+    annotationMapRouteQueryParamResolver,
+  ),
+  /** /project/:projectId/annotations/map */
+  project: annotationSearchRoute.project.add(
+    annotationMapRouteName,
+    annotationMapRouteQueryParamResolver,
+  ),
+};
+

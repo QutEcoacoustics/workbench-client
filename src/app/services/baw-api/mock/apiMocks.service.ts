@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import {
   ApiFilter,
   ApiShow,
-  IdOr,
   ImmutableApi,
   NonDestructibleApi,
   ReadAndCreateApi,
@@ -85,9 +84,7 @@ export class MockReadonlyApiService implements ReadonlyApi<MockModel> {
 }
 
 @Injectable()
-export class MockShowApiService
-  implements ApiShow<MockModel, [], IdOr<MockModel>>
-{
+export class MockShowApiService implements ApiShow<MockModel> {
   public show = singleModel;
 }
 

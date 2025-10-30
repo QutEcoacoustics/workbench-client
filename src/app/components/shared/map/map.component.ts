@@ -1,14 +1,18 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   inject,
   input,
   OnChanges,
   output,
   signal,
   SimpleChanges,
+  TemplateRef,
   viewChild,
   ViewChild,
+  ViewContainerRef,
 } from "@angular/core";
 import {
   GoogleMap,
@@ -17,6 +21,7 @@ import {
   MapMarkerClusterer,
   MapAdvancedMarker,
 } from "@angular/google-maps";
+import type { Algorithm, Renderer } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   GoogleMapsState,
@@ -27,12 +32,26 @@ import {
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
+import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../loading/loading.component";
+import { ClusterRenderer } from "./clusterRenderer";
+import { WeightedSuperClusterAlgorithm } from "./weightedSuperClusterAlgorithm";
 
 type MarkerGroup = unknown;
 
+interface MarkerTemplate {
+  marker: MapMarkerOptions;
+}
+
+type WeightedAdvancedMarkerElement = google.maps.marker.AdvancedMarkerElement & {
+  clusterWeight?: number;
+};
+
 /**
  * Google Maps Wrapper Component
+ *
+ * @slot marker
+ * A template for markers
  */
 @Component({
   selector: "baw-map",
@@ -44,27 +63,48 @@ type MarkerGroup = unknown;
     MapMarkerClusterer,
     MapInfoWindow,
     LoadingComponent,
+    NgTemplateOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent extends withUnsubscribe() implements OnChanges {
   private readonly mapService = inject(MapsService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly viewContainer = inject(ViewContainerRef);
 
   public readonly markers = input.required<List<MapMarkerOptions>>();
-  public readonly markerOptions = input<google.maps.marker.AdvancedMarkerElementOptions>();
-  public readonly fetchingData = input(false);
+  public readonly markerOptions =
+    input<google.maps.marker.AdvancedMarkerElementOptions>();
 
   // Setting to "hybrid" can increase load times and looks like the map is bugged
   public readonly mapOptions = input<MapOptions>({ mapTypeId: "satellite" });
+  public readonly fetchingData = input(false);
 
   public readonly newLocation = output<google.maps.MapMouseEvent>();
+
+  /**
+   * An event that is emitted when the marker is clicked with the mouse or
+   * through a keyboard event.
+   */
+  public readonly markerClicked = output<MapMarkerOptions>();
 
   public bounds: google.maps.LatLngBounds;
   public validMarkersOptions: MapMarkerOptions[];
   public hasMarkers = false;
+  protected readonly clusterRenderer: Renderer =
+    new ClusterRenderer() as unknown as Renderer;
+  protected readonly clusterAlgorithm: Algorithm =
+    new WeightedSuperClusterAlgorithm() as unknown as Algorithm;
   private _map: GoogleMap;
 
-  protected readonly infoContent = signal("");
+  protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);
+  protected readonly infoOptions = computed<google.maps.InfoWindowOptions>(
+    () => {
+      return {
+        headerContent: this.focusedMarker()?.title ?? "",
+      };
+    },
+  );
 
   protected readonly MapLoadState = GoogleMapsState;
   protected readonly mapsLoadState = signal<GoogleMapsState>(
@@ -88,7 +128,22 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     );
   });
 
-  public readonly info = viewChild(MapInfoWindow);
+  private readonly info = viewChild(MapInfoWindow);
+
+  /**
+   * A content template that is used to render the marker.
+   */
+  public readonly markerTemplate =
+    contentChild<TemplateRef<MarkerTemplate>>("markerTemplate");
+
+  /**
+   * A content template that is used to show additional information above the
+   * marker when hovered.
+   * This appears an info window/tooltip when the marker is hovered.
+   */
+  public readonly markerHoverTemplate = contentChild<
+    TemplateRef<MarkerTemplate>
+  >("markerHoverTemplate");
 
   @ViewChild(GoogleMap)
   private set map(value: GoogleMap) {
@@ -135,18 +190,35 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     options: MapMarkerOptions,
     marker: MapAdvancedMarker,
   ): void {
+    this.applyClusterWeight(options, marker);
     marker.advancedMarker.addEventListener("pointerover", () => {
       this.addMapMarkerInfo(options, marker);
     });
 
+    marker.advancedMarker.addEventListener("click", () => {
+      this.handleMarkerClick(options);
+    });
+
     this.focusMarkers();
+  }
+
+  private applyClusterWeight(
+    options: MapMarkerOptions,
+    marker: MapAdvancedMarker,
+  ): void {
+    const weight = options.clusterWeight ?? 1;
+    const advancedMarker = marker.advancedMarker as WeightedAdvancedMarkerElement;
+
+    if (advancedMarker) {
+      advancedMarker.clusterWeight = weight;
+    }
   }
 
   protected addMapMarkerInfo(
     options: MapMarkerOptions,
     marker: MapAnchorPoint,
   ): void {
-    this.infoContent.set(options.title ?? "");
+    this.focusedMarker.set(options);
     this.info().open(marker);
   }
 
@@ -168,13 +240,28 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     this._map.panToBounds(this.bounds);
   }
 
+  protected handleMarkerClick(marker: MapMarkerOptions): void {
+    this.markerClicked.emit(marker);
+  }
+
   // TODO: Implement some sort of caching so that markers of the same group can
   // share the same element reference instead of creating a new one each time.
   protected markerContent(marker: MapMarkerOptions): HTMLElement {
-    return this.createMarkerElement(marker);
+    const customTemplate = this.markerTemplate()?.elementRef?.nativeElement;
+    if (customTemplate) {
+      const container = this.viewContainer.createEmbeddedView(
+        this.markerTemplate(),
+        { marker },
+      );
+      return container.rootNodes[0] as HTMLElement;
+    }
+
+    // If the consumer has not provided a custom template in the default slot,
+    // we render a pin element with a color based on the marker's group.
+    return this.createPinElement(marker);
   }
 
-  private createMarkerElement(marker: MapMarkerOptions): HTMLElement {
+  private createPinElement(marker: MapMarkerOptions): HTMLElement {
     const color = this.markerColor(marker);
     const pinElement = new google.maps.marker.PinElement({
       background: color,
@@ -209,7 +296,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     // the end of the picked color index.
     // E.g. For 2 groups, the indexes will be 0 and 0.5 instead of 0 and 1,
     // ensuring that the two colors are as far apart as possible.
-    const scalar = ((1 / count) * index) % 1
+    const scalar = ((1 / count) * index) % 1;
     const color = interpolateSinebow(scalar);
 
     return color;

@@ -17,6 +17,11 @@ import { StrongRouteDirective } from "./strong-route.directive";
 
 export type RouterLinkActiveOptions = { exact: boolean } | IsActiveMatchOptions;
 
+/**
+ * @description
+ * A directive which works with our custom route format to conditionally check
+ * if a link is active.
+ */
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRouteActive]",

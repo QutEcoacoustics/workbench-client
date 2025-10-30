@@ -2,9 +2,9 @@
   "folders": [{ "path": "." }],
   "settings": {
     "typescript.tsdk": "node_modules\\typescript\\lib",
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit"
-    },
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll": "explicit"
+    // },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "cSpell.words": [
       "ecosounds",
@@ -101,7 +101,8 @@
       "statusBarItem.remoteBackground": "#2b7489",
       "statusBarItem.remoteForeground": "#e7e7e7"
     },
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "files.insertFinalNewline": true
   },
   "extensions": {
     "recommendations": [
@@ -112,7 +113,8 @@
       "xabikos.jasminesnippets",
       "aaron-bond.better-comments",
       "esbenp.prettier-vscode",
-      "editorconfig.editorconfig"
+      "editorconfig.editorconfig",
+      "redhat.vscode-yaml",
     ]
   }
 }

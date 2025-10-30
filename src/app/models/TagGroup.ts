@@ -31,9 +31,9 @@ export class TagGroup extends AbstractModel<ITagGroup> implements ITagGroup {
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  @creator<TagGroup>()
+  @creator()
   public creator?: User;
-  @hasOne<TagGroup, Tag>(TAG, "tagId")
+  @hasOne(TAG, "tagId")
   public tag?: Tag;
 
   public get viewUrl(): string {

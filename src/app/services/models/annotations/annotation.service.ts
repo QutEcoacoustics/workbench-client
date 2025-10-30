@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -13,15 +13,10 @@ export type TagComparer = (a: Tag, b: Tag) => number;
 
 @Injectable()
 export class AnnotationService {
-  public constructor(
-    private tagsApi: TagsService,
-    private audioRecordingsApi: AudioRecordingsService,
-  ) {}
+  private readonly tagsApi = inject(TagsService);
+  private readonly audioRecordingsApi = inject(AudioRecordingsService);
 
-  public async show(
-    audioEvent: AudioEvent,
-    priorityTags: Id[],
-  ): Promise<Annotation> {
+  public async show(audioEvent: AudioEvent, priorityTags: Id<Tag>[]): Promise<Annotation> {
     const audioRecording = await this.showAudioRecording(audioEvent);
     const audioEventTags = await this.showTags(audioEvent);
 
@@ -32,7 +27,7 @@ export class AnnotationService {
       ...audioEvent,
       tags,
       audioRecording,
-      corrections: new Map<Tag["id"], Tagging>(),
+      corrections: new Map<Id<Tag>, Tagging>(),
     } as IAnnotation;
 
     return new Annotation(data);

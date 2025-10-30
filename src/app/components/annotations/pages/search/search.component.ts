@@ -1,8 +1,9 @@
 import {
   Component,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
+  signal,
   viewChild,
 } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -32,14 +33,24 @@ import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotatio
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  VerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/verification-filters/verification-filters.component";
+import { mergeParameters } from "@helpers/parameters/merge";
+import { filterAnd } from "@helpers/filters/filters";
 import { AnnotationSearchFormComponent } from "../../components/annotation-search-form/annotation-search-form.component";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
-const annotationsKey = "annotations";
+const searchParametersKey = "searchParameters";
+const verificationParametersKey = "verificationParameters";
 
 @Component({
   selector: "baw-annotations-search",
@@ -52,6 +63,7 @@ const annotationsKey = "annotations";
     NgbPagination,
     ErrorHandlerComponent,
     FiltersWarningModalComponent,
+    VerificationFiltersModalComponent,
     LoadingComponent,
   ],
 })
@@ -59,12 +71,14 @@ class AnnotationSearchComponent
   extends PaginationTemplate<AudioEvent>
   implements OnInit
 {
-  public constructor(
-    protected audioEventApi: ShallowAudioEventsService,
-    protected modals: NgbModal,
-    protected annotationService: AnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
+  protected readonly modals = inject(NgbModal);
+  private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
+  private readonly audioEventApi = inject(ShallowAudioEventsService);
+
+  public constructor() {
+    const audioEventApi = inject(ShallowAudioEventsService);
+    const annotationService = inject(AnnotationService);
+
     super(
       audioEventApi,
       "id",
@@ -72,26 +86,28 @@ class AnnotationSearchComponent
       async (newResults: AudioEvent[]) => {
         this.loading = true;
 
-        this.searchResults = await Promise.all(
+        const results = await Promise.all(
           newResults.map(
             async (result) =>
               await annotationService.show(
                 result,
-                this.searchParameters.tagPriority,
+                this.verificationParameters().tagPriority,
               ),
           ),
-        )
+        );
+
+        this.searchResults.set(results);
 
         if (newResults.length === 0) {
-          this.paginationInformation = { total: 0, items: 0, page: 1 };
+          this.paginationInformation.set({ total: 0, items: 0, page: 1 });
         } else {
-          this.paginationInformation = newResults[0].getMetadata().paging;
+          this.paginationInformation.set(newResults[0].getMetadata().paging);
         }
 
         this.loading = false;
       },
-      () => this.searchParameters.toFilter().filter,
-      () => this.searchParameters.toFilter().sorting,
+      () => this.searchParameters().toFilter().filter,
+      () => this.searchParameters().toFilter().sorting,
     );
 
     // we make the page size an even number so that the page of results is more
@@ -99,28 +115,58 @@ class AnnotationSearchComponent
     this.pageSize = 24;
   }
 
-  public broadFilterWarningModal =
-    viewChild<ElementRef<FiltersWarningModalComponent>>("broadSearchWarningModal");
+  public readonly broadFilterWarningModal = viewChild<
+    ElementRef<FiltersWarningModalComponent>
+  >("broadSearchWarningModal");
 
-  public searchParameters: AnnotationSearchParameters;
-  public searchResults: Annotation[] = [];
-  protected paginationInformation: Paging;
-  protected verificationRoute: StrongRoute;
+  public readonly verificationFiltersModal = viewChild<
+    ElementRef<VerificationFiltersModalComponent>
+  >("verificationFiltersModal");
+
+  public readonly searchParameters = signal<AnnotationSearchParameters | null>(
+    null,
+  );
+  public readonly verificationParameters =
+    signal<VerificationParameters | null>(null);
+
+  public readonly searchResults = signal<Annotation[]>([]);
+  public readonly paginationInformation = signal<Paging>({});
+
+  // This is not a signal because it does not need to be reactive.
+  private verificationRoute: StrongRoute;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-    this.searchParameters ??= models[
-      annotationsKey
-    ] as AnnotationSearchParameters;
-    this.searchParameters.injector = this.injector;
 
-    this.searchParameters.routeProjectModel ??= models[projectKey] as Project;
-    if (models[regionKey]) {
-      this.searchParameters.routeRegionModel ??= models[regionKey] as Region;
-    }
-    if (models[siteKey]) {
-      this.searchParameters.routeSiteModel ??= models[siteKey] as Site;
-    }
+    this.searchParameters.update(() => {
+      const newModel = models[
+        searchParametersKey
+      ] as AnnotationSearchParameters;
+
+      newModel.injector = this.injector;
+
+      newModel.routeProjectModel = models[projectKey] as Project;
+
+      if (models[regionKey]) {
+        newModel.routeRegionModel = models[regionKey] as Region;
+      }
+
+      if (models[siteKey]) {
+        newModel.routeSiteModel = models[siteKey] as Site;
+      }
+
+      return newModel;
+    });
+
+    this.verificationParameters.update(() => {
+      const newModel = models[
+        verificationParametersKey
+      ] as VerificationParameters;
+
+      newModel.injector = this.injector;
+
+      return newModel;
+    });
 
     this.verificationRoute = this.verifyAnnotationsRoute();
 
@@ -137,7 +183,7 @@ class AnnotationSearchComponent
   // TODO: the correct fix here would be to add support for any length query
   // string parameters to the pagination template
   protected override updateQueryParams(page: number): void {
-    const queryParams: Params = this.searchParameters.toQueryParams();
+    const queryParams: Params = this.searchParameters().toQueryParams();
 
     // we have this condition so that undefined page numbers and
     // the first (default) page number is not shown in the query parameters
@@ -149,22 +195,55 @@ class AnnotationSearchComponent
   }
 
   protected updateSearchParameters(model: AnnotationSearchParameters): void {
-    this.searchParameters = model;
+    this.searchParameters.set(model);
     this.updateQueryParams(this.page);
+    this.updateFromUrl();
+  }
+
+  protected async createVerificationTask(): Promise<void> {
+    const modalRef = this.modals.open(this.verificationFiltersModal(), {
+      size: "lg",
+    });
+    const result = await modalRef.result.catch((_) => false);
+
+    if (!result) {
+      // I purposely include a log here so that if we ever encounter a bug in
+      // production where a verification task cannot be created, we have a log
+      // to indicate that the user cancelled the operation.
+      // eslint-disable-next-line no-console
+      console.debug("User cancelled verification task creation");
+      return;
+    }
+
+    this.verificationParameters.set(result);
   }
 
   protected async navigateToVerificationGrid(): Promise<void> {
-    const queryParameters = this.searchParameters.toQueryParams();
-    const numberOfParameters = Object.keys(queryParameters).length;
+    const queryParams = mergeParameters(
+      this.searchParameters().toQueryParams(),
+      this.verificationParameters().toQueryParams(),
+    );
+
+    const numberOfParameters = Object.keys(queryParams).length;
 
     // if the user has not added any search filters, we want to confirm that the
     // user wanted to create a verification task over all annotations in the
     // project, region or site
     if (numberOfParameters === 0) {
+      const verificationFilters = this.verificationParameters().toFilter();
+      const searchFilters = this.searchParameters().toFilter({
+        includeVerification: false,
+      });
+
+      const filter = filterAnd<AudioEvent>(
+        verificationFilters.filter,
+        searchFilters.filter,
+      );
+
       // if the verification task has less than 1,000 annotations, we don't need
       // to show an error modal
       const request = this.audioEventApi.filter({
-        filter: this.searchParameters.toFilter().filter,
+        filter: filter,
         paging: { items: 1 },
       });
 
@@ -193,14 +272,13 @@ class AnnotationSearchComponent
       }
     }
 
-    const queryParams = this.searchParameters.toQueryParams();
-
+    const searchParameters = this.searchParameters();
     this.router.navigate(
       [
         this.verificationRoute.toRouterLink({
-          projectId: this.searchParameters.routeProjectId,
-          regionId: this.searchParameters.routeRegionId,
-          siteId: this.searchParameters.routeSiteId,
+          projectId: searchParameters.routeProjectId,
+          regionId: searchParameters.routeRegionId,
+          siteId: searchParameters.routeSiteId,
         }),
       ],
       { queryParams },
@@ -208,11 +286,13 @@ class AnnotationSearchComponent
   }
 
   protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.searchParameters.routeSiteId) {
-      return this.searchParameters.routeSiteModel.isPoint
+    const searchParameters = this.searchParameters();
+
+    if (searchParameters.routeSiteId) {
+      return searchParameters.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (this.searchParameters.routeRegionId) {
+    } else if (searchParameters.routeRegionId) {
       return annotationMenuItems.verify.region.route;
     }
 
@@ -230,7 +310,8 @@ function getPageInfo(
       [projectKey]: projectResolvers.showOptional,
       [regionKey]: regionResolvers.showOptional,
       [siteKey]: siteResolvers.showOptional,
-      [annotationsKey]: annotationResolvers.showOptional,
+      [searchParametersKey]: annotationSearchParametersResolvers.showOptional,
+      [verificationParametersKey]: verificationParametersResolvers.showOptional,
     },
     // We use client rendering because:
     // 1. We are rendering spectrograms, and we should not be trying to render
