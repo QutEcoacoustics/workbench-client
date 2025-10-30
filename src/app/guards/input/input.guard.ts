@@ -1,8 +1,12 @@
-import { Injectable, Signal } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { CanDeactivate } from "@angular/router";
+import {
+  SignalOr,
+  unwrapPotentialSignal,
+} from "@helpers/signals/signals";
 
 export interface UnsavedInputCheckingComponent {
-  hasUnsavedChanges: boolean | Signal<boolean>;
+  hasUnsavedChanges: SignalOr<boolean>;
 }
 
 /**
@@ -20,12 +24,11 @@ export class UnsavedInputGuard
       return true;
     }
 
-    const isUnsaved =
-      typeof component.hasUnsavedChanges === "function"
-        ? component.hasUnsavedChanges()
-        : component.hasUnsavedChanges;
+    const hasUnsavedChanges = unwrapPotentialSignal(
+      component.hasUnsavedChanges,
+    );
 
-    return isUnsaved
+    return hasUnsavedChanges
       ? confirm(
           "Changes to this page will be lost! Are you sure you want to leave?",
         )
