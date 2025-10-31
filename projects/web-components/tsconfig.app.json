@@ -3,16 +3,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../out-tsc/lib",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
+    "outDir": "../../out-tsc/app",
     "types": [
       "@types/gtag.js",
     ]
   },
-  "angularCompilerOptions": {
-    "compilationMode": "partial",
-    "enableIvy": true
-  }
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "../../src/**/*"
+  ]
 }
