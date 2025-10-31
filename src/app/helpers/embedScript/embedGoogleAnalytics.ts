@@ -1,7 +1,5 @@
 import { environment } from "src/environments/environment";
 
-declare let gtag: Gtag.Gtag;
-
 export const googleTagsBaseUrl = "https://www.googletagmanager.com/gtag/js";
 
 /**

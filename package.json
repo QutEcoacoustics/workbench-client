@@ -9,6 +9,7 @@
   "scripts": {
     "ci": "npm ci --force",
     "build": "ng build --configuration production",
+    "build:web-components": "ng build --project=web-components --configuration production",
     "lint": "ng lint",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host development.ecosounds.org",
@@ -78,6 +79,7 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^19.0.1",
+    "@angular-devkit/build-angular": "^19.2.6",
     "@angular-eslint/builder": "19.3.0",
     "@angular-eslint/eslint-plugin": "19.3.0",
     "@angular-eslint/eslint-plugin-template": "19.3.0",
