@@ -1,6 +1,6 @@
 import { createCustomElement } from "@angular/elements";
 import { createApplication } from "@angular/platform-browser";
-import { EventMapWebComponent } from "./app/components/event-map/event-map.web.component";
+import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 
 (async () => {
   const app = await createApplication({
