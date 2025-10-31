@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, ViewEncapsulation } from "@angular/core";
-import { EventMapComponent } from "../../../../../../src/app/components/shared/event-map/event-map.component";
 import { AudioEventGroup } from "@models/AudioEventGroup";
+import { EventMapComponent } from "../../../../../../src/app/components/shared/event-map/event-map.component";
 
 @Component({
   selector: "baw-wc-event-map",
@@ -10,5 +10,5 @@ import { AudioEventGroup } from "@models/AudioEventGroup";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapWebComponent {
-  public readonly events = input.required<AudioEventGroup[]>();
+  public readonly events = input<AudioEventGroup[]>([]);
 }
