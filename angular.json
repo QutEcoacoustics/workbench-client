@@ -178,11 +178,9 @@
           "options": {
             "project": "projects/web-components/ng-package.json"
           },
+          "defaultConfiguration": "production",
           "configurations": {
             "production": {
-              "tsConfig": "projects/web-components/tsconfig.lib.json"
-            },
-            "development": {
               "tsConfig": "projects/web-components/tsconfig.lib.json"
             }
           }

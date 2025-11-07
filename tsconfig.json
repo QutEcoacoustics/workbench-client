@@ -82,9 +82,6 @@
       "@test/*": [
         "./src/app/test/*"
       ],
-      "web-components": [
-        "./dist/web-components"
-      ]
     },
     "useDefineForClassFields": false
   },

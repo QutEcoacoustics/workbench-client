@@ -12,7 +12,10 @@
     ]
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial",
+    // We use "full" compilation mode because we pre-link the library during
+    // build meaning that we don't need to support different Angular version
+    // that the consumer app uses.
+    "compilationMode": "full",
     "enableIvy": true
   }
 }
