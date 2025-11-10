@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -34,7 +35,6 @@ import {
   PercentPipe,
   TitleCasePipe,
 } from "@angular/common";
-import { Map } from "immutable";
 import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
@@ -44,18 +44,18 @@ import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { ConfidencePlotComponent } from "@shared/charts/confidence-plot/confidence-plot.component";
+import { CoveragePlotComponent } from "@shared/charts/coverage-plot/coverage-plot.component";
+import { SpeciesAccumulationCurveComponent } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
+import { DateTimePipe } from "@pipes/date/date.pipe";
+import { TimePipe } from "@pipes/time/time.pipe";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { SpeciesCompositionGraphComponent } from "@shared/charts/species-composition/species-composition.component";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
-import { TimePipe } from "../../../../../pipes/time/time.pipe";
-import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
-import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
-import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
-import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -72,7 +72,6 @@ const reportKey = "report";
     DatetimeComponent,
     InlineListComponent,
     SiteMapComponent,
-    ChartComponent,
     DurationComponent,
     NgbCollapse,
     DecimalPipe,
@@ -81,20 +80,20 @@ const reportKey = "report";
     IsUnresolvedPipe,
     TimePipe,
     DateTimePipe,
-    UrlDirective
+    UrlDirective,
+    ConfidencePlotComponent,
+    CoveragePlotComponent,
+    SpeciesAccumulationCurveComponent,
+    SpeciesCompositionGraphComponent,
 ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
-  public constructor(
-    protected eventSummaryReportApi: EventSummaryReportService,
-    protected session: BawSessionService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private modalService: NgbModal
-  ) {
-    super();
-  }
+  protected readonly eventSummaryReportApi = inject(EventSummaryReportService);
+  protected readonly session = inject(BawSessionService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly modalService = inject(NgbModal);
 
   public parameterDataModel: EventSummaryReportParameters;
   public report: EventSummaryReport;
@@ -103,12 +102,6 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected coveragePlotSchema = Map(coveragePlotSchema);
-  protected confidencePlotSchema = Map(confidencePlotSchema);
-  protected speciesAccumulationCurveSchema = Map(
-    speciesAccumulationCurveSchema
-  );
-  protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
   protected chartTypes = Chart;
 
   public filters$: BehaviorSubject<Filters<any>> = new BehaviorSubject({

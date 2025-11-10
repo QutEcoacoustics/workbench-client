@@ -6,7 +6,6 @@ import {
   OnDestroy,
   ViewChild,
 } from "@angular/core";
-import { Data } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import embed, {
   EmbedOptions,
@@ -18,6 +17,10 @@ import embed, {
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
 const customFormatterName = "customFormatter";
+
+interface ChartData {
+  [key: string | symbol]: any;
+}
 
 // this component exists so we can render vega-lite charts in an @for loop
 // and use the same schema to render multiple charts with different data
@@ -41,7 +44,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   /** An immutable spec which describes the layout of the chart. For any reactive values, use vega-lite spec parameters */
   @Input() public spec: Immutable.Collection<string, string | object>;
   /** A single data set */
-  @Input() public data?: Data;
+  @Input() public data?: ChartData;
   /**
    * Allows for multiple disjoint data sources
    * If your spec contains multiple graphs concatenated in one spec, use multiple dataset as it allows multiple data sources for one chart
@@ -166,7 +169,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   private addDataToSpec(
     spec,
     datasets?: Datasets | object,
-    data?: Data
+    data?: ChartData,
   ): VisualizationSpec {
     if (this.datasets) {
       return {
