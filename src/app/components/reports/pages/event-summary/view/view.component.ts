@@ -41,7 +41,6 @@ import { Filters } from "@baw-api/baw-api.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { ChartComponent } from "@shared/chart/chart.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { ConfidencePlotComponent } from "@shared/charts/confidence-plot/confidence-plot.component";
@@ -51,6 +50,7 @@ import { DateTimePipe } from "@pipes/date/date.pipe";
 import { TimePipe } from "@pipes/time/time.pipe";
 import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import { SpeciesCompositionGraphComponent } from "@shared/charts/species-composition/species-composition.component";
+import { SpeciesTimeSeriesComponent } from "@shared/charts/species-time-series/species-time-series.component";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
@@ -85,6 +85,7 @@ const reportKey = "report";
     CoveragePlotComponent,
     SpeciesAccumulationCurveComponent,
     SpeciesCompositionGraphComponent,
+    SpeciesTimeSeriesComponent
 ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
@@ -110,7 +111,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   });
 
   @ViewChild("printingModal") public printingModal: ElementRef;
-  @ViewChild("compositionChart") public compositionChart: ChartComponent;
+  @ViewChild("compositionChart") public compositionChart: SpeciesCompositionGraphComponent;
+  @ViewChild("timeSeriesChart") public timeSeriesChart: SpeciesTimeSeriesComponent;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing

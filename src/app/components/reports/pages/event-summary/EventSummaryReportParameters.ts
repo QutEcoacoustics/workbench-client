@@ -36,6 +36,7 @@ import { DateTime, Duration } from "luxon";
 export enum Chart {
   speciesAccumulationCurve = "accumulation",
   speciesCompositionCurve = "composition",
+  speciesTimeSeries = "time-series",
   falseColorSpectrograms = "false-colour",
   none = "none",
 }

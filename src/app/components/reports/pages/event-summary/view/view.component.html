@@ -394,7 +394,7 @@
       <span class="chart-action-menu">
         <a
           class="download-button"
-          (click)="compositionChart.downloadChartAsCsv()"
+          (click)="compositionChart.chart().downloadChartAsCsv()"
         >
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
@@ -440,6 +440,62 @@
     }
   </div>
 
+  <div
+    class="chart-container"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.speciesTimeSeries)"
+  >
+    <div class="chart-heading">
+      <h4 class="chart-title">Species Time Series</h4>
+
+      <span class="chart-action-menu">
+        <a
+          class="download-button"
+          (click)="timeSeriesChart.chart().downloadChartAsCsv()"
+        >
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+            [ngbTooltip]="'Download this graphs data'"
+          />
+        </a>
+
+        <button
+          class="toggle-graph-button btn btn-secondary btn-sm"
+          [ngbTooltip]="
+            shouldShowChart(chartTypes.speciesTimeSeries)
+              ? 'Minimize'
+              : 'Maximize'
+          "
+          (click)="
+            toggleChart(
+              chartTypes.speciesTimeSeries,
+              !shouldShowChart(chartTypes.speciesTimeSeries)
+            )
+          "
+        >
+          <fa-icon
+            [icon]="[
+              'fas',
+              shouldShowChart(chartTypes.speciesTimeSeries)
+                ? 'minimize'
+                : 'maximize'
+            ]"
+          />
+        </button>
+      </span>
+    </div>
+
+    @if (parameterDataModel.tagModels.length) {
+      <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesTimeSeries)">
+        <baw-species-time-series
+          #timeSeriesChart
+          class="large-embedded-figure"
+          [data]="report.graphs?.speciesCompositionData"
+          [formatter]="vegaTagTextFormatter"
+        />
+      </div>
+    }
+  </div>
+
   <!-- TODO: Enable this chart once false colour spectrograms are functional -->
   @if (false) {
     <div
@@ -451,7 +507,7 @@
         <span class="chart-action-menu">
           <a
             class="download-button"
-            (click)="compositionChart.downloadChartAsCsv()"
+            (click)="compositionChart.chart().downloadChartAsCsv()"
           >
             <fa-icon
               [icon]="['fas', 'file-arrow-down']"

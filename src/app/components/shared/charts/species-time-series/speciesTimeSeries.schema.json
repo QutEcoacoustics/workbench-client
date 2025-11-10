@@ -12,7 +12,10 @@
   "config": {
     "customFormatTypes": true
   },
-  "mark": "area",
+  "mark": {
+    "type": "line",
+    "interpolate": "monotone"
+  },
   "transform": [
     {
       "calculate": "format(datum.ratio, '.2f')",
@@ -36,50 +39,33 @@
         "format": "%Y-%m-%d",
         "zindex": 1,
         "tickCount": "day",
-        "labelFontSize": {
-          "expr": "bawFontSize"
-        }
+        "labelFontSize": { "expr": "bawFontSize" }
       },
-      "scale": {
-        "padding": 0
-      }
+      "scale": { "padding": 0 }
     },
     "y": {
       "title": "Ratio of Tags",
-      "aggregate": "sum",
       "field": "ratio",
       "type": "quantitative",
       "axis": {
-        "titleFontSize": {
-          "expr": "bawTitleSize"
-        },
-        "labelFontSize": {
-          "expr": "bawFontSize"
-        }
+        "titleFontSize": { "expr": "bawTitleSize" },
+        "labelFontSize": { "expr": "bawFontSize" }
       }
     },
     "color": {
       "field": "tagId",
       "type": "nominal",
-      "scale": {
-        "scheme": "category10"
-      },
+      "scale": { "scheme": "category10" },
       "legend": {
         "orient": "top",
         "formatType": "customFormatter",
         "title": "Tags",
         "columns": 6,
-        "titleFontSize": {
-          "expr": "bawTitleSize"
-        },
+        "titleFontSize": { "expr": "bawTitleSize" },
         "titleFontWeight": "normal",
         "labelLimit": 500,
-        "symbolSize": {
-          "expr": "bawTitleSize * 16"
-        },
-        "labelFontSize": {
-          "expr": "bawTitleSize"
-        }
+        "symbolSize": { "expr": "bawTitleSize * 16" },
+        "labelFontSize": { "expr": "bawTitleSize" }
       }
     },
     "tooltip": [
@@ -89,8 +75,9 @@
         "title": "Date",
         "format": "%Y-%m-%d"
       },
-      {"field": "formatted_tagId", "title": "Event"},
-      {"field": "formatted_ratio", "title": "Ratio"}
-    ]
+      { "field": "formatted_tagId", "title": "Event" },
+      { "field": "formatted_ratio", "title": "Ratio" }
+    ],
+    "detail": { "field": "tagId" }
   }
 }
