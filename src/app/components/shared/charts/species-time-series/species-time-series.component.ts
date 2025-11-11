@@ -1,8 +1,13 @@
-import { Map } from "immutable";
-import { ChangeDetectionStrategy, Component, input, viewChild } from "@angular/core";
-import { ChartComponent } from "@shared/chart/chart.component";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  viewChild,
+} from "@angular/core";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { Tag } from "@models/Tag";
+import { ChartComponent } from "@shared/chart/chart.component";
+import { Map } from "immutable";
 import chartSchema from "./speciesTimeSeries.schema.json";
 
 export interface SpeciesTimeSeriesGraphData {
@@ -20,7 +25,7 @@ export interface SpeciesTimeSeriesGraphData {
       [data]="data()"
       [formatter]="formatter()"
     />
- `,
+  `,
   styleUrl: "../charts.component.scss",
   imports: [ChartComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,

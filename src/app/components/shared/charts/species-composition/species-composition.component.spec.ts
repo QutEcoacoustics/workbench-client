@@ -1,9 +1,9 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { assertChart } from "@test/helpers/charts";
 import {
   SpeciesCompositionGraphComponent,
   SpeciesCompositionGraphData,
 } from "./species-composition.component";
-import { assertChart } from "@test/helpers/charts";
 
 describe("SpeciesCompositionGraphComponent", () => {
   let spec: Spectator<SpeciesCompositionGraphComponent>;
@@ -57,7 +57,6 @@ describe("SpeciesCompositionGraphComponent", () => {
   });
 
   assertChart(() => spec, {
-    title: "Species Composition Over Time",
     xAxis: {
       title: "Date",
       labels: [
@@ -73,8 +72,8 @@ describe("SpeciesCompositionGraphComponent", () => {
       ],
     },
     yAxis: {
-      title: "Count of Events",
-      labels: jasmine.any(Array),
+      title: "Ratio of Tags",
+      labels: [],
     },
     legend: {
       legendTitle: "Tags",
