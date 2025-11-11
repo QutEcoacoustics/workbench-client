@@ -26,12 +26,13 @@ describe("ChartComponent", () => {
     defaultData?: Data,
     defaultDataset?: Datasets
   ): void {
-    spec = createComponent({ detectChanges: false });
-
-    spec.setInput({
-      spec: defaultSpec,
-      data: defaultData,
-      datasets: defaultDataset,
+    spec = createComponent({
+      props: {
+        spec: defaultSpec,
+        data: defaultData,
+        datasets: defaultDataset,
+      },
+      detectChanges: false,
     });
 
     // we spy on the DOM's window element so that we can test for resize events

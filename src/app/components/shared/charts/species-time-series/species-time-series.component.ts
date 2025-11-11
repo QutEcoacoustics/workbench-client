@@ -8,7 +8,7 @@ import chartSchema from "./speciesTimeSeries.schema.json";
 export interface SpeciesTimeSeriesGraphData {
   date: Param;
   tagId: Id<Tag>;
-  ratio: number;
+  count: number;
 }
 
 @Component({

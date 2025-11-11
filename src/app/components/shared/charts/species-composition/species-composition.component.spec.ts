@@ -1,0 +1,84 @@
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import {
+  SpeciesCompositionGraphComponent,
+  SpeciesCompositionGraphData,
+} from "./species-composition.component";
+import { assertChart } from "@test/helpers/charts";
+
+describe("SpeciesCompositionGraphComponent", () => {
+  let spec: Spectator<SpeciesCompositionGraphComponent>;
+
+  const createComponent = createComponentFactory({
+    component: SpeciesCompositionGraphComponent,
+  });
+
+  it("should create", () => {
+    expect(spec.component).toBeInstanceOf(SpeciesCompositionGraphComponent);
+  });
+
+  beforeEach(() => {
+    // TODO: Make this work with pseudo-random data generation
+    const mockData: SpeciesCompositionGraphData[] = [
+      { date: "2023-05-22", tagId: 1, ratio: 0.55 },
+      { date: "2023-05-22", tagId: 39, ratio: 0.3 },
+      { date: "2023-05-22", tagId: 277, ratio: 0.15 },
+      { date: "2023-05-23", tagId: 1, ratio: 0.45 },
+      { date: "2023-05-23", tagId: 39, ratio: 0.2 },
+      { date: "2023-05-23", tagId: 277, ratio: 0.35 },
+      { date: "2023-05-24", tagId: 1, ratio: 0.05 },
+      { date: "2023-05-24", tagId: 39, ratio: 0.25 },
+      { date: "2023-05-24", tagId: 277, ratio: 0.7 },
+      { date: "2023-05-25", tagId: 1, ratio: 0.5 },
+      { date: "2023-05-25", tagId: 39, ratio: 0.2 },
+      { date: "2023-05-25", tagId: 277, ratio: 0.3 },
+      { date: "2023-05-26", tagId: 1, ratio: 0.25 },
+      { date: "2023-05-26", tagId: 39, ratio: 0.4 },
+      { date: "2023-05-26", tagId: 277, ratio: 0.35 },
+      { date: "2023-05-27", tagId: 1, ratio: 0.15 },
+      { date: "2023-05-27", tagId: 39, ratio: 0.3 },
+      { date: "2023-05-27", tagId: 277, ratio: 0.55 },
+      { date: "2023-05-28", tagId: 1, ratio: 0.1 },
+      { date: "2023-05-28", tagId: 39, ratio: 0.2 },
+      { date: "2023-05-28", tagId: 277, ratio: 0.7 },
+      { date: "2023-05-29", tagId: 1, ratio: 0.05 },
+      { date: "2023-05-29", tagId: 39, ratio: 0.15 },
+      { date: "2023-05-29", tagId: 277, ratio: 0.8 },
+      { date: "2023-05-30", tagId: 1, ratio: 0.05 },
+      { date: "2023-05-30", tagId: 39, ratio: 0.1 },
+      { date: "2023-05-30", tagId: 277, ratio: 0.85 },
+    ];
+
+    spec = createComponent({
+      props: {
+        data: mockData,
+        formatter: (tagId) => `Tag ${tagId.toString()}`,
+      },
+    });
+  });
+
+  assertChart(() => spec, {
+    title: "Species Composition Over Time",
+    xAxis: {
+      title: "Date",
+      labels: [
+        "2023-05-22",
+        "2023-05-23",
+        "2023-05-24",
+        "2023-05-25",
+        "2023-05-26",
+        "2023-05-27",
+        "2023-05-28",
+        "2023-05-29",
+        "2023-05-30",
+      ],
+    },
+    yAxis: {
+      title: "Count of Events",
+      labels: jasmine.any(Array),
+    },
+    legend: {
+      legendTitle: "Tags",
+      legendLabels: ["Tag 1", "Tag 39", "Tag 277"],
+    },
+  });
+});
