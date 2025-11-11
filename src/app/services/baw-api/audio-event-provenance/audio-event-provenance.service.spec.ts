@@ -6,7 +6,7 @@ import {
   mockServiceProviders,
   validateStandardApi,
 } from "@test/helpers/api-common";
-import { AudioEventProvenanceService } from "./AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "./audio-event-provenance.service";
 
 // TODO: enable once the api is complete
 // this is currently disabled because it will fail due to us mocking the service

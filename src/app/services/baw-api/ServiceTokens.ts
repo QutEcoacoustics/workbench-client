@@ -92,7 +92,7 @@ import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
-import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import type { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
