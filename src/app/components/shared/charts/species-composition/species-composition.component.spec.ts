@@ -12,10 +12,6 @@ describe("SpeciesCompositionGraphComponent", () => {
     component: SpeciesCompositionGraphComponent,
   });
 
-  it("should create", () => {
-    expect(spec.component).toBeInstanceOf(SpeciesCompositionGraphComponent);
-  });
-
   beforeEach(() => {
     // TODO: Make this work with pseudo-random data generation
     const mockData: SpeciesCompositionGraphData[] = [
@@ -54,6 +50,10 @@ describe("SpeciesCompositionGraphComponent", () => {
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });
+  });
+
+  it("should create", () => {
+    expect(spec.component).toBeInstanceOf(SpeciesCompositionGraphComponent);
   });
 
   assertChart(() => spec, {

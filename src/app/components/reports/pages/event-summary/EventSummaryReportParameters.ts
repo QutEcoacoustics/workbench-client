@@ -12,14 +12,14 @@ import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
-  serializeObjectToParams,
-  jsNumberArray,
-  jsNumber,
-  jsString,
   jsBoolean,
+  jsNumber,
+  jsNumberArray,
+  jsString,
+  jsStringArray,
   luxonDateArray,
   luxonDurationArray,
-  jsStringArray,
+  serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
@@ -83,7 +83,7 @@ export class EventSummaryReportParameters
     IParameterModel<EventSummaryReport>
 {
   public constructor(
-    protected queryStringParameters: Params = {},
+    queryStringParameters: Params = {},
     public injector?: AssociationInjector
   ) {
     super(queryStringParameters);
