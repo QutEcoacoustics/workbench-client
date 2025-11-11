@@ -50,14 +50,8 @@ export function generateEventSummaryReport(
         Object({
           date: modelData.date.soon(),
           tagId: modelData.datatype.number(),
-          ratio: modelData.percentage()
-        })
-      ),
-      speciesTimeSeriesData: modelData.randomArray(10, 20, () =>
-        Object({
-          date: modelData.date.soon(),
-          tagId: modelData.datatype.number(),
-          count: modelData.datatype.number(),
+          ratio: modelData.percentage(),
+          count: modelData.percentage()
         })
       ),
       coverageData: {
