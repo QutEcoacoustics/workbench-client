@@ -1,10 +1,12 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
-  Input,
+  input,
   OnDestroy,
-  ViewChild,
+  viewChild,
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import embed, {
@@ -18,6 +20,8 @@ import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
 const customFormatterName = "customFormatter";
 
+type FormatterCallback = (item: unknown) => string;
+
 interface ChartData {
   [key: string | symbol]: any;
 }
@@ -30,28 +34,27 @@ interface ChartData {
   template: `
     <div #chartContainer class="chartContainer marks">Chart loading</div>
   `,
-  styleUrl: "./chart.component.scss"
+  styleUrl: "./chart.component.scss",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartComponent implements AfterViewInit, OnDestroy {
-  public constructor() {}
-
-  @ViewChild("chartContainer") public chartContainer: ElementRef;
+  public readonly chartContainer = viewChild<ElementRef>("chartContainer");
 
   // in vega lite the spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
   // we use an immutable.js object because the only way to recreate a graph is to destroy it and recreate it
   // we therefore don't allow it to be updated with change detection or through an RxJS observable
   /** An immutable spec which describes the layout of the chart. For any reactive values, use vega-lite spec parameters */
-  @Input() public spec: Immutable.Collection<string, string | object>;
+  public readonly spec = input.required<Immutable.Collection<string, string | object>>();
   /** A single data set */
-  @Input() public data?: ChartData;
+  public readonly data = input<ChartData>();
   /**
    * Allows for multiple disjoint data sources
    * If your spec contains multiple graphs concatenated in one spec, use multiple dataset as it allows multiple data sources for one chart
    * If your spec contains one graph, use the `[data]` attribute instead
    */
-  @Input() public datasets?: Datasets | object;
-  @Input() public options?: EmbedOptions = { actions: false };
+  public readonly datasets = input<Datasets | object>();
+  public readonly options = input<EmbedOptions>({ actions: false });
   /**
    * Specifies a way to turn model values into user-facing values
    * e.g. turn a model id into its model name
@@ -65,23 +68,28 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    *    this.projects.find((project: Project) => project.id === projectId);
    * ```
    */
-  @Input() public formatter?: (item: unknown) => string;
+  public readonly formatter = input<FormatterCallback>();
+
+  // the spec input is only ever used used to convert to a plain object for
+  // vega-lite.
+  // So that we only convert to an object once, we use a computed property.
+  // We use a immutable.js Map for the input instead of a plain object so that
+  // if the spec is changed, it is changed by reference and not by mutation,
+  // meaning that the input change will be detected.
+  private readonly specObject = computed(() => this.spec().toObject());
 
   private vegaView: Result;
-  private vegaFormatterFunction: ExpressionFunction;
-  private fullSpec: VisualizationSpec;
-  private resizeObserver: ResizeObserver;
 
   public async ngAfterViewInit() {
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
     // updating by reference will cause all other graphs to update as well
-    this.fullSpec = this.addDataToSpec(
-      this.spec.toObject(),
-      this.datasets,
-      this.data
+    const fullSpec = this.addDataToSpec(
+      this.specObject(),
+      this.datasets(),
+      this.data()
     );
 
-    this.vegaView = await this.generateChart(this.fullSpec);
+    this.vegaView = await this.generateChart(fullSpec);
 
     // since node does not have access to the window global namespace, it does not have an implementation of a resize observer, breaking ssr
     // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
@@ -95,7 +103,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
     // but vega lite's autosize will only update when the window is resized
     // therefore, we also need to trigger a resize event when the component is resized
-    ChartComponent.resizeObserver.observe(this.chartContainer.nativeElement);
+    ChartComponent.resizeObserver.observe(this.chartContainer().nativeElement);
 
     // under certain conditions using v/h concat will cause the chart to only fit to the first chart
     // to fix this, we fire a resize event once the component has been loaded
@@ -109,7 +117,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       this.vegaView.view.finalize();
     }
 
-    ChartComponent.resizeObserver.unobserve(this.chartContainer.nativeElement);
+    ChartComponent.resizeObserver.unobserve(this.chartContainer().nativeElement);
   }
 
   public downloadChartAsCsv(): void {
@@ -141,21 +149,23 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       },
     };
 
-    if (this.formatter) {
-      this.vegaFormatterFunction = vega.expressionFunction(
+    let vegaFormatterFunction: ExpressionFunction | undefined = undefined;
+    const formatterCallback = this.formatter();
+    if (formatterCallback) {
+      vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
-        (datum: unknown) => this.formatter(datum)
+        (datum: unknown) => formatterCallback(datum)
       );
     }
 
     const vegaChart: Result = await embed(
-      this.chartContainer.nativeElement,
+      this.chartContainer().nativeElement,
       fullSpec,
       {
         ...defaultOptions,
-        ...this.options,
+        ...this.options(),
         expressionFunctions: {
-          [`${customFormatterName}`]: this.vegaFormatterFunction ?? {},
+          [`${customFormatterName}`]: vegaFormatterFunction ?? {},
         },
       }
     );
@@ -171,12 +181,12 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     datasets?: Datasets | object,
     data?: ChartData,
   ): VisualizationSpec {
-    if (this.datasets) {
+    if (this.datasets()) {
       return {
         ...spec,
         datasets,
       };
-    } else if (this.data) {
+    } else if (this.data()) {
       return {
         ...spec,
         data: {

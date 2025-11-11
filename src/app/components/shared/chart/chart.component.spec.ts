@@ -10,7 +10,7 @@ import { ChartComponent } from "./chart.component";
 //! this component could not be tested with print styles. Manually test this
 // component with print styles when making changes
 describe("ChartComponent", () => {
-  let spectator: Spectator<ChartComponent>;
+  let spec: Spectator<ChartComponent>;
   let windowSpy: jasmine.Spy;
   let resizeObserveSpy: jasmine.Spy;
   let resizeUnobserveSpy: jasmine.Spy;
@@ -26,18 +26,20 @@ describe("ChartComponent", () => {
     defaultData?: Data,
     defaultDataset?: Datasets
   ): void {
-    spectator = createComponent({ detectChanges: false });
+    spec = createComponent({ detectChanges: false });
 
-    spectator.component.spec = defaultSpec;
-    spectator.component.data = defaultData;
-    spectator.component.datasets = defaultDataset;
+    spec.setInput({
+      spec: defaultSpec,
+      data: defaultData,
+      datasets: defaultDataset,
+    });
 
     // we spy on the DOM's window element so that we can test for resize events
     windowSpy = spyOn(window, "dispatchEvent");
     resizeObserveSpy = spyOn(ResizeObserver.prototype, "observe").and.callThrough();
     resizeUnobserveSpy = spyOn(ResizeObserver.prototype, "unobserve").and.callThrough();
 
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   // valid data and valid spec can be used as test data when data and spec are not important to the test
@@ -64,7 +66,7 @@ describe("ChartComponent", () => {
   ];
 
   const chartElement = (): HTMLDivElement =>
-    spectator.query<HTMLDivElement>(".chartContainer");
+    spec.query<HTMLDivElement>(".chartContainer");
   const chartSvg = (): SVGElement =>
     chartElement().querySelector<SVGElement>("svg");
 
@@ -74,11 +76,11 @@ describe("ChartComponent", () => {
     // if we don't explicitly destroy the test bed after tests, the resize observer will continue to observe the component
     // this will cause all tests to fail if one test fails that depends on the resize observer
     // to ensure only one test fails if the resize observer is not working, we explicitly destroy the test bed after each test
-    spectator.fixture.destroy();
+    spec.fixture.destroy();
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(ChartComponent);
+    expect(spec.component).toBeInstanceOf(ChartComponent);
   });
 
   it("should use svg to render the chart", () => {
@@ -95,7 +97,7 @@ describe("ChartComponent", () => {
 
   // assert that the resize observer was disassociated with the component when it was destroyed
   it("should destroy the chart component correctly", () => {
-    spectator.fixture.destroy();
+    spec.fixture.destroy();
     expect(resizeUnobserveSpy).toHaveBeenCalledWith(chartElement());
   });
 });
