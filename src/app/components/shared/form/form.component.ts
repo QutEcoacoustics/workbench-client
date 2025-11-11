@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -27,6 +28,9 @@ import { NgClass } from "@angular/common";
   imports: [NgClass, FormsModule, ReactiveFormsModule, FormlyModule],
 })
 export class FormComponent extends withUnsubscribe() implements OnChanges {
+  private readonly notifications = inject(ToastService);
+  private readonly recaptcha = inject(ReCaptchaV3Service);
+
   @Input() public btnColor: BootstrapColorTypes = "primary";
   @Input() public fields: FormlyFieldConfig[] = [];
   @Input() public model: Record<string, any> = {};
@@ -48,20 +52,14 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
 
   public form = new FormGroup({});
 
-  public constructor(
-    private notifications: ToastService,
-    private recaptcha: ReCaptchaV3Service
-  ) {
-    super();
-  }
-
   public ngOnChanges() {
-    if (!isInstantiated(this.recaptchaSeed)) {
-      return;
-    }
-
     // Submit button should be inactive while retrieving recaptcha seed
-    this.submitLoading = this.recaptchaSeed.state === "loading";
+    if (
+      isInstantiated(this.recaptchaSeed) &&
+      this.recaptchaSeed.state === "loading"
+    ) {
+      this.submitLoading = true;
+    }
   }
 
   /**
@@ -80,13 +78,28 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
     }
 
     try {
+      // While we are fetching the recaptcha token, we want to enter the
+      // "submitting" state so that the submission button is disabled.
+      // If we did not do this, the submit button would be enabled while we are
+      // waiting for the recaptcha token and would only become disabled once the
+      // "submit" event is being processed by the parent component.
+      this.submitLoading = true;
+
       const { seed, action } = this.recaptchaSeed as RecaptchaLoadedState;
       const token = await this.recaptcha.executeAsPromise(seed, action);
       return this.submit.emit({ ...model, recaptchaToken: token });
     } catch (err) {
+      // If the recaptcha fails, we want to re-enable the submit button to allow
+      // the user to try submitting the form again.
+      // I do this as the first side effect (before logging to the console or
+      // showing a notification) as a defensive programming measure so that even
+      // if the notification or logging fails, the form will still be in a
+      // usable state.
+      this.submitLoading = false;
+
       console.error(err);
       this.notifications.error(
-        "Recaptcha failed, please try refreshing the website."
+        "Recaptcha failed, please try refreshing the website.",
       );
     }
   }
@@ -96,13 +109,15 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   }
 }
 
+export type RecaptchaState = RecaptchaLoadedState | RecaptchaLoadingState;
+export type RecaptchaStatus = "success" | "error";
+
 interface RecaptchaLoadingState {
   state: "loading";
 }
+
 interface RecaptchaLoadedState {
   state: "loaded";
   seed: string;
   action: string;
 }
-export type RecaptchaState = RecaptchaLoadedState | RecaptchaLoadingState;
-export type RecaptchaStatus = "success" | "error";

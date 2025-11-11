@@ -318,11 +318,30 @@ describe("FormComponent", () => {
     });
   });
 
-  // TODO Add tests for recaptcha
-  xdescribe("Recaptcha", () => {
-    it("should disable submit button while loading recaptcha seed", () => {});
-    it("should re-enable submit button when recaptcha seed loaded", () => {});
+  describe("recaptcha", () => {
+    fit("should disable submit button while loading recaptcha seed", () => {
+      setup({
+        fields: defaultFields,
+        recaptchaSeed: { state: "loading" },
+      });
+      spec.detectChanges();
+
+      expect(getSubmitButton()).toBeDisabled();
+
+      // Once the recaptcha seed is loaded, the button should be enabled
+      spec.setInput("recaptchaSeed", {
+        state: "loaded",
+        action: "test-action",
+        seed: "test-seed",
+      });
+
+      expect(getSubmitButton()).not.toBeDisabled();
+    });
+
     it("should display error notification if recaptcha fails to load", () => {});
+
+    it("should re-enable the submit button if recaptcha fails", () => {});
+
     it("should insert recaptcha token into model on submit", () => {});
   });
 
