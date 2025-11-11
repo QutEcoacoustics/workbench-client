@@ -1,8 +1,8 @@
-import { Map } from "immutable";
 import { ChangeDetectionStrategy, Component, input, viewChild } from "@angular/core";
-import { ChartComponent } from "@shared/chart/chart.component";
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { Tag } from "@models/Tag";
+import { ChartComponent } from "@shared/chart/chart.component";
+import { Map } from "immutable";
 import chartSchema from "./speciesCompositionCurve.schema.json";
 
 export interface SpeciesCompositionGraphData {
