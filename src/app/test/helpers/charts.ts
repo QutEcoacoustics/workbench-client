@@ -54,7 +54,6 @@ export function assertChart(
       expect(yAxisTitle()).toHaveExactTrimmedText(expected.yAxis.title);
 
       const yLabels = axisLabels(yAxisElement());
-      console.log(yLabels);
       expect(yLabels).toEqual(expected.yAxis.labels);
 
       const xLabels = axisLabels(xAxisElement());
