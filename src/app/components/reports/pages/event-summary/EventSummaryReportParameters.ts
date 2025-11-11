@@ -12,7 +12,6 @@ import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
-  deserializeParamsToObject,
   serializeObjectToParams,
   jsNumberArray,
   jsNumber,
@@ -30,7 +29,7 @@ import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsI
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { IParameterModel } from "@models/data/parametersModel";
+import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
@@ -77,24 +76,17 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
+  extends ParameterModel<EventSummaryReport>(serializationTable)
   implements
     IEventSummaryReportParameters,
     HasAssociationInjector,
     IParameterModel<EventSummaryReport>
 {
   public constructor(
-    queryStringParameters: Params = {},
+    protected queryStringParameters: Params = {},
     public injector?: AssociationInjector
   ) {
-    const deserializedObject: IEventSummaryReportParameters =
-      deserializeParamsToObject<IEventSummaryReportParameters>(
-        queryStringParameters,
-        serializationTable
-      );
-
-    Object.keys(deserializedObject).forEach((key: string) => {
-      this[key] = deserializedObject[key];
-    });
+    super(queryStringParameters);
   }
 
   // since these properties are exposed to the user in the form of query string parameters

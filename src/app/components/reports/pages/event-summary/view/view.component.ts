@@ -103,7 +103,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected chartTypes = Chart;
+  protected readonly chartTypes = Chart;
 
   public filters$: BehaviorSubject<Filters<any>> = new BehaviorSubject({
     paging: { page: 1 },
@@ -206,6 +206,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
       this.parameterDataModel.charts = [
         Chart.speciesCompositionCurve,
         Chart.speciesAccumulationCurve,
+        Chart.speciesTimeSeries,
         Chart.falseColorSpectrograms,
       ];
     }
@@ -220,7 +221,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     if (this.parameterDataModel.charts.length === 0) {
       this.parameterDataModel.charts = [];
-    } else if (this.parameterDataModel.charts.length === 3) {
+    } else if (this.parameterDataModel.charts.length === 4) {
       this.parameterDataModel.charts = null;
     }
 
