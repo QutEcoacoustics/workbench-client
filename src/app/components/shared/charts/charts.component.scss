@@ -1,5 +1,11 @@
 :host {
-  display: block !important;
+  display: block;
   position: relative;
   contain: content;
+}
+
+baw-chart {
+  display: block;
+  height: 100%;
+  width: 100%;
 }

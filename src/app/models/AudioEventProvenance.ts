@@ -33,7 +33,6 @@ export class AudioEventProvenance
    * Navigates to the details page of an AudioEventProvenance
    */
   public get viewUrl(): string {
-    // console.warn("AudioEventProvenance.viewUrl is not implemented");
     return "";
   }
 

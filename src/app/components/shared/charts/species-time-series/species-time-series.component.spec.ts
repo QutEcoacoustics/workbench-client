@@ -69,11 +69,22 @@ describe("SpeciesTimeSeriesComponent", () => {
     },
     yAxis: {
       title: "Count of Events",
-      labels: [],
+      labels: [
+        "0",
+        "10",
+        "20",
+        "30",
+        "40",
+        "50",
+        "60",
+        "70",
+        "80",
+        "90",
+      ],
     },
     legend: {
       legendTitle: "Tags",
-      legendLabels: [],
+      legendLabels: ["Tag 1", "Tag 39", "Tag 277"],
     },
   });
 });

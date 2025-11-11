@@ -13,8 +13,8 @@ import embed, {
   EmbedOptions,
   ExpressionFunction,
   Result,
-  VisualizationSpec,
   vega,
+  VisualizationSpec,
 } from "vega-embed";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
 
@@ -23,7 +23,14 @@ const customFormatterName = "customFormatter";
 type FormatterCallback = (item: unknown) => string;
 
 interface ChartData {
-  [key: string | symbol]: any;
+  // TODO: Improve this type definition by removing the "any" type.
+  // This originally used to use the Angular `Data` type, but that was
+  // semantically incorrect because the Angular `Data` type is for routing data
+  // not charting.
+  // To keep full compatibility with the Angular `Data` type, I have reflected
+  // a slightly stricter version of the Angular route `Data` type here with
+  // improved semantics.
+  [key: string]: any;
 }
 
 // this component exists so we can render vega-lite charts in an @for loop
@@ -70,12 +77,15 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    */
   public readonly formatter = input<FormatterCallback>();
 
-  // the spec input is only ever used used to convert to a plain object for
-  // vega-lite.
-  // So that we only convert to an object once, we use a computed property.
-  // We use a immutable.js Map for the input instead of a plain object so that
-  // if the spec is changed, it is changed by reference and not by mutation,
-  // meaning that the input change will be detected.
+  // We use a immutable.js Map for the input instead of a plain object that vega
+  // expects so that if the spec is changed, it will create a new instance of
+  // the spec Map instead of mutating the existing one (which would not trigger
+  // change detection).
+  //
+  // By using a computed signal here, we can convert the immutable.js Map to an
+  // object only when the spec changes.
+  // If we instead inlined this functionality, the conversion would happen on
+  // every change detection cycle.
   private readonly specObject = computed(() => this.spec().toObject());
 
   private vegaView: Result;
