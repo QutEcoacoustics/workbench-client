@@ -1,34 +1,18 @@
-import { DebugElement } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
 import { noop } from "rxjs";
+import { ReCaptchaV3Service } from "ngx-captcha";
+import { clickButton } from "@test/helpers/html";
 import { FormComponent } from "./form.component";
-
-/** Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler */
-export const buttonClickEvents = {
-  left: { button: 0 },
-  right: { button: 2 },
-};
-
-/** Simulate element click. Defaults to mouse left-button click event. */
-export function click(
-  el: DebugElement | HTMLElement,
-  eventObj: any = buttonClickEvents.left
-): void {
-  if (el instanceof HTMLElement) {
-    el.click();
-  } else {
-    el.triggerEventHandler("click", eventObj);
-  }
-}
 
 describe("FormComponent", () => {
   let defaultFields: FormlyFieldConfig[];
   let toastr: ToastService;
+  let recaptchaService: ReCaptchaV3Service;
   let spec: Spectator<FormComponent>;
 
   const createComponent = createComponentFactory({
@@ -43,7 +27,7 @@ describe("FormComponent", () => {
 
   function findInput(
     selector: string = "input",
-    position: number = 0
+    position: number = 0,
   ): HTMLElement {
     return spec.queryAll<HTMLElement>("form " + selector)[position];
   }
@@ -60,7 +44,7 @@ describe("FormComponent", () => {
   function createInputField(
     type?: string,
     required?: boolean,
-    opts?: { key?: string; label?: string }
+    opts?: { key?: string; label?: string },
   ) {
     return {
       key: opts?.key ?? "input",
@@ -88,6 +72,7 @@ describe("FormComponent", () => {
   function setup(props?: Partial<FormComponent>) {
     spec = createComponent({ detectChanges: false, props });
     toastr = TestBed.inject(ToastService);
+    recaptchaService = TestBed.inject(ReCaptchaV3Service);
 
     spyOn(toastr, "success").and.stub();
     spyOn(toastr, "error").and.stub();
@@ -234,8 +219,7 @@ describe("FormComponent", () => {
     it("should call submit function OnClick", () => {
       setup({ fields: defaultFields });
       submit();
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
       expect(buttonPressed).toBeTruthy();
     });
 
@@ -251,15 +235,13 @@ describe("FormComponent", () => {
       input.value = "user input";
       input.dispatchEvent(new Event("input"));
 
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
     });
 
     it("should not call submit function OnClick when required field is empty", () => {
       setup({ fields: [createInputField("text", true)] });
       submit();
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
       expect(buttonPressed).toBeFalsy();
     });
 
@@ -275,25 +257,22 @@ describe("FormComponent", () => {
       input.value = "user input";
       input.dispatchEvent(new Event("input"));
 
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
     });
 
     it("should show error message when required field is empty OnSubmit", () => {
       setup({ fields: [createInputField("text", true)] });
       submit();
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
       expect(toastr.error).toHaveBeenCalledWith(
-        "Please fill all required fields."
+        "Please fill all required fields.",
       );
     });
 
     it("should highlight missing field when required field is empty OnSubmit", () => {
       setup({ fields: [createInputField("text", true)] });
       submit();
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
       expect(getInputs()[0]).toHaveClass("is-invalid");
       expect(getHints()[0]).toBeTruthy();
     });
@@ -307,8 +286,7 @@ describe("FormComponent", () => {
         ],
       });
       submit();
-      click(getSubmitButton());
-      spec.detectChanges();
+      clickButton(spec, getSubmitButton());
 
       const inputs = getInputs();
       expect(inputs[0]).toHaveClass("is-invalid");
@@ -319,7 +297,7 @@ describe("FormComponent", () => {
   });
 
   describe("recaptcha", () => {
-    fit("should disable submit button while loading recaptcha seed", () => {
+    it("should disable submit button while loading recaptcha seed", () => {
       setup({
         fields: defaultFields,
         recaptchaSeed: { state: "loading" },
@@ -338,11 +316,60 @@ describe("FormComponent", () => {
       expect(getSubmitButton()).not.toBeDisabled();
     });
 
-    it("should display error notification if recaptcha fails to load", () => {});
+    it("should display error notification if recaptcha fails to load", () => {
+      setup({
+        fields: [createInputField("text", false)],
+        recaptchaSeed: {
+          state: "loaded",
+          action: "test-action",
+          seed: "test-seed",
+        },
+      });
+      spyOn(recaptchaService, "executeAsPromise").and.throwError("bad request");
+      spec.detectChanges();
 
-    it("should re-enable the submit button if recaptcha fails", () => {});
+      clickButton(spec, getSubmitButton());
 
-    it("should insert recaptcha token into model on submit", () => {});
+      // We should also see that the submit button is re-enabled so that the
+      // user can try submitting again.
+      expect(getSubmitButton()).not.toBeDisabled();
+      expect(toastr.error).toHaveBeenCalledWith(
+        "Recaptcha failed, please try refreshing the website.",
+      );
+    });
+
+    it("should insert recaptcha token into model on submit", fakeAsync(() => {
+      const testSeed = "test-seed";
+      const testAction = "test-action";
+      const testToken = "test-token";
+
+      setup({
+        fields: [createInputField("text", false)],
+        recaptchaSeed: {
+          state: "loaded",
+          action: testAction,
+          seed: testSeed,
+        },
+      });
+      spyOn(recaptchaService, "executeAsPromise").and.resolveTo(testToken);
+      const submitSpy = spyOn(spec.component.submit, "emit");
+      spec.detectChanges();
+
+      // Because the recaptcha token is fetched asynchronously, we need to use
+      // fakeAsync and flush to clear the microtasks queue of this promise.
+      // If we did not flush, the expectations would be checked before the
+      // promise resolves and the test would incorrectly fail.
+      clickButton(spec, getSubmitButton());
+      flush();
+
+      expect(recaptchaService.executeAsPromise).toHaveBeenCalledOnceWith(
+        testSeed,
+        testAction,
+      );
+      expect(submitSpy).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({ recaptchaToken: testToken }),
+      );
+    }));
   });
 
   // TODO Add tests for spinner
