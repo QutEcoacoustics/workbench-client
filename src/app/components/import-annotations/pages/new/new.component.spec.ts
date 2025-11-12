@@ -19,7 +19,7 @@ import { NewAnnotationsComponent } from "./new.component";
 describe("NewAnnotationsComponent", () => {
   const { fields } = schema;
 
-  let spectator: SpectatorRouting<NewAnnotationsComponent>;
+  let spec: SpectatorRouting<NewAnnotationsComponent>;
   let apiSpy: SpyObject<AudioEventImportService>;
 
   const createComponent = createRoutingFactory({
@@ -29,19 +29,15 @@ describe("NewAnnotationsComponent", () => {
     mocks: [ToastService],
   });
 
-  function setup(): void {
-    spectator = createComponent({
-      detectChanges: false,
-    });
+  beforeEach(() => {
+    spec = createComponent({ detectChanges: false });
 
-    apiSpy = spectator.inject(AudioEventImportService);
+    apiSpy = spec.inject(AudioEventImportService);
     apiSpy.create = jasmine.createSpy("create") as any;
     apiSpy.create.and.callFake(() => new Subject());
 
-    spectator.detectChanges();
-  }
-
-  beforeEach(() => setup());
+    spec.detectChanges();
+  });
 
   assertPageInfo(NewAnnotationsComponent, "New Annotation Import");
 
@@ -69,7 +65,7 @@ describe("NewAnnotationsComponent", () => {
 
   describe("component", () => {
     it("should create", () => {
-      expect(spectator.component).toBeInstanceOf(NewAnnotationsComponent);
+      expect(spec.component).toBeInstanceOf(NewAnnotationsComponent);
     });
 
     it("should call the api with the correct model when the form is submitted", () => {
@@ -78,12 +74,11 @@ describe("NewAnnotationsComponent", () => {
         description: modelData.description(),
       });
 
-      spectator.component.submit(model);
-      expect(apiSpy.create).toHaveBeenCalledOnceWith(model);
-    });
-
-    it("should not call the api before the form is submitted", () => {
+      // We should not see any api calls before submission.
       expect(apiSpy.create).not.toHaveBeenCalled();
+
+      spec.component.submit(model);
+      expect(apiSpy.create).toHaveBeenCalledOnceWith(model);
     });
   });
 });

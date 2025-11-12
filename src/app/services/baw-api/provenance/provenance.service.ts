@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   StandardApi,
   IdOr,
@@ -20,21 +20,14 @@ const provenanceId: IdParamOptional<Provenance> = id;
 const endpoint = stringTemplate`/provenances/${provenanceId}${option}`;
 
 @Injectable()
-export class ProvenanceService
-  implements StandardApi<Provenance>
-{
-  public constructor(protected api: BawApiService<Provenance>) {}
+export class ProvenanceService implements StandardApi<Provenance> {
+  protected readonly api = inject(BawApiService<Provenance>);
 
   public list(): Observable<Provenance[]> {
-    return this.api.list(
-      Provenance,
-      endpoint(emptyParam, emptyParam),
-    );
+    return this.api.list(Provenance, endpoint(emptyParam, emptyParam));
   }
 
-  public filter(
-    filters: Filters<Provenance>,
-  ): Observable<Provenance[]> {
+  public filter(filters: Filters<Provenance>): Observable<Provenance[]> {
     return this.api.filter(
       Provenance,
       endpoint(emptyParam, filterParam),
@@ -42,9 +35,7 @@ export class ProvenanceService
     );
   }
 
-  public show(
-    model: IdOr<Provenance>,
-  ): Observable<Provenance> {
+  public show(model: IdOr<Provenance>): Observable<Provenance> {
     return this.api.show(Provenance, endpoint(model, emptyParam));
   }
 
@@ -58,16 +49,10 @@ export class ProvenanceService
   }
 
   public update(model: Provenance): Observable<Provenance> {
-    return this.api.update(
-      Provenance,
-      endpoint(model, emptyParam),
-      model,
-    );
+    return this.api.update(Provenance, endpoint(model, emptyParam), model);
   }
 
-  public destroy(
-    model: IdOr<Provenance>,
-  ): Observable<void | Provenance> {
+  public destroy(model: IdOr<Provenance>): Observable<void | Provenance> {
     return this.api.destroy(endpoint(model, emptyParam));
   }
 
@@ -79,6 +64,4 @@ export class ProvenanceService
 export const provenanceResolvers = new Resolvers<
   Provenance,
   [IdOr<Provenance>]
->([ProvenanceService], "provenanceId").create(
-  "Provenance",
-);
+>([ProvenanceService], "provenanceId").create("Provenance");

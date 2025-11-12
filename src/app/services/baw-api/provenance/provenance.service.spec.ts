@@ -13,7 +13,7 @@ describe("ProvenanceService", () => {
   const createModel = () =>
     new Provenance(generateProvenance({ id: modelId }));
 
-  const baseUrl = "/provenance/";
+  const baseUrl = "/provenances/";
   const updateUrl: string = baseUrl + modelId;
   let spectator: SpectatorService<ProvenanceService>;
 

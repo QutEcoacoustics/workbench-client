@@ -26,11 +26,11 @@ import schema from "../../provenance.schema.json";
       [submitLoading]="loading"
       (onSubmit)="submit($event)"
     />
- `,
+  `,
   imports: [FormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class ProvenanceNewComponent extends FormTemplate<Provenance> {
+class NewProvenanceComponent extends FormTemplate<Provenance> {
   public readonly fields = schema.fields;
 
   public constructor(
@@ -50,10 +50,10 @@ class ProvenanceNewComponent extends FormTemplate<Provenance> {
   }
 }
 
-ProvenanceNewComponent.linkToRoute({
+NewProvenanceComponent.linkToRoute({
   category: provenanceCategory,
   pageRoute: newProvenanceMenuItem,
   menus: { actions: List(provenancesMenuItemActions) },
 });
 
-export { ProvenanceNewComponent };
+export { NewProvenanceComponent };
