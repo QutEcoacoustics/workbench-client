@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -18,7 +18,7 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { provenanceMenuItemActions } from "../details/details.component";
-import schema from "../../provenance.schema.json";
+import schema from "../../provenance.base.schema.json";
 
 const provenanceKey = "provenance";
 
@@ -31,16 +31,16 @@ class EditProvenanceComponent
   extends FormTemplate<Provenance>
   implements OnInit
 {
-  protected readonly notifications = inject(ToastService);
-  protected readonly route = inject(ActivatedRoute);
-  protected readonly router = inject(Router);
-  private readonly api = inject(ProvenanceService);
-
   public readonly fields = schema.fields;
   protected title: string;
 
-  public constructor() {
-    super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
+  public constructor(
+    protected readonly notifications: ToastService,
+    protected readonly route: ActivatedRoute,
+    protected readonly router: Router,
+    private readonly api: ProvenanceService,
+  ) {
+    super(notifications, route, router, {
       getModel: (models) => models[provenanceKey] as Provenance,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
@@ -48,6 +48,8 @@ class EditProvenanceComponent
   }
 
   public ngOnInit(): void {
+    super.ngOnInit();
+
     // We set the title as a un-computed property so that when the modals name
     // in the form is changed, the title does not also change.
     this.title = `Edit ${this.model.name}`;

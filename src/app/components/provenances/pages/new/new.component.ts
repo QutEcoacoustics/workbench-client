@@ -14,7 +14,7 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { provenancesMenuItemActions } from "../list/list.component";
-import schema from "../../provenance.schema.json";
+import schema from "../../provenance.base.schema.json";
 
 @Component({
   selector: "baw-provenances-new",

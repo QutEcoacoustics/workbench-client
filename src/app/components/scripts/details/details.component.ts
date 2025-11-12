@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -39,9 +39,7 @@ class AdminScriptComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
-  public constructor(private route: ActivatedRoute) {
-    super();
-  }
+  private readonly route = inject(ActivatedRoute);
 
   public script: Script;
   public failure: boolean;

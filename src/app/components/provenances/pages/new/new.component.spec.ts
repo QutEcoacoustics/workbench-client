@@ -8,9 +8,9 @@ import { of } from "rxjs";
 import { Provenance } from "@models/Provenance";
 import { generateProvenance } from "@test/fakes/Provenance";
 import { testFormlyFields } from "@test/helpers/formly";
-import schema from "../../provenance.schema.json";
-import { NewProvenanceComponent } from "./new.component";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import schema from "../../provenance.base.schema.json";
+import { NewProvenanceComponent } from "./new.component";
 
 describe("NewProvenanceComponent", () => {
   const { fields } = schema;
@@ -35,6 +35,19 @@ describe("NewProvenanceComponent", () => {
   });
 
   assertPageInfo(NewProvenanceComponent, "New Provenance");
+
+  it("should create", () => {
+    expect(spec.component).toBeInstanceOf(NewProvenanceComponent);
+  });
+
+  it("should call the api with the correct model when the form is submitted", () => {
+    const model = new Provenance(generateProvenance());
+
+    expect(apiSpy.create).not.toHaveBeenCalled();
+
+    spec.component.submit(model);
+    expect(apiSpy.create).toHaveBeenCalledOnceWith(model);
+  });
 
   describe("form", () => {
     testFormlyFields([
@@ -82,20 +95,5 @@ describe("NewProvenanceComponent", () => {
         required: false,
       },
     ]);
-  });
-
-  describe("component", () => {
-    it("should create", () => {
-      expect(spec.component).toBeInstanceOf(NewProvenanceComponent);
-    });
-
-    it("should call the api with the correct model when the form is submitted", () => {
-      const model = new Provenance(generateProvenance());
-
-      expect(apiSpy.create).not.toHaveBeenCalled();
-
-      spec.component.submit(model);
-      expect(apiSpy.create).toHaveBeenCalledOnceWith(model);
-    });
   });
 });

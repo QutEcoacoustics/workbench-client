@@ -27,7 +27,13 @@
       Description
     </ng-template>
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <span>{{ value }}</span>
+      <span>
+        @if (value) {
+          {{ value }}
+        } @else {
+          <i>No description</i>
+        }
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
