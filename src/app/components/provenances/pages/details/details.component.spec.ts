@@ -1,97 +1,57 @@
-// import { Router } from "@angular/router";
-// import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-// import {
-//   provenanceResolvers,
-//   ProvenanceService,
-// } from "@baw-api/provenance/provenance.service";
-// import { Provenance } from "@models/Provenance";
-// import {
-//   createRoutingFactory,
-//   SpectatorRouting,
-//   SpyObject,
-// } from "@ngneat/spectator";
-// import { generateProvenance } from "@test/fakes/Provenance";
-// import { assertPageInfo } from "@test/helpers/pageRoute";
-// import { ToastService } from "@services/toasts/toasts.service";
-// import { of } from "rxjs";
-// import { ProvenanceDetailsComponent } from "./details.component";
+import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { Provenance } from "@models/Provenance";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { generateProvenance } from "@test/fakes/Provenance";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { assertDetail, Detail } from "@test/helpers/detail-view";
+import { ProvenanceDetailsComponent } from "./details.component";
 
-// describe("ProvenanceDetailsComponent", () => {
-//   let provenanceApi: SpyObject<ProvenanceService>;
-//   let routerSpy: SpyObject<Router>;
-//   let defaultProvenance: Provenance;
-//   let spectator: SpectatorRouting<ProvenanceDetailsComponent>;
+describe("ProvenanceDetailsComponent", () => {
+  let spec: SpectatorRouting<ProvenanceDetailsComponent>;
+  let mockModel: Provenance | BawApiError;
 
-//   const createComponent = createRoutingFactory({
-//     component: ProvenanceDetailsComponent,
-//     providers: [provideMockBawApi()],
-//     mocks: [ToastService],
-//   });
+  const createComponent = createRoutingFactory({
+    component: ProvenanceDetailsComponent,
+    providers: [provideMockBawApi()],
+  });
 
-//   assertPageInfo<Provenance>(
-//     ProvenanceDetailsComponent,
-//     "test name",
-//     {
-//       provenance: {
-//         model: new Provenance(
-//           generateProvenance({ name: "test name" })
-//         ),
-//       },
-//     }
-//   );
+  function setup(modelOverride?: Provenance | BawApiError): void {
+    if (modelOverride) {
+      mockModel = modelOverride;
+    }
 
-//   function setup(provenance: Provenance) {
-//     spectator = createComponent({
-//       detectChanges: false,
-//       data: {
-//         resolvers: {
-//           provenance: provenanceResolvers.show,
-//         },
-//         provenance: { model: provenance },
-//       },
-//     });
-//     provenanceApi = spectator.inject(ProvenanceService);
-//     routerSpy = spectator.inject(Router);
-//     spectator.detectChanges();
-//   }
+    spec = createComponent({
+      detectChanges: false,
+    });
+  }
 
-//   beforeEach(() => {
-//     defaultProvenance = new Provenance(
-//       generateProvenance()
-//     );
-//   });
+  beforeEach(() => {
+    mockModel = new Provenance(generateProvenance());
+  });
 
-//   it("should create", () => {
-//     setup(defaultProvenance);
-//     expect(spectator.component).toBeTruthy();
-//   });
+  assertPageInfo(ProvenanceDetailsComponent, "Test Provenance", {
+    provenance: {
+      model: new Provenance(generateProvenance({ name: "Test Provenance" })),
+    },
+  });
 
-//   it("should display provenance name", () => {
-//     setup(defaultProvenance);
-//     const heading = spectator.query<HTMLHeadingElement>("h1");
-//     expect(heading).toContainText(defaultProvenance.name);
-//   });
+  it("should create", () => {
+    setup();
+    expect(spec.component).toBeInstanceOf(ProvenanceDetailsComponent);
+  });
 
-//   it("should use detail-view component", () => {
-//     setup(defaultProvenance);
-//     const detailView = spectator.query("baw-detail-view");
-//     expect(detailView).toBeTruthy();
-//   });
+  it("should handle error", () => {
+    setup(generateBawApiError());
+    expect(spec.component).toBeTruthy();
+  });
 
-//   describe("deleteModel", () => {
-//     it("should call destroy on provenance api", () => {
-//       setup(defaultProvenance);
-//       provenanceApi.destroy.and.returnValue(of(undefined));
-//       spectator.component.deleteModel();
-//       expect(provenanceApi.destroy).toHaveBeenCalledWith(defaultProvenance);
-//     });
+  describe("details", () => {
+    const details: Detail[] = [];
 
-//     it("should navigate to provenances list on success", () => {
-//       setup(defaultProvenance);
-//       provenanceApi.destroy.and.returnValue(of(undefined));
-//       spectator.component.deleteModel();
-//       spectator.detectChanges();
-//       expect(routerSpy.navigateByUrl).toHaveBeenCalledWith("/provenances");
-//     });
-//   });
-// });
+    for (const detail of details) {
+      assertDetail(detail);
+    }
+  });
+});

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   analysisCategory,
@@ -18,6 +18,7 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import schema from "../../analysis-job.schema.json";
 
 const analysisJobKey = "analysisJob";
@@ -26,20 +27,18 @@ const projectKey = "project";
 @Component({
   selector: "baw-analysis",
   templateUrl: "./details.component.html",
-  imports: [DetailViewComponent],
+  imports: [DetailViewComponent, ErrorHandlerComponent],
 })
 class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  private readonly route = inject(ActivatedRoute);
+
   public analysisJob: AnalysisJob;
   public failure: boolean;
   public fields = schema.fields;
   public project: Project;
-
-  public constructor(private route: ActivatedRoute) {
-    super();
-  }
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;
