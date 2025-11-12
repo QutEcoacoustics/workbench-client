@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { getRoute, MenuLink } from "@interfaces/menusInterfaces";
 import { HeaderItem } from "@menu/primary-menu/primary-menu.component";
@@ -16,10 +16,10 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
         ngbDropdownToggle
         id="dropdownBasic"
         class="btn btn-link nav-link dropdown-toggle border-0"
-        [innerText]="label"
+        [innerText]="label()"
       ></button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic">
-        @for (link of links; track link) {
+        @for (link of links(); track link) {
           <a ngbDropdownItem [href]="getHref(link)">
             {{ link.label }}
           </a>
@@ -31,15 +31,18 @@ import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from
   imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
 })
 export class HeaderDropdownComponent {
-  @Input() public label: string;
-  @Input() public links: HeaderItem[];
-  public params: Params;
+  private readonly route = inject(ActivatedRoute);
 
-  public constructor(private route: ActivatedRoute) {
+  public readonly label = input.required<string>();
+  public readonly links = input.required<HeaderItem[]>();
+
+  private readonly params: Params;
+
+  public constructor() {
     this.params = this.route.snapshot.params;
   }
 
-  public getHref(link: HeaderItem): string {
+  protected getHref(link: HeaderItem): string {
     return getRoute(link as MenuLink, this.params);
   }
 }

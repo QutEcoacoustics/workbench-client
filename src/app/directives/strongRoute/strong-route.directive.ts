@@ -14,6 +14,10 @@ import { RouteParams, StrongRoute } from "@interfaces/strongRoute";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { map, takeUntil, tap } from "rxjs/operators";
 
+/**
+ * @description
+ * A link directive which can be used with our custom route format.
+ */
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: "a[strongRoute]",

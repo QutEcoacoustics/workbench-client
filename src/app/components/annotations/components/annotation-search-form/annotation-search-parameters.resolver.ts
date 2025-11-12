@@ -1,18 +1,16 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { lastValueFrom } from "rxjs";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
-import { lastValueFrom } from "rxjs";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 
 @Injectable({ providedIn: "root" })
-class AnnotationsSearchResolver
+class AnnotationsSearchParametersResolver
   implements Resolve<{ model: AnnotationSearchParameters }>
 {
-  public constructor(
-    private session: BawSessionService,
-    private security: SecurityService,
-  ) {}
+  private readonly session = inject(BawSessionService);
+  private readonly security = inject(SecurityService);
 
   public async resolve(
     route: ActivatedRouteSnapshot,
@@ -34,16 +32,18 @@ class AnnotationsSearchResolver
       });
     }
 
-    return { model: new AnnotationSearchParameters(data, this.session.loggedInUser) };
+    return {
+      model: new AnnotationSearchParameters(data, this.session.loggedInUser),
+    };
   }
 }
 
-export const annotationResolvers = {
+export const annotationSearchParametersResolvers = {
   showOptional: "annotationSearchParametersResolver",
   providers: [
     {
       provide: "annotationSearchParametersResolver",
-      useClass: AnnotationsSearchResolver,
+      useClass: AnnotationsSearchParametersResolver,
       deps: [BawSessionService, SecurityService],
     },
   ],

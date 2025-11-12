@@ -18,6 +18,7 @@ import { UserLinkComponent } from "@shared/user-link/user-link.component";
 import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { getElementByTextContent } from "@test/helpers/html";
 import { HarvestListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -116,12 +117,6 @@ describe("ListComponent", () => {
     return spec.query("baw-user-link");
   }
 
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spec.debugElement.query(
-      (element) => element.nativeElement.innerText === text
-    )?.nativeElement as T;
-  }
-
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultProject.addMetadata(generateProjectMeta({}));
@@ -191,7 +186,8 @@ describe("ListComponent", () => {
 
       setup(defaultProject, defaultHarvest);
 
-      const createdAtLabel = getElementByInnerText<HTMLSpanElement>(
+      const createdAtLabel = getElementByTextContent<HTMLSpanElement>(
+        spec,
         expectedLocalCreatedAt
       );
       expect(createdAtLabel).toExist();
@@ -262,7 +258,7 @@ describe("ListComponent", () => {
   it("should not display the harvest project name in the project column if the harvest list is scoped to a project", () => {
     setup(defaultProject, defaultHarvest);
     const projectColumnHeader =
-      getElementByInnerText<HTMLTableCellElement>("Project");
+      getElementByTextContent<HTMLTableCellElement>(spec, "Project");
     expect(projectColumnHeader).not.toExist();
   });
 
@@ -272,8 +268,8 @@ describe("ListComponent", () => {
     const expectedProject: Project = defaultHarvest.project;
     const expectedProjectName: string = expectedProject.name;
 
-    const projectNameColumnValue: HTMLTableCellElement =
-      getElementByInnerText(expectedProjectName);
+    const projectNameColumnValue =
+      getElementByTextContent<HTMLTableCellElement>(spec, expectedProjectName);
 
     expect(projectNameColumnValue).toExist();
   });

@@ -18,7 +18,7 @@ import { IItem, ItemComponent } from "../item/item.component";
     <div class="row pb-3">
       <div class="col-sm-6">
         <ul class="list-group">
-          @for (stat of groupOne; track stat) {
+          @for (stat of groupOne; track stat.name + stat.value) {
             <li class="list-group-item">
               <baw-items-item
                 [icon]="stat.icon"
@@ -33,7 +33,7 @@ import { IItem, ItemComponent } from "../item/item.component";
       </div>
       <div class="col-sm-6">
         <ul class="list-group">
-          @for (stat of groupTwo; track stat) {
+          @for (stat of groupTwo; track stat.name + stat.value) {
             <li class="list-group-item">
               <baw-items-item
                 [icon]="stat.icon"

@@ -96,3 +96,5 @@ const brandSymbol = Symbol("brand");
 export type Brand<T, BrandName extends string> = T & {
   [key in typeof brandSymbol]: BrandName;
 };
+
+export type Constructor<T> = new (...args: any[]) => T;

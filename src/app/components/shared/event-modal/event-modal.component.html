@@ -1,0 +1,30 @@
+@let resolvedAnnotation = annotation() | async;
+
+<div class="modal-header">
+  <h4 class="modal-title">
+    <baw-inline-list
+      [items]="resolvedAnnotation?.tags"
+      [itemKey]="'text'"
+      [emptyTemplate]="defaultTitleTemplate"
+    ></baw-inline-list>
+  </h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="closeModal()"
+  ></button>
+</div>
+
+<div id="card-container" class="modal-body modal-large">
+  @if (resolvedAnnotation) {
+    <baw-annotation-event-card
+      id="event-card"
+      [annotation]="resolvedAnnotation"
+    ></baw-annotation-event-card>
+  }
+</div>
+
+<ng-template #defaultTitleTemplate>
+  Annotation
+</ng-template>

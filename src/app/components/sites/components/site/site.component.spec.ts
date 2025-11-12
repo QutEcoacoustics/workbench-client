@@ -24,6 +24,7 @@ import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { SiteComponent } from "./site.component";
 
 // TODO This component is doing too many things. Split it into
@@ -172,12 +173,15 @@ describe("SiteComponent", () => {
   });
 
   describe("Google Maps", () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       setup(defaultProject, defaultSite);
       interceptEventsRequest();
       interceptRecordingsRequest();
+
       spec.detectChanges();
-    });
+      flush();
+      spec.detectChanges();
+    }));
 
     it("should create google maps component", () => {
       expect(spec.query(MapComponent)).toBeTruthy();

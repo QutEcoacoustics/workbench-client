@@ -139,7 +139,7 @@
       }
 
       @if (models.value) {
-        <baw-model-cards [models]="models.value">
+        <baw-model-cards [models]="models.value.toArray()">
           @if (models.value.size === 0) {
             <p id="placeholder" class="m-auto">
               No {{ viewMoreLink.label | titlecase }}s to display

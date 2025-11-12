@@ -40,7 +40,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
@@ -107,7 +107,7 @@ describe("AnnotationsDetailsComponent", () => {
   }
 
   function deleteFirstFile() {
-    const deleteButton = getElementByInnerText(spec, "Delete");
+    const deleteButton = getElementByTextContent(spec, "Delete");
     spec.click(deleteButton);
 
     const confirmationButton = spec.query<HTMLButtonElement>(
@@ -233,7 +233,7 @@ describe("AnnotationsDetailsComponent", () => {
     spec.detectChanges();
 
     expectedAudioEventTable = mockAudioEvents.map((event) => ({
-      "Audio Recording": event.audioRecording?.id.toString(),
+      "Audio Recording": event.audioRecording?.id?.toString(),
       "Created At": event.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
       Tags: mockTagModel.text,
       Provenance: mockProvenance.name,

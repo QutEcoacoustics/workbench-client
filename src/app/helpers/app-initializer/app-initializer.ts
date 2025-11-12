@@ -49,6 +49,7 @@ export interface Settings {
     harvestFilenameGuide: string;
   };
   hideProjects: boolean;
+  homePageAndProjectListMaps: boolean;
   customMenu: CustomMenuItem[];
   theme?: BawTheme;
 }

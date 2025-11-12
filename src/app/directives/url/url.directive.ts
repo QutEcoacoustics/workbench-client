@@ -10,6 +10,11 @@ import {
 } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 
+/**
+ * @description
+ * An extension of the Angular RouterLink directive.
+ * This allows you to use a string url instead of an array of route segments.
+ */
 @Directive({ selector: "a[bawUrl]" })
 export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;

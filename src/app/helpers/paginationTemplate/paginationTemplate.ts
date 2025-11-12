@@ -1,4 +1,4 @@
-import { Directive, OnInit } from "@angular/core";
+import { Directive, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import {
@@ -23,6 +23,12 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   extends PageComponent
   implements OnInit
 {
+  protected readonly router = inject(Router);
+  protected readonly route = inject(ActivatedRoute);
+
+  /** Config for pagination defaults */
+  protected readonly config = inject(NgbPaginationConfig);
+
   /**
    * Observable to wrap api request behavior
    */
@@ -50,6 +56,16 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public loading: boolean;
   /**
+   * Tracks whether we are currently waiting for the first api request to
+   * complete.
+   * This is useful because if you have no results because you are still waiting
+   * for the API to return the initial results, we don't want to show a
+   * "no results" message.
+   * However, if we have already done a request and there are no results, we can
+   * conclude that there are actually no results to show.
+   */
+  public doneInitialLoad = false;
+  /**
    * Tracks the current user filter input
    */
   public filter: string;
@@ -64,12 +80,6 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   private _page: number;
 
   public constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    /**
-     * Config for pagination defaults
-     */
-    protected config: NgbPaginationConfig,
     /**
      * API Service which will create filter requests
      */
@@ -124,10 +134,12 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           this.collectionSize = models?.[0]?.getMetadata()?.paging?.total || 0;
           this.displayPagination = this.collectionSize > defaultApiPageSize;
           this.apiUpdate(models);
+          this.doneInitialLoad = true;
         },
         error: (error: BawApiError) => {
           this.error = error;
           this.loading = false;
+          this.doneInitialLoad = true;
         },
       });
 
@@ -140,7 +152,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * Read the previous filter query and page number from the url,
    * and update the page to match
    */
-  private updateFromUrl() {
+  protected updateFromUrl() {
     const params = this.route.snapshot.queryParams;
     this.filter = params[queryKey] ?? "";
     this._page = parseInt(params[pageKey], 10) || 1;
@@ -173,12 +185,21 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     const params = {};
     if (page > 1) {
       params[pageKey] = page;
-    }
-    if (query) {
-      params[queryKey] = query;
+    } else {
+      params[pageKey] = null;
     }
 
-    this.router.navigate([], { relativeTo: this.route, queryParams: params });
+    if (query) {
+      params[queryKey] = query;
+    } else {
+      params[queryKey] = null;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: "merge",
+    });
   }
 
   /**

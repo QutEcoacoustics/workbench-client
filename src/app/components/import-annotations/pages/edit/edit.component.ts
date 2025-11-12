@@ -50,7 +50,7 @@ class EditAnnotationsComponent
     super(notifications, route, router, {
       getModel: (models) => models[audioEventImportKey] as AudioEventImport,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
-      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
+      redirectUser: (model) => this.router.navigateByUrl(model.createViewUrl(this.project.id)),
     });
   }
 

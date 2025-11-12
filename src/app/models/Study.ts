@@ -33,11 +33,11 @@ export class Study extends AbstractModel<IStudy> implements IStudy {
   public readonly updatedAt?: DateTimeTimezone;
 
   // Associations
-  @creator<Study>()
+  @creator()
   public creator?: User;
-  @updater<Study>()
+  @updater()
   public updater?: User;
-  @hasOne<Study, Dataset>(DATASET, "datasetId")
+  @hasOne(DATASET, "datasetId")
   public dataset?: Dataset;
 
   public get viewUrl(): string {

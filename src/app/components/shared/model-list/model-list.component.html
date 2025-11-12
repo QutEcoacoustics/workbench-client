@@ -1,0 +1,68 @@
+<div class="list-chrome">
+  <label class="input-group mb-3">
+    <span class="input-group-prepend input-group-text">Filter</span>
+    <input
+      bawDebouncedInput
+      type="text"
+      class="form-control"
+      [placeholder]="filterPlaceholder()"
+      [value]="filter"
+      (valueChange)="onFilter($event)"
+    >
+  </label>
+</div>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs right-aligned-tabs small-tabs">
+  <li [ngbNavItem]="tabs.tiles">
+    <a ngbNavLink>
+      <fa-icon [icon]="['fas', 'table-cells-large']"></fa-icon>
+      Tiles
+    </a>
+    <ng-template ngbNavContent>
+      <ng-container [ngTemplateOutlet]="tilesTab"></ng-container>
+    </ng-template>
+  </li>
+
+  @if (siteConfig.settings.homePageAndProjectListMaps) {
+    <li [ngbNavItem]="tabs.map">
+      <a ngbNavLink>
+        <fa-icon [icon]="['fas', 'map-location-dot']"></fa-icon>
+        Map
+      </a>
+      <ng-template ngbNavContent>
+        <ng-container [ngTemplateOutlet]="mapTab"></ng-container>
+      </ng-template>
+    </li>
+  }
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+<ng-template #tilesTab>
+  @if (doneInitialLoad) {
+    @if (models().length > 0) {
+      <baw-model-cards [models]="models()"></baw-model-cards>
+    } @else {
+      <h4 class="text-center">
+        <ng-template [ngTemplateOutlet]="noResultsTemplate()"></ng-template>
+      </h4>
+    }
+  }
+
+  @if (displayPagination) {
+    <ngb-pagination
+      aria-label="Pagination Buttons"
+      class="mt-2 d-flex justify-content-end"
+      [collectionSize]="collectionSize"
+      [(page)]="page"
+    ></ngb-pagination>
+  }
+</ng-template>
+
+<ng-template #mapTab>
+  <baw-site-map
+    class="geographic-map rounded"
+    [filters]="mapFilter()"
+    [groupBy]="groupBy"
+  ></baw-site-map>
+</ng-template>

@@ -1,0 +1,54 @@
+<form #form="ngForm">
+  <baw-typeahead-input
+    id="task-tag-input"
+    label="Tag to Verify"
+    [inputPlaceholder]="
+      verificationParameters().tagModels.length > 0
+        ? $any(verificationParameters().tagModels)
+        : 'First Tag'
+    "
+    [searchCallback]="tagsApi.typeaheadCallback()"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    [multipleInputs]="false"
+    [value]="hasTaskTag() ? [verificationParameters().taskTagModel] : []"
+    (modelChange)="updateTaskTag($event)"
+  />
+
+  <div class="mt-2">
+    <label class="form-label w-100">Verification Task</label>
+    <baw-selectable-items
+      [options]="taskBehaviorOptions"
+      [selection]="verificationParameters().taskBehavior ?? 'verify'"
+      [inline]="true"
+      (selectionChange)="updateTaskBehavior($event)"
+    />
+  </div>
+
+  <div class="mt-2">
+    <label class="form-label w-100">Sampling Behavior</label>
+    <baw-selectable-items
+      [options]="verifiedStatusOptions"
+      [selection]="verificationParameters().verificationStatus"
+      [inline]="true"
+      (selectionChange)="updateVerificationStatus($event)"
+    />
+
+    <p class="text-muted">
+      @switch (verificationParameters().verificationStatus) {
+        @case ("unverified-for-me") {
+            Participate in consensus building by showing me annotations that other
+            others may have already verified, but I haven't seen.
+        }
+
+        @case ("unverified") {
+            Participate in annotating as much of the dataset as possible by only
+            showing me annotations that no one has verified.
+        }
+      }
+    </p>
+  </div>
+</form>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
+</ng-template>

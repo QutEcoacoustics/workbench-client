@@ -46,7 +46,7 @@ interface ErrorTemplate {
       }
     </div>
   `,
-  styleUrl: "error-card.component.scss",
+  styleUrl: "./error-card.component.scss",
   imports: [NgTemplateOutlet],
 })
 export class ErrorCardComponent {

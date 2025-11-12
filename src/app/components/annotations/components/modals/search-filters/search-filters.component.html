@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h4 class="modal-title">Annotation Search Filters</h4>
+</div>
+
+<div class="filters-modal-body modal-body modal-large">
+  <baw-annotation-search-form [(searchParameters)]="formValue" />
+</div>
+
+<div class="modal-footer justify-content-end">
+  <div class="mt-2">
+    <button
+      id="exit-btn"
+      class="btn btn-outline-primary me-2"
+      (click)="closeModal()"
+    >
+      Close
+    </button>
+    <button
+      id="update-filters-btn"
+      class="btn btn-primary"
+      (click)="success()"
+    >
+      Update search filters
+    </button>
+  </div>
+</div>

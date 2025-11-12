@@ -64,7 +64,7 @@ export class HarvestMapping
   public recursive?: boolean;
 
   // Associations
-  @hasOne<HarvestMapping, Site>(SHALLOW_SITE, "siteId")
+  @hasOne(SHALLOW_SITE, "siteId")
   public site?: Site;
 
   public constructor(data: IHarvestMapping, injector?: AssociationInjector) {
@@ -131,11 +131,11 @@ export class Harvest extends AbstractModel implements IHarvest {
   public readonly lastMappingsChangeAt?: DateTimeTimezone;
 
   // Associations
-  @hasOne<Harvest, Project>(PROJECT, "projectId")
+  @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @creator<Harvest>()
+  @creator()
   public creator?: User;
-  @updater<Harvest>()
+  @updater()
   public updater?: User;
 
   public constructor(data: IHarvest, injector?: AssociationInjector) {

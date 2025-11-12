@@ -1,6 +1,7 @@
 import { Route, Routes } from "@angular/router";
 import { ResolverHandlerComponent } from "@components/error/resolver-handler.component";
 import { FormTouchedGuard } from "@guards/form/form.guard";
+import { NavigationConfirmationGuard } from "@guards/confirmation/confirmation.guard";
 import { Option } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -52,7 +53,11 @@ function createClientRoute(strongRoute: StrongRoute): Option<Route> {
         path: "",
         pathMatch: "full",
         component: pageInfo.component,
-        canDeactivate: [FormTouchedGuard, UnsavedInputGuard],
+        canDeactivate: [
+          FormTouchedGuard,
+          UnsavedInputGuard,
+          NavigationConfirmationGuard,
+        ],
       },
       {
         path: "",

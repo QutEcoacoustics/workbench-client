@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldProps } from "@ngx-formly/core";
 import {
   clickButton,
-  getElementByInnerText,
+  getElementByTextContent,
   selectFromTypeahead,
 } from "@test/helpers/html";
 import { modelData } from "@test/helpers/faker";
@@ -35,9 +35,9 @@ describe("LicenseInputComponent", () => {
 
   const licenseInput = () => spec.query("baw-typeahead-input");
   const removeButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "Remove");
+    getElementByTextContent<HTMLButtonElement>(spec, "Remove");
   const showButton = () =>
-    getElementByInnerText<HTMLButtonElement>(spec, "Show");
+    getElementByTextContent<HTMLButtonElement>(spec, "Show");
 
   function setup(
     initialLicense?: string,

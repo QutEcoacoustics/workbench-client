@@ -135,17 +135,17 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public readonly overallDataLength?: string;
 
   // Associations
-  @creator<AnalysisJob>()
+  @creator()
   public creator: User;
-  @updater<AnalysisJob>()
+  @updater()
   public updater?: User;
-  @deleter<AnalysisJob>()
+  @deleter()
   public deleter?: User;
-  @hasOne<AnalysisJob, Project>(PROJECT, "projectId")
+  @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @hasMany<AnalysisJob, Script>(SCRIPT, "scriptIds")
+  @hasMany(SCRIPT, "scriptIds")
   public scripts?: Script[];
-  @hasMany<AnalysisJob, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportIds")
+  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImportIds")
   public audioEventImports?: AudioEventImport[];
 
   public constructor(analysisJob: IAnalysisJob, injector?: AssociationInjector) {

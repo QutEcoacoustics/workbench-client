@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { TaggingsService } from "@baw-api/tag/taggings.service";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { Id } from "@interfaces/apiInterfaces";
 import { Annotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
@@ -23,7 +24,7 @@ export class TaggingCorrectionsService {
    */
   public create(
     model: Annotation,
-    correctTagId: Tag["id"],
+    correctTagId: Id<Tag>,
   ): Observable<Tagging> {
     const isNewTag = !model.tagIds.has(correctTagId);
 
@@ -72,7 +73,7 @@ export class TaggingCorrectionsService {
    */
   public destroy(
     model: Annotation,
-    tagIdToRemove: Tag["id"],
+    tagIdToRemove: Id<Tag>,
   ): Observable<void | Tagging> {
     const taggingToRemove = model.corrections.get(tagIdToRemove);
     if (!taggingToRemove) {

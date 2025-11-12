@@ -1,7 +1,6 @@
 import { PROJECT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { audioRecordingsRoutes } from "@components/audio-recordings/audio-recording.routes";
 import { regionRoute } from "@components/regions/regions.routes";
-import { visualizeMenuItem } from "@components/visualize/visualize.menus";
 import {
   DateTimeTimezone,
   Description,
@@ -81,15 +80,15 @@ export class Region
   public readonly notes?: Hash;
 
   // Associations
-  @hasOne<Region, Project>(PROJECT, "projectId")
+  @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @hasMany<Region, Site>(SHALLOW_SITE, "siteIds")
+  @hasMany(SHALLOW_SITE, "siteIds")
   public sites?: Site[];
-  @creator<Region>()
+  @creator()
   public creator?: User;
-  @updater<Region>()
+  @updater()
   public updater?: User;
-  @deleter<Region>()
+  @deleter()
   public deleter?: User;
 
   public get viewUrl(): string {
@@ -97,10 +96,6 @@ export class Region
       projectId: this.projectId,
       regionId: this.id,
     });
-  }
-
-  public get visualizeUrl(): string {
-    return visualizeMenuItem.route.format(undefined, { siteIds: this.siteIds });
   }
 
   public get license() {

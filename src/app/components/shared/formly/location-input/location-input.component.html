@@ -1,0 +1,53 @@
+<div class="form-group">
+  <label for="latitude"> Latitude {{ props.required ? " *" : "" }} </label>
+  <input
+    id="latitude"
+    type="number"
+    class="form-control"
+    [class.is-invalid]="latitudeError()"
+    [formlyAttributes]="field"
+    [ngModel]="latitude()"
+    (ngModelChange)="updateModel($event)"
+  />
+
+  @if (latitudeError()) {
+    <div class="invalid-feedback" style="display: block;">
+      {{ getError() }}
+    </div>
+  }
+</div>
+
+<div class="form-group">
+  <label for="longitude">
+    Longitude {{ props.required ? " *" : "" }}
+  </label>
+  <input
+    id="longitude"
+    type="number"
+    class="form-control"
+    [class.is-invalid]="longitudeError()"
+    [formlyAttributes]="field"
+    [ngModel]="longitude()"
+    (ngModelChange)="updateModel(undefined, $event)"
+  />
+
+  @if (longitudeError()) {
+    <div class="invalid-feedback" style="display: block;">
+      {{ getError() }}
+    </div>
+  }
+
+  <input
+    type="hidden"
+    [id]="field.id"
+    [formControl]="asFormControl(formControl)"
+  />
+</div>
+
+<div class="mb-3" style="height: 400px">
+  <baw-map
+    [markers]="marker()"
+    [markerOptions]="{ gmpDraggable: true }"
+    (newLocation)="updateModel($event.latLng.lat(), $event.latLng.lng())"
+  ></baw-map>
+</div>

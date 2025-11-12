@@ -36,7 +36,7 @@ const projectKey = "project";
 
 @Component({
   selector: "baw-harvests",
-  templateUrl: "list.component.html",
+  templateUrl: "./list.component.html",
   imports: [
     StrongRouteDirective,
     NgxDatatableModule,

@@ -154,7 +154,7 @@ describe("BatchUploadingComponent", () => {
     function setCurrentTab(tabLabel: string) {
       const tab = spec
         .queryAll<HTMLAnchorElement>("a.nav-link")
-        .find((item) => item.innerText === tabLabel);
+        .find((item) => item.textContent === tabLabel);
       spec.click(tab);
     }
 
@@ -193,7 +193,7 @@ describe("BatchUploadingComponent", () => {
         spec.detectChanges();
         const interval = setInterval(() => {
           spec.detectChanges();
-          if (getCurrentTabBody().innerText.includes(description)) {
+          if (getCurrentTabBody().textContent.includes(description)) {
             expect(getCurrentTabBody()).toContainText(description);
             clearInterval(interval);
             done();

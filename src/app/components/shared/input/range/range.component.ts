@@ -17,17 +17,17 @@ import { toNumber } from "@helpers/typing/toNumber";
   imports: [FormsModule],
 })
 export class RangeComponent implements ControlValueAccessor, OnInit {
-  public label = input("");
-  public min = input(0);
-  public max = input(100);
-  public step = input(5);
-  public dirty = input(false);
-  public value = input<number | undefined>();
+  public readonly label = input("");
+  public readonly min = input(0);
+  public readonly max = input(100);
+  public readonly step = input(5);
+  public readonly dirty = input(false);
+  public readonly value = input<number | undefined>();
 
   // We have an internal value because you cannot write directly to inputs.
   // This signal is used to sync the range and number inputs.
-  protected _value = signal<number>(0);
-  protected disabled = signal(false);
+  protected readonly _value = signal<number>(0);
+  protected readonly disabled = signal(false);
 
   private onChange: (value: number | null) => void;
   private onTouched: () => void;

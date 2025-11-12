@@ -70,11 +70,11 @@ export class AudioEventImportFile
   public readonly additionalTagIds: CollectionIds;
 
   // Associations
-  @hasMany<AudioEventImportFile, Tag>(TAG, "additionalTagIds")
+  @hasMany(TAG, "additionalTagIds")
   public readonly additionalTags?: Tag[];
-  @hasOne<AudioEventImportFile, AnalysisJobItem>(ANALYSIS_JOB_ITEM, "analysisJobsItemId")
+  @hasOne(ANALYSIS_JOB_ITEM, "analysisJobsItemId")
   public readonly analysisJobItem?: AnalysisJobItem;
-  @hasOne<AudioEventImportFile, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportId")
+  @hasOne(AUDIO_EVENT_IMPORT, "audioEventImportId")
   public readonly audioEventImport?: AudioEventImport;
 
   public get viewUrl(): string {

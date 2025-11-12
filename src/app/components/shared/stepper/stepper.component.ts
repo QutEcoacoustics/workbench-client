@@ -20,7 +20,6 @@ export interface Step {
 
 @Component({
   selector: "baw-stepper",
-  styleUrl: "stepper.component.scss",
   template: `
     <div #stepper class="stepper mb-3">
       <div class="lines">
@@ -28,7 +27,7 @@ export interface Step {
         <div class="main"></div>
         <div #rightDots class="dots"></div>
       </div>
-    
+
       <div #steps class="steps">
         @for (step of stepList; track step; let i = $index) {
           <div
@@ -47,6 +46,7 @@ export interface Step {
       </div>
     </div>
   `,
+  styleUrl: "./stepper.component.scss",
   imports: [FaIconComponent],
 })
 export class StepperComponent

@@ -6,7 +6,7 @@ import {
 import { IconsModule } from "@shared/icons/icons.module";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { modelData } from "@test/helpers/faker";
 import {
   ImportAnnotationService,
@@ -38,15 +38,15 @@ describe("AnnotationImportIssueWidgetComponent", () => {
   const uncommittedFileWarning = () => spec.query(".uncommitted-file-warning");
 
   function hasEventError(): boolean {
-    return !!getElementByInnerText(spec, "Annotation errors");
+    return !!getElementByTextContent(spec, "Annotation errors");
   }
 
   function hasDuplicateFileError(): boolean {
-    return !!getElementByInnerText(spec, "Duplicate files");
+    return !!getElementByTextContent(spec, "Duplicate files");
   }
 
   function hasUnsupportedFormatError(): boolean {
-    return !!getElementByInnerText(spec, "Unsupported file format");
+    return !!getElementByTextContent(spec, "Unsupported file format");
   }
 
   function setFiles(mockFiles: ImportedFileWithErrors[]): void {

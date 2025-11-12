@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, inject, Input, OnChanges } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -70,7 +70,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @for (tag of value.tags; track tag) {
+          @for (tag of value.tags; track tag.id) {
             <span class="badge text-bg-highlight me-1">
               {{ tag.text }}
             </span>
@@ -137,13 +137,13 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class RecentAnnotationsComponent implements OnChanges {
+  public readonly session = inject(BawSessionService);
+
   @Input() public annotations!: AudioEvent[] | undefined;
 
   public columnMode = ColumnMode;
   public columns: TableColumn[];
   public rows = [];
-
-  public constructor(public session: BawSessionService) {}
 
   public ngOnChanges(): void {
     if (!this.columns) {

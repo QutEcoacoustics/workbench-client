@@ -10,7 +10,7 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
 @Component({
   selector: "baw-zoned-datetime",
   templateUrl: "../../abstract-template.component.html",
-  styleUrl: "zoned-datetime.component.scss",
+  styleUrl: "./zoned-datetime.component.scss",
   imports: [NgbTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -5,10 +5,6 @@ import {
   Input,
   Output,
 } from "@angular/core";
-import {
-  MetaReviewFolder,
-  metaReviewIcons,
-} from "@components/harvest/screens/metadata-review/metadata-review.component";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -18,6 +14,7 @@ import { FaLayersComponent, FaIconComponent, FaLayersCounterComponent } from "@f
 import { DecimalPipe } from "@angular/common";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { CheckboxComponent } from "@shared/checkbox/checkbox.component";
+import { MetaReviewFolder, metaReviewIcons } from "@components/harvest/screens/metadata-review/metadata-review.types";
 import { SiteSelectorComponent } from "../inputs/site-selector.component";
 import { UTCOffsetSelectorComponent } from "../inputs/utc-offset-selector.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";

@@ -1,0 +1,44 @@
+<div id="auth-token" class="input-group">
+  <button
+    id="visibility-btn"
+    type="button"
+    container="body"
+    [class]="'btn btn-outline-' + color()"
+    [class.active]="visible()"
+    [ngbTooltip]="disabled() ? disabled() : tooltip()"
+    [disabled]="disabled()"
+    (click)="toggleVisibility()"
+  >
+    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+  </button>
+
+  <pre class="text-center form-control">{{ visible() ? content() : "..." }}@if (visible()) {<ng-content></ng-content>}</pre>
+
+  <!--
+    We use a manual trigger for the "Copied!" tooltip so that so that it is
+    only triggered by the cbOnSuccess event.
+
+    We also add the container="body" so that the tooltip can go above this
+    components top level container.
+
+    We can't add the ngbTooltip with the ngxClipboard directive otherwise
+    the content fails to copy.
+  -->
+  <span
+    #copyTooltip="ngbTooltip"
+    [ngbTooltip]="'Copied!'"
+    triggers="manual"
+    container="body"
+  >
+    <button
+      id="copy-btn"
+      [class]="'btn btn-outline-' + color()"
+      [disabled]="disabled()"
+      ngxClipboard
+      [cbContent]="value()"
+      (cbOnSuccess)="copyTooltip.open()"
+    >
+      <fa-icon id="copy-icon" [icon]="['fas', 'copy']"></fa-icon>
+    </button>
+  </span>
+</div>

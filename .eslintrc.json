@@ -1,6 +1,6 @@
 {
   "ignorePatterns": [
-    "projects/**/*"
+    "**/*.base64.ts"
   ],
   "overrides": [
     {

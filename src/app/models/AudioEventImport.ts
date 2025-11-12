@@ -37,13 +37,13 @@ export class AudioEventImport
   public readonly analysisJobId?: Id;
 
   // Associations
-  @hasOne<AudioEventImport, User>(USER, "creatorId")
+  @hasOne(USER, "creatorId")
   public creator?: User;
-  @hasOne<AudioEventImport, User>(USER, "deleterId")
+  @hasOne(USER, "deleterId")
   public deleter?: User;
-  @hasOne<AudioEventImport, User>(USER, "updaterId")
+  @hasOne(USER, "updaterId")
   public updater?: User;
-  @hasOne<AudioEventImport, AnalysisJob>(ANALYSIS_JOB, "analysisJobId")
+  @hasOne(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {

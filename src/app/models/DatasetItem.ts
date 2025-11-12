@@ -39,11 +39,11 @@ export class DatasetItem
   public readonly order?: number;
 
   // Associations
-  @creator<DatasetItem>()
+  @creator()
   public creator?: User;
-  @hasOne<DatasetItem, Dataset>(DATASET, "datasetId")
+  @hasOne(DATASET, "datasetId")
   public dataset?: Dataset;
-  @hasOne<DatasetItem, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
 
   public get viewUrl(): string {

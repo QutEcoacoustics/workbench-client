@@ -11,6 +11,7 @@ import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { appLibraryImports } from "src/app/app.config";
+import { getElementByTextContent } from "@test/helpers/html";
 import { AssignComponent } from "./assign.component";
 
 // some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
@@ -57,12 +58,6 @@ describe("AssignComponent", () => {
   const updateButton = (): HTMLButtonElement =>
     spectator.query<HTMLButtonElement>("button[type='submit']");
 
-  function getElementByInnerText<T extends HTMLElement>(text: string): T {
-    return spectator.debugElement.query(
-      (element) => element.nativeElement.innerText === text
-    )?.nativeElement as T;
-  }
-
   function submitForm(): void {
     const updateButtonElement = updateButton();
     updateButtonElement.click();
@@ -70,7 +65,7 @@ describe("AssignComponent", () => {
   }
 
   function getSiteRow(siteName: string): HTMLElement {
-    return getElementByInnerText(siteName).parentElement.parentElement;
+    return getElementByTextContent(spectator, siteName).parentElement.parentElement;
   }
 
   function getSiteCheckbox(siteName: string): HTMLInputElement {
@@ -146,7 +141,7 @@ describe("AssignComponent", () => {
     ];
 
     descriptionElementText.forEach((text) => {
-      expect(getElementByInnerText(text)).toExist();
+      expect(getElementByTextContent(spectator, text)).toExist();
     });
   });
 

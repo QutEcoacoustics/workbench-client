@@ -50,11 +50,11 @@ export class ImportedAudioEvent
   public readonly provenanceId?: Id;
 
   // Associations
-  @hasOne<ImportedAudioEvent, AudioRecording>(AUDIO_RECORDING, "audioRecordingId")
+  @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne<ImportedAudioEvent, AudioEventImport>(AUDIO_EVENT_IMPORT, "audioEventImportId")
+  @hasOne(AUDIO_EVENT_IMPORT, "audioEventImportId")
   public audioEventImport?: AudioEventImport;
-  @hasOne<ImportedAudioEvent, AudioEventProvenance>(AUDIO_EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {

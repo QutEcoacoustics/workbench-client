@@ -1,0 +1,10 @@
+// Can be added to an "ngbNav" element to right align the tabs
+.right-aligned-tabs {
+  justify-content: end;
+}
+
+.small-tabs {
+  // I use "em" units here instead of "rem" units so that this class is a
+  // modifier of the original font size.
+  font-size: 0.875em;
+}

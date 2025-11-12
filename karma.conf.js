@@ -9,7 +9,7 @@ var isCi = process.env.CI === "true";
 var isMacOS = process.platform === "darwin";
 
 // We use custom middleware for the Karma test server so that we can append
-// headers to all served files (including static files served from /src/assets/)
+// headers to all served files (including files served from /src/test-assets/)
 // This is different from the customHeaders config option which only applies to
 // the iframe that the test runs in, and does not apply to other files served
 // through the karma server.
@@ -27,16 +27,14 @@ function assetHeadersMiddlewareFactory(config) {
 module.exports = function (config) {
   config.set({
     basePath: "",
-    frameworks: ["jasmine", "@angular-devkit/build-angular", "viewport"],
+    frameworks: ["jasmine", "viewport"],
     plugins: [
       require("karma-jasmine"),
       require("karma-viewport"),
       require("karma-chrome-launcher"),
       require("karma-firefox-launcher"),
-      require("@chiragrupani/karma-chromium-edge-launcher"),
       require("karma-jasmine-html-reporter"),
       require("karma-coverage"),
-      require("@angular-devkit/build-angular/plugins/karma"),
       require("karma-junit-reporter"),
     ],
     client: {
@@ -76,7 +74,9 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_ERROR,
-    autoWatch: true,
+    // We don't want to run tests in watch mode on CI.
+    // see: https://github.com/angular/angular-cli/issues/30506
+    autoWatch: !isCi,
     browsers: ["Chrome"],
     singleRun: false,
     restartOnFileChange: true,
@@ -89,11 +89,12 @@ module.exports = function (config) {
     // client to test integrations
     files: [
       { pattern: "src/assets/*", included: false, served: true },
+      { pattern: "src/test-assets/*", included: false, served: true },
       {
         // TODO: this should expose all of node_modules through the karma server
         // so that we can dynamically import anything from node_modules
         // without adding it to this list
-        pattern: __dirname + "/node_modules/@ecoacoustics/web-components/**",
+        pattern: "node_modules/@ecoacoustics/web-components/*",
         included: false,
         served: true,
       },
