@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
-  audioEventProvenanceResolvers,
-  AudioEventProvenanceService,
-} from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+  provenanceResolvers,
+  ProvenanceService,
+} from "@baw-api/provenance/provenance.service";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
@@ -18,7 +18,7 @@ import { deleteProvenanceModal } from "@components/provenances/provenances.modal
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
@@ -38,12 +38,12 @@ const provenanceKey = "provenance";
   imports: [DetailViewComponent],
 })
 class ProvenanceDetailsComponent extends PageComponent implements OnInit {
-  public provenance: AudioEventProvenance;
+  public provenance: Provenance;
   public fields = schema.fields;
 
   protected route = inject(ActivatedRoute);
   private router = inject(Router);
-  private provenancesApi = inject(AudioEventProvenanceService);
+  private provenancesApi = inject(ProvenanceService);
   public notifications = inject(ToastService);
 
   public constructor() {
@@ -55,7 +55,7 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
     if (!hasResolvedSuccessfully(models)) {
       return;
     }
-    this.provenance = models[provenanceKey] as AudioEventProvenance;
+    this.provenance = models[provenanceKey] as Provenance;
   }
 
   public deleteModel(): void {
@@ -79,7 +79,7 @@ ProvenanceDetailsComponent.linkToRoute({
   menus: {
     actions: List(provenanceMenuItemActions),
   },
-  resolvers: { [provenanceKey]: audioEventProvenanceResolvers.show },
+  resolvers: { [provenanceKey]: provenanceResolvers.show },
 });
 
 export { ProvenanceDetailsComponent };

@@ -16,7 +16,6 @@ import { AnalysisJobsService } from "./analysis/analysis-jobs.service";
 import { BawApiInterceptor } from "./api.interceptor.service";
 import { AudioEventImportFileService, ShallowAudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
-import { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import {
   AudioEventsService,
   ShallowAudioEventsService,
@@ -36,6 +35,7 @@ import {
 import { MockSecurityService } from "./mock/securityMock.service";
 import { ProgressEventsService } from "./progress-event/progress-events.service";
 import { ProjectsService } from "./project/projects.service";
+import { ProvenanceService } from "./provenance/provenance.service";
 import {
   RegionsService,
   ShallowRegionsService,
@@ -104,7 +104,7 @@ export const mockProviders: Provider[] = [
   mockProvider(TaggingsService),
   mockProvider(UserService),
   mockProvider(WebsiteStatusService),
-  mockProvider(AudioEventProvenanceService),
+  mockProvider(ProvenanceService),
   mockProvider(SiteSettingsService),
   mockProvider(VerificationService),
   mockProvider(AudioEventImportService),

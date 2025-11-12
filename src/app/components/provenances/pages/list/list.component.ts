@@ -1,11 +1,11 @@
 import { Component, OnInit, inject } from "@angular/core";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   newProvenanceMenuItem,
   provenancesCategory,
   provenancesMenuItem,
 } from "@components/provenances/provenances.menus";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import { List } from "immutable";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { BehaviorSubject, takeUntil } from "rxjs";
@@ -31,12 +31,12 @@ export const provenancesMenuItemActions = [newProvenanceMenuItem];
   ],
 })
 class ProvenanceListComponent extends PageComponent implements OnInit {
-  private api = inject(AudioEventProvenanceService);
+  private api = inject(ProvenanceService);
   private notifications = inject(ToastService);
   private modals = inject(NgbModal);
 
-  protected filters$: BehaviorSubject<Filters<AudioEventProvenance>>;
-  private defaultFilters: Filters<AudioEventProvenance> = {
+  protected filters$: BehaviorSubject<Filters<Provenance>>;
+  private defaultFilters: Filters<Provenance> = {
     sorting: {
       direction: "desc",
       orderBy: "createdAt",
@@ -47,12 +47,12 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
     this.filters$ = new BehaviorSubject(this.defaultFilters);
   }
 
-  protected getModels = (filters: Filters<AudioEventProvenance>) =>
+  protected getModels = (filters: Filters<Provenance>) =>
     this.api.filter(filters);
 
   protected async deleteProvenance(
     template: any,
-    model: AudioEventProvenance
+    model: Provenance
   ): Promise<void> {
     const modelId: Id = model.id;
     const modelName: string = model.name;

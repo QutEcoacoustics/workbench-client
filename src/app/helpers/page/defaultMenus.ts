@@ -7,7 +7,6 @@ import {
   myAnnotationsMenuItem,
 } from "@components/profile/profile.menus";
 import { projectsMenuItem } from "@components/projects/projects.menus";
-import { provenancesMenuItem } from "@components/provenances/provenances.menus";
 import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
@@ -51,7 +50,6 @@ export class DefaultMenu {
         reportProblemMenuItem,
         statisticsMenuItem,
         websiteStatusMenuItem,
-        provenancesMenuItem,
       ]),
       defaultCategory: homeCategory,
     };

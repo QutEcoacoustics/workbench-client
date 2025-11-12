@@ -16,11 +16,11 @@ import {
 } from "@baw-api/resolver-common";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
 import {
   EventSummaryReport,
   IEventSummaryReport,
 } from "@models/EventSummaryReport";
+import { EventGroup } from "@models/Provenance/EventGroup";
 import { API_ROOT } from "@services/config/config.tokens";
 import { Observable, map, of } from "rxjs";
 

@@ -13,7 +13,7 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
-import { AudioEventProvenance } from "./AudioEventProvenance";
+import { Provenance } from "./Provenance";
 import type { User } from "./User";
 
 /**
@@ -75,7 +75,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   @hasOne(SCRIPT, "groupId")
   public group?: Script;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
-  public provenance?: AudioEventProvenance;
+  public provenance?: Provenance;
 
   public get viewUrl(): string {
     return scriptMenuItem.route.format({ scriptId: this.id });
