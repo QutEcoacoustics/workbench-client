@@ -29,7 +29,8 @@ import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
 import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
-import schema from "../../provenance.schema.json";
+import baseSchema from "../../provenance.base.schema.json";
+import extendedSchema from "../../provenance.extended.schema.json";
 
 export const provenanceMenuItemActions = [
   editProvenanceMenuItem,
@@ -42,7 +43,6 @@ const provenanceKey = "provenance";
   selector: "baw-provenance",
   templateUrl: "./details.component.html",
   imports: [DetailViewComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ProvenanceDetailsComponent extends PageComponent implements OnInit {
   public readonly notifications = inject(ToastService);
@@ -50,7 +50,7 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly provenancesApi = inject(ProvenanceService);
 
-  protected readonly fields = schema.fields;
+  protected readonly fields = [...baseSchema.fields, ...extendedSchema.fields];
   protected readonly provenance = signal<Provenance | null>(null);
 
   public ngOnInit() {

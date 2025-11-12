@@ -1,0 +1,52 @@
+{
+  "fields": [
+    {
+      "key": "creator",
+      "hide": true,
+      "props": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "props": {
+        "label": "Created At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "props": {
+        "label": "Updater",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updatedAt",
+      "hide": true,
+      "props": {
+        "label": "Updated At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deleter",
+      "hide": true,
+      "props": {
+        "label": "Deleter",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deletedAt",
+      "hide": true,
+      "props": {
+        "label": "Deleted At",
+        "disabled": true
+      }
+    }
+  ]
+}

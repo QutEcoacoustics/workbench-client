@@ -21,8 +21,6 @@ export class Provenance
 {
   public readonly kind = "Provenance";
   @bawPersistAttr()
-  public readonly id: Id;
-  @bawPersistAttr()
   public readonly name: string;
   @bawPersistAttr()
   public readonly version: string;
