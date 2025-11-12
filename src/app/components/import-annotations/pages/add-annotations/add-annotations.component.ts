@@ -73,7 +73,7 @@ import {
 import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {

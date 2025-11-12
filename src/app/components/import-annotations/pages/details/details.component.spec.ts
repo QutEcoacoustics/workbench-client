@@ -43,7 +43,7 @@ import { fakeAsync, flush } from "@angular/core/testing";
 import { getElementByTextContent } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
