@@ -37,9 +37,7 @@
         "type": "number",
         "label": "Score Minimum",
         "required": false,
-        "min": 0,
-        "max": 1,
-        "step": 0.01
+        "step": 0.1
       }
     },
     {
@@ -49,9 +47,55 @@
         "type": "number",
         "label": "Score Maximum",
         "required": false,
-        "min": 0,
-        "max": 1,
-        "step": 0.01
+        "step": 0.1
+      }
+    },
+    {
+      "key": "creator",
+      "hide": true,
+      "props": {
+        "label": "Creator",
+        "disabled": true
+      }
+    },
+    {
+      "key": "createdAt",
+      "hide": true,
+      "props": {
+        "label": "Created At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updater",
+      "hide": true,
+      "props": {
+        "label": "Updater",
+        "disabled": true
+      }
+    },
+    {
+      "key": "updatedAt",
+      "hide": true,
+      "props": {
+        "label": "Updated At",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deleter",
+      "hide": true,
+      "props": {
+        "label": "Deleter",
+        "disabled": true
+      }
+    },
+    {
+      "key": "deletedAt",
+      "hide": true,
+      "props": {
+        "label": "Deleted At",
+        "disabled": true
       }
     }
   ]

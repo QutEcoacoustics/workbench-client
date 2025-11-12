@@ -37,7 +37,7 @@ const siteKey = "site";
   imports: [FormComponent],
 })
 class SiteEditComponent extends FormTemplate<Site> implements OnInit {
-  public title: string;
+  protected title: string;
 
   public constructor(
     private api: SitesService,

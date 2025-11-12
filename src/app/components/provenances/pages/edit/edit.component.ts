@@ -31,12 +31,13 @@ class ProvenanceEditComponent
   extends FormTemplate<Provenance>
   implements OnInit
 {
-  public fields = schema.fields;
+  protected readonly notifications = inject(ToastService);
+  protected readonly route = inject(ActivatedRoute);
+  protected readonly router = inject(Router);
+  private readonly api = inject(ProvenanceService);
 
-  private api = inject(ProvenanceService);
-  protected notifications = inject(ToastService);
-  protected route = inject(ActivatedRoute);
-  protected router = inject(Router);
+  public readonly fields = schema.fields;
+  protected title: string;
 
   public constructor() {
     super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
@@ -46,8 +47,10 @@ class ProvenanceEditComponent
     });
   }
 
-  public ngOnInit() {
-    super.ngOnInit();
+  public ngOnInit(): void {
+    // We set the title as a un-computed property so that when the modals name
+    // in the form is changed, the title does not also change.
+    this.title = `Edit ${this.model.name}`;
   }
 
   protected apiAction(model: Partial<Provenance>) {

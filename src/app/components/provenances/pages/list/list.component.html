@@ -33,6 +33,15 @@
 
   <ngx-datatable-column prop="">
     <ng-template let-column="column" ngx-datatable-header-template>
+      Created By
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <baw-user-link [user]="value.creator" />
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
       Action
     </ng-template>
     <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
