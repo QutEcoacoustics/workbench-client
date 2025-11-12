@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { List } from "immutable";
 import { scriptsMenuItem } from "@components/scripts/scripts.menus";
+import { provenancesMenuItem } from "@components/provenances/provenances.menus";
 import {
   adminAnalysisJobsMenuItem,
   adminCategory,
@@ -31,6 +32,10 @@ export const adminMenuItemActions = [
   adminUserListMenuItem,
   adminUploadsMenuItem,
   adminDateTimeTemplateMenuItem,
+
+  // TODO: We probably want to move provenance management to a different
+  // location once we want to expose it to non-admin users.
+  provenancesMenuItem,
 
   // even though listing scripts is not restricted to admins, I have included it
   // in the admin dashboard because it is not linked to from any other page and

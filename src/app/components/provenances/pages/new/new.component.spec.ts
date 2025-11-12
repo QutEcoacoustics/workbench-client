@@ -1,16 +1,16 @@
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
-  IAudioEventProvenance,
-  AudioEventProvenance,
-} from "@models/AudioEventProvenance";
+  IProvenance,
+  Provenance,
+} from "@models/Provenance";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
@@ -18,7 +18,7 @@ import schema from "../../provenance.schema.json";
 import { ProvenanceNewComponent } from "./new.component";
 
 describe("ProvenanceNewComponent", () => {
-  let provenanceApi: SpyObject<AudioEventProvenanceService>;
+  let provenanceApi: SpyObject<ProvenanceService>;
   let spectator: SpectatorRouting<ProvenanceNewComponent>;
 
   const createComponent = createRoutingFactory({
@@ -32,7 +32,7 @@ describe("ProvenanceNewComponent", () => {
 
   beforeEach(() => {
     spectator = createComponent({ detectChanges: false });
-    provenanceApi = spectator.inject(AudioEventProvenanceService);
+    provenanceApi = spectator.inject(ProvenanceService);
     spectator.detectChanges();
   });
 
@@ -45,12 +45,12 @@ describe("ProvenanceNewComponent", () => {
   });
 
   it("should call create on submission", () => {
-    const provenance = new AudioEventProvenance(
-      generateAudioEventProvenance()
+    const provenance = new Provenance(
+      generateProvenance()
     );
     provenanceApi.create.and.returnValue(of(provenance));
 
-    const data: Partial<IAudioEventProvenance> = {
+    const data: Partial<IProvenance> = {
       name: "New Provenance",
       version: "1.0.0",
     };

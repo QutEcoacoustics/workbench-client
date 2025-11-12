@@ -24,7 +24,7 @@ import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
-import { AudioEventProvenance } from "./AudioEventProvenance";
+import { Provenance } from "./Provenance";
 import { AssociationInjector } from "./ImplementsInjector";
 
 export interface IAudioEvent extends HasAllUsers {
@@ -89,7 +89,7 @@ export class AudioEvent
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
-  public provenance?: AudioEventProvenance;
+  public provenance?: Provenance;
   @hasMany(TAG, "tagIds")
   public tags?: Tag[];
 

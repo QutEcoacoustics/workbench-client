@@ -40,9 +40,9 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { Provenance } from "@models/Provenance";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -52,7 +52,7 @@ describe("AddAnnotationsComponent", () => {
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
-  let provenanceServiceSpy: SpyObject<AudioEventProvenanceService>;
+  let provenanceServiceSpy: SpyObject<ProvenanceService>;
 
   let notificationsSpy: SpyObject<ToastService>;
   let routerSpy: SpyObject<Router>;
@@ -61,7 +61,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError;
   let mockTagsResponse: Tag[];
-  let mockProvenanceResponse: AudioEventProvenance[];
+  let mockProvenanceResponse: Provenance[];
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -184,7 +184,7 @@ describe("AddAnnotationsComponent", () => {
       1,
       10,
       () =>
-        new AudioEventProvenance(generateAudioEventProvenance(), injectorSpy),
+        new Provenance(generateProvenance(), injectorSpy),
     );
 
     mockRecordingsResponse = new AudioRecording(

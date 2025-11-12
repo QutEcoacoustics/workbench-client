@@ -68,9 +68,9 @@ import {
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
-  audioEventProvenanceResolvers,
-  AudioEventProvenanceService,
-} from "./AudioEventProvenance/AudioEventProvenance.service";
+  provenanceResolvers,
+  ProvenanceService,
+} from "./provenance/provenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -309,8 +309,8 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
-    service: AudioEventProvenanceService,
-    resolvers: audioEventProvenanceResolvers,
+    service: ProvenanceService,
+    resolvers: provenanceResolvers,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,

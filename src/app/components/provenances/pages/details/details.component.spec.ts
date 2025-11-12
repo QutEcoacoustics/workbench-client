@@ -1,25 +1,25 @@
 import { Router } from "@angular/router";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
-  audioEventProvenanceResolvers,
-  AudioEventProvenanceService,
-} from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+  provenanceResolvers,
+  ProvenanceService,
+} from "@baw-api/provenance/provenance.service";
+import { Provenance } from "@models/Provenance";
 import {
   createRoutingFactory,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { ProvenanceDetailsComponent } from "./details.component";
 
 describe("ProvenanceDetailsComponent", () => {
-  let provenanceApi: SpyObject<AudioEventProvenanceService>;
+  let provenanceApi: SpyObject<ProvenanceService>;
   let routerSpy: SpyObject<Router>;
-  let defaultProvenance: AudioEventProvenance;
+  let defaultProvenance: Provenance;
   let spectator: SpectatorRouting<ProvenanceDetailsComponent>;
 
   const createComponent = createRoutingFactory({
@@ -28,36 +28,36 @@ describe("ProvenanceDetailsComponent", () => {
     mocks: [ToastService],
   });
 
-  assertPageInfo<AudioEventProvenance>(
+  assertPageInfo<Provenance>(
     ProvenanceDetailsComponent,
     "test name",
     {
       provenance: {
-        model: new AudioEventProvenance(
-          generateAudioEventProvenance({ name: "test name" })
+        model: new Provenance(
+          generateProvenance({ name: "test name" })
         ),
       },
     }
   );
 
-  function setup(provenance: AudioEventProvenance) {
+  function setup(provenance: Provenance) {
     spectator = createComponent({
       detectChanges: false,
       data: {
         resolvers: {
-          provenance: audioEventProvenanceResolvers.show,
+          provenance: provenanceResolvers.show,
         },
         provenance: { model: provenance },
       },
     });
-    provenanceApi = spectator.inject(AudioEventProvenanceService);
+    provenanceApi = spectator.inject(ProvenanceService);
     routerSpy = spectator.inject(Router);
     spectator.detectChanges();
   }
 
   beforeEach(() => {
-    defaultProvenance = new AudioEventProvenance(
-      generateAudioEventProvenance()
+    defaultProvenance = new Provenance(
+      generateProvenance()
     );
   });
 

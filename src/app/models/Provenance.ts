@@ -3,7 +3,7 @@ import { DateTimeTimezone, HasAllUsers, HasDescription, Id } from "../interfaces
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 
-export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
+export interface IProvenance extends HasAllUsers, HasDescription {
   id?: Id;
   name?: string;
   version?: string;
@@ -13,10 +13,11 @@ export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
   scoreMaximum?: number;
 }
 
-export class AudioEventProvenance
-  extends AbstractModel<IAudioEventProvenance>
-  implements IAudioEventProvenance
+export class Provenance
+  extends AbstractModel<IProvenance>
+  implements IProvenance
 {
+  public readonly kind = "Provenance";
   @bawPersistAttr()
   public readonly id: Id;
   @bawPersistAttr()
@@ -41,9 +42,6 @@ export class AudioEventProvenance
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
 
-  /**
-   * Navigates to the details page of an AudioEventProvenance
-   */
   public get viewUrl(): string {
     return provenanceMenuItem.route.format({
       provenanceId: this.id,

@@ -1,11 +1,11 @@
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { Provenance } from "@models/Provenance";
 import {
   createRoutingFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -13,7 +13,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProvenanceListComponent } from "./list.component";
 
 describe("ProvenanceListComponent", () => {
-  let api: SpyObject<AudioEventProvenanceService>;
+  let api: SpyObject<ProvenanceService>;
   let spec: Spectator<ProvenanceListComponent>;
 
   const createComponent = createRoutingFactory({
@@ -24,7 +24,7 @@ describe("ProvenanceListComponent", () => {
 
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
-    api = spec.inject(AudioEventProvenanceService);
+    api = spec.inject(ProvenanceService);
   });
 
   assertPageInfo(ProvenanceListComponent, ["Provenances"]);

@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   newProvenanceMenuItem,
   provenancesCategory,
@@ -9,7 +9,7 @@ import {
   defaultSuccessMsg,
   FormTemplate,
 } from "@helpers/formTemplate/formTemplate";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
@@ -22,20 +22,23 @@ import schema from "../../provenance.schema.json";
   templateUrl: "./new.component.html",
   imports: [FormComponent, ErrorHandlerComponent],
 })
-class ProvenanceNewComponent extends FormTemplate<AudioEventProvenance> {
-  public fields = schema.fields;
+class ProvenanceNewComponent extends FormTemplate<Provenance> {
+  public readonly fields = schema.fields;
 
-  private api = inject(AudioEventProvenanceService);
-
-  public constructor() {
-    super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
+  public constructor(
+    protected api: ProvenanceService,
+    protected notifications: ToastService,
+    protected route: ActivatedRoute,
+    protected router: Router
+  ) {
+    super(inject(ToastService), inject(ActivatedRoute), router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
-      redirectUser: (model) => inject(Router).navigateByUrl(model.viewUrl),
+      redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
 
-  protected apiAction(model: Partial<AudioEventProvenance>) {
-    return this.api.create(new AudioEventProvenance(model));
+  protected apiAction(model: Partial<Provenance>) {
+    return this.api.create(new Provenance(model));
   }
 }
 

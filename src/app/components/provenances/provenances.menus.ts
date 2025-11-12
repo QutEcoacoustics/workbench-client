@@ -1,7 +1,7 @@
 import { RouterStateSnapshot } from "@angular/router";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { Category, menuRoute } from "@interfaces/menusInterfaces";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import {
   defaultEditIcon,
   defaultNewIcon,
@@ -54,7 +54,7 @@ export const provenanceMenuItem = menuRoute({
   route: provenanceRoute,
   tooltip: () => "The current provenance",
   breadcrumbResolve: (pageInfo) =>
-    retrieveResolvedModel(pageInfo, AudioEventProvenance)?.name,
+    retrieveResolvedModel(pageInfo, Provenance)?.name,
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild.data;
     return componentModel?.provenance?.model?.name ?? "Unknown";

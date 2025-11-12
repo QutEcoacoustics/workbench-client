@@ -42,9 +42,9 @@ import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
 import { getElementByTextContent } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { verificationRoute } from "@components/annotations/annotation.routes";
@@ -61,12 +61,12 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventImportService: SpyObject<AudioEventImportService>;
   let mockAudioEventFileService: SpyObject<AudioEventImportFileService>;
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
-  let mockProvenanceService: SpyObject<AudioEventProvenanceService>;
+  let mockProvenanceService: SpyObject<ProvenanceService>;
 
   let mockAudioEventImport: AudioEventImport;
   let mockTagModel: Tag;
   let mockAudioEvents: AudioEvent[];
-  let mockProvenance: AudioEventProvenance;
+  let mockProvenance: Provenance;
   let mockAudioEventImportFiles: AudioEventImportFile[];
   let mockAudioRecording: AudioRecording;
   let mockProject: Project;
@@ -162,8 +162,8 @@ describe("AnnotationsDetailsComponent", () => {
       ),
     );
 
-    mockProvenance = new AudioEventProvenance(
-      generateAudioEventProvenance(),
+    mockProvenance = new Provenance(
+      generateProvenance(),
       injector,
     );
 
@@ -199,7 +199,7 @@ describe("AnnotationsDetailsComponent", () => {
 
     const audioEventSubject = new Subject<AudioEventImport>();
     const tagsSubject = new Subject<Tag[]>();
-    const provenanceSubject = new Subject<AudioEventProvenance>();
+    const provenanceSubject = new Subject<Provenance>();
 
     const promise = Promise.all([
       nStepObservable(audioEventSubject, () => mockAudioEvents as any),
