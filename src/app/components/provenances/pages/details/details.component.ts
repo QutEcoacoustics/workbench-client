@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -62,7 +68,7 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.provenance.name)
+            defaultSuccessMsg("destroyed", this.provenance.name),
           );
           this.router.navigateByUrl(provenancesMenuItem.route.toRouterLink());
         },

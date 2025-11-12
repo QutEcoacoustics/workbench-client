@@ -27,7 +27,7 @@ const provenanceKey = "provenance";
   templateUrl: "./edit.component.html",
   imports: [FormComponent, ErrorHandlerComponent],
 })
-class ProvenanceEditComponent
+class EditProvenanceComponent
   extends FormTemplate<Provenance>
   implements OnInit
 {
@@ -58,7 +58,7 @@ class ProvenanceEditComponent
   }
 }
 
-ProvenanceEditComponent.linkToRoute({
+EditProvenanceComponent.linkToRoute({
   category: provenanceCategory,
   pageRoute: editProvenanceMenuItem,
   menus: {
@@ -67,4 +67,4 @@ ProvenanceEditComponent.linkToRoute({
   resolvers: { [provenanceKey]: provenanceResolvers.show },
 });
 
-export { ProvenanceEditComponent };
+export { EditProvenanceComponent };

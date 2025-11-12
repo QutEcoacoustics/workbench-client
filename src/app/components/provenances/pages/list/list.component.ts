@@ -54,7 +54,7 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
 
   protected async deleteProvenance(
     template: any,
-    model: Provenance
+    model: Provenance,
   ): Promise<void> {
     const modelId: Id = model.id;
     const modelName: string = model.name;
@@ -87,4 +87,4 @@ ProvenanceListComponent.linkToRoute({
   menus: { actions: List(provenancesMenuItemActions) },
 });
 
-export { ProvenanceListComponent };
+export { ProvenanceListComponent as ProvenanceListComponent };

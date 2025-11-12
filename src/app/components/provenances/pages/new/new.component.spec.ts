@@ -1,66 +1,101 @@
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { ProvenanceService } from "@baw-api/provenance/provenance.service";
-import {
-  IProvenance,
-  Provenance,
-} from "@models/Provenance";
-import {
-  createRoutingFactory,
-  SpectatorRouting,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, SpectatorRouting, SpyObject } from "@ngneat/spectator";
 import { FormComponent } from "@shared/form/form.component";
-import { generateProvenance } from "@test/fakes/Provenance";
-import { assertPageInfo } from "@test/helpers/pageRoute";
+import { MockComponent } from "ng-mocks";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ToastService } from "@services/toasts/toasts.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import { of } from "rxjs";
+import { Provenance } from "@models/Provenance";
+import { generateProvenance } from "@test/fakes/Provenance";
+import { testFormlyFields } from "@test/helpers/formly";
 import schema from "../../provenance.schema.json";
-import { ProvenanceNewComponent } from "./new.component";
+import { NewProvenanceComponent } from "./new.component";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 
-describe("ProvenanceNewComponent", () => {
-  let provenanceApi: SpyObject<ProvenanceService>;
-  let spectator: SpectatorRouting<ProvenanceNewComponent>;
+describe("NewProvenanceComponent", () => {
+  const { fields } = schema;
+
+  let spec: SpectatorRouting<NewProvenanceComponent>;
+  let apiSpy: SpyObject<ProvenanceService>;
 
   const createComponent = createRoutingFactory({
-    component: ProvenanceNewComponent,
-    imports: [FormComponent],
+    component: NewProvenanceComponent,
+    declarations: [MockComponent(FormComponent)],
     providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 
-  assertPageInfo(ProvenanceNewComponent, "New Provenance");
-
   beforeEach(() => {
-    spectator = createComponent({ detectChanges: false });
-    provenanceApi = spectator.inject(ProvenanceService);
-    spectator.detectChanges();
+    spec = createComponent({ detectChanges: false });
+
+    apiSpy = spec.inject(ProvenanceService);
+    apiSpy.create.and.returnValue(of());
+
+    spec.detectChanges();
   });
 
-  it("should create", () => {
-    expect(spectator.component).toBeTruthy();
+  assertPageInfo(NewProvenanceComponent, "New Provenance");
+
+  describe("form", () => {
+    testFormlyFields([
+      {
+        testGroup: "Provenance Name Input",
+        field: fields[0],
+        key: "name",
+        label: "Provenance Name",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+      {
+        testGroup: "Version Input",
+        field: fields[1],
+        key: "version",
+        label: "Version",
+        type: "input",
+        inputType: "text",
+        required: true,
+      },
+      {
+        testGroup: "Description Input",
+        field: fields[2],
+        key: "description",
+        label: "Description",
+        type: "textarea",
+      },
+      {
+        testGroup: "Score Minimum Input",
+        field: fields[3],
+        key: "scoreMinimum",
+        label: "Score Minimum",
+        type: "input",
+        inputType: "number",
+        required: false,
+      },
+      {
+        testGroup: "Score Maximum Input",
+        field: fields[4],
+        key: "scoreMaximum",
+        label: "Score Maximum",
+        type: "input",
+        inputType: "number",
+        required: false,
+      },
+    ]);
   });
 
-  it("should have fields", () => {
-    expect(spectator.component.fields.length).toBe(schema.fields.length);
-  });
+  describe("component", () => {
+    it("should create", () => {
+      expect(spec.component).toBeInstanceOf(NewProvenanceComponent);
+    });
 
-  it("should call create on submission", () => {
-    const provenance = new Provenance(
-      generateProvenance()
-    );
-    provenanceApi.create.and.returnValue(of(provenance));
+    it("should call the api with the correct model when the form is submitted", () => {
+      const model = new Provenance(generateProvenance());
 
-    const data: Partial<IProvenance> = {
-      name: "New Provenance",
-      version: "1.0.0",
-    };
-    spectator.component.submit(data);
+      expect(apiSpy.create).not.toHaveBeenCalled();
 
-    expect(provenanceApi.create).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        name: "New Provenance",
-        version: "1.0.0",
-      })
-    );
+      spec.component.submit(model);
+      expect(apiSpy.create).toHaveBeenCalledOnceWith(model);
+    });
   });
 });
