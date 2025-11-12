@@ -1,4 +1,4 @@
-@if (provenance) {
-  <h1 class="provenance-name">{{ provenance.name }}</h1>
-  <baw-detail-view [model]="provenance" [fields]="fields"></baw-detail-view>
+@if (provenance()) {
+  <h1>{{ provenance().name }}</h1>
+  <baw-detail-view [fields]="fields" [model]="provenance()" />
 }

@@ -2,6 +2,8 @@ import { provenanceMenuItem } from "@components/provenances/provenances.menus";
 import { DateTimeTimezone, HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
+import { creator, deleter, updater } from "./AssociationDecorators";
+import { User } from "./User";
 
 export interface IProvenance extends HasAllUsers, HasDescription {
   id?: Id;
@@ -41,6 +43,13 @@ export class Provenance
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+
+  @creator()
+  public creator?: User;
+  @updater()
+  public updater?: User;
+  @deleter()
+  public deleter?: User;
 
   public get viewUrl(): string {
     return provenanceMenuItem.route.format({

@@ -11,10 +11,7 @@ import {
 import { CommonRouteTitles } from "src/app/stringConstants";
 import { provenanceRoute, provenancesRoute } from "./provenances.routes";
 
-/*
-  Provenances Category
-*/
-export const provenancesCategory: Category = {
+export const provenanceCategory: Category = {
   label: "Provenances",
   icon: ["fas", "location-crosshairs"],
   route: provenancesRoute,
@@ -30,29 +27,19 @@ export const provenancesMenuItem = menuRoute({
 
 export const newProvenanceMenuItem = menuRoute({
   icon: defaultNewIcon,
-  label: "New provenance",
+  label: "New Provenance",
   parent: provenancesMenuItem,
   predicate: isLoggedInPredicate,
   route: provenancesRoute.add("new"),
   tooltip: () => "Create a new provenance",
 });
 
-/*
-  Provenance Category
-*/
-
-export const provenanceCategory: Category = {
-  label: "Provenance",
-  icon: provenancesCategory.icon,
-  route: provenanceRoute,
-};
-
 export const provenanceMenuItem = menuRoute({
   icon: ["fas", "location-crosshairs"],
   label: "Provenance",
   parent: provenancesMenuItem,
   route: provenanceRoute,
-  tooltip: () => "The current provenance",
+  tooltip: () => "View provenance",
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Provenance)?.name,
   title: (routeData: RouterStateSnapshot): string => {

@@ -1,9 +1,9 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   newProvenanceMenuItem,
-  provenancesCategory,
+  provenanceCategory,
 } from "@components/provenances/provenances.menus";
 import {
   defaultSuccessMsg,
@@ -13,14 +13,22 @@ import { Provenance } from "@models/Provenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
-import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { provenancesMenuItemActions } from "../list/list.component";
 import schema from "../../provenance.schema.json";
 
 @Component({
   selector: "baw-provenances-new",
-  templateUrl: "./new.component.html",
-  imports: [FormComponent, ErrorHandlerComponent],
+  template: `
+    <baw-form
+      title="New Provenance"
+      [model]="model"
+      [fields]="fields"
+      [submitLoading]="loading"
+      (onSubmit)="submit($event)"
+    />
+ `,
+  imports: [FormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ProvenanceNewComponent extends FormTemplate<Provenance> {
   public readonly fields = schema.fields;
@@ -29,9 +37,9 @@ class ProvenanceNewComponent extends FormTemplate<Provenance> {
     protected api: ProvenanceService,
     protected notifications: ToastService,
     protected route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
   ) {
-    super(inject(ToastService), inject(ActivatedRoute), router, {
+    super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
@@ -43,7 +51,7 @@ class ProvenanceNewComponent extends FormTemplate<Provenance> {
 }
 
 ProvenanceNewComponent.linkToRoute({
-  category: provenancesCategory,
+  category: provenanceCategory,
   pageRoute: newProvenanceMenuItem,
   menus: { actions: List(provenancesMenuItemActions) },
 });

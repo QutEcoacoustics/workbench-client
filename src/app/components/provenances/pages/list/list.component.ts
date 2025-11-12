@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from "@angular/core";
 import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   newProvenanceMenuItem,
-  provenancesCategory,
+  provenanceCategory,
   provenancesMenuItem,
 } from "@components/provenances/provenances.menus";
 import { Provenance } from "@models/Provenance";
@@ -17,6 +17,7 @@ import { UrlDirective } from "@directives/url/url.directive";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Id } from "@interfaces/apiInterfaces";
+import { UserLinkComponent } from "@shared/user-link/user-link.component";
 
 export const provenancesMenuItemActions = [newProvenanceMenuItem];
 
@@ -28,12 +29,13 @@ export const provenancesMenuItemActions = [newProvenanceMenuItem];
     DatatableDefaultsDirective,
     DatatablePaginationDirective,
     UrlDirective,
+    UserLinkComponent,
   ],
 })
 class ProvenanceListComponent extends PageComponent implements OnInit {
-  private api = inject(ProvenanceService);
-  private notifications = inject(ToastService);
-  private modals = inject(NgbModal);
+  private readonly api = inject(ProvenanceService);
+  private readonly notifications = inject(ToastService);
+  private readonly modals = inject(NgbModal);
 
   protected filters$: BehaviorSubject<Filters<Provenance>>;
   private defaultFilters: Filters<Provenance> = {
@@ -80,7 +82,7 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
 }
 
 ProvenanceListComponent.linkToRoute({
-  category: provenancesCategory,
+  category: provenanceCategory,
   pageRoute: provenancesMenuItem,
   menus: { actions: List(provenancesMenuItemActions) },
 });

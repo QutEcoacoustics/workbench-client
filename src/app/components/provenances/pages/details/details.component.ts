@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -36,31 +36,28 @@ const provenanceKey = "provenance";
   selector: "baw-provenance",
   templateUrl: "./details.component.html",
   imports: [DetailViewComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ProvenanceDetailsComponent extends PageComponent implements OnInit {
-  public provenance: Provenance;
-  public fields = schema.fields;
+  public readonly notifications = inject(ToastService);
+  protected readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly provenancesApi = inject(ProvenanceService);
 
-  protected route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private provenancesApi = inject(ProvenanceService);
-  public notifications = inject(ToastService);
-
-  public constructor() {
-    super(inject(ActivatedRoute));
-  }
+  protected readonly fields = schema.fields;
+  protected readonly provenance = signal<Provenance | null>(null);
 
   public ngOnInit() {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
     if (!hasResolvedSuccessfully(models)) {
       return;
     }
-    this.provenance = models[provenanceKey] as Provenance;
+    this.provenance.set(models[provenanceKey] as Provenance);
   }
 
   public deleteModel(): void {
     this.provenancesApi
-      .destroy(this.provenance)
+      .destroy(this.provenance())
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
