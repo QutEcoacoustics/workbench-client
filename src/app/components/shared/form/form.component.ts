@@ -3,13 +3,11 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnChanges,
   Output,
   ViewEncapsulation,
 } from "@angular/core";
 import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
 import { ReCaptchaV3Service } from "ngx-captcha";
@@ -27,7 +25,7 @@ import { NgClass } from "@angular/common";
   encapsulation: ViewEncapsulation.None,
   imports: [NgClass, FormsModule, ReactiveFormsModule, FormlyModule],
 })
-export class FormComponent extends withUnsubscribe() implements OnChanges {
+export class FormComponent extends withUnsubscribe() {
   private readonly notifications = inject(ToastService);
   private readonly recaptcha = inject(ReCaptchaV3Service);
 
@@ -51,16 +49,6 @@ export class FormComponent extends withUnsubscribe() implements OnChanges {
   @Output() public modelChange = new EventEmitter<any>();
 
   public form = new FormGroup({});
-
-  public ngOnChanges() {
-    // Submit button should be inactive while retrieving recaptcha seed
-    if (
-      isInstantiated(this.recaptchaSeed) &&
-      this.recaptchaSeed.state === "loading"
-    ) {
-      this.submitLoading = true;
-    }
-  }
 
   /**
    * Check form submission is valid, and if so emit output event

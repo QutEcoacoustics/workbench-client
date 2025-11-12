@@ -30,7 +30,7 @@
             type="submit"
             class="btn mt-3"
             [ngClass]="'btn-' + btnColor"
-            [disabled]="submitLoading"
+            [disabled]="submitLoading || recaptchaSeed?.state === 'loading'"
           >
             {{ submitLabel }}
           </button>
