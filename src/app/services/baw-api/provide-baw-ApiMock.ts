@@ -59,7 +59,7 @@ import { UserService } from "./user/user.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
 import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
-import { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { VerificationService } from "./verification/verification.service";
 
