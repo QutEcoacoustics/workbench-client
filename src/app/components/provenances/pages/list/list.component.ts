@@ -72,7 +72,7 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
           this.filters$.next(this.defaultFilters);
           this.notifications.success(`Successfully destroyed ${modelName}`);
         },
-        error: (error) => {
+        error: () => {
           this.notifications.error(`Failed to delete ${modelName}`);
         },
       });

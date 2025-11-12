@@ -1,7 +1,7 @@
-import { HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
-import { AbstractModel } from "./AbstractModel";
-import { bawPersistAttr } from "./AttributeDecorators";
 import { provenanceMenuItem } from "@components/provenances/provenances.menus";
+import { DateTimeTimezone, HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
 
 export interface IAudioEventProvenance extends HasAllUsers, HasDescription {
   id?: Id;
@@ -29,6 +29,17 @@ export class AudioEventProvenance
   public readonly scoreMinimum: number;
   @bawPersistAttr()
   public readonly scoreMaximum: number;
+
+  public readonly creatorId?: Id;
+  public readonly updaterId?: Id;
+  public readonly deleterId?: Id;
+
+  @bawDateTime()
+  public readonly createdAt?: DateTimeTimezone;
+  @bawDateTime()
+  public readonly updatedAt?: DateTimeTimezone;
+  @bawDateTime()
+  public readonly deletedAt?: DateTimeTimezone;
 
   /**
    * Navigates to the details page of an AudioEventProvenance
