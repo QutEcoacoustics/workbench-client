@@ -27,6 +27,7 @@ import { Provenance } from "@models/Provenance";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
 import { takeUntil } from "rxjs";
+import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
 import baseSchema from "../../provenance.base.schema.json";
 import extendedSchema from "../../provenance.extended.schema.json";
@@ -80,6 +81,7 @@ ProvenanceDetailsComponent.linkToRoute({
   pageRoute: provenanceMenuItem,
   menus: {
     actions: List(provenanceMenuItemActions),
+    actionWidgets: List([permissionsWidgetMenuItem]),
   },
   resolvers: { [provenanceKey]: provenanceResolvers.show },
 });
