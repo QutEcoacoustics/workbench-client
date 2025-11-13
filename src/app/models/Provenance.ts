@@ -9,6 +9,7 @@ export interface IProvenance extends HasAllUsers, HasDescription {
   id?: Id;
   name?: string;
   version?: string;
+  url?: string;
   description?: string;
 
   scoreMinimum?: number;
@@ -24,6 +25,8 @@ export class Provenance
   public readonly name: string;
   @bawPersistAttr()
   public readonly version: string;
+  @bawPersistAttr()
+  public readonly url: string;
   @bawPersistAttr()
   public readonly description: string;
   @bawPersistAttr()
