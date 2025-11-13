@@ -73,6 +73,7 @@ describe("ProvenanceDetailsComponent", () => {
       { label: "Provenance Name", key: "name", plain: testModel.name },
       { label: "Version", key: "version", plain: testModel.version },
       { label: "Description", key: "description", plain: testModel.description },
+      { label: "URL", key: "url", plain: testModel.url },
       { label: "Score Minimum", key: "scoreMinimum", plain: testModel.scoreMinimum },
       { label: "Score Maximum", key: "scoreMaximum", plain: testModel.scoreMaximum },
       { label: "Creator", key: "creator", model: mockUser.userName },
