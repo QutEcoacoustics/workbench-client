@@ -65,7 +65,7 @@ describe("ProvenanceDetailsComponent", () => {
     expect(spec.component).toBeTruthy();
   });
 
-  fdescribe("details", () => {
+  describe("details", () => {
     const testModel = new Provenance(generateProvenance());
 
     const details: Detail[] = [
