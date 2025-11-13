@@ -87,4 +87,4 @@ ProvenanceListComponent.linkToRoute({
   menus: { actions: List(provenancesMenuItemActions) },
 });
 
-export { ProvenanceListComponent as ProvenanceListComponent };
+export { ProvenanceListComponent };

@@ -59,13 +59,13 @@
         View
       </a>
 
-      <a
+      <button
         name="delete-button"
         class="btn btn-sm btn-outline-danger ms-1"
         (click)="deleteProvenance(deleteProvenanceModal, value)"
       >
         Delete
-      </a>
+      </button>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
@@ -88,7 +88,19 @@
   </div>
 
   <div class="modal-footer">
-    <a class="btn btn-outline-primary" (click)="modal.close()">Cancel</a>
-    <a class="btn btn-danger text-white" (click)="modal.close(true)">Delete</a>
+    <button
+      class="btn btn-outline-primary"
+      data-testid="delete-cancel-button"
+      (click)="modal.close()"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-danger text-white"
+      data-testid="delete-confirm-button"
+      (click)="modal.close(true)"
+    >
+      Delete
+    </button>
   </div>
 </ng-template>

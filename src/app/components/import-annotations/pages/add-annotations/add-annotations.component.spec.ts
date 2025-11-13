@@ -216,10 +216,7 @@ describe("AddAnnotationsComponent", () => {
     setup();
   });
 
-  assertPageInfo<AudioEventImport>(
-    AddAnnotationsComponent,
-    "Add New Annotations",
-  );
+  assertPageInfo(AddAnnotationsComponent, "Add New Annotations");
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(AddAnnotationsComponent);
