@@ -67,7 +67,7 @@ describe("NewProvenanceComponent", () => {
         label: "Version",
         type: "input",
         inputType: "text",
-        required: true,
+        required: false,
       },
       {
         testGroup: "Description Input",
@@ -75,6 +75,7 @@ describe("NewProvenanceComponent", () => {
         key: "description",
         label: "Description",
         type: "textarea",
+        required: false,
       },
       {
         testGroup: "URL Input",

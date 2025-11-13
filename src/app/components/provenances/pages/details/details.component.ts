@@ -68,7 +68,7 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.provenance.name),
+            defaultSuccessMsg("destroyed", this.provenance()?.name),
           );
           this.router.navigateByUrl(provenancesMenuItem.route.toRouterLink());
         },
