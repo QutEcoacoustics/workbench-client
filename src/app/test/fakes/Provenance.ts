@@ -8,6 +8,7 @@ export function generateProvenance(
     id: modelData.id(),
     name: modelData.name.jobTitle(),
     version: modelData.version(),
+    url: modelData.internet.url(),
     description: modelData.description(),
     scoreMinimum: modelData.datatype.number(),
     scoreMaximum: modelData.datatype.number(),

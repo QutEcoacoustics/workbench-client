@@ -77,8 +77,17 @@ describe("NewProvenanceComponent", () => {
         type: "textarea",
       },
       {
-        testGroup: "Score Minimum Input",
+        testGroup: "URL Input",
         field: fields[4],
+        key: "url",
+        label: "URL",
+        type: "input",
+        inputType: "url",
+        required: false,
+      },
+      {
+        testGroup: "Score Minimum Input",
+        field: fields[5],
         key: "scoreMinimum",
         label: "Score Minimum",
         type: "input",
@@ -87,7 +96,7 @@ describe("NewProvenanceComponent", () => {
       },
       {
         testGroup: "Score Maximum Input",
-        field: fields[5],
+        field: fields[6],
         key: "scoreMaximum",
         label: "Score Maximum",
         type: "input",

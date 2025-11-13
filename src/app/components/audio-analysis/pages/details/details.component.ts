@@ -18,7 +18,6 @@ import { AnalysisJob } from "@models/AnalysisJob";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
 import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
-import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import schema from "../../analysis-job.schema.json";
 
 const analysisJobKey = "analysisJob";
@@ -27,7 +26,7 @@ const projectKey = "project";
 @Component({
   selector: "baw-analysis",
   templateUrl: "./details.component.html",
-  imports: [DetailViewComponent, ErrorHandlerComponent],
+  imports: [DetailViewComponent],
 })
 class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)
