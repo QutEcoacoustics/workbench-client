@@ -1,6 +1,14 @@
 {
   "fields": [
     {
+      "key": "id",
+      "hide": true,
+      "props": {
+        "label": "Provenance Id",
+        "disabled": true
+      }
+    },
+    {
       "key": "name",
       "type": "input",
       "props": {

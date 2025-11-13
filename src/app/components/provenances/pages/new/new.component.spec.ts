@@ -53,7 +53,7 @@ describe("NewProvenanceComponent", () => {
     testFormlyFields([
       {
         testGroup: "Provenance Name Input",
-        field: fields[0],
+        field: fields[1],
         key: "name",
         label: "Provenance Name",
         type: "input",
@@ -62,7 +62,7 @@ describe("NewProvenanceComponent", () => {
       },
       {
         testGroup: "Version Input",
-        field: fields[1],
+        field: fields[2],
         key: "version",
         label: "Version",
         type: "input",
@@ -71,14 +71,14 @@ describe("NewProvenanceComponent", () => {
       },
       {
         testGroup: "Description Input",
-        field: fields[2],
+        field: fields[3],
         key: "description",
         label: "Description",
         type: "textarea",
       },
       {
         testGroup: "Score Minimum Input",
-        field: fields[3],
+        field: fields[4],
         key: "scoreMinimum",
         label: "Score Minimum",
         type: "input",
@@ -87,7 +87,7 @@ describe("NewProvenanceComponent", () => {
       },
       {
         testGroup: "Score Maximum Input",
-        field: fields[4],
+        field: fields[5],
         key: "scoreMaximum",
         label: "Score Maximum",
         type: "input",
