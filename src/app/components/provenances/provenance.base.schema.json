@@ -42,9 +42,10 @@
       "key": "url",
       "type": "input",
       "props": {
-        "type": "url",
+        "type": "text",
         "label": "URL",
-        "required": false
+        "required": false,
+        "minLength": 3
       }
     },
     {
