@@ -42,7 +42,7 @@
       "key": "url",
       "type": "input",
       "props": {
-        "type": "text",
+        "type": "url",
         "label": "URL",
         "required": false,
         "minLength": 3
