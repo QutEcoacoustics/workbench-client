@@ -1,6 +1,5 @@
 import { DecimalPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
-import { isDatatype } from "@helpers/datatypes/datatypes";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 
@@ -38,6 +37,4 @@ export class SafeNumberComponent {
   public readonly value = input.required<unknown>();
   public readonly missingValueText = input("Missing");
   public readonly incorrectTypeText = input("Type Error");
-
-  protected readonly isDatatype = isDatatype;
 }

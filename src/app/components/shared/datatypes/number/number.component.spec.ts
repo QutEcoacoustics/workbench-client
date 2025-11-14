@@ -44,6 +44,22 @@ describe("SafeNumberComponent", () => {
     expect(spec.fixture.nativeElement).toHaveExactTrimmedText("Type Error");
   });
 
+  it("should have the correct tooltip for a string", () => {
+    const expectedTooltip = "Expected a number type. Found 'string'.";
+    setup("55");
+
+    const tooltipHint = spec.query(".tooltip-hint")!;
+    expect(tooltipHint).toHaveTooltip(expectedTooltip);
+  });
+
+  it("should have the correct tooltip for a null value", () => {
+    const expectedTooltip = "Expected a number type. Found 'null'.";
+    setup(null);
+
+    const tooltipHint = spec.query(".tooltip-hint")!;
+    expect(tooltipHint).toHaveTooltip(expectedTooltip);
+  });
+
   const nonValidTypes = ["42", {}, [], true, false];
   for (const invalidValue of nonValidTypes) {
     it(`should display incorrect type message for value: ${JSON.stringify(invalidValue)}`, () => {

@@ -1,20 +1,24 @@
 @if (value() | isInstantiated) {
-  @if (isDatatype(value(), "number")) {
+  @if (typeof value() === "number") {
     <!--
-      This $any() type cast is safe because the isDatatype check above was able
+      This $any() type cast is safe because the typeof check above was able
       to type narrow value() to number.
     -->
     {{ $any(value()) | number }}
   } @else {
     <span
       class="text-danger text-muted tooltip-hint"
-      [ngbTooltip]="'This value is not a valid number'"
+      [ngbTooltip]="`Expected a number type. Found '${typeof value()}'.`"
     >
       {{ incorrectTypeText() }}
     </span>
   }
 } @else {
-  <span class="text-muted tooltip-hint" [ngbTooltip]="'This value is missing'">
+  <!-- We don't use typeof value() here because null is an object  -->
+  <span
+    class="text-muted tooltip-hint"
+    [ngbTooltip]="`Expected a number type. Found '${value()}'.`"
+  >
     {{ missingValueText() }}
   </span>
 }
