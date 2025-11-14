@@ -44,8 +44,8 @@ import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/aud
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { AddAnnotationsComponent } from "./add-annotations.component";
 import { generateImportedAudioEvent } from "@test/fakes/ImportedAudioEvent";
+import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
   let spec: Spectator<AddAnnotationsComponent>;
@@ -424,7 +424,7 @@ describe("AddAnnotationsComponent", () => {
         const expectedTagValue =
           event.tags.length > 0
             ? event.tags.map((tag) => tag.text).join(", ")
-            : "Empty";
+            : "Missing";
 
         const expectedErrorValue =
           event.errors.length > 0 ? event.errors.join("") : "No errors";

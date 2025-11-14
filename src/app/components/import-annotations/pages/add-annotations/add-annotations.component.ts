@@ -2,11 +2,8 @@ import {
   Component,
   ElementRef,
   inject,
-  Inject,
   OnInit,
   viewChild,
-  ViewChild,
-  ViewChildren,
   WritableSignal,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -34,7 +31,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
@@ -54,7 +50,6 @@ import {
   NgClass,
   NgTemplateOutlet,
   AsyncPipe,
-  DecimalPipe,
 } from "@angular/common";
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
