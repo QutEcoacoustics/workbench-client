@@ -83,6 +83,7 @@ import {
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
 import { annotationImportIssueWidgetMenuItem } from "../../widgets/annotation-import-issue.component";
+import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
 
 interface QueuedFile {
   file: Readonly<File>;
@@ -161,10 +162,10 @@ const audioEventImportKey = "audioEventImport";
     InlineListComponent,
     NgbHighlight,
     AsyncPipe,
-    DecimalPipe,
     IsUnresolvedPipe,
     isInstantiatedPipe,
-  ],
+    SafeNumberComponent
+],
 })
 class AddAnnotationsComponent
   extends PageComponent
