@@ -267,7 +267,7 @@
           @if (value.isReference | isInstantiated) {
             {{ value.isReference ? "Yes" : "No" }}
           } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate" />
+            <ng-container [ngTemplateOutlet]="missingTemplate" />
           }
         </ng-template>
       </ngx-datatable-column>
@@ -291,7 +291,7 @@
           <baw-inline-list
             [items]="value.tags"
             [itemKey]="'text'"
-            [emptyTemplate]="emptyTemplate"
+            [emptyTemplate]="missingTemplate"
           />
         </ng-template>
       </ngx-datatable-column>
@@ -305,7 +305,7 @@
           @if (value.provenance) {
             {{ value.provenance.toString() }}
           } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate" />
+            <ng-container [ngTemplateOutlet]="missingTemplate" />
           }
         </ng-template>
       </ngx-datatable-column>
@@ -337,6 +337,6 @@
   <ngb-highlight [result]="result.text" [term]="searchTerm" />
 </ng-template>
 
-<ng-template #emptyTemplate>
-  <span class="text-muted">Empty</span>
+<ng-template #missingTemplate>
+  <span class="text-muted">Missing</span>
 </ng-template>
