@@ -1,8 +1,10 @@
 import {
   Component,
   ElementRef,
+  inject,
   Inject,
   OnInit,
+  viewChild,
   ViewChild,
   ViewChildren,
   WritableSignal,
@@ -123,7 +125,7 @@ class TableRow extends AbstractModelWithoutId {
   }
 }
 
-enum ImportState {
+const enum ImportState {
   NONE,
   SUCCESS,
   FAILURE,
@@ -171,29 +173,31 @@ class AddAnnotationsComponent
   extends PageComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
-  public constructor(
-    protected tagsApi: TagsService,
-    protected provenanceApi: AudioEventProvenanceService,
-    private api: AudioEventImportFileService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private notifications: ToastService,
-    private annotationImport: ImportAnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
+  protected readonly tagsApi = inject(TagsService);
+  protected readonly provenanceApi = inject(AudioEventProvenanceService);
+  private readonly api = inject(AudioEventImportFileService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(ToastService);
+  private readonly annotationImport = inject(ImportAnnotationService);
+  private readonly injector = inject(ASSOCIATION_INJECTOR);
+
+  public constructor() {
     super();
 
     this.sharedImportState = this.annotationImport.newInstance();
   }
 
-  @ViewChild("fileInput")
-  private fileInput!: ElementRef<HTMLInputElement>;
+  private readonly fileInput =
+    viewChild<ElementRef<HTMLInputElement>>("fileInput");
 
-  @ViewChildren("additionalFileTagInput")
-  private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
+  private readonly additionalFileTagInputs = viewChild<
+    TypeaheadInputComponent<Tag>[]
+  >("additionalFileTagInput");
 
-  @ViewChildren("additionalProvenanceInput")
-  private provenanceFileInputs!: TypeaheadInputComponent<AudioEventProvenance>[];
+  private readonly provenanceFileInputs = viewChild<
+    TypeaheadInputComponent<AudioEventProvenance>[]
+  >("additionalProvenanceInput");
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -212,7 +216,7 @@ class AddAnnotationsComponent
   // the most recent value
   protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
 
-  protected errorCardStyles = ErrorCardStyle;
+  protected readonly errorCardStyles = ErrorCardStyle;
 
   // I use an object here when I should be using a readonly map because I want
   // to use the "as const" assertion to make the object immutable, get
@@ -370,7 +374,7 @@ class AddAnnotationsComponent
 
     const extraTagIds = this.getIdsFromAbstractModelArray(extraTags);
 
-    const additionalTagInputs = this.additionalFileTagInputs;
+    const additionalTagInputs = this.additionalFileTagInputs();
     for (const input of additionalTagInputs) {
       input.value.push(...extraTags);
     }
@@ -398,7 +402,7 @@ class AddAnnotationsComponent
     // tags are applied
     this.importState = ImportState.UPLOADING;
 
-    const provenanceFileInputs = this.provenanceFileInputs;
+    const provenanceFileInputs = this.provenanceFileInputs();
     for (const input of provenanceFileInputs) {
       input.value = [extraProvenance];
       input.inputModel = extraProvenance.toString();
@@ -563,7 +567,7 @@ class AddAnnotationsComponent
       dataTransfer.items.add(file);
     }
 
-    this.fileInput.nativeElement.files = dataTransfer.files;
+    this.fileInput().nativeElement.files = dataTransfer.files;
   }
 
   private importFileToBufferedFile(

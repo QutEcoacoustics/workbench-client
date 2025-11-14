@@ -43,7 +43,9 @@ import { generateProject } from "@test/fakes/Project";
 import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AddAnnotationsComponent } from "./add-annotations.component";
+import { generateImportedAudioEvent } from "@test/fakes/ImportedAudioEvent";
 
 describe("AddAnnotationsComponent", () => {
   let spec: Spectator<AddAnnotationsComponent>;
@@ -59,7 +61,7 @@ describe("AddAnnotationsComponent", () => {
 
   let audioEventImport: AudioEventImport;
   let routeProject: Project;
-  let mockImportResponse: AudioEventImportFile | BawApiError;
+  let mockImportResponse: AudioEventImportFile | BawApiError<AudioEventImportFile>;
   let mockTagsResponse: Tag[];
   let mockProvenanceResponse: AudioEventProvenance[];
   let mockRecordingsResponse: AudioRecording;
@@ -193,7 +195,13 @@ describe("AddAnnotationsComponent", () => {
     );
 
     fileImportSpy.create.and.callFake(() => of(mockImportResponse));
-    fileImportSpy.dryCreate.and.callFake(() => of(mockImportResponse));
+    fileImportSpy.dryCreate.and.callFake(() => {
+      if (mockImportResponse instanceof BawApiError) {
+        return throwError(() => mockImportResponse);
+      }
+
+      return of(mockImportResponse)
+    });
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));
     tagServiceSpy.typeaheadCallback.and.returnValue(() => of(mockTagsResponse));
@@ -349,9 +357,9 @@ describe("AddAnnotationsComponent", () => {
     it("should warn if the user fails to commit their files", () => {
       addFiles([modelData.file()]);
 
-      // in we simulate the dry run succeeding, but the commit failing
-      // therefore, I override the create method to return an error
-      // after I have added files and the dry run has succeeded
+      // We simulate the dry run succeeding, but the commit failing.
+      // To do this I override the create method to return an error
+      // after I have added files and the dry run has succeeded.
       fileImportSpy.create.and.callThrough();
       fileImportSpy.create.andCallFake(() =>
         throwError(
@@ -465,11 +473,6 @@ describe("AddAnnotationsComponent", () => {
         "Unprocessable Content",
         mockImportResponse as any,
         { file: "validation failed" },
-      );
-
-      fileImportSpy.dryCreate.and.callThrough();
-      fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse),
       );
 
       addFiles([modelData.file()]);
@@ -670,11 +673,6 @@ describe("AddAnnotationsComponent", () => {
         { file: "validation failed" },
       );
 
-      fileImportSpy.dryCreate.and.callThrough();
-      fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse),
-      );
-
       // by adding files, we expect that the website will perform a dry run
       // and therefore, we expect that the api will return an error
       // however, we expect that he error will not be shown as a notification
@@ -699,11 +697,6 @@ describe("AddAnnotationsComponent", () => {
         { file: mockErrorMessage },
       );
 
-      fileImportSpy.dryCreate.and.callThrough();
-      fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse),
-      );
-
       const mockUploadedFile = modelData.file();
       addFiles([mockUploadedFile]);
 
@@ -721,11 +714,6 @@ describe("AddAnnotationsComponent", () => {
         { file: mockErrorMessage },
       );
 
-      fileImportSpy.dryCreate.and.callThrough();
-      fileImportSpy.dryCreate.andCallFake(() =>
-        throwError(() => mockImportResponse),
-      );
-
       const mockAudioFiles = [modelData.file(), modelData.file()];
       addFiles(mockAudioFiles);
 
@@ -741,6 +729,51 @@ describe("AddAnnotationsComponent", () => {
       for (const fileAlert of fileAlerts()) {
         expect(fileAlert).toHaveExactTrimmedText(mockErrorMessage);
       }
+    });
+
+    it("should show type errors if a field has an incorrect data type", () => {
+      const testEvent: IImportedAudioEvent =
+        generateImportedAudioEvent({
+          // We use "as any" here to bypass type checking because we want to
+          // test invalid types being sent to the client from the server.
+          channel: "this is a string" as any,
+          errors: [
+            { channel: ["Channel must be a number"] },
+          ],
+        });
+
+      const testFile = new AudioEventImportFile(
+        generateAudioEventImportFile({
+          importedEvents: [testEvent],
+        }),
+        injectorSpy,
+      );
+
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        testFile,
+        { file: "validation failed "},
+      );
+
+      const mockAudioFiles = [modelData.file()];
+      addFiles(mockAudioFiles);
+
+      const row = eventTableRows()[0];
+      assertDatatableRow(row, [
+        "1:1",
+        "",
+        testEvent.startTimeSeconds.toLocaleString(),
+        testEvent.endTimeSeconds.toLocaleString(),
+        testEvent.lowFrequencyHertz.toLocaleString(),
+        testEvent.highFrequencyHertz.toLocaleString(),
+        "Type Error",
+        testEvent.isReference ? "Yes" : "No",
+        testEvent.score.toLocaleString(),
+        testEvent.tags.map((tag) => tag.text).join(", "),
+        mockProvenanceResponse[0].toString(),
+        "channel: Channel must be a number",
+      ]);
     });
   });
 
