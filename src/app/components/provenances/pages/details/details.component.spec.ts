@@ -13,7 +13,6 @@ import { generateUser } from "@test/fakes/User";
 import { of } from "rxjs";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ProvenanceDetailsComponent } from "./details.component";
-import { fakeAsync, flush } from "@angular/core/testing";
 
 describe("ProvenanceDetailsComponent", () => {
   let spec: SpectatorRouting<ProvenanceDetailsComponent>;
