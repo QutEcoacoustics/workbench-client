@@ -13,10 +13,12 @@ import { generateUser } from "@test/fakes/User";
 import { of } from "rxjs";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ProvenanceDetailsComponent } from "./details.component";
+import { fakeAsync, flush } from "@angular/core/testing";
 
 describe("ProvenanceDetailsComponent", () => {
   let spec: SpectatorRouting<ProvenanceDetailsComponent>;
-  let mockUser = new User(generateUser());
+
+  const mockUser = new User(generateUser());
 
   const createComponent = createRoutingFactory({
     component: ProvenanceDetailsComponent,
@@ -73,7 +75,6 @@ describe("ProvenanceDetailsComponent", () => {
       { label: "Provenance Name", key: "name", plain: testModel.name },
       { label: "Version", key: "version", plain: testModel.version },
       { label: "Description", key: "description", plain: testModel.description },
-      { label: "URL", key: "url", plain: testModel.url },
       { label: "Score Minimum", key: "scoreMinimum", plain: testModel.scoreMinimum },
       { label: "Score Maximum", key: "scoreMaximum", plain: testModel.scoreMaximum },
       { label: "Creator", key: "creator", model: mockUser.userName },

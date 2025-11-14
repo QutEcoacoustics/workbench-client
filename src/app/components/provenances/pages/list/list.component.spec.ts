@@ -23,8 +23,8 @@ describe("ProvenanceListComponent", () => {
   let apiSpy: SpyObject<ProvenanceService>;
   let modalService: SpyObject<NgbModal>;
 
+  const mockUser = new User(generateUser());
   let mockResponse: Provenance[];
-  let mockUser = new User(generateUser());
 
   const createComponent = createRoutingFactory({
     component: ProvenanceListComponent,
