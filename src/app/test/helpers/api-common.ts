@@ -33,6 +33,7 @@ import {
 } from "../../services/baw-api/api-common";
 import { BawApiService, Filters } from "../../services/baw-api/baw-api.service";
 import { getCallArgs } from "./general";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 
 export const mockServiceProviders: (Provider | EnvironmentProviders)[] = [
   BawApiService,
@@ -261,7 +262,10 @@ export function validateApiCreateOrUpdate<
   describe("Api Create or Update", () => {
     it("should handle create endpoint", () => {
       const spec = createService();
+
       const testModel = model();
+      testModel["injector"] = spec.inject(ASSOCIATION_INJECTOR);
+
       const service = spec.service;
 
       const api: BawApiService<Model> =

@@ -302,7 +302,7 @@ function createModelDecorator<
     }) as Params;
 
     // Create service and request from API
-    const service = injector.get?.(serviceToken.token);
+    const service = injector.get(serviceToken.token);
 
     // Set initial value for field
     updateBackingField(parent, unresolvedValue);

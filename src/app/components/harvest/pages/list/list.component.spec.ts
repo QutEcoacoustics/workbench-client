@@ -19,6 +19,7 @@ import { withDefaultZone } from "@test/helpers/mocks";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { getElementByTextContent } from "@test/helpers/html";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { HarvestListComponent } from "./list.component";
 
 describe("ListComponent", () => {
@@ -28,6 +29,7 @@ describe("ListComponent", () => {
   let defaultUser: User;
   let modalService: NgbModal;
   let modalConfigService: NgbModalConfig;
+  let injector: AssociationInjector;
 
   const createComponent = createRoutingFactory({
     component: HarvestListComponent,
@@ -48,7 +50,7 @@ describe("ListComponent", () => {
       },
     });
 
-    const injector = spec.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
     if (project) {
       project["injector"] = injector;
@@ -68,7 +70,7 @@ describe("ListComponent", () => {
 
     const mockHarvestProject: Project = project
       ? project
-      : new Project(generateProject());
+      : new Project(generateProject(), injector);
     spyOnProperty(mockHarvest, "project").and.callFake(
       () => mockHarvestProject
     );
@@ -118,10 +120,10 @@ describe("ListComponent", () => {
   }
 
   beforeEach(() => {
-    defaultProject = new Project(generateProject());
+    defaultProject = new Project(generateProject(), injector);
     defaultProject.addMetadata(generateProjectMeta({}));
-    defaultHarvest = new Harvest(generateHarvest({ status: "uploading" }));
-    defaultUser = new User(generateUser());
+    defaultHarvest = new Harvest(generateHarvest({ status: "uploading" }), injector);
+    defaultUser = new User(generateUser(), injector);
   });
 
   afterEach(() => {
@@ -140,7 +142,8 @@ describe("ListComponent", () => {
   it("should not show abort button when harvest cannot be aborted", () => {
     // ensure harvest status is not an abortable state
     const unAbortableHarvest = new Harvest(
-      generateHarvest({ status: "scanning" })
+      generateHarvest({ status: "scanning" }),
+      injector,
     );
 
     setup(defaultProject, unAbortableHarvest);
@@ -181,7 +184,8 @@ describe("ListComponent", () => {
       const harvestUtcCreatedAt = DateTime.fromISO("2020-01-01T00:00:00.000Z");
       const expectedLocalCreatedAt = "2020-01-01 08:00:00";
       defaultHarvest = new Harvest(
-        generateHarvest({ createdAt: harvestUtcCreatedAt })
+        generateHarvest({ createdAt: harvestUtcCreatedAt }),
+        injector,
       );
 
       setup(defaultProject, defaultHarvest);

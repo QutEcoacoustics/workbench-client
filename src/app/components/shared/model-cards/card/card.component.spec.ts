@@ -30,6 +30,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { fakeAsync, flush } from "@angular/core/testing";
 import { LicensesService } from "@services/licenses/licenses.service";
 import spdxLicenseList from "spdx-license-list";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
@@ -38,6 +39,7 @@ describe("CardComponent", () => {
   let recordingApi: SpyObject<AudioRecordingsService>;
   let projectsApi: SpyObject<ProjectsService>;
   let sessionApi: SpyObject<BawSessionService>;
+  let injector: AssociationInjector;
 
   const createComponent = createRoutingFactory({
     component: CardComponent,
@@ -57,7 +59,7 @@ describe("CardComponent", () => {
   ) {
     spec = createComponent({ detectChanges: false, props: { model } });
 
-    const injector = spec.inject(ASSOCIATION_INJECTOR);
+    injector = spec.inject(ASSOCIATION_INJECTOR);
     model["injector"] = injector;
 
     licenseService = spec.inject(LicensesService)
@@ -96,7 +98,7 @@ describe("CardComponent", () => {
     interceptShowApiRequest(
       projectsApi,
       injector,
-      isModelProject ? model : new Project(generateProject()),
+      isModelProject ? model : new Project(generateProject(), injector),
       Project,
     );
 
@@ -259,7 +261,7 @@ describe("CardComponent", () => {
       it("should not show no audio badge if model has recordings", async () => {
         const model = createModel();
         const promise = setup(model, [
-          new AudioRecording(generateAudioRecording()),
+          new AudioRecording(generateAudioRecording(), injector),
         ]);
         spec.detectChanges();
         await promise;
@@ -335,7 +337,7 @@ describe("CardComponent", () => {
         delete data.license;
       }
 
-      const model = new Region(generateRegion(data ?? {}));
+      const model = new Region(generateRegion(data ?? {}), injector);
       spyOnProperty(model, "license", "get").and.returnValue(licenseData);
 
       return model;
@@ -343,6 +345,6 @@ describe("CardComponent", () => {
   });
 
   describe("Project", () => {
-    validateCard((data) => new Project(generateProject(data ?? {})));
+    validateCard((data) => new Project(generateProject(data ?? {}), injector));
   });
 });
