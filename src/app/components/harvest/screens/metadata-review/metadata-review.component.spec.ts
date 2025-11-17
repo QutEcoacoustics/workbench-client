@@ -23,13 +23,13 @@ import { generateHarvestItem } from "@test/fakes/HarvestItem";
 import { IconsModule } from "@shared/icons/icons.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { NgStyle, DecimalPipe } from "@angular/common";
 import { ToastService } from "@services/toasts/toasts.service";
 import { MockProvider } from "ng-mocks";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
