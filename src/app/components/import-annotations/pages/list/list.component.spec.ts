@@ -143,7 +143,7 @@ describe("AnnotationsListComponent", () => {
     expect(importCreatedColumn).toExist();
   });
 
-  it("should have clickable view buttons next to each import", () => {
+  fit("should have clickable view buttons next to each import", () => {
     const viewButton = viewImportButton();
     expect(viewButton).toExist();
   });

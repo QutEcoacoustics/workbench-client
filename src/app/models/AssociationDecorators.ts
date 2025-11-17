@@ -298,6 +298,7 @@ function createModelDecorator<
     }) as Params;
 
     // Create service and request from API
+    console.log(injector);
     const service = injector.get(serviceToken.token);
 
     // Set initial value for field
