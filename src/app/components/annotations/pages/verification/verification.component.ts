@@ -410,26 +410,18 @@ class VerificationComponent
 
     const verification = new Verification(verificationData, this.injector);
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.verificationApi.createOrUpdate(verification),
     );
-
-    // I use firstValueFrom so that the observable is evaluated
-    // but I don't have to subscribe or unsubscribe.
-    // Additionally, notice that the function is not awaited so that the
-    // render thread can continue to run while the request is being made
-    firstValueFrom(apiRequest);
   }
 
   private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
     const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.verificationApi.destroyUserVerification(audioEvent, newTag),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   /**
