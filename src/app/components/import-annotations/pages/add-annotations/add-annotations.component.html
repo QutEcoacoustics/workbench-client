@@ -34,6 +34,13 @@
                     </button>
 
                     <span class="file-name">{{ fileModel.file.name }}</span>
+
+                    @if (fileModel.isUploading) {
+                      <baw-loading
+                        class="file-upload-spinner"
+                        [size]="'sm'"
+                      />
+                    }
                   </span>
 
                   <baw-error-card
@@ -161,7 +168,11 @@
     Annotations" button.
   </p>
 
-  <div>
+  <div
+    class="annotation-preview-table"
+    [class.preview-disabled]="isUploading"
+    [attr.inert]="isUploading ? 'true' : null"
+  >
     <ngx-datatable
       bawDatatableCompact
       [bawVirtualDatatablePagination]="getEventModels"

@@ -109,6 +109,11 @@ interface QueuedFile {
    * E.g. What machine learning recogniser was used.
    */
   provenanceId: Id;
+
+  /**
+   * Tracks whether the file is currently being uploaded or validated.
+   */
+  isUploading: boolean;
 }
 
 class TableRow extends AbstractModelWithoutId {
@@ -448,6 +453,7 @@ class AddAnnotationsComponent
     }
 
     this.importState = ImportState.UPLOADING;
+    this.setFilesUploading(this.importFiles$.value, true);
 
     const fileUploadObservables = this.importFiles$.value.map(
       (model: QueuedFile) => this.commitFile(model)
@@ -456,6 +462,9 @@ class AddAnnotationsComponent
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
+        next: (result: QueuedFile[]) => {
+          this.importFiles$.next(result);
+        },
         complete: () => {
           if (this.importState === ImportState.FAILURE) {
             console.error("Failed to import annotations");
@@ -476,9 +485,14 @@ class AddAnnotationsComponent
   }
 
   private performDryRun(): void {
-    this.importState = ImportState.UPLOADING;
-
     const models: QueuedFile[] = this.importFiles$.value;
+    if (models.length === 0) {
+      return;
+    }
+
+    this.importState = ImportState.UPLOADING;
+    this.setFilesUploading(models, true);
+
     const fileUploadObservables = models.map((model: QueuedFile) =>
       this.dryRunFile(model)
     );
@@ -531,6 +545,7 @@ class AddAnnotationsComponent
             [],
             queueModel.additionalTagIds,
             queueModel.provenanceId,
+            false,
           )
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
@@ -547,6 +562,7 @@ class AddAnnotationsComponent
           errors,
           queueModel.additionalTagIds,
           queueModel.provenanceId,
+          false,
         );
         return of(result);
       })
@@ -572,6 +588,7 @@ class AddAnnotationsComponent
     errors: EventImportError[],
     additionalTagIds: Id[],
     provenanceId: Id,
+    isUploading = false,
   ): QueuedFile {
     return {
       file,
@@ -579,6 +596,7 @@ class AddAnnotationsComponent
       errors,
       additionalTagIds,
       provenanceId,
+      isUploading,
     };
   }
 
@@ -615,6 +633,24 @@ class AddAnnotationsComponent
 
   private changeFileTypes(files: File, type: string): File {
     return new File([files], files.name, { type });
+  }
+
+  private setFilesUploading(
+    files: QueuedFile | QueuedFile[],
+    isUploading: boolean,
+  ): void {
+    const fileArray = Array.isArray(files) ? files : [files];
+    if (fileArray.length === 0) {
+      return;
+    }
+
+    const fileRefs = new Set(fileArray.map((model) => model.file));
+
+    const updatedFiles = this.importFiles$.value.map((model) =>
+      fileRefs.has(model.file) ? { ...model, isUploading } : model
+    );
+
+    this.importFiles$.next(updatedFiles);
   }
 }
 

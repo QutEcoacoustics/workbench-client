@@ -40,6 +40,7 @@
 
 .file-actions {
   display: flex;
+  align-items: center;
 
   .remove-file-btn {
     display: flex;
@@ -60,8 +61,22 @@
     // start overflowing content.
     overflow-wrap: break-word anywhere;
   }
+
+  .file-upload-spinner {
+    margin-left: 0.5rem;
+    display: inline-flex;
+  }
 }
 
 .event-errors {
   height: 100%;
+}
+
+.annotation-preview-table {
+  transition: opacity 0.2s ease-in-out;
+
+  &.preview-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
