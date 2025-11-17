@@ -278,7 +278,7 @@ function createModelDecorator<
       );
     } else if (typeof injector.get !== "function") {
       throw new Error(
-        `Injector service on ${parent} is not a valid injector. Found '${typeof injector.get}'. Value: '${injector.get}'. Injector value: '${injector}' Tried to access ${identifierKey.toString()}`
+        `Injector service on ${parent} is not a valid injector.`
       );
     }
 

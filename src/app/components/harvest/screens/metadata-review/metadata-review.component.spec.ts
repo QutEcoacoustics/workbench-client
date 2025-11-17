@@ -28,9 +28,9 @@ import { ToastService } from "@services/toasts/toasts.service";
 import { MockProvider } from "ng-mocks";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
-import { MetadataReviewComponent } from "./metadata-review.component";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { MetadataReviewComponent } from "./metadata-review.component";
 
 describe("MetadataReviewComponent", () => {
   let spec: SpectatorRouting<MetadataReviewComponent>;
