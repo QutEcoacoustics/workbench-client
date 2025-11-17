@@ -16,6 +16,11 @@ import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe"
  * values and incorrect datatypes are displayed consistently across the
  * application.
  *
+ * This component does not attempt to convert strings to numbers. If the value
+ * is not a number, it will display an incorrect data type error message.
+ * This design decision ensures type safety and prevents unexpected behavior
+ * from implicit type coercion.
+ *
  * This is useful for when you have untrusted data that may not be the correct
  * type and you want the error messages to be consistent across the application.
  *

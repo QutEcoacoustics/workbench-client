@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   viewChild,
+  viewChildren,
   WritableSignal,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -162,7 +163,7 @@ const audioEventImportKey = "audioEventImport";
     IsUnresolvedPipe,
     isInstantiatedPipe,
     SafeNumberComponent
-],
+  ],
 })
 class AddAnnotationsComponent
   extends PageComponent
@@ -186,12 +187,12 @@ class AddAnnotationsComponent
   private readonly fileInput =
     viewChild<ElementRef<HTMLInputElement>>("fileInput");
 
-  private readonly additionalFileTagInputs = viewChild<
-    TypeaheadInputComponent<Tag>[]
+  private readonly additionalFileTagInputs = viewChildren<
+    TypeaheadInputComponent<Tag>
   >("additionalFileTagInput");
 
-  private readonly provenanceFileInputs = viewChild<
-    TypeaheadInputComponent<AudioEventProvenance>[]
+  private readonly provenanceFileInputs = viewChildren<
+    TypeaheadInputComponent<AudioEventProvenance>
   >("additionalProvenanceInput");
 
   /** The route model that the annotation import is scoped to */

@@ -200,7 +200,7 @@ describe("AddAnnotationsComponent", () => {
         return throwError(() => mockImportResponse);
       }
 
-      return of(mockImportResponse)
+      return of(mockImportResponse);
     });
 
     tagServiceSpy.filter.and.callFake(() => of(mockTagsResponse));

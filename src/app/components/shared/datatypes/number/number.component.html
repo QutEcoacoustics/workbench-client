@@ -7,7 +7,7 @@
     {{ $any(value()) | number }}
   } @else {
     <span
-      class="text-danger text-muted tooltip-hint"
+      class="text-danger tooltip-hint"
       [ngbTooltip]="`Expected a number type. Found '${typeof value()}'.`"
     >
       {{ incorrectTypeText() }}
