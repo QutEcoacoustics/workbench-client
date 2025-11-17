@@ -75,7 +75,7 @@ describe("AnnotationsDetailsComponent", () => {
   let expectedFilesTable: any;
 
   const fileVerifyLinks = () => spec.queryAll(StrongRouteDirective);
-  const fileDownloadLinks = () => getElementByTextContent(spec, "Download");
+  const fileDownloadLink = () => getElementByTextContent(spec, "Download");
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -383,7 +383,7 @@ describe("AnnotationsDetailsComponent", () => {
     it("should have the correct download link", () => {
       // We only make an assertion over the first download link which will
       // correspond to the first file in the table.
-      const downloadLink = fileDownloadLinks();
+      const downloadLink = fileDownloadLink();
       const firstFile = mockAudioEventImportFiles[0];
 
       expect(downloadLink).toBeDefined();
