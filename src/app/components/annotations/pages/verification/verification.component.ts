@@ -434,7 +434,7 @@ class VerificationComponent
     const annotation = subjectWrapper.subject as any as Annotation;
     const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.tagCorrections.create(annotation, newTag).pipe(
         map((correctTagging: Tagging) => {
           this.sessionTagCorrections.set(annotation.id, correctTagging);
@@ -442,8 +442,6 @@ class VerificationComponent
         }),
       ),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   private deleteTagCorrectionDecision(
@@ -462,11 +460,9 @@ class VerificationComponent
       return;
     }
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.tagCorrections.destroy(annotation, tagToRemove.id),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   // TODO: this function can be improved with instanceof checks once we export
