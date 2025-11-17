@@ -40,6 +40,6 @@ import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe"
 })
 export class SafeNumberComponent {
   public readonly value = input.required<unknown>();
-  public readonly missingValueText = input("Missing");
+  public readonly missingValueText = input("(missing)");
   public readonly incorrectTypeText = input("Type Error");
 }

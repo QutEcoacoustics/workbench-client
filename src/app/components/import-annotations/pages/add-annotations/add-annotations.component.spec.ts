@@ -424,7 +424,7 @@ describe("AddAnnotationsComponent", () => {
         const expectedTagValue =
           event.tags.length > 0
             ? event.tags.map((tag) => tag.text).join(", ")
-            : "Missing";
+            : "(missing)";
 
         const expectedErrorValue =
           event.errors.length > 0 ? event.errors.join("") : "No errors";

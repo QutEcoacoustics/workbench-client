@@ -59,6 +59,7 @@ import {
   VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
@@ -81,7 +82,6 @@ import {
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
 import { annotationImportIssueWidgetMenuItem } from "../../widgets/annotation-import-issue.component";
-import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
 
 interface QueuedFile {
   file: Readonly<File>;
