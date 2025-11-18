@@ -1,6 +1,5 @@
 import { Params } from "@angular/router";
 import { TAG } from "@baw-api/ServiceTokens";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
   jsNumber,
@@ -8,7 +7,7 @@ import {
   serializeObjectToParams,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
-import { CollectionIds, Id } from "@interfaces/apiInterfaces";
+import { Id } from "@interfaces/apiInterfaces";
 import { hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
@@ -52,21 +51,6 @@ export class VerificationParameters
     public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
-  }
-
-  // We cannot use a set here because we use the index of tags as the priority.
-  // Meaning that if we used a set, we could not use indexOf to find the
-  // priority of a tag.
-  // While we could convert to an Array for the indexOf call, I'd like to
-  // convert as early as possible so we don't have types changing depending on
-  // the context.
-  public tagPriority(searchTags: CollectionIds<Tag>): Id<Tag>[] {
-    if (isInstantiated(this.taskTag)) {
-      const uniqueIds = new Set([this.taskTag, ...searchTags]);
-      return Array.from(uniqueIds);
-    }
-
-    return Array.from(searchTags);
   }
 
   @hasOne(TAG, "taskTag")

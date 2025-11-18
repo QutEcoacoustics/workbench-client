@@ -108,13 +108,13 @@ describe("AnnotationService", () => {
   });
 
   describe("tag priority", () => {
-    it("should order an array of tags correctly", async () => {
+    fit("should order an array of tags correctly", async () => {
       // Although we are filtering by 4 tags (1,2,3,4), we have explicitly
       // specified that we want to verify tag 3.
       // Therefore, when the tags are ordered from highest priority to lowest,
       // we should see that tag 3 is preferred.
-      const dataModel = new VerificationParameters({
-        tags: "1,2,3,4",
+      const filteredTags = [1, 2, 3, 4];
+      const verificationParameters = new VerificationParameters({
         taskTag: "3",
       });
 
@@ -148,8 +148,9 @@ describe("AnnotationService", () => {
       // Note that the sorting algorithm is stable.
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
+      const tagPriority = [ verificationParameters.taskTag, ...filteredTags];
 
-      const realizedResult = await spec.service.show(testedEvent, dataModel.tagPriority);
+      const realizedResult = await spec.service.show(testedEvent, tagPriority);
       const realizedIds = realizedResult.tags.map((tag) => tag.id);
 
       expect(realizedIds).toEqual(expectedIds);

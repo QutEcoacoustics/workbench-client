@@ -88,13 +88,12 @@ class AnnotationSearchComponent
 
         const results = await Promise.all(
           newResults.map(
-            async (result) =>
-              await annotationService.show(
-                result,
-                this.verificationParameters().tagPriority(
-                  this.searchParameters().tags ?? [],
-                ),
-              ),
+            async (result) => {
+              // Because the ordering of the "tags" property is not important on
+              // the annotation search page, we do not need to provide any
+              // priority tag ids.
+              return await annotationService.show(result);
+            },
           ),
         );
 

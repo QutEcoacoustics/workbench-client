@@ -10,12 +10,11 @@ import { ModalComponent } from "@menu/widget.component";
 import { VerificationParameters } from "../../verification-form/verificationParameters";
 import { VerificationFormComponent } from "../../verification-form/verification-form.component";
 import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
-import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
 
 @Component({
   selector: "baw-verification-filters-modal",
   templateUrl: "./verification-filters.component.html",
-  imports: [VerificationFormComponent, DatatablePaginationDirective],
+  imports: [VerificationFormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerificationFiltersModalComponent implements ModalComponent {
