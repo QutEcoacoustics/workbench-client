@@ -111,7 +111,8 @@ interface QueuedFile {
   provenanceId: Id;
 
   /**
-   * Tracks whether the file is currently being uploaded or validated.
+   * Tracks whether the file is currently being uploaded to the server for
+   * a dry or wet run.
    */
   isUploading: boolean;
 }
