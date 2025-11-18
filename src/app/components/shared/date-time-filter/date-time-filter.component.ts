@@ -3,11 +3,9 @@ import {
   Component,
   Input,
   ViewChild,
-  ChangeDetectorRef,
   EventEmitter,
   Output,
   ChangeDetectionStrategy,
-  inject,
 } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -61,8 +59,6 @@ export class DateTimeFilterComponent
   extends withUnsubscribe()
   implements AfterViewInit
 {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-
   @ViewChild(NgForm) public form: NgForm;
   @Input() public project: Project;
   @Input() public region: Region;
