@@ -1,0 +1,24 @@
+@if (value() | isInstantiated) {
+  @if (typeof value() === "number") {
+    <!--
+      This $any() type cast is safe because the typeof check above was able
+      to type narrow value() to number.
+    -->
+    {{ $any(value()) | number }}
+  } @else {
+    <span
+      class="text-danger tooltip-hint"
+      [ngbTooltip]="`Expected a number type. Found '${typeof value()}'.`"
+    >
+      {{ incorrectTypeText() }}
+    </span>
+  }
+} @else {
+  <!-- We don't use typeof value() here because null is an object  -->
+  <span
+    class="text-muted tooltip-hint"
+    [ngbTooltip]="`Expected a number type. Found '${value()}'.`"
+  >
+    {{ missingValueText() }}
+  </span>
+}

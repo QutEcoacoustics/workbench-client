@@ -30,7 +30,7 @@
                       [ngbTooltip]="'Remove file'"
                       (click)="removeBufferedFile(fileModel)"
                     >
-                      <fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+                      <fa-icon [icon]="['fas', 'xmark']" />
                     </button>
 
                     <span class="file-name">{{ fileModel.file.name }}</span>
@@ -66,7 +66,7 @@
                           getIdsFromAbstractModelArray($event)
                         )
                       "
-                    ></baw-typeahead-input>
+                    />
 
                     <baw-typeahead-input
                       #additionalProvenanceInput
@@ -78,14 +78,14 @@
                       (modelChange)="
                         updateFileProvenance(fileModel, $event?.[0]?.id)
                       "
-                    ></baw-typeahead-input>
+                    />
                   </div>
                 </div>
               </li>
             }
           </ol>
         } @else {
-          <ng-container [ngTemplateOutlet]="noFilesTemplate"></ng-container>
+          <span class="text-muted">No files found</span>
         }
       </section>
 
@@ -99,7 +99,7 @@
           [resultTemplate]="tagsTypeaheadTemplate"
           [inputDisabled]="(hasFiles() | async) === false"
           (modelChange)="updateExtraTags($event, extraTagsInput)"
-        ></baw-typeahead-input>
+        />
 
         <p class="text-muted">
           Extra tags will be applied to all files in the annotation import.
@@ -118,7 +118,7 @@
           (modelChange)="
             updateExtraProvenances($event[0], extraProvenanceInput)
           "
-        ></baw-typeahead-input>
+        />
 
         <p class="text-muted">
           Provenances will be applied to all files in the annotation import.
@@ -190,7 +190,7 @@
         <ng-template let-value="value" ngx-datatable-cell-template>
           @if (!hasRecordingErrors(value)) {
             @if (value.audioRecording | isUnresolved) {
-              <baw-loading size="sm"></baw-loading>
+              <baw-loading size="sm" />
             } @else {
               <a [bawUrl]="value.audioRecording.viewUrl">
                 {{ value.audioRecording.id }}
@@ -214,11 +214,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.startTimeSeconds | isInstantiated) {
-            {{ value.startTimeSeconds | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.startTimeSeconds" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -228,11 +224,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.endTimeSeconds | isInstantiated) {
-            {{ value.endTimeSeconds | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.endTimeSeconds" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -242,11 +234,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.lowFrequencyHertz | isInstantiated) {
-            {{ value.lowFrequencyHertz | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.lowFrequencyHertz" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -256,11 +244,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.highFrequencyHertz | isInstantiated) {
-            {{ value.highFrequencyHertz | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.highFrequencyHertz" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -270,11 +254,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.channel | isInstantiated) {
-            {{ value.channel | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.channel" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -287,7 +267,7 @@
           @if (value.isReference | isInstantiated) {
             {{ value.isReference ? "Yes" : "No" }}
           } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
+            <ng-container [ngTemplateOutlet]="missingTemplate" />
           }
         </ng-template>
       </ngx-datatable-column>
@@ -298,11 +278,7 @@
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>
-          @if (value.score | isInstantiated) {
-            {{ value.score | number }}
-          } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
-          }
+          <baw-safe-number [value]="value.score" />
         </ng-template>
       </ngx-datatable-column>
 
@@ -315,8 +291,8 @@
           <baw-inline-list
             [items]="value.tags"
             [itemKey]="'text'"
-            [emptyTemplate]="emptyTemplate"
-          ></baw-inline-list>
+            [emptyTemplate]="missingTemplate"
+          />
         </ng-template>
       </ngx-datatable-column>
 
@@ -329,7 +305,7 @@
           @if (value.provenance) {
             {{ value.provenance.toString() }}
           } @else {
-            <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
+            <ng-container [ngTemplateOutlet]="missingTemplate" />
           }
         </ng-template>
       </ngx-datatable-column>
@@ -350,7 +326,7 @@
             [errorStyle]="errorCardStyles.Inline"
             [showSuccessState]="true"
             class="event-errors"
-          ></baw-error-card>
+          />
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
@@ -358,17 +334,9 @@
 </div>
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
 </ng-template>
 
-<ng-template #emptyTemplate>
-  <span class="text-muted">Empty</span>
-</ng-template>
-
-<ng-template #defaultDescription>
-  <i>No description found</i>
-</ng-template>
-
-<ng-template #noFilesTemplate>
-  <span class="text-muted">No files found</span>
+<ng-template #missingTemplate>
+  <span class="text-muted">(missing)</span>
 </ng-template>

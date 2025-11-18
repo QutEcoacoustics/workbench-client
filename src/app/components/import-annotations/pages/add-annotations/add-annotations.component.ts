@@ -1,10 +1,10 @@
 import {
   Component,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
-  ViewChild,
-  ViewChildren,
+  viewChild,
+  viewChildren,
   WritableSignal,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -32,7 +32,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
@@ -52,7 +51,6 @@ import {
   NgClass,
   NgTemplateOutlet,
   AsyncPipe,
-  DecimalPipe,
 } from "@angular/common";
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -61,6 +59,7 @@ import {
   VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
@@ -122,7 +121,7 @@ class TableRow extends AbstractModelWithoutId {
   }
 }
 
-enum ImportState {
+const enum ImportState {
   NONE,
   SUCCESS,
   FAILURE,
@@ -161,38 +160,40 @@ const audioEventImportKey = "audioEventImport";
     InlineListComponent,
     NgbHighlight,
     AsyncPipe,
-    DecimalPipe,
     IsUnresolvedPipe,
     isInstantiatedPipe,
+    SafeNumberComponent
   ],
 })
 class AddAnnotationsComponent
   extends PageComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
-  public constructor(
-    protected tagsApi: TagsService,
-    protected provenanceApi: AudioEventProvenanceService,
-    private api: AudioEventImportFileService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private notifications: ToastService,
-    private annotationImport: ImportAnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
+  protected readonly tagsApi = inject(TagsService);
+  protected readonly provenanceApi = inject(AudioEventProvenanceService);
+  private readonly api = inject(AudioEventImportFileService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(ToastService);
+  private readonly annotationImport = inject(ImportAnnotationService);
+  private readonly injector = inject(ASSOCIATION_INJECTOR);
+
+  public constructor() {
     super();
 
     this.sharedImportState = this.annotationImport.newInstance();
   }
 
-  @ViewChild("fileInput")
-  private fileInput!: ElementRef<HTMLInputElement>;
+  private readonly fileInput =
+    viewChild<ElementRef<HTMLInputElement>>("fileInput");
 
-  @ViewChildren("additionalFileTagInput")
-  private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
+  private readonly additionalFileTagInputs = viewChildren<
+    TypeaheadInputComponent<Tag>
+  >("additionalFileTagInput");
 
-  @ViewChildren("additionalProvenanceInput")
-  private provenanceFileInputs!: TypeaheadInputComponent<AudioEventProvenance>[];
+  private readonly provenanceFileInputs = viewChildren<
+    TypeaheadInputComponent<AudioEventProvenance>
+  >("additionalProvenanceInput");
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -211,7 +212,7 @@ class AddAnnotationsComponent
   // the most recent value
   protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
 
-  protected errorCardStyles = ErrorCardStyle;
+  protected readonly errorCardStyles = ErrorCardStyle;
 
   // I use an object here when I should be using a readonly map because I want
   // to use the "as const" assertion to make the object immutable, get
@@ -369,7 +370,7 @@ class AddAnnotationsComponent
 
     const extraTagIds = this.getIdsFromAbstractModelArray(extraTags);
 
-    const additionalTagInputs = this.additionalFileTagInputs;
+    const additionalTagInputs = this.additionalFileTagInputs();
     for (const input of additionalTagInputs) {
       input.value.push(...extraTags);
     }
@@ -397,7 +398,7 @@ class AddAnnotationsComponent
     // tags are applied
     this.importState = ImportState.UPLOADING;
 
-    const provenanceFileInputs = this.provenanceFileInputs;
+    const provenanceFileInputs = this.provenanceFileInputs();
     for (const input of provenanceFileInputs) {
       input.value = [extraProvenance];
       input.inputModel = extraProvenance.toString();
@@ -562,7 +563,7 @@ class AddAnnotationsComponent
       dataTransfer.items.add(file);
     }
 
-    this.fileInput.nativeElement.files = dataTransfer.files;
+    this.fileInput().nativeElement.files = dataTransfer.files;
   }
 
   private importFileToBufferedFile(
