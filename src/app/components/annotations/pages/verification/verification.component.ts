@@ -164,8 +164,11 @@ class VerificationComponent
   );
 
   protected readonly verificationGridFocused = signal(true);
-  protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
+  protected readonly hasCorrectionTask = computed(
+    () =>
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
+  );
 
   protected readonly project = signal<Project | null>(null);
   protected readonly region = signal<Region | null>(null);
@@ -214,10 +217,6 @@ class VerificationComponent
       newModel.injector = this.injector;
       return newModel;
     });
-
-    this.hasCorrectionTask.set(
-      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
-    );
   }
 
   public ngAfterViewInit(): void {
@@ -294,7 +293,9 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.verificationParameters().tagPriority,
+            this.verificationParameters().tagPriority(
+              this.searchParameters().tags ?? [],
+            ),
           ),
         ),
       );
@@ -316,10 +317,6 @@ class VerificationComponent
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
     this.updateUrlParameters();
-
-    this.hasCorrectionTask.set(
-      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
-    );
   }
 
   protected handleDecision(decisionEvent: Event): void {
@@ -519,8 +516,7 @@ class VerificationComponent
       verificationParameters,
     );
 
-    const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString());
+    this.router.navigate([], { queryParams });
   }
 
   private tagSearchCallback(): TypeaheadCallback<any> {

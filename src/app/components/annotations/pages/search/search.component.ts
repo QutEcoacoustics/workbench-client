@@ -91,7 +91,9 @@ class AnnotationSearchComponent
             async (result) =>
               await annotationService.show(
                 result,
-                this.verificationParameters().tagPriority,
+                this.verificationParameters().tagPriority(
+                  this.searchParameters().tags ?? [],
+                ),
               ),
           ),
         );

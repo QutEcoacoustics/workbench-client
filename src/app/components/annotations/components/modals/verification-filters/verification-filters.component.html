@@ -3,7 +3,10 @@
 </div>
 
 <div class="filters-modal-body modal-body modal-large">
-  <baw-verification-form [(verificationParameters)]="formValue" />
+  <baw-verification-form
+    [(verificationParameters)]="formValue"
+    [searchParameters]="searchParameters()"
+  />
 </div>
 
 <div class="modal-footer justify-content-end">
@@ -15,11 +18,7 @@
     >
       Cancel
     </button>
-    <button
-      id="update-filters-btn"
-      class="btn btn-primary"
-      (click)="success()"
-    >
+    <button id="update-filters-btn" class="btn btn-primary" (click)="success()">
       Start Verification
     </button>
   </div>

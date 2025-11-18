@@ -10,7 +10,10 @@
 
   <hr />
 
-  <baw-verification-form [(verificationParameters)]="verificationFormValue" />
+  <baw-verification-form
+    [(verificationParameters)]="verificationFormValue"
+    [searchParameters]="searchFormValue()"
+  />
 </div>
 
 <div class="modal-footer justify-content-end">

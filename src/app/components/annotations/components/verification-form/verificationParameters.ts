@@ -4,13 +4,12 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
   jsNumber,
-  jsNumberArray,
   jsString,
   serializeObjectToParams,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
-import { Id, Ids } from "@interfaces/apiInterfaces";
-import { hasMany, hasOne } from "@models/AssociationDecorators";
+import { CollectionIds, Id } from "@interfaces/apiInterfaces";
+import { hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { Tag } from "@models/Tag";
@@ -30,15 +29,11 @@ export type TaskBehaviorKey = "verify-and-correct-tag" | "verify";
 export interface IVerificationParameters {
   taskBehavior: TaskBehaviorKey;
   verificationStatus: VerificationStatusKey;
-
-  tags: Ids<Tag>;
   taskTag: Id<Tag>;
 }
 
 const serializationTable: IQueryStringParameterSpec<IVerificationParameters> = {
-  tags: jsNumberArray,
   taskTag: jsNumber,
-
   verificationStatus: withDefault(jsString, "unverified-for-me"),
   taskBehavior: withDefault(jsString, "verify"),
 };
@@ -47,7 +42,6 @@ export class VerificationParameters
   extends ParameterModel<AudioEvent>(serializationTable)
   implements IVerificationParameters, IParameterModel<AudioEvent>
 {
-  public tags: Ids<Tag>;
   public taskTag: Id<Tag>;
   public taskBehavior: TaskBehaviorKey;
   public verificationStatus: VerificationStatusKey;
@@ -66,19 +60,14 @@ export class VerificationParameters
   // While we could convert to an Array for the indexOf call, I'd like to
   // convert as early as possible so we don't have types changing depending on
   // the context.
-  public get tagPriority(): Id<Tag>[] {
-    const baseTags = this.tags ?? [];
-
+  public tagPriority(searchTags: CollectionIds<Tag>): Id<Tag>[] {
     if (isInstantiated(this.taskTag)) {
-      const uniqueIds = new Set([this.taskTag, ...baseTags]);
+      const uniqueIds = new Set([this.taskTag, ...searchTags]);
       return Array.from(uniqueIds);
     }
 
-    return Array.from(baseTags);
+    return Array.from(searchTags);
   }
-
-  @hasMany(TAG, "tags")
-  public tagModels?: Tag[];
 
   @hasOne(TAG, "taskTag")
   public taskTagModel?: Tag;

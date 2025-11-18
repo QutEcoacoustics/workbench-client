@@ -9,15 +9,18 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "@menu/widget.component";
 import { VerificationParameters } from "../../verification-form/verificationParameters";
 import { VerificationFormComponent } from "../../verification-form/verification-form.component";
+import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
 
 @Component({
   selector: "baw-verification-filters-modal",
   templateUrl: "./verification-filters.component.html",
-  imports: [VerificationFormComponent],
+  imports: [VerificationFormComponent, DatatablePaginationDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerificationFiltersModalComponent implements ModalComponent {
   public readonly formValue = model.required<VerificationParameters>();
+  public readonly searchParameters = input.required<AnnotationSearchParameters>();
   public readonly modal = input<NgbActiveModal>();
 
   // TODO: Migrate this to a signal once we add support for signals to the
