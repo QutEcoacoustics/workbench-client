@@ -1,5 +1,4 @@
 import {
-  AfterContentChecked,
   AfterViewInit,
   Component,
   Input,
@@ -8,6 +7,7 @@ import {
   EventEmitter,
   Output,
   ChangeDetectionStrategy,
+  inject,
 } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
@@ -59,11 +59,9 @@ export interface DateTimeFilterModel {
 })
 export class DateTimeFilterComponent
   extends withUnsubscribe()
-  implements AfterViewInit, AfterContentChecked
+  implements AfterViewInit
 {
-  public constructor(private changeDetector: ChangeDetectorRef) {
-    super();
-  }
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   @ViewChild(NgForm) public form: NgForm;
   @Input() public project: Project;
@@ -80,7 +78,7 @@ export class DateTimeFilterComponent
   @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
   @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
 
-  private previousFilters: FromJS<Filters<AudioRecording>>;
+  private previousFilters: FromJS<Filters<AudioRecording>> = fromJS({});
 
   public ngAfterViewInit(): void {
     this.form.valueChanges
@@ -90,15 +88,6 @@ export class DateTimeFilterComponent
         takeUntil(this.unsubscribe)
       )
       .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
-  }
-
-  // TODO: Refactor the following hacky code block
-  // without this code block, the ExpressionChangedAfterItHasBeenCheckedError warning is thrown in development mode
-  public ngAfterContentChecked(): void {
-    // since we are using angular form validation & bootstrap validation, the errors attribute of the form is updated with change detection
-    // this causes the form state to update with change detection so we need to add an extra change detection cycle
-    // to ensure the updated form state (with errors) is a part of the model at end of change detection
-    this.changeDetector.detectChanges();
   }
 
   public emitFilterUpdate(model: DateTimeFilterModel): void {
@@ -133,10 +122,6 @@ export class DateTimeFilterComponent
     // to prevent duplicate filters from being emitted, we compare the new filter to the previous filter's value
     // e.g. if a user types in a valid filter condition, inputs an invalid filter condition, then inputs a valid filter condition
     const changed = !fromJS(newFilters)?.equals(previousFilters) && newFilters !== previousFilters;
-
-    if (Object.keys(newInnerFilters).length === 0) {
-      return [changed, newFilters];
-    }
 
     return [changed, newFilters];
   }
