@@ -108,7 +108,7 @@ describe("AnnotationService", () => {
   });
 
   describe("tag priority", () => {
-    fit("should order an array of tags correctly", async () => {
+    it("should order an array of tags correctly", async () => {
       // Although we are filtering by 4 tags (1,2,3,4), we have explicitly
       // specified that we want to verify tag 3.
       // Therefore, when the tags are ordered from highest priority to lowest,

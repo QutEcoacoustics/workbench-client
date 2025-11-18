@@ -21,7 +21,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from "@angular/common";
 import { firstValueFrom, map, Observable } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
@@ -127,7 +126,6 @@ class VerificationComponent
   private readonly modals = inject(NgbModal);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly config = inject(ConfigService);
   private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
 
