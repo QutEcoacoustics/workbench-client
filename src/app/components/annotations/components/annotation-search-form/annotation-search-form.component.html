@@ -1,6 +1,6 @@
 <form #form="ngForm">
   <baw-date-time-filter
-    [(model)]="recordingDateTimeFilters"
+    [model]="recordingDateTimeFilters()"
     (modelChange)="updateRecordingDateTime($event)"
     [disableStartDate]="true"
     [disableStartTime]="true"
