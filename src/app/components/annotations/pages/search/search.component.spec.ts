@@ -41,6 +41,7 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import { generateMeta } from "@test/fakes/Meta";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchComponent } from "./search.component";
 
@@ -316,7 +317,7 @@ describe("AnnotationSearchComponent", () => {
       spec.detectChanges();
 
       const element = getElementByTextContent(spec, expectedText);
-      expect(element).toExist();
+      expect(element).toBeVisible();
     });
 
     it("should not display an error if the search results are still loading", () => {
@@ -327,7 +328,7 @@ describe("AnnotationSearchComponent", () => {
       spec.detectChanges();
 
       const element = getElementByTextContent(spec, expectedText);
-      expect(element).not.toExist();
+      expect(element).toBeHidden();
     });
 
     it("should display a page of search results", () => {
@@ -336,6 +337,42 @@ describe("AnnotationSearchComponent", () => {
       const expectedResults = mockAudioEventsResponse.length;
       const realizedResults = spectrogramElements().length;
       expect(realizedResults).toEqual(expectedResults);
+    });
+
+    it("should re-use the event cards when search results are updated", () => {
+      spec.detectChanges();
+
+      const initialSpectrogram = spectrogramElements()[0];
+
+      // We override the returned audio events to make this test harder to pass
+      // because we can't track by anything on the audio event since it would
+      // have changed.
+      mockAudioEventsResponse = modelData.randomArray(
+        responsePageSize,
+        responsePageSize,
+        () => {
+          // generateAudioEvent() uses our modelData.id iterator which ensures
+          // that each generated audio event has a unique ID.
+          // Therefore, there is no risk of this being a flaky test because each
+          // id will always be unique.
+          const model = new AudioEvent(generateAudioEvent(), injector);
+          model.addMetadata(generateMeta());
+
+          return model;
+        },
+      );
+
+      // By changing the "verification status" filter, we should re-enter a
+      // loading state, but should not have destroyed the spectrograms elements.
+      clickVerificationStatusFilter("unverified-for-me");
+      spec.detectChanges();
+
+      const updatedSpectrogram = spectrogramElements()[0];
+
+      // We use a toBe comparison here so that we compare the spectrogram
+      // elements by reference instead of by value.
+      // If the reference is the same, then we know the elements were reused.
+      expect(updatedSpectrogram).toBe(initialSpectrogram);
     });
 
     xit("should have a disabled 'verify' button if there are no search results", () => {
