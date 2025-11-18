@@ -163,11 +163,8 @@ class VerificationComponent
   );
 
   protected readonly verificationGridFocused = signal(true);
+  protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
-  protected readonly hasCorrectionTask = computed(
-    () =>
-      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
-  );
 
   protected readonly project = signal<Project | null>(null);
   protected readonly region = signal<Region | null>(null);
@@ -216,6 +213,10 @@ class VerificationComponent
       newModel.injector = this.injector;
       return newModel;
     });
+
+    this.hasCorrectionTask.set(
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -314,6 +315,10 @@ class VerificationComponent
     this.verificationGridElement().nativeElement.getPage =
       this.getPageCallback();
     this.updateUrlParameters();
+
+    this.hasCorrectionTask.set(
+      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
+    );
   }
 
   protected handleDecision(decisionEvent: Event): void {
