@@ -120,7 +120,7 @@ export function bawImage<Model>(
     opts,
     (model, key, imageUrls: string | ImageUrl[]) => {
       // Get API root if injector exists
-      const apiRoot = model["injector"]?.get(API_ROOT) ?? "";
+      const apiRoot = model["injector"]?.get?.(API_ROOT) ?? "";
       if (!apiRoot) {
         console.warn(
           `${model} does not have injector service. Tried to access ${key.toString()}`
