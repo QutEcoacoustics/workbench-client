@@ -38,6 +38,8 @@ export type TypeaheadSearchCallback<T> = (
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
 })
 export class TypeaheadInputComponent<T = unknown> implements OnChanges {
+  public static readonly maximumResults = 10;
+
   /**
    * The options callback is typically linked to a service as it should return
    * a list observable of options that the user could select Active items are
@@ -82,30 +84,34 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     }
   }
 
-  protected findOptions = (text$: Observable<string>): Observable<T[]> => {
-    const maximumResults = 10;
+    protected findOptions = (text$: Observable<string>): Observable<T[]> => {
+      const debouncedText$ = text$.pipe(
+        debounceTime(defaultDebounceTime),
+        distinctUntilChanged(),
+      );
 
-    return merge(this.focus$, text$).pipe(
-      debounceTime(defaultDebounceTime),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        if (!this.searchCallback) {
-          return [];
-        }
-
-        if (term === "" || term === null) {
-          if (this.queryOnFocus) {
-            return this.searchCallback("", this.value);
+      return merge(this.focus$, debouncedText$).pipe(
+        switchMap((term: string) => {
+          if (!this.searchCallback) {
+            return [];
           }
 
-          return [];
-        }
+          if (term === "" || term === null) {
+            if (this.queryOnFocus) {
+              return this.searchCallback("", this.value);
+            }
 
-        return this.searchCallback(term, this.value);
-      }),
-      map((items: T[]) => items.slice(0, maximumResults)),
-    );
-  };
+            return [];
+          }
+
+          return this.searchCallback(term, this.value);
+        }),
+        map((items: T[]) =>
+          items.slice(0, TypeaheadInputComponent.maximumResults),
+        ),
+      );
+    };
+
 
   protected templateFormatter = (item: T): string => item.toString();
 

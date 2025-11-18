@@ -263,6 +263,18 @@ describe("TypeaheadInputComponent", () => {
     expect(dropdownItems).toHaveLength(0);
   }));
 
+  it("should not debounce on the initial focus event", fakeAsync(() => {
+    spec.component.searchCallback = () => of(defaultFakeSites);
+    spec.detectChanges();
+
+    // Note that we don't tick or flush the async queue here because we should
+    // see that the focus events results are immediate and not debounced.
+    spec.focus(inputBox());
+
+    const dropdownItems = dropdownOptions();
+    expect(dropdownItems).toHaveLength(defaultFakeSites.length);
+  }));
+
   describe("single input mode", () => {
     beforeEach(() => {
       spec.component.multipleInputs = false;

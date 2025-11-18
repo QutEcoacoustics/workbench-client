@@ -1,8 +1,87 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { modelData } from "@test/helpers/faker";
-import { createItemSearchCallback } from "./typeaheadCallbacks";
+import { Tag } from "@models/Tag";
+import { generateTag } from "@test/fakes/Tag";
+import { createItemSearchCallback, createSearchCallback } from "./typeaheadCallbacks";
+import { InnerFilter, Projection } from "@baw-api/baw-api.service";
+import { TagsService } from "@baw-api/tag/tags.service";
 
 describe("typeaheadCallbacks", () => {
+  describe("createSearchCallback", () => {
+    let apiSpy: jasmine.SpyObj<TagsService>;
+
+    beforeEach(() => {
+      apiSpy = jasmine.createSpyObj<TagsService>(["filter"]);
+      apiSpy.filter.and.returnValue(of([]));
+    });
+
+    it("should include the correct filter conditions", () => {
+      const predefinedFilter: InnerFilter<Tag> = {
+        notes: { contains: "migrated from:" },
+      };
+
+      const callback = createSearchCallback(apiSpy, "text", predefinedFilter);
+
+      const filteredTag = new Tag(generateTag());
+      callback("test", [filteredTag]);
+
+      expect(apiSpy.filter).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          filter: {
+            and: [
+              predefinedFilter,
+              { text: { contains: "test" } },
+              { text: { notIn: [filteredTag.text] } },
+            ],
+          },
+        }),
+      );
+    });
+
+    it("should omit the 'filters' parameter if it is not provided", () => {
+      const callback = createSearchCallback(apiSpy, "text");
+
+      const filteredTag = new Tag(generateTag());
+      callback("test", [filteredTag]);
+
+      expect(apiSpy.filter).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          filter: {
+            and: [
+              { text: { contains: "test" } },
+              { text: { notIn: [filteredTag.text] } },
+            ],
+          },
+        }),
+      );
+    });
+
+    it("should include 'projection' parameters when provided", () => {
+      const projection: Projection<Tag> = { include: ["id", "text"] };
+      const callback = createSearchCallback(apiSpy, "text", {}, projection);
+
+      callback("test", []);
+
+      expect(apiSpy.filter).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          projection,
+        }),
+      );
+    });
+
+    it("should omit the 'projection' parameter if it is not provided", () => {
+      const callback = createSearchCallback(apiSpy, "text");
+
+      callback("test", []);
+
+      expect(apiSpy.filter).not.toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          projection: jasmine.anything(),
+        }),
+      );
+    });
+  });
+
   describe("createItemSearchCallback", () => {
     // when matching against the search term, we convert to lower case
     // therefore, in this test, I purposely use a search term with mixed casing
