@@ -276,6 +276,10 @@ function createModelDecorator<
       throw new Error(
         `${parent} does not have injector service. Tried to access ${identifierKey.toString()}`
       );
+    } else if (typeof injector.get !== "function") {
+      throw new Error(
+        `Injector service on ${parent} is not a valid injector.`
+      );
     }
 
     // Get child model identifying ID/s
@@ -298,7 +302,7 @@ function createModelDecorator<
     }) as Params;
 
     // Create service and request from API
-    const service = injector.get(serviceToken.token);
+    const service = injector.get?.(serviceToken.token);
 
     // Set initial value for field
     updateBackingField(parent, unresolvedValue);
