@@ -20,10 +20,11 @@ import { generateMenuRoute } from "@test/fakes/MenuItem";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { generateHarvestItem } from "@test/fakes/HarvestItem";
-import { Inject } from "@angular/core";
 import { IconsModule } from "@shared/icons/icons.module";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { NgStyle, DecimalPipe } from "@angular/common";
 import { ToastService } from "@services/toasts/toasts.service";
 import { MockProvider } from "ng-mocks";
@@ -37,6 +38,7 @@ describe("MetadataReviewComponent", () => {
   let modalConfigService: NgbModalConfig;
   let stages: SpyObject<HarvestStagesService>;
   let harvestService: SpyObject<ShallowHarvestsService>;
+  let injector: SpyObject<AssociationInjector>;
   let defaultProject: Project;
   let defaultHarvest: Harvest;
 
@@ -74,6 +76,8 @@ describe("MetadataReviewComponent", () => {
   function setup(): SpyObject<HarvestStagesService> {
     spec = createComponent({ detectChanges: false });
     spec.component.newSiteMenuItem = menuRoute(generateMenuRoute());
+
+    injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
 
@@ -275,31 +279,31 @@ describe("MetadataReviewComponent", () => {
         recursive: true,
         siteId: 543,
         utcOffset: "+11:00"
-      }),
+      }, injector),
       new HarvestMapping({
         path: "B",
         recursive: true,
         siteId: null,
         utcOffset: null
-      }, Inject(FolderRowComponent)),
+      }, injector),
       new HarvestMapping({
         path: "C",
         recursive: true,
         siteId: 1234,
         utcOffset: "+10:00"
-      }),
+      }, injector),
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
         siteId: null,
         utcOffset: "-08:00"
-      })
+      }, injector)
     ];
 
     defaultHarvest = new Harvest({
       ...defaultHarvest,
       mappings: mapping
-    });
+    }, injector);
 
     const rootFolderStructure: HarvestItem[] = folderStructureFactory(["B"]);
     spyOn(stages, "getHarvestItems").and.resolveTo(rootFolderStructure);
@@ -318,25 +322,25 @@ describe("MetadataReviewComponent", () => {
         recursive: true,
         siteId: 543,
         utcOffset: "+11:00"
-      }),
+      }, injector),
       new HarvestMapping({
         path: "B",
         recursive: true,
         siteId: null,
         utcOffset: "-11:00"
-      }),
+      }, injector),
       new HarvestMapping({
         path: "C",
         recursive: true,
         siteId: 1234,
         utcOffset: "+10:00"
-      }),
+      }, injector),
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
         siteId: null,
         utcOffset: "-08:00"
-      })
+      }, injector),
     ];
 
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
