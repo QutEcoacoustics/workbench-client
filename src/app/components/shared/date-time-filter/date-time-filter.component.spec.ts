@@ -330,9 +330,6 @@ describe("AudioRecordingsFilter", () => {
       toggleDateFilters();
       toggleTimeOfDayFilters();
 
-      // there is a filter update event emitted when the component is initialized
-      // this is done for the batch downloading component which needs the initial filter state for its batch downloading script
-      // therefore, if the user has not input any filters, there should only be the initial filter update
       expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
