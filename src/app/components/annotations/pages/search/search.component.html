@@ -76,6 +76,7 @@
   <baw-verification-filters-modal
     [modal]="filtersModal"
     [formValue]="verificationParameters()"
+    [searchParameters]="searchParameters()"
     [successCallback]="navigateToVerificationGrid.bind(this)"
   />
 </ng-template>

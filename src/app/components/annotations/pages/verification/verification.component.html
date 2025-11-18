@@ -14,7 +14,7 @@
           [ngbTooltip]="'Shortcut keys are disabled because the verification grid has lost focus. Select a verification grid tile to enable shortcut keys.'"
           [icon]="['fas', 'triangle-exclamation']"
           class="inline text-warning"
-        ></fa-icon>
+        />
       } Annotation Verification
     </h2>
   </div>
@@ -49,18 +49,18 @@
 >
   <template>
     <div class="tile-spacing">
-      <oe-subject-tag></oe-subject-tag>
-      <oe-media-controls for="spectrogram"></oe-media-controls>
+      <oe-subject-tag />
+      <oe-media-controls for="spectrogram" />
     </div>
 
     <oe-axes>
       <oe-indicator>
-        <oe-spectrogram id="spectrogram" color-map="grayscale"></oe-spectrogram>
+        <oe-spectrogram id="spectrogram" color-map="grayscale" />
       </oe-indicator>
     </oe-axes>
 
     <div class="tile-block">
-      <oe-task-meter></oe-task-meter>
+      <oe-task-meter />
       <baw-grid-tile-content />
     </div>
   </template>
@@ -71,21 +71,21 @@
     shortcut="Y"
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
-  ></oe-verification>
+  />
   <oe-verification
     #verificationDecision
     verified="false"
     shortcut="N"
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
-  ></oe-verification>
+  />
   <oe-verification
     #verificationDecision
     verified="unsure"
     shortcut="U"
     (focus)="verificationGridFocused.set(true)"
     (blur)="verificationGridFocused.set(false)"
-  ></oe-verification>
+  />
 
   @if (hasCorrectionTask()) {
     <oe-tag-prompt

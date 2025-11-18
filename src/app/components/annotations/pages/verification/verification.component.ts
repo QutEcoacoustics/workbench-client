@@ -21,7 +21,6 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from "@angular/common";
 import { firstValueFrom, map, Observable } from "rxjs";
 import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
@@ -65,6 +64,8 @@ import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { ConfigService } from "@services/config/config.service";
+import { mergeParameters } from "@helpers/parameters/merge";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
@@ -73,7 +74,6 @@ import { filterAnd } from "@helpers/filters/filters";
 import {
   SearchVerificationFiltersModalComponent,
 } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
-import { mergeParameters } from "@helpers/parameters/merge";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -126,7 +126,6 @@ class VerificationComponent
   private readonly modals = inject(NgbModal);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly config = inject(ConfigService);
   private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
 
@@ -294,7 +293,7 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.verificationParameters().tagPriority,
+            this.tagPriority(),
           ),
         ),
       );
@@ -390,6 +389,23 @@ class VerificationComponent
         }
       }
     }
+  }
+
+  /**
+   * @description
+   * An ordered array of tag IDs representing what tags should be prioritized
+   * when displaying the tag that is being verified.
+   */
+  private tagPriority(): Id<Tag>[] {
+    const taskTag = this.verificationParameters().taskTag;
+    const searchTags = this.searchParameters().tags ?? [];
+
+    if (isInstantiated(taskTag)) {
+      const uniqueIds = new Set([taskTag, ...searchTags]);
+      return Array.from(uniqueIds);
+    }
+
+    return Array.from(searchTags);
   }
 
   private handleVerificationDecision(subjectWrapper: SubjectWrapper): void {
@@ -519,8 +535,7 @@ class VerificationComponent
       verificationParameters,
     );
 
-    const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString());
+    this.router.navigate([], { queryParams });
   }
 
   private tagSearchCallback(): TypeaheadCallback<any> {
