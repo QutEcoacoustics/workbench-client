@@ -41,9 +41,9 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
 import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import { generateMeta } from "@test/fakes/Meta";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchComponent } from "./search.component";
-import { generateMeta } from "@test/fakes/Meta";
 
 describe("AnnotationSearchComponent", () => {
   const responsePageSize = 24;
