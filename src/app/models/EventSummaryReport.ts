@@ -17,11 +17,11 @@ import { hasMany } from "./AssociationDecorators";
 import { bawCollection, bawDateTime } from "./AttributeDecorators";
 import { Site } from "./Site";
 import { Region } from "./Region";
-import { EventGroup } from "./AudioEventProvenance/EventGroup";
-import { IAudioEventSummaryReportStatistics } from "./AudioEventProvenance/ReportStatistics";
-import { IEventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
+import { EventGroup } from "./Provenance/EventGroup";
+import { IAudioEventSummaryReportStatistics } from "./Provenance/ReportStatistics";
+import { IEventSummaryGraphs } from "./Provenance/ReportGraphs";
 import { Tag } from "./Tag";
-import { AudioEventProvenance } from "./AudioEventProvenance";
+import { Provenance } from "./Provenance";
 
 export interface IEventSummaryReport {
   id?: Id;
@@ -66,11 +66,11 @@ export class EventSummaryReport
   public sites?: Site[];
   @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
-  @hasMany<EventSummaryReport, AudioEventProvenance>(
+  @hasMany<EventSummaryReport, Provenance>(
     AUDIO_EVENT_PROVENANCE,
     "provenanceIds"
   )
-  public provenances?: AudioEventProvenance[];
+  public provenances?: Provenance[];
 
   public get viewUrl(): string {
     const reportLevel = this.generationParameters.sites

@@ -73,8 +73,8 @@ import {
 import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { Provenance } from "@models/Provenance";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
   addAnnotationImportMenuItem,
@@ -172,7 +172,7 @@ class AddAnnotationsComponent
 {
   public constructor(
     protected tagsApi: TagsService,
-    protected provenanceApi: AudioEventProvenanceService,
+    protected provenanceApi: ProvenanceService,
     private api: AudioEventImportFileService,
     private route: ActivatedRoute,
     private router: Router,
@@ -192,7 +192,7 @@ class AddAnnotationsComponent
   private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
 
   @ViewChildren("additionalProvenanceInput")
-  private provenanceFileInputs!: TypeaheadInputComponent<AudioEventProvenance>[];
+  private provenanceFileInputs!: TypeaheadInputComponent<Provenance>[];
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -389,8 +389,8 @@ class AddAnnotationsComponent
   }
 
   protected updateExtraProvenances(
-    extraProvenance: AudioEventProvenance,
-    host: TypeaheadInputComponent<AudioEventProvenance>,
+    extraProvenance: Provenance,
+    host: TypeaheadInputComponent<Provenance>,
   ): void {
     // when the user applies "provenances" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra

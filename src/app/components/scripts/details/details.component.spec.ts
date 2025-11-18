@@ -25,9 +25,9 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { appLibraryImports } from "src/app/app.config";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
+import { Provenance } from "@models/Provenance";
+import { generateProvenance } from "@test/fakes/Provenance";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {
@@ -61,7 +61,7 @@ describe("ScriptComponent", () => {
     ) as SpyObject<ScriptsService>;
     const provenanceApi = TestBed.inject(
       AUDIO_EVENT_PROVENANCE.token,
-    ) as SpyObject<AudioEventProvenanceService>;
+    ) as SpyObject<ProvenanceService>;
 
     component = fixture.componentInstance;
 
@@ -69,7 +69,7 @@ describe("ScriptComponent", () => {
     accountsApi.show.and.callFake(() => accountsSubject);
     const scriptsSubject = new Subject<Script>();
     scriptsApi.show.and.callFake(() => scriptsSubject);
-    const provenanceSubject = new Subject<AudioEventProvenance>();
+    const provenanceSubject = new Subject<Provenance>();
     provenanceApi.show.andCallFake(() => provenanceSubject);
 
     // Update model to contain injector
@@ -89,8 +89,8 @@ describe("ScriptComponent", () => {
       nStepObservable(
         provenanceSubject,
         () =>
-          new AudioEventProvenance(
-            generateAudioEventProvenance({
+          new Provenance(
+            generateProvenance({
               id: 1,
               name: "BirdNET",
               version: "2.4",

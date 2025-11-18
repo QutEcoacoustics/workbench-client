@@ -20,7 +20,7 @@ import {
   EventSummaryReport,
   IEventSummaryReport,
 } from "@models/EventSummaryReport";
-import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
+import { EventGroup } from "@models/Provenance/EventGroup";
 import { Observable, map, of } from "rxjs";
 import { API_ROOT } from "@services/config/config.tokens";
 

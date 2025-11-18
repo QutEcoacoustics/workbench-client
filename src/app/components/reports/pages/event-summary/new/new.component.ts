@@ -22,7 +22,7 @@ import {
   reportCategories,
 } from "@components/reports/reports.menu";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   notIn,
@@ -58,7 +58,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
     protected sitesApi: ShallowSitesService,
     protected regionsApi: ShallowRegionsService,
-    protected provenanceApi: AudioEventProvenanceService,
+    protected provenanceApi: ProvenanceService,
     protected tagsApi: TagsService,
     private route: ActivatedRoute
   ) {

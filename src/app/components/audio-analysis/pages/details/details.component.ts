@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   analysisCategory,
@@ -32,14 +32,12 @@ class AnalysisJobComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  private readonly route = inject(ActivatedRoute);
+
   public analysisJob: AnalysisJob;
   public failure: boolean;
   public fields = schema.fields;
   public project: Project;
-
-  public constructor(private route: ActivatedRoute) {
-    super();
-  }
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;

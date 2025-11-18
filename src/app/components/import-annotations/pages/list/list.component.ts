@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { List } from "immutable";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -41,14 +41,10 @@ const projectKey = "project";
   ],
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
-  public constructor(
-    private api: AudioEventImportService,
-    private notifications: ToastService,
-    private modals: NgbModal,
-    protected route: ActivatedRoute,
-  ) {
-    super();
-  }
+  protected readonly route = inject(ActivatedRoute);
+  private readonly api = inject(AudioEventImportService);
+  private readonly notifications = inject(ToastService);
+  private readonly modals = inject(NgbModal);
 
   protected filters$: BehaviorSubject<Filters<AudioEventImport>>;
   private defaultFilters: Filters<AudioEventImport> = {

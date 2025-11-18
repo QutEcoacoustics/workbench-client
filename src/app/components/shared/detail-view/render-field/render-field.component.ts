@@ -44,7 +44,7 @@ import { DatetimeComponent } from "../../datetime-formats/datetime/datetime/date
           class="m-0"
           [checked]="isChecked()"
           [disabled]="true"
-        ></baw-checkbox>
+        />
       </dl>
     }
 

@@ -21,13 +21,11 @@ describe("AudioRecordingsDetailsComponent", () => {
     },
   });
 
-  function setup() {
+  beforeEach(() => {
     defaultAudioRecording = new AudioRecording(generateAudioRecording());
     spectator = createComponent({ detectChanges: false });
     spyOnProperty(spectator.component, "recording", "get").and.callFake(() => defaultAudioRecording);
-  }
-
-  beforeEach(() => setup());
+  });
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AudioRecordingsDetailsComponent);

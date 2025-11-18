@@ -1,5 +1,6 @@
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { ImageUrl } from "@interfaces/apiInterfaces";
+import { Spectator } from "@ngneat/spectator";
 import { DateTime, Duration } from "luxon";
 
 /**
@@ -25,15 +26,17 @@ function findDetailIndex(nativeElement: HTMLElement, label: string): number {
 /**
  * Assert detail view is correct
  */
-export function assertDetail(detail: Detail) {
+export function assertDetail(detail: Detail, spec?: () => Spectator<any>) {
   describe(`${detail.label} (${detail.key})`, function () {
     it("should display " + detail.key, function () {
-      const index = findDetailIndex(this.fixture.nativeElement, detail.label);
+      const fixture = spec ? spec().fixture : this.fixture;
+      const index = findDetailIndex(fixture.nativeElement, detail.label);
       expect(index).toBeGreaterThanOrEqual(0);
     });
 
     it("should display " + detail.key + " value", function () {
-      const element: HTMLElement = this.fixture.nativeElement;
+      const fixture = spec ? spec().fixture : this.fixture;
+      const element: HTMLElement = fixture.nativeElement;
       const index = findDetailIndex(element, detail.label);
       const views = element.querySelectorAll("dl");
       assertValue(detail, index, views);

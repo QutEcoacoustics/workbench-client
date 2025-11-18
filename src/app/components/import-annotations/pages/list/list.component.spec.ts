@@ -105,7 +105,9 @@ describe("AnnotationsListComponent", () => {
   const modalConfirmButton = (): HTMLButtonElement =>
     spectator.query<HTMLButtonElement>(".btn-danger", { root: true });
 
-  beforeEach(() => setup());
+  beforeEach(() => {
+    setup();
+  });
 
   afterEach(() => {
     // if we keep modals open, it will impact the next test
