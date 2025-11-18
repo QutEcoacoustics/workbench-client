@@ -75,6 +75,7 @@ describe("AnnotationsDetailsComponent", () => {
   let expectedFilesTable: any;
 
   const fileVerifyLinks = () => spec.queryAll(StrongRouteDirective);
+  const fileDownloadLink = () => getElementByTextContent(spec, "Download");
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -374,6 +375,19 @@ describe("AnnotationsDetailsComponent", () => {
         expect(link.routeParams).toEqual(expectedResult.routeParams);
         expect(link.queryParams).toEqual(expectedResult.queryParams);
       });
+    });
+
+    // If you are incorrectly using a bawUrl directive instead of a href, this
+    // test will fail because the url will attempt to point to a client route
+    // instead of an external download link.
+    it("should have the correct download link", () => {
+      // We only make an assertion over the first download link which will
+      // correspond to the first file in the table.
+      const downloadLink = fileDownloadLink();
+      const firstFile = mockAudioEventImportFiles[0];
+
+      expect(downloadLink).toBeDefined();
+      expect(downloadLink.getAttribute("href")).toEqual(firstFile.path);
     });
   });
 });
