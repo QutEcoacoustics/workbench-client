@@ -334,7 +334,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], [], null)
+      this.importFileToBufferedFile(file, null, [], [], null, false)
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -450,7 +450,6 @@ class AddAnnotationsComponent
     }
 
     this.importState.set(ImportState.UPLOADING);
-    this.setFilesUploading(this.importFiles$.value, true);
 
     const fileUploadObservables = this.importFiles$.value.map(
       (model: QueuedFile) => this.commitFile(model)
@@ -482,14 +481,9 @@ class AddAnnotationsComponent
   }
 
   private performDryRun(): void {
-    const models: QueuedFile[] = this.importFiles$.value;
-    if (models.length === 0) {
-      return;
-    }
-
     this.importState.set(ImportState.UPLOADING);
-    this.setFilesUploading(models, true);
 
+    const models: QueuedFile[] = this.importFiles$.value;
     const fileUploadObservables = models.map((model: QueuedFile) =>
       this.dryRunFile(model)
     );
@@ -523,6 +517,8 @@ class AddAnnotationsComponent
     const importFileModel = this.createAudioEventImportFile(queueModel);
     const file = queueModel.file;
     const provenanceId = queueModel.provenanceId;
+
+    queueModel.isUploading = true;
 
     // We use defer inside this iif to ensure that the api is only called when
     // the observable is subscribed to (the commit flag is evaluated).
@@ -585,7 +581,7 @@ class AddAnnotationsComponent
     errors: EventImportError[],
     additionalTagIds: Id[],
     provenanceId: Id,
-    isUploading = false,
+    isUploading: boolean,
   ): QueuedFile {
     return {
       file,
@@ -630,24 +626,6 @@ class AddAnnotationsComponent
 
   private changeFileTypes(files: File, type: string): File {
     return new File([files], files.name, { type });
-  }
-
-  private setFilesUploading(
-    files: QueuedFile | QueuedFile[],
-    isUploading: boolean,
-  ): void {
-    const fileArray = Array.isArray(files) ? files : [files];
-    if (fileArray.length === 0) {
-      return;
-    }
-
-    const fileRefs = new Set(fileArray.map((model) => model.file));
-
-    const updatedFiles = this.importFiles$.value.map((model) =>
-      fileRefs.has(model.file) ? { ...model, isUploading } : model
-    );
-
-    this.importFiles$.next(updatedFiles);
   }
 }
 

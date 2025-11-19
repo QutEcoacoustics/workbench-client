@@ -12,6 +12,7 @@
 
 .error-output {
   flex: 1 1;
+  align-content: center;
 
   &:not(:last-child) {
     margin-bottom: 1em;

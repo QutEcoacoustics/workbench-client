@@ -2,6 +2,10 @@
   &:not(:last-child) {
     margin-bottom: 0.5em;
   }
+
+  baw-typeahead-input {
+    margin-bottom: 0;
+  }
 }
 
 .file-list-item-content {
@@ -63,8 +67,8 @@
   }
 
   .file-upload-spinner {
+    display: inline;
     margin-left: 0.5rem;
-    display: inline-flex;
   }
 }
 
@@ -76,7 +80,8 @@
   transition: opacity 0.2s ease-in-out;
 
   &.preview-disabled {
-    opacity: 0.5;
+    opacity: 0.75;
     pointer-events: none;
+    cursor: wait;
   }
 }
