@@ -125,11 +125,13 @@ describe("AddAnnotationsComponent", () => {
   function addExtraTag(tag: string): void {
     const target = extraTagsTypeahead();
     selectFromTypeahead(spec, target, tag);
+    spec.detectChanges();
   }
 
   function addExtraProvenance(tag: string): void {
     const target = extraProvenanceTypeahead();
     selectFromTypeahead(spec, target, tag);
+    spec.detectChanges();
   }
 
   function commitImport(): void {
@@ -839,12 +841,13 @@ describe("AddAnnotationsComponent", () => {
       }
     }));
 
-    it("should show type errors if a field has an incorrect data type", fakeAsync(() => {
+    fit("should show type errors if a field has an incorrect data type", fakeAsync(() => {
       const testEvent: IImportedAudioEvent = generateImportedAudioEvent({
         // We use "as any" here to bypass type checking because we want to
         // test invalid types being sent to the client from the server.
         channel: "this is a string" as any,
         errors: [{ channel: ["Channel must be a number"] }],
+        tags: modelData.randomArray(1, 3, () => new Tag(generateTag())),
       });
 
       const testFile = new AudioEventImportFile(
