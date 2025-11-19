@@ -100,7 +100,6 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
       distinctUntilChanged(),
       switchMap((term: string) => {
         const callback = this.searchCallback();
-        console.log(callback);
         if (!callback) {
           return [];
         }
