@@ -14,10 +14,9 @@
     </span>
   }
 } @else {
-  <!-- We don't use typeof value() here because null is an object  -->
   <span
     class="text-muted tooltip-hint"
-    [ngbTooltip]="`Expected a number type. Found '${value()}'.`"
+    [ngbTooltip]="'Expected a number type'"
   >
     {{ missingValueText() }}
   </span>

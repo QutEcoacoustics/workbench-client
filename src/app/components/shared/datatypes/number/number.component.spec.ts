@@ -53,7 +53,7 @@ describe("SafeNumberComponent", () => {
   });
 
   it("should have the correct tooltip for a null value", () => {
-    const expectedTooltip = "Expected a number type. Found 'null'.";
+    const expectedTooltip = "Expected a number type";
     setup(null);
 
     const tooltipHint = spec.query(".tooltip-hint")!;
