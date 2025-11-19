@@ -212,7 +212,7 @@ export class AnnotationSearchFormComponent implements OnInit {
         return current;
       });
     } else {
-      const recordingIds = this.recordingsTypeahead().value.map(
+      const recordingIds = this.recordingsTypeahead().value().map(
         (recordingModel: AudioRecording) => recordingModel.id,
       );
 
