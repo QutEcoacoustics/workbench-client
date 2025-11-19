@@ -3,9 +3,7 @@ import {
   Component,
   input,
   model,
-  OnChanges,
   output,
-  SimpleChanges,
   TemplateRef,
 } from "@angular/core";
 import {
@@ -39,7 +37,7 @@ export type TypeaheadSearchCallback<T> = (
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TypeaheadInputComponent<T = unknown> implements OnChanges {
+export class TypeaheadInputComponent<T = unknown> {
   public static readonly maximumResults = 10;
 
   /**
@@ -75,19 +73,6 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
 
   public readonly inputModel = model<string | null>(null);
   protected readonly focus$ = new Subject<T[]>();
-
-  public ngOnChanges(change: SimpleChanges): void {
-    // If we are not creating a multiple input typeahead, changing the [value]
-    // property should directly change the value inside the typeahead input.
-    // This is also useful for populating the typeahead with a default value.
-    if (
-      !this.multipleInputs() &&
-      Object.prototype.hasOwnProperty.call(change, "value")
-    ) {
-      const value = this.value()[0]?.toString();
-      this.inputModel.set(value);
-    }
-  }
 
   protected findOptions = (text$: Observable<string>): Observable<T[]> => {
     // We only debounce the text observable, but not the focus observable so
