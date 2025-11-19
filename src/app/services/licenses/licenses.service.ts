@@ -1,5 +1,10 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { License } from "@models/data/License";
+import { RegionsService } from "@baw-api/region/regions.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { defer, iif, map, Observable, of } from "rxjs";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
 import { createItemSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 
@@ -13,6 +18,8 @@ export type SpdxLicense = (typeof spdxLicenses)[0];
 
 @Injectable({ providedIn: "root" })
 export class LicensesService {
+  private readonly projectsApi = inject(ProjectsService);
+
   public async availableLicenses(): Promise<Record<string, SpdxLicense>> {
     // Because the spdx license list is quite large (5MB), importing the
     // license list into the client bundle would almost double the clients
@@ -75,6 +82,22 @@ export class LicensesService {
 
     const isSpdxLicense = await this.isSpdxLicense(identifier);
     return isSpdxLicense ? identifier : "Custom License";
+  }
+
+  // TODO: Remove this method once the associations support returning promises
+  // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
+  public modelLicenseIdentifier(model: Region | Project): Observable<string | null> {
+    return iif(
+      () => model instanceof Project,
+      defer(() => of((model as Project))),
+      defer(() =>
+        // This type cast is safe because the iif condition above ensures that
+        // the model is a Region in this branch.
+        this.projectsApi.show((model as Region).projectId),
+      ),
+    ).pipe(
+      map((project: Project) => project.license ?? null),
+    );
   }
 
   private async licenseIdentifiers(): Promise<Readonly<Set<string>>> {

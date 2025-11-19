@@ -1,0 +1,62 @@
+<div class="card h-100">
+  <!-- Image -->
+  <div class="card-image position-relative">
+    <a [bawUrl]="model().viewUrl">
+      <img [alt]="model().name + ' image'" [src]="model().imageUrls" />
+    </a>
+  </div>
+
+  <div class="card-body">
+    <!-- Title -->
+    <a class="card-title truncate" [bawUrl]="model().viewUrl">
+      <h4 [innerText]="model().name"></h4>
+    </a>
+
+    <!-- Description -->
+    <div class="card-text">
+      <div class="truncate">
+        <p
+          [innerHtml]="
+            model().descriptionHtmlTagline ?? '<i>No description given</i>'
+          "
+        ></p>
+      </div>
+    </div>
+
+    <div class="card-badges">
+      @if (isOwner()) {
+        <div id="owner" class="badge text-bg-highlight">Owner</div>
+      }
+
+      @let license = licenseText() | async;
+      @if (!!license) {
+        <div
+          class="license-badge badge text-bg-secondary tooltip-hint"
+          [ngbTooltip]="
+            'This license has been applied to all data, metadata, and analysis results'
+          "
+          container="body"
+        >
+          {{ license }}
+        </div>
+      }
+
+      <ng-container [ngTemplateOutlet]="noAudioTemplate"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #noAudioTemplate>
+  @if (hasNoAudio$ | withLoading | async; as hasNoAudio) {
+    @if (hasNoAudio.value !== false) {
+      <div id="no-audio" class="badge text-bg-secondary">
+        @if (hasNoAudio.loading) {
+          <baw-loading size="sm" color="light" />
+        }
+        @if (hasNoAudio.value) {
+          <span>No audio yet</span>
+        }
+      </div>
+    }
+  }
+</ng-template>
