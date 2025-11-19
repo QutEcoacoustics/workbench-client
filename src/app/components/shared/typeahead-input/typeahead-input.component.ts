@@ -84,34 +84,35 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     }
   }
 
-    protected findOptions = (text$: Observable<string>): Observable<T[]> => {
-      const debouncedText$ = text$.pipe(
-        debounceTime(defaultDebounceTime),
-        distinctUntilChanged(),
-      );
+  protected findOptions = (text$: Observable<string>): Observable<T[]> => {
+    // We only debounce the text observable, but not the focus observable so
+    // that when the user performs the initial query by focusing the input,
+    // results appear immediately instead of having to wait for the debounce
+    // time.
+    const debouncedText$ = text$.pipe(debounceTime(defaultDebounceTime));
 
-      return merge(this.focus$, debouncedText$).pipe(
-        switchMap((term: string) => {
-          if (!this.searchCallback) {
-            return [];
+    return merge(this.focus$, debouncedText$).pipe(
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        if (!this.searchCallback) {
+          return [];
+        }
+
+        if (term === "" || term === null) {
+          if (this.queryOnFocus) {
+            return this.searchCallback("", this.value);
           }
 
-          if (term === "" || term === null) {
-            if (this.queryOnFocus) {
-              return this.searchCallback("", this.value);
-            }
+          return [];
+        }
 
-            return [];
-          }
-
-          return this.searchCallback(term, this.value);
-        }),
-        map((items: T[]) =>
-          items.slice(0, TypeaheadInputComponent.maximumResults),
-        ),
-      );
-    };
-
+        return this.searchCallback(term, this.value);
+      }),
+      map((items: T[]) =>
+        items.slice(0, TypeaheadInputComponent.maximumResults),
+      ),
+    );
+  };
 
   protected templateFormatter = (item: T): string => item.toString();
 
