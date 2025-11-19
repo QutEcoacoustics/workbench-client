@@ -1,10 +1,10 @@
 import { firstValueFrom, of } from "rxjs";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
-import { createItemSearchCallback, createSearchCallback } from "./typeaheadCallbacks";
 import { generateTag } from "@test/fakes/Tag";
 import { InnerFilter, Projection } from "@baw-api/baw-api.service";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { createItemSearchCallback, createSearchCallback } from "./typeaheadCallbacks";
 
 describe("typeaheadCallbacks", () => {
   describe("createSearchCallback", () => {
