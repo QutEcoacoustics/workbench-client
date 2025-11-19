@@ -157,10 +157,9 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     if (this.value().length === 1) {
       this.value.set([]);
     } else {
-      this.value.update((current) => {
-        current.splice(indexToRemove, 1);
-        return current;
-      });
+      this.value.update((current) =>
+        current.filter((_, index) => index !== indexToRemove)
+      );
     }
 
     this.modelChange.emit(this.value());
