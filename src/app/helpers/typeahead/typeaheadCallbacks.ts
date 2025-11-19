@@ -2,8 +2,8 @@ import { ApiFilter } from "@baw-api/api-common";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 import { contains, filterAnd, notIn } from "@helpers/filters/filters";
 import { Observable, of } from "rxjs";
-import { InnerFilter } from "@baw-api/baw-api.service";
-import { TypeaheadSearchCallback } from "../../components/shared/typeahead-input/typeahead-input.component";
+import { InnerFilter, Projection } from "@baw-api/baw-api.service";
+import { TypeaheadInputComponent, TypeaheadSearchCallback } from "../../components/shared/typeahead-input/typeahead-input.component";
 
 // create a callback that can be used to filter for items in a typeahead
 // TODO: Places that use this helper should be replaced with a service method
@@ -12,7 +12,8 @@ import { TypeaheadSearchCallback } from "../../components/shared/typeahead-input
 export function createSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
-  filters: InnerFilter<T> = {}
+  filters: InnerFilter<T> = {},
+  projection?: Projection<T>,
 ): TypeaheadSearchCallback<T> {
   return (text: any, activeItems: T[]): Observable<T[]> =>
     api.filter({
@@ -23,6 +24,8 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
         // selected
         notIn<T>(key, activeItems)
       ),
+      paging: { items: TypeaheadInputComponent.maximumResults },
+      projection,
     });
 }
 
@@ -30,7 +33,8 @@ export function createSearchCallback<T extends AbstractModelWithoutId>(
 export function createIdSearchCallback<T extends AbstractModelWithoutId>(
   api: ApiFilter<T>,
   key: keyof T,
-  filters: InnerFilter<T> = {}
+  filters: InnerFilter<T> = {},
+  projection?: Projection<T>,
 ): TypeaheadSearchCallback<T> {
   return (text: any): Observable<T[]> => {
     const id = Number(text);
@@ -40,6 +44,8 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
 
     return api.filter({
       filter: filterAnd({ [key]: { eq: id } } as any, filters),
+      paging: { items: TypeaheadInputComponent.maximumResults },
+      projection,
     });
   };
 }
@@ -51,7 +57,7 @@ export function createIdSearchCallback<T extends AbstractModelWithoutId>(
 export function createItemSearchCallback<T>(
   items: T[]
 ): TypeaheadSearchCallback<T> {
-  const maxResults = 10;
+  const maxResults = TypeaheadInputComponent.maximumResults;
   return (searchTerm: string) => {
     const filteredItems = items.filter((item) => {
       const itemText = item.toString().toLowerCase();

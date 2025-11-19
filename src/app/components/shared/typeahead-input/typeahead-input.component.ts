@@ -38,6 +38,8 @@ export type TypeaheadSearchCallback<T> = (
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
 })
 export class TypeaheadInputComponent<T = unknown> implements OnChanges {
+  public static readonly maximumResults = 10;
+
   /**
    * The options callback is typically linked to a service as it should return
    * a list observable of options that the user could select Active items are
@@ -83,10 +85,13 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
   }
 
   protected findOptions = (text$: Observable<string>): Observable<T[]> => {
-    const maximumResults = 10;
+    // We only debounce the text observable, but not the focus observable so
+    // that when the user performs the initial query by focusing the input,
+    // results appear immediately instead of having to wait for the debounce
+    // time.
+    const debouncedText$ = text$.pipe(debounceTime(defaultDebounceTime));
 
-    return merge(this.focus$, text$).pipe(
-      debounceTime(defaultDebounceTime),
+    return merge(this.focus$, debouncedText$).pipe(
       distinctUntilChanged(),
       switchMap((term: string) => {
         if (!this.searchCallback) {
@@ -103,7 +108,9 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
 
         return this.searchCallback(term, this.value);
       }),
-      map((items: T[]) => items.slice(0, maximumResults)),
+      map((items: T[]) =>
+        items.slice(0, TypeaheadInputComponent.maximumResults),
+      ),
     );
   };
 

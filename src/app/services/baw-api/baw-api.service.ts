@@ -1100,6 +1100,21 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   };
 
 /**
+ * @description
+ * A partial body that can be used to include or exclude keys from an API
+ * response.
+ */
+export interface Projection<
+  Model = unknown,
+  K extends keyof Model = keyof Model,
+> {
+  /** Include keys in response */
+  include?: K[];
+  /** Exclude keys from response */
+  exclude?: K[];
+}
+
+/**
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
@@ -1107,12 +1122,7 @@ export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
   /** Filter settings */
   filter?: InnerFilter<Writeable<Model>>;
   /** Include or exclude keys from response */
-  projection?: {
-    /** Include keys in response */
-    include?: K[];
-    /** Exclude keys from response */
-    exclude?: K[];
-  };
+  projection?: Projection<Model>;
   /** Current sorting options */
   sorting?: Sorting<K>;
   /** Current page data */
