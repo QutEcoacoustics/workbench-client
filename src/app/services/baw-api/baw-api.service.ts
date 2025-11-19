@@ -1100,19 +1100,52 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   };
 
 /**
- * @description
- * A partial body that can be used to include or exclude keys from an API
- * response.
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
  */
-export interface Projection<
-  Model = unknown,
-  K extends keyof Model = keyof Model,
-> {
+interface NewProjection<Model = unknown, K extends keyof Model = keyof Model> {
+  /**
+   * The `only` parameter specifies the base set of keys to include.
+   * This means that `add` and `remove` operations will be performed on top of
+   * the keys specified in `only`.
+   *
+   * If `add` and `remove` are not specified, only the keys in `only` field will
+   * be included in the response.
+   */
+  only?: K[];
+
+  /**
+   * Adds additional fields to the projection, on top of the default/only fields
+   */
+  add?: K[];
+
+  /**
+   * remove the following fields from the set default/only+add fields
+   */
+  remove?: K[];
+}
+
+/**
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
+interface OldProjection<Model = unknown, K extends keyof Model = keyof Model> {
   /** Include keys in response */
   include?: K[];
+
   /** Exclude keys from response */
   exclude?: K[];
 }
+
+/**
+ * @description
+ * A partial body that can be used to include or exclude keys from an API
+ * response.
+ *
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
+export type Projection<Model = unknown> = XOR<
+  OldProjection<Model>,
+  NewProjection<Model>
+>;
 
 /**
  * Filter metadata from api response
