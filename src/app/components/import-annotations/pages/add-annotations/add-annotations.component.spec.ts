@@ -25,7 +25,7 @@ import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
-import { Observable, of, throwError } from "rxjs";
+import { Observable, of, Subject, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { UNPROCESSABLE_ENTITY } from "http-status";
@@ -329,6 +329,29 @@ describe("AddAnnotationsComponent", () => {
       expect(fileListItems()).toHaveLength(0);
       expect(fileInput().files).toHaveLength(0);
     });
+
+    // Because all files are uploaded together, removing a file causes all of
+    // the remaining files to be re-uploaded (dry run).
+    // Therefore, we should see that the loading spinner is shown again.
+    it("should enter a loading state after removing a file", () => {
+      addFiles([modelData.file(), modelData.file()]);
+
+      // Delay the observable completing so that we can check the loading state
+      // after removing a file.
+      const response = new Subject();
+      fileImportSpy.dryCreate.and.returnValue(response);
+
+      removeFile(0);
+
+      expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+      response.next(mockImportResponse);
+      spec.detectChanges();
+
+      // After the observable completes emits a value for the dry run, we should
+      // see that the loading spinner is removed.
+      expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
+    });
   });
 
   // the navigation warning depends on the UnsavedInputGuard
@@ -479,6 +502,25 @@ describe("AddAnnotationsComponent", () => {
 
       expect(importFilesButton()).toBeDisabled();
     });
+
+    it("should remove the loading spinner when the dry run completes", () => {
+      // We provide a observable that we manually trigger so that we can assert
+      // that the loading spinner is correctly shown when a dry run is in
+      // progress and that it is removed when the dry run errors.
+      const response = new Subject();
+      fileImportSpy.dryCreate.and.returnValue(response);
+
+      addFiles([modelData.file()]);
+
+      expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+      response.next(mockImportResponse);
+      spec.detectChanges();
+
+      // After we send the dry run response, we should see that the loading
+      // spinner is removed.
+      expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
+    });
   });
 
   describe("additional tags", () => {
@@ -521,6 +563,23 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
         expect(fileAdditionalTags(0)).toHaveLength(0);
       });
+
+      it("should enter a loading state when additional tags are added to a file", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        const response = new Subject();
+        fileImportSpy.dryCreate.and.returnValue(response);
+
+        const testedTag = mockTagsResponse[0];
+        addTagToFile(0, testedTag.text);
+
+        expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+        response.next(mockImportResponse);
+        spec.detectChanges();
+
+        expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
+      }));
     });
 
     describe("extra tags", () => {
@@ -580,6 +639,23 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
         expect(fileProvenance(0)).toEqual("");
       });
+
+      it("should enter a loading state when a provenance is added to a file", fakeAsync(() => {
+        addFiles([modelData.file()]);
+
+        const response = new Subject();
+        fileImportSpy.dryCreate.and.returnValue(response);
+
+        const testedProvenance = mockProvenanceResponse[0];
+        addProvenanceToFile(0, testedProvenance.name);
+
+        expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+        response.next(mockImportResponse);
+        spec.detectChanges();
+
+        expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
+      }));
     });
 
     // The "all files" provenance input can be used to apply a provenance to
@@ -657,6 +733,25 @@ describe("AddAnnotationsComponent", () => {
         "Successfully imported annotations",
       );
     });
+
+    it("should enter a loading state when committing an import", () => {
+      addFiles([modelData.file()]);
+
+      const response = new Subject();
+      fileImportSpy.create.and.returnValue(response);
+
+      commitImport();
+
+      // while the create observable has not emitted, we should see a loading
+      // spinner for the file being uploaded
+      expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+      response.next(mockImportResponse);
+      spec.detectChanges();
+
+      // after the create completes, the loading spinner should be removed
+      expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
+    });
   });
 
   describe("error handling", () => {
@@ -732,15 +827,12 @@ describe("AddAnnotationsComponent", () => {
     });
 
     it("should show type errors if a field has an incorrect data type", () => {
-      const testEvent: IImportedAudioEvent =
-        generateImportedAudioEvent({
-          // We use "as any" here to bypass type checking because we want to
-          // test invalid types being sent to the client from the server.
-          channel: "this is a string" as any,
-          errors: [
-            { channel: ["Channel must be a number"] },
-          ],
-        });
+      const testEvent: IImportedAudioEvent = generateImportedAudioEvent({
+        // We use "as any" here to bypass type checking because we want to
+        // test invalid types being sent to the client from the server.
+        channel: "this is a string" as any,
+        errors: [{ channel: ["Channel must be a number"] }],
+      });
 
       const testFile = new AudioEventImportFile(
         generateAudioEventImportFile({
@@ -753,7 +845,7 @@ describe("AddAnnotationsComponent", () => {
         UNPROCESSABLE_ENTITY,
         "Unprocessable Content",
         testFile,
-        { file: "validation failed "},
+        { file: "validation failed " },
       );
 
       const mockAudioFiles = [modelData.file()];
@@ -774,6 +866,32 @@ describe("AddAnnotationsComponent", () => {
         mockProvenanceResponse[0].toString(),
         "channel: Channel must be a number",
       ]);
+    });
+
+    it("should transition out of an uploading state if the dry run fails", () => {
+      // We provide a observable that we manually trigger so that we can assert
+      // that the loading spinner is correctly shown when a dry run is in
+      // progress and that it is removed when the dry run errors.
+      const response = new Subject();
+      fileImportSpy.dryCreate.and.returnValue(response);
+
+      addFiles([modelData.file()]);
+
+      expect(fileListItems()[0]).toHaveDescendant("baw-loading");
+
+      mockImportResponse = new BawApiError(
+        UNPROCESSABLE_ENTITY,
+        "Unprocessable Content",
+        mockImportResponse as any,
+        { file: "validation failed" },
+      );
+
+      response.error(mockImportResponse);
+      spec.detectChanges();
+
+      // After we send the error response, we should see that the loading
+      // spinner is removed.
+      expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
     });
   });
 
