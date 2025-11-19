@@ -12,8 +12,8 @@
         type="file"
         accept=".csv, .tsv, .selections.txt, .json"
         class="form-control border"
-        [ngClass]="{ 'is-invalid': !ngForm.valid }"
-        [disabled]="isUploading"
+        [class.is-invalid]="!ngForm.valid"
+        [disabled]="isUploading()"
         (change)="handleFileChange($event)"
         multiple
       />
@@ -66,7 +66,7 @@
                       inputPlaceholder="Add tags"
                       [searchCallback]="tagsApi.typeaheadCallback()"
                       [resultTemplate]="tagsTypeaheadTemplate"
-                      [inputDisabled]="isUploading"
+                      [inputDisabled]="isUploading()"
                       (modelChange)="
                         updateFileAdditionalTagIds(
                           fileModel,
@@ -80,7 +80,7 @@
                       class="file-provenance"
                       inputPlaceholder="Add provenance"
                       [searchCallback]="provenanceApi.typeaheadCallback()"
-                      [inputDisabled]="isUploading"
+                      [inputDisabled]="isUploading()"
                       [multipleInputs]="false"
                       (modelChange)="
                         updateFileProvenance(fileModel, $event?.[0]?.id)
@@ -138,14 +138,14 @@
     <!-- we use attr.ngbTooltip because we want to conditionally add a tooltip -->
     <span
       class="d-inline-block mt-2"
-      [ngbTooltip]="uploadTooltip"
-      [attr.ngbTooltip]="uploadTooltip !== null"
+      [ngbTooltip]="uploadTooltip()"
+      [attr.ngbTooltip]="uploadTooltip() !== null"
     >
       <button
         id="import-btn"
         type="submit"
         class="btn btn-primary"
-        [disabled]="!canCommitUploads"
+        [disabled]="!canCommitUploads()"
         (click)="commitImports()"
       >
         Import Annotations
@@ -170,8 +170,8 @@
 
   <div
     class="annotation-preview-table"
-    [class.preview-disabled]="isUploading"
-    [attr.inert]="isUploading ? 'true' : null"
+    [class.preview-disabled]="isUploading()"
+    [attr.inert]="isUploading() ? 'true' : null"
   >
     <ngx-datatable
       bawDatatableCompact
