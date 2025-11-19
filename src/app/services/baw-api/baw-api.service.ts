@@ -1099,6 +1099,9 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
       Subsets;
   };
 
+/**
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
 interface NewProjection<Model = unknown, K extends keyof Model = keyof Model> {
   /**
    * The `only` parameter specifies the base set of keys to include.
@@ -1111,18 +1114,19 @@ interface NewProjection<Model = unknown, K extends keyof Model = keyof Model> {
   only?: K[];
 
   /**
-   * All default keys not filtered out by `remove` will be included in the
-   * response along with any non-default keys specified by `add`.
+   * Adds additional fields to the projection, on top of the default/only fields
    */
   add?: K[];
 
   /**
-   * Exclude the following keys from the response.
-   * All other non-matching keys will be included.
+   * remove the following fields from the set default/only+add fields
    */
   remove?: K[];
 }
 
+/**
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
 interface OldProjection<Model = unknown, K extends keyof Model = keyof Model> {
   /** Include keys in response */
   include?: K[];
@@ -1135,6 +1139,8 @@ interface OldProjection<Model = unknown, K extends keyof Model = keyof Model> {
  * @description
  * A partial body that can be used to include or exclude keys from an API
  * response.
+ *
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
  */
 export type Projection<Model = unknown> = XOR<
   OldProjection<Model>,
