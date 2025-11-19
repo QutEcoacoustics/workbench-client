@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
+  signal,
 } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -45,17 +47,24 @@ export class CardComponent {
 
   public readonly model = input<Project | Region>();
 
+  protected readonly license = signal<string | null>(null);
   protected readonly licenseText = computed(() =>
-    this.licenseService.modelLicenseIdentifier(this.model()),
+    this.licenseService.licenseText(this.license()),
   );
 
   protected readonly isOwner = computed(
     () => this.model().creatorId === this.session.loggedInUser?.id,
   );
 
-  protected hasNoAudio$: Observable<boolean> = this.getRecordings().pipe(
-    map((recordings) => recordings.length === 0),
-  );
+  protected readonly hasNoAudio$: Observable<boolean> =
+    this.getRecordings().pipe(map((recordings) => recordings.length === 0));
+
+  public constructor() {
+    effect(async () => {
+      const modelIdentifier = await this.model().license;
+      this.license.set(modelIdentifier);
+    });
+  }
 
   private getRecordings(): Observable<AudioRecording[]> {
     const filters: Filters<AudioRecording> = { paging: { items: 1 } };

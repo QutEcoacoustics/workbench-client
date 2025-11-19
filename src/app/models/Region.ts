@@ -30,6 +30,7 @@ import {
 import { Project } from "./Project";
 import { Site } from "./Site";
 import { User } from "./User";
+import { firstValueFrom, map } from "rxjs";
 
 /**
  * A region model.
@@ -90,6 +91,17 @@ export class Region
   public updater?: User;
   @deleter()
   public deleter?: User;
+
+  public get license(): Promise<string | null> {
+    // TODO: Use the "project" association once we support async associations
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
+    const projectsApi = this.injector.get(PROJECT.token);
+    const request$ = projectsApi
+      .show(this.projectId)
+      .pipe(map((project: Project) => project.license ?? null));
+
+    return firstValueFrom(request$);
+  }
 
   public get viewUrl(): string {
     return regionRoute.format({
