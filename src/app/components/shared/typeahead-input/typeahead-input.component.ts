@@ -1,10 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
+  input,
+  model,
+  output,
   TemplateRef,
 } from "@angular/core";
 import {
@@ -36,8 +35,9 @@ export type TypeaheadSearchCallback<T> = (
   templateUrl: "./typeahead-input.component.html",
   styleUrl: "./typeahead-input.component.scss",
   imports: [FaIconComponent, NgTemplateOutlet, NgbTypeahead, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TypeaheadInputComponent<T = unknown> implements OnChanges {
+export class TypeaheadInputComponent<T = unknown> {
   public static readonly maximumResults = 10;
 
   /**
@@ -46,43 +46,33 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
    * included in the callback as the api request should have a filter condition
    * to filter these results out.
    */
-  @Input() public searchCallback: TypeaheadSearchCallback<T>;
+  public readonly searchCallback = input.required<TypeaheadSearchCallback<T>>();
   /**
    * Describes how to convert an object model into a human readable form for
    * use in the pills and typeahead dropdown.
    */
-  @Input() public resultTemplate: TemplateRef<ResultTemplateContext>;
+  public readonly resultTemplate = input<TemplateRef<ResultTemplateContext>>();
   /** Whether the typeahead input should allow multiple inputs in pill form */
-  @Input() public multipleInputs = true;
+  public readonly multipleInputs = input(true);
   /** Text to show above the input field. Usually a one 1-2 word description. */
-  @Input() public label = "";
+  public readonly label = input("");
   /**
    * Placeholder text that is shown when the input field is empty.
    * Note: This value is not emitted at any point
    */
-  @Input() public inputPlaceholder = "";
-  @Input() public inputDisabled = false;
-  @Input() public queryOnFocus = true;
+  public readonly inputPlaceholder = input("");
+  public readonly inputDisabled = input(false);
+  public readonly queryOnFocus = input(true);
 
   // if multiple items are enabled, they will be added to the value
   // if multiple inputs are disabled, the value will always be an array with a single element
   // we use the variable name "value" so the component can be used in ngForms and can bind to [(ngModel)]
-  @Input() public value: T[] = [];
+  public readonly value = model<T[]>([]);
   /** An event emitter when a user adds, removes, or selects and item from the typeahead input */
-  @Output() public modelChange = new EventEmitter<T[]>();
+  public readonly modelChange = output<T[]>();
 
-  public inputModel: string | null;
-  protected focus$ = new Subject<T[]>();
-
-  public ngOnChanges(change: SimpleChanges): void {
-    // If we are not creating a multiple input typeahead, changing the [value]
-    // property should directly change the value inside the typeahead input.
-    // This is also useful for populating the typeahead with a default value.
-    if (!this.multipleInputs && Object.prototype.hasOwnProperty.call(change, "value")) {
-      const value = this.value[0]?.toString();
-      this.inputModel = value;
-    }
-  }
+  public readonly inputModel = model<string | null>(null);
+  protected readonly focus$ = new Subject<T[]>();
 
   protected findOptions = (text$: Observable<string>): Observable<T[]> => {
     // We only debounce the text observable, but not the focus observable so
@@ -94,19 +84,20 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     return merge(this.focus$, debouncedText$).pipe(
       distinctUntilChanged(),
       switchMap((term: string) => {
-        if (!this.searchCallback) {
+        const callback = this.searchCallback();
+        if (!callback) {
           return [];
         }
 
         if (term === "" || term === null) {
-          if (this.queryOnFocus) {
-            return this.searchCallback("", this.value);
+          if (this.queryOnFocus()) {
+            return callback("", this.value());
           }
 
           return [];
         }
 
-        return this.searchCallback(term, this.value);
+        return callback(term, this.value());
       }),
       map((items: T[]) =>
         items.slice(0, TypeaheadInputComponent.maximumResults),
@@ -120,40 +111,43 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     event.preventDefault();
     const selectedItem = event.item;
 
-    if (this.multipleInputs) {
+    if (this.multipleInputs()) {
       // We have to use the spread operator because array.push does not work on
       // arrays created by getters.
       // By spreading into a new array, we create a new array that does not have
       // this limitation.
-      this.value = [...this.value, selectedItem];
-      this.modelChange.emit(this.value);
+      this.value.update((current) => [...current, selectedItem]);
+      this.modelChange.emit(this.value());
 
-      this.inputModel = null;
+      this.inputModel.set(null);
     } else {
-      this.value = [selectedItem];
+      this.value.set([selectedItem]);
       this.modelChange.emit([selectedItem]);
 
-      this.inputModel = selectedItem.toString();
+      this.inputModel.set(selectedItem.toString());
     }
   }
 
   protected removeLastItem(): void {
-    if (this.multipleInputs && this.value.length > 0 && !this.inputModel) {
-      this.value.pop();
-      this.modelChange.emit(this.value);
+    if (this.multipleInputs() && this.value().length > 0 && !this.inputModel()) {
+      this.value.update((current) => current.slice(0, -1));
+
+      this.modelChange.emit(this.value());
     }
   }
 
   protected removeItem(indexToRemove: number): void {
     // if the "value" array has a length of 1, the splice function doesn't return an empty array
     // therefore, we use length === 1 as an edge case
-    if (this.value.length === 1) {
-      this.value = [];
+    if (this.value().length === 1) {
+      this.value.set([]);
     } else {
-      this.value.splice(indexToRemove, 1);
+      this.value.update((current) =>
+        current.filter((_, index) => index !== indexToRemove)
+      );
     }
 
-    this.modelChange.emit(this.value);
+    this.modelChange.emit(this.value());
   }
 
   protected handleInput(): void {
@@ -168,8 +162,8 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
     // TODO: we should add "lose matching" support so that if the user types in
     // the exact value as a search result it should be automatically selected,
     // meaning that the user doesn't have to click on the search result item.
-    if (!this.multipleInputs && this.value.length > 0) {
-      this.value = [];
+    if (!this.multipleInputs() && this.value().length > 0) {
+      this.value.set([]);
       this.modelChange.emit([]);
     }
   }

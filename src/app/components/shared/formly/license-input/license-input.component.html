@@ -14,9 +14,9 @@
       [multipleInputs]="false"
       [resultTemplate]="licenseSearchTemplate"
       (modelChange)="updateSelectedLicense($event)"
-    ></baw-typeahead-input>
+    />
 
-    @if (selectedLicense) {
+    @if (selectedLicense()) {
       <button
         type="button"
         class="btn btn-outline-danger"
@@ -61,10 +61,10 @@
 <ng-template #licenseInformationModal let-licenseModal>
   <baw-license-information-modal
     [modal]="licenseModal"
-    [license]="selectedLicense"
-  ></baw-license-information-modal>
+    [license]="selectedLicense()"
+  />
 </ng-template>
 
 <ng-template #licenseSearchTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.name" [term]="searchTerm" />
 </ng-template>
