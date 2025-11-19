@@ -145,10 +145,7 @@ export class TypeaheadInputComponent<T = unknown> implements OnChanges {
 
   protected removeLastItem(): void {
     if (this.multipleInputs() && this.value().length > 0 && !this.inputModel()) {
-      this.value.update((current) => {
-        current.pop();
-        return current;
-      });
+      this.value.update((current) => current.slice(0, -1));
 
       this.modelChange.emit(this.value());
     }
