@@ -1099,20 +1099,47 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
       Subsets;
   };
 
+interface NewProjection<Model = unknown, K extends keyof Model = keyof Model> {
+  /**
+   * The `only` parameter specifies the base set of keys to include.
+   * This means that `add` and `remove` operations will be performed on top of
+   * the keys specified in `only`.
+   *
+   * If `add` and `remove` are not specified, only the keys in `only` field will
+   * be included in the response.
+   */
+  only?: K[];
+
+  /**
+   * All default keys not filtered out by `remove` will be included in the
+   * response along with any non-default keys specified by `add`.
+   */
+  add?: K[];
+
+  /**
+   * Exclude the following keys from the response.
+   * All other non-matching keys will be included.
+   */
+  remove?: K[];
+}
+
+interface OldProjection<Model = unknown, K extends keyof Model = keyof Model> {
+  /** Include keys in response */
+  include?: K[];
+
+  /** Exclude keys from response */
+  exclude?: K[];
+}
+
 /**
  * @description
  * A partial body that can be used to include or exclude keys from an API
  * response.
  */
-export interface Projection<
-  Model = unknown,
-  K extends keyof Model = keyof Model,
-> {
-  /** Include keys in response */
-  include?: K[];
-  /** Exclude keys from response */
-  exclude?: K[];
-}
+export type Projection<Model = unknown> = XOR<
+  OldProjection<Model>,
+  NewProjection<Model>
+>;
 
 /**
  * Filter metadata from api response
