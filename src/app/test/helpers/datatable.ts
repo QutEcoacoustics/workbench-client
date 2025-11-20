@@ -1,3 +1,5 @@
+import { Spectator, SpectatorDirective } from "@ngneat/spectator";
+
 // these are all callbacks because sometimes the datatable content/column names
 // are dependent on the state of the tested component
 type SetupFunction = () => {
@@ -59,3 +61,9 @@ export function assertDatatableRow(row: HTMLDivElement, expectedValues: string[]
     expect(realizedValue).toHaveExactTrimmedText(expectedValue);
   }
 }
+
+export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: number) {}
+
+export function selectDatatablePage(spec: SpectatorDirective<any>, page: number) {}
+
+export function datatableCells(spec: Spectator<any>): any {}

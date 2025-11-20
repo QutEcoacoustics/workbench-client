@@ -162,7 +162,7 @@ describe("ToastProviderComponent", () => {
 
     for (const test of testCases) {
       it(`should have the correct theming for a '${test.expectedVariant}' toast variant`, () => {
-        toastServiceSpy[test.method]();
+        (toastServiceSpy[test.method] as any)();
          spec.detectChanges();
 
         const targetToast = toasts()[0];
@@ -171,7 +171,7 @@ describe("ToastProviderComponent", () => {
       });
 
       it(`should have the correct icon for a '${test.expectedVariant}' toast variant`, () => {
-        toastServiceSpy[test.method]();
+        (toastServiceSpy[test.method] as any)();
         spec.detectChanges();
 
         const targetToast = toasts()[0];

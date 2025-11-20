@@ -22,10 +22,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import {
-  DataTableBodyCellComponent,
-  DatatableComponent,
-} from "@swimlane/ngx-datatable";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -44,6 +41,7 @@ import { modelData } from "@test/helpers/faker";
 import { generateUser } from "@test/fakes/User";
 import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
+import { datatableCells } from "@test/helpers/datatable";
 
 describe("RecentAnnotationsComponent", () => {
   let api: {
@@ -217,7 +215,7 @@ describe("RecentAnnotationsComponent", () => {
 
   describe("rows", () => {
     function getCells() {
-      return spec.queryAll(DataTableBodyCellComponent);
+      return datatableCells(spec);
     }
 
     function getCellElements() {

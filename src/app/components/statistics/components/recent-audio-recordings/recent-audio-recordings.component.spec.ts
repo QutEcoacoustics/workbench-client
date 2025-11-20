@@ -5,10 +5,7 @@ import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
 import { ISite, Site } from "@models/Site";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import {
-  DataTableBodyCellComponent,
-  DatatableComponent,
-} from "@swimlane/ngx-datatable";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
@@ -20,6 +17,7 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
+import { datatableCells } from "@test/helpers/datatable";
 
 describe("RecentAudioRecordingsComponent", () => {
   let api: SpyObject<ShallowSitesService>;
@@ -90,7 +88,7 @@ describe("RecentAudioRecordingsComponent", () => {
 
   describe("rows", () => {
     function getCells() {
-      return spec.queryAll(DataTableBodyCellComponent);
+      return datatableCells(spec);
     }
 
     function getCellElements() {
