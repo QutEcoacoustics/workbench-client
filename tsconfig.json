@@ -13,7 +13,6 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "baseUrl": "./",
     "lib": [
       "ESNext",
       "dom",

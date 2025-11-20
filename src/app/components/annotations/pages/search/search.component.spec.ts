@@ -15,7 +15,7 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { fakeAsync } from "@angular/core/testing";
-import { SpectrogramComponent } from "node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { SpectrogramComponent } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -40,7 +40,10 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  VerificationParameters,
+  VerificationStatusKey,
+} from "@components/annotations/components/verification-form/verificationParameters";
 import { generateMeta } from "@test/fakes/Meta";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchComponent } from "./search.component";
@@ -81,7 +84,9 @@ describe("AnnotationSearchComponent", () => {
         createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
       }),
       mockProvider(BawSessionService, {
-        get isLoggedIn() { return true; },
+        get isLoggedIn() {
+          return true;
+        },
         authTrigger: of({ user: mockUser }),
       }),
     ],
@@ -211,7 +216,7 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioEventImportFileId": {
+              audioEventImportFileId: {
                 in: Array.from(mockSearchParameters.importFiles),
               },
             },
@@ -221,12 +226,12 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "score": {
+              score: {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              "score": {
+              score: {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
@@ -260,7 +265,7 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioEventImportFileId": {
+              audioEventImportFileId: {
                 in: Array.from(mockSearchParameters.importFiles),
               },
             },
@@ -270,22 +275,22 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "score": {
+              score: {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              "score": {
+              score: {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
             {
               or: [
-                { "verifications.creatorId": { notEq: mockUser.id} },
+                { "verifications.creatorId": { notEq: mockUser.id } },
                 { "verifications.id": { eq: null } },
                 {
                   and: [
-                    { "verifications.creatorId": { eq: mockUser.id} },
+                    { "verifications.creatorId": { eq: mockUser.id } },
                     { "verifications.confirmed": { eq: "skip" } },
                   ],
                 },

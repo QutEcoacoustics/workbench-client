@@ -4,7 +4,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { getElementByTextContent } from "@test/helpers/html";
-import { SpectrogramComponent } from "node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { SpectrogramComponent } from "../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
