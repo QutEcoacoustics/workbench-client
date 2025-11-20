@@ -181,9 +181,5 @@ export interface TablePage {
 export interface SortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: {
-    sortable: boolean;
-    prop: string;
-    name: string;
-  };
+  column: TableColumn;
 }
