@@ -1,4 +1,4 @@
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync } from "@angular/core/testing";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
