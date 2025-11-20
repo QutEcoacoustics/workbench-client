@@ -43,7 +43,7 @@ export interface IProject extends HasAllUsers, HasDescription {
   regionIds?: Ids | Id[];
   notes?: Hash;
   allowOriginalDownload?: PermissionLevel;
-  license?: string;
+  license?: string | null;
 }
 
 /**

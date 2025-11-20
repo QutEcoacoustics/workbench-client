@@ -15,11 +15,11 @@ type CardModel = Project | Region;
   selector: "baw-model-cards",
   template: `
     <div class="row">
-      @for (model of models() ?? []; track model) {
-        <baw-card [model]="model"></baw-card>
+      @for (model of models() ?? []; track model.id) {
+        <baw-card [model]="model" />
       }
       <div id="content">
-        <ng-content></ng-content>
+        <ng-content />
       </div>
     </div>
   `,
