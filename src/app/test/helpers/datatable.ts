@@ -62,8 +62,28 @@ export function assertDatatableRow(row: HTMLDivElement, expectedValues: string[]
   }
 }
 
-export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: number) {}
+export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: number) {
+  const headerCells = spec.queryAll<HTMLElement>("datatable-header-cell");
+  const targetCell = headerCells[column];
 
-export function selectDatatablePage(spec: SpectatorDirective<any>, page: number) {}
+  const sortButton = targetCell.querySelector(".sort-btn");
+
+  spec.click(sortButton);
+  spec.dispatchMouseEvent(sortButton, "click");
+}
+
+export async function selectDatatablePage(spec: SpectatorDirective<any>, page: number) {
+  const pagerComponent = spec.query("datatable-pager");
+
+  const expectedAriaLabel = `page ${page}`;
+  const pageListItem = pagerComponent.querySelector<HTMLElement>(
+    `[aria-label="${expectedAriaLabel}"]`
+  );
+
+  const pageButton = pageListItem.querySelector("[role='button']");
+
+  spec.click(pageButton);
+  spec.dispatchMouseEvent(pageButton, "click");
+}
 
 export function datatableCells(spec: Spectator<any>): any {}

@@ -1,8 +1,5 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import {
-  DataTableColumnDirective,
-  NgxDatatableModule,
-} from "@swimlane/ngx-datatable";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { MockModel } from "@models/AbstractModel.spec";
 import { Observable } from "rxjs";
 import { modelData } from "@test/helpers/faker";
@@ -25,7 +22,6 @@ describe("bawVirtualDatatablePagination", () => {
 
   const createDirective = createDirectiveFactory({
     directive: VirtualDatatablePaginationDirective<MockModel>,
-    declarations: [DataTableColumnDirective],
     imports: [
       NgxDatatableModule,
       DatatablePaginationDirective,

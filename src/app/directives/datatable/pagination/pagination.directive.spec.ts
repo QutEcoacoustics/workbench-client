@@ -1,12 +1,8 @@
-import { fakeAsync } from "@angular/core/testing";
+import { fakeAsync, flush } from "@angular/core/testing";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import {
-  DataTableColumnDirective,
-  DatatableComponent,
-  NgxDatatableModule,
-} from "@swimlane/ngx-datatable";
+import { DatatableComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { selectDatatablePage, sortDatatableByColumn } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
@@ -20,7 +16,6 @@ describe("DatatablePaginationDirective", () => {
 
   const createDirective = createDirectiveFactory({
     directive: DatatablePaginationDirective<MockModel>,
-    declarations: [DataTableColumnDirective],
     imports: [
       NgxDatatableModule,
       DatatableDefaultsDirective,
