@@ -137,7 +137,7 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@ecoacoustics/web-components/",
-                "output": "base/node_modules/@ecoacoustics/web-components/"
+                "output": "node_modules/@ecoacoustics/web-components/"
               }
             ],
             "styles": [
