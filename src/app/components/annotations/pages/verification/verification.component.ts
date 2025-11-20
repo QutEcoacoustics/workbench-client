@@ -27,7 +27,7 @@ import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import {
   DecisionMadeEvent,
   VerificationGridComponent,
-} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+} from "node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
@@ -52,17 +52,17 @@ import {
   TagPromptComponent,
   TypeaheadCallback,
   WhenPredicate,
-} from "@ecoacoustics/web-components/@types";
+} from "node_modules/@ecoacoustics/web-components/@types";
 import { Tag } from "@models/Tag";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tagging } from "@models/Tagging";
-import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+import { decisionNotRequired } from "node_modules/@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
-import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { PageFetcherContext } from "node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import { DecisionOptions } from "node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "node_modules/@ecoacoustics/web-components/@types/models/subject";
 import { ConfigService } from "@services/config/config.service";
 import { mergeParameters } from "@helpers/parameters/merge";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";

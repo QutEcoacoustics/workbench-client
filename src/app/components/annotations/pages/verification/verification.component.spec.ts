@@ -16,7 +16,7 @@ import { generateSite } from "@test/fakes/Site";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import { VerificationGridComponent } from "node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { modelData } from "@test/helpers/faker";
 import { Tag } from "@models/Tag";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
@@ -60,7 +60,7 @@ import {
   DecisionComponent,
   TagPromptComponent,
   VerificationGridTileComponent,
-} from "@ecoacoustics/web-components/@types";
+} from "node_modules/@ecoacoustics/web-components/@types";
 import { IconsModule } from "@shared/icons/icons.module";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
@@ -375,7 +375,7 @@ describe("VerificationComponent", () => {
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
       await import(
-        nodeModule("@ecoacoustics/web-components/dist/components.js")
+        nodeModule("node_modules/@ecoacoustics/web-components/dist/components.js")
       );
     }
 

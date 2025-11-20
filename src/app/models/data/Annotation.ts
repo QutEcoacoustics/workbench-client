@@ -2,7 +2,6 @@ import { MEDIA } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
-import { AbstractModelWithoutId } from "@models/AbstractModel";
 import {
   bawDateTime,
   bawSubModelCollection,

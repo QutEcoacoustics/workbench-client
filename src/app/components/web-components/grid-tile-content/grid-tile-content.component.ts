@@ -10,10 +10,10 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { NgElement, WithProperties } from "@angular/elements";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { gridTileContext } from "@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
+import { SpectrogramComponent } from "node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { gridTileContext } from "node_modules/@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 import { Annotation } from "@models/data/Annotation";
-import { MediaControlsComponent, VerificationGridTileContext } from "@ecoacoustics/web-components/@types";
+import { MediaControlsComponent, VerificationGridTileContext } from "node_modules/@ecoacoustics/web-components/@types";
 import {
   ContextSubscription,
   WithContext,

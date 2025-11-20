@@ -11,7 +11,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import {
   MediaControlsComponent,
   SpectrogramComponent,
-} from "@ecoacoustics/web-components/@types";
+} from "node_modules/@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";

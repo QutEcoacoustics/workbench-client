@@ -16,6 +16,7 @@ import { provideClientHydration } from "@angular/platform-browser";
 import { provideBawApi } from "@baw-api/provide-baw-api";
 import { appPageComponents } from "./app.pages";
 import { clientRoutes } from "./app.routes";
+import { defaultSlowLoadTime } from "./app.helper";
 
 export const appLibraryImports = [
   ReactiveFormsModule,
@@ -36,7 +37,7 @@ export const appConfig: ApplicationConfig = {
       withDisabledInitialNavigation(),
       withInMemoryScrolling({
         scrollPositionRestoration: "enabled",
-      })
+      }),
     ),
 
     importProvidersFrom(appLibraryImports),
@@ -49,9 +50,11 @@ export const appConfig: ApplicationConfig = {
     // Timeout API requests after set period
     // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
-    // { provide: TitleStrategy, useClass: PageTitleStrategy },
-    // Show loading animation after 3 seconds
-    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
+    {
+      provide: LOADING_BAR_CONFIG,
+      useValue: { latencyThreshold: defaultSlowLoadTime },
+    },
     { provide: APP_ID, useValue: "workbench-client" },
 
     provideClientHydration(),

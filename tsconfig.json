@@ -13,6 +13,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
+    "baseUrl": "./",
     "lib": [
       "ESNext",
       "dom",
@@ -80,9 +81,6 @@
       ],
       "@test/*": [
         "./src/app/test/*"
-      ],
-      "*": [
-        "./node_modules/*",
       ],
       "src/*": [
         "./src/*"
