@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { RouterStateSnapshot, TitleStrategy } from "@angular/router";
 import { titleCase } from "@helpers/case-converter/case-converter";
@@ -6,11 +6,10 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class PageTitleStrategy extends TitleStrategy {
-  public constructor(private title: Title, private config: ConfigService) {
-    super();
-  }
+  private readonly title = inject(Title);
+  private readonly config = inject(ConfigService);
 
   private routerState: RouterStateSnapshot;
 

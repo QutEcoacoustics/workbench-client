@@ -36,10 +36,16 @@ export const serverCacheConfig = {
 } as const satisfies NgHttpCachingConfig;
 
 const serverConfig: ApplicationConfig = {
-  providers: [provideServerRendering(withRoutes(serverRoutes)), { provide: API_CONFIG, useFactory: readConfig }, {
+  providers: [
+    provideServerRendering(withRoutes(serverRoutes)),
+    { provide: API_CONFIG, useFactory: readConfig },
+    {
       provide: DeviceDetectorService,
       useClass: UniversalDeviceDetectorService,
-    }, providerTimeoutInterceptor({ timeout: environment.ssrTimeout }), provideNgHttpCaching(serverCacheConfig)],
+    },
+    providerTimeoutInterceptor({ timeout: environment.ssrTimeout }),
+    provideNgHttpCaching(serverCacheConfig),
+  ],
 };
 
 export const ssrConfig = mergeApplicationConfig(appConfig, serverConfig);

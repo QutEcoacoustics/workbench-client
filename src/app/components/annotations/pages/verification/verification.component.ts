@@ -45,7 +45,6 @@ import {
 } from "@models/Verification";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RenderMode } from "@angular/ssr";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
@@ -62,6 +61,8 @@ import { TaggingCorrectionsService } from "@services/models/tagging-corrections/
 import { ScrollService } from "@services/scroll/scroll.service";
 import { Annotation } from "@models/data/Annotation";
 import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
 import { ConfigService } from "@services/config/config.service";
 import { mergeParameters } from "@helpers/parameters/merge";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";

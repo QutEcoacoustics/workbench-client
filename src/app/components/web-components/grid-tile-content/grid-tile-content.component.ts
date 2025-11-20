@@ -13,11 +13,11 @@ import { NgElement, WithProperties } from "@angular/elements";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { gridTileContext } from "@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 import { Annotation } from "@models/data/Annotation";
+import { MediaControlsComponent, VerificationGridTileContext } from "@ecoacoustics/web-components/@types";
 import {
   ContextSubscription,
   WithContext,
 } from "@helpers/context/context-decorators";
-import { VerificationGridTileContext } from "@ecoacoustics/web-components/@types";
 
 export const gridTileContentSelector = "baw-grid-tile-content";
 

@@ -31,7 +31,7 @@ import {
 } from "@services/maps/maps.service";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { interpolateSinebow } from "node_modules/d3-scale-chromatic";
+import { interpolateSinebow } from "d3-scale-chromatic";
 import { NgTemplateOutlet } from "@angular/common";
 import { LoadingComponent } from "../loading/loading.component";
 import { ClusterRenderer } from "./clusterRenderer";

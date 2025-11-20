@@ -49,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     // Timeout API requests after set period
     // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
-    { provide: TitleStrategy, useClass: PageTitleStrategy },
+    // { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
     { provide: APP_ID, useValue: "workbench-client" },
