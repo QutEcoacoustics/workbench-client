@@ -1,7 +1,7 @@
 {
   "endpoints": {
     "environment": "development",
-    "apiRoot": "https://api.acousticobservatory.org",
+    "apiRoot": "https://api.staging.ecosounds.org",
     "clientOrigin": "https://development.ecosounds.org:4200",
     "clientDir": "/",
     "oldClientOrigin": "https://api.staging.ecosounds.org",
@@ -25,7 +25,7 @@
       "sourceRepositoryIssues": "https://github.com/QutEcoacoustics/workbench-client/issues",
       "harvestFilenameGuide": "https://github.com/ecoacoustics/metadata-standard/blob/master/filenames.md"
     },
-    "hideProjects": true,
+    "hideProjects": false,
     "homePageAndProjectListMaps": true,
     "customMenu": [
       {

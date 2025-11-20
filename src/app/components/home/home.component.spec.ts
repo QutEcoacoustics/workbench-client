@@ -140,7 +140,8 @@ describe("HomeComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    projectApi.show.andReturn(of());
+    const mockProject = new Project(generateProject(), injector);
+    projectApi.show.andReturn(of(mockProject));
 
     recordingService.filterByRegion.andReturn(of([]));
     recordingService.filterByProject.andReturn(of([]));
