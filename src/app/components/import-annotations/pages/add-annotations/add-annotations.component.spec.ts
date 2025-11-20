@@ -841,7 +841,7 @@ describe("AddAnnotationsComponent", () => {
       }
     }));
 
-    fit("should show type errors if a field has an incorrect data type", fakeAsync(() => {
+    it("should show type errors if a field has an incorrect data type", fakeAsync(() => {
       const testEvent: IImportedAudioEvent = generateImportedAudioEvent({
         // We use "as any" here to bypass type checking because we want to
         // test invalid types being sent to the client from the server.
