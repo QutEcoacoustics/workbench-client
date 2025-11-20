@@ -5,7 +5,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, Spectator } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
@@ -18,10 +18,7 @@ import {
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import { AsyncPipe } from "@angular/common";
-import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AUDIO_RECORDING, PROJECT } from "@baw-api/ServiceTokens";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { IUser, User } from "@models/User";
@@ -34,14 +31,9 @@ import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
   let spec: Spectator<CardComponent>;
-  let licenseService: SpyObject<LicensesService>;
-  let recordingApi: SpyObject<AudioRecordingsService>;
-  let projectsApi: SpyObject<ProjectsService>;
-  let sessionApi: SpyObject<BawSessionService>;
 
   const createComponent = createRoutingFactory({
     component: CardComponent,
-    imports: [AsyncPipe, WithLoadingPipe],
     providers: [provideMockBawApi()],
   });
 
@@ -55,12 +47,23 @@ describe("CardComponent", () => {
     recordings: Errorable<AudioRecording[]> = [],
     userModel?: Partial<IUser>,
   ) {
-    spec = createComponent({ detectChanges: false, props: { model } });
+    const subject = new Subject();
+
+    spec = createComponent({
+      detectChanges: false,
+      props: { model },
+      providers: [
+        mockProvider(AudioRecordingsService, {
+          filterByProject: () => subject,
+          filterByRegion: () => subject,
+        }),
+      ],
+    });
 
     const injector = spec.inject(ASSOCIATION_INJECTOR);
     model["injector"] = injector;
 
-    licenseService = spec.inject(LicensesService)
+    const licenseService = spec.inject(LicensesService)
     spyOn(licenseService, "availableLicenses").and.callThrough();
     spyOn(licenseService, "isSpdxLicense").and.callThrough();
     spyOn(licenseService, "licenseText").and.callThrough();
@@ -70,17 +73,7 @@ describe("CardComponent", () => {
       Object.keys(spdxLicenseList),
     ) as any;
 
-    const subject = new Subject<AudioRecording[]>();
-    recordingApi = spec.inject(AUDIO_RECORDING.token);
-
-    const isModelProject = model instanceof Project;
-    if (isModelProject) {
-      recordingApi.filterByProject.and.callFake(() => subject);
-    } else {
-      recordingApi.filterByRegion.and.callFake(() => subject);
-    }
-
-    sessionApi = spec.inject(BawSessionService);
+    const sessionApi = spec.inject(BawSessionService);
     if (userModel) {
       const mockUser = new User(generateUser(userModel), injector);
       spyOnProperty(sessionApi, "loggedInUser", "get").and.returnValue(
@@ -92,11 +85,12 @@ describe("CardComponent", () => {
       );
     }
 
-    projectsApi = spec.inject(PROJECT.token);
+    const isProjectModel = model instanceof Project;
+    const projectsApi = spec.inject(ProjectsService);
     interceptShowApiRequest(
       projectsApi,
       injector,
-      isModelProject ? model : new Project(generateProject()),
+      isProjectModel ? model : new Project(generateProject(), injector),
       Project,
     );
 
@@ -285,12 +279,19 @@ describe("CardComponent", () => {
         expect(realizedBadges).toHaveLength(0);
       });
 
-      it("should display a valid license correctly", fakeAsync(() => {
+      it("should display a valid license correctly", fakeAsync(async () => {
         const mockLicense = modelData.licenseName();
         const model = createModel({ license: mockLicense });
 
         setup(model);
         spec.detectChanges();
+
+        // flush so that the model effect completes and updates the license
+        // signal.
+        flush();
+        spec.detectChanges();
+
+        // We need to flush again so that the licenseText async pipe resolves.
         flush();
         spec.detectChanges();
 
@@ -307,6 +308,9 @@ describe("CardComponent", () => {
 
         setup(model);
         spec.detectChanges();
+
+        // We don't have to do a double flush here because the tooltip is static
+        // and does not depend on the licenseText async pipe.
         flush();
         spec.detectChanges();
 
