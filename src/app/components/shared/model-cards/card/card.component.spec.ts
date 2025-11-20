@@ -63,7 +63,7 @@ describe("CardComponent", () => {
     const injector = spec.inject(ASSOCIATION_INJECTOR);
     model["injector"] = injector;
 
-    const licenseService = spec.inject(LicensesService)
+    const licenseService = spec.inject(LicensesService);
     spyOn(licenseService, "availableLicenses").and.callThrough();
     spyOn(licenseService, "isSpdxLicense").and.callThrough();
     spyOn(licenseService, "licenseText").and.callThrough();
