@@ -38,7 +38,6 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: "enabled",
       })
     ),
-    provideClientHydration(),
 
     importProvidersFrom(appLibraryImports),
     menuProviders,
@@ -54,5 +53,7 @@ export const appConfig: ApplicationConfig = {
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
     { provide: APP_ID, useValue: "workbench-client" },
+
+    provideClientHydration(),
   ],
 };
