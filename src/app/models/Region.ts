@@ -12,6 +12,7 @@ import {
   ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
+import { firstValueFrom, map } from "rxjs";
 import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
@@ -30,7 +31,6 @@ import {
 import { Project } from "./Project";
 import { Site } from "./Site";
 import { User } from "./User";
-import { firstValueFrom, map } from "rxjs";
 
 /**
  * A region model.
