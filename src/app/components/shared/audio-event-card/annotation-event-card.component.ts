@@ -8,11 +8,16 @@ import {
 } from "@angular/core";
 import { Annotation } from "@models/data/Annotation";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import {
+  MediaControlsComponent,
+  SpectrogramComponent,
+} from "@ecoacoustics/web-components/@types";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { MediaControlsComponent, SpectrogramComponent } from "@ecoacoustics/web-components/@types";
+import { UrlDirective } from "@directives/url/url.directive";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 
@@ -28,22 +33,24 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     IsUnresolvedPipe,
     isInstantiatedPipe,
     DecimalPipe,
+    UrlDirective,
+    InlineListComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AnnotationEventCardComponent implements AfterViewInit {
-  public annotation = input.required<Annotation>();
+  public readonly annotation = input.required<Annotation>();
 
   // Note that there is no { static: true } option for viewChild signals.
   // This is on purpose, because signals are supposed to be able to
   // automatically detect non-changes.
   // https://github.com/angular/angular/issues/54376
-  private mediaControls =
+  private readonly mediaControls =
     viewChild<ElementRef<MediaControlsComponent>>("mediaControls");
-  private spectrogram =
+  private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
-  public ngAfterViewInit() {
+  public ngAfterViewInit(): void {
     setTimeout(() => {
       this.mediaControls().nativeElement.for = this.spectrogram().nativeElement;
     }, 0);

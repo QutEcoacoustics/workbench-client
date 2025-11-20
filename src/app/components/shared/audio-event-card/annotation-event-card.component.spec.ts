@@ -23,14 +23,15 @@ import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/compon
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
-import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
+import { provideRouter } from "@angular/router";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
-describe("AudioEventCardComponent", () => {
+describe("AnnotationEventCardComponent", () => {
   let spectator: Spectator<AnnotationEventCardComponent>;
   let injectorSpy: SpyObject<AssociationInjector>;
 
@@ -47,7 +48,7 @@ describe("AudioEventCardComponent", () => {
   const createComponent = createComponentFactory({
     component: AnnotationEventCardComponent,
     imports: [IconsModule],
-    providers: [provideMockBawApi()],
+    providers: [provideMockBawApi(), provideRouter([])],
   });
 
   function setup(): void {
@@ -56,13 +57,15 @@ describe("AudioEventCardComponent", () => {
     injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
 
     mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(testAsset("example.flac"));
+    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(
+      `data:[audio/flac];base64,${exampleBase64}`,
+    );
 
     mockTag = new Tag(generateTag(), injectorSpy);
     mockSite = new Site(generateSite(), injectorSpy);
     mockAudioRecording = new AudioRecording(
       generateAudioRecording(),
-      injectorSpy
+      injectorSpy,
     );
     mockAnnotation = new Annotation(
       generateAnnotation({
@@ -72,7 +75,7 @@ describe("AudioEventCardComponent", () => {
         endTimeSeconds: 5,
         tags: [mockTag],
       }),
-      injectorSpy
+      injectorSpy,
     );
 
     audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);
@@ -97,6 +100,9 @@ describe("AudioEventCardComponent", () => {
     spectator.query<HTMLAnchorElement>(".more-information-link");
   const tagInfoElement = () => spectator.query(".tag-information");
 
+  const scoreElement = () => spectator.query(".tag-score");
+  const noScoreElement = () => spectator.query(".no-score-placeholder");
+
   beforeEach(() => {
     setup();
   });
@@ -114,11 +120,36 @@ describe("AudioEventCardComponent", () => {
   it("should have the correct link to the listen page", () => {
     const expectedHref = mockAnnotation.viewUrl;
     expect(listenLink()).toHaveAttribute("href", expectedHref);
+
+    // We use "toHaveExactText" here to ensure there are no extraneous spaces
+    // or newlines.
+    expect(listenLink()).toHaveExactText("More information");
   });
 
   it("should have the tag text and link in the info", () => {
     const expectedText = mockTag.text;
     expect(tagInfoElement()).toHaveText(expectedText);
+  });
+
+  it("should display scores correctly", () => {
+    const expectedText = mockAnnotation.score?.toString();
+
+    expect(scoreElement()).toHaveExactTrimmedText(expectedText);
+    expect(noScoreElement()).not.toExist();
+  });
+
+  it("should have the correct content if there is no score", () => {
+    mockAnnotation = new Annotation(
+      generateAnnotation({
+        audioRecording: mockAudioRecording,
+        score: null,
+      }),
+      injectorSpy,
+    );
+
+    spectator.setInput("annotation", mockAnnotation);
+
+    expect(noScoreElement()).toHaveExactText("No score available");
   });
 
   xit("should be able to play the spectrogram", () => {});

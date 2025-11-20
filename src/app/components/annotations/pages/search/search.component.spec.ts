@@ -4,7 +4,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { Params, Router } from "@angular/router";
+import { Params } from "@angular/router";
 import { of } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { modelData } from "@test/helpers/faker";
@@ -16,19 +16,18 @@ import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { fakeAsync } from "@angular/core/testing";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { getElementByInnerText } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioEvent } from "@models/AudioEvent";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateAnnotationSearchUrlParameters } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { testAsset } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -39,7 +38,11 @@ import { generateUser } from "@test/fakes/User";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { AnnotationSearchParameters } from "../annotationSearchParameters";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import { generateMeta } from "@test/fakes/Meta";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {
@@ -61,14 +64,11 @@ describe("AnnotationSearchComponent", () => {
   let routeRegion: Region;
   let routeSite: Site;
 
-  const verifyButton = () => spec.query<HTMLButtonElement>(".verify-button");
-
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
     imports: [IconsModule, AnnotationSearchFormComponent],
     providers: [
       provideMockBawApi(),
-      mockProvider(Router),
       mockProvider(AnnotationService, {
         show: () => mockAnnotationResponse,
       }),
@@ -77,7 +77,12 @@ describe("AnnotationSearchComponent", () => {
         filter: () => of(),
       }),
       mockProvider(MediaService, {
-        createMediaUrl: () => testAsset("example.flac"),
+        // createMediaUrl: () => testAsset("example.flac"),
+        createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
+      }),
+      mockProvider(BawSessionService, {
+        get isLoggedIn() { return true; },
+        authTrigger: of({ user: mockUser }),
       }),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -92,10 +97,23 @@ describe("AnnotationSearchComponent", () => {
         siteId: routeSite.id,
       },
       queryParams: queryParameters,
+      data: {
+        resolvers: {
+          project: "resolver",
+          region: "resolver",
+          site: "resolver",
+          searchParameters: "resolver",
+          verificationParameters: "resolver",
+        },
+        project: { model: routeProject },
+        region: { model: routeRegion },
+        site: { model: routeSite },
+        searchParameters: { model: mockSearchParameters },
+        verificationParameters: { model: new VerificationParameters() },
+      },
     });
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
-    spec.component.searchParameters = mockSearchParameters;
 
     mockAudioEventsResponse = modelData.randomArray(
       responsePageSize,
@@ -140,8 +158,14 @@ describe("AnnotationSearchComponent", () => {
     spec.detectChanges();
   }
 
+  const verifyButton = () => spec.query<HTMLButtonElement>(".verify-button");
   const spectrogramElements = () =>
     spec.queryAll<SpectrogramComponent>("oe-spectrogram");
+
+  function clickVerificationStatusFilter(value: VerificationStatusKey) {
+    const target = document.querySelector(`[aria-valuetext="${value}"]`);
+    clickButton(spec, target);
+  }
 
   beforeEach(fakeAsync(() => {
     routeProject = new Project(generateProject());
@@ -151,7 +175,7 @@ describe("AnnotationSearchComponent", () => {
     mockUser = new User(generateUser());
 
     mockSearchParameters = new AnnotationSearchParameters(
-      generateAnnotationSearchUrlParameters(),
+      generateAnnotationSearchUrlParams(),
       mockUser,
     );
     mockSearchParameters.routeProjectModel = routeProject;
@@ -182,8 +206,77 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioRecordings.siteId": {
+              "audioRecordings.id": {
+                in: Array.from(mockSearchParameters.audioRecordings),
+              },
+            },
+            {
+              "audioEventImportFileId": {
+                in: Array.from(mockSearchParameters.importFiles),
+              },
+            },
+            {
+              "sites.id": {
                 in: Array.from(mockSearchParameters.sites),
+              },
+            },
+            {
+              "score": {
+                gteq: mockSearchParameters.scoreLowerBound,
+              },
+            },
+            {
+              "score": {
+                lteq: mockSearchParameters.scoreUpperBound,
+              },
+            },
+          ],
+        },
+        sorting: {
+          orderBy: "createdAt",
+          direction: "asc",
+        },
+      };
+
+      expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
+    });
+
+    it("should make the correct api calls when 'verification status' is changed", () => {
+      const expectedBody: Filters<AudioEvent> = {
+        paging: {
+          page: 1,
+          items: responsePageSize,
+        },
+        filter: {
+          and: [
+            {
+              "tags.id": {
+                in: Array.from(mockSearchParameters.tags),
+              },
+            },
+            {
+              "audioRecordings.id": {
+                in: Array.from(mockSearchParameters.audioRecordings),
+              },
+            },
+            {
+              "audioEventImportFileId": {
+                in: Array.from(mockSearchParameters.importFiles),
+              },
+            },
+            {
+              "sites.id": {
+                in: Array.from(mockSearchParameters.sites),
+              },
+            },
+            {
+              "score": {
+                gteq: mockSearchParameters.scoreLowerBound,
+              },
+            },
+            {
+              "score": {
+                lteq: mockSearchParameters.scoreUpperBound,
               },
             },
             {
@@ -197,7 +290,7 @@ describe("AnnotationSearchComponent", () => {
                   ],
                 },
               ],
-            }
+            },
           ],
         },
         sorting: {
@@ -205,6 +298,9 @@ describe("AnnotationSearchComponent", () => {
           direction: "asc",
         },
       };
+
+      audioEventsSpy.filter.calls.reset();
+      clickVerificationStatusFilter("unverified-for-me");
 
       expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
     });
@@ -214,25 +310,25 @@ describe("AnnotationSearchComponent", () => {
     it("should display the correct error message if there are no search results", () => {
       const expectedText = "No annotations found";
 
-      spec.component.searchParameters.verificationStatus = "any";
+      spec.component.searchParameters().verificationStatus = "any";
 
-      spec.component.searchResults = [];
+      spec.component.searchResults.set([]);
       spec.component.loading = false;
       spec.detectChanges();
 
-      const element = getElementByInnerText(spec, expectedText);
-      expect(element).toExist();
+      const element = getElementByTextContent(spec, expectedText);
+      expect(element).toBeVisible();
     });
 
     it("should not display an error if the search results are still loading", () => {
       const expectedText = "No annotations found";
 
-      spec.component.searchResults = [];
+      spec.component.searchResults.set([]);
       spec.component.loading = true;
       spec.detectChanges();
 
-      const element = getElementByInnerText(spec, expectedText);
-      expect(element).not.toExist();
+      const element = getElementByTextContent(spec, expectedText);
+      expect(element).toBeHidden();
     });
 
     it("should display a page of search results", () => {
@@ -243,19 +339,55 @@ describe("AnnotationSearchComponent", () => {
       expect(realizedResults).toEqual(expectedResults);
     });
 
+    it("should re-use the event cards when search results are updated", () => {
+      spec.detectChanges();
+
+      const initialSpectrogram = spectrogramElements()[0];
+
+      // We override the returned audio events to make this test harder to pass
+      // because we can't track by anything on the audio event since it would
+      // have changed.
+      mockAudioEventsResponse = modelData.randomArray(
+        responsePageSize,
+        responsePageSize,
+        () => {
+          // generateAudioEvent() uses our modelData.id iterator which ensures
+          // that each generated audio event has a unique ID.
+          // Therefore, there is no risk of this being a flaky test because each
+          // id will always be unique.
+          const model = new AudioEvent(generateAudioEvent(), injector);
+          model.addMetadata(generateMeta());
+
+          return model;
+        },
+      );
+
+      // By changing the "verification status" filter, we should re-enter a
+      // loading state, but should not have destroyed the spectrograms elements.
+      clickVerificationStatusFilter("unverified-for-me");
+      spec.detectChanges();
+
+      const updatedSpectrogram = spectrogramElements()[0];
+
+      // We use a toBe comparison here so that we compare the spectrogram
+      // elements by reference instead of by value.
+      // If the reference is the same, then we know the elements were reused.
+      expect(updatedSpectrogram).toBe(initialSpectrogram);
+    });
+
     xit("should have a disabled 'verify' button if there are no search results", () => {
-      spec.component.searchResults = [];
+      spec.component.searchResults.set([]);
       spec.detectChanges();
 
       expect(verifyButton()).toBeDisabled();
     });
 
     xit("should have an enabled 'verify' button if there are search results", () => {
-      spec.component.searchResults = [
+      spec.component.searchResults.set([
         new Annotation(generateAnnotation(), injector),
         new Annotation(generateAnnotation(), injector),
         new Annotation(generateAnnotation(), injector),
-      ];
+      ]);
       spec.detectChanges();
 
       expect(verifyButton()).not.toBeDisabled();

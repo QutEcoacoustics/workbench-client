@@ -15,15 +15,18 @@ import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AnnotationSearchParameters } from "@components/annotations/pages/annotationSearchParameters";
 import { Tagging } from "@models/Tagging";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateTag } from "@test/fakes/Tag";
+import { modelData } from "@test/helpers/faker";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
   let injector: SpyObject<AssociationInjector>;
+  let tagApiSpy: SpyObject<TagsService>;
+
 
   let mockAudioEvent: AudioEvent;
   let mockRecording: AudioRecording;
@@ -40,7 +43,10 @@ describe("AnnotationService", () => {
   });
 
   function mockTagsService() {
-    return { filter: () => of(mockTags) };
+    return {
+      filter: () => of(mockTags),
+      show: () => of(mockTags[0]),
+    };
   }
 
   function mockRecordingsService() {
@@ -51,7 +57,24 @@ describe("AnnotationService", () => {
     spec = createService();
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    mockAudioEvent = new AudioEvent(generateAudioEvent(), injector);
+    tagApiSpy = spec.inject(TagsService);
+    spyOn(tagApiSpy, "show").and.callThrough();
+    spyOn(tagApiSpy, "filter").and.callThrough();
+
+    // The default generateAudioEvent mock has a chance to not have any taggings
+    // Because we want to test tag fetching, we ensure there are some taggings
+    // in the default mock.
+    mockAudioEvent = new AudioEvent(
+      generateAudioEvent({
+        taggings: modelData.randomArray(
+          1,
+          25,
+          () => new Tagging(generateTagging(), injector),
+        ),
+      }),
+      injector,
+    );
+
     mockRecording = new AudioRecording(generateAudioRecording(), injector);
     mockTags = Array.from(
       { length: 5 },
@@ -70,9 +93,7 @@ describe("AnnotationService", () => {
   describe("show", () => {
     it("should have all the same property values as the original audio event model", async () => {
       const result = await spec.service.show(mockAudioEvent, []);
-      expect(result).toEqual(
-        jasmine.objectContaining(mockAudioEvent as any),
-      );
+      expect(result).toEqual(jasmine.objectContaining(mockAudioEvent as any));
     });
 
     it("should resolve the associated audio recording model", async () => {
@@ -92,8 +113,8 @@ describe("AnnotationService", () => {
       // specified that we want to verify tag 3.
       // Therefore, when the tags are ordered from highest priority to lowest,
       // we should see that tag 3 is preferred.
-      const dataModel = new AnnotationSearchParameters({
-        tags: "1,2,3,4",
+      const filteredTags = [1, 2, 3, 4];
+      const verificationParameters = new VerificationParameters({
         taskTag: "3",
       });
 
@@ -112,8 +133,8 @@ describe("AnnotationService", () => {
         new Tag(generateTag({ id: 8, typeOfTag: "common_name" })),
       ];
 
-      const taggings = mockTags.map((tag) =>
-        new Tagging(generateTagging({ tagId: tag.id }), injector),
+      const taggings = mockTags.map(
+        (tag) => new Tagging(generateTagging({ tagId: tag.id }), injector),
       );
 
       const testedEvent = new AudioEvent(
@@ -127,11 +148,67 @@ describe("AnnotationService", () => {
       // Note that the sorting algorithm is stable.
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
+      const tagPriority = [ verificationParameters.taskTag, ...filteredTags];
 
-      const realizedResult = await spec.service.show(testedEvent, dataModel.tagPriority);
+      const realizedResult = await spec.service.show(testedEvent, tagPriority);
+      const realizedIds = realizedResult.tags.map((tag) => tag.id);
 
-      const realizedIds = realizedResult.tags.map(tag => tag.id);
       expect(realizedIds).toEqual(expectedIds);
+    });
+  });
+
+  describe("tag fetching", () => {
+    it("should not make any api calls if there are no taggings", async () => {
+      const audioEvent = new AudioEvent(
+        generateAudioEvent({ taggings: [] }),
+        injector,
+      );
+
+      const result = await spec.service.show(audioEvent, []);
+
+      expect(result.tags).toEqual([]);
+      expect(tagApiSpy.show).not.toHaveBeenCalled();
+      expect(tagApiSpy.filter).not.toHaveBeenCalled();
+    });
+
+    it("should make a single SHOW api call if there is one tagging", async () => {
+      const audioEvent = new AudioEvent(
+        generateAudioEvent({
+          taggings: [
+            new Tagging(generateTagging({ tagId: 42 }), injector),
+          ],
+        }),
+        injector,
+      );
+
+      await spec.service.show(audioEvent, []);
+
+      expect(tagApiSpy.show).toHaveBeenCalledOnceWith(42);
+      expect(tagApiSpy.filter).not.toHaveBeenCalled();
+    });
+
+    it("should make a single FILTER api call if there are multiple taggings", async () => {
+      const audioEvent = new AudioEvent(
+        generateAudioEvent({
+          taggings: [
+            new Tagging(generateTagging({ tagId: 1 }), injector),
+            new Tagging(generateTagging({ tagId: 2 }), injector),
+            new Tagging(generateTagging({ tagId: 3 }), injector),
+          ],
+        }),
+        injector,
+      );
+
+      await spec.service.show(audioEvent, []);
+
+      expect(tagApiSpy.show).not.toHaveBeenCalled();
+      expect(tagApiSpy.filter).toHaveBeenCalledOnceWith({
+        filter: {
+          id: {
+            in: [1, 2, 3],
+          },
+        },
+      });
     });
   });
 });

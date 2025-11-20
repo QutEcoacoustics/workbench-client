@@ -40,7 +40,7 @@ describe("MapsService", () => {
 
   it("should add the auth key to the google maps script", () => {
     const expectedApiKey = testApiConfig.keys.googleMaps;
-    const expectedUrl = `https://maps.googleapis.com/maps/api/js?loading=async&key=${expectedApiKey}`;
+    const expectedUrl = `https://maps.googleapis.com/maps/api/js?loading=async&libraries=marker&key=${expectedApiKey}`;
     const realizedUrl = scriptUrl();
 
     expect(realizedUrl).toEqual(expectedUrl);

@@ -92,13 +92,14 @@ import type { TaggingsService } from "./tag/taggings.service";
 import type { TagsService } from "./tag/tags.service";
 import type { UserService } from "./user/user.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
-import type { AudioEventProvenanceService } from "./AudioEventProvenance/AudioEventProvenance.service";
+import type { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { WebsiteStatusService } from "./website-status/website-status.service";
 import type { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import type { ShallowVerificationService, VerificationService } from "./verification/verification.service";
 import type { SiteSettingsService } from "./site-settings/site-settings.service";
+import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
 
 /**
  * Wrapper for InjectionToken class. This is required because of
@@ -166,3 +167,4 @@ export const VERIFICATION = new ServiceToken<VerificationService, Verification>(
 export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService, Verification>("S_VERIFICATION");
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
 export const SITE_SETTINGS = new ServiceToken<SiteSettingsService, SiteSetting>("SITE_SETTINGS");
+export const GROUPED_AUDIO_EVENTS = new ServiceToken<GroupedAudioEventsService, AudioEvent>("GROUPED_AUDIO_EVENTS");

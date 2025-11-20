@@ -1,21 +1,26 @@
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { AbstractModel } from "@models/AbstractModel";
 import humanizeDuration from "humanize-duration";
 import { DateTime, Duration } from "luxon";
 
+// These id parameters contain information about the base model they refer to
+// so that you cannot mix and match ids from different models.
 /**
  * BAW API ID
  */
-export type Id = number;
+export type Id<T extends AbstractModel = AbstractModel> = T["id"];
 
 /**
  * BAW API IDs
  */
-export type Ids = Set<Id>;
+export type Ids<T extends AbstractModel = AbstractModel> = Set<Id<T>>;
 
 /**
  * Union of Id and Ids
  */
-export type CollectionIds = Ids | Id[];
+export type CollectionIds<T extends AbstractModel = AbstractModel> =
+  | Ids<T>
+  | Id<T>[];
 
 /**
  * BAW API UUID
@@ -113,12 +118,12 @@ export function toRelative(
 /**
  * BAW API Latitude
  */
-export type Latitude = string;
+export type Latitude = number;
 
 /**
  * BAW API Longitude
  */
-export type Longitude = string;
+export type Longitude = number;
 
 /**
  * A concent enum that can be used to determine if a user has given concent

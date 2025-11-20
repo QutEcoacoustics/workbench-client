@@ -139,12 +139,7 @@
 
   <h4>Geographic Coverage</h4>
 
-  <baw-site-map
-    class="site-map"
-    [sitesSubset]="filteredSites()"
-    [project]="project"
-    [region]="region"
-  ></baw-site-map>
+  <baw-site-map class="site-map" [sites]="filteredSites()" [groupBy]="'regionId'"></baw-site-map>
 
   <h4>Coverage</h4>
 
@@ -276,7 +271,7 @@
         <tr>
           <td scope="row">
             @if (!(item.tag | isUnresolved)) {
-              <a [href]="item.tag?.viewUrl">
+              <a [bawUrl]="item.tag?.viewUrl">
                 {{ item.tag?.text }}
               </a>
             }
@@ -284,9 +279,7 @@
 
           <td>
             @if (!(item.tag | isUnresolved)) {
-              <a
-                [href]="item.provenance?.viewUrl"
-                >
+              <a [bawUrl]="item.provenance?.viewUrl">
                 {{ item.provenance?.name }}
               </a>
             }

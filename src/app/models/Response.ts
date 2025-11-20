@@ -33,12 +33,12 @@ export class Response extends AbstractModel<IResponse> implements IResponse {
   public readonly createdAt?: DateTimeTimezone;
 
   // Associations
-  @creator<Response>()
+  @creator()
   public creator?: User;
   // TODO Add association to DatasetItem
-  @hasOne<Response, Question>(SHALLOW_QUESTION, "questionId")
+  @hasOne(SHALLOW_QUESTION, "questionId")
   public question?: Question;
-  @hasOne<Response, Study>(STUDY, "studyId")
+  @hasOne(STUDY, "studyId")
   public study?: Study;
 
   public get viewUrl(): string {

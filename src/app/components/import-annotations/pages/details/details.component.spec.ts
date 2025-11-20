@@ -40,10 +40,10 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
@@ -75,6 +75,7 @@ describe("AnnotationsDetailsComponent", () => {
   let expectedFilesTable: any;
 
   const fileVerifyLinks = () => spec.queryAll(StrongRouteDirective);
+  const fileDownloadLink = () => getElementByTextContent(spec, "Download");
 
   const createComponent = createRoutingFactory({
     component: AnnotationImportDetailsComponent,
@@ -107,7 +108,7 @@ describe("AnnotationsDetailsComponent", () => {
   }
 
   function deleteFirstFile() {
-    const deleteButton = getElementByInnerText(spec, "Delete");
+    const deleteButton = getElementByTextContent(spec, "Delete");
     spec.click(deleteButton);
 
     const confirmationButton = spec.query<HTMLButtonElement>(
@@ -233,7 +234,7 @@ describe("AnnotationsDetailsComponent", () => {
     spec.detectChanges();
 
     expectedAudioEventTable = mockAudioEvents.map((event) => ({
-      "Audio Recording": event.audioRecording?.id.toString(),
+      "Audio Recording": event.audioRecording?.id?.toString(),
       "Created At": event.createdAt?.toFormat("yyyy-MM-dd HH:mm:ss"),
       Tags: mockTagModel.text,
       Provenance: mockProvenance.name,
@@ -374,6 +375,19 @@ describe("AnnotationsDetailsComponent", () => {
         expect(link.routeParams).toEqual(expectedResult.routeParams);
         expect(link.queryParams).toEqual(expectedResult.queryParams);
       });
+    });
+
+    // If you are incorrectly using a bawUrl directive instead of a href, this
+    // test will fail because the url will attempt to point to a client route
+    // instead of an external download link.
+    it("should have the correct download link", () => {
+      // We only make an assertion over the first download link which will
+      // correspond to the first file in the table.
+      const downloadLink = fileDownloadLink();
+      const firstFile = mockAudioEventImportFiles[0];
+
+      expect(downloadLink).toBeDefined();
+      expect(downloadLink.getAttribute("href")).toEqual(firstFile.path);
     });
   });
 });

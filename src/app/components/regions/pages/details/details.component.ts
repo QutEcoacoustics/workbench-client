@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   regionResolvers,
@@ -28,7 +27,7 @@ import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.m
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbPaginationConfig, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
+import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -48,6 +47,7 @@ export const regionMenuItemActions = [
   audioRecordingMenuItems.batch.region,
   reportMenuItems.new.region,
   annotationMenuItems.search.region,
+  annotationMenuItems.map.region,
   regionAnnotationsModal,
 ];
 
@@ -103,7 +103,7 @@ const regionKey = "region";
         <!-- Google Maps -->
         @if (hasSites()) {
           <div class="item map">
-            <baw-site-map [project]="project" [region]="region"></baw-site-map>
+            <baw-site-map [regions]="[region]"></baw-site-map>
           </div>
         }
 
@@ -139,18 +139,12 @@ class RegionDetailsComponent extends PaginationTemplate<Site> implements OnInit 
   public sites: List<Site> = List([]);
 
   public constructor(
-    router: Router,
-    route: ActivatedRoute,
-    config: NgbPaginationConfig,
     sitesApi: SitesService,
     private regionsApi: RegionsService,
     private notifications: ToastService,
     private clientConfig: ConfigService
   ) {
     super(
-      router,
-      route,
-      config,
       sitesApi,
       "name",
       () => [this.project.id],

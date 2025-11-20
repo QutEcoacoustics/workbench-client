@@ -36,9 +36,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent {
-  public id = input<string>();
-  public disabled = input<boolean>();
+  public readonly id = input<string>();
+  public readonly disabled = input<boolean>();
 
-  public checked = input(false);
-  public checkedChange = output<boolean>();
+  public readonly checked = input(false);
+  public readonly checkedChange = output<boolean>();
 }

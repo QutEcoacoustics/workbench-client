@@ -11,7 +11,7 @@ import { SpdxLicense } from "@services/licenses/licenses.service";
 @Component({
   selector: "baw-license-information-modal",
   templateUrl: "./license-information.component.html",
-  styleUrl: "license-information.component.scss",
+  styleUrl: "./license-information.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LicenseInformationModalComponent implements ModalComponent {

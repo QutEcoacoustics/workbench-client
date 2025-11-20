@@ -2,6 +2,7 @@ import { NgIfContext, NgTemplateOutlet } from "@angular/common";
 import { Component, input, TemplateRef } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
+import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-inline-list",
@@ -9,7 +10,7 @@ import { AbstractModel } from "@models/AbstractModel";
     @if (!!items() && items().length > 0) {
       @for (item of items(); track item; let isLast = $last) {
         <span>
-          <a [href]="item.viewUrl">{{ itemText(item) }}</a>
+          <a [bawUrl]="item.viewUrl">{{ itemText(item) }}</a>
           @if (!isLast) {, }
         </span>
       }
@@ -17,13 +18,13 @@ import { AbstractModel } from "@models/AbstractModel";
       <ng-template [ngTemplateOutlet]="emptyTemplate()"></ng-template>
     }
   `,
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, UrlDirective],
 })
 export class InlineListComponent {
-  public items = input.required<AbstractModel[]>();
-  public withLoading = input(false);
-  public emptyTemplate = input<TemplateRef<NgIfContext<boolean>>>();
-  public itemKey = input<string>();
+  public readonly items = input.required<AbstractModel[]>();
+  public readonly withLoading = input(false);
+  public readonly emptyTemplate = input<TemplateRef<NgIfContext<boolean>>>();
+  public readonly itemKey = input<string>();
 
   protected itemText(item: AbstractModel): string {
     if (isInstantiated(this.itemKey())) {

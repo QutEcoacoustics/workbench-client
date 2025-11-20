@@ -4,19 +4,20 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
+  inject,
   signal,
   viewChild,
   ViewEncapsulation,
 } from "@angular/core";
 import { NgElement, WithProperties } from "@angular/elements";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { gridTileContext } from "@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 import { Annotation } from "@models/data/Annotation";
 import {
   ContextSubscription,
   WithContext,
 } from "@helpers/context/context-decorators";
-import { SpectrogramComponent, MediaControlsComponent } from "@ecoacoustics/web-components/@types";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { VerificationGridTileContext } from "@ecoacoustics/web-components/@types";
 
 export const gridTileContentSelector = "baw-grid-tile-content";
 
@@ -29,36 +30,45 @@ export const gridTileContentSelector = "baw-grid-tile-content";
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class GridTileContentComponent implements WithContext {
-  public constructor(
-    public elementRef: ElementRef,
-    public changeDetectorRef: ChangeDetectorRef,
-  ) {}
+  public readonly elementRef = inject(ElementRef);
+  public readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  private contextSpectrogram =
+  private readonly contextSpectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("contextSpectrogram");
-  private contextMediaControls =
+  private readonly contextMediaControls =
     viewChild<ElementRef<MediaControlsComponent>>("contextMediaControls");
 
-  protected model = signal<Annotation>(undefined);
-  protected contextExpanded = signal(false);
+  protected readonly model = signal<Annotation>(undefined);
+  protected readonly contextExpanded = signal(false);
 
-  public get listenLink(): string {
+  protected get listenLink(): string {
     return this.model()?.viewUrl;
   }
 
-  public get contextSource(): string {
+  protected get contextSource(): string {
     if (!this.model()) {
       return "";
     }
 
-    const contextSize = 30 as const;
+    const contextSize = 30;
     return this.model().contextUrl(contextSize);
   }
 
   @ContextSubscription(gridTileContext)
-  public handleContextChange(subjectWrapper: SubjectWrapper): void {
+  public handleContextChange(tile: VerificationGridTileContext): void {
+    // TODO: Remove this guard once we fix upstream issues
+    // https://github.com/ecoacoustics/web-components/issues/532
+    if (tile === undefined) {
+      return;
+    }
+
     this.contextExpanded.set(false);
-    this.model.set(subjectWrapper.subject as any);
+    const model = tile.model;
+
+    // We need this "as any" to remove the "readonly" type from the subject.
+    // TODO: Remove this type cast once we fix upstream typings
+    // see: https://github.com/ecoacoustics/web-components/issues/512
+    this.model.set(model.subject as any);
   }
 
   protected toggleContext(): void {

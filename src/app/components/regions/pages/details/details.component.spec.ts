@@ -206,22 +206,13 @@ describe("RegionDetailsComponent", () => {
       expect(getMap()).toBeTruthy();
     });
 
-    it("should provide project to maps component", async () => {
-      setup(defaultProject, defaultRegion);
-      const promise = interceptApiRequest([new Site(generateSite())]);
-      spectator.detectChanges();
-      await promise;
-      spectator.detectChanges();
-      expect(getMap().project).toEqual(defaultProject);
-    });
-
     it("should provide region to maps component", async () => {
       setup(defaultProject, defaultRegion);
       const promise = interceptApiRequest([new Site(generateSite())]);
       spectator.detectChanges();
       await promise;
       spectator.detectChanges();
-      expect(getMap().region).toEqual(defaultRegion);
+      expect(getMap().regions).toEqual([defaultRegion]);
     });
   });
 

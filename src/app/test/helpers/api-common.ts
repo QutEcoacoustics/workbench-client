@@ -20,6 +20,7 @@ import {
   ApiCreateOrUpdate,
   ApiDestroy,
   ApiFilter,
+  ApiFilterGroupBy,
   ApiList,
   ApiShow,
   ApiUpdate,
@@ -71,13 +72,13 @@ export function validateApiList<
   endpoint: string,
   ...parameters: Params
 ): void {
-  const key: keyof Service = "list";
+  const key = "list";
 
   validateCustomApiList<Model, Params, Service>(
     createService,
     modelBuilder,
     endpoint,
-    key as any,
+    key,
     ...parameters
   );
 }
@@ -92,7 +93,7 @@ export function validateApiFilter<
   endpoint: string,
   ...parameters: Params
 ): void {
-  const key: keyof Service = "filter";
+  const key = "filter";
   const filter = undefined;
   const models = undefined;
 
@@ -100,7 +101,33 @@ export function validateApiFilter<
     createService,
     modelBuilder,
     endpoint,
-    key as any,
+    key,
+    filter,
+    models,
+    ...parameters
+  );
+}
+
+export function validateApiFilterGroupBy<
+  Model extends AbstractModel,
+  ReturnModel extends AbstractModel,
+  Params extends any[],
+  Service extends ApiFilterGroupBy<Model, ReturnModel, Params>,
+>(
+  createService: () => SpectatorService<Service>,
+  modelBuilder: AbstractModelConstructor<Model>,
+  endpoint: string,
+  ...parameters: Params
+): void {
+  const key = "filterGroupBy";
+  const filter = undefined;
+  const models = undefined;
+
+  validateCustomApiFilter<Model, Params, Service>(
+    createService,
+    modelBuilder,
+    endpoint,
+    key,
     filter,
     models,
     ...parameters
@@ -337,7 +364,7 @@ export function validateCustomApiList<
         spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "list").and.callFake(() => new BehaviorSubject<Model[]>([]));
 
-      (service[key as any] as CustomList<Model, Params>)(
+      (service[key] as CustomList<Model, Params>)(
         ...parameters
       ).subscribe();
       expect(api.list).toHaveBeenCalledWith(modelBuilder, endpoint);
@@ -369,7 +396,7 @@ export function validateCustomApiFilter<
       spyOn(api, "filter").and.callFake(
         () => new BehaviorSubject<Model[]>(testModels)
       );
-      (service[key as any] as CustomFilter<Model, Params>)(
+      (service[key] as CustomFilter<Model, Params>)(
         defaultFilters,
         ...parameters
       ).subscribe();

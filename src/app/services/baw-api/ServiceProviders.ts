@@ -1,7 +1,15 @@
-import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
-import { annotationResolvers } from "@services/models/annotations/annotation.resolver";
+import {
+  annotationSearchParametersResolvers,
+} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import {
+  annotationMapParameterResolvers,
+} from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import {
+  verificationParametersResolvers,
+} from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -62,7 +70,7 @@ import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
   audioEventProvenanceResolvers,
   AudioEventProvenanceService,
-} from "./AudioEventProvenance/AudioEventProvenance.service";
+} from "./audio-event-provenance/audio-event-provenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -115,6 +123,7 @@ import {
   VerificationService,
 } from "./verification/verification.service";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
+import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -324,7 +333,6 @@ const serviceList = [
   {
     serviceToken: Tokens.ANNOTATION,
     service: AnnotationService,
-    resolvers: annotationResolvers,
   },
   {
     serviceToken: Tokens.MEDIA,
@@ -344,7 +352,17 @@ const serviceList = [
     serviceToken: Tokens.SITE_SETTINGS,
     service: SiteSettingsService,
   },
+  {
+    serviceToken: Tokens.GROUPED_AUDIO_EVENTS,
+    service: GroupedAudioEventsService,
+  },
 ] satisfies ServiceProvider<unknown>[];
+
+const resolverProviders = [
+  annotationMapParameterResolvers,
+  annotationSearchParametersResolvers,
+  verificationParametersResolvers,
+];
 
 const services = serviceList.map(({ service }) => service) satisfies Provider[];
 const serviceTokens = serviceList.map(({ service, serviceToken }) => ({
@@ -358,5 +376,9 @@ serviceList.forEach(({ resolvers }) => {
     serviceResolvers.push(...resolvers.providers);
   }
 });
+
+for (const resolver of resolverProviders) {
+  serviceResolvers.push(...resolver.providers);
+}
 
 export { services, serviceTokens, serviceResolvers };

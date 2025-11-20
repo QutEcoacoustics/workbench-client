@@ -3,7 +3,7 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { getElementByInnerText } from "@test/helpers/html";
+import { getElementByTextContent } from "@test/helpers/html";
 import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
@@ -11,10 +11,10 @@ import { AnnotationService } from "@services/models/annotations/annotation.servi
 import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { detectChanges } from "@test/helpers/changes";
-import { testAsset } from "@test/helpers/karma";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
@@ -52,9 +52,12 @@ describe("GridTileContentComponent", () => {
       injectorSpy
     );
 
+    // mockAudioRecording.getMediaUrl = jasmine
+    //   .createSpy("getSplittableUrl")
+    //   .and.returnValue(testAsset("example.flac"));
     mockAudioRecording.getMediaUrl = jasmine
       .createSpy("getSplittableUrl")
-      .and.returnValue(testAsset("example.flac"));
+      .and.returnValue(`data:[audio/flac];base64,${exampleBase64}`);
 
     mockAnnotation = new Annotation(
       generateAnnotation({
@@ -69,8 +72,8 @@ describe("GridTileContentComponent", () => {
     updateContext(mockAnnotation);
   }
 
-  function updateContext(model: Annotation): void {
-    spectator.component.handleContextChange({ subject: model } as any);
+  function updateContext(subject: Annotation): void {
+    spectator.component.handleContextChange({ model: { subject }} as any);
 
     contextRequestSpy = jasmine.createSpy("event");
     spectator.component.elementRef.nativeElement.addEventListener("context-request", contextRequestSpy);
@@ -78,8 +81,8 @@ describe("GridTileContentComponent", () => {
     spectator.detectChanges();
   }
 
-  const listenLink = () => getElementByInnerText(spectator, "Go To Source");
-  const contextButton = () => getElementByInnerText(spectator, "Show More");
+  const listenLink = () => getElementByTextContent(spectator, "Go To Source");
+  const contextButton = () => getElementByTextContent(spectator, "Show More");
   const contextCloseButton = () => spectator.query("#close-btn");
   const contextCard = () => spectator.query(".context-card");
   const spectrogram = () =>

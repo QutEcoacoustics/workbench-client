@@ -930,6 +930,15 @@ type AssociationKeys<Model extends AbstractModel> = KeysOfType<
   number | string | Set<string> | Set<number>
 >;
 
+/**
+ * @description
+ * Searches through all models to get all possible associations that a model
+ * could have.
+ * Note that this does not guarantee that a model will have an association for
+ * the given key, only that the association "kind" exists.
+ */
+export type AssociationKind<T extends AbstractModelWithoutId = AbstractModelWithoutId> = Lowercase<T["kind"]>;
+
 export type Direction = "desc" | "asc";
 
 /**
@@ -954,6 +963,15 @@ export interface Paging {
   total?: number;
   /** Maximum page number */
   maxPage?: number;
+
+  /**
+   * Whether to disable paging for the filter request and return all results
+   * that match the filter.
+   *
+   *! Warning: This may result in very large, slow responses!
+   * @default false
+   */
+  disablePaging?: boolean;
 }
 
 export interface Combinations<T> {
@@ -1082,6 +1100,54 @@ export type InnerFilter<Model = unknown> = Combinations<Writeable<Model>> &
   };
 
 /**
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
+interface NewProjection<Model = unknown, K extends keyof Model = keyof Model> {
+  /**
+   * The `only` parameter specifies the base set of keys to include.
+   * This means that `add` and `remove` operations will be performed on top of
+   * the keys specified in `only`.
+   *
+   * If `add` and `remove` are not specified, only the keys in `only` field will
+   * be included in the response.
+   */
+  only?: K[];
+
+  /**
+   * Adds additional fields to the projection, on top of the default/only fields
+   */
+  add?: K[];
+
+  /**
+   * remove the following fields from the set default/only+add fields
+   */
+  remove?: K[];
+}
+
+/**
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
+interface OldProjection<Model = unknown, K extends keyof Model = keyof Model> {
+  /** Include keys in response */
+  include?: K[];
+
+  /** Exclude keys from response */
+  exclude?: K[];
+}
+
+/**
+ * @description
+ * A partial body that can be used to include or exclude keys from an API
+ * response.
+ *
+ * @see https://github.com/QutEcoacoustics/baw-server/wiki/API:-Spec#projection-for-resource
+ */
+export type Projection<Model = unknown> = XOR<
+  OldProjection<Model>,
+  NewProjection<Model>
+>;
+
+/**
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
@@ -1089,12 +1155,7 @@ export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
   /** Filter settings */
   filter?: InnerFilter<Writeable<Model>>;
   /** Include or exclude keys from response */
-  projection?: {
-    /** Include keys in response */
-    include?: K[];
-    /** Exclude keys from response */
-    exclude?: K[];
-  };
+  projection?: Projection<Model>;
   /** Current sorting options */
   sorting?: Sorting<K>;
   /** Current page data */

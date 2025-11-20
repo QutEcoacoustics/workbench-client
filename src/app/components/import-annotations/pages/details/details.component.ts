@@ -173,6 +173,24 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
    }
   }
 
+  public deleteModel(): void {
+    this.eventImportsApi
+      .destroy(this.audioEventImport)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        complete: () => {
+          this.notifications.success(
+            defaultSuccessMsg("destroyed", this.audioEventImport.name)
+          );
+          this.router.navigateByUrl(
+            annotationsImportMenuItem.route.toRouterLink({
+              projectId: this.project.id,
+            })
+          );
+        },
+      });
+  }
+
   // used to fetch all previously imported events for the events ngx-datatable
   protected getEventModels = (
     filters: Filters<AudioEvent>
@@ -219,22 +237,6 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
           },
         });
     }
-  }
-
-  protected deleteModel(): void {
-    this.eventImportsApi
-      .destroy(this.audioEventImport)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe({
-        complete: () => {
-          this.notifications.success(
-            defaultSuccessMsg("destroyed", this.audioEventImport.name)
-          );
-          this.router.navigateByUrl(
-            annotationsImportMenuItem.route.toRouterLink()
-          );
-        },
-      });
   }
 }
 

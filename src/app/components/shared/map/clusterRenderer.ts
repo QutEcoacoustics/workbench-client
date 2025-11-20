@@ -1,0 +1,69 @@
+import { ClusterStats, Renderer, Cluster } from "@googlemaps/markerclusterer"
+
+// Adapted from the @googlemaps/js-markerclusterer default cluster renderer
+// https://github.com/googlemaps/js-markerclusterer/blob/8acb046d9b5/src/renderer.ts#L107
+export class ClusterRenderer implements Renderer {
+  public render(
+    cluster: Cluster,
+    _stats: ClusterStats,
+    map: google.maps.Map
+  ): google.maps.marker.AdvancedMarkerElement {
+    const { position, markers } = cluster;
+    // Our custom MapMarkerOptions type has a clusterWeight property which allows
+    // us to modify how much the marker counts for when clustering.
+    // This is useful for clustering groups such as an aggregate of events where
+    // one marker may represent hundreds of events.
+    let clusterWeight = 0;
+    for (const marker of markers) {
+      // If there is no clusterWeight on the marker, we default to using a weight
+      // of one.
+      clusterWeight += (marker as any).clusterWeight;
+    }
+
+    // This SVG uses styling attribute instead of CSS because the SVG is
+    // rendered inside of the google-maps "shadow DOM"
+    // (component style encapsulation), meaning that I'd have to break this
+    // style encapsulation to style it via CSS.
+    // see: https://github.com/QutEcoacoustics/workbench-client/pull/2462#discussion_r2467510013
+    const svg = `
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 240 240"
+        width="50"
+        height="50"
+        fill="var(--baw-primary)"
+      >
+        <circle cx="120" cy="120" opacity=".6" r="70" />
+        <circle cx="120" cy="120" opacity=".3" r="90" />
+        <circle cx="120" cy="120" opacity=".2" r="110" />
+        <text
+          x="50%"
+          y="50%"
+          fill="var(--baw-primary-contrast)"
+          text-anchor="middle"
+          font-size="50"
+          dominant-baseline="middle"
+          font-family="roboto,arial,sans-serif"
+        >${clusterWeight}</text>
+      </svg>
+    `;
+
+    const title = `Cluster of ${clusterWeight} markers`;
+    const zIndex: number = Number(google.maps.Marker.MAX_ZINDEX) + clusterWeight;
+
+    const parser = new DOMParser();
+    const markerContent = parser.parseFromString(
+      svg,
+      "image/svg+xml"
+    ).documentElement;
+    markerContent.setAttribute("transform", "translate(0 25)");
+
+    return new google.maps.marker.AdvancedMarkerElement({
+      map,
+      position,
+      zIndex,
+      title,
+      content: markerContent,
+    });
+  }
+}

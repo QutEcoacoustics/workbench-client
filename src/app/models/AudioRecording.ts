@@ -98,15 +98,15 @@ export class AudioRecording
   public readonly recordedDateTimezone?: string;
 
   // Associations
-  @creator<AudioRecording>()
+  @creator()
   public creator?: User;
-  @updater<AudioRecording>()
+  @updater()
   public updater?: User;
-  @deleter<AudioRecording>()
+  @deleter()
   public deleter?: User;
-  @hasOne<AudioRecording, User>(ACCOUNT, "uploaderId")
+  @hasOne(ACCOUNT, "uploaderId")
   public uploader?: User;
-  @hasOne<AudioRecording, Site>(SHALLOW_SITE, "siteId")
+  @hasOne(SHALLOW_SITE, "siteId")
   public site?: Site;
 
   /** Routes to the play url */

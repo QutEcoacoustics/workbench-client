@@ -38,6 +38,7 @@ import {
 import { SiteComponent } from "../../components/site/site.component";
 
 export const siteMenuItemActions = [
+  annotationMenuItems.map.site,
   deleteSiteModal,
   visualizeMenuItem,
   siteAnnotationsModal,
@@ -57,6 +58,7 @@ export const pointMenuItemActions = [
   audioRecordingMenuItems.batch.siteAndRegion,
   reportMenuItems.new.siteAndRegion,
   annotationMenuItems.search.siteAndRegion,
+  annotationMenuItems.map.siteAndRegion,
 ];
 
 const projectKey = "project";

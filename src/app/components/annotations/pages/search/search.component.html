@@ -3,9 +3,9 @@
 <div>
   <baw-annotation-search-form
     #annotationSearchForm
-    [searchParameters]="searchParameters"
+    [searchParameters]="searchParameters()"
     (searchParametersChange)="updateSearchParameters($event)"
-  ></baw-annotation-search-form>
+  />
 
   <div class="mt-2">
     <!--
@@ -13,12 +13,15 @@
       we should uncomment this buttons functionality
       see: https://github.com/QutEcoacoustics/baw-server/issues/688
     -->
-    <!-- <a class="btn btn-secondary me-2" [href]="downloadAnnotationsUrl()">
+    <!-- <a class="btn btn-secondary me-2" [bawUrl]="downloadAnnotationsUrl()">
       Download Annotations
     </a> -->
 
     <baw-can [ifLoggedIn]="true">
-      <button class="verify-button btn btn-primary" (click)="navigateToVerificationGrid()">
+      <button
+        class="verify-button btn btn-primary"
+        (click)="createVerificationTask()"
+      >
         Verify This List
       </button>
     </baw-can>
@@ -30,44 +33,97 @@
 <div>
   @if (!error) {
     @if (loading) {
-      <baw-loading></baw-loading>
-    } @else {
+      <baw-loading />
+    }
+
+    <!--
+      We use a "hidden" attribute instead of using an if condition so that when
+      the user changes the search parameters, the previous card components and
+      spectrograms are hidden instead of removed/destroyed from the DOM.
+
+      I have done this because creating a new card component including a
+      spectrogram, axes, indicator, etc... is quite an expensive operation.
+      More expensive than just visibly hiding/showing the components because
+      it has to re-initialize and spin create new web workers.
+
+      Because we know it's likely that the user will see new results once we
+      loading completes, we optimistically preserve same spectrogram components
+      for re-use by re-showing the same card components and updating their
+      inputs once loading completes.
+
+      I use the "hidden" attribute instead of using CSS display: none because:
+      1. It is more semantically correct
+      2. It helps with accessibility because screen readers will ignore this
+         content while the new data is being fetched.
+      3. It does not remove the element from the browsers compositor, meaning
+         that we should (in theory) have slightly better performance when
+         re-displaying the elements. (although I have not measured this).
+    -->
+    <div [hidden]="loading">
       <p>
         Displaying
-        <span class="fw-bold">{{ searchResults.length }}</span> of
-        <span class="fw-bold">all {{ paginationInformation?.total }}</span> audio
-        events.
+        <span class="fw-bold">{{ searchResults().length }}</span> of
+        <span class="fw-bold">all {{ paginationInformation()?.total }}</span>
+        audio events.
       </p>
-    }
 
-    <div class="annotations-grid my-2">
-      @for (verificationModel of searchResults; track $index) {
-        @if (verificationModel) {
-          <div>
-            <baw-annotation-event-card
-              [annotation]="verificationModel"
-            ></baw-annotation-event-card>
-          </div>
-        }
+      @if (searchResults().length === 0) {
+        <h2 class="no-results-error">No annotations found</h2>
+      } @else {
+        <div class="annotations-grid my-2">
+          <!--
+            We track by index instead of something more descriptive like the
+            annotation ID because it's unlikely that the user will see the same
+            annotation twice when they are paginating through results, meaning
+            that we would not get much performance benefit from tracking by ID.
+
+            Additionally, tracking by index is actually faster because it stops
+            Angular from destroying old card elements and creating new ones for
+            new annotations. We don't want to do this because creating new card
+            components is an expensive operation because destroying and
+            re-creating the spectrogram component involves destroying & spinning
+            up new web workers.
+
+            By tracking by index, we lose a bit of potential performance when
+            seeing the same annotation twice (which is unlikely), in the trade
+            off of being able to re-use the same card components.
+
+            You might be seeing warnings in the console because Angular thinks
+            this is an anti-pattern (which it usually is). However, in this
+            specific use case, I have measured it to be the best performing
+            option.
+          -->
+          @for (annotationModel of searchResults(); track $index) {
+            <baw-annotation-event-card [annotation]="annotationModel" />
+          }
+        </div>
+      }
+
+      @if (displayPagination) {
+        <ngb-pagination
+          class="d-flex justify-content-center mt-4"
+          [collectionSize]="paginationInformation()?.total ?? 0"
+          [(page)]="page"
+        />
       }
     </div>
-
-    @if (searchResults.length === 0 && !loading) {
-      <h2 class="no-results-error">No annotations found</h2>
-      } @if(displayPagination) {
-      <ngb-pagination
-        class="d-flex justify-content-center mt-4"
-        [collectionSize]="paginationInformation?.total ?? 0"
-        [(page)]="page"
-      ></ngb-pagination>
-    }
+  } @else {
+    <baw-error-handler [error]="error" />
   }
-  <baw-error-handler [error]="error"></baw-error-handler>
 </div>
 
 <ng-template #broadSearchWarningModal let-warningModal>
   <baw-filters-warning-modal
     [modal]="warningModal"
-    [itemCount]="paginationInformation.total"
-  ></baw-filters-warning-modal>
+    [itemCount]="paginationInformation().total"
+  />
+</ng-template>
+
+<ng-template #verificationFiltersModal let-filtersModal>
+  <baw-verification-filters-modal
+    [modal]="filtersModal"
+    [formValue]="verificationParameters()"
+    [searchParameters]="searchParameters()"
+    [successCallback]="navigateToVerificationGrid.bind(this)"
+  />
 </ng-template>

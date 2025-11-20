@@ -102,3 +102,5 @@ export function withBrand<BrandedType extends Brand<unknown, string>>(
 ): BrandedType {
   return value as BrandedType;
 }
+
+export type Constructor<T> = new (...args: any[]) => T;

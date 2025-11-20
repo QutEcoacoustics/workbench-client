@@ -1,31 +1,46 @@
-@if (hasMarkers && googleMapsLoaded === true) {
+@if (hasMarkers && hasMapsLoaded()) {
   <google-map
     height="100%"
     width="100%"
-    [options]="mapOptions"
-    (mapClick)="markerOptions?.draggable && newLocation.emit($event)"
+    mapId="0"
+    [options]="mapOptions()"
+    (mapClick)="markerOptions()?.gmpDraggable && newLocation.emit($event)"
   >
-    @for (individualMarkerOptions of validMarkersOptions; track individualMarkerOptions) {
-      <map-marker
-        #markerRef="mapMarker"
-        [options]="markerOptions"
-        [position]="individualMarkerOptions.position"
-        (mapDragend)="newLocation.emit($event)"
-        (mapMouseover)="addMapMarkerInfo(individualMarkerOptions, markerRef)"
-        (positionChanged)="focusMarkers()"
-        (markerInitialized)="focusMarkers()"
-      ></map-marker>
-    }
-    <map-info-window>{{ infoContent }}</map-info-window>
+    <map-marker-clusterer
+      [renderer]="clusterRenderer"
+      [algorithm]="clusterAlgorithm"
+    >
+      @for (
+        individualMarkerOptions of validMarkersOptions;
+        track individualMarkerOptions
+      ) {
+        <map-advanced-marker
+          #markerRef="mapAdvancedMarker"
+          [options]="markerOptions()"
+          [title]="individualMarkerOptions.title"
+          [position]="individualMarkerOptions.position"
+          [content]="markerContent(individualMarkerOptions)"
+          (mapDragend)="newLocation.emit($event)"
+          (positionChanged)="focusMarkers()"
+          (markerInitialized)="initMarker(individualMarkerOptions, markerRef)"
+        ></map-advanced-marker>
+      }
+    </map-marker-clusterer>
+    <map-info-window [options]="infoOptions()">
+      <ng-container
+        [ngTemplateOutlet]="markerHoverTemplate()"
+        [ngTemplateOutletContext]="{ marker: focusedMarker() }"
+      ></ng-container>
+    </map-info-window>
   </google-map>
 } @else {
   <div class="map-placeholder">
-    @if (googleMapsLoaded === false) {
+    @if (mapsLoadState() === MapLoadState.Failed) {
       <p class="text-danger">Failure loading map</p>
       <p class="error-hint">
         Please ensure your ad-block is not blocking Google Maps
       </p>
-    } @else if (googleMapsLoaded === null) {
+    } @else if (!hasMapsLoaded()) {
       <baw-loading></baw-loading>
     } @else if (!hasMarkers) {
       <p>No locations specified</p>

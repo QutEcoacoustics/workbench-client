@@ -11,7 +11,12 @@
 </div>
 
 @if (contextExpanded()) {
-  <div class="context-card context-anchor-item">
+  <!--
+    We stop propagation here so that if you click anywhere in the context window
+    the click event won't bubble up to the grid-tile and cause the grid tile to
+    be selected/deselected.
+   -->
+  <div class="context-card context-anchor-item" (click)="$event.stopImmediatePropagation()">
     <div class="context-card-header">
       <span class="context-card-information">
         <span class="context-card-title">Context</span>
@@ -39,7 +44,7 @@
             #contextSpectrogram
             [src]="contextSource"
             (loaded)="contextSpectrogramLoaded()"
-            color-map="audacity"
+            color-map="grayscale"
             scaling="stretch"
           ></oe-spectrogram>
         </oe-indicator>

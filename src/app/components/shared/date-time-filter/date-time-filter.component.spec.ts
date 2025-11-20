@@ -323,13 +323,14 @@ describe("AudioRecordingsFilter", () => {
     }
 
     // date events where a filter update should not be emitted
-    it("should only emit one filter update event if the user hasn't input anything into the filter condition fields", fakeAsync(() => {
+    it("should not emit a filter update event if the user hasn't input anything into the filter condition fields", fakeAsync(() => {
+      // We act by opening the date and time of day filters so that we can
+      // assert that opening these accordion sections without inputting any
+      // values does not emit an update.
       toggleDateFilters();
       toggleTimeOfDayFilters();
-      // there is a filter update event emitted when the component is initialized
-      // this is done for the batch downloading component which needs the initial filter state for its batch downloading script
-      // therefore, if the user has not input any filters, there should only be the initial filter update
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should not emit a filter update if the start date is a bad format", fakeAsync(() => {
@@ -337,21 +338,20 @@ describe("AudioRecordingsFilter", () => {
       // if this test is failing, the raw input from the input field is being passed to the date filter without its type being validated
       const malformedStartDate = "testing";
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
-
       toggleDateFilters();
       typeInElement(getDateStartedAfterInput(), malformedStartDate);
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should not emit a filter update if the end date is a bad format", fakeAsync(() => {
       // in this test, the day (12) and month (20) are swapped. It should not reformat the date or emit a filter update event in this case
       const malformedEndDate = "2021-20-12";
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
       toggleDateFilters();
       typeInElement(getDateStartedAfterInput(), malformedEndDate);
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should not emit a filter update if the dates are out of bounds", fakeAsync(() => {
@@ -359,12 +359,17 @@ describe("AudioRecordingsFilter", () => {
       const endDate = "2021-09-02";
 
       toggleDateFilters();
+
+      // After the start date is entered, we should see that a filter update is
+      // emitted. However, because we don't want the out of bounds date to emit
+      // a filter, we need to reset the spy calls after entering the start date.
       typeInElement(getDateStartedAfterInput(), startDate);
+      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+      filterChangeSpy.calls.reset();
+
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
-      // a filter change event would have been emitted once due to the correctly formatted and valid start date
-      // we therefore have to assert that two filter events didn't get emitted from the second date input (which is out of bounds)
-      expect(filterChangeSpy).toHaveBeenCalledTimes(2);
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     // date filter update events
@@ -440,22 +445,19 @@ describe("AudioRecordingsFilter", () => {
     it("should not emit a filter update if the start time is a bad format", fakeAsync(() => {
       const startTime = "25:00";
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
       toggleTimeOfDayFilters();
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should not emit a filter update if the end time is a bad format", fakeAsync(() => {
       const endTime = "01:98";
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
-
       toggleTimeOfDayFilters();
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
-      expect(filterChangeSpy).toHaveBeenCalledTimes(1);
+      expect(filterChangeSpy).not.toHaveBeenCalled();
     }));
 
     it("should emit an empty filter update if the time condition is set, then unset", fakeAsync(() => {

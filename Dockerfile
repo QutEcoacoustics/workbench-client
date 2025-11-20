@@ -1,3 +1,4 @@
+# Check that this version matches the node versions in CI
 FROM node:22-alpine as BUILD_IMAGE
 
 ARG GIT_COMMIT

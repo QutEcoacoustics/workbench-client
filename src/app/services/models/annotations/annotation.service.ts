@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Id } from "@interfaces/apiInterfaces";
@@ -7,18 +7,16 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Annotation, IAnnotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
-import { firstValueFrom } from "rxjs";
+import { defer, firstValueFrom, iif, map, Observable } from "rxjs";
 
 export type TagComparer = (a: Tag, b: Tag) => number;
 
 @Injectable()
 export class AnnotationService {
-  public constructor(
-    private tagsApi: TagsService,
-    private audioRecordingsApi: AudioRecordingsService,
-  ) {}
+  private readonly tagsApi = inject(TagsService);
+  private readonly audioRecordingsApi = inject(AudioRecordingsService);
 
-  public async show(audioEvent: AudioEvent, priorityTags: Id[]): Promise<Annotation> {
+  public async show(audioEvent: AudioEvent, priorityTags: Id<Tag>[] = []): Promise<Annotation> {
     const audioRecording = await this.showAudioRecording(audioEvent);
     const audioEventTags = await this.showTags(audioEvent);
 
@@ -29,7 +27,7 @@ export class AnnotationService {
       ...audioEvent,
       tags,
       audioRecording,
-      corrections: new Map<Tag["id"], Tagging>(),
+      corrections: new Map<Id<Tag>, Tagging>(),
     } as IAnnotation;
 
     return new Annotation(data);
@@ -45,20 +43,45 @@ export class AnnotationService {
       // This means that tags that appear sooner in the tag priority list will
       // be preferred when there is a tie in priority.
       return bPriority - aPriority;
-    }
+    };
+  }
+
+  private showMultipleTags(tagIds: Id[]): Observable<Tag[]> {
+    return this.tagsApi.filter({
+      filter: {
+        id: {
+          in: tagIds,
+        },
+      } as any,
+    });
+  }
+
+  private showSingleTag(tagId: Id): Observable<Tag[]> {
+    return this.tagsApi.show(tagId).pipe(map((tag) => [tag]));
   }
 
   private async showTags(audioEvent: AudioEvent): Promise<Tag[]> {
+    // If there are no taggings, we can short-circuit and return an empty list
+    // without making any API calls.
     const tagIds = audioEvent.taggings.map((tagging) => tagging.tagId);
-    return await firstValueFrom(
-      this.tagsApi.filter({
-        filter: {
-          id: {
-            in: tagIds,
-          },
-        } as any,
-      }),
+    if (tagIds.length === 0) {
+      return [];
+    }
+
+    // If there is only one tag, we use the show endpoint because it has
+    // improved caching behavior and can use the same response if multiple
+    // requests for the same tag are made in quick succession.
+    //
+    // If there are multiple tags, we use the filter endpoint instead of
+    // fetching each tag individually so that we can reduce the number of API
+    // calls.
+    const request = iif(
+      () => tagIds.length > 1,
+      defer(() => this.showMultipleTags(tagIds)),
+      defer(() => this.showSingleTag(tagIds[0])),
     );
+
+    return await firstValueFrom(request);
   }
 
   private async showAudioRecording(

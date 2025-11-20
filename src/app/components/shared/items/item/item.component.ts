@@ -31,8 +31,7 @@ import { NgClass } from "@angular/common";
         {{ value ?? "Unknown" }}
       </span>
     </div>
-  `,
-    // Pure Component
+    `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FaIconComponent, NgbTooltip, NgClass]
 })

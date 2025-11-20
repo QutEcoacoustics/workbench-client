@@ -1,11 +1,11 @@
 <form #form="ngForm">
   <baw-date-time-filter
-    [(model)]="recordingDateTimeFilters"
+    [model]="recordingDateTimeFilters()"
     (modelChange)="updateRecordingDateTime($event)"
     [disableStartDate]="true"
     [disableStartTime]="true"
     [disableEndTime]="true"
-  ></baw-date-time-filter>
+  />
 
   <baw-typeahead-input
     id="tags-input"
@@ -15,7 +15,7 @@
     [resultTemplate]="tagsTypeaheadTemplate"
     [value]="searchParameters().tagModels"
     (modelChange)="updateSubModel('tags', $event)"
-  ></baw-typeahead-input>
+  />
 
   <baw-typeahead-input
     id="projects-input"
@@ -27,7 +27,7 @@
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!project()"
     (modelChange)="updateSubModel('projects', $event)"
-  ></baw-typeahead-input>
+  />
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
   @if (!site() || site()?.isPoint) {
@@ -41,7 +41,7 @@
       [resultTemplate]="nameTypeaheadTemplate"
       [inputDisabled]="!!region()"
       (modelChange)="updateSubModel('regions', $event)"
-    ></baw-typeahead-input>
+    />
   }
 
   <baw-typeahead-input
@@ -54,7 +54,7 @@
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site()"
     (modelChange)="updateSubModel('sites', $event)"
-  ></baw-typeahead-input>
+  />
 
   <div>
     <div class="row">
@@ -151,41 +151,21 @@
         [resultTemplate]="idTypeaheadTemplate"
         [value]="searchParameters().audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
-      ></baw-typeahead-input>
-
-      <!-- Tags to verify moved to advanced filters -->
-      <baw-typeahead-input
-        id="task-tag-input"
-        label="Tag to Verify"
-        [inputPlaceholder]="searchParameters().tagModels.length > 0 ? $any(searchParameters().tagModels) : 'First Tag'"
-        [searchCallback]="tagsApi.typeaheadCallback()"
-        [resultTemplate]="tagsTypeaheadTemplate"
-        [multipleInputs]="false"
-        [value]="hasTaskTag() ? [searchParameters().taskTagModel] : []"
-        (modelChange)="updateTaskTag($event)"
-      ></baw-typeahead-input>
+      />
     </div>
   </div>
 
-  <div class="mt-2">
-    <label class="form-label w-100">Show annotations that</label>
-    <baw-selectable-items
-      [options]="verifiedStatusOptions()"
-      [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
-      [inline]="true"
-      (selectionChange)="updateParameterProperty('verificationStatus', $event)"
-    ></baw-selectable-items>
-  </div>
-
-  <div class="mt-2">
-    <label class="form-label w-100">Task Behavior</label>
-    <baw-selectable-items
-      [options]="taskBehaviorOptions"
-      [selection]="searchParameters().taskBehavior ?? 'verify'"
-      [inline]="true"
-      (selectionChange)="updateParameterProperty('taskBehavior', $event)"
-    ></baw-selectable-items>
-  </div>
+  @if (showVerificationOptions()) {
+    <div class="mt-2">
+      <label class="form-label w-100">Show annotations that</label>
+      <baw-selectable-items
+        [options]="verifiedStatusOptions()"
+        [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
+        [inline]="true"
+        (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+      />
+    </div>
+  }
 
   <label class="form-label mt-2 w-100">
     Sort by
@@ -206,13 +186,13 @@
 </form>
 
 <ng-template #idTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.id" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.id" [term]="searchTerm" />
 </ng-template>
 
 <ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.name" [term]="searchTerm" />
 </ng-template>
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
 </ng-template>

@@ -32,7 +32,7 @@ describe("annotationSearchParameters", () => {
     const expectedFilters = {
       filter: {
         and: [
-          { "audioRecordings.siteId": { in: [] } },
+          { "sites.id": { in: [] } },
           { "verifications.id": { eq: null } },
         ],
       },
@@ -51,7 +51,7 @@ describe("annotationSearchParameters", () => {
     const dataModel = new AnnotationSearchParameters(params, mockUser);
 
     const mockProjectId = modelData.id();
-    dataModel.routeProjectId = modelData.id();
+    dataModel.routeProjectId = mockProjectId;
 
     const mockSiteIds = modelData.ids();
     routeProject = new Project({
@@ -88,15 +88,10 @@ describe("annotationSearchParameters", () => {
       inputParams: undefined,
       expectedFilters: () => ({
         filter: {
-          and: [
-            {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
-              },
-            },
-            myUnverifiedFilters,
-          ],
-        },
+          "projects.id": {
+            in: [routeProject.id],
+          },
+        } as any,
         sorting: defaultSorting,
       }),
     },
@@ -113,7 +108,7 @@ describe("annotationSearchParameters", () => {
         sites: "6,7,8,9",
 
         taskTag: "5",
-        verificationStatus: "any",
+        verificationStatus: "unverified-for-me",
       },
       expectedFilters: () => ({
         filter: {
@@ -129,12 +124,13 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.id": { in: [11, 12, 13] } },
             { audioEventImportFileId: { in: [1, 12, 23] } },
             {
-              "audioRecordings.siteId": {
+              "sites.id": {
                 in: [6, 7, 8, 9],
               },
             },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
+            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -166,7 +162,7 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            { "audioRecordings.siteId": { in: [6, 7, 8, 9] } },
+            { "sites.id": { in: [6, 7, 8, 9] } },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
             {
@@ -192,12 +188,11 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "projects.id": {
+                in: [routeProject.id],
               },
             },
             { score: { gteq: 0.2 } },
-            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -212,12 +207,11 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "projects.id": {
+                in: [routeProject.id],
               },
             },
             { score: { lteq: 0.9 } },
-            myUnverifiedFilters,
           ],
         },
         sorting: defaultSorting,
@@ -232,8 +226,8 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             {
-              "audioRecordings.siteId": {
-                in: Array.from(routeProject.siteIds),
+              "projects.id": {
+                in: [routeProject.id],
               },
             },
             {
@@ -255,24 +249,4 @@ describe("annotationSearchParameters", () => {
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
-
-  describe("tag priority", () => {
-    it("should handle an empty array of tags", () => {
-      const dataModel = createParameterModel();
-      const realizedResult = dataModel.tagPriority;
-      expect(realizedResult).toEqual([]);
-    });
-
-    it("should handle an array of tags with no task tag", () => {
-      const dataModel = createParameterModel({ tags: "1,2,3,4" });
-      const realizedResult = dataModel.tagPriority;
-      expect(realizedResult).toEqual([1, 2, 3, 4]);
-    });
-
-    it("should handle an array of tags with a task tag", () => {
-      const dataModel = createParameterModel({ tags: "1,2,3,4", taskTag: "3" });
-      const realizedResult = dataModel.tagPriority;
-      expect(realizedResult).toEqual([3, 1, 2, 4]);
-    });
-  });
 });

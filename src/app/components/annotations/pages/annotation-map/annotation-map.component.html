@@ -1,0 +1,140 @@
+<!-- This menu is only visible on mobile / small screen devices -->
+<div class="overlay mobile-menu-toggle m-2 d-block d-md-none">
+  <button
+    type="button"
+    class="btn btn-primary p-3 py-2"
+    (click)="openSearchFiltersModal()"
+    [ngbTooltip]="'Edit Filters'"
+    container="body"
+  >
+    <fa-icon [icon]="['fas', 'filter']" />
+  </button>
+</div>
+
+<div
+  class="desktop-overlay overlay alert alert-light shadow m-3"
+  [class.hide-on-mobile]="focusedEvents() === null"
+>
+  <div
+    class="controls alert-heading d-flex justify-content-between align-items-center mb-2"
+  >
+    <h3 class="h4 mb-0 text-dark fw-bold">Annotations</h3>
+    <button
+      class="btn btn-primary hide-on-mobile"
+      (click)="openSearchFiltersModal()"
+    >
+      <fa-icon [icon]="['fas', 'filter']" class="me-1" />
+      Edit Filters
+    </button>
+
+    <!--
+      We use bootstrap hiding/showing instead of Angular control flow +
+      bootstrap modal so that resizing the window from a small screen to a
+      large screen correctly updates to including / omitting these compact
+      versions without any JavaScript.
+    -->
+    <div class="hide-on-desktop">
+      <button class="btn btn-danger text-white" (click)="defocusSite()">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <div>
+    <p class="text-muted">Click on a marker to view annotations.</p>
+
+    @if (focusedEvents() !== null) {
+      <hr />
+
+      @if (focusedEvents().length > 0) {
+        <div class="species-list">
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th scope="col" id="species-column">Species</th>
+                <th scope="col">Score</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (event of focusedEvents(); track event.id) {
+                <tr class="audio-event-row">
+                  <td>
+                    <baw-inline-list
+                      [items]="event.tags"
+                      [itemKey]="'text'"
+                      [emptyTemplate]="noTagsTemplate"
+                    />
+                  </td>
+                  <td>
+                    @if (event.score !== undefined && event.score !== null) {
+                      {{ event.score }}
+                    } @else {
+                      <i>No Score</i>
+                    }
+                  </td>
+                  <td>
+                    <a
+                      class="view-event btn btn-sm btn-secondary me-1"
+                      [ngbTooltip]="'View Annotation'"
+                      [bawUrl]="event.viewUrl"
+                      container="body"
+                    >
+                      <fa-icon [icon]="['fas', 'eye']" />
+                    </a>
+                    <button
+                      class="preview-event btn btn-sm btn-outline-secondary"
+                      [ngbTooltip]="'Preview Annotation'"
+                      (click)="previewEvent(event)"
+                      container="body"
+                    >
+                      <fa-icon [icon]="['fas', 'magnifying-glass']" />
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="text-center">
+            <a
+              class="btn btn-sm btn-outline-primary"
+              [strongRoute]="moreEventsUrl"
+              [queryParams]="annotationSearchParameters().toQueryParams()"
+              [routeParams]="{
+                projectId: annotationSearchParameters().routeProjectId,
+                regionId: annotationSearchParameters().routeRegionId,
+                siteId: annotationSearchParameters().routeSiteId,
+              }"
+            >
+              Show More
+            </a>
+          </div>
+        </div>
+      } @else {
+        <div class="alert alert-warning">
+          <strong class="fw-normal">
+            No annotations at this site match the current search filters.
+          </strong>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<baw-event-map
+  class="event-map"
+  [events]="(eventGroups() | async) ?? []"
+  (siteFocused)="handleSiteFocused($event)"
+/>
+
+<ng-template #searchFiltersModal let-filtersModal>
+  <baw-search-filters-modal
+    [modal]="filtersModal"
+    [successCallback]="updateSearchParameters.bind(this)"
+    [formValue]="annotationSearchParameters()"
+  />
+</ng-template>
+
+<ng-template #noTagsTemplate>No Tags</ng-template>

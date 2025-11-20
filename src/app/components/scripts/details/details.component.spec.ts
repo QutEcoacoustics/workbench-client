@@ -27,7 +27,7 @@ import { appLibraryImports } from "src/app/app.config";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {

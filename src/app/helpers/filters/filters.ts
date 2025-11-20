@@ -36,6 +36,37 @@ export function filterAnd<T extends AbstractModel>(
 }
 
 /**
+ * Adds an inner filter to the root of an existing filter in an `or` expression
+ *
+ * @param filter The current inner filter
+ * @param newFilter A new inner filter that will be added in an `or` expression
+ * @returns A new filter which satisfies the union between the two filters
+ */
+export function filterOr<T extends AbstractModel>(
+  filter: InnerFilter<T>,
+  newFilter: InnerFilter<T>,
+): InnerFilter<Writeable<T>> {
+  if (!newFilter || Object.keys(newFilter).length === 0) {
+    // If the new filter is an empty object, we can short circuit and return the
+    // existing filter.
+    return filter;
+  } else if (!filter || Object.keys(filter).length === 0) {
+    // Similarly, if the existing filter is an empty object, we can short
+    // circuit and return the new filter.
+    return newFilter;
+  }
+
+  // If there is already an existing "or" block, we can just append the new
+  // filter to it. Otherwise, we need to create a new "or" block with both the
+  // existing filter and the new filter as its members.
+  return {
+    or: filter.or
+      ? [...(filter.or as InnerFilter[]), newFilter]
+      : [filter, newFilter],
+  };
+}
+
+/**
  * Adds a new filter to an existing filter that filters by a model's id
  *
  * @param key The key identifier of the model, most likely the type
@@ -47,7 +78,7 @@ export function filterAnd<T extends AbstractModel>(
 export function filterModel<T extends AbstractModel, U extends AbstractModel>(
   key: string,
   model: T,
-  currentFilter: InnerFilter<T> = {}
+  currentFilter: InnerFilter<T> = {},
 ): InnerFilter<Writeable<U>> {
   // all model filters condition on the id attribute. While it is very rare for a model to not have an id, it is possible
   // this bailout is typically evoked if the model is undefined
@@ -76,7 +107,7 @@ export function filterModel<T extends AbstractModel, U extends AbstractModel>(
 export function filterModelIds<T extends AbstractModel>(
   key: string,
   ids: Id[] | Ids,
-  currentFilter: InnerFilter<T> = {}
+  currentFilter: InnerFilter<T> = {},
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(ids)) {
     return currentFilter;
@@ -94,7 +125,7 @@ export function filterModelIds<T extends AbstractModel>(
 export function contains<T extends AbstractModel, K extends keyof T>(
   key: K,
   value: T[K],
-  currentFilter: InnerFilter<T> = {}
+  currentFilter: InnerFilter<T> = {},
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(value)) {
     return currentFilter;
@@ -112,7 +143,7 @@ export function contains<T extends AbstractModel, K extends keyof T>(
 export function notIn<T extends AbstractModel>(
   key: keyof T,
   values: T[],
-  currentFilter: InnerFilter<T> = {}
+  currentFilter: InnerFilter<T> = {},
 ): InnerFilter<Writeable<T>> {
   if (!isInstantiated(values)) {
     return currentFilter;

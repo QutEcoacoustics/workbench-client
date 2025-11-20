@@ -1,7 +1,8 @@
 import { MEDIA } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
-import { DateTimeTimezone, Ids } from "@interfaces/apiInterfaces";
+import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
+import { AbstractModelWithoutId } from "@models/AbstractModel";
 import {
   bawDateTime,
   bawSubModelCollection,
@@ -15,7 +16,7 @@ import { MediaService } from "@services/media/media.service";
 export interface IAnnotation extends Required<IAudioEvent> {
   tags: ITag[];
   audioRecording: AudioRecording;
-  corrections: Map<Tag["id"], Tagging>;
+  corrections: Map<Id<Tag>, Tagging>;
 }
 
 // this class is not backed by the api or a database table
@@ -54,7 +55,7 @@ export class Annotation extends AudioEvent implements IAnnotation {
   @bawDateTime()
   public readonly updatedAt: DateTimeTimezone;
 
-  public readonly corrections: Map<Tag["id"], Tagging>;
+  public readonly corrections: Map<Id<Tag>, Tagging>;
 
   public get tagIds(): Ids {
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
@@ -95,11 +96,11 @@ export class Annotation extends AudioEvent implements IAnnotation {
     );
   }
 
-  public addCorrection(tag: Tag["id"], tagging: Tagging): void {
+  public addCorrection(tag: Id<Tag>, tagging: Tagging): void {
     this.corrections.set(tag, tagging);
   }
 
-  public removeCorrection(tag: Tag["id"]): void {
+  public removeCorrection(tag: Id<Tag>): void {
     this.corrections.delete(tag);
   }
 }
