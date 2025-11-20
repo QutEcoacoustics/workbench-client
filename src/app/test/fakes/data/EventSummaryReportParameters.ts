@@ -28,6 +28,7 @@ export function generateEventSummaryReportUrlParams(data?: Params): Params {
     charts: faker.helpers.shuffle([
       Chart.speciesAccumulationCurve,
       Chart.speciesCompositionCurve,
+      Chart.speciesTimeSeries,
       Chart.falseColorSpectrograms,
       Chart.none,
     ]).join(","),

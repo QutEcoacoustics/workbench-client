@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -34,28 +35,27 @@ import {
   PercentPipe,
   TitleCasePipe,
 } from "@angular/common";
-import { Map } from "immutable";
 import { NgbModal, NgbTooltip, NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Filters } from "@baw-api/baw-api.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { ChartComponent } from "@shared/chart/chart.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { ConfidencePlotComponent } from "@shared/charts/confidence-plot/confidence-plot.component";
+import { CoveragePlotComponent } from "@shared/charts/coverage-plot/coverage-plot.component";
+import { SpeciesAccumulationCurveComponent } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
+import { DateTimePipe } from "@pipes/date/date.pipe";
+import { TimePipe } from "@pipes/time/time.pipe";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { SpeciesCompositionGraphComponent } from "@shared/charts/species-composition/species-composition.component";
+import { SpeciesTimeSeriesComponent } from "@shared/charts/species-time-series/species-time-series.component";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
 import {
   Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
-import { IsUnresolvedPipe } from "../../../../../pipes/is-unresolved/is-unresolved.pipe";
-import { TimePipe } from "../../../../../pipes/time/time.pipe";
-import { DateTimePipe } from "../../../../../pipes/date/date.pipe";
-import speciesCompositionCurveSchema from "./speciesCompositionCurve.schema.json";
-import speciesAccumulationCurveSchema from "./speciesAccumulationCurve.schema.json";
-import confidencePlotSchema from "./confidencePlot.schema.json";
-import coveragePlotSchema from "./coveragePlot.schema.json";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -72,7 +72,6 @@ const reportKey = "report";
     DatetimeComponent,
     InlineListComponent,
     SiteMapComponent,
-    ChartComponent,
     DurationComponent,
     NgbCollapse,
     DecimalPipe,
@@ -81,20 +80,21 @@ const reportKey = "report";
     IsUnresolvedPipe,
     TimePipe,
     DateTimePipe,
-    UrlDirective
+    UrlDirective,
+    ConfidencePlotComponent,
+    CoveragePlotComponent,
+    SpeciesAccumulationCurveComponent,
+    SpeciesCompositionGraphComponent,
+    SpeciesTimeSeriesComponent
 ],
 })
 class ViewEventReportComponent extends PageComponent implements OnInit {
-  public constructor(
-    protected eventSummaryReportApi: EventSummaryReportService,
-    protected session: BawSessionService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private modalService: NgbModal
-  ) {
-    super();
-  }
+  protected readonly eventSummaryReportApi = inject(EventSummaryReportService);
+  protected readonly session = inject(BawSessionService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly modalService = inject(NgbModal);
 
   public parameterDataModel: EventSummaryReportParameters;
   public report: EventSummaryReport;
@@ -103,13 +103,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   public region?: Region;
   public site?: Site;
 
-  protected coveragePlotSchema = Map(coveragePlotSchema);
-  protected confidencePlotSchema = Map(confidencePlotSchema);
-  protected speciesAccumulationCurveSchema = Map(
-    speciesAccumulationCurveSchema
-  );
-  protected speciesCompositionCurveSchema = Map(speciesCompositionCurveSchema);
-  protected chartTypes = Chart;
+  protected readonly chartTypes = Chart;
 
   public filters$: BehaviorSubject<Filters<any>> = new BehaviorSubject({
     paging: { page: 1 },
@@ -117,7 +111,8 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   });
 
   @ViewChild("printingModal") public printingModal: ElementRef;
-  @ViewChild("compositionChart") public compositionChart: ChartComponent;
+  @ViewChild("compositionChart") public compositionChart: SpeciesCompositionGraphComponent;
+  @ViewChild("timeSeriesChart") public timeSeriesChart: SpeciesTimeSeriesComponent;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -211,6 +206,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
       this.parameterDataModel.charts = [
         Chart.speciesCompositionCurve,
         Chart.speciesAccumulationCurve,
+        Chart.speciesTimeSeries,
         Chart.falseColorSpectrograms,
       ];
     }
@@ -225,7 +221,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
     if (this.parameterDataModel.charts.length === 0) {
       this.parameterDataModel.charts = [];
-    } else if (this.parameterDataModel.charts.length === 3) {
+    } else if (this.parameterDataModel.charts.length === 4) {
       this.parameterDataModel.charts = null;
     }
 
