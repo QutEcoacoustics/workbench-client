@@ -57,7 +57,6 @@
             ],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
-            "prerender": false,
             "ssr": {
               "entry": "src/server.ts"
             }

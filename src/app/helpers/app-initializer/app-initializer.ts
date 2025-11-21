@@ -11,7 +11,7 @@ type AppInitializerType = () => Promise<unknown>;
  * Class is a wrapper for the factory function as error handler
  * forbids injection on functions even though its supported.
  */
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class AppInitializer {
   public static initializerFactory(
     // SSR Sets a default config

@@ -1,5 +1,4 @@
 import { Spectator, SpectatorDirective } from "@ngneat/spectator";
-import { DomSpectator } from "@ngneat/spectator/lib/base/dom-spectator";
 
 // these are all callbacks because sometimes the datatable content/column names
 // are dependent on the state of the tested component

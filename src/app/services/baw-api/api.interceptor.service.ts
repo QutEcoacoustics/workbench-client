@@ -35,7 +35,7 @@ export const CREDENTIALS_CONTEXT = new HttpContextToken<boolean>(() => true);
  * This handles intercepting http requests to the BAW API server and manages
  * login tokens and error handling.
  */
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(API_ROOT) private apiRoot: string,
