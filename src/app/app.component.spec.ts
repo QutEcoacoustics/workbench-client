@@ -13,7 +13,7 @@ import {
   SpectatorRouting,
 } from "@ngneat/spectator";
 import { LoadingBarComponent, LoadingBarService } from "@ngx-loading-bar/core";
-import { Title } from "@angular/platform-browser";
+import { By, Title } from "@angular/platform-browser";
 import { MenuService } from "@services/menu/menu.service";
 import { BreadcrumbComponent } from "@shared/breadcrumb/breadcrumb.component";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
@@ -50,7 +50,7 @@ describe("AppComponent", () => {
         SecondaryMenuComponent,
         ActionMenuComponent,
         BreadcrumbComponent,
-        MenuButtonComponent
+        MenuButtonComponent,
       ),
     ],
   });
@@ -95,8 +95,17 @@ describe("AppComponent", () => {
   describe("side nav", () => {
     [true, false].forEach((isFullscreen) => {
       describe(`${isFullscreen ? "fullscreen" : "menu layout"}`, () => {
-        function assertIsSideNav(el: Element) {
-          expect(el).toHaveAttribute("ng-reflect-is-side-nav");
+        function sideNav() {
+          return spec.query("baw-side-nav");
+        }
+
+        /**
+         * @param target
+         * A polymorphic object type that enforces the component contains the
+         * `isSideNav` property.
+         */
+        function assertIsSideNav(target: { isSideNav: boolean }) {
+          expect(target.isSideNav).toBeTrue();
         }
 
         beforeEach(() => {
@@ -108,27 +117,35 @@ describe("AppComponent", () => {
         });
 
         it("should include primary menu", () => {
-          const primaryMenu = spec.query("baw-side-nav baw-primary-menu");
-          expect(primaryMenu).toBeTruthy();
-          assertIsSideNav(primaryMenu);
+          const primaryMenu = spec.fixture.debugElement.query(
+            By.css("baw-side-nav baw-primary-menu"),
+          );
+
+          expect(primaryMenu).toExist();
+          assertIsSideNav(primaryMenu.componentInstance);
         });
 
         it("should include secondary menu", () => {
-          const secondaryMenu = spec.query("baw-side-nav baw-secondary-menu");
-          expect(secondaryMenu).toBeTruthy();
-          assertIsSideNav(secondaryMenu);
+          const secondaryMenu = spec.fixture.debugElement.query(
+            By.css("baw-side-nav baw-secondary-menu"),
+          );
+
+          expect(secondaryMenu).toExist();
+          assertIsSideNav(secondaryMenu.componentInstance);
         });
 
         it(`should ${
           isFullscreen ? "include" : "not include"
         } action menu`, () => {
-          const actionMenu = spec.query("baw-side-nav baw-action-menu");
+          const actionMenu = spec.fixture.debugElement.query(
+            By.css("baw-side-nav baw-action-menu"),
+          );
 
           if (isFullscreen) {
-            expect(actionMenu).toBeTruthy();
-            assertIsSideNav(actionMenu);
+            expect(actionMenu).toExist();
+            assertIsSideNav(actionMenu.componentInstance);
           } else {
-            expect(actionMenu).toBeFalsy();
+            expect(actionMenu).not.toExist();
           }
         });
       });
@@ -152,7 +169,7 @@ describe("AppComponent", () => {
     function assertLayout(isFullscreen: boolean) {
       const container = spec.query("#container");
       expect(container).toHaveClass(
-        isFullscreen ? "fullscreen" : "menu-layout"
+        isFullscreen ? "fullscreen" : "menu-layout",
       );
 
       const actionMenu = spec.query("#container baw-action-menu");
@@ -188,8 +205,8 @@ describe("AppComponent", () => {
         generatePageInfo(
           generatePageInfoResolvers({
             model: new MockModel({ id: 1 }),
-          })
-        )
+          }),
+        ),
       );
       assertPageComponent(true);
     });
@@ -200,7 +217,7 @@ describe("AppComponent", () => {
           resolvers: generatePageInfoResolvers({
             error: generateBawApiError(),
           }),
-        })
+        }),
       );
       assertPageComponent(false);
     });

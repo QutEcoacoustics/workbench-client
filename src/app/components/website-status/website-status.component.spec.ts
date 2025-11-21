@@ -98,7 +98,7 @@ describe("WebsiteStatusComponent", () => {
     );
   });
 
-  fit("should display the correct text for an unhealthy response", () => {
+  it("should display the correct text for an unhealthy response", () => {
     const expectedValues: GridItem[] = [
       { name: "Overall Server Health", value: "Unhealthy" },
       { name: "Server Connection", value: "Unhealthy" },
