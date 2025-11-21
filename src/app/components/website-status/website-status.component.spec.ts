@@ -1,6 +1,10 @@
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { ServerTimeout, SsrContext, WebsiteStatus } from "@models/WebsiteStatus";
+import {
+  ServerTimeout,
+  SsrContext,
+  WebsiteStatus,
+} from "@models/WebsiteStatus";
 import { MockProvider } from "ng-mocks";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { BehaviorSubject } from "rxjs";
@@ -10,6 +14,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { IconsModule } from "@shared/icons/icons.module";
 import { WebsiteStatusComponent } from "./website-status.component";
+import { getElementByTextContent } from "@test/helpers/html";
 
 interface GridItem {
   name: string;
@@ -17,7 +22,7 @@ interface GridItem {
 }
 
 describe("WebsiteStatusComponent", () => {
-  let spectator: Spectator<WebsiteStatusComponent>;
+  let spec: Spectator<WebsiteStatusComponent>;
   let userHasInternet: boolean;
   let mockApi: jasmine.SpyObj<WebsiteStatusService>;
 
@@ -35,23 +40,23 @@ describe("WebsiteStatusComponent", () => {
   });
 
   function setup(
-    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
+    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus()),
   ) {
-    spectator = createComponent({ detectChanges: false });
+    spec = createComponent({ detectChanges: false });
 
-    mockApi = spectator.inject(WebsiteStatusService);
+    mockApi = spec.inject(WebsiteStatusService);
     mockApi.status$ = new BehaviorSubject(fakeWebsiteStatus);
 
     spyOnProperty(navigator, "onLine", "get").and.callFake(
-      () => userHasInternet
+      () => userHasInternet,
     );
 
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   function assertGridItemText(itemName: string, expectedValue: string) {
-    const gridElement = spectator.query(`[ng-reflect-name="${itemName}"]`);
-    const gridElementValue = gridElement.querySelector("#value");
+    const gridElement = getElementByTextContent(spec, itemName);
+    const gridElementValue = gridElement.parentElement.querySelector("#value");
 
     expect(gridElementValue).toHaveExactTrimmedText(expectedValue);
   }
@@ -60,7 +65,7 @@ describe("WebsiteStatusComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spectator.component).toBeInstanceOf(WebsiteStatusComponent);
+    expect(spec.component).toBeInstanceOf(WebsiteStatusComponent);
   });
 
   it("should display the correct text for a healthy response", () => {
@@ -89,11 +94,11 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString())
+      assertGridItemText(item.name, item.value.toString()),
     );
   });
 
-  it("should display the correct text for an unhealthy response", () => {
+  fit("should display the correct text for an unhealthy response", () => {
     const expectedValues: GridItem[] = [
       { name: "Overall Server Health", value: "Unhealthy" },
       { name: "Server Connection", value: "Unhealthy" },
@@ -119,7 +124,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString())
+      assertGridItemText(item.name, item.value.toString()),
     );
   });
 
@@ -149,7 +154,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString())
+      assertGridItemText(item.name, item.value.toString()),
     );
   });
 
@@ -171,7 +176,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString())
+      assertGridItemText(item.name, item.value.toString()),
     );
   });
 
@@ -193,7 +198,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValue.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString())
+      assertGridItemText(item.name, item.value.toString()),
     );
   });
 });

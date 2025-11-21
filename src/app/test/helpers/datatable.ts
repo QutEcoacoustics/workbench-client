@@ -19,10 +19,6 @@ export function assertDatatable(setup: SetupFunction): void {
     return Array.from(rootElement.querySelectorAll("datatable-row-wrapper"));
   }
 
-  // function rowCells(row: Element): Element[] {
-  //   return Array.from(row.querySelectorAll(".datatable-body-cell-label"));
-  // }
-
   it("should have the correct column headings", () => {
     const { columns, root } = setup();
     const rootElement = root();

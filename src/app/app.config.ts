@@ -1,4 +1,4 @@
-import { APP_ID, ApplicationConfig, importProvidersFrom, provideNgReflectAttributes } from "@angular/core";
+import { APP_ID, ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import {
   provideRouter,
@@ -44,11 +44,6 @@ export const appConfig: ApplicationConfig = {
 
     importProvidersFrom(appLibraryImports),
     menuProviders,
-
-    // This should only activate in dev & testing.
-    // TODO: Migrate our tests to use property assertions instead of relying on
-    // ng-reflect attributes.
-    provideNgReflectAttributes(),
 
     provideConfig(),
     provideBawApi(),

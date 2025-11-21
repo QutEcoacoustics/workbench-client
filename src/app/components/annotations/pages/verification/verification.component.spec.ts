@@ -1126,7 +1126,7 @@ describe("VerificationComponent", () => {
       await setup();
     });
 
-    fit("should not show a navigation confirmation if the user has not made a decision", () => {
+    it("should not show a navigation confirmation if the user has not made a decision", () => {
       expect(spec.component.confirmNavigation).toBeFalse();
     });
 
