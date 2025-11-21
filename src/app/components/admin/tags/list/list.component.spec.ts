@@ -83,8 +83,8 @@ describe("AdminTagsComponent", () => {
 
       // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
       spyOn(modalService, "open").and.returnValue({
-        result: new Promise((resolve) => resolve(true)),
-      });
+        result: Promise.resolve(true),
+      } as any);
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 
       tick();

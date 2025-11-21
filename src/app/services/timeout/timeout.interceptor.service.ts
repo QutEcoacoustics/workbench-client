@@ -24,7 +24,7 @@ export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>(
  * @author IKatsuba (Igor Katsuba)
  * @link https://github.com/IKatsuba/ngx-ssr
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class TimeoutInterceptor implements HttpInterceptor {
   public constructor(
     @Inject(TIMEOUT_OPTIONS) private timeoutOptions: TimeoutOptions

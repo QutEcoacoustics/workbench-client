@@ -1,4 +1,3 @@
-import { DOCUMENT } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
@@ -7,6 +6,7 @@ import {
   Input,
   OnInit,
   Renderer2,
+  DOCUMENT
 } from "@angular/core";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";

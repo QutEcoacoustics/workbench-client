@@ -81,11 +81,7 @@ describe("IsLoggedInComponent", () => {
       });
 
       it("should have a tooltip", () => {
-        const expectedContent = "You must be logged in";
-        expect(wrapperSpan()).toHaveAttribute(
-          "ng-reflect-ngb-tooltip",
-          expectedContent
-        );
+        expect(wrapperSpan()).toHaveTooltip("You must be logged in");
       });
 
       it("should disable buttons and input elements", () => {

@@ -8,6 +8,7 @@ import { BawApiService } from "@baw-api/baw-api.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { of } from "rxjs";
 import { NgHttpCachingService } from "ng-http-caching";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { WebsiteStatusService } from "./website-status.service";
 
 describe("WebsiteStatusService", () => {
@@ -59,8 +60,8 @@ describe("WebsiteStatusService", () => {
     expect(realizedHeaders).toEqual(expectedHeaders);
     expect(realizedOptions).toEqual(expectedOptions);
 
-    const realizedShouldCache = realizedOptions.cacheOptions.isCacheable();
-    return expect(realizedShouldCache).toBeFalse();
+    // We use "toBe" here so that we compare the callback references.
+    return expect(realizedOptions.cacheOptions.isCacheable).toBe(disableCache);
   });
 
   it("should not cache the request", () => {

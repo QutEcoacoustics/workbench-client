@@ -198,14 +198,14 @@ describe("AnnotationsDetailsComponent", () => {
       of(mockAudioEventImport),
     );
 
-    const audioEventSubject = new Subject<AudioEventImport>();
-    const tagsSubject = new Subject<Tag[]>();
+    const audioEventSubject = new Subject<AudioEvent[]>();
+    const tagsSubject = new Subject<Tag>();
     const provenanceSubject = new Subject<AudioEventProvenance>();
 
     const promise = Promise.all([
-      nStepObservable(audioEventSubject, () => mockAudioEvents as any),
-      nStepObservable(tagsSubject, () => mockTagModel as any),
-      nStepObservable(provenanceSubject, () => mockProvenance as any),
+      nStepObservable(audioEventSubject, () => mockAudioEvents),
+      nStepObservable(tagsSubject, () => mockTagModel),
+      nStepObservable(provenanceSubject, () => mockProvenance),
     ]);
 
     mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
