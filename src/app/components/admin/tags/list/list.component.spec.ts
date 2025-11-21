@@ -7,7 +7,11 @@ import {
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Tag } from "@models/Tag";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbModal,
+  NgbModalConfig,
+  NgbModalRef,
+} from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
 import { generateTag } from "@test/fakes/Tag";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -43,7 +47,7 @@ describe("AdminTagsComponent", () => {
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
     modalConfigService = TestBed.inject(
-      NgbModalConfig
+      NgbModalConfig,
     ) as SpyObject<NgbModalConfig>;
     modalConfigService.animation = false;
 
@@ -81,10 +85,15 @@ describe("AdminTagsComponent", () => {
       const mockTag = new Tag(generateTag());
       tagsApiSpy.destroy.and.returnValue(of(null));
 
-      // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
-      spyOn(modalService, "open").and.returnValue({
-        result: Promise.resolve(true),
-      } as any);
+      // since there is a confirmation modal before the api call, we need to
+      // open & confirm the modal before asserting api call parameters.
+      const mockRef = jasmine.createSpyObj<NgbModalRef>("NgbModalRef", [
+        "close",
+        "dismiss",
+      ]);
+      mockRef.result = Promise.resolve(true);
+      spyOn(modalService, "open").and.returnValue(mockRef);
+
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 
       tick();

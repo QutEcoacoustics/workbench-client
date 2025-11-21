@@ -220,8 +220,8 @@ describe("VerificationComponent", () => {
         },
         project: { model: routeProject },
         region: { model: routeRegion },
-        site:  { model: routeSite },
-        searchParameters: { model: mockSearchParameters  },
+        site: { model: routeSite },
+        searchParameters: { model: mockSearchParameters },
         verificationParameters: { model: mockVerificationParameters },
       },
       providers: [
@@ -375,7 +375,9 @@ describe("VerificationComponent", () => {
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
       await import(
-        nodeModule("../../../../node_modules/@ecoacoustics/web-components/dist/components.js")
+        nodeModule(
+          "../../../../node_modules/@ecoacoustics/web-components/dist/components.js",
+        )
       );
     }
 
@@ -833,7 +835,7 @@ describe("VerificationComponent", () => {
         await clickDecisionButton(DecisionOptions.TRUE);
         expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
           gridSize(),
-          );
+        );
       });
     });
 
@@ -1144,7 +1146,9 @@ describe("VerificationComponent", () => {
     it("should show an alert if the user tries to navigate away while requests are still processing", async () => {
       // Mock the verification api to return an observable that never completes
       // so that the component thinks that there are still requests processing.
-      verificationApiSpy.createOrUpdate.and.returnValue(new Observable(() => {}));
+      verificationApiSpy.createOrUpdate.and.returnValue(
+        new Observable(() => {}),
+      );
 
       await makeSelection(0, 0);
       await clickDecisionButton(DecisionOptions.TRUE);

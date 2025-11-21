@@ -1,4 +1,5 @@
 import { Spectator, SpectatorDirective } from "@ngneat/spectator";
+import { By } from "@angular/platform-browser";
 
 // these are all callbacks because sometimes the datatable content/column names
 // are dependent on the state of the tested component
@@ -82,4 +83,8 @@ export async function selectDatatablePage(spec: SpectatorDirective<any>, page: n
   spec.dispatchMouseEvent(pageButton, "click");
 }
 
-export function datatableCells(spec: Spectator<any>): any {}
+export function datatableCells(spec: Spectator<any>): any[] {
+  return spec.debugElement
+    .queryAll(By.css("datatable-body-cell"))
+    .map((de) => de.componentInstance);
+}

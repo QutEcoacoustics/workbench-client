@@ -7,7 +7,11 @@ import {
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbModal,
+  NgbModalConfig,
+  NgbModalRef,
+} from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -29,14 +33,8 @@ describe("AdminTagGroupsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [
-        ...appLibraryImports,
-        AdminTagGroupsComponent,
-      ],
-      providers: [
-        provideMockBawApi(),
-        provideRouter([]),
-      ],
+      imports: [...appLibraryImports, AdminTagGroupsComponent],
+      providers: [provideMockBawApi(), provideRouter([])],
     }).compileComponents();
 
     TestBed.inject(ToastService);
@@ -44,14 +42,14 @@ describe("AdminTagGroupsComponent", () => {
     api = TestBed.inject(TagGroupsService);
 
     tagGroupApiSpy = TestBed.inject(
-      TagGroupsService
+      TagGroupsService,
     ) as SpyObject<TagGroupsService>;
     modalService = TestBed.inject(NgbModal) as SpyObject<NgbModal>;
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
     modalConfigService = TestBed.inject(
-      NgbModalConfig
+      NgbModalConfig,
     ) as SpyObject<NgbModalConfig>;
     modalConfigService.animation = false;
 
@@ -82,7 +80,7 @@ describe("AdminTagGroupsComponent", () => {
 
       fixture.componentInstance.confirmTagGroupDeletion(
         undefined,
-        mockTagGroup
+        mockTagGroup,
       );
 
       expect(modalService.hasOpenModals()).toBeTrue();
@@ -92,10 +90,15 @@ describe("AdminTagGroupsComponent", () => {
       const mockTagGroup = new TagGroup(generateTagGroup());
       tagGroupApiSpy.destroy.and.returnValue(of(null));
 
-      // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
-      spyOn(modalService, "open").and.returnValue({
-        result: Promise.resolve(true),
-      } as any);
+      // Since there is a confirmation modal before the api call, we need to
+      // open & confirm the modal before asserting api call parameters.
+      const modalRef = jasmine.createSpyObj<NgbModalRef>("NgbModalRef", [
+        "close",
+        "dismiss",
+      ]);
+      modalRef.result = Promise.resolve(true);
+      spyOn(modalService, "open").and.returnValue(modalRef);
+
       fixture.componentInstance.confirmTagGroupDeletion(null, mockTagGroup);
 
       tick();
