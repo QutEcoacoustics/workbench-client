@@ -1,22 +1,26 @@
 <div class="card-container card p-2">
   <div class="spectrogram-container">
-    <!--
-      Use the same spectrogram settings that the baw-server uses for spectrograms
-      so that there is consistency across the website.
-      see: QutEcoacoustics/baw-server > config/settings/default.yml#L243-L244
-    -->
-    <oe-axes class="axes">
-      <oe-indicator>
-        <oe-spectrogram
-          #spectrogram
-          [src]="annotation().audioLink"
-          scaling="stretch"
-          color-map="grayscale"
-          window-size="512"
-          window-function="hamming"
-        ></oe-spectrogram>
-      </oe-indicator>
-    </oe-axes>
+    @defer (on viewport) {
+      <!--
+        Use the same spectrogram settings that the baw-server uses for spectrograms
+        so that there is consistency across the website.
+        see: QutEcoacoustics/baw-server > config/settings/default.yml#L243-L244
+      -->
+      <oe-axes class="axes">
+        <oe-indicator>
+          <oe-spectrogram
+            #spectrogram
+            [src]="annotation().audioLink"
+            scaling="stretch"
+            color-map="grayscale"
+            window-size="512"
+            window-function="hamming"
+          ></oe-spectrogram>
+        </oe-indicator>
+      </oe-axes>
+    } @placeholder {
+      <div class="spectrogram-placeholder"></div>
+    }
   </div>
 
   <div class="card-header">
@@ -64,14 +68,17 @@
           <span
             class="no-score-placeholder tooltip-hint"
             [ngbTooltip]="'This event does not have a score assigned'"
-          >No score available</span>
+            >No score available</span
+          >
         }
       </span>
     </span>
 
     <span class="info-line">
       <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [bawUrl]="annotation().viewUrl">More information</a>
+      <a class="more-information-link" [bawUrl]="annotation().viewUrl"
+        >More information</a
+      >
     </span>
   </div>
 </div>

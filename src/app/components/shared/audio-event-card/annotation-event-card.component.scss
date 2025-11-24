@@ -58,6 +58,11 @@
   min-height: 0;
 }
 
+.spectrogram-placeholder {
+  display: block;
+  min-height: 180px;
+}
+
 .card-container {
   display: flex block;
   flex-direction: column;
