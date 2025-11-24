@@ -30,7 +30,12 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { assertDatatable } from "@test/helpers/datatable";
-import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbModal,
+  NgbModalConfig,
+  NgbModalRef,
+  NgbNavConfig,
+} from "@ng-bootstrap/ng-bootstrap";
 import { modelData } from "@test/helpers/faker";
 import { generateTag } from "@test/fakes/Tag";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
@@ -62,6 +67,7 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventFileService: SpyObject<AudioEventImportFileService>;
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
   let mockProvenanceService: SpyObject<AudioEventProvenanceService>;
+  let mockModalService: SpyObject<NgbModal>;
 
   let mockAudioEventImport: AudioEventImport;
   let mockTagModel: Tag;
@@ -81,7 +87,7 @@ describe("AnnotationsDetailsComponent", () => {
     component: AnnotationImportDetailsComponent,
     imports: [InlineListComponent, LoadingComponent],
     providers: [provideMockBawApi()],
-    mocks: [ToastService],
+    mocks: [ToastService, NgbModal],
   });
 
   function fileTabButton(): Element | null {
@@ -116,6 +122,7 @@ describe("AnnotationsDetailsComponent", () => {
       { root: true },
     );
     spec.click(confirmationButton);
+
     flush();
   }
 
@@ -155,13 +162,14 @@ describe("AnnotationsDetailsComponent", () => {
       10,
       () => new AudioEvent(generateAudioEvent(), injector),
     );
-    mockAudioEvents.forEach((event) =>
+    mockAudioEvents.forEach((event) => {
+      event.audioRecording = mockAudioRecording;
       event.addMetadata(
         modelData.model.generatePagingMetadata({
           items: mockAudioEvents.length,
         }),
-      ),
-    );
+      );
+    });
 
     mockProvenance = new AudioEventProvenance(
       generateAudioEventProvenance(),
@@ -224,6 +232,15 @@ describe("AnnotationsDetailsComponent", () => {
     const modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
+    mockModalService = spec.inject(NgbModal);
+    mockModalService.open.and.callFake(() => {
+      const modalRef: Partial<NgbModalRef> = {
+        componentInstance: {},
+        result: Promise.resolve(true),
+      };
+      return modalRef as NgbModalRef;
+    });
+
     // without mocking the timezone, tests that assert time will fail in CI
     // and other timezones that are not the same as the developers local timezone (UTC+8)
     const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
@@ -269,9 +286,12 @@ describe("AnnotationsDetailsComponent", () => {
 
     switchToFileTab();
 
+    expect(mockAudioEventFileService.filter).toHaveBeenCalled();
+
     expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         paging: { page: 1 },
+        sorting: { direction: "desc", orderBy: "createdAt" },
       }),
       mockAudioEventImport,
     );
@@ -294,6 +314,7 @@ describe("AnnotationsDetailsComponent", () => {
       expect(mockEventsService.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({
           paging: { page: 1 },
+          sorting: { direction: "desc", orderBy: "createdAt" },
         }),
       );
     });

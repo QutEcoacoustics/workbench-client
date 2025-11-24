@@ -142,7 +142,7 @@ describe("AssignComponent", () => {
     });
   });
 
-  fit("should send the correct filter request on initialization", () => {
+  it("should send the correct filter request on initialization", () => {
     setup();
     const expectedRequest: Filters = { paging: { page: 1 } };
     expect(mockApi.filter).toHaveBeenCalledWith(expectedRequest);
