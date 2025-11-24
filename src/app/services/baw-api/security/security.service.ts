@@ -38,7 +38,7 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  * Security Service.
  * Handles API routes pertaining to security.
  */
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class SecurityService {
   public constructor(
     private api: BawApiService<Session>,

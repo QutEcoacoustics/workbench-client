@@ -96,7 +96,7 @@ describe("LicenseInputComponent", () => {
 
     licenseService = spec.inject(LicensesService);
     spyOn(licenseService, "availableLicenses").and.returnValue(
-      mockAvailableLicenses,
+      Promise.resolve(mockAvailableLicenses),
     );
 
     if (initialLicense) {

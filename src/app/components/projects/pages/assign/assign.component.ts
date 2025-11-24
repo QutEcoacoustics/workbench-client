@@ -52,16 +52,15 @@ class AssignComponent
   ];
   public sortKeys = { siteId: "id", name: "name" };
   public error: BawApiError;
-  protected api: ShallowSitesService;
   private oldSiteIds: Id[];
 
   public constructor(
-    siteApi: ShallowSitesService,
+    protected api: ShallowSitesService,
     private notifications: ToastService,
     route: ActivatedRoute
   ) {
     super(
-      siteApi,
+      api,
       (sites) =>
         sites.map((site) => ({
           siteId: site.id,
@@ -156,7 +155,7 @@ class AssignComponent
 
   private updateProjectSites() {
     this.rows?.forEach((row) => {
-      if (this.selected.find((selection) => selection === row)) {
+      if (this.selected.find((selection) => selection.siteId === row.siteId)) {
         this.project.siteIds.add(row.siteId);
       } else {
         if (this.project.siteIds.has(row.siteId)) {

@@ -1,9 +1,5 @@
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import {
-  DataTableColumnDirective,
-  DataTablePagerComponent,
-  NgxDatatableModule,
-} from "@swimlane/ngx-datatable";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { MockModel } from "@models/AbstractModel.spec";
 import { Observable } from "rxjs";
 import { modelData } from "@test/helpers/faker";
@@ -15,6 +11,7 @@ import {
   VirtualDatabaseModelInput,
   VirtualDatatablePaginationDirective,
 } from "./virtual-datatable-pagination.directive";
+import { selectDatatablePage } from "@test/helpers/datatable";
 
 // because this directive extends the bawDatatablePagination directive, most of
 // the table rendering logic is tested elsewhere. This spec will focus on the
@@ -25,7 +22,6 @@ describe("bawVirtualDatatablePagination", () => {
 
   const createDirective = createDirectiveFactory({
     directive: VirtualDatatablePaginationDirective<MockModel>,
-    declarations: [DataTableColumnDirective],
     imports: [
       NgxDatatableModule,
       DatatablePaginationDirective,
@@ -77,7 +73,7 @@ describe("bawVirtualDatatablePagination", () => {
   }
 
   function setPage(page: number) {
-    spec.query(DataTablePagerComponent).selectPage(page);
+    selectDatatablePage(spec, page);
     spec.detectChanges();
   }
 

@@ -4,7 +4,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { Session } from "@models/User";
 import { Observable } from "rxjs";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class MockSecurityService extends SecurityService {
   public sessionDetails(): Observable<Session> {
     return new Observable<Session>();

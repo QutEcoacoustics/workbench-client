@@ -31,6 +31,7 @@ import { MockProvider } from "ng-mocks";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
 import { MetadataReviewComponent } from "./metadata-review.component";
+import { of } from "rxjs";
 
 describe("MetadataReviewComponent", () => {
   let spec: SpectatorRouting<MetadataReviewComponent>;
@@ -226,6 +227,8 @@ describe("MetadataReviewComponent", () => {
       // through expect(mappings).toEqual(expectedMappings). Therefore, by converting the objects to strings,
       // we can compare these two objects values without the injector class, but still retain verbose failed exceptions & output
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+
+      return of(null);
     });
 
     // modifying the mappings for path "A/aa" will trigger the mocked method above to asset if the correct parameters are called
@@ -263,6 +266,8 @@ describe("MetadataReviewComponent", () => {
 
       expect(model).toEqual(spec.component.harvest);
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+
+      return of(null);
     });
 
     clickEditMappingButton(4);
@@ -346,6 +351,7 @@ describe("MetadataReviewComponent", () => {
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
       expect(model).toEqual(spec.component.harvest);
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+      return of(null);
     });
 
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(1);

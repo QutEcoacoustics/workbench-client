@@ -13,7 +13,7 @@ import { createCustomElement } from "@angular/elements";
 import {
   GridTileContentComponent,
   gridTileContentSelector,
-} from "@components/web-components/grid-tile-content/grid-tile-content.component";
+} from "./components/web-components/grid-tile-content/grid-tile-content.component";
 import { LoadingBarModule } from "@ngx-loading-bar/core";
 import { IS_SERVER_PLATFORM } from "./app.helper";
 import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";

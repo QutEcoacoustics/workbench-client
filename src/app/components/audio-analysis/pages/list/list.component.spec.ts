@@ -58,8 +58,13 @@ describe("AnalysesComponent", () => {
       },
     } as const satisfies InnerFilter<AnalysisJob>;
 
-    mockScriptsApi.show.and.returnValue(() => of(new Script(generateScript(), injector)));
-    mockAccountsApi.show.and.callFake(() => of(new User(generateUser(), injector)));
+    mockScriptsApi.show.and.returnValue(
+      of(new Script(generateScript(), injector)),
+    );
+
+    mockAccountsApi.show.and.returnValue(
+      of(new User(generateUser(), injector)),
+    );
 
     this.defaultInnerFilters = expectedInnerFilters;
     this.defaultModels = defaultModels;

@@ -69,7 +69,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
     private rowsCallback: (models: M[]) => TableRow[],
     protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
-    private preselectRows: (rows: TableRow[]) => void = () => {}
+    private preselectRows: (rows: TableRow[]) => void = () => {},
   ) {
     super();
     this.pageNumber = 0;
@@ -79,7 +79,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       .pipe(
         debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: () => this.getPageData(),
@@ -181,9 +181,5 @@ export interface TablePage {
 export interface SortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: {
-    sortable: boolean;
-    prop: string;
-    name: string;
-  };
+  column: TableColumn;
 }

@@ -19,7 +19,7 @@ import {
   selector: "baw-website-status",
   template: `
     <h2>Website Status</h2>
-    <baw-items [items]="statusItems()"></baw-items>
+    <baw-items [items]="statusItems()" />
 
     <p>
       If you are experiencing issues with the website, please
@@ -32,23 +32,33 @@ import {
 class WebsiteStatusComponent extends PageComponent implements OnInit {
   public constructor(
     private api: WebsiteStatusService,
-    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean
+    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean,
   ) {
     super();
   }
 
-  protected reportProblemRoute = reportProblemMenuItem.route;
+  protected model: WebsiteStatus;
+
+  protected readonly reportProblemRoute = reportProblemMenuItem.route;
+
+  private readonly healthyListItem = {
+    value: "Healthy",
+    color: "success",
+  } as const;
+  private readonly unhealthyListItem = {
+    value: "Unhealthy",
+    color: "danger",
+  } as const;
+  private readonly unknownListItem = {
+    value: "Unknown",
+    color: "secondary",
+  } as const;
 
   public ngOnInit(): void {
     this.api.status$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((model) => (this.model = model));
   }
-
-  protected model: WebsiteStatus;
-  private healthyListItem = { value: "Healthy", color: "success" } as const;
-  private unhealthyListItem = { value: "Unhealthy", color: "danger" } as const;
-  private unknownListItem = { value: "Unknown", color: "secondary" } as const;
 
   protected statusItems(): List<IItem> {
     return List<IItem>([

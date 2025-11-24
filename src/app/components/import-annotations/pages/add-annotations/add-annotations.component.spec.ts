@@ -206,7 +206,14 @@ describe("AddAnnotationsComponent", () => {
       injectorSpy,
     );
 
-    fileImportSpy.create.and.callFake(() => of(mockImportResponse));
+    fileImportSpy.create.and.callFake(() => {
+      if (mockImportResponse instanceof BawApiError) {
+        return throwError(() => mockImportResponse);
+      }
+
+      return of(mockImportResponse);
+    });
+
     fileImportSpy.dryCreate.and.callFake(() => {
       if (mockImportResponse instanceof BawApiError) {
         return throwError(() => mockImportResponse);
@@ -350,14 +357,14 @@ describe("AddAnnotationsComponent", () => {
 
       // Delay the observable completing so that we can check the loading state
       // after removing a file.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       removeFile(0);
 
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as AudioEventImportFile);
       spec.detectChanges();
 
       // After the observable completes emits a value for the dry run, we should
@@ -522,14 +529,14 @@ describe("AddAnnotationsComponent", () => {
       // We provide a observable that we manually trigger so that we can assert
       // that the loading spinner is correctly shown when a dry run is in
       // progress and that it is removed when the dry run errors.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       addFiles([modelData.file()]);
 
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as any);
       spec.detectChanges();
 
       // After we send the dry run response, we should see that the loading
@@ -582,7 +589,7 @@ describe("AddAnnotationsComponent", () => {
       it("should enter a loading state when additional tags are added to a file", fakeAsync(() => {
         addFiles([modelData.file()]);
 
-        const response = new Subject();
+        const response = new Subject<AudioEventImportFile>();
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedTag = mockTagsResponse[0];
@@ -590,7 +597,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-        response.next(mockImportResponse);
+        response.next(mockImportResponse as any);
         spec.detectChanges();
 
         expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
@@ -658,7 +665,7 @@ describe("AddAnnotationsComponent", () => {
       it("should enter a loading state when a provenance is added to a file", fakeAsync(() => {
         addFiles([modelData.file()]);
 
-        const response = new Subject();
+        const response = new Subject<AudioEventImportFile>();
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedProvenance = mockProvenanceResponse[0];
@@ -666,7 +673,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-        response.next(mockImportResponse);
+        response.next(mockImportResponse as any);
         spec.detectChanges();
 
         expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
@@ -752,7 +759,7 @@ describe("AddAnnotationsComponent", () => {
     it("should enter a loading state when committing an import", fakeAsync(() => {
       addFiles([modelData.file()]);
 
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.create.and.returnValue(response);
 
       commitImport();
@@ -761,7 +768,7 @@ describe("AddAnnotationsComponent", () => {
       // spinner for the file being uploaded
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as any);
       spec.detectChanges();
 
       // after the create completes, the loading spinner should be removed
@@ -888,7 +895,7 @@ describe("AddAnnotationsComponent", () => {
       // We provide a observable that we manually trigger so that we can assert
       // that the loading spinner is correctly shown when a dry run is in
       // progress and that it is removed when the dry run errors.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       addFiles([modelData.file()]);
