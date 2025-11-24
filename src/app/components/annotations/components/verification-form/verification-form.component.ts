@@ -1,7 +1,7 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   model,
   output,
 } from "@angular/core";
@@ -15,6 +15,7 @@ import { Tag } from "@models/Tag";
 import { FormsModule } from "@angular/forms";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { AnnotationSearchParameters } from "../annotation-search-form/annotationSearchParameters";
 import { TypeaheadInputComponent } from "../../../shared/typeahead-input/typeahead-input.component";
 import {
   TaskBehaviorKey,
@@ -22,6 +23,11 @@ import {
   VerificationStatusKey,
 } from "./verificationParameters";
 
+// This component cannot be OnPush because it uses associations which rely on
+// mutable state changes.
+//
+// TODO: Migrate this to OnPush when associations are refactored
+// see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
 @Component({
   selector: "baw-verification-form",
   templateUrl: "./verification-form.component.html",
@@ -31,11 +37,11 @@ import {
     SelectableItemsComponent,
     NgbHighlight,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerificationFormComponent {
   protected readonly tagsApi = inject(TagsService);
 
+  public readonly searchParameters = input.required<AnnotationSearchParameters>();
   public readonly verificationParameters = model.required<VerificationParameters>();
   public readonly verificationParametersChange = output<VerificationParameters>();
 

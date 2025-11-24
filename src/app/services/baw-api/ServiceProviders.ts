@@ -70,7 +70,7 @@ import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
   audioEventProvenanceResolvers,
   AudioEventProvenanceService,
-} from "./AudioEventProvenance/AudioEventProvenance.service";
+} from "./audio-event-provenance/audio-event-provenance.service";
 import {
   regionResolvers,
   RegionsService,

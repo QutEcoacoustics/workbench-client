@@ -29,7 +29,14 @@ describe("TypeaheadInputComponent", () => {
         <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
       </ng-template>
 
-      <baw-typeahead-input [resultTemplate]="siteTypeaheadTemplate"></baw-typeahead-input>
+      <baw-typeahead-input
+        [resultTemplate]="siteTypeaheadTemplate"
+        [searchCallback]="searchCallback"
+        [multipleInputs]="multipleInputs ?? false"
+        [label]="label ?? ''"
+        [value]="value ?? []"
+        [queryOnFocus]="queryOnFocus ?? true"
+      ></baw-typeahead-input>
     `;
 
     spec = createComponent(testBedTemplate, { detectChanges: false });
@@ -42,9 +49,8 @@ describe("TypeaheadInputComponent", () => {
     mockSitesService = spec.inject(SHALLOW_SITE.token);
     mockSitesService.filter.and.callFake(() => of(defaultFakeSites));
 
-    spec.component.searchCallback = mockSitesService.filter;
-
-    spec.detectChanges();
+    // setHostInput will trigger a change detection cycle
+    spec.setHostInput("searchCallback", mockSitesService.filter);
   }
 
   const inputLabel = () => spec.query<HTMLLabelElement>("label");
@@ -85,50 +91,48 @@ describe("TypeaheadInputComponent", () => {
   it("should include a label above the input if a input label has been specified", () => {
     const testLabelContent = modelData.lorem.words();
 
-    spec.component.label = testLabelContent;
-    spec.detectChanges();
+    spec.setHostInput("label", testLabelContent);
 
     expect(inputLabel()).toHaveExactTrimmedText(testLabelContent);
   });
 
   it("should not create object pills if multiple inputs is disabled", () => {
-    spec.component.multipleInputs = false;
+    spec.setHostInput("multipleInputs", false);
     const numberOfActiveItems = 1;
 
-    spec.component.value = defaultFakeSites.slice(
+    spec.setHostInput("value", defaultFakeSites.slice(
       0,
       defaultFakeSites.length - numberOfActiveItems
-    );
-    spec.detectChanges();
+    ));
 
     const pillElements = itemPills();
     expect(pillElements).toHaveLength(0);
   });
 
   it("should create object pills if multiple inputs is enabled", () => {
-    spec.component.multipleInputs = true;
+    spec.setHostInput("multipleInputs", true);
     const numberOfActiveItems = 2;
 
-    spec.component.value = defaultFakeSites.slice(
+    spec.setHostInput("value", defaultFakeSites.slice(
       0,
       defaultFakeSites.length - numberOfActiveItems
-    );
+    ));
 
     spec.detectChanges();
 
     const pillElements = itemPills();
 
-    expect(pillElements.length).toEqual(spec.component.value.length);
+    expect(pillElements).toHaveLength(spec.component.value().length);
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
         // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
-        (spec.component.value[i] as Site).name
+        (spec.component.value()[i] as Site).name
       );
     });
   });
 
   it("should create multiple pills if the user adds multiple through the input box", fakeAsync(() => {
-    spec.component.multipleInputs = true;
+    spec.setHostInput("multipleInputs", true);
     const testInput = defaultFakeSites[0].name;
 
     typeInInput(testInput);
@@ -143,7 +147,7 @@ describe("TypeaheadInputComponent", () => {
 
   it("should clear the input if the user selects an item and multiple inputs are enabled", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
-    spec.component.multipleInputs = true;
+    spec.setHostInput("multipleInputs", true);
 
     typeInInput(testInput);
     tick(defaultDebounceTime);
@@ -156,7 +160,7 @@ describe("TypeaheadInputComponent", () => {
 
   it("should complete in the input box if the typeahead emits a singular value", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
-    spec.component.multipleInputs = false;
+    spec.setHostInput("multipleInputs", false);
 
     typeInInput(testInput);
     tick(defaultDebounceTime);
@@ -170,7 +174,7 @@ describe("TypeaheadInputComponent", () => {
   }));
 
   it("should not emit multiple items if the user selects items in the options dropdown when multiple inputs are disabled", fakeAsync(() => {
-    spec.component.multipleInputs = false;
+    spec.setHostInput("multipleInputs", false);
     const siteToSelect = defaultFakeSites[0];
 
     spec.component.modelChange.emit = jasmine.createSpy("modelChange");
@@ -192,8 +196,10 @@ describe("TypeaheadInputComponent", () => {
       defaultFakeSites.length - 1
     );
 
-    spec.component.multipleInputs = true;
-    spec.component.value = defaultFakeSites;
+    spec.setHostInput({
+      "multipleInputs": true,
+      "value": defaultFakeSites
+    });
 
     const inputBoxElement = inputBox();
     inputBoxElement.dispatchEvent(
@@ -203,7 +209,7 @@ describe("TypeaheadInputComponent", () => {
     tick(defaultDebounceTime);
     spec.detectChanges();
 
-    expect(spec.component.value).toEqual(expectedSites);
+    expect(spec.component.value()).toEqual(expectedSites);
 
     flush();
     discardPeriodicTasks();
@@ -228,20 +234,18 @@ describe("TypeaheadInputComponent", () => {
   }));
 
   it("should use the formatter template for the active pill items", fakeAsync(() => {
-    spec.component.multipleInputs = true;
+    spec.setHostInput("multipleInputs", true);
 
     const activeSite = defaultFakeSites[0];
     const expectedPillText = activeSite.name;
 
-    spec.component.value = [activeSite];
-    spec.detectChanges();
+    spec.setHostInput("value", [activeSite]);
 
     expect(itemPills()[0].innerText).toEqual(expectedPillText);
   }));
 
   it("should return no items if the search callback is not set", fakeAsync(() => {
-    spec.component.searchCallback = undefined;
-    spec.detectChanges();
+    spec.setHostInput("searchCallback", undefined);
 
     typeInInput(modelData.param());
     tick(defaultDebounceTime);
@@ -252,8 +256,7 @@ describe("TypeaheadInputComponent", () => {
   }));
 
   it("should not show a dropdown if the search callback returns no items", fakeAsync(() => {
-    spec.component.searchCallback = () => of([]);
-    spec.detectChanges();
+    spec.setHostInput("searchCallback", () => of([]));
 
     typeInInput(modelData.param());
     tick(defaultDebounceTime);
@@ -263,9 +266,20 @@ describe("TypeaheadInputComponent", () => {
     expect(dropdownItems).toHaveLength(0);
   }));
 
+  it("should not debounce on the initial focus event", fakeAsync(() => {
+    spec.setHostInput("searchCallback", () => of(defaultFakeSites));
+
+    // Note that we don't tick or flush the async queue here because we should
+    // see that the focus events results are immediate and not debounced.
+    spec.focus(inputBox());
+
+    const dropdownItems = dropdownOptions();
+    expect(dropdownItems).toHaveLength(defaultFakeSites.length);
+  }));
+
   describe("single input mode", () => {
     beforeEach(() => {
-      spec.component.multipleInputs = false;
+      spec.setHostInput("multipleInputs", false);
     });
 
     it("should emit an empty value if the user inputs an invalid value in single input mode", fakeAsync(() => {
@@ -274,7 +288,7 @@ describe("TypeaheadInputComponent", () => {
       typeInInput("this is not a valid site name");
       tick(defaultDebounceTime);
 
-      expect(spec.component.value).toEqual([]);
+      expect(spec.component.value()).toEqual([]);
       expect(spec.component.modelChange.emit).not.toHaveBeenCalled();
     }));
 
@@ -288,15 +302,14 @@ describe("TypeaheadInputComponent", () => {
       typeInInput("");
       tick(defaultDebounceTime);
 
-      expect(spec.component.value).toEqual([]);
+      expect(spec.component.value()).toEqual([]);
       expect(spec.component.modelChange.emit).toHaveBeenCalledOnceWith([]);
     }));
   });
 
   describe("default query", () => {
     it("should show a list of default options when focused and the defaultQuery is true", fakeAsync(() => {
-      spec.component.queryOnFocus = true;
-      spec.detectChanges();
+      spec.setHostInput("queryOnFocus", true);
 
       // assert that options are not shown until the input is focused
       const initialDropdownItems = dropdownOptions();
@@ -316,8 +329,7 @@ describe("TypeaheadInputComponent", () => {
     }));
 
     it("should not show a list of default options if defaultQuery is not set", fakeAsync(() => {
-      spec.component.queryOnFocus = false;
-      spec.detectChanges();
+      spec.setHostInput("queryOnFocus", false);
 
       const initialDropdownItems = dropdownOptions();
       expect(initialDropdownItems).toHaveLength(0);

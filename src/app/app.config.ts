@@ -12,8 +12,7 @@ import { provideConfig } from "@services/config/provide-config";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
-import { RehydrationInterceptorService } from "@services/rehydration/rehydration.interceptor.service";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { provideClientHydration } from "@angular/platform-browser";
 import { provideBawApi } from "@baw-api/provide-baw-api";
 import { appPageComponents } from "./app.pages";
 import { clientRoutes } from "./app.routes";
@@ -55,12 +54,6 @@ export const appConfig: ApplicationConfig = {
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
     { provide: APP_ID, useValue: "workbench-client" },
 
-    // Rehydrate data from SSR. This must be set after BawApi imports so that
-    // the interceptor runs after the API interceptor
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: RehydrationInterceptorService,
-      multi: true,
-    },
+    provideClientHydration(),
   ],
 };

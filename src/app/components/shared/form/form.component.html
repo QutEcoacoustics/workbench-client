@@ -1,44 +1,41 @@
 @if (fields) {
   <div
     class="login-form ps-2 pe-2 pb-3"
-    [ngClass]="{ small: size === 'small' }"
+    [class.small]="size === 'small'"
   >
     @if (title) {
-      <h2 class="text-center" [innerHTML]="title"></h2>
+      <h2 class="text-center">{{ title }}</h2>
     }
 
     <small class="text-muted">
       @if (subTitle) {
-        <h6 [innerHTML]="subTitle"></h6>
+        <h6>{{ subTitle }}</h6>
       }
 
       <h6><ng-content select="#subTitle"></ng-content></h6>
     </small>
 
-    <div class="clearfix">
-      <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
-        <!-- Form -->
-        <formly-form
-          [form]="form"
-          [fields]="fields"
-          [model]="model"
-          (modelChange)="onModelChange($event)"
-        ></formly-form>
+    <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
+      <formly-form
+        [form]="form"
+        [fields]="fields"
+        [model]="model"
+        (modelChange)="onModelChange($event)"
+      />
 
-        <!-- Right aligned submit button -->
-        <div class="clearfix">
-          @if (submitLabel) {
-            <button
-              type="submit"
-              class="btn float-end mt-3"
-              [ngClass]="'btn-' + btnColor"
-              [disabled]="!fields || submitLoading"
-              >
-              {{ submitLabel }}
-            </button>
-          }
-        </div>
-      </form>
-    </div>
+      <!-- Right aligned submit button -->
+      <div class="d-flex justify-content-end">
+        @if (submitLabel) {
+          <button
+            type="submit"
+            class="btn mt-3"
+            [ngClass]="'btn-' + btnColor"
+            [disabled]="submitLoading || recaptchaSeed?.state === 'loading'"
+          >
+            {{ submitLabel }}
+          </button>
+        }
+      </div>
+    </form>
   </div>
 }

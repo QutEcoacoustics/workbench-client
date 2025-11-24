@@ -102,8 +102,8 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected readonly hideAdvancedFilters = signal(true);
-  protected createSearchCallback = createSearchCallback;
-  protected createIdSearchCallback = createIdSearchCallback;
+  protected readonly createSearchCallback = createSearchCallback;
+  protected readonly createIdSearchCallback = createIdSearchCallback;
 
   protected scoreRangeBounds = ScoreRangeBounds;
   protected verifiedStatusOptions = signal<
@@ -212,7 +212,7 @@ export class AnnotationSearchFormComponent implements OnInit {
         return current;
       });
     } else {
-      const recordingIds = this.recordingsTypeahead().value.map(
+      const recordingIds = this.recordingsTypeahead().value().map(
         (recordingModel: AudioRecording) => recordingModel.id,
       );
 

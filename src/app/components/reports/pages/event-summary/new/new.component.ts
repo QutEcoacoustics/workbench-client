@@ -22,7 +22,7 @@ import {
   reportCategories,
 } from "@components/reports/reports.menu";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   notIn,

@@ -3,8 +3,8 @@
     id="task-tag-input"
     label="Tag to Verify"
     [inputPlaceholder]="
-      verificationParameters().tagModels.length > 0
-        ? $any(verificationParameters().tagModels)
+      searchParameters().tagModels.length > 0
+        ? $any(searchParameters().tagModels)
         : 'First Tag'
     "
     [searchCallback]="tagsApi.typeaheadCallback()"

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ContactUsService } from "@baw-api/report/contact-us.service";
 import {
@@ -22,7 +22,6 @@ import schema from "./contact-us.schema.json";
       title="Contact Us"
       [model]="model"
       [fields]="fields"
-      submitLabel="Submit"
       [submitLoading]="loading"
       [recaptchaSeed]="recaptchaSeed"
       (onSubmit)="submit($event)"
@@ -37,18 +36,15 @@ import schema from "./contact-us.schema.json";
   imports: [FormComponent, StrongRouteDirective],
 })
 class ContactUsComponent extends FormTemplate<ContactUs> implements OnInit {
-  public fields = schema.fields;
+  private readonly api = inject(ContactUsService);
+
+  public readonly fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public dataRequestRoute = dataRequestMenuItem.route;
   public reportProblemRoute = reportProblemMenuItem.route;
 
-  public constructor(
-    private api: ContactUsService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
-    super(notifications, route, router, {
+  public constructor() {
+    super(inject(ToastService), inject(ActivatedRoute), inject(Router), {
       successMsg: () =>
         "Thank you for contacting us. " +
         "If you've asked us to contact you or we need more information, " +
