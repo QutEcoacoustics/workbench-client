@@ -1,7 +1,7 @@
 import {
-  AfterViewInit,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  effect,
   ElementRef,
   input,
   viewChild,
@@ -38,7 +38,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AnnotationEventCardComponent implements AfterViewInit {
+export class AnnotationEventCardComponent {
   public readonly annotation = input.required<Annotation>();
 
   // Note that there is no { static: true } option for viewChild signals.
@@ -50,9 +50,17 @@ export class AnnotationEventCardComponent implements AfterViewInit {
   private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
-  public ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.mediaControls().nativeElement.for = this.spectrogram().nativeElement;
-    }, 0);
+  public constructor() {
+    // Use effect() to link media controls to the spectrogram when it becomes
+    // available. This is necessary because the spectrogram is inside a @defer
+    // block and won't exist until the element enters the viewport.
+    effect(() => {
+      const spectrogramEl = this.spectrogram();
+      const mediaControlsEl = this.mediaControls();
+
+      if (spectrogramEl && mediaControlsEl) {
+        mediaControlsEl.nativeElement.for = spectrogramEl.nativeElement;
+      }
+    });
   }
 }
