@@ -60,6 +60,16 @@
 
 .spectrogram-placeholder {
   display: block;
+
+  // Our spectrograms have a minimum height of 180px, so I therefore set the
+  // placeholder to be 180px high too.
+  // I do this to prevent layout shift and to prevent the scroll bar from
+  // growing / shrinking depending on if the spectrogram has been created yet.
+  //
+  // E.g. If we did not include a minimum height on the spectrogram placeholder,
+  // the scroll bar would grow as the user scrolled down on the annotation
+  // search page because each card component would grow the size of the page as
+  // they entered the viewport.
   min-height: 180px;
 }
 
