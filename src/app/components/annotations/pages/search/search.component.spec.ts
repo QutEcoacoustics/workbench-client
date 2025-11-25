@@ -15,7 +15,6 @@ import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
 import { fakeAsync } from "@angular/core/testing";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -43,6 +42,7 @@ import { AnnotationSearchParameters } from "@components/annotations/components/a
 import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
 import { generateMeta } from "@test/fakes/Meta";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {
@@ -66,7 +66,7 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [IconsModule, AnnotationSearchFormComponent],
+    imports: [IconsModule, AnnotationSearchFormComponent, AnnotationEventCardComponent],
     providers: [
       provideMockBawApi(),
       mockProvider(AnnotationService, {
@@ -159,8 +159,8 @@ describe("AnnotationSearchComponent", () => {
   }
 
   const verifyButton = () => spec.query<HTMLButtonElement>(".verify-button");
-  const spectrogramElements = () =>
-    spec.queryAll<SpectrogramComponent>("oe-spectrogram");
+  const eventCards = () =>
+    spec.queryAll(AnnotationEventCardComponent);
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
@@ -334,15 +334,14 @@ describe("AnnotationSearchComponent", () => {
     it("should display a page of search results", () => {
       spec.detectChanges();
 
-      const expectedResults = mockAudioEventsResponse.length;
-      const realizedResults = spectrogramElements().length;
-      expect(realizedResults).toEqual(expectedResults);
+      const expectedCount = mockAudioEventsResponse.length;
+      expect(eventCards()).toHaveLength(expectedCount);
     });
 
     it("should re-use the event cards when search results are updated", () => {
       spec.detectChanges();
 
-      const initialSpectrogram = spectrogramElements()[0];
+      const initialCard = eventCards()[0];
 
       // We override the returned audio events to make this test harder to pass
       // because we can't track by anything on the audio event since it would
@@ -367,12 +366,12 @@ describe("AnnotationSearchComponent", () => {
       clickVerificationStatusFilter("unverified-for-me");
       spec.detectChanges();
 
-      const updatedSpectrogram = spectrogramElements()[0];
+      const updatedCard = eventCards()[0];
 
       // We use a toBe comparison here so that we compare the spectrogram
       // elements by reference instead of by value.
       // If the reference is the same, then we know the elements were reused.
-      expect(updatedSpectrogram).toBe(initialSpectrogram);
+      expect(updatedCard).toBe(initialCard);
     });
 
     xit("should have a disabled 'verify' button if there are no search results", () => {
