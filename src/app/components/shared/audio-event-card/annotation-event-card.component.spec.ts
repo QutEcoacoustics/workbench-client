@@ -19,7 +19,6 @@ import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { MediaService } from "@services/media/media.service";
@@ -94,8 +93,8 @@ describe("AnnotationEventCardComponent", () => {
     spectator.setInput("annotation", mockAnnotation);
   }
 
-  const spectrogram = () =>
-    spectator.query<SpectrogramComponent>("oe-spectrogram");
+  // const spectrogram = () =>
+  //   spectator.query<SpectrogramComponent>("oe-spectrogram");
   const listenLink = () =>
     spectator.query<HTMLAnchorElement>(".more-information-link");
   const tagInfoElement = () => spectator.query(".tag-information");
@@ -111,11 +110,22 @@ describe("AnnotationEventCardComponent", () => {
     expect(spectator.component).toBeInstanceOf(AnnotationEventCardComponent);
   });
 
-  it("should have the correct spectrogram source", () => {
-    const expectedSource = mockAnnotation.audioLink;
-    const realizedSource = spectrogram().src;
-    expect(realizedSource).toEqual(expectedSource);
-  });
+  // TODO: We cannot test defer blocks until ng-mocks supports them.
+  // At the moment, they will fail when any ng-mock components are present
+  // inside any of the tests.
+  // This means that if you just run this test file alone, this test will appear
+  // to work, but as soon as you add any other tests that use ng-mocks, this
+  // test will begin to fail.
+  // see: https://github.com/help-me-mom/ng-mocks/issues/7742
+  //
+  // xit("should have the correct spectrogram source", async () => {
+  //   const deferBlock = (await spectator.fixture.getDeferBlocks())[0];
+  //   await deferBlock.render(DeferBlockState.Complete);
+  //
+  //   const expectedSource = mockAnnotation.audioLink;
+  //   const realizedSource = spectrogram().src;
+  //   expect(realizedSource).toEqual(expectedSource);
+  // });
 
   it("should have the correct link to the listen page", () => {
     const expectedHref = mockAnnotation.viewUrl;
