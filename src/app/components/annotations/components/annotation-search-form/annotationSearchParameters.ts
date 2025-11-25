@@ -38,6 +38,7 @@ import { Tag } from "@models/Tag";
 import { User } from "@models/User";
 import { DateTime, Duration } from "luxon";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
+import { ConfirmedStatus } from "@models/Verification";
 
 export type SortingKey =
   | "score-asc"
@@ -103,6 +104,7 @@ export interface IAnnotationSearchParameters {
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
+  consensus: ConfirmedStatus;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -146,6 +148,7 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     recordingDate: luxonDateArray,
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
+    consensus: jsString,
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -183,6 +186,7 @@ export class AnnotationSearchParameters
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
   public score: MonoTuple<number, 2>;
+  public consensus: ConfirmedStatus;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -249,11 +253,13 @@ export class AnnotationSearchParameters
   }
 
   public get scoreLowerBound(): number | null {
-    return this.score ? this.score[0] : null;
+    // We use isInstantiated here to differentiate between a score of zero
+    // (which is falsy) and an uninstantiated score.
+    return isInstantiated(this.score) ? this.score[0] : null;
   }
 
   public get scoreUpperBound(): number | null {
-    return this.score ? this.score[1] : null;
+    return isInstantiated(this.score) ? this.score[1] : null;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {
@@ -444,6 +450,12 @@ export class AnnotationSearchParameters
       scoreFilters = filterAnd(scoreFilters, {
         score: { lteq: upperBound },
       });
+    }
+
+    if (isInstantiated(this.consensus)) {
+      scoreFilters = filterAnd(scoreFilters, {
+        "verificationConsensus": { eq: this.consensus },
+      } as any);
     }
 
     return scoreFilters;

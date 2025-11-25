@@ -50,6 +50,7 @@ import { Tag } from "@models/Tag";
 import { AbstractModel } from "@models/AbstractModel";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
+import { ConfirmedStatus } from "@models/Verification";
 
 enum ScoreRangeBounds {
   Lower,
@@ -94,9 +95,9 @@ export class AnnotationSearchFormComponent implements OnInit {
     model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
-  public readonly showVerificationOptions = input<boolean>(true);
+  public readonly showSearchOnlyOptions = input<boolean>(true);
 
-  private recordingsTypeahead = viewChild<
+  private readonly recordingsTypeahead = viewChild<
     TypeaheadInputComponent<AudioRecording>
   >("recordingsTypeahead");
 
@@ -105,8 +106,8 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly createSearchCallback = createSearchCallback;
   protected readonly createIdSearchCallback = createIdSearchCallback;
 
-  protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions = signal<
+  protected readonly scoreRangeBounds = ScoreRangeBounds;
+  protected readonly verifiedStatusOptions = signal<
     ISelectableItem<VerificationStatusKey>[]
   >([
     // I disabled prettier for this line because prettier wants to reformat the
@@ -119,9 +120,24 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "are verified or unverified", value: "any" },
   ]);
 
-  protected project = computed(() => this.searchParameters().routeProjectModel);
-  protected region = computed(() => this.searchParameters().routeRegionModel);
-  protected site = computed(() => this.searchParameters().routeSiteModel);
+  protected readonly verifiedConsensusOptions: ISelectableItem<ConfirmedStatus | null>[] =
+    [
+      { label: "Any", value: null },
+      { label: "Correct", value: ConfirmedStatus.Correct },
+      { label: "Incorrect", value: ConfirmedStatus.Incorrect },
+      { label: "Unsure", value: ConfirmedStatus.Unsure },
+      { label: "Skip", value: ConfirmedStatus.Skip },
+    ];
+
+  protected readonly project = computed(
+    () => this.searchParameters().routeProjectModel,
+  );
+  protected readonly region = computed(
+    () => this.searchParameters().routeRegionModel,
+  );
+  protected readonly site = computed(
+    () => this.searchParameters().routeSiteModel,
+  );
 
   protected get defaultVerificationStatus(): VerificationStatusKey {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
@@ -212,9 +228,9 @@ export class AnnotationSearchFormComponent implements OnInit {
         return current;
       });
     } else {
-      const recordingIds = this.recordingsTypeahead().value().map(
-        (recordingModel: AudioRecording) => recordingModel.id,
-      );
+      const recordingIds = this.recordingsTypeahead()
+        .value()
+        .map((recordingModel: AudioRecording) => recordingModel.id);
 
       if (recordingIds.length > 0) {
         this.searchParameters.update((current) => {

@@ -155,7 +155,7 @@
     </div>
   </div>
 
-  @if (showVerificationOptions()) {
+  @if (showSearchOnlyOptions()) {
     <div class="mt-2">
       <label class="form-label w-100">Show annotations that</label>
       <baw-selectable-items
@@ -163,6 +163,18 @@
         [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
         [inline]="true"
         (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+      />
+    </div>
+  }
+
+  @if (showSearchOnlyOptions()) {
+    <div class="mt-2">
+      <label class="form-label w-100">Verification consensus</label>
+      <baw-selectable-items
+        [options]="verifiedConsensusOptions"
+        [selection]="searchParameters().consensus ?? null"
+        [inline]="true"
+        (selectionChange)="updateParameterProperty('consensus', $event)"
       />
     </div>
   }
