@@ -58,8 +58,8 @@ export class AnnotationEventCardComponent {
       const spectrogramElement = this.spectrogram();
       const mediaControlsElement = this.mediaControls();
 
-      if (spectrogramEl && mediaControlsEl) {
-        mediaControlsEl.nativeElement.for = spectrogramEl.nativeElement;
+      if (spectrogramElement && mediaControlsElement) {
+        mediaControlsElement.nativeElement.for = spectrogramElement.nativeElement;
       }
     });
   }
