@@ -55,8 +55,8 @@ export class AnnotationEventCardComponent {
     // available. This is necessary because the spectrogram is inside a @defer
     // block and won't exist until the element enters the viewport.
     effect(() => {
-      const spectrogramEl = this.spectrogram();
-      const mediaControlsEl = this.mediaControls();
+      const spectrogramElement = this.spectrogram();
+      const mediaControlsElement = this.mediaControls();
 
       if (spectrogramEl && mediaControlsEl) {
         mediaControlsEl.nativeElement.for = spectrogramEl.nativeElement;
