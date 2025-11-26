@@ -55,7 +55,6 @@ import { generateUser } from "@test/fakes/User";
 import { generateVerification } from "@test/fakes/Verification";
 import { detectChanges } from "@test/helpers/changes";
 import { modelData } from "@test/helpers/faker";
-import { viewports } from "@test/helpers/general";
 import {
   clickButton,
   selectFromTypeahead,
@@ -328,7 +327,17 @@ describe("VerificationComponent", () => {
   beforeEach(async () => {
     // I explicitly set the viewport size so that the grid size is always
     // consistent no matter what size the karma browser window is
-    viewport.set(viewports.extraLarge);
+    //
+    // We use a very large viewport size so that the verification grids default
+    // shape can be tested without any responsive changes.
+    // If we instead used a smaller size, we would have to wait for the
+    // verification grid to find a suitable size which would slow down the
+    // tests and make them flaky due to the test completing before the grid has
+    // finished resizing.
+    //
+    // TODO: Remove this is a hack to get around the resize observer not
+    // correctly aborting when the verification grid is destroyed.
+    viewport.set(2112, 1188);
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
