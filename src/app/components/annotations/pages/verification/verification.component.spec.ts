@@ -386,10 +386,24 @@ describe("VerificationComponent", () => {
       ".typeahead-result-action",
     );
 
-  const decisionButton = (index: number) =>
-    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+  function decisionButton(decision: DecisionOptions) {
+    const decisions = [
+      DecisionOptions.TRUE,
+      DecisionOptions.FALSE,
+      DecisionOptions.UNSURE,
+      DecisionOptions.CORRECT_TAG,
+      DecisionOptions.SKIP,
+    ];
+
+    const index = decisions.indexOf(decision);
+    if (index < 0) {
+      throw new Error("Could not find decision button");
+    }
+
+    return decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
       "#decision-button",
     );
+  }
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
@@ -415,22 +429,9 @@ describe("VerificationComponent", () => {
   }
 
   async function clickDecisionButton(decision: DecisionOptions) {
-    const decisions = [
-      DecisionOptions.TRUE,
-      DecisionOptions.FALSE,
-      DecisionOptions.UNSURE,
-      DecisionOptions.CORRECT_TAG,
-      DecisionOptions.SKIP,
-    ];
+    const decisionButtonTarget = decisionButton(decision);
 
-    const index = decisions.indexOf(decision);
-    if (index < 0) {
-      throw new Error("Could not find decision button");
-    }
-
-    const decisionButtonTarget = decisionButton(index);
     const grid = verificationGrid();
-
     const decisionMadeEvent = new Promise<void>((resolve) => {
       const handler = () => {
         grid.removeEventListener("decision-made", handler);
@@ -446,6 +447,15 @@ describe("VerificationComponent", () => {
     await detectChanges(spec);
   }
 
+  // Because the "correct tag" decision button does not emit a "decision-made"
+  // event like the other decision buttons, we have a custom click action.
+  async function clickCorrectTag() {
+    const decisionButtonTarget = decisionButton(DecisionOptions.CORRECT_TAG);
+    spec.click(decisionButtonTarget);
+    await detectChanges(spec);
+    return;
+  }
+
   async function makeTagCorrectionDecision(
     decision: TagCorrectionDecision | DecisionOptions.SKIP,
   ) {
@@ -454,7 +464,7 @@ describe("VerificationComponent", () => {
       return;
     }
 
-    await clickDecisionButton(DecisionOptions.CORRECT_TAG);
+    await clickCorrectTag();
 
     // When the tag typeahead is initially opened, it will show a list of
     // results based on a query without any search text.
@@ -621,7 +631,7 @@ describe("VerificationComponent", () => {
         const testName =
           test.testName ?? `${test.initialDecision} -> ${test.newDecision}`;
 
-        fit(testName, async () => {
+        it(testName, async () => {
           if (test.initialDecision) {
             await makeSelection(0, 0);
             await clickDecisionButton(test.initialDecision);
