@@ -41,11 +41,17 @@ describe("SpeciesTimeSeriesComponent", () => {
     ];
 
     spec = createComponent({
+      detectChanges: false,
       props: {
         data: mockData,
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });
+
+    spyOn(ResizeObserver.prototype, "observe").and.stub();
+    spyOn(ResizeObserver.prototype, "unobserve").and.stub();
+
+    spec.detectChanges();
   });
 
   it("should create", () => {

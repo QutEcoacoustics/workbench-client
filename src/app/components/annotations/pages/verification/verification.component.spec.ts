@@ -329,7 +329,7 @@ describe("VerificationComponent", () => {
     // consistent no matter what size the karma browser window is
     //
     // We use a very large viewport size so that the verification grids default
-    // shape can be tested without any responsive changes.
+    // size (12) can be tested without any responsive changes.
     // If we instead used a smaller size, we would have to wait for the
     // verification grid to find a suitable size which would slow down the
     // tests and make them flaky due to the test completing before the grid has
