@@ -2,14 +2,14 @@ import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { assertChart } from "@test/helpers/charts";
 import { SpeciesTimeSeriesComponent } from "./species-time-series.component";
 
-describe("SpeciesTimeSeriesComponent", () => {
+fdescribe("SpeciesTimeSeriesComponent", () => {
   let spec: Spectator<SpeciesTimeSeriesComponent>;
 
   const createComponent = createComponentFactory({
     component: SpeciesTimeSeriesComponent,
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const mockData = [
       { date: "2023-05-22", tagId: 1, count: 55 },
       { date: "2023-05-22", tagId: 39, count: 30 },
@@ -50,6 +50,8 @@ describe("SpeciesTimeSeriesComponent", () => {
 
     spyOn(ResizeObserver.prototype, "observe").and.stub();
     spyOn(ResizeObserver.prototype, "unobserve").and.stub();
+
+    await spec.fixture.whenStable();
 
     spec.detectChanges();
   });

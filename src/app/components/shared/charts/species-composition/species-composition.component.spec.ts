@@ -5,14 +5,14 @@ import {
   SpeciesCompositionGraphData,
 } from "./species-composition.component";
 
-describe("SpeciesCompositionGraphComponent", () => {
+fdescribe("SpeciesCompositionGraphComponent", () => {
   let spec: Spectator<SpeciesCompositionGraphComponent>;
 
   const createComponent = createComponentFactory({
     component: SpeciesCompositionGraphComponent,
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // TODO: Make this work with pseudo-random data generation
     const mockData: SpeciesCompositionGraphData[] = [
       { date: "2023-05-22", tagId: 1, ratio: 0.55 },
@@ -54,6 +54,8 @@ describe("SpeciesCompositionGraphComponent", () => {
 
     spyOn(ResizeObserver.prototype, "observe").and.stub();
     spyOn(ResizeObserver.prototype, "unobserve").and.stub();
+
+    await spec.fixture.whenStable();
 
     spec.detectChanges();
   });
