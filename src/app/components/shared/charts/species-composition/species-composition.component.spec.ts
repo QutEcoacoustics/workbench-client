@@ -1,4 +1,5 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { ChartComponent } from "@shared/chart/chart.component";
 import { assertChart } from "@test/helpers/charts";
 import {
   SpeciesCompositionGraphComponent,
@@ -52,12 +53,23 @@ fdescribe("SpeciesCompositionGraphComponent", () => {
       },
     });
 
-    spyOn(ResizeObserver.prototype, "observe").and.stub();
-    spyOn(ResizeObserver.prototype, "unobserve").and.stub();
-
-    await spec.fixture.whenStable();
+    // Mock the chart components resize observer because otherwise the tests
+    // will become flaky due to the ResizeObserver events not completing before
+    // the test assertions run.
+    // Because these tests assert over data and not layout, we do not need to
+    // test the resize behavior.
+    ChartComponent.resizeObserver = jasmine.createSpyObj("ResizeObserver", [
+      "observe",
+      "unobserve",
+      "disconnect",
+    ]);
 
     spec.detectChanges();
+  });
+
+  afterEach(() => {
+    // Unset the static ResizeObserver to avoid side effects on other tests
+    ChartComponent.resizeObserver = undefined;
   });
 
   it("should create", () => {
