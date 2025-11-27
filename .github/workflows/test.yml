@@ -2,20 +2,15 @@
 ### to access a read-only version of the GITHUB-TOKEN:
 ### https://github.com/dependabot/dependabot-core/issues/3253
 
-name: "Build, Test, and Publish"
+name: "Test"
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - master
 
 jobs:
   baw-client:
     name: Build Baw Client
     runs-on: ubuntu-latest
-    # Skip on master branch - PRs already run this check
-    if: github.ref != 'refs/heads/master'
 
     steps:
       - name: Checkout Baw Client
@@ -84,8 +79,6 @@ jobs:
     name: Unit Tests (${{ matrix.os }} ${{ matrix.browsers }})
     needs: baw-client
     runs-on: ${{ matrix.os }}
-    # Skip on master branch - PRs already run this check
-    if: github.ref != 'refs/heads/master'
 
     strategy:
       fail-fast: false
@@ -139,77 +132,6 @@ jobs:
           name: Unit Test Results (OS ${{ matrix.os }} ${{ matrix.browsers }})
           path: TESTS-*.xml
 
-  ssr:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Workbench Client
-        uses: nschloe/action-cached-lfs-checkout@v1
-
-      - name: Build container
-        run: docker build -t qutecoacoustics/workbench-client . --build-arg GIT_COMMIT="a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0" --build-arg WORKBENCH_CLIENT_VERSION="70.1.1+test.a0a0a0a0"
-
-      - name: Run docker container
-        run: docker run -d -p 4000:4000 -v "$(pwd)/src/assets/environment.json:/environment.json" qutecoacoustics/workbench-client
-
-      - name: Run SSR tests
-        shell: pwsh
-        run: ./scripts/ssr-tests.ps1
-
-  # Linting is in its own job instead of in the test matrix so that it only runs
-  # once per workflow invocation, saving compute resources and cost.
-  lint:
-    runs-on: ubuntu-latest
-    # Skip on master branch - PRs already run this check
-    if: github.ref != 'refs/heads/master'
-
-    steps:
-      - name: Checkout Workbench Client
-        uses: nschloe/action-cached-lfs-checkout@v1
-
-      - name: Install Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Install project dependencies
-        run: npm ci --force
-
-      - name: Lint project
-        run: npm run lint
-        env:
-          # We were running out of memory in the lint step, so I increased it.
-          # This is an indication that there is a memory leak somewhere, but I
-          # don't want to invest time into tracking it down right now.
-          # TODO: We should track down the memory leak and remove this hack.
-          NODE_OPTIONS: --max-old-space-size="8192"
-
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Workbench Client
-        uses: nschloe/action-cached-lfs-checkout@v1
-
-      - name: Install Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Install project dependencies
-        run: npm ci --force
-
-      - name: Build the workbench client
-        run: npm run build
-
-      - name: Publish build files
-        uses: actions/upload-artifact@v4
-        with:
-          path: ./dist/workbench-client/
-          name: workbench-client
-
   results:
     name: "Publish Unit Tests Results"
     runs-on: ubuntu-latest
@@ -231,16 +153,3 @@ jobs:
           files: artifacts/**/TESTS-*.xml
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
-
-  publish:
-    name: "Publish Docker Container"
-    needs: [ssr, build]
-    if: >
-      github.actor != 'dependabot[bot]' &&
-      github.actor != 'kodiakhq[bot]' &&
-      (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
-
-    uses: ./.github/workflows/publish.yml
-    with:
-      release_tag: 'beta'
-    secrets: inherit

@@ -1,0 +1,32 @@
+name: "Lint"
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  # Linting is in its own job instead of in the test matrix so that it only runs
+  # once per workflow invocation, saving compute resources and cost.
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Workbench Client
+        uses: nschloe/action-cached-lfs-checkout@v1
+
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install project dependencies
+        run: npm ci --force
+
+      - name: Lint project
+        run: npm run lint
+        env:
+          # We were running out of memory in the lint step, so I increased it.
+          # This is an indication that there is a memory leak somewhere, but I
+          # don't want to invest time into tracking it down right now.
+          # TODO: We should track down the memory leak and remove this hack.
+          NODE_OPTIONS: --max-old-space-size="8192"
