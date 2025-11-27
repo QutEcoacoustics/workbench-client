@@ -1,38 +1,29 @@
 import { Id, Param } from "@interfaces/apiInterfaces";
+import { Tag } from "@models/Tag";
+import { CoverageGraphData } from "@shared/charts/coverage-plot/coverage-plot.component";
+import { SpeciesAccumulationGraphData } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
 
 export interface IEventSummaryGraphs {
-  accumulationData: IAccumulationGraphData[];
-  speciesCompositionData: ISpeciesCompositionGraphData[];
-  analysisConfidenceData: IAnalysisCoverageGraphData[];
-  coverageData: ITimeSeriesGraph;
+  accumulationData: SpeciesAccumulationGraphData[];
+  speciesCompositionData: CompositionSeriesData[];
+  analysisConfidenceData: AnalysisCoverageGraphData[];
+  coverageData: CoverageGraphData;
 }
 
-interface IDateRange {
+export interface IDateRange {
   startDate: Param;
   endDate: Param;
 }
 
-interface ITimeSeriesGraph {
-  failedAnalysisCoverage: IDateRange[];
-  analysisCoverage: IDateRange[];
-  missingAnalysisCoverage: IDateRange[];
-  recordingCoverage: IDateRange[];
-}
-
-interface IAccumulationGraphData {
-  date: Param;
-  count: number;
-  error: number;
-}
-
-interface ISpeciesCompositionGraphData {
-  date: Param;
-  tagId: Id;
-  ratio: number;
-}
-
-interface IAnalysisCoverageGraphData {
+interface AnalysisCoverageGraphData {
   date: Param;
   audioCoverage: number;
   analysisCoverage: number;
+}
+
+interface CompositionSeriesData {
+  date: Param;
+  tagId: Id<Tag>;
+  ratio: number;
+  count: number;
 }

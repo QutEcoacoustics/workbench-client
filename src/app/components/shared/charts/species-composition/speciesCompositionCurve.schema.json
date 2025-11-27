@@ -5,7 +5,7 @@
   "data": {
     "values": []
   },
-    "params": [
+  "params": [
     { "name": "bawTitleSize", "value": 20 },
     { "name": "bawFontSize", "value": 18 }
   ],

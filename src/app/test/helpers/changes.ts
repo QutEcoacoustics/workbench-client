@@ -21,11 +21,11 @@ type PseudoLitElement = HTMLElement & { updateComplete: Promise<unknown> };
 /**
  * Detect changes in Angular components and Lit web components
  *
- * @param spectator The spectator instance to detect changes on
+ * @param spec The spectator instance to detect changes on
  */
-export async function detectChanges<T>(spectator: Spectator<T>) {
+export async function detectChanges<T>(spec: Spectator<T>) {
   // Detect changes in Angular components
-  spectator.detectChanges();
+  spec.detectChanges();
 
   // wait for the lit lifecycle to complete
   //
@@ -46,7 +46,7 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
   ];
 
   for (const selector of webComponentSelectors) {
-    const foundElements = spectator.element.querySelectorAll<PseudoLitElement>(selector);
+    const foundElements = spec.element.querySelectorAll<PseudoLitElement>(selector);
 
     for (const component of foundElements) {
       await component.updateComplete;
@@ -55,7 +55,7 @@ export async function detectChanges<T>(spectator: Spectator<T>) {
 
   // We use whenStable here to ensure that all async operations
   // (like Promises or Observables) are completed before proceeding.
-  await spectator.fixture.whenStable();
+  await spec.fixture.whenStable();
 
-  spectator.detectChanges();
+  spec.detectChanges();
 }
