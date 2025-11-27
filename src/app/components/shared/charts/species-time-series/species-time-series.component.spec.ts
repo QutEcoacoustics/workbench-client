@@ -60,6 +60,12 @@ describe("SpeciesTimeSeriesComponent", () => {
     });
   });
 
+  afterEach(() => {
+    // reset the ChartComponent resize observer mock to avoid side effects on
+    // other tests
+    ChartComponent.resizeObserver = undefined;
+  });
+
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(SpeciesTimeSeriesComponent);
   });

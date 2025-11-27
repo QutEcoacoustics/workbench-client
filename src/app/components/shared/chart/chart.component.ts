@@ -120,6 +120,10 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     ChartComponent.resizeEvent();
   }
 
+  /**
+   * @description
+   * Cleans up the vega view and resize observer to prevent memory leaks.
+   */
   public ngOnDestroy(): void {
     if (this.vegaView) {
       // using finalize before the component is destroyed will prevent memory leaks from unattached timers & events
@@ -127,7 +131,18 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       this.vegaView.view.finalize();
     }
 
-    ChartComponent.resizeObserver.unobserve(this.chartContainer().nativeElement);
+    // Sometimes the resizeObserver might not be initialized if the component is
+    // destroyed before ngAfterViewInit is called.
+    // If this occurs, it is a smell that something is wrong with how the
+    // component is being used, but we should still defensively check for it.
+    if (ChartComponent.resizeObserver) {
+      ChartComponent.resizeObserver.unobserve(this.chartContainer().nativeElement);
+    } else {
+      console.warn(
+        "ChartComponent resize observer was not initialized before " +
+          "component destruction",
+      );
+    }
   }
 
   public downloadChartAsCsv(): void {
