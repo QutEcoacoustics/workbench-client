@@ -1,10 +1,10 @@
+import { fakeAsync } from "@angular/core/testing";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
-import { Data } from "vega-lite/build/src/data";
 import { Map } from "immutable";
-import { fakeAsync } from "@angular/core/testing";
+import { Data } from "vega-lite/build/src/data";
 import { Datasets } from "vega-lite/build/src/spec/toplevel";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ChartComponent } from "./chart.component";
 
 //! this component could not be tested with print styles. Manually test this
@@ -74,6 +74,8 @@ describe("ChartComponent", () => {
   beforeEach(fakeAsync(() => setup(validSpec, validData)));
 
   afterEach(() => {
+    ChartComponent.resizeObserver.disconnect();
+
     // if we don't explicitly destroy the test bed after tests, the resize observer will continue to observe the component
     // this will cause all tests to fail if one test fails that depends on the resize observer
     // to ensure only one test fails if the resize observer is not working, we explicitly destroy the test bed after each test
