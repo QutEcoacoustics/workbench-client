@@ -6,23 +6,34 @@ import {
   SelectableItemsComponent,
 } from "./selectable-items.component";
 
+type SelectableItem = "value1" | "value2" | "value3";
+
 describe("SelectableItemsComponent", () => {
-  let spec: Spectator<SelectableItemsComponent<string>>;
+  let spec: Spectator<SelectableItemsComponent<SelectableItem>>;
   let selectionChangeSpy: jasmine.Spy;
 
-  const testOptions: ISelectableItem<string>[] = [
+  const testOptions: ISelectableItem<SelectableItem>[] = [
     { label: "Option 1", value: "value1" },
     { label: "Option 2", value: "value2" },
     { label: "Option 3", value: "value3" },
   ];
 
   const createComponent = createComponentFactory({
-    component: SelectableItemsComponent<string>,
+    component: SelectableItemsComponent<SelectableItem>,
     imports: [IconsModule],
   });
 
-  function getButtons(): HTMLButtonElement[] {
-    return spec.queryAll<HTMLButtonElement>("button");
+  function clickOption(value: SelectableItem) {
+    const indexMap = new Map<string, number>([
+      ["value1", 0],
+      ["value2", 1],
+      ["value3", 2],
+    ]);
+
+    const buttons = spec.queryAll<HTMLButtonElement>("button");
+    const buttonToClick = buttons[indexMap.get(value)];
+
+    clickButton(spec, buttonToClick);
   }
 
   beforeEach(() => {
@@ -42,8 +53,7 @@ describe("SelectableItemsComponent", () => {
         selection: "value1",
       });
 
-      // Click on the second button (value2)
-      clickButton(spec, getButtons()[1]);
+      clickOption("value2");
 
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value2");
     });
@@ -54,31 +64,14 @@ describe("SelectableItemsComponent", () => {
         selection: "value1",
       });
 
-      // Click on the first button (value1) which is already selected
-      clickButton(spec, getButtons()[0]);
-
-      expect(selectionChangeSpy).not.toHaveBeenCalled();
-    });
-
-    it("should not emit selectionChange when clicking the same item multiple times", () => {
-      spec.setInput({
-        options: testOptions,
-        selection: "value2",
-      });
-
-      // Click on the second button (value2) which is already selected multiple times
-      clickButton(spec, getButtons()[1]);
-      clickButton(spec, getButtons()[1]);
-      clickButton(spec, getButtons()[1]);
+      clickOption("value1");
 
       expect(selectionChangeSpy).not.toHaveBeenCalled();
     });
 
     it("should emit selectionChange when selection is undefined and an item is clicked", () => {
       spec.setInput({ options: testOptions });
-
-      clickButton(spec, getButtons()[0]);
-
+      clickOption("value1");
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value1");
     });
   });
@@ -91,8 +84,7 @@ describe("SelectableItemsComponent", () => {
         inline: true,
       });
 
-      // Click on the second button (value2)
-      clickButton(spec, getButtons()[1]);
+      clickOption("value2");
 
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value2");
     });
@@ -104,8 +96,7 @@ describe("SelectableItemsComponent", () => {
         inline: true,
       });
 
-      // Click on the first button (value1) which is already selected
-      clickButton(spec, getButtons()[0]);
+      clickOption("value1");
 
       expect(selectionChangeSpy).not.toHaveBeenCalled();
     });

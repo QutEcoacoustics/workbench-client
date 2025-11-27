@@ -22,6 +22,8 @@ export class SelectableItemsComponent<T> {
   public readonly selectionChange = output<T>();
 
   protected changeSelection(item: T) {
+    // If the item is already selected, we don't want to emit the event again
+    // as it may cause unnecessary re-renders or side effects.
     if (item === this.selection()) {
       return;
     }
