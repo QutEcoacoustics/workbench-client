@@ -50,22 +50,9 @@ export class Consensus extends AbstractData<IConsensus> {
    * votes.
    */
   public get ratio(): number {
-    let decisionVotes = 0;
-    switch (this.decision) {
-      case ConsensusDecision.Correct:
-        decisionVotes = this.correct;
-        break;
-      case ConsensusDecision.Incorrect:
-        decisionVotes = this.incorrect;
-        break;
-      case ConsensusDecision.Unsure:
-        decisionVotes = this.unsure;
-        break;
-      case ConsensusDecision.Skip:
-        decisionVotes = this.skip;
-        break;
-    }
+    const totalResolved = this.correct + this.incorrect;
+    const maxResolved = Math.max(this.correct, this.incorrect);
 
-    return (decisionVotes ?? 0) / (this.count ?? 1);
+    return maxResolved / totalResolved;
   }
 }

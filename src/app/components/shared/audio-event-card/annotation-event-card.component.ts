@@ -1,4 +1,4 @@
-import { DecimalPipe, JsonPipe, PercentPipe } from "@angular/common";
+import { DecimalPipe, PercentPipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -36,7 +36,6 @@ import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datet
     DecimalPipe,
     UrlDirective,
     PercentPipe,
-    JsonPipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
