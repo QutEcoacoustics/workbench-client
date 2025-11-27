@@ -62,11 +62,11 @@ describe("SpeciesCompositionGraphComponent", () => {
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });
+
+    await spec.fixture.whenStable();
   });
 
   afterEach(() => {
-    ChartComponent.resizeObserver.disconnect();
-
     // if we don't explicitly destroy the test bed after tests, the resize observer will continue to observe the component
     // this will cause all tests to fail if one test fails that depends on the resize observer
     // to ensure only one test fails if the resize observer is not working, we explicitly destroy the test bed after each test

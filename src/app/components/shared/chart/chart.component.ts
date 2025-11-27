@@ -105,6 +105,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
     // to the window namespace & a resize observer implementation
     if (!isInstantiated(ChartComponent.resizeObserver)) {
+      console.log("Initializing ChartComponent ResizeObserver");
       ChartComponent.resizeObserver = new ResizeObserver(
         () => ChartComponent.resizeEvent()
       );
