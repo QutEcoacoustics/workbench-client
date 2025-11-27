@@ -29,74 +29,57 @@
 
   <div class="card-body">
     <span class="info-line tag-information">
-      <fa-icon class="me-2" [icon]="['fas', 'tags']" />
       @if (tagInfo().length > 0) {
         @for (tag of tagInfo(); track tag.id; let isLast = $last) {
-          @if (tag.verificationStatus.consensus.ratio > 0.75) {
-            @switch (tag.verificationStatus.consensus.decision) {
-              @case ("correct") {
-                <span
-                  class="me-1 text-success"
-                  [ngbTooltip]="
-                    'This item has been verified with a ' +
-                    tag.verificationStatus.consensus.ratio * 100 +
-                    '%  consensus'
-                  "
-                >
-                  <fa-icon [icon]="['fas', 'circle-check']" />
-                </span>
-              }
+          <div
+            class="tag-item"
+            [ngbTooltip]="tagVerifications"
+            [tooltipContext]="{ verificationSummary: tag.verificationStatus }"
+          >
+            <fa-icon class="me-2" [icon]="['fas', 'tags']" />
 
-              @case ("incorrect") {
-                <span
-                  class="me-1 text-danger"
-                  [ngbTooltip]="
-                    'This item has been marked incorrect with a ' +
-                    tag.verificationStatus.consensus.ratio * 100 +
-                    '% consensus'
-                  "
-                >
-                  <fa-icon [icon]="['fas', 'circle-xmark']" />
-                </span>
+            <!--
+              We show a check or a cross icon depending on if this tag has been
+              confirmed as "correct" or "incorrect".
+              However, we require a consensus ratio of over 66% to show these
+              so that we only show this verified tick if there is strong
+              agreement.
+
+              I have chosen 66% so that if there is a disagreement between 2
+              verifiers who have opposing opinions, we do not show an icon.
+              However, a third verifier can break the tie to show a verified icon
+              because this will cause a 2/3 consensus (66.66...%).
+
+              Additionally, if there are 5 verifiers, a 4-1 vote will also show
+              a verified icon (80% consensus), but a 3-2 vote (60% consensus)
+              will not show an icon (which seems reasonable).
+
+              TODO: I'm sure there's some UX research on what consensus ratio
+              is appropriate to show verification ticks, however, I have not
+              looked for this research yet.
+            -->
+            @if (tag.verificationStatus.consensus.ratio > 0.66) {
+              @switch (tag.verificationStatus.consensus.decision) {
+                @case ("correct") {
+                  <span class="me-1 text-success">
+                    <fa-icon [icon]="['fas', 'circle-check']" />
+                  </span>
+                }
+
+                @case ("incorrect") {
+                  <span class="me-1 text-danger">
+                    <fa-icon [icon]="['fas', 'circle-xmark']" />
+                  </span>
+                }
               }
             }
-          }
-
-          <a
-            [bawUrl]="tag.viewUrl"
-            [class.verified__correct]="
-              tag.verificationStatus.consensus.decision === 'correct'
-            "
-            [class.verified__incorrect]="
-              tag.verificationStatus.consensus.decision === 'incorrect'
-            "
-            [class.verified__unsure]="
-              tag.verificationStatus.consensus.decision === 'unsure'
-            "
-            [class.verified__skip]="
-              tag.verificationStatus.consensus.decision === 'skip'
-            "
-            [class.verified__none]="
-              tag.verificationStatus.consensus.decision === 'none'
-            "
-            [ngbTooltip]="
-              'Consensus: ' +
-              tag.verificationStatus.consensus.decision +
-              '\nCorrect: ' +
-              tag.verificationStatus.correct +
-              '\nIncorrect: ' +
-              tag.verificationStatus.incorrect +
-              '\nUnsure: ' +
-              tag.verificationStatus.unsure +
-              '\nSkip: ' +
-              tag.verificationStatus.skip +
-              '\nRatio: ' +
-              tag.verificationStatus.consensus.ratio * 100 +
-              '%'
-            "
-            >{{ tag.text }}</a
-          >
-          @if (!isLast) {, }
+            <!--
+              we use a non-breaking space here so that the icon and the tag
+              text are not separated onto different lines by word wrapping.
+            -->
+            &nbsp;
+            <a class="tag-link" [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
+          </div>
         }
       } @else {
         <i>No tags</i>
@@ -147,3 +130,25 @@
     </span>
   </div>
 </div>
+
+<ng-template #tagVerifications let-verificationSummary="verificationSummary">
+  <div class="summary-tooltip">
+    @if (verificationSummary.count > 0) {
+      <b class="summary-tooltip-decision">
+        {{ verificationSummary.consensus.decision }}
+      </b>
+      ({{ verificationSummary.consensus.ratio | percent }})
+    } @else {
+      <i>No verifications yet</i>
+    }
+
+    <hr />
+
+    <ul class="data-list">
+      <li>Correct: {{ verificationSummary.correct | number }}</li>
+      <li>Incorrect: {{ verificationSummary.incorrect | number }}</li>
+      <li>Unsure: {{ verificationSummary.unsure | number }}</li>
+      <li>Skip: {{ verificationSummary.skip | number }}</li>
+    </ul>
+  </div>
+</ng-template>

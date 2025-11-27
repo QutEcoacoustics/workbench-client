@@ -1,3 +1,4 @@
+import { DecimalPipe, JsonPipe, PercentPipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -7,20 +8,19 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import { Annotation } from "@models/data/Annotation";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UrlDirective } from "@directives/url/url.directive";
 import {
   MediaControlsComponent,
   SpectrogramComponent,
 } from "@ecoacoustics/web-components/@types";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { DecimalPipe } from "@angular/common";
-import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
-import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { UrlDirective } from "@directives/url/url.directive";
-import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
-import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
+import { Annotation } from "@models/data/Annotation";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 
 @Component({
   selector: "baw-annotation-event-card",
@@ -35,6 +35,8 @@ import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
     isInstantiatedPipe,
     DecimalPipe,
     UrlDirective,
+    PercentPipe,
+    JsonPipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -71,8 +73,6 @@ export class AnnotationEventCardComponent {
 
         verificationStatus = noVerificationSummary;
       }
-
-      console.log(verificationStatus.correct);
 
       return {
         ...tagModel,

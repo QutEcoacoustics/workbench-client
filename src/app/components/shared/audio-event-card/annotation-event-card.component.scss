@@ -103,26 +103,20 @@ oe-spectrogram {
   color: var(--baw-text-color-secondary);
 }
 
-.tag-information {
-  .verified {
-    &__correct {
-      color: var(--baw-success);
-    }
+.summary-tooltip {
+  text-align: left;
+  padding-inline: 1rem;
 
-    &__incorrect {
-      color: var(--baw-danger);
-    }
+  // The ngb-tooltip adds some bottom padding by default, so we don't need to
+  // add any padding on the bottom here.
+  padding-top: 1rem;
 
-    &__unsure {
-      color: var(--baw-warning);
-    }
+  .summary-tooltip-decision {
+    text-transform: capitalize;
+  }
 
-    &__skip {
-      color: gray;
-    }
-
-    &__none {
-      color: var(--baw-text-color-secondary);
-    }
+  .data-list {
+    list-style: none;
+    padding: 0;
   }
 }
