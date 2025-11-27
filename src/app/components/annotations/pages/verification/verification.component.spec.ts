@@ -1,83 +1,68 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
+import { Params, Router } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
+import {
+  VerificationParameters,
+  VerificationStatusKey,
+} from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  DecisionComponent,
+  TagPromptComponent,
+  VerificationGridTileComponent,
+} from "@ecoacoustics/web-components/@types";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import { Annotation } from "@models/data/Annotation";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { Tagging } from "@models/Tagging";
+import { User } from "@models/User";
+import { Verification } from "@models/Verification";
+import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   mockProvider,
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import { Params, Router } from "@angular/router";
-import { Observable, of } from "rxjs";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ConfigService } from "@services/config/config.service";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { MediaService } from "@services/media/media.service";
+import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
+import { ScrollService } from "@services/scroll/scroll.service";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { IconsModule } from "@shared/icons/icons.module";
+import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { WIPComponent } from "@shared/wip/wip.component";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { modelData } from "@test/helpers/faker";
-import { Tag } from "@models/Tag";
-import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
+import { generateTagging } from "@test/fakes/Tagging";
+import { generateUser } from "@test/fakes/User";
+import { generateVerification } from "@test/fakes/Verification";
+import { detectChanges } from "@test/helpers/changes";
+import { modelData } from "@test/helpers/faker";
 import {
   clickButton,
   selectFromTypeahead,
   waitUntil,
 } from "@test/helpers/html";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { AudioEvent } from "@models/AudioEvent";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { Annotation } from "@models/data/Annotation";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { MediaService } from "@services/media/media.service";
-import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
-import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
-import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
-import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
-import { detectChanges } from "@test/helpers/changes";
 import { nodeModule } from "@test/helpers/karma";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { Verification } from "@models/Verification";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { WIPComponent } from "@shared/wip/wip.component";
-import {
-  interceptFilterApiRequest,
-  interceptShowApiRequest,
-  viewports,
-} from "@test/helpers/general";
-import {
-  DecisionComponent,
-  TagPromptComponent,
-  VerificationGridTileComponent,
-} from "@ecoacoustics/web-components/@types";
-import { IconsModule } from "@shared/icons/icons.module";
-import { User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
-import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
-import { Tagging } from "@models/Tagging";
-import { generateVerification } from "@test/fakes/Verification";
-import { generateTagging } from "@test/fakes/Tagging";
-import { ScrollService } from "@services/scroll/scroll.service";
-import { provideMockConfig } from "@services/config/provide-configMock";
-import { ConfigService } from "@services/config/config.service";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import {
-  VerificationParameters,
-  VerificationStatusKey,
-} from "@components/annotations/components/verification-form/verificationParameters";
-import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { Observable, of } from "rxjs";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
@@ -118,33 +103,19 @@ type TagCorrectionServiceCall = ServiceCall<TaggingCorrectionsService>;
 
 describe("VerificationComponent", () => {
   let spec: SpectatorRouting<VerificationComponent>;
-  let injector: SpyObject<AssociationInjector>;
 
-  let audioEventsApiSpy: SpyObject<ShallowAudioEventsService>;
-  let mediaServiceSpy: SpyObject<MediaService>;
-
-  let verificationApiSpy: SpyObject<ShallowVerificationService>;
-  let taggingCorrectionApiSpy: SpyObject<TaggingCorrectionsService>;
-  let tagsApiSpy: SpyObject<TagsService>;
-  let projectApiSpy: SpyObject<ProjectsService>;
-  let regionApiSpy: SpyObject<ShallowRegionsService>;
-  let sitesApiSpy: SpyObject<ShallowSitesService>;
-
+  let mediaService: SpyObject<MediaService>;
   let modalsSpy: NgbModal;
 
-  let routeProject: Project;
-  let routeRegion: Region;
-  let routeSite: Site;
+  let verificationApi: SpyObject<ShallowVerificationService>;
+  let correctionApi: SpyObject<TaggingCorrectionsService>;
+  let tagsApi: SpyObject<TagsService>;
 
   let mockSearchParameters: AnnotationSearchParameters;
   let mockVerificationParameters: VerificationParameters;
 
-  let mockUser: User;
-  let mockAudioEventsResponse: AudioEvent[] = [];
   let defaultFakeTags: Tag[];
-  let mockAudioRecording: AudioRecording;
-  let mockAnnotationResponse: Annotation;
-  let verificationResponse: Verification;
+  let verifyResponse: Verification;
 
   const createComponent = createRoutingFactory({
     component: VerificationComponent,
@@ -185,6 +156,13 @@ describe("VerificationComponent", () => {
     //    to open and close.
     setNoBootstrap();
 
+    const mockUser = new User(generateUser());
+    const routeProject = new Project(generateProject());
+    const routeRegion = new Region(
+      generateRegion({ projectId: routeProject.id }),
+    );
+    const routeSite = new Site(generateSite({ regionId: routeRegion.id }));
+
     mockSearchParameters = new AnnotationSearchParameters(
       generateAnnotationSearchUrlParams(queryParameters),
       mockUser,
@@ -220,14 +198,11 @@ describe("VerificationComponent", () => {
         },
         project: { model: routeProject },
         region: { model: routeRegion },
-        site:  { model: routeSite },
-        searchParameters: { model: mockSearchParameters  },
+        site: { model: routeSite },
+        searchParameters: { model: mockSearchParameters },
         verificationParameters: { model: mockVerificationParameters },
       },
       providers: [
-        mockProvider(AnnotationService, {
-          show: () => mockAnnotationResponse,
-        }),
         mockProvider(TaggingCorrectionsService),
         mockProvider(Router, {
           createUrlTree: () => ({}),
@@ -236,7 +211,7 @@ describe("VerificationComponent", () => {
       queryParams: queryParameters,
     });
 
-    injector = spec.inject(ASSOCIATION_INJECTOR);
+    const injector = spec.inject(ASSOCIATION_INJECTOR);
 
     // We use a base64 encoded audio file rather than fetching the file through
     // the Karma server because we encountered issues where the server would
@@ -248,18 +223,15 @@ describe("VerificationComponent", () => {
     const mockFile = `data:[audio/flac];base64,${exampleBase64}`;
     // const mockFile = testAsset("example.flac");
 
-    mediaServiceSpy = spec.inject(MediaService);
-    mediaServiceSpy.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
-    mediaServiceSpy.createMediaUrl.and.returnValue(mockFile);
+    mediaService = spec.inject(MediaService);
+    mediaService.createMediaUrl = jasmine.createSpy("createMediaUrl") as any;
+    mediaService.createMediaUrl.and.returnValue(mockFile);
 
     defaultFakeTags = Array.from({ length: 3 }).map((_, index) => {
       const tagObject = generateTag({ id: index, text: `item ${index}` });
       return new Tag(tagObject, injector);
     });
 
-    const mockAudioEventIds = Array.from({ length: 12 }).map(
-      (_, index) => index,
-    );
     const mockTaggings = defaultFakeTags.slice(0, 3).map((tag, index) => {
       return new Tagging(
         generateTagging({ tagId: tag.id, audioEventId: index }),
@@ -267,36 +239,22 @@ describe("VerificationComponent", () => {
       );
     });
 
-    mockAudioEventsResponse = mockAudioEventIds.map((id, index) => {
-      return new AudioEvent(
-        generateAudioEvent({ id, taggings: [mockTaggings[index]] }),
-        injector,
-      );
-    });
+    verifyResponse = new Verification(generateVerification(), injector);
 
-    mockAudioRecording = new AudioRecording(
-      generateAudioRecording({ siteId: routeSite.id }),
-      injector,
+    const annotationResponse = Array.from({ length: 10 }).map(
+      () =>
+        new Annotation(
+          generateAnnotation({
+            taggings: mockTaggings,
+            tags: defaultFakeTags,
+          }),
+          injector,
+        ),
     );
 
-    mockAnnotationResponse = new Annotation(
-      generateAnnotation({
-        audioRecording: mockAudioRecording,
-        tags: defaultFakeTags,
-        ...mockAudioEventsResponse[0],
-      }),
-      injector,
-    );
-
-    verificationResponse = new Verification(generateVerification(), injector);
-
-    verificationApiSpy = spec.inject(ShallowVerificationService);
-    taggingCorrectionApiSpy = spec.inject(TaggingCorrectionsService);
-    audioEventsApiSpy = spec.inject(ShallowAudioEventsService);
-    tagsApiSpy = spec.inject(TagsService);
-    projectApiSpy = spec.inject(ProjectsService);
-    regionApiSpy = spec.inject(ShallowRegionsService);
-    sitesApiSpy = spec.inject(ShallowSitesService);
+    verificationApi = spec.inject(ShallowVerificationService);
+    correctionApi = spec.inject(TaggingCorrectionsService);
+    tagsApi = spec.inject(TagsService);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
@@ -306,70 +264,80 @@ describe("VerificationComponent", () => {
 
     spyOn(modalsSpy, "open").and.callThrough();
 
-    const requestPromises = Promise.all([
-      interceptShowApiRequest(tagsApiSpy, injector, defaultFakeTags[0], Tag),
-      interceptShowApiRequest(projectApiSpy, injector, routeProject, Project),
-      interceptShowApiRequest(regionApiSpy, injector, routeRegion, Region),
-      interceptShowApiRequest(sitesApiSpy, injector, routeSite, Site),
+    // const requestPromises = Promise.all([
+    //   interceptShowApiRequest(projectApi, injector, routeProject, Project),
+    //   interceptShowApiRequest(regionApi, injector, routeRegion, Region),
+    //   interceptShowApiRequest(sitesApi, injector, routeSite, Site),
 
-      interceptFilterApiRequest(regionApiSpy, injector, [routeRegion], Region),
-      interceptFilterApiRequest(sitesApiSpy, injector, [routeSite], Site),
-      interceptFilterApiRequest(
-        projectApiSpy,
-        injector,
-        [routeProject],
-        Project,
-      ),
+    //   interceptFilterApiRequest(regionApi, injector, [routeRegion], Region),
+    //   interceptFilterApiRequest(sitesApi, injector, [routeSite], Site),
+    //   interceptFilterApiRequest(projectApi, injector, [routeProject], Project),
+    // ]);
 
-      interceptFilterApiRequest(tagsApiSpy, injector, defaultFakeTags, Tag),
-      interceptFilterApiRequest(
-        audioEventsApiSpy,
-        injector,
-        mockAudioEventsResponse,
-        AudioEvent,
-      ),
-    ]);
+    // We create a getPageCallback that only returns one page of results so that
+    // the gridPageFetcher does not hang waiting in the background pre-fetching
+    // additional pages when all of the tests only need one page of results.
+    spec.component["getPageCallback"] = () => {
+      let doneFirstCall = false;
+      return () => {
+        // Once we have done the first call, we return an empty array of results
+        // to mock being at the end of the dataset.
+        if (doneFirstCall) {
+          return [];
+        }
 
-    tagsApiSpy.typeaheadCallback.andReturn(() => of(defaultFakeTags));
+        doneFirstCall = true;
 
-    spyOn(verificationApiSpy, "create").and.returnValue(
-      of(verificationResponse),
+        return {
+          subjects: annotationResponse,
+          context: {},
+          totalItems: annotationResponse.length,
+        };
+      };
+    };
+
+    tagsApi.show.and.callFake(() => of(defaultFakeTags[0]));
+    tagsApi.typeaheadCallback.and.returnValue(() => of(defaultFakeTags));
+
+    spyOn(verificationApi, "create").and.returnValue(of(verifyResponse));
+    spyOn(verificationApi, "update").and.returnValue(of(verifyResponse));
+    spyOn(verificationApi, "createOrUpdate").and.returnValue(
+      of(verifyResponse),
     );
-    spyOn(verificationApiSpy, "update").and.returnValue(
-      of(verificationResponse),
-    );
-    spyOn(verificationApiSpy, "createOrUpdate").and.returnValue(
-      of(verificationResponse),
-    );
-    spyOn(verificationApiSpy, "destroy").and.returnValue(of());
+    spyOn(verificationApi, "destroy").and.returnValue(of());
 
-    spyOn(verificationApiSpy, "filter").and.returnValue(of([]));
-    spyOn(verificationApiSpy, "list").and.returnValue(of([]));
-    spyOn(verificationApiSpy, "show").and.returnValue(of());
+    spyOn(verificationApi, "filter").and.returnValue(of([]));
+    spyOn(verificationApi, "list").and.returnValue(of([]));
+    spyOn(verificationApi, "show").and.returnValue(of());
 
-    spyOn(verificationApiSpy, "destroyUserVerification").and.returnValue(
+    spyOn(verificationApi, "destroyUserVerification").and.returnValue(
       of(undefined),
     );
-    spyOn(verificationApiSpy, "showUserVerification").and.returnValue(
-      of(verificationResponse),
+    spyOn(verificationApi, "showUserVerification").and.returnValue(
+      of(verifyResponse),
     );
 
-    taggingCorrectionApiSpy.destroy.and.returnValue(of(undefined));
-    taggingCorrectionApiSpy.create.and.returnValue(of(mockTaggings[0]));
+    correctionApi.destroy.and.returnValue(of(undefined));
+    correctionApi.create.and.returnValue(of(mockTaggings[0]));
 
-    await detectChanges(spec);
-
-    await requestPromises;
-
+    spec.detectChanges();
     await waitUntil(() => isGridLoaded(), 10_000);
-
-    await detectChanges(spec);
   }
 
   beforeEach(async () => {
     // I explicitly set the viewport size so that the grid size is always
     // consistent no matter what size the karma browser window is
-    viewport.set(viewports.extraLarge);
+    //
+    // We use a very large viewport size so that the verification grids default
+    // size (12) can be tested without any responsive changes.
+    // If we instead used a smaller size, we would have to wait for the
+    // verification grid to find a suitable size which would slow down the
+    // tests and make them flaky due to the test completing before the grid has
+    // finished resizing.
+    //
+    // TODO: Remove this is a hack to get around the resize observer not
+    // correctly aborting when the verification grid is destroyed.
+    viewport.set(2112, 1188);
 
     // we import the web components using a dynamic import statement so that
     // the web components are loaded through the karma test server
@@ -378,12 +346,6 @@ describe("VerificationComponent", () => {
         nodeModule("@ecoacoustics/web-components/dist/components.js")
       );
     }
-
-    mockUser = new User(generateUser());
-
-    routeProject = new Project(generateProject());
-    routeRegion = new Region(generateRegion({ projectId: routeProject.id }));
-    routeSite = new Site(generateSite({ regionId: routeRegion.id }));
   });
 
   afterEach(() => {
@@ -433,10 +395,24 @@ describe("VerificationComponent", () => {
       ".typeahead-result-action",
     );
 
-  const decisionButton = (index: number) =>
-    decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+  function decisionButton(decision: DecisionOptions) {
+    const decisions = [
+      DecisionOptions.TRUE,
+      DecisionOptions.FALSE,
+      DecisionOptions.UNSURE,
+      DecisionOptions.CORRECT_TAG,
+      DecisionOptions.SKIP,
+    ];
+
+    const index = decisions.indexOf(decision);
+    if (index < 0) {
+      throw new Error("Could not find decision button");
+    }
+
+    return decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
       "#decision-button",
     );
+  }
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
@@ -462,23 +438,31 @@ describe("VerificationComponent", () => {
   }
 
   async function clickDecisionButton(decision: DecisionOptions) {
-    const decisions = [
-      DecisionOptions.TRUE,
-      DecisionOptions.FALSE,
-      DecisionOptions.UNSURE,
-      DecisionOptions.CORRECT_TAG,
-      DecisionOptions.SKIP,
-    ];
+    const decisionButtonTarget = decisionButton(decision);
 
-    const index = decisions.indexOf(decision);
-    if (index < 0) {
-      throw new Error("Could not find decision button");
-    }
+    const grid = verificationGrid();
+    const decisionMadeEvent = new Promise<void>((resolve) => {
+      const handler = () => {
+        grid.removeEventListener("decision-made", handler);
+        resolve();
+      };
 
-    const decisionButtonTarget = decisionButton(index);
+      grid.addEventListener("decision-made", handler, { once: true });
+    });
+
     spec.click(decisionButtonTarget);
 
+    await decisionMadeEvent;
     await detectChanges(spec);
+  }
+
+  // Because the "correct tag" decision button does not emit a "decision-made"
+  // event like the other decision buttons, we have a custom click action.
+  async function clickCorrectTag() {
+    const decisionButtonTarget = decisionButton(DecisionOptions.CORRECT_TAG);
+    spec.click(decisionButtonTarget);
+    await detectChanges(spec);
+    return;
   }
 
   async function makeTagCorrectionDecision(
@@ -489,7 +473,7 @@ describe("VerificationComponent", () => {
       return;
     }
 
-    await clickDecisionButton(DecisionOptions.CORRECT_TAG);
+    await clickCorrectTag();
 
     // When the tag typeahead is initially opened, it will show a list of
     // results based on a query without any search text.
@@ -673,7 +657,7 @@ describe("VerificationComponent", () => {
           ];
 
           for (const method of testedMethods) {
-            verificationApiSpy[method].calls.reset();
+            verificationApi[method].calls.reset();
           }
 
           // We make the selection after resetting calls so that if there is a
@@ -691,11 +675,11 @@ describe("VerificationComponent", () => {
 
           for (const method of testedMethods) {
             if (method === test.expectedApiCall?.method) {
-              expect(verificationApiSpy[method]).toHaveBeenCalledOnceWith(
+              expect(verificationApi[method]).toHaveBeenCalledOnceWith(
                 ...test.expectedApiCall.args,
               );
             } else {
-              expect(verificationApiSpy[method]).not.toHaveBeenCalled();
+              expect(verificationApi[method]).not.toHaveBeenCalled();
             }
           }
         });
@@ -831,9 +815,9 @@ describe("VerificationComponent", () => {
 
       xit("should make verification api calls about the entire page if nothing is selected", async () => {
         await clickDecisionButton(DecisionOptions.TRUE);
-        expect(verificationApiSpy.createOrUpdate).toHaveBeenCalledTimes(
+        expect(verificationApi.createOrUpdate).toHaveBeenCalledTimes(
           gridSize(),
-          );
+        );
       });
     });
 
@@ -875,7 +859,7 @@ describe("VerificationComponent", () => {
           ];
 
           for (const method of testedMethods) {
-            taggingCorrectionApiSpy[method].calls.reset();
+            correctionApi[method].calls.reset();
           }
 
           await makeTagCorrectionDecision(test.newDecision);
@@ -886,11 +870,11 @@ describe("VerificationComponent", () => {
             );
 
             if (expectedApiCall) {
-              expect(taggingCorrectionApiSpy[method]).toHaveBeenCalledOnceWith(
+              expect(correctionApi[method]).toHaveBeenCalledOnceWith(
                 ...expectedApiCall.args,
               );
             } else {
-              expect(taggingCorrectionApiSpy[method]).not.toHaveBeenCalled();
+              expect(correctionApi[method]).not.toHaveBeenCalled();
             }
           }
         });
@@ -1144,7 +1128,7 @@ describe("VerificationComponent", () => {
     it("should show an alert if the user tries to navigate away while requests are still processing", async () => {
       // Mock the verification api to return an observable that never completes
       // so that the component thinks that there are still requests processing.
-      verificationApiSpy.createOrUpdate.and.returnValue(new Observable(() => {}));
+      verificationApi.createOrUpdate.and.returnValue(new Observable(() => {}));
 
       await makeSelection(0, 0);
       await clickDecisionButton(DecisionOptions.TRUE);
