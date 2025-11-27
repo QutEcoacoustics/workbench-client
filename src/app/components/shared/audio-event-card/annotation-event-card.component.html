@@ -30,12 +30,77 @@
   <div class="card-body">
     <span class="info-line tag-information">
       <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+      @if (tagInfo().length > 0) {
+        @for (tag of tagInfo(); track tag.id; let isLast = $last) {
+          @if (tag.verificationStatus.consensus.ratio > 0.75) {
+            @switch (tag.verificationStatus.consensus.decision) {
+              @case ("correct") {
+                <span
+                  class="me-1 text-success"
+                  [ngbTooltip]="
+                    'This item has been verified with a ' +
+                    tag.verificationStatus.consensus.ratio * 100 +
+                    '%  consensus'
+                  "
+                >
+                  <fa-icon [icon]="['fas', 'circle-check']" />
+                </span>
+              }
 
-      <baw-inline-list
-        [items]="annotation().tags"
-        [itemKey]="'text'"
-        [emptyTemplate]="noTagsTemplate"
-      />
+              @case ("incorrect") {
+                <span
+                  class="me-1 text-danger"
+                  [ngbTooltip]="
+                    'This item has been marked incorrect with a ' +
+                    tag.verificationStatus.consensus.ratio * 100 +
+                    '% consensus'
+                  "
+                >
+                  <fa-icon [icon]="['fas', 'circle-xmark']" />
+                </span>
+              }
+            }
+          }
+
+          <a
+            [bawUrl]="tag.viewUrl"
+            [class.verified__correct]="
+              tag.verificationStatus.consensus.decision === 'correct'
+            "
+            [class.verified__incorrect]="
+              tag.verificationStatus.consensus.decision === 'incorrect'
+            "
+            [class.verified__unsure]="
+              tag.verificationStatus.consensus.decision === 'unsure'
+            "
+            [class.verified__skip]="
+              tag.verificationStatus.consensus.decision === 'skip'
+            "
+            [class.verified__none]="
+              tag.verificationStatus.consensus.decision === 'none'
+            "
+            [ngbTooltip]="
+              'Consensus: ' +
+              tag.verificationStatus.consensus.decision +
+              '\nCorrect: ' +
+              tag.verificationStatus.correct +
+              '\nIncorrect: ' +
+              tag.verificationStatus.incorrect +
+              '\nUnsure: ' +
+              tag.verificationStatus.unsure +
+              '\nSkip: ' +
+              tag.verificationStatus.skip +
+              '\nRatio: ' +
+              tag.verificationStatus.consensus.ratio * 100 +
+              '%'
+            "
+            >{{ tag.text }}</a
+          >
+          @if (!isLast) {, }
+        }
+      } @else {
+        <i>No tags</i>
+      }
     </span>
 
     <span class="info-line">
@@ -82,7 +147,3 @@
     </span>
   </div>
 </div>
-
-<ng-template #noTagsTemplate>
-  <i>No Tags</i>
-</ng-template>

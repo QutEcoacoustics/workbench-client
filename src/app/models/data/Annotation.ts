@@ -8,6 +8,7 @@ import {
   bawSubModelCollection,
 } from "@models/AttributeDecorators";
 import { IAudioEvent } from "@models/AudioEvent";
+import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag, Tag } from "@models/Tag";
 import { Tagging } from "@models/Tagging";
@@ -59,6 +60,11 @@ export class Annotation
   public readonly updatedAt: DateTimeTimezone;
 
   public readonly corrections: Map<Id<Tag>, Tagging>;
+
+  public readonly verificationIds: Ids;
+
+  @bawSubModelCollection(VerificationSummary)
+  public readonly verificationSummary: VerificationSummary[];
 
   public get tagIds(): Ids {
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));

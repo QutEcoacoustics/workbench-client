@@ -19,7 +19,7 @@ import {
   hasOne,
   updater,
 } from "./AssociationDecorators";
-import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
+import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
 import type { AudioRecording } from "./AudioRecording";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
@@ -27,15 +27,7 @@ import type { User } from "./User";
 import { AudioEventProvenance } from "./AudioEventProvenance";
 import { AssociationInjector } from "./ImplementsInjector";
 import { AudioEventImportFile } from "./AudioEventImportFile";
-
-interface VerificationSummary {
-  tagId: Id<Tag>;
-  count: number;
-  confirmed: number;
-  unconfirmed: number;
-  unsure: number;
-  skip: number;
-}
+import { IVerificationSummary, VerificationSummary } from "./AudioEvent/VerificationSummary";
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -55,7 +47,7 @@ export interface IAudioEvent extends HasAllUsers {
   // These fields are not included in the standard response, and must be
   // explicitly added via the `projection.add` filter.
   verificationIds?: Ids;
-  verificationSummary?: VerificationSummary[];
+  verificationSummary?: IVerificationSummary[];
 }
 
 export class AudioEvent
@@ -97,6 +89,8 @@ export class AudioEvent
   // These fields are not included in the standard response, and must be
   // explicitly added via the `projection.add` filter.
   public readonly verificationIds?: Ids;
+
+  @bawSubModelCollection(VerificationSummary)
   public readonly verificationSummary?: VerificationSummary[];
 
   // Associations

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   ElementRef,
@@ -17,9 +18,9 @@ import { DecimalPipe } from "@angular/common";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { UrlDirective } from "@directives/url/url.directive";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
+import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 
 @Component({
   selector: "baw-annotation-event-card",
@@ -34,7 +35,6 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
     isInstantiatedPipe,
     DecimalPipe,
     UrlDirective,
-    InlineListComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -49,6 +49,38 @@ export class AnnotationEventCardComponent {
     viewChild<ElementRef<MediaControlsComponent>>("mediaControls");
   private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
+
+  protected readonly tagInfo = computed(() => {
+    return this.annotation().tags.map((tagModel) => {
+      // Audio events without any verifications return "null" instead of an
+      // object.
+      // see: https://github.com/QutEcoacoustics/baw-server/issues/869
+      let verificationStatus = (this.annotation().verificationSummary ?? []).find(
+        (tagSummary) => tagSummary.tagId === tagModel.id
+      );
+
+      if (!verificationStatus) {
+        const noVerificationSummary = new VerificationSummary({
+          tagId: tagModel.id,
+          count: 0,
+          correct: 0,
+          incorrect: 0,
+          unsure: 0,
+          skip: 0,
+        });
+
+        verificationStatus = noVerificationSummary;
+      }
+
+      console.log(verificationStatus.correct);
+
+      return {
+        ...tagModel,
+        viewUrl: tagModel.viewUrl,
+        verificationStatus: verificationStatus,
+      };
+    });
+  });
 
   public constructor() {
     // Use effect() to link media controls to the spectrogram when it becomes

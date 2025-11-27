@@ -29,7 +29,9 @@
   padding: 0.5rem;
 }
 
-.axes, oe-indicator, oe-spectrogram {
+.axes,
+oe-indicator,
+oe-spectrogram {
   display: block;
 
   position: relative;
@@ -99,4 +101,28 @@
 
 .no-score-placeholder {
   color: var(--baw-text-color-secondary);
+}
+
+.tag-information {
+  .verified {
+    &__correct {
+      color: var(--baw-success);
+    }
+
+    &__incorrect {
+      color: var(--baw-danger);
+    }
+
+    &__unsure {
+      color: var(--baw-warning);
+    }
+
+    &__skip {
+      color: gray;
+    }
+
+    &__none {
+      color: var(--baw-text-color-secondary);
+    }
+  }
 }

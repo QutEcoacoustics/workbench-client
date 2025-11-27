@@ -239,6 +239,10 @@ export abstract class PaginationTemplate<M extends AbstractModel>
       filters.sorting = this.defaultSortingFilter();
     }
 
+    if (this.defaultProjectionFilter) {
+      filters.projection = this.defaultProjectionFilter();
+    }
+
     return filters;
   }
 }
