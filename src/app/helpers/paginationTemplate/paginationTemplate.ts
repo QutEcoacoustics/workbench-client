@@ -5,6 +5,7 @@ import {
   defaultApiPageSize,
   Filters,
   InnerFilter,
+  Projection,
   Sorting,
 } from "@baw-api/baw-api.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -102,6 +103,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
     protected defaultInnerFilter: () => InnerFilter<M> = () =>
       ({} as InnerFilter<M>),
     protected defaultSortingFilter?: () => Sorting<keyof M>,
+    protected defaultProjectionFilter?: () => Projection<M>,
   ) {
     super();
   }

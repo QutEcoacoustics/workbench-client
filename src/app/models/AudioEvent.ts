@@ -26,10 +26,20 @@ import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
 import { AudioEventProvenance } from "./AudioEventProvenance";
 import { AssociationInjector } from "./ImplementsInjector";
+import { AudioEventImportFile } from "./AudioEventImportFile";
+
+interface VerificationSummary {
+  tagId: Id<Tag>;
+  count: number;
+  confirmed: number;
+  unconfirmed: number;
+  unsure: number;
+  skip: number;
+}
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
-  audioRecordingId?: Id;
+  audioRecordingId?: Id<AudioRecording>;
   channel?: number;
   startTimeSeconds?: number;
   endTimeSeconds?: number;
@@ -39,8 +49,13 @@ export interface IAudioEvent extends HasAllUsers {
   isReference?: boolean;
   score?: number;
   taggings?: ITagging[] | Tagging[];
-  provenanceId?: Id;
-  audioEventImportFileId?: Id;
+  provenanceId?: Id<AudioEventProvenance>;
+  audioEventImportFileId?: Id<AudioEventImportFile>;
+
+  // These fields are not included in the standard response, and must be
+  // explicitly added via the `projection.add` filter.
+  verificationIds?: Ids;
+  verificationSummary?: VerificationSummary[];
 }
 
 export class AudioEvent
@@ -78,6 +93,11 @@ export class AudioEvent
   public readonly updatedAt?: DateTimeTimezone;
   @bawDateTime()
   public readonly deletedAt?: DateTimeTimezone;
+
+  // These fields are not included in the standard response, and must be
+  // explicitly added via the `projection.add` filter.
+  public readonly verificationIds?: Ids;
+  public readonly verificationSummary?: VerificationSummary[];
 
   // Associations
   @creator()
