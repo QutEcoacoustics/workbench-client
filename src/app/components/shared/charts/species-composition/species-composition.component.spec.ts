@@ -6,7 +6,7 @@ import {
   SpeciesCompositionGraphData,
 } from "./species-composition.component";
 
-fdescribe("SpeciesCompositionGraphComponent", () => {
+describe("SpeciesCompositionGraphComponent", () => {
   let spec: Spectator<SpeciesCompositionGraphComponent>;
 
   const createComponent = createComponentFactory({
