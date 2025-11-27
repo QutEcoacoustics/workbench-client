@@ -22,6 +22,9 @@ export class SelectableItemsComponent<T> {
   public readonly selectionChange = output<T>();
 
   protected changeSelection(item: T) {
+    if (item === this.selection()) {
+      return;
+    }
     this.selectionChange.emit(item);
   }
 }
