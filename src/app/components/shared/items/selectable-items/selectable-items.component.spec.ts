@@ -1,5 +1,6 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
+import { clickButton } from "@test/helpers/html";
 import {
   ISelectableItem,
   SelectableItemsComponent,
@@ -27,62 +28,56 @@ describe("SelectableItemsComponent", () => {
   beforeEach(() => {
     spec = createComponent({ detectChanges: false });
     selectionChangeSpy = spyOn(spec.component.selectionChange, "emit");
+    spec.detectChanges();
   });
 
   it("should create", () => {
-    spec.detectChanges();
-    expect(spec.component).toBeTruthy();
+    expect(spec.component).toBeInstanceOf(SelectableItemsComponent);
   });
 
   describe("selectionChange event", () => {
     it("should emit selectionChange when a non-selected item is clicked", () => {
-      spec.setInput("options", testOptions);
-      spec.setInput("selection", "value1");
-      spec.detectChanges();
+      spec.setInput({
+        options: testOptions,
+        selection: "value1",
+      });
 
-      const buttons = getButtons();
       // Click on the second button (value2)
-      buttons[1].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[1]);
 
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value2");
     });
 
     it("should not emit selectionChange when an already selected item is clicked", () => {
-      spec.setInput("options", testOptions);
-      spec.setInput("selection", "value1");
-      spec.detectChanges();
+      spec.setInput({
+        options: testOptions,
+        selection: "value1",
+      });
 
-      const buttons = getButtons();
       // Click on the first button (value1) which is already selected
-      buttons[0].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[0]);
 
       expect(selectionChangeSpy).not.toHaveBeenCalled();
     });
 
     it("should not emit selectionChange when clicking the same item multiple times", () => {
-      spec.setInput("options", testOptions);
-      spec.setInput("selection", "value2");
-      spec.detectChanges();
+      spec.setInput({
+        options: testOptions,
+        selection: "value2",
+      });
 
-      const buttons = getButtons();
       // Click on the second button (value2) which is already selected multiple times
-      buttons[1].click();
-      buttons[1].click();
-      buttons[1].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[1]);
+      clickButton(spec, getButtons()[1]);
+      clickButton(spec, getButtons()[1]);
 
       expect(selectionChangeSpy).not.toHaveBeenCalled();
     });
 
     it("should emit selectionChange when selection is undefined and an item is clicked", () => {
-      spec.setInput("options", testOptions);
-      spec.detectChanges();
+      spec.setInput({ options: testOptions });
 
-      const buttons = getButtons();
-      buttons[0].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[0]);
 
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value1");
     });
@@ -90,29 +85,27 @@ describe("SelectableItemsComponent", () => {
 
   describe("inline mode", () => {
     it("should emit selectionChange when a non-selected item is clicked in inline mode", () => {
-      spec.setInput("options", testOptions);
-      spec.setInput("selection", "value1");
-      spec.setInput("inline", true);
-      spec.detectChanges();
+      spec.setInput({
+        options: testOptions,
+        selection: "value1",
+        inline: true,
+      });
 
-      const buttons = getButtons();
       // Click on the second button (value2)
-      buttons[1].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[1]);
 
       expect(selectionChangeSpy).toHaveBeenCalledOnceWith("value2");
     });
 
     it("should not emit selectionChange when an already selected item is clicked in inline mode", () => {
-      spec.setInput("options", testOptions);
-      spec.setInput("selection", "value1");
-      spec.setInput("inline", true);
-      spec.detectChanges();
+      spec.setInput({
+        options: testOptions,
+        selection: "value1",
+        inline: true,
+      });
 
-      const buttons = getButtons();
       // Click on the first button (value1) which is already selected
-      buttons[0].click();
-      spec.detectChanges();
+      clickButton(spec, getButtons()[0]);
 
       expect(selectionChangeSpy).not.toHaveBeenCalled();
     });

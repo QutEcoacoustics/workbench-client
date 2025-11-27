@@ -25,6 +25,7 @@ export class SelectableItemsComponent<T> {
     if (item === this.selection()) {
       return;
     }
+
     this.selectionChange.emit(item);
   }
 }
