@@ -7,7 +7,7 @@ import { SpeciesTimeSeriesComponent } from "./species-time-series.component";
 // observer is still firing events.
 // I need to find a way to mock the resize observer or wait until it is stable
 // before I re-enable these tests.
-xdescribe("SpeciesTimeSeriesComponent", () => {
+fdescribe("SpeciesTimeSeriesComponent", () => {
   let spec: Spectator<SpeciesTimeSeriesComponent>;
 
   const createComponent = createComponentFactory({
@@ -45,31 +45,21 @@ xdescribe("SpeciesTimeSeriesComponent", () => {
       { date: "2023-05-30", tagId: 277, count: 85 },
     ];
 
-    spec = createComponent({
-      detectChanges: false,
-      props: {
-        data: mockData,
-        formatter: (tagId) => `Tag ${tagId.toString()}`,
-      },
-    });
-
     // Mock the chart components resize observer because otherwise the tests
     // will become flaky due to the ResizeObserver events not completing before
     // the test assertions run.
     // Because these tests assert over data and not layout, we do not need to
     // test the resize behavior.
-    ChartComponent.resizeObserver = jasmine.createSpyObj("ResizeObserver", [
-      "observe",
-      "unobserve",
-      "disconnect",
-    ]);
+    ChartComponent["resizeObserver"] = jasmine
+      .createSpy("resizeObserver")
+      .and.stub() as any;
 
-    spec.detectChanges();
-  });
-
-  afterEach(() => {
-    // Unset the static ResizeObserver to avoid side effects on other tests
-    ChartComponent.resizeObserver = undefined;
+    spec = createComponent({
+      props: {
+        data: mockData,
+        formatter: (tagId) => `Tag ${tagId.toString()}`,
+      },
+    });
   });
 
   it("should create", () => {

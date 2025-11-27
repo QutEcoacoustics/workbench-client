@@ -101,6 +101,8 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
 
     this.vegaView = await this.generateChart(fullSpec);
 
+    console.log(ChartComponent.resizeEvent);
+
     // since node does not have access to the window global namespace, it does not have an implementation of a resize observer, breaking ssr
     // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
     // to the window namespace & a resize observer implementation
