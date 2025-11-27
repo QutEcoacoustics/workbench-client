@@ -14,6 +14,8 @@ jobs:
   baw-client:
     name: Build Baw Client
     runs-on: ubuntu-latest
+    # Skip on master branch - PRs already run this check
+    if: github.ref != 'refs/heads/master'
 
     steps:
       - name: Checkout Baw Client
@@ -82,6 +84,8 @@ jobs:
     name: Unit Tests (${{ matrix.os }} ${{ matrix.browsers }})
     needs: baw-client
     runs-on: ${{ matrix.os }}
+    # Skip on master branch - PRs already run this check
+    if: github.ref != 'refs/heads/master'
 
     strategy:
       fail-fast: false
@@ -156,6 +160,8 @@ jobs:
   # once per workflow invocation, saving compute resources and cost.
   lint:
     runs-on: ubuntu-latest
+    # Skip on master branch - PRs already run this check
+    if: github.ref != 'refs/heads/master'
 
     steps:
       - name: Checkout Workbench Client
@@ -228,7 +234,7 @@ jobs:
 
   publish:
     name: "Publish Docker Container"
-    needs: [test, ssr, build]
+    needs: [ssr, build]
     if: >
       github.actor != 'dependabot[bot]' &&
       github.actor != 'kodiakhq[bot]' &&
