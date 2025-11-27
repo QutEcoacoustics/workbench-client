@@ -4,10 +4,12 @@ on:
   pull_request:
 
 jobs:
-  # Linting is in its own job instead of in the test matrix so that it only runs
-  # once per workflow invocation, saving compute resources and cost.
+  baw-client:
+    uses: ./.github/workflows/baw-client.yml
+
   lint:
     runs-on: ubuntu-latest
+    needs: baw-client
 
     steps:
       - name: Checkout Workbench Client
