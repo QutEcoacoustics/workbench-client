@@ -50,9 +50,11 @@ fdescribe("SpeciesTimeSeriesComponent", () => {
     // the test assertions run.
     // Because these tests assert over data and not layout, we do not need to
     // test the resize behavior.
-    ChartComponent["resizeObserver"] = jasmine
-      .createSpy("resizeObserver")
-      .and.stub() as any;
+    ChartComponent.resizeObserver = jasmine.createSpyObj("ResizeObserver", [
+      "observe",
+      "unobserve",
+      "disconnect",
+    ]);
 
     spec = createComponent({
       props: {
