@@ -6,6 +6,7 @@ import {
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
+  CollectionIds,
   DateTimeTimezone,
   HasAllUsers,
   Id,
@@ -20,14 +21,14 @@ import {
   updater,
 } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
+import { IVerificationSummary, VerificationSummary } from "./AudioEvent/VerificationSummary";
+import { AudioEventImportFile } from "./AudioEventImportFile";
+import { AudioEventProvenance } from "./AudioEventProvenance";
 import type { AudioRecording } from "./AudioRecording";
+import { AssociationInjector } from "./ImplementsInjector";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
-import { AudioEventProvenance } from "./AudioEventProvenance";
-import { AssociationInjector } from "./ImplementsInjector";
-import { AudioEventImportFile } from "./AudioEventImportFile";
-import { IVerificationSummary, VerificationSummary } from "./AudioEvent/VerificationSummary";
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -46,7 +47,7 @@ export interface IAudioEvent extends HasAllUsers {
 
   // These fields are not included in the standard response, and must be
   // explicitly added via the `projection.add` filter.
-  verificationIds?: Ids;
+  verificationIds?: CollectionIds;
   verificationSummary?: IVerificationSummary[];
 }
 
@@ -88,7 +89,7 @@ export class AudioEvent
 
   // These fields are not included in the standard response, and must be
   // explicitly added via the `projection.add` filter.
-  public readonly verificationIds?: Ids;
+  public readonly verificationIds?: CollectionIds;
 
   @bawSubModelCollection(VerificationSummary)
   public readonly verificationSummary?: VerificationSummary[];
