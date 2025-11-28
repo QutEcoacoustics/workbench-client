@@ -62,25 +62,29 @@
               is appropriate to show verification ticks, however, I have not
               looked for this research yet.
             -->
-            <span class="me-1">
+            <span class="verified-icon me-1">
               @if (tag.verificationSummary.consensus.ratio > 0.66) {
                 @switch (tag.verificationSummary.consensus.decision) {
                   @case ("correct") {
                     <fa-icon
-                      class="text-success"
+                      class="verification-status-icon text-success"
                       [icon]="['fas', 'circle-check']"
                     />
                   }
 
                   @case ("incorrect") {
                     <fa-icon
-                      class="text-danger"
+                      class="verification-status-icon text-danger"
                       [icon]="['fas', 'circle-xmark']"
                     />
                   }
                 }
               } @else {
-                <fa-icon [style]="{'color': tag.color}" [icon]="['fas', 'circle-question']" />
+                <fa-icon
+                  class="verification-status-icon"
+                  [style]="{ color: tag.color }"
+                  [icon]="['fas', 'circle-question']"
+                />
               }
             </span>
             <a class="tag-link" [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
