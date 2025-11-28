@@ -5,7 +5,7 @@ import { AbstractData } from "@models/AbstractData";
 // Therefore, the best that I can do is reference the ConfirmedStatus enum in a
 // JsDoc comment documenting that the ConsensusDecision enum should extend
 // ConfirmedStatus.
-// eslint-disable-next-line import/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ConfirmedStatus } from "@models/Verification";
 
 /**
