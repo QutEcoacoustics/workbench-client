@@ -167,7 +167,7 @@ describe("AnnotationEventCardComponent", () => {
       const expectedLinks = mockAnnotation.tags.map((tag) => tag.viewUrl);
       expect(tagLinks()).toHaveLength(expectedLinks.length);
 
-      for (let i in expectedLinks) {
+      for (const i in expectedLinks) {
         expect(tagLinks()[i]).toHaveUrl(expectedLinks[i]);
       }
     });
@@ -197,7 +197,6 @@ describe("AnnotationEventCardComponent", () => {
           unsure: 0,
           skip: 0,
         }),
-        injector,
       );
 
       mockAnnotation = new Annotation(
@@ -228,7 +227,6 @@ describe("AnnotationEventCardComponent", () => {
           unsure: 0,
           skip: 0,
         }),
-        injector,
       );
 
       mockAnnotation = new Annotation(
@@ -259,7 +257,6 @@ describe("AnnotationEventCardComponent", () => {
           unsure: 0,
           skip: 0,
         }),
-        injector,
       );
 
       mockAnnotation = new Annotation(
@@ -290,7 +287,6 @@ describe("AnnotationEventCardComponent", () => {
           unsure: 0,
           skip: 0,
         }),
-        injector,
       );
 
       mockAnnotation = new Annotation(

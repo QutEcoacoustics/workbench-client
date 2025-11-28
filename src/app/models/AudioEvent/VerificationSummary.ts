@@ -1,5 +1,5 @@
 import { Id } from "@interfaces/apiInterfaces";
-import { AbstractModelWithoutId } from "@models/AbstractModel";
+import { AbstractData } from "@models/AbstractData";
 import { Tag } from "@models/Tag";
 import { Consensus } from "./Consensus";
 
@@ -13,27 +13,27 @@ export interface IVerificationSummary {
 }
 
 export class VerificationSummary
-  extends AbstractModelWithoutId<IVerificationSummary>
+  extends AbstractData<IVerificationSummary>
   implements IVerificationSummary
 {
   public readonly tagId: Id<Tag>;
+  /**
+   * A count of the total number of verifications seen by the server.
+   *
+   * This should be equal to the sum of
+   * {@linkcode correct} + {@linkcode incorrect} + {@linkcode unsure} + {@linkcode skip}
+   */
   public readonly count: number;
+  /** Count of "correct" verifications applied to the tag + audio event */
   public readonly correct: number;
+  /** Count of "incorrect" verifications applied to the tag + audio event */
   public readonly incorrect: number;
+  /** Count of "unsure" verifications applied to the tag + audio event */
   public readonly unsure: number;
+  /** Count of "skip" verifications applied to the tag + audio event */
   public readonly skip: number;
 
   public get consensus(): Consensus {
-    return new Consensus({
-      count: this.count,
-      correct: this.correct,
-      incorrect: this.incorrect,
-      unsure: this.unsure,
-      skip: this.skip,
-    });
-  }
-
-  public get viewUrl(): string {
-    throw new Error("Method not implemented.");
+    return new Consensus(this);
   }
 }

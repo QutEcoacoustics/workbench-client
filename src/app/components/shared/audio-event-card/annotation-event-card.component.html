@@ -62,19 +62,19 @@
               is appropriate to show verification ticks, however, I have not
               looked for this research yet.
             -->
-            <span class="verified-icon me-1">
+            <span class="verified-icon me-1" [style]="{ color: tag.color }">
               @if (tag.verificationSummary.consensus.ratio > 0.66) {
                 @switch (tag.verificationSummary.consensus.decision) {
                   @case ("correct") {
                     <fa-icon
-                      class="verification-status-icon text-success"
+                      class="verification-status-icon"
                       [icon]="['fas', 'circle-check']"
                     />
                   }
 
                   @case ("incorrect") {
                     <fa-icon
-                      class="verification-status-icon text-danger"
+                      class="verification-status-icon"
                       [icon]="['fas', 'circle-xmark']"
                     />
                   }
@@ -82,7 +82,6 @@
               } @else {
                 <fa-icon
                   class="verification-status-icon"
-                  [style]="{ color: tag.color }"
                   [icon]="['fas', 'circle-question']"
                 />
               }
@@ -143,9 +142,9 @@
 
 <ng-template #tagVerifications let-verificationSummary="verificationSummary">
   <div class="summary-tooltip">
-    @if (verificationSummary.consensus.decision !== "none") {
+    @if (verificationSummary.consensus.decision !== ConsensusDecision.None) {
       <b class="summary-tooltip-decision">
-        {{ verificationSummary.consensus.decision }}
+        {{ verificationSummary.consensus.decision | titlecase }}
       </b>
       ({{ verificationSummary.consensus.ratio | percent }})
     } @else {

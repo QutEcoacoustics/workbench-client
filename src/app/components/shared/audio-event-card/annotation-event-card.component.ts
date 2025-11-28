@@ -1,4 +1,4 @@
-import { DecimalPipe, PercentPipe } from "@angular/common";
+import { DecimalPipe, PercentPipe, TitleCasePipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -14,13 +14,13 @@ import {
   SpectrogramComponent,
 } from "@ecoacoustics/web-components/@types";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { Consensus } from "@models/AudioEvent/Consensus";
+import { Consensus, ConsensusDecision } from "@models/AudioEvent/Consensus";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { interpolateRdYlGn } from "d3-scale-chromatic";
+import { scaleLinear } from "d3-scale";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 
@@ -47,6 +47,7 @@ interface TagInfo {
     DecimalPipe,
     UrlDirective,
     PercentPipe,
+    TitleCasePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -62,14 +63,17 @@ export class AnnotationEventCardComponent {
   private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
+  protected readonly undecidedColor = "#555555";
+  protected readonly ConsensusDecision = ConsensusDecision;
+
   protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
       // Audio events without any verifications return "null" instead of an
       // object.
       // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-      let verificationSummary = (this.annotation().verificationSummary ?? []).find(
-        (tagSummary) => tagSummary.tagId === tagModel.id
-      );
+      let verificationSummary = (
+        this.annotation().verificationSummary ?? []
+      ).find((tagSummary) => tagSummary.tagId === tagModel.id);
 
       if (!verificationSummary) {
         const noVerificationSummary = new VerificationSummary({
@@ -104,12 +108,35 @@ export class AnnotationEventCardComponent {
       const mediaControlsElement = this.mediaControls();
 
       if (spectrogramElement && mediaControlsElement) {
-        mediaControlsElement.nativeElement.for = spectrogramElement.nativeElement;
+        mediaControlsElement.nativeElement.for =
+          spectrogramElement.nativeElement;
       }
     });
   }
 
   private verificationColor(consensus: Consensus): string {
-    return interpolateRdYlGn(consensus.ratio);
+    if (consensus.decision === ConsensusDecision.None) {
+      return this.undecidedColor;
+    }
+
+    const correctColor = "#1a9850"; // green
+    const incorrectColor = "#d73027"; // red
+
+    const rangeEnd =
+      consensus.decision === ConsensusDecision.Correct
+        ? correctColor
+        : incorrectColor;
+
+    // We use red for a high "incorrect" consensus, and green for a high "correct"
+    // consensus.
+    // In the middle (a consensus ratio of 0.5), we use gray.
+    // Note that we should never see a ratio below 0.5, because the ratio is
+    // defined as the max(correct, incorrect) / totalResolved.
+    const scale = scaleLinear(
+      [0.5, 1],
+      [this.undecidedColor, rangeEnd],
+    );
+
+    return scale(consensus.ratio);
   }
 }

@@ -47,6 +47,10 @@ export interface IAudioEvent extends HasAllUsers {
 
   // These fields are not included in the standard response, and must be
   // explicitly added via the `projection.add` filter.
+  //
+  // TODO: Improve these typings once we refactor how abstract models interact
+  // with projections and non-default fields.
+  // see: https://github.com/QutEcoacoustics/workbench-client/issues/2556
   verificationIds?: CollectionIds;
   verificationSummary?: IVerificationSummary[];
 }
