@@ -14,13 +14,24 @@ import {
   SpectrogramComponent,
 } from "@ecoacoustics/web-components/@types";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { Consensus } from "@models/AudioEvent/Consensus";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { interpolateRdYlGn } from "d3-scale-chromatic";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
+
+interface TagInfo {
+  id?: number;
+  text?: string;
+  viewUrl: string;
+
+  verificationSummary: VerificationSummary;
+  color: string;
+}
 
 @Component({
   selector: "baw-annotation-event-card",
@@ -51,16 +62,16 @@ export class AnnotationEventCardComponent {
   private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
-  protected readonly tagInfo = computed(() => {
+  protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
       // Audio events without any verifications return "null" instead of an
       // object.
       // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-      let verificationStatus = (this.annotation().verificationSummary ?? []).find(
+      let verificationSummary = (this.annotation().verificationSummary ?? []).find(
         (tagSummary) => tagSummary.tagId === tagModel.id
       );
 
-      if (!verificationStatus) {
+      if (!verificationSummary) {
         const noVerificationSummary = new VerificationSummary({
           tagId: tagModel.id,
           count: 0,
@@ -70,13 +81,16 @@ export class AnnotationEventCardComponent {
           skip: 0,
         });
 
-        verificationStatus = noVerificationSummary;
+        verificationSummary = noVerificationSummary;
       }
+
+      const color = this.verificationColor(verificationSummary.consensus);
 
       return {
         ...tagModel,
         viewUrl: tagModel.viewUrl,
-        verificationStatus: verificationStatus,
+        verificationSummary,
+        color,
       };
     });
   });
@@ -93,5 +107,9 @@ export class AnnotationEventCardComponent {
         mediaControlsElement.nativeElement.for = spectrogramElement.nativeElement;
       }
     });
+  }
+
+  private verificationColor(consensus: Consensus): string {
+    return interpolateRdYlGn(consensus.ratio);
   }
 }

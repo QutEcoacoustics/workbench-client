@@ -24,26 +24,20 @@ export class Consensus extends AbstractData<IConsensus> {
   public readonly unsure: number;
   public readonly skip: number;
 
-    // Returns the consensus decision based on the highest vote count
-    // If all counts are 0, returns None
-    public get decision(): ConsensusDecision {
-      if (this.count === 0) {
-        return ConsensusDecision.None;
-      }
-
-      const decisions = [
-        { decision: ConsensusDecision.Correct, count: this.correct },
-        { decision: ConsensusDecision.Incorrect, count: this.incorrect },
-        { decision: ConsensusDecision.Unsure, count: this.unsure },
-        { decision: ConsensusDecision.Skip, count: this.skip },
-      ];
-
-      const orderedDecisions = decisions.sort((a, b) => b.count - a.count);
-
-      return orderedDecisions[0].decision;
+  // Returns the consensus decision based on the highest vote count
+  // If all counts are 0, returns None
+  public get decision(): ConsensusDecision {
+    if (this.count === 0 || (this.correct === 0 && this.incorrect === 0)) {
+      return ConsensusDecision.None;
     }
 
-
+    // In the event of a tie, default to Correct
+    if (this.correct >= this.incorrect) {
+      return ConsensusDecision.Correct;
+    } else {
+      return ConsensusDecision.Incorrect;
+    }
+  }
 
   /**
    * Returns how many of the "decision" votes there were as a ratio of total

@@ -30,13 +30,17 @@
   <div class="card-body">
     <span class="info-line tag-information">
       @if (tagInfo().length > 0) {
-        @for (tag of tagInfo(); track tag.id; let isLast = $last) {
+        @for (tag of tagInfo(); track tag.id; let isFirst = $first) {
           <div
             class="tag-item"
             [ngbTooltip]="tagVerifications"
-            [tooltipContext]="{ verificationSummary: tag.verificationStatus }"
+            [tooltipContext]="{ verificationSummary: tag.verificationSummary }"
           >
-            <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+            @if (isFirst) {
+              <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+            } @else {
+              <span class="me-4"></span>
+            }
 
             <!--
               We show a check or a cross icon depending on if this tag has been
@@ -58,30 +62,32 @@
               is appropriate to show verification ticks, however, I have not
               looked for this research yet.
             -->
-            @if (tag.verificationStatus.consensus.ratio > 0.66) {
-              @switch (tag.verificationStatus.consensus.decision) {
-                @case ("correct") {
-                  <span class="me-1 text-success">
-                    <fa-icon [icon]="['fas', 'circle-check']" />
-                  </span>
-                }
+            <span class="me-1">
+              @if (tag.verificationSummary.consensus.ratio > 0.66) {
+                @switch (tag.verificationSummary.consensus.decision) {
+                  @case ("correct") {
+                    <fa-icon
+                      class="text-success"
+                      [icon]="['fas', 'circle-check']"
+                    />
+                  }
 
-                @case ("incorrect") {
-                  <span class="me-1 text-danger">
-                    <fa-icon [icon]="['fas', 'circle-xmark']" />
-                  </span>
+                  @case ("incorrect") {
+                    <fa-icon
+                      class="text-danger"
+                      [icon]="['fas', 'circle-xmark']"
+                    />
+                  }
                 }
+              } @else {
+                <fa-icon [style]="{'color': tag.color}" [icon]="['fas', 'circle-question']" />
               }
-            }
-            <!--
-              we use a non-breaking space here so that the icon and the tag
-              text are not separated onto different lines by word wrapping.
-            -->
-            &nbsp;
+            </span>
             <a class="tag-link" [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
           </div>
         }
       } @else {
+        <fa-icon class="me-2" [icon]="['fas', 'tags']" />
         <i>No tags</i>
       }
     </span>
@@ -133,7 +139,7 @@
 
 <ng-template #tagVerifications let-verificationSummary="verificationSummary">
   <div class="summary-tooltip">
-    @if (verificationSummary.count > 0) {
+    @if (verificationSummary.consensus.decision !== "none") {
       <b class="summary-tooltip-decision">
         {{ verificationSummary.consensus.decision }}
       </b>
