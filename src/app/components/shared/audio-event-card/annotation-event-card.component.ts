@@ -97,7 +97,7 @@ export class AnnotationEventCardComponent {
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
-      let verificationSummary = this.annotation().verificationSummary.find(
+      const verificationSummary = this.annotation().verificationSummary.find(
         (tagSummary) => tagSummary.tagId === tagModel.id,
       );
 

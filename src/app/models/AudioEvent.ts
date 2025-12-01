@@ -143,7 +143,7 @@ export class AudioEvent
     // array.
     //
     // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-    if (this.verificationSummary == null) {
+    if (this.verificationSummary === null) {
       this.verificationSummary = [];
     } else {
       // Tags that do not have any verifications do not show up in the

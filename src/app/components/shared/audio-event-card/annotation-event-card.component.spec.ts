@@ -42,6 +42,7 @@ describe("AnnotationEventCardComponent", () => {
   let siteApi: SpyObject<ShallowSitesService>;
 
   let mockAnnotation: Annotation;
+  let mockVerificationSummary: VerificationSummary[];
   let mockAudioRecording: AudioRecording;
   let mockTag: Tag;
   let mockSite: Site;
@@ -77,6 +78,15 @@ describe("AnnotationEventCardComponent", () => {
     mockTag = new Tag(generateTag(), injector);
     mockSite = new Site(generateSite(), injector);
     mockAudioRecording = new AudioRecording(generateAudioRecording(), injector);
+
+    mockVerificationSummary = [
+      new VerificationSummary(
+        generateVerificationSummary({
+          tagId: mockTag.id,
+        }),
+      ),
+    ];
+
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
@@ -84,6 +94,7 @@ describe("AnnotationEventCardComponent", () => {
         startTimeSeconds: 0,
         endTimeSeconds: 5,
         tags: [mockTag],
+        verificationSummary: mockVerificationSummary,
       }),
       injector,
     );
@@ -145,6 +156,8 @@ describe("AnnotationEventCardComponent", () => {
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
+        tags: [mockTag],
+        verificationSummary: mockVerificationSummary,
         score: null,
       }),
       injector,
@@ -177,6 +190,7 @@ describe("AnnotationEventCardComponent", () => {
         generateAnnotation({
           audioRecording: mockAudioRecording,
           tags: [],
+          verificationSummary: [],
         }),
         injector,
       );
@@ -274,7 +288,7 @@ describe("AnnotationEventCardComponent", () => {
       expect(icons).toHaveLength(1);
 
       const targetIcon = icons[0];
-      expect(targetIcon).toHaveIcon(["fas", "circle-question"]);
+      expect(targetIcon).toHaveIcon(["fas", "circle"]);
     });
 
     it("should have the correct icon for low-consensus verified tags", () => {
