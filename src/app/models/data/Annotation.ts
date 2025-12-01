@@ -5,7 +5,7 @@ import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
 import {
   bawDateTime,
-  bawSubModelCollection,
+  bawSubModelCollection
 } from "@models/AttributeDecorators";
 import { IAudioEvent } from "@models/AudioEvent";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";

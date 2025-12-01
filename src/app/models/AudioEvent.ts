@@ -20,7 +20,7 @@ import {
   hasOne,
   updater,
 } from "./AssociationDecorators";
-import { bawDateTime, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
+import { bawDateTime, bawDefault, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
 import { IVerificationSummary, VerificationSummary } from "./AudioEvent/VerificationSummary";
 import { AudioEventImportFile } from "./AudioEventImportFile";
 import { AudioEventProvenance } from "./AudioEventProvenance";
@@ -29,6 +29,19 @@ import { AssociationInjector } from "./ImplementsInjector";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
+
+const defaultVerificationSummary = (model: AudioEvent): VerificationSummary[] =>
+  Array.from(model.tagIds).map(
+    (tagId) =>
+      new VerificationSummary({
+        tagId,
+        count: 0,
+        correct: 0,
+        incorrect: 0,
+        unsure: 0,
+        skip: 0,
+      }),
+  );
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -95,6 +108,14 @@ export class AudioEvent
   // explicitly added via the `projection.add` filter.
   public readonly verificationIds?: CollectionIds;
 
+  // Audio events without any verifications return "null" instead of an
+  // object.
+  // To get around this, we provide a default value of an empty
+  // verificationSummary object when we see "null" or "undefined" for the
+  // verification summary property.
+  //
+  // see: https://github.com/QutEcoacoustics/baw-server/issues/869
+  @bawDefault(defaultVerificationSummary)
   @bawSubModelCollection(VerificationSummary)
   public readonly verificationSummary?: VerificationSummary[];
 

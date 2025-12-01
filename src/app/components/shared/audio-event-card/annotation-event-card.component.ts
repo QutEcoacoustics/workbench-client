@@ -3,10 +3,9 @@ import {
   Component,
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
-  effect,
-  ElementRef,
+  effect, ElementRef,
   input,
-  viewChild,
+  viewChild
 } from "@angular/core";
 import { UrlDirective } from "@directives/url/url.directive";
 import {
@@ -89,25 +88,9 @@ export class AnnotationEventCardComponent {
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
-      // Audio events without any verifications return "null" instead of an
-      // object.
-      // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-      let verificationSummary = (
-        this.annotation().verificationSummary ?? []
-      ).find((tagSummary) => tagSummary.tagId === tagModel.id);
-
-      if (!verificationSummary) {
-        const noVerificationSummary = new VerificationSummary({
-          tagId: tagModel.id,
-          count: 0,
-          correct: 0,
-          incorrect: 0,
-          unsure: 0,
-          skip: 0,
-        });
-
-        verificationSummary = noVerificationSummary;
-      }
+      let verificationSummary = this.annotation().verificationSummary.find(
+        (tagSummary) => tagSummary.tagId === tagModel.id,
+      );
 
       const color = this.verificationColor(verificationSummary.consensus);
 
