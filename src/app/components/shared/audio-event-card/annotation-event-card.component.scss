@@ -119,3 +119,14 @@ oe-spectrogram {
     padding: 0;
   }
 }
+
+.tag-indent {
+  text-indent: 1.5rem;
+}
+
+.no-decision-icon {
+  border: 1px solid gray;
+  border-radius: 100%;
+
+  color: transparent;
+}

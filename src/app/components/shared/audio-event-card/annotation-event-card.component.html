@@ -33,57 +33,29 @@
         @for (tag of tagInfo(); track tag.id; let isFirst = $first) {
           <div
             class="tag-item"
+            [class.tag-indent]="!isFirst"
             [ngbTooltip]="tagVerifications"
             [tooltipContext]="{ verificationSummary: tag.verificationSummary }"
           >
             @if (isFirst) {
               <fa-icon class="me-2" [icon]="['fas', 'tags']" />
-            } @else {
-              <span class="me-4"></span>
             }
 
-            <!--
-              We show a check or a cross icon depending on if this tag has been
-              confirmed as "correct" or "incorrect".
-              However, we require a consensus ratio of over 66% to show these
-              so that we only show this verified tick if there is strong
-              agreement.
-
-              I have chosen 66% so that if there is a disagreement between 2
-              verifiers who have opposing opinions, we do not show an icon.
-              However, a third verifier can break the tie to show a verified icon
-              because this will cause a 2/3 consensus (66.66...%).
-
-              Additionally, if there are 5 verifiers, a 4-1 vote will also show
-              a verified icon (80% consensus), but a 3-2 vote (60% consensus)
-              will not show an icon (which seems reasonable).
-
-              TODO: I'm sure there's some UX research on what consensus ratio
-              is appropriate to show verification ticks, however, I have not
-              looked for this research yet.
-            -->
             <span class="verified-icon me-1" [style]="{ color: tag.color }">
-              @if (tag.verificationSummary.consensus.ratio > 0.66) {
+              @if (tag.verificationSummary.correct + tag.verificationSummary.incorrect === 0) {
+                <fa-icon class="no-decision-icon" [icon]="['fas', 'circle']" />
+              } @else if (tag.verificationSummary.consensus.ratio > ratioThreshold) {
                 @switch (tag.verificationSummary.consensus.decision) {
                   @case ("correct") {
-                    <fa-icon
-                      class="verification-status-icon"
-                      [icon]="['fas', 'circle-check']"
-                    />
+                    <fa-icon [icon]="['fas', 'circle-check']" />
                   }
 
                   @case ("incorrect") {
-                    <fa-icon
-                      class="verification-status-icon"
-                      [icon]="['fas', 'circle-xmark']"
-                    />
+                    <fa-icon [icon]="['fas', 'circle-xmark']" />
                   }
                 }
               } @else {
-                <fa-icon
-                  class="verification-status-icon"
-                  [icon]="['fas', 'circle-question']"
-                />
+                <fa-icon [icon]="['fas', 'circle-question']" />
               }
             </span>
             <a class="tag-link" [bawUrl]="tag.viewUrl">{{ tag.text }}</a>

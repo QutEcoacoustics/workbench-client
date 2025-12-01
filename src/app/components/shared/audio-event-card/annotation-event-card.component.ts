@@ -30,6 +30,7 @@ interface TagInfo {
   viewUrl: string;
 
   verificationSummary: VerificationSummary;
+
   color: string;
 }
 
@@ -63,7 +64,30 @@ export class AnnotationEventCardComponent {
   private readonly spectrogram =
     viewChild<ElementRef<SpectrogramComponent>>("spectrogram");
 
-  protected readonly undecidedColor = "#555555";
+  /**
+   * @summary
+   * The consensus ratio threshold need to show a verified icon next to a tag.
+   *
+   * We show a check or a cross icon depending on if this tag has been
+   * confirmed as "correct" or "incorrect".
+   * However, we require a consensus ratio of over 66% to show these
+   * so that we only show this verified tick if there is strong
+   * agreement.
+   *
+   * I have chosen 66% so that if there is a disagreement between 2
+   * verifiers who have opposing opinions, we do not show an icon.
+   * However, a third verifier can break the tie to show a verified icon
+   * because this will cause a 2/3 consensus (66.66...%).
+   *
+   * Additionally, if there are 5 verifiers, a 4-1 vote will also show
+   * a verified icon (80% consensus), but a 3-2 vote (60% consensus)
+   * will not show an icon (which seems reasonable).
+   *
+   * TODO: I'm sure there's some UX research on what consensus ratio
+   * is appropriate to show verification ticks, however, I have not
+   * looked for this research yet.
+   */
+  protected readonly ratioThreshold = 0.6 satisfies Consensus["ratio"];
   protected readonly ConsensusDecision = ConsensusDecision;
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
@@ -115,12 +139,13 @@ export class AnnotationEventCardComponent {
   }
 
   private verificationColor(consensus: Consensus): string {
-    if (consensus.decision === ConsensusDecision.None) {
-      return this.undecidedColor;
-    }
-
+    const undecidedColor = "#555555"; // gray
     const correctColor = "#1a9850"; // green
     const incorrectColor = "#d73027"; // red
+
+    if (consensus.decision === ConsensusDecision.None) {
+      return undecidedColor;
+    }
 
     const rangeEnd =
       consensus.decision === ConsensusDecision.Correct
@@ -132,10 +157,7 @@ export class AnnotationEventCardComponent {
     // In the middle (a consensus ratio of 0.5), we use gray.
     // Note that we should never see a ratio below 0.5, because the ratio is
     // defined as the max(correct, incorrect) / totalResolved.
-    const scale = scaleLinear(
-      [0.5, 1],
-      [this.undecidedColor, rangeEnd],
-    );
+    const scale = scaleLinear([0.5, 1], [undecidedColor, rangeEnd]);
 
     return scale(consensus.ratio);
   }
