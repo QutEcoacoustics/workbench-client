@@ -152,6 +152,17 @@
         [value]="searchParameters().audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
       />
+
+      <baw-typeahead-input
+        #eventImportTypeahead
+        id="event-imports-input"
+        label="Audio event imports"
+        inputPlaceholder="All"
+        [searchCallback]="eventImportApi.typeaheadCallback()"
+        [resultTemplate]="nameTypeaheadTemplate"
+        [value]="searchParameters().audioEventImportModels"
+        (modelChange)="updateSubModel('importFiles', $event)"
+      />
     </div>
   </div>
 

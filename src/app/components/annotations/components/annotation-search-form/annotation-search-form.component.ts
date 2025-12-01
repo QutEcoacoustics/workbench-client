@@ -9,45 +9,47 @@ import {
   signal,
   viewChild,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { Writeable } from "@helpers/advancedTypes";
+import { filterModel } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AudioRecording } from "@models/AudioRecording";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import {
-  NgbDate,
-  NgbCollapse,
-  NgbHighlight,
-  NgbTooltip,
-} from "@ng-bootstrap/ng-bootstrap";
-import {
-  DateTimeFilterModel,
-  DateTimeFilterComponent,
-} from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
   createSearchCallback,
 } from "@helpers/typeahead/typeaheadCallbacks";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { DateTime } from "luxon";
-import { FormsModule } from "@angular/forms";
-import { filterModel } from "@helpers/filters/filters";
-import { InnerFilter } from "@baw-api/baw-api.service";
-import { Writeable } from "@helpers/advancedTypes";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
-import { BawSessionService } from "@baw-api/baw-session.service";
+import { AbstractModel } from "@models/AbstractModel";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioRecording } from "@models/AudioRecording";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import {
+  NgbCollapse,
+  NgbDate,
+  NgbHighlight,
+  NgbTooltip,
+} from "@ng-bootstrap/ng-bootstrap";
+import {
+  DateTimeFilterComponent,
+  DateTimeFilterModel,
+} from "@shared/date-time-filter/date-time-filter.component";
 import {
   ISelectableItem,
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
-import { Tag } from "@models/Tag";
-import { AbstractModel } from "@models/AbstractModel";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTime } from "luxon";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
@@ -73,6 +75,7 @@ enum ScoreRangeBounds {
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
+  protected readonly eventImportApi = inject(AudioEventImportService);
   protected readonly recordingsApi = inject(AudioRecordingsService);
   protected readonly projectsApi = inject(ProjectsService);
   protected readonly regionsApi = inject(ShallowRegionsService);
@@ -80,25 +83,18 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly tagsApi = inject(TagsService);
   private readonly session = inject(BawSessionService);
 
-  public constructor() {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.session.authTrigger.subscribe(() => {
-      this.verifiedStatusOptions.update((current) => {
-        current[0].disabled = !this.session.isLoggedIn;
-        return current;
-      });
-    });
-  }
-
   public readonly searchParameters =
     model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
   public readonly showVerificationOptions = input<boolean>(true);
 
-  private recordingsTypeahead = viewChild<
+  private readonly recordingsTypeahead = viewChild<
     TypeaheadInputComponent<AudioRecording>
   >("recordingsTypeahead");
+  private readonly eventImportTypeahead = viewChild<
+    TypeaheadInputComponent<AudioEventImport>
+  >("eventImportTypeahead");
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected readonly hideAdvancedFilters = signal(true);
@@ -122,6 +118,16 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected project = computed(() => this.searchParameters().routeProjectModel);
   protected region = computed(() => this.searchParameters().routeRegionModel);
   protected site = computed(() => this.searchParameters().routeSiteModel);
+
+  public constructor() {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.session.authTrigger.subscribe(() => {
+      this.verifiedStatusOptions.update((current) => {
+        current[0].disabled = !this.session.isLoggedIn;
+        return current;
+      });
+    });
+  }
 
   protected get defaultVerificationStatus(): VerificationStatusKey {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";

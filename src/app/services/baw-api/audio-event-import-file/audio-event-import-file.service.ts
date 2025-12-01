@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   emptyParam,
   filterParam,
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/audio_event_imports/${eventImportId}/files/${ev
 export class AudioEventImportFileService
   implements ImmutableApi<AudioEventImportFile, [IdOr<AudioEventImport>, ...any]>
 {
-  public constructor(private api: BawApiService<AudioEventImportFile>) {}
+  private readonly api = inject(BawApiService<AudioEventImportFile>);
 
   public list(
     audioEventImport: IdOr<AudioEventImport>
@@ -36,7 +36,7 @@ export class AudioEventImportFileService
   }
 
   public filter(
-    filters: Filters<AudioEventImportFile, keyof AudioEventImportFile>,
+    filters: Filters<AudioEventImportFile>,
     audioEventImport: IdOr<AudioEventImport>
   ): Observable<AudioEventImportFile[]> {
     return this.api.filter(

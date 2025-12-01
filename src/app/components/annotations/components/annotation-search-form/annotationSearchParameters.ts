@@ -1,6 +1,7 @@
 import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
+  AUDIO_EVENT_IMPORT,
   AUDIO_RECORDING,
   PROJECT,
   SHALLOW_REGION,
@@ -25,6 +26,7 @@ import {
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
+import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import {
@@ -98,11 +100,13 @@ export function verificationStatusOptions(user?: User) {
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds;
   tags: CollectionIds;
-  importFiles: CollectionIds;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
+
+  audioEventImports: CollectionIds;
+  importFiles: CollectionIds;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -141,11 +145,13 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
   {
     audioRecordings: jsNumberArray,
     tags: jsNumberArray,
-    importFiles: jsNumberArray,
     daylightSavings: jsBoolean,
     recordingDate: luxonDateArray,
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
+
+    audioEventImports: jsNumberArray,
+    importFiles: jsNumberArray,
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -178,11 +184,13 @@ export class AnnotationSearchParameters
 {
   public audioRecordings: CollectionIds;
   public tags: CollectionIds;
-  public importFiles: CollectionIds;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
   public score: MonoTuple<number, 2>;
+
+  public audioEventImports: CollectionIds;
+  public importFiles: CollectionIds;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -222,6 +230,8 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
+  @hasMany(AUDIO_EVENT_IMPORT, "importFiles")
+  public audioEventImportModels?: AudioEventImport[];
 
   // TODO: use resolvers here once the association resolver decorators return a promise
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
