@@ -30,7 +30,7 @@
   <div class="card-body">
     <span class="info-line tag-information">
       @if (tagInfo().length > 0) {
-        @for (tag of tagInfo(); track tag.id; let isFirst = $first) {
+        @for (tag of tagInfo(); track tag.tag.id; let isFirst = $first) {
           <div
             class="tag-item"
             [class.tag-indent]="!isFirst"
@@ -58,7 +58,7 @@
                 <fa-icon [icon]="['fas', 'circle-question']" />
               }
             </span>
-            <a class="tag-link" [bawUrl]="tag.viewUrl">{{ tag.text }}</a>
+            <a class="tag-link" [bawUrl]="tag.tag.viewUrl">{{ tag.tag.text }}</a>
           </div>
         }
       } @else {

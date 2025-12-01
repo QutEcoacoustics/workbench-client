@@ -17,6 +17,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { Consensus, ConsensusDecision } from "@models/AudioEvent/Consensus";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";
+import { Tag } from "@models/Tag";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { LoadingComponent } from "@shared/loading/loading.component";
@@ -25,12 +26,8 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 
 interface TagInfo {
-  id?: number;
-  text?: string;
-  viewUrl: string;
-
+  tag: Tag;
   verificationSummary: VerificationSummary;
-
   color: string;
 }
 
@@ -115,8 +112,7 @@ export class AnnotationEventCardComponent {
       const color = this.verificationColor(verificationSummary.consensus);
 
       return {
-        ...tagModel,
-        viewUrl: tagModel.viewUrl,
+        tag: tagModel,
         verificationSummary,
         color,
       };
