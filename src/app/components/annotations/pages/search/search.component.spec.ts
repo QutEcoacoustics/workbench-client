@@ -145,6 +145,8 @@ describe("AnnotationSearchComponent", () => {
     mockAnnotationResponse = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
+        tags: [],
+        verificationSummary: [],
       }),
       injector,
     );
