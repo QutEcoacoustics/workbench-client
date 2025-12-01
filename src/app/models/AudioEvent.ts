@@ -143,38 +143,38 @@ export class AudioEvent
     // array.
     //
     // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-    if (this.verificationSummary === null) {
+    if (!this.verificationSummary) {
       this.verificationSummary = [];
-    } else {
-      // Tags that do not have any verifications do not show up in the
-      // verification summary returned by the server.
-      // This means that you can have a partially complete verification summary
-      // if some tags have verifications and others do not.
-      // Therefore, we need to fill in any missing tags with an empty "default"
-      // verification summary with all zero counts.
-      //
-      // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-      const tagIds = this.tagIds ?? [];
-      for (const tagId of tagIds) {
-        const hasSummary = this.verificationSummary.some(
-          (summary) => summary.tagId === tagId,
-        );
+    }
 
-        if (hasSummary) {
-          continue;
-        }
+    // Tags that do not have any verifications do not show up in the
+    // verification summary returned by the server.
+    // This means that you can have a partially complete verification summary
+    // if some tags have verifications and others do not.
+    // Therefore, we need to fill in any missing tags with an empty "default"
+    // verification summary with all zero counts.
+    //
+    // see: https://github.com/QutEcoacoustics/baw-server/issues/869
+    const tagIds = this.tagIds ?? [];
+    for (const tagId of tagIds) {
+      const hasSummary = this.verificationSummary.some(
+        (summary) => summary.tagId === tagId,
+      );
 
-        const defaultSummary = new VerificationSummary({
-          tagId,
-          count: 0,
-          correct: 0,
-          incorrect: 0,
-          unsure: 0,
-          skip: 0,
-        });
-
-        this.verificationSummary.push(defaultSummary);
+      if (hasSummary) {
+        continue;
       }
+
+      const defaultSummary = new VerificationSummary({
+        tagId,
+        count: 0,
+        correct: 0,
+        incorrect: 0,
+        unsure: 0,
+        skip: 0,
+      });
+
+      this.verificationSummary.push(defaultSummary);
     }
   }
 
