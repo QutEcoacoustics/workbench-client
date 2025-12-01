@@ -13,7 +13,6 @@ import {
   SpectrogramComponent,
 } from "@ecoacoustics/web-components/@types";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { Consensus, ConsensusDecision } from "@models/AudioEvent/Consensus";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";
 import { Tag } from "@models/Tag";
@@ -83,8 +82,19 @@ export class AnnotationEventCardComponent {
    * is appropriate to show verification ticks, however, I have not
    * looked for this research yet.
    */
-  protected readonly ratioThreshold = 0.6 satisfies Consensus["ratio"];
-  protected readonly ConsensusDecision = ConsensusDecision;
+  protected readonly upperRatioThreshold = 0.6;
+  // We use 0.34 instead of 0.33 here because the "incorrect" ratio uses the
+  // "less than" operator to determine if it meets the threshold, meaning that
+  // if we used 0.33 exactly, a 2-1 "incorrect" vote (33.33...% correct) would
+  // not be able to show an incorrect icon.
+  // By using 0.34, we ensure that a 2-1 incorrect vote will show the incorrect
+  // icon as expected.
+  //
+  // Warning: This does provide a small edge case for a VERY large number of
+  // users where showing the "incorrect" icon may incorrectly show 0.01% too
+  // early.
+  // However, i have determined that this edge case is acceptable given that there
+  protected readonly lowerRatioThreshold = 0.34;
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
@@ -92,7 +102,10 @@ export class AnnotationEventCardComponent {
         (tagSummary) => tagSummary.tagId === tagModel.id,
       );
 
-      const color = this.verificationColor(verificationSummary.consensus);
+      const color = this.verificationColor(
+        verificationSummary.correctConsensus,
+        verificationSummary.resolvedDecisionCount,
+      );
 
       return {
         tag: tagModel,
@@ -117,27 +130,28 @@ export class AnnotationEventCardComponent {
     });
   }
 
-  private verificationColor(consensus: Consensus): string {
+  private verificationColor(
+    consensusRatio: number,
+    decisionCount: number,
+  ): string {
     const undecidedColor = "#555555"; // gray
     const correctColor = "#1a9850"; // green
     const incorrectColor = "#d73027"; // red
 
-    if (consensus.decision === ConsensusDecision.None) {
+    if (decisionCount === 0) {
       return undecidedColor;
     }
-
-    const rangeEnd =
-      consensus.decision === ConsensusDecision.Correct
-        ? correctColor
-        : incorrectColor;
 
     // We use red for a high "incorrect" consensus, and green for a high "correct"
     // consensus.
     // In the middle (a consensus ratio of 0.5), we use gray.
     // Note that we should never see a ratio below 0.5, because the ratio is
     // defined as the max(correct, incorrect) / totalResolved.
-    const scale = scaleLinear([0.5, 1], [undecidedColor, rangeEnd]);
+    const scale = scaleLinear(
+      [0, 0.5, 1],
+      [incorrectColor, undecidedColor, correctColor],
+    );
 
-    return scale(consensus.ratio);
+    return scale(consensusRatio);
   }
 }

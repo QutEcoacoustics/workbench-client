@@ -1,7 +1,6 @@
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
 import { Tag } from "@models/Tag";
-import { Consensus } from "./Consensus";
 
 export interface IVerificationSummary {
   tagId: Id<Tag>;
@@ -33,7 +32,32 @@ export class VerificationSummary
   /** Count of "skip" verifications applied to the tag + audio event */
   public readonly skip: number;
 
-  public get consensus(): Consensus {
-    return new Consensus(this);
+  /**
+   * @description
+   * The total number of resolved verifications (correct + incorrect).
+   */
+  public get resolvedDecisionCount(): number {
+    return this.correct + this.incorrect;
+  }
+
+  /**
+   * @description
+   * A percentage (0-1) of resolved verifications (correct + incorrect) that
+   * were marked as correct.
+   */
+  public get correctConsensus(): number {
+    // Store the resolvedDecisionCount in a variable so that the getter is only
+    // called once, meaning if there is a bug where the getter returns different
+    // values on subsequent calls it won't affect the outcome of this method and
+    // the resolvedCount === 0 check will be over the same value as used in the
+    // division.
+    const resolvedCount = this.resolvedDecisionCount;
+    if (resolvedCount === 0) {
+      // We return a 0% consensus if there are no resolved verifications to
+      // prevent a divide by zero bug which would return NaN.
+      return 0;
+    }
+
+    return this.correct / resolvedCount;
   }
 }

@@ -42,18 +42,18 @@
             }
 
             <span class="verified-icon me-1" [style]="{ color: tag.color }">
-              @if (tag.verificationSummary.correct + tag.verificationSummary.incorrect === 0) {
+              @if (tag.verificationSummary.resolvedDecisionCount === 0) {
+                <!--
+                  Having no decision is distinct from an undecided consensus.
+                  If there are no verifications, we show a neutral circle icon
+                  instead of a question mark icon to indicate that there is no
+                  data.
+                -->
                 <fa-icon class="no-decision-icon" [icon]="['fas', 'circle']" />
-              } @else if (tag.verificationSummary.consensus.ratio > ratioThreshold) {
-                @switch (tag.verificationSummary.consensus.decision) {
-                  @case ("correct") {
-                    <fa-icon [icon]="['fas', 'circle-check']" />
-                  }
-
-                  @case ("incorrect") {
-                    <fa-icon [icon]="['fas', 'circle-xmark']" />
-                  }
-                }
+              } @else if (tag.verificationSummary.correctConsensus > upperRatioThreshold) {
+                <fa-icon [icon]="['fas', 'circle-check']" />
+              } @else if (tag.verificationSummary.correctConsensus < lowerRatioThreshold) {
+                <fa-icon [icon]="['fas', 'circle-xmark']" />
               } @else {
                 <fa-icon [icon]="['fas', 'circle-question']" />
               }
@@ -114,11 +114,9 @@
 
 <ng-template #tagVerifications let-verificationSummary="verificationSummary">
   <div class="summary-tooltip">
-    @if (verificationSummary.consensus.decision !== ConsensusDecision.None) {
-      <b class="summary-tooltip-decision">
-        {{ verificationSummary.consensus.decision | titlecase }}
-      </b>
-      ({{ verificationSummary.consensus.ratio | percent }})
+    @if (verificationSummary.resolvedDecisionCount > 0) {
+      <b class="summary-tooltip-decision">% Correct</b>
+      ({{ verificationSummary.correctConsensus | percent }})
     } @else {
       <i>No verifications</i>
     }
