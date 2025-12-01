@@ -4,7 +4,7 @@ import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
-import { AbstractModel, AbstractModelConstructor, AbstractModelWithoutId } from "./AbstractModel";
+import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
 import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
 export interface BawAttributeOptions {
@@ -50,25 +50,6 @@ function persistAttr(
       attributes.push({ key, ...defaultOpts, ...opts });
     }
   }
-}
-
-/**
- * @description
- * A decorator that can be used on a models property to assign if the value is
- * `undefined` upon instantiation.
- */
-export function bawDefault<T extends AbstractModelWithoutId, V>(
-  defaultValue: V | ((model: T) => V),
-) {
-  return function (model: T, key: string): void {
-    if (model[key] === undefined || model[key] === null) {
-      const value = typeof defaultValue === "function"
-        ? (defaultValue as () => V)()
-        : defaultValue;
-
-      model[key] = value;
-    }
-  };
 }
 
 /**

@@ -20,8 +20,15 @@ import {
   hasOne,
   updater,
 } from "./AssociationDecorators";
-import { bawDateTime, bawDefault, bawPersistAttr, bawSubModelCollection } from "./AttributeDecorators";
-import { IVerificationSummary, VerificationSummary } from "./AudioEvent/VerificationSummary";
+import {
+  bawDateTime,
+  bawPersistAttr,
+  bawSubModelCollection,
+} from "./AttributeDecorators";
+import {
+  IVerificationSummary,
+  VerificationSummary,
+} from "./AudioEvent/VerificationSummary";
 import { AudioEventImportFile } from "./AudioEventImportFile";
 import { AudioEventProvenance } from "./AudioEventProvenance";
 import type { AudioRecording } from "./AudioRecording";
@@ -29,19 +36,6 @@ import { AssociationInjector } from "./ImplementsInjector";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
-
-const defaultVerificationSummary = (model: AudioEvent): VerificationSummary[] =>
-  Array.from(model.tagIds).map(
-    (tagId) =>
-      new VerificationSummary({
-        tagId,
-        count: 0,
-        correct: 0,
-        incorrect: 0,
-        unsure: 0,
-        skip: 0,
-      }),
-  );
 
 export interface IAudioEvent extends HasAllUsers {
   id?: Id;
@@ -108,16 +102,8 @@ export class AudioEvent
   // explicitly added via the `projection.add` filter.
   public readonly verificationIds?: CollectionIds;
 
-  // Audio events without any verifications return "null" instead of an
-  // object.
-  // To get around this, we provide a default value of an empty
-  // verificationSummary object when we see "null" or "undefined" for the
-  // verification summary property.
-  //
-  // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-  @bawDefault(defaultVerificationSummary)
   @bawSubModelCollection(VerificationSummary)
-  public readonly verificationSummary?: VerificationSummary[];
+  public readonly verificationSummary: VerificationSummary[];
 
   // Associations
   @creator()
@@ -138,6 +124,58 @@ export class AudioEvent
     this.taggings = ((audioEvent.taggings ?? []) as ITagging[]).map(
       (tagging) => new Tagging(tagging, injector),
     );
+
+    // The verificationSummary has some bugs that need to be worked around
+    // client side.
+    // To make it easy to use this model, all of the bugs are handled here so
+    // hopefully you can use the verificationSummary property without worrying
+    // about these issues.
+    //
+    // Warning: that these fixes ALWAYS add a verificationSummary for every tag
+    // and the verificationSummary is NOT a part of the standard audio event
+    // response, meaning that if you did not explicitly request the
+    // verificationSummary to be included via a projection filter, these fixes
+    // will always add a fully zeroed verification summary for every tag.
+    //
+    // If there are no verifications on the audio event, the server will return
+    // "null" for the verification summary instead of an empty array.
+    // Therefore, we handle this case here by converting values null to an empty
+    // array.
+    //
+    // see: https://github.com/QutEcoacoustics/baw-server/issues/869
+    if (this.verificationSummary == null) {
+      this.verificationSummary = [];
+    } else {
+      // Tags that do not have any verifications do not show up in the
+      // verification summary returned by the server.
+      // This means that you can have a partially complete verification summary
+      // if some tags have verifications and others do not.
+      // Therefore, we need to fill in any missing tags with an empty "default"
+      // verification summary with all zero counts.
+      //
+      // see: https://github.com/QutEcoacoustics/baw-server/issues/869
+      const tagIds = this.tagIds ?? [];
+      for (const tagId of tagIds) {
+        const hasSummary = this.verificationSummary.some(
+          (summary) => summary.tagId === tagId,
+        );
+
+        if (hasSummary) {
+          continue;
+        }
+
+        const defaultSummary = new VerificationSummary({
+          tagId,
+          count: 0,
+          correct: 0,
+          incorrect: 0,
+          unsure: 0,
+          skip: 0,
+        });
+
+        this.verificationSummary.push(defaultSummary);
+      }
+    }
   }
 
   public get viewUrl(): string {

@@ -1,4 +1,4 @@
-import { DecimalPipe, PercentPipe, TitleCasePipe } from "@angular/common";
+import { DecimalPipe, PercentPipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -43,7 +43,6 @@ interface TagInfo {
     DecimalPipe,
     UrlDirective,
     PercentPipe,
-    TitleCasePipe,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
