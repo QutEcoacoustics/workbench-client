@@ -127,7 +127,7 @@ oe-spectrogram {
 // We use CSS for the transparent icon instead of using the FontAwesome "far"
 // collection so that we don't need to import an additional icon pack just for
 // a circle outline icon.
-// Therefore, what I do is use a normal "fas fa-circle" icon, but make the color
+// What I do is use a normal "fas fa-circle" icon, but make the color
 // transparent and add a gray border around it to mimic the "far circle" icon.
 //
 // If we end up adding the "far" icon pack to the project for other reasons, we
@@ -137,7 +137,10 @@ oe-spectrogram {
   // it would be 2px larger than other icons.
   // By using a box-shadow, we can make the box shadow inset, meaning that it
   // doesn't contribute to the element's size.
-  box-shadow: 0 0 0 1px gray inset;
+  //
+  // This #555555 color is chosen to match the "undecidedColor" in the
+  // annotation-event-card.component.ts file.
+  box-shadow: 0 0 0 1px #555555 inset;
   border-radius: 100%;
 
   color: transparent;
