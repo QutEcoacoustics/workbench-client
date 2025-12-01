@@ -115,8 +115,7 @@
 <ng-template #tagVerifications let-verificationSummary="verificationSummary">
   <div class="summary-tooltip">
     @if (verificationSummary.resolvedDecisionCount > 0) {
-      <b class="summary-tooltip-decision">% Correct</b>
-      ({{ verificationSummary.correctConsensus | percent }})
+      Correct consensus: {{ verificationSummary.correctConsensus | percent }}
     } @else {
       <i>No verifications</i>
     }

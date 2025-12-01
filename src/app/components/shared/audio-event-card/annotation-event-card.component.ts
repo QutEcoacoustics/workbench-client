@@ -93,8 +93,6 @@ export class AnnotationEventCardComponent {
   // users where showing the "incorrect" icon may incorrectly show 0.01% too
   // early.
   // However, I have determined that this edge case is acceptable given that there
-  // is no practical impact for typical user counts, and the trade-off simplifies the logic
-  // without affecting the user experience in any meaningful way.
   protected readonly lowerRatioThreshold = 0.34;
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
@@ -146,8 +144,6 @@ export class AnnotationEventCardComponent {
     // We use red for a high "incorrect" consensus, and green for a high "correct"
     // consensus.
     // In the middle (a consensus ratio of 0.5), we use gray.
-    // Note that we should never see a ratio below 0.5, because the ratio is
-    // defined as the max(correct, incorrect) / totalResolved.
     const scale = scaleLinear(
       [0, 0.5, 1],
       [incorrectColor, undecidedColor, correctColor],
