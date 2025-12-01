@@ -92,7 +92,9 @@ export class AnnotationEventCardComponent {
   // Warning: This does provide a small edge case for a VERY large number of
   // users where showing the "incorrect" icon may incorrectly show 0.01% too
   // early.
-  // However, i have determined that this edge case is acceptable given that there
+  // However, I have determined that this edge case is acceptable given that there
+  // is no practical impact for typical user counts, and the trade-off simplifies the logic
+  // without affecting the user experience in any meaningful way.
   protected readonly lowerRatioThreshold = 0.34;
 
   protected readonly tagInfo = computed<TagInfo[]>(() => {
