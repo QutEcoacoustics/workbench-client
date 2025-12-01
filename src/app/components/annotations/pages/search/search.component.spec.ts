@@ -1,48 +1,48 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { fakeAsync } from "@angular/core/testing";
+import { Params } from "@angular/router";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters, Meta } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
+import { Annotation } from "@models/data/Annotation";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { User } from "@models/User";
 import {
   createRoutingFactory,
   mockProvider,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { Params } from "@angular/router";
-import { of } from "rxjs";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { modelData } from "@test/helpers/faker";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { MediaService } from "@services/media/media.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
+import { IconsModule } from "@shared/icons/icons.module";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
+import { generateMeta } from "@test/fakes/Meta";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { fakeAsync } from "@angular/core/testing";
-import { clickButton, getElementByTextContent } from "@test/helpers/html";
-import { Filters, Meta } from "@baw-api/baw-api.service";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { AudioEvent } from "@models/AudioEvent";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import { Annotation } from "@models/data/Annotation";
-import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { MediaService } from "@services/media/media.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
-import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { modelData } from "@test/helpers/faker";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { of } from "rxjs";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
-import { generateMeta } from "@test/fakes/Meta";
-import { BawSessionService } from "@baw-api/baw-session.service";
-import { AnnotationEventCardComponent } from "@shared/audio-event-card/annotation-event-card.component";
 import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {
@@ -145,6 +145,8 @@ describe("AnnotationSearchComponent", () => {
     mockAnnotationResponse = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
+        tags: [],
+        verificationSummary: [],
       }),
       injector,
     );
@@ -236,6 +238,9 @@ describe("AnnotationSearchComponent", () => {
           orderBy: "createdAt",
           direction: "asc",
         },
+        projection: {
+          add: ["verificationSummary"],
+        },
       };
 
       expect(audioEventsSpy.filter).toHaveBeenCalledWith(expectedBody);
@@ -296,6 +301,9 @@ describe("AnnotationSearchComponent", () => {
         sorting: {
           orderBy: "createdAt",
           direction: "asc",
+        },
+        projection: {
+          add: ["verificationSummary"],
         },
       };
 

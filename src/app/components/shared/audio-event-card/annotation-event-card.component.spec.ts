@@ -1,45 +1,48 @@
-import {
-  createComponentFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
-import { AudioRecording } from "@models/AudioRecording";
-import { Tag } from "@models/Tag";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { provideRouter } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { generateTag } from "@test/fakes/Tag";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AUDIO_RECORDING,
   MEDIA,
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { of } from "rxjs";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { Site } from "@models/Site";
-import { generateSite } from "@test/fakes/Site";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
+import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
-import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { MediaService } from "@services/media/media.service";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import {
+  createComponentFactory,
+  Spectator,
+  SpyObject,
+} from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { MediaService } from "@services/media/media.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { generateVerificationSummary } from "@test/fakes/AudioEvent/VerificationSummary";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { generateSite } from "@test/fakes/Site";
+import { generateTag } from "@test/fakes/Tag";
+import { of } from "rxjs";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
-import { provideRouter } from "@angular/router";
 import { AnnotationEventCardComponent } from "./annotation-event-card.component";
 
 describe("AnnotationEventCardComponent", () => {
-  let spectator: Spectator<AnnotationEventCardComponent>;
-  let injectorSpy: SpyObject<AssociationInjector>;
+  let spec: Spectator<AnnotationEventCardComponent>;
+  let injector: SpyObject<AssociationInjector>;
 
-  let mediaServiceSpy: SpyObject<MediaService>;
-  let audioRecordingApiSpy: SpyObject<AudioRecordingsService>;
-  let tagApiSpy: SpyObject<TagsService>;
-  let siteApiSpy: SpyObject<ShallowSitesService>;
+  let mediaService: SpyObject<MediaService>;
+  let audioRecordingApi: SpyObject<AudioRecordingsService>;
+  let tagApi: SpyObject<TagsService>;
+  let siteApi: SpyObject<ShallowSitesService>;
 
   let mockAnnotation: Annotation;
+  let mockVerificationSummary: VerificationSummary[];
   let mockAudioRecording: AudioRecording;
   let mockTag: Tag;
   let mockSite: Site;
@@ -50,22 +53,40 @@ describe("AnnotationEventCardComponent", () => {
     providers: [provideMockBawApi(), provideRouter([])],
   });
 
-  function setup(): void {
-    spectator = createComponent({ detectChanges: false });
+  // const spectrogram = () =>
+  //   spectator.query<SpectrogramComponent>("oe-spectrogram");
+  const listenLink = () =>
+    spec.query<HTMLAnchorElement>(".more-information-link");
 
-    injectorSpy = spectator.inject(ASSOCIATION_INJECTOR);
+  const tagInfoContainer = () => spec.query(".tag-information");
+  const tagLinks = () => spec.queryAll<HTMLAnchorElement>(".tag-link");
+  const tagVerifiedIcons = () => spec.queryAll(".verified-icon");
 
-    mediaServiceSpy = spectator.inject(MEDIA.token);
-    spyOn(mediaServiceSpy, "createMediaUrl").and.returnValue(
+  const scoreElement = () => spec.query(".tag-score");
+  const noScoreElement = () => spec.query(".no-score-placeholder");
+
+  beforeEach(() => {
+    spec = createComponent({ detectChanges: false });
+
+    injector = spec.inject(ASSOCIATION_INJECTOR);
+
+    mediaService = spec.inject(MEDIA.token);
+    spyOn(mediaService, "createMediaUrl").and.returnValue(
       `data:[audio/flac];base64,${exampleBase64}`,
     );
 
-    mockTag = new Tag(generateTag(), injectorSpy);
-    mockSite = new Site(generateSite(), injectorSpy);
-    mockAudioRecording = new AudioRecording(
-      generateAudioRecording(),
-      injectorSpy,
-    );
+    mockTag = new Tag(generateTag(), injector);
+    mockSite = new Site(generateSite(), injector);
+    mockAudioRecording = new AudioRecording(generateAudioRecording(), injector);
+
+    mockVerificationSummary = [
+      new VerificationSummary(
+        generateVerificationSummary({
+          tagId: mockTag.id,
+        }),
+      ),
+    ];
+
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
@@ -73,41 +94,29 @@ describe("AnnotationEventCardComponent", () => {
         startTimeSeconds: 0,
         endTimeSeconds: 5,
         tags: [mockTag],
+        verificationSummary: mockVerificationSummary,
       }),
-      injectorSpy,
+      injector,
     );
 
-    audioRecordingApiSpy = spectator.inject(AUDIO_RECORDING.token);
-    audioRecordingApiSpy.show.andCallFake(() => of(mockAudioRecording));
-    audioRecordingApiSpy.filter.andCallFake(() => of([mockAudioRecording]));
+    audioRecordingApi = spec.inject(AUDIO_RECORDING.token);
+    audioRecordingApi.show.andCallFake(() => of(mockAudioRecording));
+    audioRecordingApi.filter.andCallFake(() => of([mockAudioRecording]));
 
-    tagApiSpy = spectator.inject(TAG.token);
-    tagApiSpy.show.andCallFake(() => of(mockTag));
-    tagApiSpy.filter.andCallFake(() => of([mockTag]));
+    tagApi = spec.inject(TAG.token);
+    tagApi.show.andCallFake(() => of(mockTag));
+    tagApi.filter.andCallFake(() => of([mockTag]));
 
-    siteApiSpy = spectator.inject(SHALLOW_SITE.token);
-    siteApiSpy.show.andCallFake(() => of(mockSite));
+    siteApi = spec.inject(SHALLOW_SITE.token);
+    siteApi.show.andCallFake(() => of(mockSite));
 
-    siteApiSpy.filter.andCallFake(() => of([mockSite]));
+    siteApi.filter.andCallFake(() => of([mockSite]));
 
-    spectator.setInput("annotation", mockAnnotation);
-  }
-
-  // const spectrogram = () =>
-  //   spectator.query<SpectrogramComponent>("oe-spectrogram");
-  const listenLink = () =>
-    spectator.query<HTMLAnchorElement>(".more-information-link");
-  const tagInfoElement = () => spectator.query(".tag-information");
-
-  const scoreElement = () => spectator.query(".tag-score");
-  const noScoreElement = () => spectator.query(".no-score-placeholder");
-
-  beforeEach(() => {
-    setup();
+    spec.setInput("annotation", mockAnnotation);
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AnnotationEventCardComponent);
+    expect(spec.component).toBeInstanceOf(AnnotationEventCardComponent);
   });
 
   // TODO: We cannot test defer blocks until ng-mocks supports them.
@@ -136,11 +145,6 @@ describe("AnnotationEventCardComponent", () => {
     expect(listenLink()).toHaveExactText("More information");
   });
 
-  it("should have the tag text and link in the info", () => {
-    const expectedText = mockTag.text;
-    expect(tagInfoElement()).toHaveText(expectedText);
-  });
-
   it("should display scores correctly", () => {
     const expectedText = mockAnnotation.score?.toString();
 
@@ -152,15 +156,169 @@ describe("AnnotationEventCardComponent", () => {
     mockAnnotation = new Annotation(
       generateAnnotation({
         audioRecording: mockAudioRecording,
+        tags: [mockTag],
+        verificationSummary: mockVerificationSummary,
         score: null,
       }),
-      injectorSpy,
+      injector,
     );
 
-    spectator.setInput("annotation", mockAnnotation);
+    spec.setInput("annotation", mockAnnotation);
 
     expect(noScoreElement()).toHaveExactText("No score available");
   });
 
   xit("should be able to play the spectrogram", () => {});
+
+  describe("tag info", () => {
+    it("should have the tag text and link", () => {
+      // We use toHaveExactText here instead of toHaveExactTrimmedText because
+      // if there is any leading or trailing whitespace, the underline will
+      // appear to extend beyond the text, which looks bad.
+      expect(tagInfoContainer()).toHaveExactText(mockTag.text);
+
+      const expectedLinks = mockAnnotation.tags.map((tag) => tag.viewUrl);
+      expect(tagLinks()).toHaveLength(expectedLinks.length);
+
+      for (const i in expectedLinks) {
+        expect(tagLinks()[i]).toHaveUrl(expectedLinks[i]);
+      }
+    });
+
+    it("should have the correct content if there are no tags", () => {
+      mockAnnotation = new Annotation(
+        generateAnnotation({
+          audioRecording: mockAudioRecording,
+          tags: [],
+          verificationSummary: [],
+        }),
+        injector,
+      );
+
+      spec.setInput("annotation", mockAnnotation);
+
+      expect(tagInfoContainer()).toHaveExactText("No tags");
+      expect(tagLinks()).toHaveLength(0);
+    });
+
+    it("should have the correct icon for verified 'correct' tags", () => {
+      const verificationSummary = new VerificationSummary(
+        generateVerificationSummary({
+          tagId: 1,
+          count: 1,
+          correct: 1,
+          incorrect: 0,
+          unsure: 0,
+          skip: 0,
+        }),
+      );
+
+      mockAnnotation = new Annotation(
+        generateAnnotation({
+          audioRecording: mockAudioRecording,
+          verificationSummary: [verificationSummary],
+          tags: [new Tag(generateTag({ id: 1 }))],
+        }),
+        injector,
+      );
+
+      spec.setInput("annotation", mockAnnotation);
+
+      const icons = tagVerifiedIcons();
+      expect(icons).toHaveLength(1);
+
+      const targetIcon = icons[0];
+      expect(targetIcon).toHaveIcon(["fas", "circle-check"]);
+    });
+
+    it("should have the correct icon for verified 'incorrect' tags", () => {
+      const verificationSummary = new VerificationSummary(
+        generateVerificationSummary({
+          tagId: 1,
+          count: 1,
+          correct: 0,
+          incorrect: 1,
+          unsure: 0,
+          skip: 0,
+        }),
+      );
+
+      mockAnnotation = new Annotation(
+        generateAnnotation({
+          audioRecording: mockAudioRecording,
+          verificationSummary: [verificationSummary],
+          tags: [new Tag(generateTag({ id: 1 }))],
+        }),
+        injector,
+      );
+
+      spec.setInput("annotation", mockAnnotation);
+
+      const icons = tagVerifiedIcons();
+      expect(icons).toHaveLength(1);
+
+      const targetIcon = icons[0];
+      expect(targetIcon).toHaveIcon(["fas", "circle-xmark"]);
+    });
+
+    it("should have the correct icon for unverified tags", () => {
+      const verificationSummary = new VerificationSummary(
+        generateVerificationSummary({
+          tagId: 1,
+          count: 0,
+          correct: 0,
+          incorrect: 0,
+          unsure: 0,
+          skip: 0,
+        }),
+      );
+
+      mockAnnotation = new Annotation(
+        generateAnnotation({
+          audioRecording: mockAudioRecording,
+          verificationSummary: [verificationSummary],
+          tags: [new Tag(generateTag({ id: 1 }))],
+        }),
+        injector,
+      );
+
+      spec.setInput("annotation", mockAnnotation);
+
+      const icons = tagVerifiedIcons();
+      expect(icons).toHaveLength(1);
+
+      const targetIcon = icons[0];
+      expect(targetIcon).toHaveIcon(["fas", "circle"]);
+    });
+
+    it("should have the correct icon for low-consensus verified tags", () => {
+      const verificationSummary = new VerificationSummary(
+        generateVerificationSummary({
+          tagId: 1,
+          count: 2,
+          correct: 1,
+          incorrect: 1,
+          unsure: 0,
+          skip: 0,
+        }),
+      );
+
+      mockAnnotation = new Annotation(
+        generateAnnotation({
+          audioRecording: mockAudioRecording,
+          verificationSummary: [verificationSummary],
+          tags: [new Tag(generateTag({ id: 1 }))],
+        }),
+        injector,
+      );
+
+      spec.setInput("annotation", mockAnnotation);
+
+      const icons = tagVerifiedIcons();
+      expect(icons).toHaveLength(1);
+
+      const targetIcon = icons[0];
+      expect(targetIcon).toHaveIcon(["fas", "circle-question"]);
+    });
+  });
 });
