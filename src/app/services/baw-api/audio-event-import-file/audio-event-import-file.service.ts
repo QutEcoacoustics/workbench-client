@@ -10,11 +10,14 @@ import {
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Id } from "@interfaces/apiInterfaces";
+import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { Observable } from "rxjs";
+import {
+  TypeaheadInputComponent,
+  TypeaheadSearchCallback,
+} from "@shared/typeahead-input/typeahead-input.component";
+import { merge, Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
 const eventImportFileId: IdParamOptional<AudioEventImportFile> = id;
@@ -23,37 +26,38 @@ const endpoint = stringTemplate`/audio_event_imports/${eventImportId}/files/${ev
 
 @Injectable()
 export class AudioEventImportFileService
-  implements ImmutableApi<AudioEventImportFile, [IdOr<AudioEventImport>, ...any]>
+  implements
+    ImmutableApi<AudioEventImportFile, [IdOr<AudioEventImport>, ...any]>
 {
   private readonly api = inject(BawApiService<AudioEventImportFile>);
 
   public list(
-    audioEventImport: IdOr<AudioEventImport>
+    audioEventImport: IdOr<AudioEventImport>,
   ): Observable<AudioEventImportFile[]> {
     return this.api.list(
       AudioEventImportFile,
-      endpoint(audioEventImport, emptyParam, emptyParam)
+      endpoint(audioEventImport, emptyParam, emptyParam),
     );
   }
 
   public filter(
     filters: Filters<AudioEventImportFile>,
-    audioEventImport: IdOr<AudioEventImport>
+    audioEventImport: IdOr<AudioEventImport>,
   ): Observable<AudioEventImportFile[]> {
     return this.api.filter(
       AudioEventImportFile,
       endpoint(audioEventImport, emptyParam, filterParam),
-      filters
+      filters,
     );
   }
 
   public show(
     model: IdOr<AudioEventImportFile>,
-    audioEventImport: AudioEventImport
+    audioEventImport: AudioEventImport,
   ): Observable<AudioEventImportFile> {
     return this.api.show(
       AudioEventImportFile,
-      endpoint(audioEventImport, model, emptyParam)
+      endpoint(audioEventImport, model, emptyParam),
     );
   }
 
@@ -69,7 +73,9 @@ export class AudioEventImportFileService
     audioEventImport: AudioEventImport,
     provenanceId: Id,
   ): Observable<AudioEventImportFile> {
-    const params: { commit?: boolean, provenance_id?: number } = { commit: true };
+    const params: { commit?: boolean; provenance_id?: number } = {
+      commit: true,
+    };
     if (provenanceId !== null) {
       params.provenance_id = provenanceId;
     }
@@ -81,7 +87,7 @@ export class AudioEventImportFileService
       endpoint(audioEventImport, emptyParam, emptyParam),
       (event) => endpoint(audioEventImport, event, emptyParam),
       model,
-      { params }
+      { params },
     );
   }
 
@@ -95,38 +101,59 @@ export class AudioEventImportFileService
     audioEventImport: AudioEventImport,
     provenanceId: Id,
   ) {
-    const params: { commit?: boolean, provenance_id?: number } = {};
+    const params: { commit?: boolean; provenance_id?: number } = {};
     if (provenanceId !== null) {
       params.provenance_id = provenanceId;
     }
 
     // we don't want to raise non-200 responses as errors because the api will
     // respond with a 422 (unprocessable content) error if a dry run fails
-    return this.api
-      .create(
-        AudioEventImportFile,
-        endpoint(audioEventImport, emptyParam, emptyParam),
-        (event) => endpoint(audioEventImport, event, emptyParam),
-        model,
-        { disableNotification: true, params }
-      );
+    return this.api.create(
+      AudioEventImportFile,
+      endpoint(audioEventImport, emptyParam, emptyParam),
+      (event) => endpoint(audioEventImport, event, emptyParam),
+      model,
+      { disableNotification: true, params },
+    );
+  }
+}
+
+// TODO: Refactor this service to use the API once we have a shallow audio event
+// import file routes.
+// see: https://github.com/QutEcoacoustics/baw-server/issues/871
+@Injectable()
+export class ShallowAudioEventImportFileService {
+  // TODO: Replace this with the BawApiService once shallow routes are available
+  private readonly api = inject(AudioEventImportFileService);
+
+  public filter(
+    filters: Filters<AudioEventImportFile>,
+    eventImports: CollectionIds<AudioEventImport>,
+  ) {
+    const arrayEventImports = Array.from(eventImports);
+
+    return merge(
+      ...arrayEventImports.map((eventImport) =>
+        this.api.filter(filters, eventImport),
+      ),
+    )
   }
 
-  public typeaheadCallback() {
+  public typeaheadCallback(
+    eventImports: CollectionIds<AudioEventImport>,
+  ): TypeaheadSearchCallback<AudioEventImportFile> {
     return (text: any): Observable<AudioEventImportFile[]> => {
-      const id = Number(text);
-      if (!isFinite(id)) {
-        throw new Error("Invalid id");
-      }
-
-      return this.filter({
+      const filterBody: Filters<AudioEventImportFile> = {
         filter: {
           name: {
             contains: text,
           },
         },
         paging: { items: TypeaheadInputComponent.maximumResults },
-      }, 1);
+      };
+
+      return this.filter(filterBody, eventImports);
     };
   }
+
 }

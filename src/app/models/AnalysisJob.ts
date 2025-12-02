@@ -1,32 +1,32 @@
-import { AUDIO_EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
-import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { Duration } from "luxon";
 import { InnerFilter } from "@baw-api/baw-api.service";
+import { EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
+import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
+import { Duration } from "luxon";
 import {
-  DateTimeTimezone,
-  Description,
-  HasAllUsers,
-  HasDescription,
-  HasFilter,
-  Id,
-  Ids,
-  Param,
+    DateTimeTimezone,
+    Description,
+    HasAllUsers,
+    HasDescription,
+    HasFilter,
+    Id,
+    Ids,
+    Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, deleter, hasMany, hasOne, updater } from "./AssociationDecorators";
 import {
-  bawBytes,
-  bawCollection,
-  bawDateTime,
-  bawDuration,
-  bawPersistAttr,
+    bawBytes,
+    bawCollection,
+    bawDateTime,
+    bawDuration,
+    bawPersistAttr,
 } from "./AttributeDecorators";
+import { AudioEventImport } from "./AudioEventImport";
+import { AssociationInjector } from "./ImplementsInjector";
+import { Project } from "./Project";
 import type { Script } from "./Script";
 import type { User } from "./User";
-import { AssociationInjector } from "./ImplementsInjector";
-import { AudioEventImport } from "./AudioEventImport";
-import { Project } from "./Project";
 
 export type AnalysisJobStatus =
   | "beforeSave"
@@ -145,7 +145,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public project?: Project;
   @hasMany(SCRIPT, "scriptIds")
   public scripts?: Script[];
-  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImportIds")
+  @hasMany(EVENT_IMPORT, "audioEventImportIds")
   public audioEventImports?: AudioEventImport[];
 
   public constructor(analysisJob: IAnalysisJob, injector?: AssociationInjector) {

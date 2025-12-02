@@ -7,9 +7,10 @@ import {
   OnInit,
   output,
   signal,
-  viewChild,
+  viewChild
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { InnerFilter } from "@baw-api/baw-api.service";
@@ -53,7 +54,6 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { DateTime } from "luxon";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
-import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 
 enum ScoreRangeBounds {
   Lower,
@@ -78,7 +78,7 @@ enum ScoreRangeBounds {
 })
 export class AnnotationSearchFormComponent implements OnInit {
   protected readonly eventImportApi = inject(AudioEventImportService);
-  protected readonly eventImportFileApi = inject(AudioEventImportFileService);
+  protected readonly eventImportFileApi = inject(ShallowAudioEventImportFileService);
   protected readonly recordingsApi = inject(AudioRecordingsService);
   protected readonly projectsApi = inject(ProjectsService);
   protected readonly regionsApi = inject(ShallowRegionsService);
@@ -124,6 +124,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly project = computed(() => this.searchParameters().routeProjectModel);
   protected readonly region = computed(() => this.searchParameters().routeRegionModel);
   protected readonly site = computed(() => this.searchParameters().routeSiteModel);
+  protected readonly hasEventImportFilters = computed(() =>
+    Array.from(this.searchParameters().audioEventImports ?? []).length > 0,
+  );
 
   public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil

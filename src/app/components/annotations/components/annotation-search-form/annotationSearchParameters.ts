@@ -1,13 +1,12 @@
 import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
-  AUDIO_EVENT_IMPORT,
-  AUDIO_EVENT_IMPORT_FILE,
   AUDIO_RECORDING,
+  EVENT_IMPORT,
   PROJECT,
   SHALLOW_REGION,
   SHALLOW_SITE,
-  TAG,
+  TAG
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
@@ -100,22 +99,22 @@ export function verificationStatusOptions(user?: User) {
 }
 
 export interface IAnnotationSearchParameters {
-  audioRecordings: CollectionIds;
-  tags: CollectionIds;
+  audioRecordings: CollectionIds<AudioRecording>;
+  tags: CollectionIds<Tag>;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
-  audioEventImports: CollectionIds;
-  importFiles: CollectionIds;
+  audioEventImports: CollectionIds<AudioEventImport>;
+  importFiles: CollectionIds<AudioEventImportFile>;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
   // e.g. /annotations?projects=1,2,3&regions=4,5,6&sites=7,8,9
-  projects: CollectionIds;
-  regions: CollectionIds;
-  sites: CollectionIds;
+  projects: CollectionIds<Project>;
+  regions: CollectionIds<Region>;
+  sites: CollectionIds<Site>;
 
   // these parameters are used to filter by project, region, and site in the
   // route parameters
@@ -123,9 +122,9 @@ export interface IAnnotationSearchParameters {
   // these exist in addition with the query string parameters to allow for
   // search parameters such as
   // /projects/1/regions/2?sites=3,4,5
-  routeProjectId: Id;
-  routeRegionId: Id;
-  routeSiteId: Id;
+  routeProjectId: Id<Project>;
+  routeRegionId: Id<Region>;
+  routeSiteId: Id<Site>;
 
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
@@ -184,26 +183,26 @@ export class AnnotationSearchParameters
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
-  public audioRecordings: CollectionIds;
-  public tags: CollectionIds;
+  public audioRecordings: CollectionIds<AudioRecording>;
+  public tags: CollectionIds<Tag>;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
   public score: MonoTuple<number, 2>;
 
-  public audioEventImports: CollectionIds;
-  public importFiles: CollectionIds;
+  public audioEventImports: CollectionIds<AudioEventImport>;
+  public importFiles: CollectionIds<AudioEventImportFile>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
   // parameters will be used over these query string parameters.
-  public projects: CollectionIds;
-  public regions: CollectionIds;
-  public sites: CollectionIds;
+  public projects: CollectionIds<Project>;
+  public regions: CollectionIds<Region>;
+  public sites: CollectionIds<Site>;
 
-  public routeProjectId: Id;
-  public routeRegionId: Id;
-  public routeSiteId: Id;
+  public routeProjectId: Id<Project>;
+  public routeRegionId: Id<Region>;
+  public routeSiteId: Id<Site>;
 
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
@@ -232,10 +231,10 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImports")
+  @hasMany(EVENT_IMPORT, "audioEventImports")
   public audioEventImportModels?: AudioEventImport[];
-  @hasMany(AUDIO_EVENT_IMPORT_FILE, "importFiles")
-  public importFileModels?: AudioEventImportFile[];
+  // @hasMany(SHALLOW_EVENT_IMPORT_FILE, "importFiles", ["audioEventImports"])
+  public importFileModels?: AudioEventImportFile[] = [];
 
   // TODO: use resolvers here once the association resolver decorators return a promise
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
@@ -414,20 +413,38 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
+    // Annotation imports and annotation import file filters are mutually
+    // exclusive because an annotation import file will always be a part of an
+    // exiting annotation import.
+    // This means that we can exclude the annotation import filter conditions if
+    // there are also annotation import file filters.
     if (
-      !isInstantiated(this.importFiles) ||
-      Array.from(this.importFiles).length === 0
+      isInstantiated(this.importFiles) &&
+      Array.from(this.importFiles).length !== 0
     ) {
-      return initialFilter;
+      const importFileFilters = {
+        audioEventImportFileId: {
+          in: Array.from(this.importFiles),
+        },
+      };
+
+      return filterAnd(initialFilter, importFileFilters);
+    } else if (
+      isInstantiated(this.audioEventImports) &&
+      Array.from(this.audioEventImports).length !== 0
+    ) {
+      const importFilters = {
+        "audioEventImports.id": {
+          in: Array.from(this.audioEventImports),
+        },
+      } as any;
+
+      console.log(importFilters);
+
+      return filterAnd(initialFilter, importFilters);
     }
 
-    const importFileFilters = {
-      audioEventImportFileId: {
-        in: Array.from(this.importFiles),
-      },
-    };
-
-    return filterAnd(initialFilter, importFileFilters);
+    return initialFilter;
   }
 
   // TODO: We should add support for event date/time filtering once the api

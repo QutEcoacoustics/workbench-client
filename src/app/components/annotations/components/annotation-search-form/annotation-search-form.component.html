@@ -29,7 +29,11 @@
     (modelChange)="updateSubModel('projects', $event)"
   />
 
-  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <!--
+    We disable the input and use a placeholder value if the form is immutably
+    scoped to a region/site so that the user doesn't get the impression they can
+    change the value.
+  -->
   @if (!site() || site()?.isPoint) {
     <baw-typeahead-input
       id="region-input"
@@ -169,9 +173,14 @@
         id="event-imports-files-input"
         label="Audio event import files"
         inputPlaceholder="All"
-        [searchCallback]="eventImportFileApi.typeaheadCallback()"
+        [searchCallback]="
+          eventImportFileApi.typeaheadCallback(
+            searchParameters().audioEventImports ?? []
+          )
+        "
         [resultTemplate]="importFileTypeaheadTemplate"
         [value]="searchParameters().importFileModels"
+        [inputDisabled]="!hasEventImportFilters()"
         (modelChange)="updateSubModel('importFiles', $event)"
       />
     </div>

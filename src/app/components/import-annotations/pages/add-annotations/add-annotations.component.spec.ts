@@ -6,10 +6,10 @@ import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recording
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
-  AUDIO_EVENT_IMPORT_FILE,
-  AUDIO_EVENT_PROVENANCE,
-  AUDIO_RECORDING,
-  TAG,
+    AUDIO_EVENT_PROVENANCE,
+    AUDIO_RECORDING,
+    EVENT_IMPORT_FILE,
+    TAG,
 } from "@baw-api/ServiceTokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -38,9 +38,9 @@ import { generateTag } from "@test/fakes/Tag";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
 import {
-  clickButton,
-  inputFile,
-  selectFromTypeahead,
+    clickButton,
+    inputFile,
+    selectFromTypeahead,
 } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { UNPROCESSABLE_ENTITY } from "http-status";
@@ -170,7 +170,7 @@ describe("AddAnnotationsComponent", () => {
     routeProject["injector"] = injectorSpy;
     spec.component.project = routeProject;
 
-    fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    fileImportSpy = spec.inject(EVENT_IMPORT_FILE.token);
     tagServiceSpy = spec.inject(TAG.token);
     provenanceServiceSpy = spec.inject(AUDIO_EVENT_PROVENANCE.token);
     recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);

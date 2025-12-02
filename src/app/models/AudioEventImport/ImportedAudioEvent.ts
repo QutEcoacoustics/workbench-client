@@ -1,4 +1,4 @@
-import { AUDIO_EVENT_IMPORT, AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_PROVENANCE, AUDIO_RECORDING, EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { hasOne } from "@models/AssociationDecorators";
@@ -52,7 +52,7 @@ export class ImportedAudioEvent
   // Associations
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne(AUDIO_EVENT_IMPORT, "audioEventImportId")
+  @hasOne(EVENT_IMPORT, "audioEventImportId")
   public audioEventImport?: AudioEventImport;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
