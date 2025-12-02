@@ -439,8 +439,6 @@ export class AnnotationSearchParameters
         },
       } as any;
 
-      console.log(importFilters);
-
       return filterAnd(initialFilter, importFilters);
     }
 

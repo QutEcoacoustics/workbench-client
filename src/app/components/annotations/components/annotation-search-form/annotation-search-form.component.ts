@@ -148,6 +148,8 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
+      "audioEventImports",
+      "importFiles",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -237,7 +239,28 @@ export class AnnotationSearchFormComponent implements OnInit {
           return current;
         });
       }
-      // Do not set taskTag here, it will be set by the typeahead input
+
+      const eventImportIds = this.eventImportTypeahead().value().map(
+        (eventImportModel: AudioEventImport) => eventImportModel.id,
+      );
+
+      if (eventImportIds.length > 0) {
+        this.searchParameters.update((current) => {
+          current.audioEventImports = eventImportIds;
+          return current;
+        });
+      }
+
+      const eventImportFileIds = this.eventImportFilesTypeahead().value().map(
+        (eventImportFileModel: AudioEventImportFile) => eventImportFileModel.id,
+      );
+
+      if (eventImportFileIds.length > 0) {
+        this.searchParameters.update((current) => {
+          current.importFiles = eventImportFileIds;
+          return current;
+        });
+      }
     }
 
     this.emitUpdate();
