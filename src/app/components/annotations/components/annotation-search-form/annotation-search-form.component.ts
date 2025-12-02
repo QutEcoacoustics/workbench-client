@@ -143,9 +143,9 @@ export class AnnotationSearchFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // if there are advanced filters when we initially load the page, we should
+    // If there are advanced filters when we initially load the page, we should
     // automatically open the advanced filters accordion so that the user can
-    // see that advanced filters are applied
+    // see that advanced filters are applied.
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
       "audioEventImports",
