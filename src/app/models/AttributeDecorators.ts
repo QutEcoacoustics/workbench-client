@@ -1,9 +1,9 @@
+import { SortFunction } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
-import { SortFunction } from "@helpers/advancedTypes";
 import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
 import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 

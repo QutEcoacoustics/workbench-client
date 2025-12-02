@@ -29,7 +29,9 @@
   padding: 0.5rem;
 }
 
-.axes, oe-indicator, oe-spectrogram {
+.axes,
+oe-indicator,
+oe-spectrogram {
   display: block;
 
   position: relative;
@@ -99,4 +101,47 @@
 
 .no-score-placeholder {
   color: var(--baw-text-color-secondary);
+}
+
+.summary-tooltip {
+  // NgbTooltips default to center-aligning text, although because we are trying
+  // to show a list of data, left-aligning the text makes more sense so that all
+  // of the categories are horizontally aligned left.
+  text-align: left;
+  padding-inline: 1rem;
+
+  // The ngb-tooltip adds some bottom padding by default, so we don't need to
+  // add any padding on the bottom here.
+  padding-top: 1rem;
+
+  .data-list {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+.tag-indent {
+  text-indent: 1.5rem;
+}
+
+// We use CSS for the transparent icon instead of using the FontAwesome "far"
+// collection so that we don't need to import an additional icon pack just for
+// a circle outline icon.
+// What I do is use a normal "fas fa-circle" icon, but make the color
+// transparent and add a gray border around it to mimic the "far circle" icon.
+//
+// If we end up adding the "far" icon pack to the project for other reasons, we
+// should remove this CSS class and use the official "far circle" icon instead.
+.no-decision-icon {
+  // We use a box shadow because borders affect the elements size, meaning that
+  // it would be 2px larger than other icons.
+  // By using a box-shadow, we can make the box shadow inset, meaning that it
+  // doesn't contribute to the element's size.
+  //
+  // This #555555 color is chosen to match the "undecidedColor" in the
+  // annotation-event-card.component.ts file.
+  box-shadow: 0 0 0 1px #555555 inset;
+  border-radius: 100%;
+
+  color: transparent;
 }

@@ -1,50 +1,50 @@
-import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import { AudioEventImport } from "@models/AudioEventImport";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { ToastService } from "@services/toasts/toasts.service";
-import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
+import { fakeAsync, flush } from "@angular/core/testing";
+import { Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   AUDIO_EVENT_IMPORT_FILE,
   AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { assertPageInfo } from "@test/helpers/pageRoute";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { modelData } from "@test/helpers/faker";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Tag } from "@models/Tag";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { generateImportedAudioEvent } from "@test/fakes/AudioEventImport/ImportedAudioEvent";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateProject } from "@test/fakes/Project";
+import { generateTag } from "@test/fakes/Tag";
+import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
+import { modelData } from "@test/helpers/faker";
 import {
   clickButton,
   inputFile,
   selectFromTypeahead,
 } from "@test/helpers/html";
-import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { Tag } from "@models/Tag";
-import { generateTag } from "@test/fakes/Tag";
-import { Observable, of, Subject, throwError } from "rxjs";
-import { Router } from "@angular/router";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { UNPROCESSABLE_ENTITY } from "http-status";
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { fakeAsync, flush } from "@angular/core/testing";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { generateImportedAudioEvent } from "@test/fakes/ImportedAudioEvent";
+import { Observable, of, Subject, throwError } from "rxjs";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {

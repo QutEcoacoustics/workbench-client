@@ -28,6 +28,7 @@ export class AnnotationService {
       tags,
       audioRecording,
       corrections: new Map<Id<Tag>, Tagging>(),
+      verificationSummary: audioEvent.verificationSummary,
     } as IAnnotation;
 
     return new Annotation(data);

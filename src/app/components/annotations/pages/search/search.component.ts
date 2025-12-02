@@ -109,6 +109,7 @@ class AnnotationSearchComponent
       },
       () => this.searchParameters().toFilter().filter,
       () => this.searchParameters().toFilter().sorting,
+      () => ({ add: ["verificationSummary"] }),
     );
 
     // we make the page size an even number so that the page of results is more
