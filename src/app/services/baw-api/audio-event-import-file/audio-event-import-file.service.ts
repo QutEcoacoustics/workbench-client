@@ -13,6 +13,7 @@ import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
@@ -109,5 +110,23 @@ export class AudioEventImportFileService
         model,
         { disableNotification: true, params }
       );
+  }
+
+  public typeaheadCallback() {
+    return (text: any): Observable<AudioEventImportFile[]> => {
+      const id = Number(text);
+      if (!isFinite(id)) {
+        throw new Error("Invalid id");
+      }
+
+      return this.filter({
+        filter: {
+          name: {
+            contains: text,
+          },
+        },
+        paging: { items: TypeaheadInputComponent.maximumResults },
+      }, 1);
+    };
   }
 }

@@ -154,13 +154,24 @@
       />
 
       <baw-typeahead-input
-        #eventImportTypeahead
+        #eventImportsTypeahead
         id="event-imports-input"
         label="Audio event imports"
         inputPlaceholder="All"
         [searchCallback]="eventImportApi.typeaheadCallback()"
         [resultTemplate]="nameTypeaheadTemplate"
         [value]="searchParameters().audioEventImportModels"
+        (modelChange)="updateSubModel('audioEventImports', $event)"
+      />
+
+      <baw-typeahead-input
+        #eventImportFilesTypeahead
+        id="event-imports-files-input"
+        label="Audio event import files"
+        inputPlaceholder="All"
+        [searchCallback]="eventImportFileApi.typeaheadCallback()"
+        [resultTemplate]="importFileTypeaheadTemplate"
+        [value]="searchParameters().importFileModels"
         (modelChange)="updateSubModel('importFiles', $event)"
       />
     </div>
@@ -171,9 +182,13 @@
       <label class="form-label w-100">Show annotations that</label>
       <baw-selectable-items
         [options]="verifiedStatusOptions()"
-        [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
+        [selection]="
+          searchParameters().verificationStatus ?? defaultVerificationStatus
+        "
         [inline]="true"
-        (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+        (selectionChange)="
+          updateParameterProperty('verificationStatus', $event)
+        "
       />
     </div>
   }
@@ -206,4 +221,12 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm" />
+</ng-template>
+
+<ng-template
+  #importFileTypeaheadTemplate
+  let-result="result"
+  let-searchTerm="term"
+>
+  <ngb-highlight [result]="result.name" [term]="searchTerm" />
 </ng-template>

@@ -29,6 +29,7 @@ import {
 import { toNumber } from "@helpers/typing/toNumber";
 import { AbstractModel } from "@models/AbstractModel";
 import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -52,6 +53,7 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { DateTime } from "luxon";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
+import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 
 enum ScoreRangeBounds {
   Lower,
@@ -76,6 +78,7 @@ enum ScoreRangeBounds {
 })
 export class AnnotationSearchFormComponent implements OnInit {
   protected readonly eventImportApi = inject(AudioEventImportService);
+  protected readonly eventImportFileApi = inject(AudioEventImportFileService);
   protected readonly recordingsApi = inject(AudioRecordingsService);
   protected readonly projectsApi = inject(ProjectsService);
   protected readonly regionsApi = inject(ShallowRegionsService);
@@ -94,15 +97,18 @@ export class AnnotationSearchFormComponent implements OnInit {
   >("recordingsTypeahead");
   private readonly eventImportTypeahead = viewChild<
     TypeaheadInputComponent<AudioEventImport>
-  >("eventImportTypeahead");
+  >("eventImportsTypeahead");
+  private readonly eventImportFilesTypeahead = viewChild<
+    TypeaheadInputComponent<AudioEventImportFile>
+  >("eventImportFilesTypeahead");
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected readonly hideAdvancedFilters = signal(true);
   protected readonly createSearchCallback = createSearchCallback;
   protected readonly createIdSearchCallback = createIdSearchCallback;
 
-  protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions = signal<
+  protected readonly scoreRangeBounds = ScoreRangeBounds;
+  protected readonly verifiedStatusOptions = signal<
     ISelectableItem<VerificationStatusKey>[]
   >([
     // I disabled prettier for this line because prettier wants to reformat the
@@ -115,9 +121,9 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "are verified or unverified", value: "any" },
   ]);
 
-  protected project = computed(() => this.searchParameters().routeProjectModel);
-  protected region = computed(() => this.searchParameters().routeRegionModel);
-  protected site = computed(() => this.searchParameters().routeSiteModel);
+  protected readonly project = computed(() => this.searchParameters().routeProjectModel);
+  protected readonly region = computed(() => this.searchParameters().routeRegionModel);
+  protected readonly site = computed(() => this.searchParameters().routeSiteModel);
 
   public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil

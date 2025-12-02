@@ -2,6 +2,7 @@ import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_EVENT_IMPORT,
+  AUDIO_EVENT_IMPORT_FILE,
   AUDIO_RECORDING,
   PROJECT,
   SHALLOW_REGION,
@@ -27,6 +28,7 @@ import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import {
@@ -230,8 +232,10 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany(AUDIO_EVENT_IMPORT, "importFiles")
+  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImports")
   public audioEventImportModels?: AudioEventImport[];
+  @hasMany(AUDIO_EVENT_IMPORT_FILE, "importFiles")
+  public importFileModels?: AudioEventImportFile[];
 
   // TODO: use resolvers here once the association resolver decorators return a promise
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
