@@ -1,26 +1,26 @@
 import {
-  ANALYSIS_JOB_ITEM,
-  EVENT_IMPORT,
-  TAG,
+    ANALYSIS_JOB_ITEM,
+    AUDIO_EVENT_IMPORT,
+    TAG,
 } from "@baw-api/ServiceTokens";
 import {
-  CollectionIds,
-  DateTimeTimezone,
-  FilePath,
-  Id,
+    CollectionIds,
+    DateTimeTimezone,
+    FilePath,
+    Id,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJobItem } from "./AnalysisJobItem";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import {
-  bawDateTime,
-  bawPersistAttr,
-  bawSubModelCollection,
+    bawDateTime,
+    bawPersistAttr,
+    bawSubModelCollection,
 } from "./AttributeDecorators";
 import { AudioEventImport } from "./AudioEventImport";
 import {
-  IImportedAudioEvent,
-  ImportedAudioEvent,
+    IImportedAudioEvent,
+    ImportedAudioEvent,
 } from "./AudioEventImport/ImportedAudioEvent";
 import { Tag } from "./Tag";
 
@@ -74,7 +74,7 @@ export class AudioEventImportFile
   public readonly additionalTags?: Tag[];
   @hasOne(ANALYSIS_JOB_ITEM, "analysisJobsItemId")
   public readonly analysisJobItem?: AnalysisJobItem;
-  @hasOne(EVENT_IMPORT, "audioEventImportId")
+  @hasOne(AUDIO_EVENT_IMPORT, "audioEventImportId")
   public readonly audioEventImport?: AudioEventImport;
 
   public get viewUrl(): string {

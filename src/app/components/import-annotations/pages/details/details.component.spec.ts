@@ -1,12 +1,4 @@
 import { fakeAsync, flush } from "@angular/core/testing";
-import {
-  AUDIO_RECORDING,
-  EVENT_IMPORT,
-  EVENT_IMPORT_FILE,
-  EVENT_PROVENANCE,
-  SHALLOW_AUDIO_EVENT,
-  TAG,
-} from "@baw-api/ServiceTokens";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
@@ -181,10 +173,10 @@ describe("AnnotationsDetailsComponent", () => {
       ),
     );
 
-    mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
+    mockRecordingsService = spec.inject(AudioRecordingsService);
     mockRecordingsService.show.and.callFake(() => of(mockAudioRecording));
 
-    mockAudioEventFileService = spec.inject(EVENT_IMPORT_FILE.token);
+    mockAudioEventFileService = spec.inject(AudioEventImportFileService);
     mockAudioEventFileService.list.and.callFake(() =>
       of(mockAudioEventImportFiles),
     );
@@ -193,7 +185,7 @@ describe("AnnotationsDetailsComponent", () => {
     );
     mockAudioEventFileService.destroy.andReturn(of());
 
-    mockAudioEventImportService = spec.inject(EVENT_IMPORT.token);
+    mockAudioEventImportService = spec.inject(AudioEventImportService);
     mockAudioEventImportService.show.and.callFake(() =>
       of(mockAudioEventImport),
     );
@@ -208,13 +200,13 @@ describe("AnnotationsDetailsComponent", () => {
       nStepObservable(provenanceSubject, () => mockProvenance as any),
     ]);
 
-    mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    mockEventsService = spec.inject(ShallowAudioEventsService);
     mockEventsService.filter.and.callFake(() => audioEventSubject);
 
-    mockTagsService = spec.inject(TAG.token);
+    mockTagsService = spec.inject(TagsService);
     mockTagsService.show.and.callFake(() => tagsSubject);
 
-    mockProvenanceService = spec.inject(EVENT_PROVENANCE.token);
+    mockProvenanceService = spec.inject(AudioEventProvenanceService);
     mockProvenanceService.show.and.callFake(() => provenanceSubject);
 
     // When deleting a file, we use a modal to confirm that the user wants to

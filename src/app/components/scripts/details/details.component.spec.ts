@@ -4,13 +4,13 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
-    scriptResolvers,
-    ScriptsService,
+  scriptResolvers,
+  ScriptsService,
 } from "@baw-api/script/scripts.service";
 import {
-    ACCOUNT,
-    EVENT_PROVENANCE,
-    SCRIPT,
+  ACCOUNT,
+  AUDIO_EVENT_PROVENANCE,
+  SCRIPT,
 } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
@@ -60,7 +60,7 @@ describe("ScriptComponent", () => {
       SCRIPT.token,
     ) as SpyObject<ScriptsService>;
     const provenanceApi = TestBed.inject(
-      EVENT_PROVENANCE.token,
+      AUDIO_EVENT_PROVENANCE.token,
     ) as SpyObject<AudioEventProvenanceService>;
 
     component = fixture.componentInstance;

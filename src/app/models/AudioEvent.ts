@@ -1,33 +1,33 @@
 import {
-    AUDIO_RECORDING,
-    EVENT_PROVENANCE,
-    TAG,
+  AUDIO_EVENT_PROVENANCE,
+  AUDIO_RECORDING,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import {
-    CollectionIds,
-    DateTimeTimezone,
-    HasAllUsers,
-    Id,
-    Ids,
+  CollectionIds,
+  DateTimeTimezone,
+  HasAllUsers,
+  Id,
+  Ids,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import {
-    creator,
-    deleter,
-    hasMany,
-    hasOne,
-    updater,
+  creator,
+  deleter,
+  hasMany,
+  hasOne,
+  updater,
 } from "./AssociationDecorators";
 import {
-    bawDateTime,
-    bawPersistAttr,
-    bawSubModelCollection,
+  bawDateTime,
+  bawPersistAttr,
+  bawSubModelCollection,
 } from "./AttributeDecorators";
 import {
-    IVerificationSummary,
-    VerificationSummary,
+  IVerificationSummary,
+  VerificationSummary,
 } from "./AudioEvent/VerificationSummary";
 import { AudioEventImportFile } from "./AudioEventImportFile";
 import { AudioEventProvenance } from "./AudioEventProvenance";
@@ -114,7 +114,7 @@ export class AudioEvent
   public deleter?: User;
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
-  @hasOne(EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
   @hasMany(TAG, "tagIds")
   public tags?: Tag[];

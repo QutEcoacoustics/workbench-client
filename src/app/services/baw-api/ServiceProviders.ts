@@ -1,116 +1,116 @@
 import { Provider } from "@angular/core";
 import {
-    annotationSearchParametersResolvers,
+  annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
-    verificationParametersResolvers,
+  verificationParametersResolvers,
 } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import {
-    annotationMapParameterResolvers,
+  annotationMapParameterResolvers,
 } from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
 import { MediaService } from "@services/media/media.service";
 import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
-    analysisJobItemResultResolvers,
-    AnalysisJobItemResultsService,
+  analysisJobItemResultResolvers,
+  AnalysisJobItemResultsService,
 } from "./analysis/analysis-job-item-result.service";
 import {
-    analysisJobItemResolvers,
-    AnalysisJobItemsService,
+  analysisJobItemResolvers,
+  AnalysisJobItemsService,
 } from "./analysis/analysis-job-items.service";
 import {
-    analysisJobResolvers,
-    AnalysisJobsService,
+  analysisJobResolvers,
+  AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
 import { AudioEventImportFileService, ShallowAudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import {
-    audioEventImportResolvers,
-    AudioEventImportService,
+  audioEventImportResolvers,
+  AudioEventImportService,
 } from "./audio-event-import/audio-event-import.service";
 import {
-    audioEventProvenanceResolvers,
-    AudioEventProvenanceService,
+  audioEventProvenanceResolvers,
+  AudioEventProvenanceService,
 } from "./audio-event-provenance/audio-event-provenance.service";
 import {
-    audioEventResolvers,
-    AudioEventsService,
-    ShallowAudioEventsService,
+  audioEventResolvers,
+  AudioEventsService,
+  ShallowAudioEventsService,
 } from "./audio-event/audio-events.service";
 import {
-    audioRecordingResolvers,
-    AudioRecordingsService,
+  audioRecordingResolvers,
+  AudioRecordingsService,
 } from "./audio-recording/audio-recordings.service";
 import {
-    bookmarkResolvers,
-    BookmarksService,
+  bookmarkResolvers,
+  BookmarksService,
 } from "./bookmark/bookmarks.service";
 import { DataRequestService } from "./data-request/data-request.service";
 import {
-    datasetItemResolvers,
-    DatasetItemsService,
+  datasetItemResolvers,
+  DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
 import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
 import {
-    harvestItemResolvers,
-    HarvestItemsService,
-    shallowHarvestItemResolvers,
-    ShallowHarvestItemsService,
+  harvestItemResolvers,
+  HarvestItemsService,
+  shallowHarvestItemResolvers,
+  ShallowHarvestItemsService,
 } from "./harvest/harvest-items.service";
 import {
-    harvestResolvers,
-    HarvestsService,
-    shallowHarvestResolvers,
-    ShallowHarvestsService,
+  harvestResolvers,
+  HarvestsService,
+  shallowHarvestResolvers,
+  ShallowHarvestsService,
 } from "./harvest/harvest.service";
 import {
-    permissionResolvers,
-    PermissionsService,
+  permissionResolvers,
+  PermissionsService,
 } from "./permissions/permissions.service";
 import {
-    progressEventResolvers,
-    ProgressEventsService,
+  progressEventResolvers,
+  ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
-    regionResolvers,
-    RegionsService,
-    shallowRegionResolvers,
-    ShallowRegionsService,
+  regionResolvers,
+  RegionsService,
+  shallowRegionResolvers,
+  ShallowRegionsService,
 } from "./region/regions.service";
 import { ContactUsService } from "./report/contact-us.service";
 import { ReportProblemService } from "./report/report-problem.service";
 import {
-    EventSummaryReportService,
-    eventSummaryResolvers,
+  EventSummaryReportService,
+  eventSummaryResolvers,
 } from "./reports/event-report/event-summary-report.service";
 import { BawProvider } from "./resolver-common";
 import {
-    SavedSearchesService,
-    savedSearchResolvers,
+  SavedSearchesService,
+  savedSearchResolvers,
 } from "./saved-search/saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./script/scripts.service";
 import * as Tokens from "./ServiceTokens";
 import { SiteSettingsService } from "./site-settings/site-settings.service";
 import {
-    shallowSiteResolvers,
-    ShallowSitesService,
-    siteResolvers,
-    SitesService,
+  shallowSiteResolvers,
+  ShallowSitesService,
+  siteResolvers,
+  SitesService,
 } from "./site/sites.service";
 import { StatisticsService } from "./statistics/statistics.service";
 import {
-    questionResolvers,
-    QuestionsService,
-    shallowQuestionResolvers,
-    ShallowQuestionsService,
+  questionResolvers,
+  QuestionsService,
+  shallowQuestionResolvers,
+  ShallowQuestionsService,
 } from "./study/questions.service";
 import {
-    responseResolvers,
-    ResponsesService,
-    shallowResponseResolvers,
-    ShallowResponsesService,
+  responseResolvers,
+  ResponsesService,
+  shallowResponseResolvers,
+  ShallowResponsesService,
 } from "./study/responses.service";
 import { StudiesService, studyResolvers } from "./study/studies.service";
 import { tagGroupResolvers, TagGroupsService } from "./tag/tag-group.service";
@@ -118,10 +118,10 @@ import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import {
-    shallowVerificationResolvers,
-    ShallowVerificationService,
-    verificationResolvers,
-    VerificationService,
+  shallowVerificationResolvers,
+  ShallowVerificationService,
+  verificationResolvers,
+  VerificationService,
 } from "./verification/verification.service";
 import { WebsiteStatusService } from "./website-status/website-status.service";
 
@@ -308,26 +308,26 @@ const serviceList = [
     resolvers: userResolvers,
   },
   {
-    serviceToken: Tokens.EVENT_PROVENANCE,
+    serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
     service: AudioEventProvenanceService,
     resolvers: audioEventProvenanceResolvers,
   },
   {
-    serviceToken: Tokens.EVENT_SUMMARY_REPORT,
+    serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,
     service: EventSummaryReportService,
     resolvers: eventSummaryResolvers,
   },
   {
-    serviceToken: Tokens.EVENT_IMPORT,
+    serviceToken: Tokens.AUDIO_EVENT_IMPORT,
     service: AudioEventImportService,
     resolvers: audioEventImportResolvers,
   },
   {
-    serviceToken: Tokens.EVENT_IMPORT_FILE,
+    serviceToken: Tokens.AUDIO_EVENT_IMPORT_FILE,
     service: AudioEventImportFileService,
   },
   {
-    serviceToken: Tokens.SHALLOW_EVENT_IMPORT_FILE,
+    serviceToken: Tokens.SHALLOW_AUDIO_EVENT_IMPORT_FILE,
     service: ShallowAudioEventImportFileService,
   },
   {
@@ -386,4 +386,3 @@ for (const resolver of resolverProviders) {
 }
 
 export { serviceResolvers, services, serviceTokens };
-

@@ -1,15 +1,14 @@
 import {
-    AudioEventImportService,
-    audioEventImportResolvers,
+  AudioEventImportService,
+  audioEventImportResolvers,
 } from "@baw-api/audio-event-import/audio-event-import.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
-import { EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { Project } from "@models/Project";
 import {
-    SpectatorRouting,
-    SpyObject,
-    createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
@@ -38,7 +37,7 @@ describe("EditAnnotationsComponent", () => {
     mocks: [ToastService],
   });
 
-  function setup(): void {
+  beforeEach(() => {
     defaultModel = new AudioEventImport(
       generateAudioEventImport({
         name: modelData.name.jobTitle(),
@@ -61,14 +60,12 @@ describe("EditAnnotationsComponent", () => {
       },
     });
 
-    apiSpy = spectator.inject(EVENT_IMPORT.token);
+    apiSpy = spectator.inject(AudioEventImportService);
     apiSpy.update = jasmine.createSpy("update") as any;
     apiSpy.update.and.callFake(() => new Subject());
 
     spectator.detectChanges();
-  }
-
-  beforeEach(() => setup());
+  });
 
   assertPageInfo(EditAnnotationsComponent, "Edit");
 

@@ -1,16 +1,16 @@
 import {
-    EVENT_PROVENANCE,
-    SHALLOW_REGION,
-    SHALLOW_SITE,
-    TAG,
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { reportMenuItems } from "@components/reports/reports.menu";
 import {
-    CollectionIds,
-    DateTimeTimezone,
-    Id,
-    Param,
+  CollectionIds,
+  DateTimeTimezone,
+  Id,
+  Param,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
@@ -67,7 +67,7 @@ export class EventSummaryReport
   @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
   @hasMany<EventSummaryReport, AudioEventProvenance>(
-    EVENT_PROVENANCE,
+    AUDIO_EVENT_PROVENANCE,
     "provenanceIds"
   )
   public provenances?: AudioEventProvenance[];

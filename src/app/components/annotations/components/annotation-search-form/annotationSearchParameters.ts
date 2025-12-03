@@ -1,10 +1,10 @@
 import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
+  AUDIO_EVENT_IMPORT,
   AUDIO_RECORDING,
-  EVENT_IMPORT,
   PROJECT,
-  SHALLOW_EVENT_IMPORT_FILE,
+  SHALLOW_AUDIO_EVENT_IMPORT_FILE,
   SHALLOW_REGION,
   SHALLOW_SITE,
   TAG,
@@ -248,9 +248,9 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany(EVENT_IMPORT, "audioEventImports")
+  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImports")
   public audioEventImportModels?: AudioEventImport[];
-  @hasManyFilter(SHALLOW_EVENT_IMPORT_FILE, "importFiles", [
+  @hasManyFilter(SHALLOW_AUDIO_EVENT_IMPORT_FILE, "importFiles", [
     "audioEventImports",
   ])
   public importFileModels?: AudioEventImportFile[];
@@ -465,11 +465,14 @@ export class AnnotationSearchParameters
 
       return filterAnd(initialFilter, importFileFilters);
     } else if (hasImportFilters) {
+      // This "as InnerFilter" cast is necessary because our filter TypeScript
+      // definitions do not currently recognize association filters.
+      // However, this is a valid filter according to the API spec.
       const importFilters = {
         "audioEventImports.id": {
           in: Array.from(this.audioEventImports),
         },
-      } as any;
+      } as InnerFilter<AudioEvent>;
 
       return filterAnd(initialFilter, importFilters);
     }

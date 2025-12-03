@@ -1,14 +1,14 @@
-import { EVENT_PROVENANCE, SCRIPT } from "@baw-api/ServiceTokens";
+import { AUDIO_EVENT_PROVENANCE, SCRIPT } from "@baw-api/ServiceTokens";
 import { scriptMenuItem } from "@components/scripts/scripts.menus";
 import { PbsResources } from "@interfaces/pbsInterfaces";
 import {
-    DateTimeTimezone,
-    Description,
-    ExecutableCommand,
-    HasCreator,
-    HasDescription,
-    Id,
-    Param,
+  DateTimeTimezone,
+  Description,
+  ExecutableCommand,
+  HasCreator,
+  HasDescription,
+  Id,
+  Param,
 } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne } from "./AssociationDecorators";
@@ -74,7 +74,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public creator?: User;
   @hasOne(SCRIPT, "groupId")
   public group?: Script;
-  @hasOne(EVENT_PROVENANCE, "provenanceId")
+  @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
 
   public get viewUrl(): string {

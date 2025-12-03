@@ -7,6 +7,7 @@ import {
   IdParamOptional,
   ImmutableApi,
   option,
+  StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -122,9 +123,40 @@ export class AudioEventImportFileService
 // import file routes.
 // see: https://github.com/QutEcoacoustics/baw-server/issues/871
 @Injectable()
-export class ShallowAudioEventImportFileService {
+export class ShallowAudioEventImportFileService
+  implements
+    StandardApi<AudioEventImportFile, [CollectionIds<AudioEventImport>]>
+{
   // TODO: Replace this with the BawApiService once shallow routes are available
   private readonly api = inject(AudioEventImportFileService);
+
+  public list(): Observable<AudioEventImportFile[]> {
+    throw new Error("Method not implemented.");
+  }
+
+  public show(
+    _model: IdOr<AudioEventImportFile>,
+  ): Observable<AudioEventImportFile> {
+    throw new Error("Method not implemented.");
+  }
+
+  public create(
+    _model: AudioEventImportFile,
+  ): Observable<AudioEventImportFile> {
+    throw new Error("Method not implemented.");
+  }
+
+  public update(
+    _model: AudioEventImportFile,
+  ): Observable<AudioEventImportFile> {
+    throw new Error("Method not implemented.");
+  }
+
+  public destroy(
+    _model: IdOr<AudioEventImportFile>,
+  ): Observable<void | AudioEventImportFile> {
+    throw new Error("Method not implemented.");
+  }
 
   public filter(
     filters: Filters<AudioEventImportFile>,
@@ -136,7 +168,7 @@ export class ShallowAudioEventImportFileService {
       ...arrayEventImports.map((eventImport) =>
         this.api.filter(filters, eventImport),
       ),
-    )
+    );
   }
 
   public typeaheadCallback(
@@ -155,5 +187,4 @@ export class ShallowAudioEventImportFileService {
       return this.filter(filterBody, eventImports);
     };
   }
-
 }

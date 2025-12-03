@@ -1,9 +1,9 @@
 import { Params } from "@angular/router";
 import {
-    EVENT_PROVENANCE,
-    SHALLOW_REGION,
-    SHALLOW_SITE,
-    TAG,
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { MonoTuple } from "@helpers/advancedTypes";
@@ -11,15 +11,15 @@ import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
-    IQueryStringParameterSpec,
-    jsBoolean,
-    jsNumber,
-    jsNumberArray,
-    jsString,
-    jsStringArray,
-    luxonDateArray,
-    luxonDurationArray,
-    serializeObjectToParams,
+  IQueryStringParameterSpec,
+  jsBoolean,
+  jsNumber,
+  jsNumberArray,
+  jsString,
+  jsStringArray,
+  luxonDateArray,
+  luxonDurationArray,
+  serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
@@ -109,7 +109,7 @@ export class EventSummaryReportParameters
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
   @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
-    EVENT_PROVENANCE,
+    AUDIO_EVENT_PROVENANCE,
     "provenances"
   )
   public provenanceModels?: AudioEventProvenance[];

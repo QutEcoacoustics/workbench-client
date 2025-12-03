@@ -255,12 +255,15 @@
 -->
 <ng-template #importFileTooltip let-result="result">
   <div class="import-file-tooltip">
-    <strong>{{ result.fileName }}</strong>
+    <strong>{{ result.name }}</strong>
 
     <hr />
 
     <ul class="data-list">
-      <li>Created: <baw-zoned-datetime [value]="result.createdAt" /></li>
+      <li>
+        Created:
+        <baw-zoned-datetime [value]="result.createdAt" [withTooltip]="false" />
+      </li>
     </ul>
   </div>
 </ng-template>

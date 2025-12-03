@@ -1,5 +1,4 @@
 import { fakeAsync, tick } from "@angular/core/testing";
-import { EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
@@ -68,7 +67,7 @@ describe("AnnotationsListComponent", () => {
     );
 
     const injector = spec.inject(ASSOCIATION_INJECTOR);
-    mockApi = spec.inject(EVENT_IMPORT.token);
+    mockApi = spec.inject(AudioEventImportService);
 
     fakeAnnotationImport["injector"] = injector;
 

@@ -16,6 +16,10 @@ type SupportedParams = Record<
   string
 >;
 
+// TODO: Finish adapting these tests to the new verification form component.
+// These tests used to be a part of the annotation search form, but have been
+// moved to here because we bifurcated the verification parameters into their
+// own component.
 xdescribe("VerificationFormComponent", () => {
   let spec: Spectator<VerificationFormComponent>;
 
@@ -31,7 +35,7 @@ xdescribe("VerificationFormComponent", () => {
   const taskTagTypeahead = () => spec.query("#task-tag-input");
   const taskTagInput = () => taskTagTypeahead().querySelector("input");
 
-  function setup(params: Partial<SupportedParams> = {}): void {
+  function setup(params: Partial<SupportedParams> = {}) {
     spec = createComponent({ detectChanges: false });
 
     const injector = spec.inject(ASSOCIATION_INJECTOR);
@@ -44,7 +48,7 @@ xdescribe("VerificationFormComponent", () => {
       verificationParameters,
     });
 
-    spec.detectChanges();
+    return Promise.resolve([]);
   }
 
   beforeEach(() => {

@@ -46,6 +46,26 @@ describe("annotationSearchParameters", () => {
     expect(realizedFilters).toEqual(expectedFilters);
   });
 
+  // Because the import files are expected to be a subset of the annotation
+  // imports, we should always see both parameters or neither.
+  // If there is only an annotation import file parameter, this indicates that
+  // something has gone wrong, and we should delete the file parameter.
+  // We delete the parameter instead of silently ignoring it so that the user
+  // gets some feedback that the parameter was ignored because the url will
+  // change with the file parameter removed.
+  it("should remove annotation import file parameters if there are no annotation import parameters", () => {
+    const params: Params = {
+      importFiles: "1,2,3",
+    };
+
+    const dataModel = new AnnotationSearchParameters(
+      params,
+      new User(generateUser()),
+    );
+
+    expect("importFiles" in dataModel.toQueryParams()).toBeFalse();
+  });
+
   function createParameterModel(params?: Params): AnnotationSearchParameters {
     mockUser = new User(generateUser({ id: 42 }));
     const dataModel = new AnnotationSearchParameters(params, mockUser);
@@ -125,7 +145,7 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.id": { in: [11, 12, 13] } },
             // Notice that even though "audioEventImports" was set, we only
             // apply import file filters because the files are expected to be a
-            // subset of the import files.
+            // subset of the "audioEventImports".
             { audioEventImportFileId: { in: [1, 12, 23] } },
             {
               "sites.id": {
