@@ -38,6 +38,7 @@ import {
   toggleDropdown,
   waitForDropdown,
 } from "@test/helpers/html";
+import { DateTime } from "luxon";
 import { of } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
 import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
@@ -422,15 +423,18 @@ describe("AnnotationSearchFormComponent", () => {
     // at the moment the date/time filter components form is not triggering
     // its form change event when the input is changed and the dropdown is not
     // opening when the checkbox is toggled
-    xit("should emit the correct model if the date filters are updated", fakeAsync(() => {
+    it("should emit the correct model if the date filters are updated", fakeAsync(() => {
       const testedDate = "2021-10-10";
-      const expectedNewModel = {};
+      const expectedNewModel = jasmine.objectContaining({
+        recordingDate: [null, jasmine.any(DateTime)],
+      });
 
       modelChangeSpy.calls.reset();
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
       spec.typeInElement(testedDate, endDateInput());
+      tick(defaultDebounceTime);
 
       expect(modelChangeSpy).toHaveBeenCalledOnceWith(expectedNewModel);
     }));
