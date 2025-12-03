@@ -8,9 +8,9 @@ import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
-    SpectatorRouting,
-    SpyObject,
-    createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+  createRoutingFactory,
 } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -25,14 +25,13 @@ import { of } from "rxjs";
 import { AnnotationsListComponent } from "./list.component";
 
 describe("AnnotationsListComponent", () => {
-  let spectator: SpectatorRouting<AnnotationsListComponent>;
+  let spec: SpectatorRouting<AnnotationsListComponent>;
   let fakeAnnotationImport: AudioEventImport;
   let defaultUser: User;
   let defaultProject: Project;
 
   let mockApi: SpyObject<AudioEventImportService>;
   let modalService: SpyObject<NgbModal>;
-  let modalConfigService: SpyObject<NgbModalConfig>;
 
   const createComponent = createRoutingFactory({
     component: AnnotationsListComponent,
@@ -60,16 +59,16 @@ describe("AnnotationsListComponent", () => {
       () => defaultUser,
     );
 
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
     });
 
-    spyOnProperty(spectator.component, "project").and.callFake(
+    spyOnProperty(spec.component, "project").and.callFake(
       () => defaultProject,
     );
 
-    const injector = spectator.inject(ASSOCIATION_INJECTOR);
-    mockApi = spectator.inject(EVENT_IMPORT.token);
+    const injector = spec.inject(ASSOCIATION_INJECTOR);
+    mockApi = spec.inject(EVENT_IMPORT.token);
 
     fakeAnnotationImport["injector"] = injector;
 
@@ -81,11 +80,11 @@ describe("AnnotationsListComponent", () => {
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
-    modalService = spectator.inject(NgbModal);
+    modalService = spec.inject(NgbModal);
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that modals can be opened without waiting for the async animation
-    modalConfigService = spectator.inject(NgbModalConfig);
+    const modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
     // without mocking the timezone, tests that assert time will fail in CI
@@ -94,16 +93,19 @@ describe("AnnotationsListComponent", () => {
     const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
     Settings.defaultZone = mockUserTimeZone;
 
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
-  const viewImportButton = (): HTMLButtonElement =>
-    spectator.query<HTMLButtonElement>("[name='view-button']");
-  const deleteImportButton = (): HTMLButtonElement =>
-    spectator.query<HTMLButtonElement>("[name='delete-button']");
-  // I must use { root: true }
-  const modalConfirmButton = (): HTMLButtonElement =>
-    spectator.query<HTMLButtonElement>(".btn-danger", { root: true });
+  const viewImportButton = () =>
+    spec.query<HTMLButtonElement>("[name='view-button']");
+  const verifyImportButton = () =>
+    spec.query<HTMLButtonElement>("[name='verify-button']");
+  const deleteImportButton = () =>
+    spec.query<HTMLButtonElement>("[name='delete-button']");
+  // I must use { root: true } because the modal is appended to the document
+  // body instead of inside the component.
+  const modalConfirmButton = () =>
+    spec.query<HTMLButtonElement>(".btn-danger", { root: true });
 
   beforeEach(() => setup());
 
@@ -116,7 +118,7 @@ describe("AnnotationsListComponent", () => {
   assertPageInfo(AnnotationsListComponent, "Import Annotations");
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(AnnotationsListComponent);
+    expect(spec.component).toBeInstanceOf(AnnotationsListComponent);
   });
 
   it("should make one api call on load", () => {
@@ -136,7 +138,7 @@ describe("AnnotationsListComponent", () => {
     const expectedLocalTime = "2022-11-05 04:12:31";
 
     const importCreatedColumn = getElementByTextContent<HTMLTableCellElement>(
-      spectator,
+      spec,
       expectedLocalTime,
     );
 
@@ -144,13 +146,15 @@ describe("AnnotationsListComponent", () => {
   });
 
   it("should have clickable view buttons next to each import", () => {
-    const viewButton = viewImportButton();
-    expect(viewButton).toExist();
+    expect(viewImportButton()).toExist();
+  });
+
+  it("should have clickable verify buttons next to each import", () => {
+    expect(verifyImportButton()).toExist();
   });
 
   it("should have a clickable delete button next to each import", () => {
-    const deleteButton = deleteImportButton();
-    expect(deleteButton).toExist();
+    expect(deleteImportButton()).toExist();
   });
 
   it("should open a modal when the delete button is clicked", fakeAsync(() => {
@@ -160,7 +164,7 @@ describe("AnnotationsListComponent", () => {
     tick();
 
     // we have to use root: true here otherwise the modal window cannot be queried
-    const modalElement = spectator.query<HTMLElement>("ngb-modal-window", {
+    const modalElement = spec.query<HTMLElement>("ngb-modal-window", {
       root: true,
     });
     expect(modalElement).toExist();
@@ -174,11 +178,11 @@ describe("AnnotationsListComponent", () => {
     tick();
 
     // click the confirmation button inside the modal
-    const modalDeleteButton: HTMLButtonElement = modalConfirmButton();
+    const modalDeleteButton = modalConfirmButton();
     modalDeleteButton.click();
 
     tick();
-    spectator.detectChanges();
+    spec.detectChanges();
 
     expect(mockApi.destroy).toHaveBeenCalledOnceWith(fakeAnnotationImport.id);
   }));

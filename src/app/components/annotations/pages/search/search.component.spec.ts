@@ -169,7 +169,7 @@ describe("AnnotationSearchComponent", () => {
     spec.queryAll(AnnotationEventCardComponent);
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
-    const target = document.querySelector(`[aria-valuetext="${value}"]`);
+    const target = spec.query(`[aria-valuetext="${value}"]`);
     clickButton(spec, target);
   }
 

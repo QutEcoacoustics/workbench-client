@@ -1,49 +1,50 @@
+import { fakeAsync, flush } from "@angular/core/testing";
+import { GoogleMapsModule, MapAdvancedMarker } from "@angular/google-maps";
+import { Params, Router } from "@angular/router";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { annotationSearchRoute } from "@components/annotations/annotation.routes";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioEventGroup } from "@models/AudioEventGroup";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   mockProvider,
   SpectatorRouting,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Params, Router } from "@angular/router";
-import { Project } from "@models/Project";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import { EventModalComponent } from "@shared/event-modal/event-modal.component";
+import { IconsModule } from "@shared/icons/icons.module";
+import { MapComponent } from "@shared/map/map.component";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
+import { generateTag } from "@test/fakes/Tag";
 import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
-import { IconsModule } from "@shared/icons/icons.module";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { of, Subject } from "rxjs";
-import { AudioEventGroup } from "@models/AudioEventGroup";
-import { GoogleMapsModule, MapAdvancedMarker } from "@angular/google-maps";
-import { MapComponent } from "@shared/map/map.component";
-import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
-import { fakeAsync, flush } from "@angular/core/testing";
-import { MockModule } from "ng-mocks";
-import { AudioEvent } from "@models/AudioEvent";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { modelData } from "@test/helpers/faker";
+import { nStepObservable } from "@test/helpers/general";
 import {
   clickButton,
   getElementByTextContent,
   selectFromTypeahead,
 } from "@test/helpers/html";
-import { annotationSearchRoute } from "@components/annotations/annotation.routes";
-import { Filters } from "@baw-api/baw-api.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import { EventModalComponent } from "@shared/event-modal/event-modal.component";
-import { Tag } from "@models/Tag";
-import { generateTag } from "@test/fakes/Tag";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { nStepObservable } from "@test/helpers/general";
-import { AnnotationMapParameters } from "./annotationMapParameters";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { MockModule } from "ng-mocks";
+import { of, Subject } from "rxjs";
 import { AnnotationMapPageComponent } from "./annotation-map.component";
+import { AnnotationMapParameters } from "./annotationMapParameters";
 
 describe("AnnotationMapPageComponent", () => {
   let spec: SpectatorRouting<AnnotationMapPageComponent>;
@@ -115,7 +116,13 @@ describe("AnnotationMapPageComponent", () => {
   const createComponent = createRoutingFactory({
     component: AnnotationMapPageComponent,
     imports: [IconsModule, MapComponent, MockModule(GoogleMapsModule)],
-    providers: [provideMockBawApi(), mockProvider(AnnotationService)],
+    providers: [
+      provideMockBawApi(),
+      mockProvider(AnnotationService),
+      mockProvider(ShallowAudioEventImportFileService, {
+        filter: () => of([]),
+      }),
+    ],
   });
 
   function setup(queryParams: Params = {}): void {
@@ -393,9 +400,11 @@ describe("AnnotationMapPageComponent", () => {
 
       selectFromTypeahead(spec, tagsTypeahead, tags[0].text);
 
-      const updateButton = document.querySelector<HTMLButtonElement>(
-        "#update-filters-btn",
-      );
+      // We have to use a root selector here because the update button is
+      // appended to the document body instead of within the component template.
+      const updateButton = spec.query("#update-filters-btn", {
+        root: true,
+      });
 
       clickButton(spec, updateButton);
 
