@@ -1,27 +1,27 @@
 import {
-  AUDIO_EVENT_PROVENANCE,
-  SHALLOW_REGION,
-  SHALLOW_SITE,
-  TAG,
+    EVENT_PROVENANCE,
+    SHALLOW_REGION,
+    SHALLOW_SITE,
+    TAG,
 } from "@baw-api/ServiceTokens";
-import {
-  CollectionIds,
-  DateTimeTimezone,
-  Id,
-  Param,
-} from "@interfaces/apiInterfaces";
 import { EventSummaryReportParameters } from "@components/reports/pages/event-summary/EventSummaryReportParameters";
 import { reportMenuItems } from "@components/reports/reports.menu";
+import {
+    CollectionIds,
+    DateTimeTimezone,
+    Id,
+    Param,
+} from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
 import { bawCollection, bawDateTime } from "./AttributeDecorators";
-import { Site } from "./Site";
-import { Region } from "./Region";
-import { EventGroup } from "./AudioEventProvenance/EventGroup";
-import { IAudioEventSummaryReportStatistics } from "./AudioEventProvenance/ReportStatistics";
-import { IEventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
-import { Tag } from "./Tag";
 import { AudioEventProvenance } from "./AudioEventProvenance";
+import { EventGroup } from "./AudioEventProvenance/EventGroup";
+import { IEventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
+import { IAudioEventSummaryReportStatistics } from "./AudioEventProvenance/ReportStatistics";
+import { Region } from "./Region";
+import { Site } from "./Site";
+import { Tag } from "./Tag";
 
 export interface IEventSummaryReport {
   id?: Id;
@@ -67,7 +67,7 @@ export class EventSummaryReport
   @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
   @hasMany<EventSummaryReport, AudioEventProvenance>(
-    AUDIO_EVENT_PROVENANCE,
+    EVENT_PROVENANCE,
     "provenanceIds"
   )
   public provenances?: AudioEventProvenance[];

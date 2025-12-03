@@ -1,9 +1,9 @@
 import { fakeAsync, flush } from "@angular/core/testing";
 import {
-  AUDIO_EVENT_PROVENANCE,
   AUDIO_RECORDING,
   EVENT_IMPORT,
   EVENT_IMPORT_FILE,
+  EVENT_PROVENANCE,
   SHALLOW_AUDIO_EVENT,
   TAG,
 } from "@baw-api/ServiceTokens";
@@ -214,7 +214,7 @@ describe("AnnotationsDetailsComponent", () => {
     mockTagsService = spec.inject(TAG.token);
     mockTagsService.show.and.callFake(() => tagsSubject);
 
-    mockProvenanceService = spec.inject(AUDIO_EVENT_PROVENANCE.token);
+    mockProvenanceService = spec.inject(EVENT_PROVENANCE.token);
     mockProvenanceService.show.and.callFake(() => provenanceSubject);
 
     // When deleting a file, we use a modal to confirm that the user wants to

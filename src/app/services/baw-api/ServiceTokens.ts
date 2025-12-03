@@ -49,7 +49,10 @@ import type { AccountsService } from "./account/accounts.service";
 import type { AnalysisJobItemResultsService } from "./analysis/analysis-job-item-result.service";
 import type { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import type { AnalysisJobsService } from "./analysis/analysis-jobs.service";
-import type { AudioEventImportFileService, ShallowAudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
+import type {
+  AudioEventImportFileService,
+  ShallowAudioEventImportFileService,
+} from "./audio-event-import-file/audio-event-import-file.service";
 import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
 import type { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import type {
@@ -157,11 +160,8 @@ export const TAG = new ServiceToken<TagsService, Tag>("TAG");
 export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>("TAG_GROUP");
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
-export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("AUDIO_EVENT_PROVENANCE");
-export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("AUDIO_EVENT_SUMMARY_REPORT");
-export const EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("EVENT_IMPORT");
-export const EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportFileService, AudioEventImportFile>("EVENT_IMPORT_FILE")
-export const SHALLOW_EVENT_IMPORT_FILE = new ServiceToken<ShallowAudioEventImportFileService, AudioEventImportFile>("SHALLOW_EVENT_IMPORT_FILE")
+export const EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>("EVENT_PROVENANCE");
+export const EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>("EVENT_SUMMARY_REPORT");
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const VERIFICATION = new ServiceToken<VerificationService, Verification>("VERIFICATION");
@@ -169,3 +169,8 @@ export const SHALLOW_VERIFICATION = new ServiceToken<ShallowVerificationService,
 export const MEDIA = new ServiceToken<MediaService, never>("MEDIA");
 export const SITE_SETTINGS = new ServiceToken<SiteSettingsService, SiteSetting>("SITE_SETTINGS");
 export const GROUPED_AUDIO_EVENTS = new ServiceToken<GroupedAudioEventsService, AudioEvent>("GROUPED_AUDIO_EVENTS");
+export const EVENT_IMPORT = new ServiceToken<AudioEventImportService, AudioEventImport>("EVENT_IMPORT");
+export const EVENT_IMPORT_FILE = new ServiceToken<AudioEventImportFileService, AudioEventImportFile>("EVENT_IMPORT_FILE")
+export const SHALLOW_EVENT_IMPORT_FILE = new ServiceToken<ShallowAudioEventImportFileService, AudioEventImportFile>(
+  "SHALLOW_EVENT_IMPORT_FILE",
+)
