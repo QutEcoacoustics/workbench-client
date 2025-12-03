@@ -237,5 +237,22 @@
   let-result="result"
   let-searchTerm="term"
 >
-  <ngb-highlight [result]="result.name" [term]="searchTerm" />
+  <ngb-highlight
+    [result]="result.name"
+    [term]="searchTerm"
+    [ngbTooltip]="importFileTooltip"
+    [tooltipContext]="{ result }"
+  />
+</ng-template>
+
+<ng-template #importFileTooltip let-result="result">
+  <div class="import-file-tooltip">
+    <strong>{{ result.fileName }}</strong>
+
+    <hr />
+
+    <ul class="data-list">
+      <li>Created: <baw-zoned-datetime [value]="result.createdAt" /></li>
+    </ul>
+  </div>
 </ng-template>

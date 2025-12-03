@@ -46,6 +46,7 @@ import {
   DateTimeFilterComponent,
   DateTimeFilterModel,
 } from "@shared/date-time-filter/date-time-filter.component";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import {
   ISelectableItem,
   SelectableItemsComponent,
@@ -74,6 +75,7 @@ enum ScoreRangeBounds {
     NgbHighlight,
     NgbTooltip,
     FormsModule,
+    ZonedDateTimeComponent
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
@@ -226,6 +228,9 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = null;
+        current.audioEventImports = null;
+        current.importFiles = null;
+
         return current;
       });
     } else {

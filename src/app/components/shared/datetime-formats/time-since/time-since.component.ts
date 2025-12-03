@@ -4,12 +4,13 @@ import {
   Component,
   WritableSignal,
   effect,
+  inject,
   signal,
 } from "@angular/core";
-import { toRelative } from "@interfaces/apiInterfaces";
-import { DateTime, Duration } from "luxon";
-import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { toRelative } from "@interfaces/apiInterfaces";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { DateTime, Duration } from "luxon";
 import { AbstractTemplateComponent } from "../abstract-template.component";
 import { AbstractDatetimeComponent } from "../datetime/abstract-datetime.component";
 
@@ -26,7 +27,9 @@ export class TimeSinceComponent extends AbstractTemplateComponent<
   InputType,
   DateTime
 > {
-  public constructor(private changeDetector: ChangeDetectorRef) {
+  private readonly changeDetector = inject(ChangeDetectorRef);
+
+  public constructor() {
     super();
 
     effect(() => {

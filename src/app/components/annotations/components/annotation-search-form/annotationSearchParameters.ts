@@ -4,6 +4,7 @@ import {
   AUDIO_RECORDING,
   EVENT_IMPORT,
   PROJECT,
+  SHALLOW_EVENT_IMPORT_FILE,
   SHALLOW_REGION,
   SHALLOW_SITE,
   TAG
@@ -24,7 +25,7 @@ import {
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
-import { hasMany } from "@models/AssociationDecorators";
+import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
@@ -233,10 +234,10 @@ export class AnnotationSearchParameters
   public tagModels?: Tag[];
   @hasMany(EVENT_IMPORT, "audioEventImports")
   public audioEventImportModels?: AudioEventImport[];
-  // @hasMany(SHALLOW_EVENT_IMPORT_FILE, "importFiles", ["audioEventImports"])
-  public importFileModels?: AudioEventImportFile[] = [];
+  @hasManyFilter(SHALLOW_EVENT_IMPORT_FILE, "importFiles", ["audioEventImports"])
+  public importFileModels?: AudioEventImportFile[];
 
-  // TODO: use resolvers here once the association resolver decorators return a promise
+  // TODO: Use associations here once we have async associations
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
   // @hasOne(PROJECT, "routeProjectId")
   public routeProjectModel?: Project;
