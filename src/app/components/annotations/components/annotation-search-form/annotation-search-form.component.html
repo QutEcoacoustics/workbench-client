@@ -245,6 +245,14 @@
   />
 </ng-template>
 
+<!--
+  Users have expressed that it is common to have files with overlapping,
+  duplicate, or not very friendly file names and that other context such as
+  the created date would help differentiate files.
+  To prevent UI clutter (by showing all the information all the time), we
+  show extra information in a tooltip that appears when hovering over the
+  file name.
+-->
 <ng-template #importFileTooltip let-result="result">
   <div class="import-file-tooltip">
     <strong>{{ result.fileName }}</strong>

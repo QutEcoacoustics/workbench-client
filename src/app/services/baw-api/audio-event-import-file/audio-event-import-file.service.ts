@@ -129,7 +129,7 @@ export class ShallowAudioEventImportFileService {
   public filter(
     filters: Filters<AudioEventImportFile>,
     eventImports: CollectionIds<AudioEventImport>,
-  ) {
+  ): Observable<AudioEventImportFile[]> {
     const arrayEventImports = Array.from(eventImports);
 
     return merge(

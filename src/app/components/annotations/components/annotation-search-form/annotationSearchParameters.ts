@@ -219,6 +219,22 @@ export class AnnotationSearchParameters
     public user?: User,
     public injector?: AssociationInjector,
   ) {
+    const hasImportFileFilters = isInstantiated(queryStringParameters["importFiles"]);
+    const hasImportFilters = isInstantiated(queryStringParameters["audioEventImports"]);
+
+    // By removing any invalid combinations of annotation import file filters
+    // and annotation import filters upon parameter model construction, we can
+    // ensure that the query string parameters are corrected, meaning that the
+    // user won't be fooled into thinking that their filters are being applied
+    // when they are not.
+    if (hasImportFileFilters && !hasImportFilters) {
+      console.warn(
+        "Annotation import file filters are expected to be a subset of " +
+          "event import filters. However, no event import filters were provided.",
+      );
+      queryStringParameters.importFiles = null;
+    }
+
     super(queryStringParameters);
   }
 
