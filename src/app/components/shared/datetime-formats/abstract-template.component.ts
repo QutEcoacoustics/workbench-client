@@ -25,6 +25,16 @@ export abstract class AbstractTemplateComponent<
   public readonly value = input.required<NormalizedType, InputType>({
     transform: (newValue) => this.normalizeValue(newValue),
   });
+
+  /**
+   * @description
+   * Whether to show a tooltip with "rich" date time information on hover.
+   * If this input is unset (false), no tooltip will be shown and the
+   * `.has-context` styling (underline) indicating that there is an action on
+   * hover will not be applied.
+   *
+   * @default true
+   */
   public readonly withTooltip = input(true);
 
   // the ISO dateTime is used in the <time> elements "datetime" attribute
