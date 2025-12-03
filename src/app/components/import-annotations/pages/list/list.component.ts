@@ -1,24 +1,30 @@
-import { Component, OnInit } from "@angular/core";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { List } from "immutable";
+import { Component, inject, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
-import { BehaviorSubject, takeUntil } from "rxjs";
-import { AudioEventImport } from "@models/AudioEventImport";
 import { Filters } from "@baw-api/baw-api.service";
-import { Id } from "@interfaces/apiInterfaces";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { ToastService } from "@services/toasts/toasts.service";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import {
+  hasResolvedSuccessfully,
+  ResolvedModelList,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
+import { verificationRoute } from "@components/annotations/annotation.routes";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { Project } from "@models/Project";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ToastService } from "@services/toasts/toasts.service";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { UserLinkComponent } from "@shared/user-link/user-link.component";
-import { UrlDirective } from "@directives/url/url.directive";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { Project } from "@models/Project";
-import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { ActivatedRoute } from "@angular/router";
-import { IPageInfo } from "@helpers/page/pageInfo";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { List } from "immutable";
+import { BehaviorSubject, takeUntil } from "rxjs";
 import {
   annotationsImportCategory,
   annotationsImportMenuItem,
@@ -38,17 +44,16 @@ const projectKey = "project";
     DatetimeComponent,
     UserLinkComponent,
     UrlDirective,
+    StrongRouteDirective,
   ],
 })
 class AnnotationsListComponent extends PageComponent implements OnInit {
-  public constructor(
-    private api: AudioEventImportService,
-    private notifications: ToastService,
-    private modals: NgbModal,
-    protected route: ActivatedRoute,
-  ) {
-    super();
-  }
+  private readonly api = inject(AudioEventImportService);
+  private readonly notifications = inject(ToastService);
+  private readonly modals = inject(NgbModal);
+  private readonly route = inject(ActivatedRoute);
+
+  protected readonly verificationRoute = verificationRoute;
 
   protected filters$: BehaviorSubject<Filters<AudioEventImport>>;
   private defaultFilters: Filters<AudioEventImport> = {
@@ -71,7 +76,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
       if (hasResolvedSuccessfully(models)) {
         this.models = models;
       }
-   }
+    }
   }
 
   protected getModels = (filters: Filters<AudioEventImport>) =>
@@ -79,7 +84,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
 
   protected async deleteEventImport(
     template: any,
-    model: AudioEventImport
+    model: AudioEventImport,
   ): Promise<void> {
     const modelId: Id = model.id;
     const modelName: string = model.name;
