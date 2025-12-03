@@ -1,26 +1,26 @@
 import {
-    ANALYSIS_JOB_ITEM,
-    AUDIO_EVENT_IMPORT,
-    TAG,
+  ANALYSIS_JOB_ITEM,
+  AUDIO_EVENT_IMPORT,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import {
-    CollectionIds,
-    DateTimeTimezone,
-    FilePath,
-    Id,
+  CollectionIds,
+  DateTimeTimezone,
+  FilePath,
+  Id,
 } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { AnalysisJobItem } from "./AnalysisJobItem";
 import { hasMany, hasOne } from "./AssociationDecorators";
 import {
-    bawDateTime,
-    bawPersistAttr,
-    bawSubModelCollection,
+  bawDateTime,
+  bawPersistAttr,
+  bawSubModelCollection,
 } from "./AttributeDecorators";
 import { AudioEventImport } from "./AudioEventImport";
 import {
-    IImportedAudioEvent,
-    ImportedAudioEvent,
+  IImportedAudioEvent,
+  ImportedAudioEvent,
 } from "./AudioEventImport/ImportedAudioEvent";
 import { Tag } from "./Tag";
 
