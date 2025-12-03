@@ -13,11 +13,7 @@ import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import {
-  createComponentFactory,
-  mockProvider,
-  Spectator,
-} from "@ngneat/spectator";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { IconsModule } from "@shared/icons/icons.module";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
@@ -64,16 +60,7 @@ describe("AnnotationSearchFormComponent", () => {
   const createComponent = createComponentFactory({
     component: AnnotationSearchFormComponent,
     imports: [IconsModule],
-    providers: [
-      provideMockBawApi(),
-      mockProvider(ShallowAudioEventImportFileService, {
-        filter: () => of(mockAudioEventImportFiles),
-      }),
-      mockProvider(AudioEventImportService, {
-        show: () => of(mockAudioEventImport),
-        filter: () => of([mockAudioEventImport]),
-      }),
-    ],
+    providers: [provideMockBawApi()],
   });
 
   const sitesTypeahead = () => spec.query("#sites-input");
@@ -102,6 +89,8 @@ describe("AnnotationSearchFormComponent", () => {
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   const eventImportTypeahead = () => spec.query("#event-imports-input");
+  const eventImportTypeaheadInput = () =>
+    eventImportTypeahead().querySelector("input");
   const eventImportFilesTypeahead = () =>
     spec.query("#event-imports-files-input");
 
@@ -116,6 +105,11 @@ describe("AnnotationSearchFormComponent", () => {
     const tagsApi = spec.inject(TagsService);
     const sitesApi = spec.inject(ShallowSitesService);
     const recordingsApi = spec.inject(AudioRecordingsService);
+
+    const eventImportService = spec.inject(AudioEventImportService);
+    const eventImportFileService = spec.inject(
+      ShallowAudioEventImportFileService,
+    );
 
     // so that the models can use their associations, we need to provide the
     // association injector to the mock models
@@ -145,6 +139,20 @@ describe("AnnotationSearchFormComponent", () => {
     }
 
     const response = Promise.all([
+      interceptShowApiRequest(
+        eventImportService,
+        injector,
+        mockAudioEventImport,
+        AudioEventImport,
+      ),
+
+      interceptFilterApiRequest(
+        eventImportFileService as any,
+        injector,
+        mockAudioEventImportFiles,
+        AudioEventImportFile,
+      ),
+
       interceptFilterApiRequest(tagsApi, injector, mockTagsResponse, Tag),
 
       interceptMappedApiRequests(tagsApi.show, mockTagShowResponses),
@@ -577,19 +585,26 @@ describe("AnnotationSearchFormComponent", () => {
     }));
   });
 
-  // TODO: ---Copilot---: DO NOT LET ME FORGET ABOUT THESE TESTS
-  xdescribe("annotation import files", () => {
+  describe("annotation import files", () => {
     it("should clear import files when audio event imports are cleared", fakeAsync(() => {
+      // Note that we set up the component with both audio event imports.
+      // There is only one audio event import on purpose so that we can test
+      // removing the last remaining audio event import and should see that the
+      // import files are also cleared.
       setup({
-        audioEventImports: "1,2",
+        audioEventImports: "1",
         importFiles: "3,4",
       });
 
-      // Clear the audio event imports by calling updateSubModel with empty array
-      spec.component["updateAudioEventImports"]([]);
+      // By pressing backspace in the audio event import typeahead, the last
+      // audio event import should be removed.
+      spec.dispatchKeyboardEvent(
+        eventImportTypeaheadInput(),
+        "keydown",
+        "Backspace",
+      );
       spec.detectChanges();
 
-      // Verify that import files were also cleared
       expect(spec.component.searchParameters().audioEventImports).toEqual([]);
       expect(spec.component.searchParameters().importFiles).toBeNull();
     }));
@@ -600,16 +615,19 @@ describe("AnnotationSearchFormComponent", () => {
         importFiles: "3,4",
       });
 
-      // Call updateSubModel directly without detectChanges to avoid template rendering issues
-      spec.component["updateAudioEventImports"]([mockAudioEventImport]);
+      // Because we started off with two audio event imports, pressing backspace
+      // should remove the last one but still leave one remaining.
+      // Additionally, we should see that the audio event import files are not
+      // cleared.
+      spec.dispatchKeyboardEvent(
+        eventImportTypeaheadInput(),
+        "keydown",
+        "Backspace",
+      );
+      spec.detectChanges();
 
-      // Verify that import files were NOT cleared
-      expect(spec.component.searchParameters().audioEventImports).toEqual([5]);
+      expect(spec.component.searchParameters().audioEventImports).toEqual([1]);
       expect(spec.component.searchParameters().importFiles).toEqual([3, 4]);
     }));
-
-    it("should have the correct tooltip that shows details about the file", () => {
-      setup();
-    });
   });
 });
