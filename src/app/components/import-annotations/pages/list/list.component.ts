@@ -54,14 +54,14 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   protected readonly verificationRoute = verificationRoute;
-
-  protected filters$: BehaviorSubject<Filters<AudioEventImport>>;
-  private defaultFilters: Filters<AudioEventImport> = {
+  private readonly defaultFilters: Filters<AudioEventImport> = {
     sorting: {
       direction: "desc",
       orderBy: "createdAt",
     },
   };
+
+  protected readonly filters$ = new BehaviorSubject(this.defaultFilters);
   private models: ResolvedModelList = {};
 
   public get project(): Project {
@@ -69,8 +69,6 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.filters$ = new BehaviorSubject(this.defaultFilters);
-
     if (this.route) {
       const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
       if (hasResolvedSuccessfully(models)) {
@@ -79,7 +77,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
     }
   }
 
-  protected getModels = (filters: Filters<AudioEventImport>) =>
+  protected readonly getModels = (filters: Filters<AudioEventImport>) =>
     this.api.filter(filters);
 
   protected async deleteEventImport(
