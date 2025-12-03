@@ -606,7 +606,7 @@ describe("AnnotationSearchFormComponent", () => {
       spec.detectChanges();
 
       expect(spec.component.searchParameters().audioEventImports).toEqual([]);
-      expect(spec.component.searchParameters().importFiles).toBeNull();
+      expect(spec.component.searchParameters().importFiles).toEqual([]);
     }));
 
     it("should not clear import files when audio event imports still has values", fakeAsync(() => {

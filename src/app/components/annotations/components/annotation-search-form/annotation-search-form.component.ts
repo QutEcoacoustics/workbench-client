@@ -288,12 +288,17 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected updateAudioEventImports(eventImports: AudioEventImport[]): void {
     // If the user clears the audio event imports, we should also clear the
     // import files because the import files are scoped to the event imports.
+    //
+    // TODO: We probably to clear out any import files that do not belong to an
+    // audio event import that is still selected.
+    // However, this is quite hard without async associations.
+    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
     if (eventImports.length === 0) {
       // Note that updating the search parameters will also update the audio
       // event import files typeahead because the value of the typeahead is
       // bound to the search parameters.
       this.searchParameters.update((current) => {
-        current.importFiles = null;
+        current.importFiles = [];
         return current;
       });
     }
