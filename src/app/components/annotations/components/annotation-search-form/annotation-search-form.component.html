@@ -180,7 +180,7 @@
         "
         [resultTemplate]="importFileTypeaheadTemplate"
         [value]="searchParameters().importFileModels"
-        [inputDisabled]="!hasEventImportFilters()"
+        [inputDisabled]="audioEventImports.length === 0"
         (modelChange)="updateSubModel('importFiles', $event)"
       />
     </div>

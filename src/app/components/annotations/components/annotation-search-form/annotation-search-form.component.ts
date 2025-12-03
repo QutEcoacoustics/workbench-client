@@ -126,9 +126,6 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly project = computed(() => this.searchParameters().routeProjectModel);
   protected readonly region = computed(() => this.searchParameters().routeRegionModel);
   protected readonly site = computed(() => this.searchParameters().routeSiteModel);
-  protected readonly hasEventImportFilters = computed(() =>
-    Array.from(this.searchParameters().audioEventImports ?? []).length > 0,
-  );
 
   public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -142,6 +139,10 @@ export class AnnotationSearchFormComponent implements OnInit {
 
   protected get defaultVerificationStatus(): VerificationStatusKey {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
+  }
+
+  protected get audioEventImports() {
+    return Array.from(this.searchParameters().audioEventImports ?? []);
   }
 
   public ngOnInit(): void {
