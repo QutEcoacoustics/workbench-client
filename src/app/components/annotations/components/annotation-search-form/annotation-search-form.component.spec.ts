@@ -52,8 +52,8 @@ describe("AnnotationSearchFormComponent", () => {
 
   let modelChangeSpy: jasmine.Spy;
 
-  let mockTagsResponse: Tag[] = [];
-  let mockSitesResponse: Site[] = [];
+  let mockTagsResponse: Tag[];
+  let mockSitesResponse: Site[];
   let mockProject: Project;
   let mockRecording: AudioRecording;
   let mockUser: User;
@@ -80,9 +80,6 @@ describe("AnnotationSearchFormComponent", () => {
   const tagsTypeahead = () => spec.query("#tags-input");
   const tagPills = () =>
     tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
-
-  const taskTagTypeahead = () => spec.query("#task-tag-input");
-  const taskTagInput = () => taskTagTypeahead().querySelector("input");
 
   const projectsTypeahead = () => spec.query("#projects-input");
   const projectsInput = () => projectsTypeahead().querySelector("input");
@@ -251,56 +248,6 @@ describe("AnnotationSearchFormComponent", () => {
       const realizedTagPills = tagPills();
       expect(realizedTagPills).toHaveLength(1);
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
-    }));
-
-    // it("should pre-populate the tag task input if provided in the search parameters model", fakeAsync(async () => {
-    //   const testedTag = mockTagsResponse[0];
-
-    //   const response = setup({
-    //     tags: testedTag.id.toString(),
-    //     taskTag: testedTag.id.toString(),
-    //   });
-
-    //   spec.detectChanges();
-    //   await response;
-    //   spec.detectChanges();
-
-    //   expect(spec.component.searchParameters().taskTag).toEqual(testedTag.id);
-    //   expect(taskTagInput()).toHaveValue(testedTag.text);
-    // }));
-
-    // it("should show a placeholder of multiple tag if there is no tag task in the parameter model", fakeAsync(async () => {
-    //   const response = setup({
-    //     tags: `${mockTagsResponse[0].id},${mockTagsResponse[1].id}`,
-    //   });
-
-    //   spec.detectChanges();
-    //   await response;
-    //   spec.detectChanges();
-
-    //   const expectedPlaceholder = `${mockTagsResponse[0].text},${mockTagsResponse[1].text}`;
-    //   expect(taskTagInput()).toHaveProperty("placeholder", expectedPlaceholder);
-    // }));
-
-    // it("should show a placeholder of one tag if there is a tag task in the parameter model", fakeAsync(async () => {
-    //   const testedTag = mockTagsResponse[0];
-
-    //   const response = setup({ tags: `${testedTag.id}` });
-    //   spec.detectChanges();
-    //   await response;
-    //   spec.detectChanges();
-
-    //   expect(taskTagInput()).toHaveProperty("placeholder", testedTag.text);
-    // }));
-
-    xit("should have 'First Tag' placeholder if there are no tag parameters", fakeAsync(async () => {
-      const response = setup({ tags: "" });
-
-      spec.detectChanges();
-      await response;
-      spec.detectChanges();
-
-      expect(taskTagInput()).toHaveProperty("placeholder", "First Tag");
     }));
 
     // check the population of an external component that is not a typeahead input
