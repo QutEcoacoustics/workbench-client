@@ -285,6 +285,22 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.emitUpdate();
   }
 
+  protected updateAudioEventImports(eventImports: AudioEventImport[]): void {
+    // If the user clears the audio event imports, we should also clear the
+    // import files because the import files are scoped to the event imports.
+    if (eventImports.length === 0) {
+      // Note that updating the search parameters will also update the audio
+      // event import files typeahead because the value of the typeahead is
+      // bound to the search parameters.
+      this.searchParameters.update((current) => {
+        current.importFiles = null;
+        return current;
+      });
+    }
+
+    this.updateSubModel("audioEventImports", eventImports);
+  }
+
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
     this.searchParameters.update((current) => {
       if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {

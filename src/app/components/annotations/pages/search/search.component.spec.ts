@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { Params } from "@angular/router";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters, Meta } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -75,6 +76,9 @@ describe("AnnotationSearchComponent", () => {
       mockProvider(TagsService, {
         show: () => of(),
         filter: () => of(),
+      }),
+      mockProvider(ShallowAudioEventImportFileService, {
+        filter: () => of([]),
       }),
       mockProvider(MediaService, {
         // createMediaUrl: () => testAsset("example.flac"),

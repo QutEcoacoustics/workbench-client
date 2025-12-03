@@ -14,7 +14,10 @@
       <ng-template ngbNavContent>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: eventFilters$, getModels: getEventModels }"
+          [bawDatatablePagination]="{
+            filters: eventFilters$,
+            getModels: getEventModels,
+          }"
         >
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -82,10 +85,7 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <a
-                class="btn btn-sm btn-primary"
-                [bawUrl]="value.viewUrl"
-              >
+              <a class="btn btn-sm btn-primary" [bawUrl]="value.viewUrl">
                 View
               </a>
             </ng-template>
@@ -99,7 +99,10 @@
       <ng-template ngbNavContent>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: fileFilters$, getModels: getFileModels }"
+          [bawDatatablePagination]="{
+            filters: fileFilters$,
+            getModels: getFileModels,
+          }"
         >
           <ngx-datatable-column prop="id" [width]="30">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -168,7 +171,10 @@
                   class="verify-button btn btn-sm btn-outline-primary"
                   [strongRoute]="verificationRoute.project"
                   [routeParams]="{ projectId: project.id }"
-                  [queryParams]="{ importFiles: value.id }"
+                  [queryParams]="{
+                    importFiles: value.id,
+                    audioEventImports: value.audioEventImportId,
+                  }"
                 >
                   Verify
                 </a>

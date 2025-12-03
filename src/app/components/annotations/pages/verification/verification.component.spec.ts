@@ -416,7 +416,7 @@ describe("VerificationComponent", () => {
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
-    spec.click(target);
+    clickButton(spec, target);
   }
 
   function showParameters(): void {

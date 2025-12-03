@@ -160,18 +160,18 @@
       <baw-typeahead-input
         #eventImportsTypeahead
         id="event-imports-input"
-        label="Audio event imports"
+        label="Annotation imports"
         inputPlaceholder="All"
         [searchCallback]="eventImportApi.typeaheadCallback()"
         [resultTemplate]="nameTypeaheadTemplate"
         [value]="searchParameters().audioEventImportModels"
-        (modelChange)="updateSubModel('audioEventImports', $event)"
+        (modelChange)="updateAudioEventImports($event)"
       />
 
       <baw-typeahead-input
         #eventImportFilesTypeahead
         id="event-imports-files-input"
-        label="Audio event import files"
+        label="Annotation import files"
         inputPlaceholder="All"
         [searchCallback]="
           eventImportFileApi.typeaheadCallback(

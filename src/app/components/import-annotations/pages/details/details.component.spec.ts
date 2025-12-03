@@ -1,11 +1,11 @@
 import { fakeAsync, flush } from "@angular/core/testing";
 import {
-    AUDIO_EVENT_PROVENANCE,
-    AUDIO_RECORDING,
-    EVENT_IMPORT,
-    EVENT_IMPORT_FILE,
-    SHALLOW_AUDIO_EVENT,
-    TAG,
+  AUDIO_EVENT_PROVENANCE,
+  AUDIO_RECORDING,
+  EVENT_IMPORT,
+  EVENT_IMPORT_FILE,
+  SHALLOW_AUDIO_EVENT,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
@@ -27,9 +27,9 @@ import { Project } from "@models/Project";
 import { Tag } from "@models/Tag";
 import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
-    createRoutingFactory,
-    SpectatorRouting,
-    SpyObject,
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
 } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -361,7 +361,11 @@ describe("AnnotationsDetailsComponent", () => {
       const expectedLinks = mockAudioEventImportFiles.map(
         (file: AudioEventImportFile) => {
           const routeParams = { projectId: mockProject.id };
-          const queryParams = { importFiles: file.id };
+          const queryParams = {
+            importFiles: file.id,
+            audioEventImports: file.audioEventImportId,
+          };
+
           return { routeParams, queryParams };
         },
       );

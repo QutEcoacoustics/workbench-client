@@ -1,48 +1,50 @@
+import { fakeAsync, tick } from "@angular/core/testing";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AUDIO_RECORDING, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import {
   createComponentFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Project } from "@models/Project";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { AUDIO_RECORDING, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
-import { Tag } from "@models/Tag";
-import { of } from "rxjs";
-import { generateTag } from "@test/fakes/Tag";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
+import { generateTag } from "@test/fakes/Tag";
+import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import {
+  interceptFilterApiRequest,
+  interceptMappedApiRequests,
+  interceptShowApiRequest,
+} from "@test/helpers/general";
 import {
   getElementByTextContent,
   selectFromTypeahead,
   toggleDropdown,
   waitForDropdown,
 } from "@test/helpers/html";
-import { fakeAsync, tick } from "@angular/core/testing";
-import { modelData } from "@test/helpers/faker";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { Id } from "@interfaces/apiInterfaces";
-import {
-  interceptFilterApiRequest,
-  interceptMappedApiRequests,
-  interceptShowApiRequest,
-} from "@test/helpers/general";
-import { IconsModule } from "@shared/icons/icons.module";
+import { of } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
+import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 import {
   AnnotationSearchParameters,
   IAnnotationSearchParameters,
   SortingKey,
 } from "./annotationSearchParameters";
-import { AnnotationSearchFormComponent } from "./annotation-search-form.component";
 
 describe("AnnotationSearchFormComponent", () => {
   let spec: Spectator<AnnotationSearchFormComponent>;
@@ -92,6 +94,7 @@ describe("AnnotationSearchFormComponent", () => {
   const advancedFiltersCollapsable = () =>
     spec.query(".advanced-filters>[ng-reflect-collapsed]");
   const recordingsTypeahead = () => spec.query("#recordings-input");
+  const eventImportFilesTypeahead = () => spec.query("#event-imports-files-input");
 
   const sortingDropdown = () => spec.query("#sort-input");
 
@@ -360,6 +363,59 @@ describe("AnnotationSearchFormComponent", () => {
       toggleDropdown(spec, advancedFiltersToggle());
 
       expect(spec.component.searchParameters().audioRecordings).toHaveLength(0);
+    }));
+
+    it("should clear import files when audio event imports are cleared", fakeAsync(() => {
+      setup();
+
+      // Set up initial state with audio event imports and import files
+      spec.component.searchParameters.update((current) => {
+        current.audioEventImports = [1, 2];
+        current.importFiles = [3, 4];
+        return current;
+      });
+
+      // Clear the audio event imports by calling updateSubModel with empty array
+      spec.component["updateSubModel"]("audioEventImports", []);
+      spec.detectChanges();
+
+      // Verify that import files were also cleared
+      expect(spec.component.searchParameters().audioEventImports).toEqual([]);
+      expect(spec.component.searchParameters().importFiles).toBeNull();
+    }));
+
+    it("should not clear import files when audio event imports still has values", fakeAsync(() => {
+      setup();
+
+      // Set up initial state with audio event imports and import files
+      spec.component.searchParameters.update((current) => {
+        current.audioEventImports = [1, 2];
+        current.importFiles = [3, 4];
+        return current;
+      });
+
+      // Update audio event imports with a non-empty array (using a mock model)
+      const mockImport = new AudioEventImport(generateAudioEventImport({ id: 5 }));
+      mockImport["injector"] = injector;
+
+      // Call updateSubModel directly without detectChanges to avoid template rendering issues
+      spec.component["updateSubModel"]("audioEventImports", [mockImport]);
+
+      // Verify that import files were NOT cleared
+      expect(spec.component.searchParameters().audioEventImports).toEqual([5]);
+      expect(spec.component.searchParameters().importFiles).toEqual([3, 4]);
+    }));
+
+    it("should disable the import files typeahead when no audio event imports are selected", fakeAsync(() => {
+      setup();
+
+      // Open advanced filters
+      toggleDropdown(spec, advancedFiltersToggle());
+      waitForDropdown(spec);
+
+      // Initially, no audio event imports are selected, so import files should be disabled
+      const importFilesInput = eventImportFilesTypeahead()?.querySelector("input");
+      expect(importFilesInput).toBeDisabled();
     }));
   });
 
