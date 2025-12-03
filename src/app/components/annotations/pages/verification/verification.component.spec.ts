@@ -416,7 +416,7 @@ describe("VerificationComponent", () => {
 
     return decisionComponents()[index].shadowRoot.querySelector(
       "#decision-button",
-    )
+    );
   }
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
