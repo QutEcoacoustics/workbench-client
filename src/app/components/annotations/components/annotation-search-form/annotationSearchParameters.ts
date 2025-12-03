@@ -7,7 +7,7 @@ import {
   SHALLOW_EVENT_IMPORT_FILE,
   SHALLOW_REGION,
   SHALLOW_SITE,
-  TAG
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
@@ -234,7 +234,9 @@ export class AnnotationSearchParameters
   public tagModels?: Tag[];
   @hasMany(EVENT_IMPORT, "audioEventImports")
   public audioEventImportModels?: AudioEventImport[];
-  @hasManyFilter(SHALLOW_EVENT_IMPORT_FILE, "importFiles", ["audioEventImports"])
+  @hasManyFilter(SHALLOW_EVENT_IMPORT_FILE, "importFiles", [
+    "audioEventImports",
+  ])
   public importFileModels?: AudioEventImportFile[];
 
   // TODO: Use associations here once we have async associations
@@ -414,26 +416,39 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
+    const hasImportFilters =
+      isInstantiated(this.audioEventImports) &&
+      Array.from(this.audioEventImports).length > 0;
+    const hasImportFileFilters =
+      isInstantiated(this.importFiles) &&
+      Array.from(this.importFiles).length > 0;
+
     // Annotation imports and annotation import file filters are mutually
     // exclusive because an annotation import file will always be a part of an
     // exiting annotation import.
     // This means that we can exclude the annotation import filter conditions if
     // there are also annotation import file filters.
-    if (
-      isInstantiated(this.importFiles) &&
-      Array.from(this.importFiles).length !== 0
-    ) {
+    if (hasImportFileFilters) {
       const importFileFilters = {
         audioEventImportFileId: {
           in: Array.from(this.importFiles),
         },
       };
 
+      // Because annotation import files are expected to be a subset of the
+      // annotation import filters, if there are no annotation import filters,
+      // this is an indication that something has gone wrong.
+      // Therefore, if we encounter any import file filters without any import
+      // filters, we log a warning to help with debugging.
+      if (!hasImportFilters) {
+        console.warn(
+          "Annotation import file filters are expected to be a subset of " +
+            "event import filters. However, no event import filters were provided.",
+        );
+      }
+
       return filterAnd(initialFilter, importFileFilters);
-    } else if (
-      isInstantiated(this.audioEventImports) &&
-      Array.from(this.audioEventImports).length !== 0
-    ) {
+    } else if (hasImportFilters) {
       const importFilters = {
         "audioEventImports.id": {
           in: Array.from(this.audioEventImports),

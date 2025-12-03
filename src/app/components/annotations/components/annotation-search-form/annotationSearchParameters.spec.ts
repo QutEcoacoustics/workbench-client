@@ -1,11 +1,11 @@
-import { modelData } from "@test/helpers/faker";
-import { Project } from "@models/Project";
+import { Params } from "@angular/router";
 import { Filters, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { Params } from "@angular/router";
-import { DateTime } from "luxon";
+import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { DateTime } from "luxon";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 interface SearchParameterTest {
@@ -100,6 +100,7 @@ describe("annotationSearchParameters", () => {
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
+        audioEventImports: "42",
         importFiles: "1,12,23",
         recordingDate: ",2020-03-01",
         score: "0.5,0.9",
@@ -122,6 +123,9 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
+            // Notice that even though "audioEventImports" was set, we only
+            // apply import file filters because the files are expected to be a
+            // subset of the import files.
             { audioEventImportFileId: { in: [1, 12, 23] } },
             {
               "sites.id": {
@@ -235,6 +239,25 @@ describe("annotationSearchParameters", () => {
                 { "verifications.confirmed": { eq: null } },
                 { "verifications.confirmed": { eq: "skip" } },
               ],
+            },
+          ],
+        },
+        sorting: defaultSorting,
+      }),
+    },
+    {
+      name: "should create correct filter when audioEventImports is set",
+      inputParams: {
+        audioEventImports: "1,2,3",
+      },
+      expectedFilters: () => ({
+        filter: {
+          and: [
+            { "audioEventImports.id": { in: [1, 2, 3] } },
+            {
+              "projects.id": {
+                in: [routeProject.id],
+              },
             },
           ],
         },
