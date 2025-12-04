@@ -26,7 +26,7 @@ import {
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { toNumber } from "@helpers/typing/toNumber";
-import { CollectionIds, Id } from "@interfaces/apiInterfaces";
+import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
 import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -51,17 +51,7 @@ export type SortingKey =
   | "created-asc"
   | "created-desc";
 
-type EventImport = SerializedEventImport | SerializedEventImportFile;
-
-interface SerializedEventImport {
-  audioEventImport: Id<AudioEventImport>;
-  audioEventImportFile: null;
-}
-
-interface SerializedEventImportFile {
-  audioEventImport: Id<AudioEventImport>;
-  audioEventImportFile: Id<AudioEventImportFile>;
-}
+type EventImports = Map<Id<AudioEventImport>, Ids<AudioEventImportFile>>;
 
 // prettier-ignore
 export const sortingOptions = new Map([
@@ -121,7 +111,7 @@ export interface IAnnotationSearchParameters {
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
-  imports: EventImport[];
+  imports: EventImports;
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -155,24 +145,39 @@ export interface IAnnotationSearchParameters {
 }
 
 const eventImportArraySerialization = {
-  serialize: (value: EventImport[]): string => {
-    return value
-      .map(
-        (item) => `${item.audioEventImport}:${item.audioEventImportFile ?? ""}`,
-      )
-      .join(",");
-  },
-  deserialize: (value: string): EventImport[] => {
-    return value.split(",").map((item) => {
-      const [audioEventImport, audioEventImportFile] = item
-        .split(":")
-        .map(toNumber);
+  serialize: (value: EventImports): string => {
+    const entries = Array.from(value.entries()).map(([importId, fileIds]) => {
+      if (fileIds.size === 0) {
+        return `${importId}:`;
+      }
 
-      return {
-        audioEventImport,
-        audioEventImportFile,
-      };
+      return Array.from(fileIds)
+        .map((fileId) => `${importId}:${fileId}`)
+        .join(",");
     });
+
+    return entries.join(",");
+  },
+  deserialize: (urlString: string): EventImports => {
+    const stagedImports = new Map<
+      Id<AudioEventImport>,
+      Ids<AudioEventImportFile>
+    >();
+
+    const importPairs = urlString.split(",");
+    for (const pair of importPairs) {
+      const [importIdString, fileIdString] = pair.split(":").map(toNumber);
+
+      const existingImport = stagedImports.get(importIdString);
+      if (existingImport) {
+        existingImport.add(fileIdString);
+      } else {
+        const newSet = new Set([fileIdString]);
+        stagedImports.set(importIdString, newSet);
+      }
+    }
+
+    return stagedImports;
   },
 } as const satisfies SerializationTechnique;
 
@@ -228,7 +233,7 @@ export class AnnotationSearchParameters
   /**
    * A grouping of audio_event_imports:audio_event_import_file
    */
-  public imports: EventImport[];
+  public imports: EventImports;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -309,27 +314,17 @@ export class AnnotationSearchParameters
   }
 
   public get eventImports(): Id<AudioEventImport>[] {
-    if (!isInstantiated(this.imports)) {
-      return [];
-    }
-
-    const nonUnique = this.imports
-      .map((importPair) => importPair.audioEventImport)
-      .filter(isInstantiated);
-
-    return Array.from(new Set(nonUnique));
+    return Array.from(this.imports.keys());
   }
 
   public get eventImportFiles(): Id<AudioEventImportFile>[] {
-    if (!isInstantiated(this.imports)) {
-      return [];
-    }
+    const fileIds: Id<AudioEventImportFile>[] = [];
 
-    const nonUnique = this.imports
-      .map((importPair) => importPair.audioEventImportFile)
-      .filter(isInstantiated);
+    this.imports.forEach((item) => {
+      fileIds.push(...item.values());
+    });
 
-    return Array.from(new Set(nonUnique));
+    return fileIds;
   }
 
   public updateEventImports(eventImports: AudioEventImport[]): void {
@@ -340,7 +335,7 @@ export class AnnotationSearchParameters
     // audioEventImportFile.
     // Any items that are in both arrays should retain their existing
     // audioEventImportFile value.
-    const updatedImports: EventImport[] = [];
+    const updatedImports: EventImports[] = [];
 
     const existingImportsMap = new Map(
       (this.imports ?? []).map((item) => [item.audioEventImport, item]),
