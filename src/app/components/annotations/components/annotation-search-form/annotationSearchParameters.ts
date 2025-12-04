@@ -350,6 +350,7 @@ export class AnnotationSearchParameters
 
     this.imports = updatedImports;
   }
+
   public updateEventImportFiles(importFiles: AudioEventImportFile[]): void {
     // Work on a shallow copy so we don't mutate the original reference
     // and initialize to an empty array if undefined.
