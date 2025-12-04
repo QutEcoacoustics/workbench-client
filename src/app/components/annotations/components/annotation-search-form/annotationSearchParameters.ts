@@ -532,6 +532,10 @@ export class AnnotationSearchParameters
   ): InnerFilter<AudioEvent> {
     let updatedFilters: InnerFilter<AudioEvent> = {};
 
+    if (!isInstantiated(this.imports) || this.imports.length === 0) {
+      return initialFilter;
+    }
+
     for (const importPair of this.imports) {
       const importId = importPair.audioEventImport;
       const importFileId = importPair.audioEventImportFile;
