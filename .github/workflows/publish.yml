@@ -1,4 +1,3 @@
-
 name: "Publish"
 
 on:
@@ -13,11 +12,48 @@ on:
       release_tag:
         required: true
         type: string
+  push:
+    branches:
+      - master
 
 jobs:
+  baw-client:
+    uses: ./.github/workflows/baw-client.yml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: baw-client
+
+    steps:
+      - name: Checkout Workbench Client
+        uses: nschloe/action-cached-lfs-checkout@v1
+
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install project dependencies
+        run: npm ci --force
+
+      - name: Build the workbench client
+        run: npm run build
+
+      - name: Publish build files
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./dist/workbench-client/
+          name: workbench-client
+
   publish:
     name: "Publish Docker Container"
+    needs: [build]
     runs-on: "ubuntu-latest"
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.actor != 'kodiakhq[bot]' &&
+      (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
     # cancel any other CI attempting to publish to docker
     concurrency:
       group: publish-container
@@ -46,4 +82,4 @@ jobs:
         shell: pwsh
         run: ./scripts/build_docker.ps1
           -github_actor '${{ github.actor }}'
-          -release_tag '${{ inputs.release_tag }}'
+          -release_tag '${{ inputs.release_tag || 'beta' }}'
