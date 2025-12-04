@@ -178,6 +178,7 @@
         "
         [resultTemplate]="importFileTypeaheadTemplate"
         [value]="searchParameters().importFileModels"
+        [inputDisabled]="searchParameters().eventImports.length === 0"
         (modelChange)="updateImportFiles($event)"
       />
     </div>
