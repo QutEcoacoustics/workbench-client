@@ -109,7 +109,7 @@ export interface IAnnotationSearchParameters {
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
-  audioEventImports: SerializedEventImport[];
+  imports: SerializedEventImport[];
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -180,7 +180,7 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
 
-    audioEventImports: eventImportArraySerialization,
+    imports: eventImportArraySerialization,
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -221,7 +221,7 @@ export class AnnotationSearchParameters
   /**
    * A grouping of audio_event_imports:audio_event_import_file
    */
-  public audioEventImports: SerializedEventImport[];
+  public imports: SerializedEventImport[];
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -302,7 +302,7 @@ export class AnnotationSearchParameters
   }
 
   public get eventImports(): Id<AudioEventImport>[] {
-    const nonUnique = (this.audioEventImports ?? [])
+    const nonUnique = (this.imports ?? [])
       .map((importPair) => importPair.audioEventImport)
       .filter(isInstantiated);
 
@@ -310,7 +310,7 @@ export class AnnotationSearchParameters
   }
 
   public get importFiles(): Id<AudioEventImportFile>[] {
-    const nonUnique = (this.audioEventImports ?? [])
+    const nonUnique = (this.imports ?? [])
       .map((importPair) => importPair.audioEventImportFile)
       .filter(isInstantiated);
 
@@ -328,7 +328,7 @@ export class AnnotationSearchParameters
     const updatedImports: SerializedEventImport[] = [];
 
     const existingImportsMap = new Map(
-      (this.audioEventImports ?? []).map((item) => [
+      (this.imports ?? []).map((item) => [
         item.audioEventImport,
         item,
       ]),
@@ -348,13 +348,13 @@ export class AnnotationSearchParameters
       }
     }
 
-    this.audioEventImports = updatedImports;
+    this.imports = updatedImports;
   }
 
   public updateEventImportFiles(importFiles: AudioEventImportFile[]): void {
     // Work on a shallow copy so we don't mutate the original reference
     // and initialize to an empty array if undefined.
-    let updatedImports = (this.audioEventImports ?? []).slice();
+    let updatedImports = (this.imports ?? []).slice();
 
     for (const importFile of importFiles) {
       // If there is currently an import without an audioEventImportFile (null)
@@ -383,7 +383,7 @@ export class AnnotationSearchParameters
       }
     }
 
-    this.audioEventImports = updatedImports;
+    this.imports = updatedImports;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {
@@ -532,7 +532,7 @@ export class AnnotationSearchParameters
   ): InnerFilter<AudioEvent> {
     let updatedFilters: InnerFilter<AudioEvent> = {};
 
-    for (const importPair of this.audioEventImports) {
+    for (const importPair of this.imports) {
       const importId = importPair.audioEventImport;
       const importFileId = importPair.audioEventImportFile;
 

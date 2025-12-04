@@ -18,8 +18,7 @@ const annotationSearchRouteQueryParamResolver = (
         tags: params.tags,
         score: params.score,
 
-        audioEventImports: params.audioEventImports,
-        importFiles: params.importFiles,
+        imports: params.imports,
 
         projects: params.projects,
         regions: params.regions,
@@ -43,8 +42,7 @@ const annotationMapRouteQueryParamResolver = (params) =>
         tags: params.tags,
         score: params.score,
 
-        audioEventImports: params.audioEventImports,
-        importFiles: params.importFiles,
+        imports: params.imports,
 
         projects: params.projects,
         regions: params.regions,

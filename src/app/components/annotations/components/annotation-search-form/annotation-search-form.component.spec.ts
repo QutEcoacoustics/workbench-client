@@ -364,10 +364,7 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     xit("should pre-populate the annotation imports correctly", fakeAsync(() => {
-      setup({
-        audioEventImports: "1,2,3",
-        importFiles: "4,5",
-      });
+      setup({ imports: "1:4,2:5,3:" });
 
       expect(advancedFiltersCollapsable()).toHaveClass("show");
 
@@ -383,7 +380,7 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     it("should not populate import files if there are no annotation imports", fakeAsync(() => {
-      setup({ importFiles: "4,5" });
+      setup({ imports: "4:,5:" });
 
       // We expect that the advanced filters section is not opened because
       // although there are annotation import files, there are no annotation
@@ -593,9 +590,9 @@ describe("AnnotationSearchFormComponent", () => {
   describe("annotation import files", () => {
     it("should remove import files that no longer belong to an annotation import", fakeAsync(() => {
       mockAudioEventImports = [
-        new AudioEventImport({ id: 1, }),
-        new AudioEventImport({ id: 2, }),
-        new AudioEventImport({ id: 3, }),
+        new AudioEventImport({ id: 1 }),
+        new AudioEventImport({ id: 2 }),
+        new AudioEventImport({ id: 3 }),
       ];
 
       mockAudioEventImportFiles = [
@@ -604,10 +601,7 @@ describe("AnnotationSearchFormComponent", () => {
         new AudioEventImportFile({ id: 3, audioEventImportId: 3 }),
       ];
 
-      setup({
-        audioEventImports: "1,2,3",
-        importFiles: "1,2,3",
-      });
+      setup({ imports: "1:1,2:2,3:3" });
 
       // Because we started off with two audio event imports, pressing backspace
       // should remove the last one but still leave one remaining.
@@ -624,14 +618,20 @@ describe("AnnotationSearchFormComponent", () => {
       // belong to audio event imports 1 and 2 respectively.
       // However, the import file "3" has been removed because its parent
       // audio event import "3" has been removed.
-      expect(spec.component.searchParameters().audioEventImports).toEqual([1, 2]);
-      expect(spec.component.searchParameters().importFiles).toEqual([1, 2]);
+      expect(spec.component.searchParameters().imports).toEqual([
+        {
+          audioEventImport: jasmine.objectContaining({ id: 1 }),
+          audioEventImportFile: jasmine.objectContaining({ id: 1 }),
+        },
+        {
+          audioEventImport: jasmine.objectContaining({ id: 2 }),
+          audioEventImportFile: jasmine.objectContaining({ id: 2 }),
+        },
+      ]);
     }));
 
     it("should clear import files when audio event imports are cleared", fakeAsync(() => {
-      mockAudioEventImports = [
-        new AudioEventImport({ id: 1, }),
-      ];
+      mockAudioEventImports = [new AudioEventImport({ id: 1 })];
 
       mockAudioEventImportFiles = [
         new AudioEventImportFile({ id: 1, audioEventImportId: 1 }),
@@ -641,10 +641,7 @@ describe("AnnotationSearchFormComponent", () => {
       // There is only one audio event import on purpose so that we can test
       // removing the last remaining audio event import and should see that the
       // import files are also cleared.
-      setup({
-        audioEventImports: "1",
-        importFiles: "1",
-      });
+      setup({ imports: "1:1" });
 
       // By pressing backspace in the audio event import typeahead, the last
       // audio event import should be removed.
@@ -655,7 +652,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
       spec.detectChanges();
 
-      expect(spec.component.searchParameters().audioEventImports).toEqual([]);
+      expect(spec.component.searchParameters().imports).toEqual([]);
       expect(spec.component.searchParameters().importFiles).toEqual([]);
     }));
   });

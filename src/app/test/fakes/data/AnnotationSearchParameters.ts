@@ -5,8 +5,6 @@ export function generateAnnotationSearchUrlParams(data?: Params): Params {
   return {
     audioRecordings: modelData.ids().join(","),
     tags: modelData.ids().join(","),
-    audioEventImports: modelData.ids().join(","),
-    importFiles: modelData.ids().join(","),
     score: [modelData.datatype.number(), modelData.datatype.number()].join(","),
     daylightSavings: modelData.bool().toString(),
     projects: modelData.ids().join(","),
@@ -14,6 +12,9 @@ export function generateAnnotationSearchUrlParams(data?: Params): Params {
     sites: modelData.ids().join(","),
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
+    imports: modelData
+      .randomArray(1, 5, () => `${modelData.id()}:${modelData.id()}`)
+      .join(","),
     ...data,
   };
 }

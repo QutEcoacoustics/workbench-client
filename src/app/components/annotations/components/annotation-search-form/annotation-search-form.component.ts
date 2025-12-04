@@ -147,8 +147,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     // see that advanced filters are applied.
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
-      "audioEventImports",
-      "importFiles",
+      "imports",
     ];
 
     for (const key of advancedFilterKeys) {
@@ -225,7 +224,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = [];
-        current.audioEventImports = [];
+        current.imports = [];
         return current;
       });
 
