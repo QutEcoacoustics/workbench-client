@@ -57,8 +57,8 @@ describe("AnnotationMapPageComponent", () => {
   let audioEvents: AudioEvent[];
   let tags: Tag[];
 
-  let annotationMapParameters: AnnotationMapParameters;
-  let annotationSearchParameters: AnnotationSearchParameters;
+  let mapParameters: AnnotationMapParameters;
+  let searchParameters: AnnotationSearchParameters;
 
   let routerSpy: Router;
   let modalSpy: NgbModal;
@@ -130,12 +130,12 @@ describe("AnnotationMapPageComponent", () => {
     region = new Region(generateRegion());
     site = new Site(generateSite());
 
-    annotationMapParameters = new AnnotationMapParameters(queryParams);
-    annotationSearchParameters = new AnnotationSearchParameters(queryParams);
+    mapParameters = new AnnotationMapParameters(queryParams);
+    searchParameters = new AnnotationSearchParameters(queryParams);
 
     // These would typically be set by the annotationSearchParameters resolver
     // but since we are mocking the resolver, we have to set them here.
-    annotationSearchParameters.routeProjectId = project.id;
+    searchParameters.routeProjectId = project.id;
 
     spec = createComponent({
       detectChanges: false,
@@ -150,8 +150,8 @@ describe("AnnotationMapPageComponent", () => {
         project: { model: project },
         region: { model: region },
         site: { model: site },
-        annotationMapParameters: { model: annotationMapParameters },
-        annotationSearchParameters: { model: annotationSearchParameters },
+        annotationMapParameters: { model: mapParameters },
+        annotationSearchParameters: { model: searchParameters },
       },
       queryParams,
     });
@@ -256,20 +256,20 @@ describe("AnnotationMapPageComponent", () => {
       const expectedFilters = {
         filter: {
           and: [
-            { "tags.id": { in: annotationSearchParameters.tags } },
+            { "tags.id": { in: searchParameters.tags } },
             {
               "audioRecordings.id": {
-                in: annotationSearchParameters.audioRecordings,
+                in: searchParameters.audioRecordings,
               },
             },
             {
-              audioEventImportFileId: {
-                in: annotationSearchParameters.importFiles,
-              },
+              or: Array.from(searchParameters.importFiles).map((id) => ({
+                audioEventImportFileId: { eq: id },
+              })),
             },
-            { "sites.id": { in: annotationSearchParameters.sites } },
-            { score: { gteq: annotationSearchParameters.scoreLowerBound } },
-            { score: { lteq: annotationSearchParameters.scoreUpperBound } },
+            { "sites.id": { in: searchParameters.sites } },
+            { score: { gteq: searchParameters.scoreLowerBound } },
+            { score: { lteq: searchParameters.scoreUpperBound } },
           ],
         },
       };
@@ -324,7 +324,7 @@ describe("AnnotationMapPageComponent", () => {
       // We should not see the "focused" url parameter in the "show more" link
       // because it is not a valid url parameter for the annotation search page.
       expect(showMoreLink).toHaveStrongRoute(annotationSearchRoute.project, {
-        queryParams: annotationSearchParameters.toQueryParams(),
+        queryParams: searchParameters.toQueryParams(),
         routeParams: {
           projectId: project.id,
           regionId: region.id,
@@ -380,7 +380,7 @@ describe("AnnotationMapPageComponent", () => {
       const componentInstance = (window as any).ng.getComponent(form);
 
       expect(componentInstance.searchParameters()).toEqual(
-        annotationSearchParameters,
+        searchParameters,
       );
     }));
 
