@@ -177,7 +177,7 @@
           eventImportFileApi.typeaheadCallback(searchParameters().eventImports)
         "
         [resultTemplate]="importFileTypeaheadTemplate"
-        [value]="searchParameters().importFileModels"
+        [value]="searchParameters().eventImportFileModels"
         [inputDisabled]="searchParameters().eventImports.length === 0"
         (modelChange)="updateImportFiles($event)"
       />

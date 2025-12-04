@@ -637,7 +637,7 @@ describe("AnnotationSearchFormComponent", () => {
       spec.detectChanges();
 
       expect(spec.component.searchParameters().imports).toEqual([]);
-      expect(spec.component.searchParameters().importFiles).toEqual([]);
+      expect(spec.component.searchParameters().eventImportFiles).toEqual([]);
     }));
   });
 });

@@ -51,6 +51,18 @@ export type SortingKey =
   | "created-asc"
   | "created-desc";
 
+type EventImport = SerializedEventImport | SerializedEventImportFile;
+
+interface SerializedEventImport {
+  audioEventImport: Id<AudioEventImport>;
+  audioEventImportFile: null;
+}
+
+interface SerializedEventImportFile {
+  audioEventImport: Id<AudioEventImport>;
+  audioEventImportFile: Id<AudioEventImportFile>;
+}
+
 // prettier-ignore
 export const sortingOptions = new Map([
   ["score-asc", {
@@ -109,7 +121,7 @@ export interface IAnnotationSearchParameters {
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
-  imports: SerializedEventImport[];
+  imports: EventImport[];
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -142,20 +154,15 @@ export interface IAnnotationSearchParameters {
   verificationStatus: VerificationStatusKey;
 }
 
-interface SerializedEventImport {
-  audioEventImport: Id<AudioEventImport>;
-  audioEventImportFile: Id<AudioEventImportFile> | null;
-}
-
 const eventImportArraySerialization = {
-  serialize: (value: SerializedEventImport[]): string => {
+  serialize: (value: EventImport[]): string => {
     return value
       .map(
         (item) => `${item.audioEventImport}:${item.audioEventImportFile ?? ""}`,
       )
       .join(",");
   },
-  deserialize: (value: string): SerializedEventImport[] => {
+  deserialize: (value: string): EventImport[] => {
     return value.split(",").map((item) => {
       const [audioEventImport, audioEventImportFile] = item
         .split(":")
@@ -221,7 +228,7 @@ export class AnnotationSearchParameters
   /**
    * A grouping of audio_event_imports:audio_event_import_file
    */
-  public imports: SerializedEventImport[];
+  public imports: EventImport[];
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -263,10 +270,10 @@ export class AnnotationSearchParameters
   public tagModels?: Tag[];
   @hasMany(AUDIO_EVENT_IMPORT, "eventImports")
   public eventImportModels?: AudioEventImport[];
-  @hasManyFilter(SHALLOW_AUDIO_EVENT_IMPORT_FILE, "importFiles", [
+  @hasManyFilter(SHALLOW_AUDIO_EVENT_IMPORT_FILE, "eventImportFiles", [
     "eventImports",
   ])
-  public importFileModels?: AudioEventImportFile[];
+  public eventImportFileModels?: AudioEventImportFile[];
 
   // TODO: Use associations here once we have async associations
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
@@ -302,15 +309,23 @@ export class AnnotationSearchParameters
   }
 
   public get eventImports(): Id<AudioEventImport>[] {
-    const nonUnique = (this.imports ?? [])
+    if (!isInstantiated(this.imports)) {
+      return [];
+    }
+
+    const nonUnique = this.imports
       .map((importPair) => importPair.audioEventImport)
       .filter(isInstantiated);
 
     return Array.from(new Set(nonUnique));
   }
 
-  public get importFiles(): Id<AudioEventImportFile>[] {
-    const nonUnique = (this.imports ?? [])
+  public get eventImportFiles(): Id<AudioEventImportFile>[] {
+    if (!isInstantiated(this.imports)) {
+      return [];
+    }
+
+    const nonUnique = this.imports
       .map((importPair) => importPair.audioEventImportFile)
       .filter(isInstantiated);
 
@@ -325,13 +340,10 @@ export class AnnotationSearchParameters
     // audioEventImportFile.
     // Any items that are in both arrays should retain their existing
     // audioEventImportFile value.
-    const updatedImports: SerializedEventImport[] = [];
+    const updatedImports: EventImport[] = [];
 
     const existingImportsMap = new Map(
-      (this.imports ?? []).map((item) => [
-        item.audioEventImport,
-        item,
-      ]),
+      (this.imports ?? []).map((item) => [item.audioEventImport, item]),
     );
 
     for (const eventImport of eventImports) {
