@@ -164,7 +164,7 @@
         inputPlaceholder="All"
         [searchCallback]="eventImportApi.typeaheadCallback()"
         [resultTemplate]="nameTypeaheadTemplate"
-        [value]="searchParameters().audioEventImportModels"
+        [value]="searchParameters().eventImportModels"
         (modelChange)="updateAudioEventImports($event)"
       />
 
@@ -174,14 +174,11 @@
         label="Annotation import files"
         inputPlaceholder="All"
         [searchCallback]="
-          eventImportFileApi.typeaheadCallback(
-            searchParameters().audioEventImports ?? []
-          )
+          eventImportFileApi.typeaheadCallback(searchParameters().eventImports)
         "
         [resultTemplate]="importFileTypeaheadTemplate"
         [value]="searchParameters().importFileModels"
-        [inputDisabled]="audioEventImports.length === 0"
-        (modelChange)="updateSubModel('importFiles', $event)"
+        (modelChange)="updateImportFiles($event)"
       />
     </div>
   </div>

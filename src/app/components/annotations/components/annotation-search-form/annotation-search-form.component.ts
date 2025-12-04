@@ -141,10 +141,6 @@ export class AnnotationSearchFormComponent implements OnInit {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
   }
 
-  protected get audioEventImports() {
-    return Array.from(this.searchParameters().audioEventImports ?? []);
-  }
-
   public ngOnInit(): void {
     // If there are advanced filters when we initially load the page, we should
     // automatically open the advanced filters accordion so that the user can
@@ -230,46 +226,11 @@ export class AnnotationSearchFormComponent implements OnInit {
       this.searchParameters.update((current) => {
         current.audioRecordings = [];
         current.audioEventImports = [];
-        current.importFiles = [];
-
         return current;
       });
-    } else {
-      const recordingIds = this.recordingsTypeahead().value().map(
-        (recordingModel: AudioRecording) => recordingModel.id,
-      );
 
-      if (recordingIds.length > 0) {
-        this.searchParameters.update((current) => {
-          current.audioRecordings = recordingIds;
-          return current;
-        });
-      }
-
-      const eventImportIds = this.eventImportTypeahead().value().map(
-        (eventImportModel: AudioEventImport) => eventImportModel.id,
-      );
-
-      if (eventImportIds.length > 0) {
-        this.searchParameters.update((current) => {
-          current.audioEventImports = eventImportIds;
-          return current;
-        });
-      }
-
-      const eventImportFileIds = this.eventImportFilesTypeahead().value().map(
-        (eventImportFileModel: AudioEventImportFile) => eventImportFileModel.id,
-      );
-
-      if (eventImportFileIds.length > 0) {
-        this.searchParameters.update((current) => {
-          current.importFiles = eventImportFileIds;
-          return current;
-        });
-      }
+      this.emitUpdate();
     }
-
-    this.emitUpdate();
   }
 
   protected updateSubModel<T extends AbstractModel>(
@@ -293,8 +254,14 @@ export class AnnotationSearchFormComponent implements OnInit {
       );
     });
 
-    this.updateSubModel("audioEventImports", eventImports);
-    this.updateSubModel("importFiles", filteredFileModels);
+    this.searchParameters().updateEventImports(eventImports);
+    this.searchParameters().updateEventImportFiles(filteredFileModels);
+    this.emitUpdate();
+  }
+
+  protected updateImportFiles(importFiles: AudioEventImportFile[]): void {
+    this.searchParameters().updateEventImportFiles(importFiles);
+    this.emitUpdate();
   }
 
   protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {

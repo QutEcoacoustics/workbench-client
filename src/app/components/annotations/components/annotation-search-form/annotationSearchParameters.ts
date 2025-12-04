@@ -11,10 +11,11 @@ import {
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
+  SerializationTechnique,
   jsBoolean,
   jsNumber,
   jsNumberArray,
@@ -24,6 +25,7 @@ import {
   serializeObjectToParams,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
+import { toNumber } from "@helpers/typing/toNumber";
 import { CollectionIds, Id } from "@interfaces/apiInterfaces";
 import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
@@ -107,8 +109,7 @@ export interface IAnnotationSearchParameters {
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
-  audioEventImports: CollectionIds<AudioEventImport>;
-  importFiles: CollectionIds<AudioEventImportFile>;
+  audioEventImports: SerializedEventImport[];
 
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
@@ -141,6 +142,33 @@ export interface IAnnotationSearchParameters {
   verificationStatus: VerificationStatusKey;
 }
 
+interface SerializedEventImport {
+  audioEventImport: Id<AudioEventImport>;
+  audioEventImportFile: Id<AudioEventImportFile> | null;
+}
+
+const eventImportArraySerialization = {
+  serialize: (value: SerializedEventImport[]): string => {
+    return value
+      .map(
+        (item) => `${item.audioEventImport}:${item.audioEventImportFile ?? ""}`,
+      )
+      .join(",");
+  },
+  deserialize: (value: string): SerializedEventImport[] => {
+    return value.split(",").map((item) => {
+      const [audioEventImport, audioEventImportFile] = item
+        .split(":")
+        .map(toNumber);
+
+      return {
+        audioEventImport,
+        audioEventImportFile,
+      };
+    });
+  },
+} as const satisfies SerializationTechnique;
+
 // we exclude project, region, and site from the serialization table because
 // we do not want them emitted in the query string
 const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
@@ -152,8 +180,7 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
 
-    audioEventImports: jsNumberArray,
-    importFiles: jsNumberArray,
+    audioEventImports: eventImportArraySerialization,
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -191,8 +218,10 @@ export class AnnotationSearchParameters
   public recordingTime: MonoTuple<Duration, 2>;
   public score: MonoTuple<number, 2>;
 
-  public audioEventImports: CollectionIds<AudioEventImport>;
-  public importFiles: CollectionIds<AudioEventImportFile>;
+  /**
+   * A grouping of audio_event_imports:audio_event_import_file
+   */
+  public audioEventImports: SerializedEventImport[];
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -219,22 +248,6 @@ export class AnnotationSearchParameters
     public user?: User,
     public injector?: AssociationInjector,
   ) {
-    const hasImportFileFilters = isInstantiated(queryStringParameters["importFiles"]);
-    const hasImportFilters = isInstantiated(queryStringParameters["audioEventImports"]);
-
-    // By removing any invalid combinations of annotation import file filters
-    // and annotation import filters upon parameter model construction, we can
-    // ensure that the query string parameters are corrected, meaning that the
-    // user won't be fooled into thinking that their filters are being applied
-    // when they are not.
-    if (hasImportFileFilters && !hasImportFilters) {
-      console.warn(
-        "Annotation import file filters are expected to be a subset of " +
-          "event import filters. However, no event import filters were provided.",
-      );
-      queryStringParameters.importFiles = null;
-    }
-
     super(queryStringParameters);
   }
 
@@ -248,10 +261,10 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImports")
-  public audioEventImportModels?: AudioEventImport[];
+  @hasMany(AUDIO_EVENT_IMPORT, "eventImports")
+  public eventImportModels?: AudioEventImport[];
   @hasManyFilter(SHALLOW_AUDIO_EVENT_IMPORT_FILE, "importFiles", [
-    "audioEventImports",
+    "eventImports",
   ])
   public importFileModels?: AudioEventImportFile[];
 
@@ -286,6 +299,91 @@ export class AnnotationSearchParameters
 
   public get scoreUpperBound(): number | null {
     return this.score ? this.score[1] : null;
+  }
+
+  public get eventImports(): Id<AudioEventImport>[] {
+    const nonUnique = (this.audioEventImports ?? [])
+      .map((importPair) => importPair.audioEventImport)
+      .filter(isInstantiated);
+
+    return Array.from(new Set(nonUnique));
+  }
+
+  public get importFiles(): Id<AudioEventImportFile>[] {
+    const nonUnique = (this.audioEventImports ?? [])
+      .map((importPair) => importPair.audioEventImportFile)
+      .filter(isInstantiated);
+
+    return Array.from(new Set(nonUnique));
+  }
+
+  public updateEventImports(eventImports: AudioEventImport[]): void {
+    // We want to remove any items in audioEventImports.eventImports that are
+    // not in the provided eventImports array.
+    // Additionally, any items that are in the provided eventImports array but
+    // not in audioEventImports.eventImports should be added with a "null"
+    // audioEventImportFile.
+    // Any items that are in both arrays should retain their existing
+    // audioEventImportFile value.
+    const updatedImports: SerializedEventImport[] = [];
+
+    const existingImportsMap = new Map(
+      (this.audioEventImports ?? []).map((item) => [
+        item.audioEventImport,
+        item,
+      ]),
+    );
+
+    for (const eventImport of eventImports) {
+      const existingImport = existingImportsMap.get(eventImport.id);
+      if (existingImport) {
+        // Retain existing audioEventImportFile value
+        updatedImports.push(existingImport);
+      } else {
+        // Add new import with explicitly null audioEventImportFile
+        updatedImports.push({
+          audioEventImport: eventImport.id,
+          audioEventImportFile: null,
+        });
+      }
+    }
+
+    this.audioEventImports = updatedImports;
+  }
+
+  public updateEventImportFiles(importFiles: AudioEventImportFile[]): void {
+    // Work on a shallow copy so we don't mutate the original reference
+    // and initialize to an empty array if undefined.
+    let updatedImports = (this.audioEventImports ?? []).slice();
+
+    for (const importFile of importFiles) {
+      // If there is currently an import without an audioEventImportFile (null)
+      // we want to delete that entry when updating the import files.
+      updatedImports = updatedImports.filter(
+        (item) =>
+          !(
+            item.audioEventImport === importFile.audioEventImportId &&
+            item.audioEventImportFile === null
+          ),
+      );
+
+      // Only add the new import file entry if it doesn't already exist to
+      // prevent duplicates when this method is called multiple times.
+      const exists = updatedImports.some(
+        (item) =>
+          item.audioEventImport === importFile.audioEventImportId &&
+          item.audioEventImportFile === importFile.id,
+      );
+
+      if (!exists) {
+        updatedImports.push({
+          audioEventImport: importFile.audioEventImportId,
+          audioEventImportFile: importFile.id,
+        });
+      }
+    }
+
+    this.audioEventImports = updatedImports;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {
@@ -432,52 +530,27 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    const hasImportFilters =
-      isInstantiated(this.audioEventImports) &&
-      Array.from(this.audioEventImports).length > 0;
-    const hasImportFileFilters =
-      isInstantiated(this.importFiles) &&
-      Array.from(this.importFiles).length > 0;
+    let updatedFilters: InnerFilter<AudioEvent> = {};
 
-    // Annotation imports and annotation import file filters are mutually
-    // exclusive because an annotation import file will always be a part of an
-    // exiting annotation import.
-    // This means that we can exclude the annotation import filter conditions if
-    // there are also annotation import file filters.
-    if (hasImportFileFilters) {
-      const importFileFilters = {
-        audioEventImportFileId: {
-          in: Array.from(this.importFiles),
-        },
-      };
+    for (const importPair of this.audioEventImports) {
+      const importId = importPair.audioEventImport;
+      const importFileId = importPair.audioEventImportFile;
 
-      // Because annotation import files are expected to be a subset of the
-      // annotation import filters, if there are no annotation import filters,
-      // this is an indication that something has gone wrong.
-      // Therefore, if we encounter any import file filters without any import
-      // filters, we log a warning to help with debugging.
-      if (!hasImportFilters) {
-        console.warn(
-          "Annotation import file filters are expected to be a subset of " +
-            "event import filters. However, no event import filters were provided.",
-        );
+      if (isInstantiated(importFileId)) {
+        updatedFilters = filterOr(updatedFilters, {
+          audioEventImportFileId: { eq: importFileId },
+        });
+      } else {
+        // This "as InnerFilter" cast is necessary because our filter TypeScript
+        // definitions do not currently recognize association filters.
+        // However, this is a valid filter according to the API spec.
+        updatedFilters = filterOr(updatedFilters, {
+          "audioEventImports.id": { eq: importId },
+        } as InnerFilter<AudioEvent>);
       }
-
-      return filterAnd(initialFilter, importFileFilters);
-    } else if (hasImportFilters) {
-      // This "as InnerFilter" cast is necessary because our filter TypeScript
-      // definitions do not currently recognize association filters.
-      // However, this is a valid filter according to the API spec.
-      const importFilters = {
-        "audioEventImports.id": {
-          in: Array.from(this.audioEventImports),
-        },
-      } as InnerFilter<AudioEvent>;
-
-      return filterAnd(initialFilter, importFilters);
     }
 
-    return initialFilter;
+    return filterAnd(initialFilter, updatedFilters);
   }
 
   // TODO: We should add support for event date/time filtering once the api
