@@ -31,10 +31,7 @@ describe("annotationSearchParameters", () => {
 
     const expectedFilters = {
       filter: {
-        and: [
-          { "sites.id": { in: [] } },
-          { "verifications.id": { eq: null } },
-        ],
+        and: [{ "sites.id": { in: [] } }, { "verifications.id": { eq: null } }],
       },
       sorting: {
         orderBy: "createdAt",
@@ -116,12 +113,11 @@ describe("annotationSearchParameters", () => {
       }),
     },
     {
-      name: "should create correct filter when filters is set",
+      name: "should create correct filter when filters are set",
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
-        audioEventImports: "42",
-        importFiles: "1,12,23",
+        imports: "42:1,42:2,42:3,67:",
         recordingDate: ",2020-03-01",
         score: "0.5,0.9",
 
@@ -143,10 +139,14 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            // Notice that even though "audioEventImports" was set, we only
-            // apply import file filters because the files are expected to be a
-            // subset of the "audioEventImports".
-            { audioEventImportFileId: { in: [1, 12, 23] } },
+            {
+              or: [
+                { audioEventImportFileId: { eq: 1 } },
+                { audioEventImportFileId: { eq: 2 } },
+                { audioEventImportFileId: { eq: 3 } },
+                { "audioEventImports.id": { eq: 67 } },
+              ],
+            },
             {
               "sites.id": {
                 in: [6, 7, 8, 9],
@@ -266,14 +266,20 @@ describe("annotationSearchParameters", () => {
       }),
     },
     {
-      name: "should create correct filter when audioEventImports is set",
+      name: "should create correct filter when event imports are set",
       inputParams: {
-        audioEventImports: "1,2,3",
+        imports: "1:,2:,3:",
       },
       expectedFilters: () => ({
         filter: {
           and: [
-            { "audioEventImports.id": { in: [1, 2, 3] } },
+            {
+              or: [
+                { "audioEventImports.id": { eq: 1 } },
+                { "audioEventImports.id": { eq: 2 } },
+                { "audioEventImports.id": { eq: 3 } },
+              ],
+            },
             {
               "projects.id": {
                 in: [routeProject.id],
@@ -289,6 +295,7 @@ describe("annotationSearchParameters", () => {
   for (const test of testCases) {
     it(test.name, () => {
       const dataModel = createParameterModel(test.inputParams);
+      console.log(dataModel.toFilter());
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
