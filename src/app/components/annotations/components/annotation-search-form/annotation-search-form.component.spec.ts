@@ -54,7 +54,7 @@ describe("AnnotationSearchFormComponent", () => {
   let mockProject: Project;
   let mockRecording: AudioRecording;
   let mockUser: User;
-  let mockAudioEventImport: AudioEventImport;
+  let mockAudioEventImports: AudioEventImport[];
   let mockAudioEventImportFiles: AudioEventImportFile[];
 
   const createComponent = createComponentFactory({
@@ -118,8 +118,15 @@ describe("AnnotationSearchFormComponent", () => {
     mockProject["injector"] = injector;
     mockRecording["injector"] = injector;
 
-    mockAudioEventImport["injector"] = injector;
+    mockAudioEventImports.forEach(
+      (importItem) => (importItem["injector"] = injector),
+    );
     mockAudioEventImportFiles.forEach((file) => (file["injector"] = injector));
+
+    const mockImportResponses = new Map<any, AudioEventImport>([]);
+    for (const eventImport of mockAudioEventImports) {
+      mockImportResponses.set(eventImport.id, eventImport);
+    }
 
     modelChangeSpy = spyOn(spec.component.searchParametersChange, "emit");
 
@@ -139,12 +146,7 @@ describe("AnnotationSearchFormComponent", () => {
     }
 
     const response = Promise.all([
-      interceptShowApiRequest(
-        eventImportService,
-        injector,
-        mockAudioEventImport,
-        AudioEventImport,
-      ),
+      interceptMappedApiRequests(eventImportService.show, mockImportResponses),
 
       interceptFilterApiRequest(
         eventImportFileService as any,
@@ -215,13 +217,16 @@ describe("AnnotationSearchFormComponent", () => {
     mockRecording = new AudioRecording(generateAudioRecording());
     mockUser = new User(generateUser());
 
-    mockAudioEventImport = new AudioEventImport(
-      generateAudioEventImport({ id: 1 }),
-    );
+    mockAudioEventImports = Array.from({ length: 10 }).map((_, id) => {
+      return new AudioEventImport(generateAudioEventImport({ id }));
+    });
 
-    mockAudioEventImportFiles = modelData.randomArray(1, 5, () => {
+    mockAudioEventImportFiles = Array.from({ length: 10 }).map((_, id) => {
       return new AudioEventImportFile({
-        audioEventImportId: mockAudioEventImport.id,
+        // The import file and its parent import share the same id so that it is
+        // easier to visually identify what files belong to what imports.
+        id,
+        audioEventImportId: id,
       });
     });
   });
@@ -586,33 +591,22 @@ describe("AnnotationSearchFormComponent", () => {
   });
 
   describe("annotation import files", () => {
-    it("should clear import files when audio event imports are cleared", fakeAsync(() => {
-      // Note that we set up the component with both audio event imports.
-      // There is only one audio event import on purpose so that we can test
-      // removing the last remaining audio event import and should see that the
-      // import files are also cleared.
+    it("should remove import files that no longer belong to an annotation import", fakeAsync(() => {
+      mockAudioEventImports = [
+        new AudioEventImport({ id: 1, }),
+        new AudioEventImport({ id: 2, }),
+        new AudioEventImport({ id: 3, }),
+      ];
+
+      mockAudioEventImportFiles = [
+        new AudioEventImportFile({ id: 1, audioEventImportId: 1 }),
+        new AudioEventImportFile({ id: 2, audioEventImportId: 2 }),
+        new AudioEventImportFile({ id: 3, audioEventImportId: 3 }),
+      ];
+
       setup({
-        audioEventImports: "1",
-        importFiles: "3,4",
-      });
-
-      // By pressing backspace in the audio event import typeahead, the last
-      // audio event import should be removed.
-      spec.dispatchKeyboardEvent(
-        eventImportTypeaheadInput(),
-        "keydown",
-        "Backspace",
-      );
-      spec.detectChanges();
-
-      expect(spec.component.searchParameters().audioEventImports).toEqual([]);
-      expect(spec.component.searchParameters().importFiles).toEqual([]);
-    }));
-
-    it("should not clear import files when audio event imports still has values", fakeAsync(() => {
-      setup({
-        audioEventImports: "1,2",
-        importFiles: "3,4",
+        audioEventImports: "1,2,3",
+        importFiles: "1,2,3",
       });
 
       // Because we started off with two audio event imports, pressing backspace
@@ -626,8 +620,43 @@ describe("AnnotationSearchFormComponent", () => {
       );
       spec.detectChanges();
 
-      expect(spec.component.searchParameters().audioEventImports).toEqual([1]);
-      expect(spec.component.searchParameters().importFiles).toEqual([3, 4]);
+      // Notice that the import files 1 and 2 are still present because they
+      // belong to audio event imports 1 and 2 respectively.
+      // However, the import file "3" has been removed because its parent
+      // audio event import "3" has been removed.
+      expect(spec.component.searchParameters().audioEventImports).toEqual([1, 2]);
+      expect(spec.component.searchParameters().importFiles).toEqual([1, 2]);
+    }));
+
+    it("should clear import files when audio event imports are cleared", fakeAsync(() => {
+      mockAudioEventImports = [
+        new AudioEventImport({ id: 1, }),
+      ];
+
+      mockAudioEventImportFiles = [
+        new AudioEventImportFile({ id: 1, audioEventImportId: 1 }),
+      ];
+
+      // Note that we set up the component with both audio event imports.
+      // There is only one audio event import on purpose so that we can test
+      // removing the last remaining audio event import and should see that the
+      // import files are also cleared.
+      setup({
+        audioEventImports: "1",
+        importFiles: "1",
+      });
+
+      // By pressing backspace in the audio event import typeahead, the last
+      // audio event import should be removed.
+      spec.dispatchKeyboardEvent(
+        eventImportTypeaheadInput(),
+        "keydown",
+        "Backspace",
+      );
+      spec.detectChanges();
+
+      expect(spec.component.searchParameters().audioEventImports).toEqual([]);
+      expect(spec.component.searchParameters().importFiles).toEqual([]);
     }));
   });
 });
