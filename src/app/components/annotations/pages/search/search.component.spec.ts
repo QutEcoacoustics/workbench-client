@@ -10,7 +10,10 @@ import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { AnnotationSearchFormComponent } from "@components/annotations/components/annotation-search-form/annotation-search-form.component";
 import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { VerificationParameters, VerificationStatusKey } from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  VerificationParameters,
+  VerificationStatusKey,
+} from "@components/annotations/components/verification-form/verificationParameters";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
@@ -67,7 +70,11 @@ describe("AnnotationSearchComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AnnotationSearchComponent,
-    imports: [IconsModule, AnnotationSearchFormComponent, AnnotationEventCardComponent],
+    imports: [
+      IconsModule,
+      AnnotationSearchFormComponent,
+      AnnotationEventCardComponent,
+    ],
     providers: [
       provideMockBawApi(),
       mockProvider(AnnotationService, {
@@ -85,7 +92,9 @@ describe("AnnotationSearchComponent", () => {
         createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
       }),
       mockProvider(BawSessionService, {
-        get isLoggedIn() { return true; },
+        get isLoggedIn() {
+          return true;
+        },
         authTrigger: of({ user: mockUser }),
       }),
     ],
@@ -165,8 +174,7 @@ describe("AnnotationSearchComponent", () => {
   }
 
   const verifyButton = () => spec.query<HTMLButtonElement>(".verify-button");
-  const eventCards = () =>
-    spec.queryAll(AnnotationEventCardComponent);
+  const eventCards = () => spec.queryAll(AnnotationEventCardComponent);
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = spec.query(`[aria-valuetext="${value}"]`);
@@ -217,9 +225,9 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioEventImportFileId": {
-                in: Array.from(mockSearchParameters.importFiles),
-              },
+              or: Array.from(mockSearchParameters.importFiles).map((id) => ({
+                audioEventImportFileId: { eq: id },
+              })),
             },
             {
               "sites.id": {
@@ -227,12 +235,12 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "score": {
+              score: {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              "score": {
+              score: {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
@@ -269,9 +277,9 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "audioEventImportFileId": {
-                in: Array.from(mockSearchParameters.importFiles),
-              },
+              or: Array.from(mockSearchParameters.importFiles).map((id) => ({
+                audioEventImportFileId: { eq: id },
+              })),
             },
             {
               "sites.id": {
@@ -279,22 +287,22 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              "score": {
+              score: {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              "score": {
+              score: {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
             {
               or: [
-                { "verifications.creatorId": { notEq: mockUser.id} },
+                { "verifications.creatorId": { notEq: mockUser.id } },
                 { "verifications.id": { eq: null } },
                 {
                   and: [
-                    { "verifications.creatorId": { eq: mockUser.id} },
+                    { "verifications.creatorId": { eq: mockUser.id } },
                     { "verifications.confirmed": { eq: "skip" } },
                   ],
                 },

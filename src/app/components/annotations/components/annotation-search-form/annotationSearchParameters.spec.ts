@@ -295,7 +295,6 @@ describe("annotationSearchParameters", () => {
   for (const test of testCases) {
     it(test.name, () => {
       const dataModel = createParameterModel(test.inputParams);
-      console.log(dataModel.toFilter());
       expect(dataModel.toFilter()).toEqual(test.expectedFilters());
     });
   }
