@@ -350,7 +350,6 @@ export class AnnotationSearchParameters
 
     this.imports = updatedImports;
   }
-
   public updateEventImportFiles(importFiles: AudioEventImportFile[]): void {
     // Work on a shallow copy so we don't mutate the original reference
     // and initialize to an empty array if undefined.
@@ -382,6 +381,17 @@ export class AnnotationSearchParameters
         });
       }
     }
+
+    const desiredFileIds = new Set(
+      importFiles.map((importFile) => importFile.id),
+    );
+
+    // Remove any import file entries that no longer exist in the provided list
+    updatedImports = updatedImports.filter(
+      (item) =>
+        item.audioEventImportFile === null ||
+        desiredFileIds.has(item.audioEventImportFile),
+    );
 
     this.imports = updatedImports;
   }
