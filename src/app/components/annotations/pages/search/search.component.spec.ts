@@ -225,9 +225,11 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              or: Array.from(mockSearchParameters.eventImportFiles).map((id) => ({
-                audioEventImportFileId: { eq: id },
-              })),
+              or: Array.from(mockSearchParameters.eventImportFiles).map(
+                (id) => ({
+                  audioEventImportFileId: { in: [id] },
+                }),
+              ),
             },
             {
               "sites.id": {
@@ -277,9 +279,11 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              or: Array.from(mockSearchParameters.eventImportFiles).map((id) => ({
-                audioEventImportFileId: { eq: id },
-              })),
+              or: Array.from(mockSearchParameters.eventImportFiles).map(
+                (id) => ({
+                  audioEventImportFileId: { in: [id] },
+                }),
+              ),
             },
             {
               "sites.id": {

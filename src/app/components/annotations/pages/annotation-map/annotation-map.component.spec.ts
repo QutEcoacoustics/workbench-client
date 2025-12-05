@@ -264,7 +264,7 @@ describe("AnnotationMapPageComponent", () => {
             },
             {
               or: Array.from(searchParameters.eventImportFiles).map((id) => ({
-                audioEventImportFileId: { eq: id },
+                audioEventImportFileId: { in: [id] },
               })),
             },
             { "sites.id": { in: searchParameters.sites } },
