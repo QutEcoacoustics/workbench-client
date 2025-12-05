@@ -172,8 +172,7 @@
                   [strongRoute]="verificationRoute.project"
                   [routeParams]="{ projectId: project.id }"
                   [queryParams]="{
-                    importFiles: value.id,
-                    audioEventImports: value.audioEventImportId,
+                    imports: value.audioEventImportId + ':' + value.id ,
                   }"
                 >
                   Verify

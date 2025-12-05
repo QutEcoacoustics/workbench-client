@@ -49,7 +49,7 @@
         class="btn btn-sm btn-outline-primary ms-1"
         [strongRoute]="verificationRoute.project"
         [routeParams]="{ projectId: project.id }"
-        [queryParams]="{ audioEventImports: value.id }"
+        [queryParams]="{ imports: value.id + ':' }"
       >
         Verify
       </a>

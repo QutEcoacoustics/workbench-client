@@ -354,8 +354,7 @@ describe("AnnotationsDetailsComponent", () => {
         (file: AudioEventImportFile) => {
           const routeParams = { projectId: mockProject.id };
           const queryParams = {
-            importFiles: file.id,
-            audioEventImports: file.audioEventImportId,
+            imports: `${file.audioEventImportId}:${file.id}`,
           };
 
           return { routeParams, queryParams };
