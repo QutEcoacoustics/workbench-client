@@ -1,9 +1,9 @@
+import { SortFunction } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
-import { SortFunction } from "@helpers/advancedTypes";
 import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
 import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
 
@@ -120,7 +120,7 @@ export function bawImage<Model>(
     opts,
     (model, key, imageUrls: string | ImageUrl[]) => {
       // Get API root if injector exists
-      const apiRoot = model["injector"]?.get(API_ROOT) ?? "";
+      const apiRoot = model["injector"]?.get?.(API_ROOT) ?? "";
       if (!apiRoot) {
         console.warn(
           `${model} does not have injector service. Tried to access ${key.toString()}`

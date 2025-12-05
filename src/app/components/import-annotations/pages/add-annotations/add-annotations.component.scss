@@ -2,6 +2,10 @@
   &:not(:last-child) {
     margin-bottom: 0.5em;
   }
+
+  baw-typeahead-input {
+    margin-bottom: 0;
+  }
 }
 
 .file-list-item-content {
@@ -40,6 +44,7 @@
 
 .file-actions {
   display: flex;
+  align-items: center;
 
   .remove-file-btn {
     display: flex;
@@ -60,8 +65,23 @@
     // start overflowing content.
     overflow-wrap: break-word anywhere;
   }
+
+  .file-upload-spinner {
+    display: inline;
+    margin-left: 0.5rem;
+  }
 }
 
 .event-errors {
   height: 100%;
+}
+
+.annotation-preview-table {
+  transition: opacity 0.2s ease-in-out;
+
+  &.preview-disabled {
+    opacity: 0.75;
+    pointer-events: none;
+    cursor: wait;
+  }
 }

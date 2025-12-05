@@ -9,6 +9,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "@menu/widget.component";
 import { VerificationParameters } from "../../verification-form/verificationParameters";
 import { VerificationFormComponent } from "../../verification-form/verification-form.component";
+import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
 
 @Component({
   selector: "baw-verification-filters-modal",
@@ -18,6 +19,7 @@ import { VerificationFormComponent } from "../../verification-form/verification-
 })
 export class VerificationFiltersModalComponent implements ModalComponent {
   public readonly formValue = model.required<VerificationParameters>();
+  public readonly searchParameters = input.required<AnnotationSearchParameters>();
   public readonly modal = input<NgbActiveModal>();
 
   // TODO: Migrate this to a signal once we add support for signals to the

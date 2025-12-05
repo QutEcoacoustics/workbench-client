@@ -1,11 +1,12 @@
 import {
   Component,
+  computed,
   ElementRef,
-  Inject,
+  inject,
   OnInit,
-  ViewChild,
-  ViewChildren,
-  WritableSignal,
+  signal,
+  viewChild,
+  viewChildren,
 } from "@angular/core";
 import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -32,7 +33,6 @@ import { AudioEventImport } from "@models/AudioEventImport";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
@@ -48,12 +48,7 @@ import { INTERNAL_SERVER_ERROR } from "http-status";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
 import { FormsModule } from "@angular/forms";
-import {
-  NgClass,
-  NgTemplateOutlet,
-  AsyncPipe,
-  DecimalPipe,
-} from "@angular/common";
+import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -61,6 +56,7 @@ import {
   VirtualDatatablePaginationDirective,
 } from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
 import { LoadingComponent } from "@shared/loading/loading.component";
+import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
 import { UrlDirective } from "@directives/url/url.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
@@ -68,12 +64,11 @@ import { Tag } from "@models/Tag";
 import { List } from "immutable";
 import {
   ImportAnnotationService,
-  ImportedFileWithErrors,
 } from "@components/import-annotations/services/import-annotation.service";
 import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { Project } from "@models/Project";
-import { AudioEventProvenanceService } from "@baw-api/AudioEventProvenance/AudioEventProvenance.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { annotationImportRoute } from "../../import-annotations.routes";
 import {
@@ -110,6 +105,12 @@ interface QueuedFile {
    * E.g. What machine learning recogniser was used.
    */
   provenanceId: Id;
+
+  /**
+   * Tracks whether the file is currently being uploaded to the server for
+   * a dry or wet run.
+   */
+  isUploading: boolean;
 }
 
 class TableRow extends AbstractModelWithoutId {
@@ -122,7 +123,7 @@ class TableRow extends AbstractModelWithoutId {
   }
 }
 
-enum ImportState {
+const enum ImportState {
   NONE,
   SUCCESS,
   FAILURE,
@@ -147,7 +148,6 @@ const audioEventImportKey = "audioEventImport";
   imports: [
     FormsModule,
     FileValueAccessorDirective,
-    NgClass,
     NgbTooltip,
     FaIconComponent,
     ErrorCardComponent,
@@ -161,38 +161,36 @@ const audioEventImportKey = "audioEventImport";
     InlineListComponent,
     NgbHighlight,
     AsyncPipe,
-    DecimalPipe,
     IsUnresolvedPipe,
     isInstantiatedPipe,
+    SafeNumberComponent
   ],
 })
 class AddAnnotationsComponent
   extends PageComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
-  public constructor(
-    protected tagsApi: TagsService,
-    protected provenanceApi: AudioEventProvenanceService,
-    private api: AudioEventImportFileService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private notifications: ToastService,
-    private annotationImport: ImportAnnotationService,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector,
-  ) {
-    super();
+  protected readonly tagsApi = inject(TagsService);
+  protected readonly provenanceApi = inject(AudioEventProvenanceService);
+  private readonly api = inject(AudioEventImportFileService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(ToastService);
+  private readonly annotationImport = inject(ImportAnnotationService);
+  private readonly injector = inject(ASSOCIATION_INJECTOR);
 
-    this.sharedImportState = this.annotationImport.newInstance();
-  }
+  private readonly sharedImportState = this.annotationImport.newInstance();
 
-  @ViewChild("fileInput")
-  private fileInput!: ElementRef<HTMLInputElement>;
+  private readonly fileInput =
+    viewChild<ElementRef<HTMLInputElement>>("fileInput");
 
-  @ViewChildren("additionalFileTagInput")
-  private additionalFileTagInputs!: TypeaheadInputComponent<Tag>[];
+  private readonly additionalFileTagInputs = viewChildren<
+    TypeaheadInputComponent<Tag>
+  >("additionalFileTagInput");
 
-  @ViewChildren("additionalProvenanceInput")
-  private provenanceFileInputs!: TypeaheadInputComponent<AudioEventProvenance>[];
+  private readonly provenanceFileInputs = viewChildren<
+    TypeaheadInputComponent<AudioEventProvenance>
+  >("additionalProvenanceInput");
 
   /** The route model that the annotation import is scoped to */
   public audioEventImport?: AudioEventImport;
@@ -204,58 +202,63 @@ class AddAnnotationsComponent
    * A state machine representation that can be used to lock UI elements during
    * uploading / error states.
    */
-  protected importState: ImportState = ImportState.NONE;
-
-  // we use a BehaviorSubject for the audio event import files because users can
-  // upload multiple files through the file input and new subscribers should get
-  // the most recent value
-  protected importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
-
-  protected errorCardStyles = ErrorCardStyle;
-
-  // I use an object here when I should be using a readonly map because I want
-  // to use the "as const" assertion to make the object immutable, get
-  // bundling optimizations, have stricter type checking, and auto completion.
-  private extensionMappings = { csv: "text/csv" } as const;
-  private sharedImportState: WritableSignal<ImportedFileWithErrors[]>;
-
-  public get hasUnsavedChanges(): boolean {
-    return (
-      this.importState !== ImportState.NONE &&
-      this.importState !== ImportState.COMMITTED
-    );
-  }
+  protected readonly importState = signal<ImportState>(ImportState.NONE);
 
   // a predicate to check if every import group is valid
-  // this is used for form validation
-  protected get canCommitUploads(): boolean {
-    return this.importState === ImportState.SUCCESS;
-  }
+  // this is used for form validation.
+  protected readonly canCommitUploads = computed(
+    () => this.importState() === ImportState.SUCCESS,
+  );
 
-  public get isUploading(): boolean {
-    return this.importState === ImportState.UPLOADING;
-  }
+  protected readonly isUploading = computed(() =>
+    this.importState() === ImportState.UPLOADING,
+  );
 
   // if the "Import Annotations" button is disabled, we want to provide some
   // feedback to the user outlining why they cannot submit the form using a
   // tooltip
-  protected get uploadTooltip(): string | null {
+  protected readonly uploadTooltip = computed(() => {
     // by returning null, the tooltip will not be displayed
-    if (this.canCommitUploads) {
+    if (this.canCommitUploads()) {
       return null;
     }
 
-    if (this.importState === ImportState.NONE) {
+    if (this.importState() === ImportState.NONE) {
       return "Please select a file to upload";
-    } else if (this.importState === ImportState.FAILURE) {
+    } else if (this.importState() === ImportState.FAILURE) {
       return "Please fix all errors before submitting";
-    } else if (this.importState === ImportState.UPLOADING) {
+    } else if (this.importState() === ImportState.UPLOADING) {
       return "Please wait for the current upload to complete";
     }
 
     // should never hit, but be safe
     return null;
+  });
+
+  // This is used by the canDeactivate route guard to determine if we should
+  // show a warning message when the user attempts to navigate away from the
+  // page.
+  // Therefore, this doesn't need to be a signal or computed property because it
+  // doesn't have any subscribers.
+  public get hasUnsavedChanges(): boolean {
+    return (
+      this.importState() !== ImportState.NONE &&
+      this.importState() !== ImportState.COMMITTED
+    );
   }
+
+
+  // we use a BehaviorSubject for the audio event import files because users can
+  // upload multiple files through the file input and new subscribers should get
+  // the most recent value
+  protected readonly importFiles$ = new BehaviorSubject<QueuedFile[]>([]);
+
+  protected readonly errorCardStyles = ErrorCardStyle;
+
+  // I use an object here when I should be using a readonly map because I want
+  // to use the "as const" assertion to make the object immutable, get
+  // bundling optimizations, have stricter type checking, and auto completion.
+  private readonly extensionMappings = { csv: "text/csv" } as const;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -331,7 +334,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], [], null)
+      this.importFileToBufferedFile(file, null, [], [], null, false)
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -365,13 +368,13 @@ class AddAnnotationsComponent
     // when the user applies "extra tags" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
     // tags are applied
-    this.importState = ImportState.UPLOADING;
+    this.importState.set(ImportState.UPLOADING);
 
     const extraTagIds = this.getIdsFromAbstractModelArray(extraTags);
 
-    const additionalTagInputs = this.additionalFileTagInputs;
+    const additionalTagInputs = this.additionalFileTagInputs();
     for (const input of additionalTagInputs) {
-      input.value.push(...extraTags);
+      input.value.update((current) => [...current, ...extraTags]);
     }
 
     for (const file of this.importFiles$.value) {
@@ -380,7 +383,7 @@ class AddAnnotationsComponent
 
     this.performDryRun();
 
-    host.value = [];
+    host.value.set([]);
   }
 
   protected updateFileAdditionalTagIds(model: QueuedFile, tagIds: Id[]): void {
@@ -395,12 +398,12 @@ class AddAnnotationsComponent
     // when the user applies "provenances" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra
     // tags are applied
-    this.importState = ImportState.UPLOADING;
+    this.importState.set(ImportState.UPLOADING);
 
-    const provenanceFileInputs = this.provenanceFileInputs;
+    const provenanceFileInputs = this.provenanceFileInputs();
     for (const input of provenanceFileInputs) {
-      input.value = [extraProvenance];
-      input.inputModel = extraProvenance.toString();
+      input.value.set([extraProvenance]);
+      input.inputModel.set(extraProvenance.toString());
     }
 
     for (const file of this.importFiles$.value) {
@@ -409,8 +412,8 @@ class AddAnnotationsComponent
 
     this.performDryRun();
 
-    host.value = [];
-    host.inputModel = null;
+    host.value.set([]);
+    host.inputModel.set(null);
   }
 
   protected updateFileProvenance(model: QueuedFile, provenanceId: Id): void {
@@ -432,7 +435,7 @@ class AddAnnotationsComponent
       // we transition to the "none" state if there are no files to import
       // this allows the user to navigate away from the page without a
       // warning message
-      this.importState = ImportState.NONE;
+      this.importState.set(ImportState.NONE);
     } else {
       this.performDryRun();
     }
@@ -442,11 +445,11 @@ class AddAnnotationsComponent
   protected commitImports(): Promise<void> {
     // importing invalid annotation imports results in an internal server error
     // we should therefore not submit any upload groups if there are any errors
-    if (!this.canCommitUploads) {
+    if (!this.canCommitUploads()) {
       return;
     }
 
-    this.importState = ImportState.UPLOADING;
+    this.importState.set(ImportState.UPLOADING);
 
     const fileUploadObservables = this.importFiles$.value.map(
       (model: QueuedFile) => this.commitFile(model)
@@ -455,13 +458,16 @@ class AddAnnotationsComponent
     forkJoin(fileUploadObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
+        next: (result: QueuedFile[]) => {
+          this.importFiles$.next(result);
+        },
         complete: () => {
-          if (this.importState === ImportState.FAILURE) {
+          if (this.importState() === ImportState.FAILURE) {
             console.error("Failed to import annotations");
             return;
           }
 
-          this.importState = ImportState.COMMITTED;
+          this.importState.set(ImportState.COMMITTED);
           this.notifications.success("Successfully imported annotations");
 
           this.router.navigateByUrl(
@@ -475,7 +481,7 @@ class AddAnnotationsComponent
   }
 
   private performDryRun(): void {
-    this.importState = ImportState.UPLOADING;
+    this.importState.set(ImportState.UPLOADING);
 
     const models: QueuedFile[] = this.importFiles$.value;
     const fileUploadObservables = models.map((model: QueuedFile) =>
@@ -489,8 +495,8 @@ class AddAnnotationsComponent
           this.importFiles$.next(result);
         },
         complete: () => {
-          if (this.importState !== ImportState.FAILURE) {
-            this.importState = ImportState.SUCCESS;
+          if (this.importState() !== ImportState.FAILURE) {
+            this.importState.set(ImportState.SUCCESS);
           }
         },
       });
@@ -512,6 +518,8 @@ class AddAnnotationsComponent
     const file = queueModel.file;
     const provenanceId = queueModel.provenanceId;
 
+    queueModel.isUploading = true;
+
     // We use defer inside this iif to ensure that the api is only called when
     // the observable is subscribed to (the commit flag is evaluated).
     // If we did not have the "defer" here, both api calls would be made, but
@@ -530,11 +538,12 @@ class AddAnnotationsComponent
             [],
             queueModel.additionalTagIds,
             queueModel.provenanceId,
+            false,
           )
       ),
       catchError((error: BawApiError<AudioEventImportFile>) => {
         const errors = this.extractFileErrors(file, error);
-        this.importState = ImportState.FAILURE;
+        this.importState.set(ImportState.FAILURE);
 
         if (Array.isArray(error.data)) {
           return throwError(() => new Error("Expected a single model"));
@@ -546,6 +555,7 @@ class AddAnnotationsComponent
           errors,
           queueModel.additionalTagIds,
           queueModel.provenanceId,
+          false,
         );
         return of(result);
       })
@@ -562,7 +572,7 @@ class AddAnnotationsComponent
       dataTransfer.items.add(file);
     }
 
-    this.fileInput.nativeElement.files = dataTransfer.files;
+    this.fileInput().nativeElement.files = dataTransfer.files;
   }
 
   private importFileToBufferedFile(
@@ -571,6 +581,7 @@ class AddAnnotationsComponent
     errors: EventImportError[],
     additionalTagIds: Id[],
     provenanceId: Id,
+    isUploading: boolean,
   ): QueuedFile {
     return {
       file,
@@ -578,6 +589,7 @@ class AddAnnotationsComponent
       errors,
       additionalTagIds,
       provenanceId,
+      isUploading,
     };
   }
 

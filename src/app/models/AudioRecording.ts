@@ -1,7 +1,7 @@
 import { id, IdOr } from "@baw-api/api-common";
 import {
-  audioRecordingOriginalEndpoint,
   audioRecordingMediaEndpoint,
+  audioRecordingOriginalEndpoint,
 } from "@baw-api/audio-recording/audio-recordings.service";
 import { ACCOUNT, SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import {
@@ -29,11 +29,11 @@ import {
   bawDuration,
   bawReadonlyConvertCase,
 } from "./AttributeDecorators";
+import { AssociationInjector } from "./ImplementsInjector";
 import { Project } from "./Project";
 import { Region } from "./Region";
 import type { Site } from "./Site";
 import type { User } from "./User";
-import { AssociationInjector } from "./ImplementsInjector";
 
 /**
  * An audio recording model
@@ -140,7 +140,16 @@ export class AudioRecording
    */
   public getMediaUrl(apiRoot: string): string {
     return (
-      apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension)
+      // We are using "ogg" here instead of the original file extension because
+      // the server currently has a bug where range requests from Chrome do not
+      // work with certain file types.
+      // Forcing the use of ogg files works around this issue.
+      //
+      // TODO: Remove this hack once the server fixes range requests for all
+      // file types.
+      // see: https://github.com/QutEcoacoustics/baw-server/issues/681
+      apiRoot + audioRecordingMediaEndpoint(this.id, "ogg")
+      // apiRoot + audioRecordingMediaEndpoint(this.id, this.originalFileExtension)
     );
   }
 

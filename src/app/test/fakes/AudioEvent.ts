@@ -1,6 +1,7 @@
 import { IAudioEvent } from "@models/AudioEvent";
 import { generateTagging } from "@test/fakes/Tagging";
 import { modelData } from "@test/helpers/faker";
+import { generateVerificationSummary } from "./AudioEvent/VerificationSummary";
 
 export function generateAudioEvent(
   data?: Partial<IAudioEvent>
@@ -24,6 +25,11 @@ export function generateAudioEvent(
     channel: modelData.datatype.number({ min: 1, max: 3 }),
     score: modelData.datatype.number({ min: 0, max: 1 }),
     audioEventImportFileId: modelData.id(),
+    verificationSummary: modelData.randomArray(0, 5, () =>
+      generateVerificationSummary()
+    ),
+    verificationIds: modelData.ids(),
+
     ...modelData.model.generateAllUsers(),
     ...data,
   };

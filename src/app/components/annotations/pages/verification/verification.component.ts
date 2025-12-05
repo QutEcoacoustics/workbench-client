@@ -11,69 +11,68 @@ import {
   viewChild,
   viewChildren,
 } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { RenderMode } from "@angular/ssr";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from "@angular/common";
-import { firstValueFrom, map, Observable } from "rxjs";
-import { annotationMenuItems } from "@components/annotations/annotation.menu";
-import { Filters, Paging, Sorting } from "@baw-api/baw-api.service";
-import {
-  DecisionMadeEvent,
-  VerificationGridComponent,
-} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { StrongRoute } from "@interfaces/strongRoute";
-import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
-import { WithNavigationConfirmation } from "@guards/confirmation/confirmation.guard";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { AudioEvent } from "@models/AudioEvent";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { siteResolvers } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import {
-  ConfirmedStatus,
-  IVerification,
-  Verification,
-} from "@models/Verification";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { RenderMode } from "@angular/ssr";
+import { annotationMenuItems } from "@components/annotations/annotation.menu";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
+import {
+  SearchVerificationFiltersModalComponent,
+} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
+import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import {
   TagPromptComponent,
   TypeaheadCallback,
   WhenPredicate,
 } from "@ecoacoustics/web-components/@types";
-import { Tag } from "@models/Tag";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { Tagging } from "@models/Tagging";
+import {
+  DecisionMadeEvent,
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
+import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { WithNavigationConfirmation } from "@guards/confirmation/confirmation.guard";
+import { filterAnd } from "@helpers/filters/filters";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { mergeParameters } from "@helpers/parameters/merge";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEvent } from "@models/AudioEvent";
+import { Annotation } from "@models/data/Annotation";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import { Tagging } from "@models/Tagging";
+import {
+  ConfirmedStatus,
+  IVerification,
+  Verification,
+} from "@models/Verification";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ConfigService } from "@services/config/config.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
-import { Annotation } from "@models/data/Annotation";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
-import { ConfigService } from "@services/config/config.service";
-import { Id } from "@interfaces/apiInterfaces";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
-import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
-import { filterAnd } from "@helpers/filters/filters";
-import {
-  SearchVerificationFiltersModalComponent,
-} from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
-import { mergeParameters } from "@helpers/parameters/merge";
+import { firstValueFrom, map, Observable } from "rxjs";
 
 interface PagingContext extends PageFetcherContext {
   page: number;
@@ -126,7 +125,6 @@ class VerificationComponent
   private readonly modals = inject(NgbModal);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly config = inject(ConfigService);
   private readonly injector: AssociationInjector = inject(ASSOCIATION_INJECTOR);
 
@@ -166,10 +164,6 @@ class VerificationComponent
   protected readonly verificationGridFocused = signal(true);
   protected readonly hasCorrectionTask = signal(false);
   private readonly doneInitialScroll = signal(false);
-
-  protected readonly project = signal<Project | null>(null);
-  protected readonly region = signal<Region | null>(null);
-  protected readonly site = signal<Site | null>(null);
 
   protected readonly loadingTimeout = this.config.environment.browserTimeout;
 
@@ -271,18 +265,6 @@ class VerificationComponent
     this.updateGridCallback();
   }
 
-  protected verifyAnnotationsRoute(): StrongRoute {
-    if (this.site()) {
-      return this.site().isPoint
-        ? annotationMenuItems.verify.siteAndRegion.route
-        : annotationMenuItems.verify.site.route;
-    } else if (this.region()) {
-      return annotationMenuItems.verify.region.route;
-    }
-
-    return annotationMenuItems.verify.project.route;
-  }
-
   protected getPageCallback(): any {
     return async ({ page }: PagingContext) => {
       const nextPage = (page ?? 0) + 1;
@@ -294,7 +276,7 @@ class VerificationComponent
         items.map((item) =>
           this.annotationsService.show(
             item,
-            this.verificationParameters().tagPriority,
+            this.tagPriority(),
           ),
         ),
       );
@@ -392,6 +374,23 @@ class VerificationComponent
     }
   }
 
+  /**
+   * @description
+   * An ordered array of tag IDs representing what tags should be prioritized
+   * when displaying the tag that is being verified.
+   */
+  private tagPriority(): Id<Tag>[] {
+    const taskTag = this.verificationParameters().taskTag;
+    const searchTags = this.searchParameters().tags ?? [];
+
+    if (isInstantiated(taskTag)) {
+      const uniqueIds = new Set([taskTag, ...searchTags]);
+      return Array.from(uniqueIds);
+    }
+
+    return Array.from(searchTags);
+  }
+
   private handleVerificationDecision(subjectWrapper: SubjectWrapper): void {
     const subject = subjectWrapper.subject as Readonly<AudioEvent>;
 
@@ -410,26 +409,18 @@ class VerificationComponent
 
     const verification = new Verification(verificationData, this.injector);
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.verificationApi.createOrUpdate(verification),
     );
-
-    // I use firstValueFrom so that the observable is evaluated
-    // but I don't have to subscribe or unsubscribe.
-    // Additionally, notice that the function is not awaited so that the
-    // render thread can continue to run while the request is being made
-    firstValueFrom(apiRequest);
   }
 
   private deleteVerificationDecision(subjectWrapper: SubjectWrapper): void {
     const audioEvent = subjectWrapper.subject as any as AudioEvent;
     const newTag = subjectWrapper.newTag as any;
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.verificationApi.destroyUserVerification(audioEvent, newTag),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   /**
@@ -442,7 +433,7 @@ class VerificationComponent
     const annotation = subjectWrapper.subject as any as Annotation;
     const newTag = ((subjectWrapper.newTag as any).tag as Tag).id;
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.tagCorrections.create(annotation, newTag).pipe(
         map((correctTagging: Tagging) => {
           this.sessionTagCorrections.set(annotation.id, correctTagging);
@@ -450,8 +441,6 @@ class VerificationComponent
         }),
       ),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   private deleteTagCorrectionDecision(
@@ -470,11 +459,9 @@ class VerificationComponent
       return;
     }
 
-    const apiRequest = this.trackPendingRequests(
+    this.trackPendingRequests(
       this.tagCorrections.destroy(annotation, tagToRemove.id),
     );
-
-    firstValueFrom(apiRequest);
   }
 
   // TODO: this function can be improved with instanceof checks once we export
@@ -531,19 +518,20 @@ class VerificationComponent
       verificationParameters,
     );
 
-    const urlTree = this.router.createUrlTree([], { queryParams });
-    this.location.replaceState(urlTree.toString());
+    this.router.navigate([], { queryParams });
   }
 
   private tagSearchCallback(): TypeaheadCallback<any> {
+    const serviceCallback = this.tagsApi.typeaheadCallback();
     return (text: string) => {
-      const filterBody: Filters<Tag> = {
-        filter: {
-          text: { contains: text },
-        },
-      };
-
-      return firstValueFrom(this.tagsApi.filter(filterBody));
+      // We set the existing items to an empty array because the web components
+      // don't currently support passing existing items to the typeahead
+      // callback.
+      //
+      // TODO: We should filter out existing tags that exist on the audio event
+      // model.
+      const request = serviceCallback(text, []);
+      return firstValueFrom(request);
     };
   }
 

@@ -1,62 +1,95 @@
 <div class="card-container card p-2">
   <div class="spectrogram-container">
-    <!--
-      Use the same spectrogram settings that the baw-server uses for spectrograms
-      so that there is consistency across the website.
-      see: QutEcoacoustics/baw-server > config/settings/default.yml#L243-L244
-    -->
-    <oe-axes class="axes">
-      <oe-indicator>
-        <oe-spectrogram
-          #spectrogram
-          [src]="annotation().audioLink"
-          scaling="stretch"
-          color-map="grayscale"
-          window-size="512"
-          window-function="hamming"
-        ></oe-spectrogram>
-      </oe-indicator>
-    </oe-axes>
+    @defer (on viewport) {
+      <!--
+        Use the same spectrogram settings that the baw-server uses for spectrograms
+        so that there is consistency across the website.
+        see: QutEcoacoustics/baw-server > config/settings/default.yml#L243-L244
+      -->
+      <oe-axes class="axes">
+        <oe-indicator>
+          <oe-spectrogram
+            #spectrogram
+            [src]="annotation().audioLink"
+            scaling="stretch"
+            color-map="grayscale"
+            window-size="512"
+            window-function="hamming"
+          />
+        </oe-indicator>
+      </oe-axes>
+    } @placeholder {
+      <div class="spectrogram-placeholder"></div>
+    }
   </div>
 
   <div class="card-header">
-    <oe-media-controls #mediaControls></oe-media-controls>
+    <oe-media-controls #mediaControls />
   </div>
 
   <div class="card-body">
     <span class="info-line tag-information">
-      <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
+      @if (tagInfo().length > 0) {
+        @for (tag of tagInfo(); track tag.tag.id; let isFirst = $first) {
+          <div
+            class="tag-item"
+            [class.tag-indent]="!isFirst"
+            [ngbTooltip]="tagVerifications"
+            [tooltipContext]="{ verificationSummary: tag.verificationSummary }"
+          >
+            @if (isFirst) {
+              <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+            }
 
-      <baw-inline-list
-        [items]="annotation().tags"
-        [itemKey]="'text'"
-        [emptyTemplate]="noTagsTemplate"
-      ></baw-inline-list>
+            <span class="verified-icon me-1" [style]="{ color: tag.color }">
+              @if (tag.verificationSummary.resolvedDecisionCount === 0) {
+                <!--
+                  Having no decision is distinct from an undecided consensus.
+                  If there are no verifications, we show a neutral circle icon
+                  instead of a question mark icon to indicate that there is no
+                  data.
+                -->
+                <fa-icon class="no-decision-icon" [icon]="['fas', 'circle']" />
+              } @else if (tag.verificationSummary.correctConsensus > upperRatioThreshold) {
+                <fa-icon [icon]="['fas', 'circle-check']" />
+              } @else if (tag.verificationSummary.correctConsensus < lowerRatioThreshold) {
+                <fa-icon [icon]="['fas', 'circle-xmark']" />
+              } @else {
+                <fa-icon [icon]="['fas', 'circle-question']" />
+              }
+            </span>
+            <a class="tag-link" [bawUrl]="tag.tag.viewUrl">{{ tag.tag.text }}</a>
+          </div>
+        }
+      } @else {
+        <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+        <i>No tags</i>
+      }
     </span>
 
     <span class="info-line">
-      <fa-icon class="me-2" [icon]="['fas', 'location-dot']"></fa-icon>
+      <fa-icon class="me-2" [icon]="['fas', 'location-dot']" />
 
       @let siteModel = annotation().audioRecording.site;
       @if (siteModel | isUnresolved) {
-        <baw-loading class="inline-spinner" size="sm"></baw-loading>
+        <baw-loading class="inline-spinner" size="sm" />
       } @else {
         <a [bawUrl]="siteModel.viewUrl">{{ siteModel.name }}</a>
       }
     </span>
 
     <span class="info-line">
-      <fa-icon class="me-2" [icon]="['fas', 'record-vinyl']"></fa-icon>
+      <fa-icon class="me-2" [icon]="['fas', 'record-vinyl']" />
       <a [bawUrl]="annotation().listenViewUrl">
         <baw-zoned-datetime
           [value]="annotation().audioRecording.recordedDate"
           [timezone]="annotation().audioRecording.recordedDateTimezone"
-        ></baw-zoned-datetime>
+        />
       </a>
     </span>
 
     <span class="info-line">
-      <fa-icon class="me-2" [icon]="['fas', 'chart-simple']"></fa-icon>
+      <fa-icon class="me-2" [icon]="['fas', 'chart-simple']" />
       <span class="tag-score">
         @if (annotation().score | isInstantiated) {
           {{ annotation().score | number }}
@@ -64,18 +97,36 @@
           <span
             class="no-score-placeholder tooltip-hint"
             [ngbTooltip]="'This event does not have a score assigned'"
-          >No score available</span>
+            >No score available</span
+          >
         }
       </span>
     </span>
 
     <span class="info-line">
-      <fa-icon class="me-2" [icon]="['fas', 'circle-info']"></fa-icon>
-      <a class="more-information-link" [bawUrl]="annotation().viewUrl">More information</a>
+      <fa-icon class="me-2" [icon]="['fas', 'circle-info']" />
+      <a class="more-information-link" [bawUrl]="annotation().viewUrl"
+        >More information</a
+      >
     </span>
   </div>
 </div>
 
-<ng-template #noTagsTemplate>
-  <i>No Tags</i>
+<ng-template #tagVerifications let-verificationSummary="verificationSummary">
+  <div class="summary-tooltip">
+    @if (verificationSummary.resolvedDecisionCount > 0) {
+      Correct consensus: {{ verificationSummary.correctConsensus | percent }}
+    } @else {
+      <i>No verifications</i>
+    }
+
+    <hr />
+
+    <ul class="data-list">
+      <li>Correct: {{ verificationSummary.correct | number }}</li>
+      <li>Incorrect: {{ verificationSummary.incorrect | number }}</li>
+      <li>Unsure: {{ verificationSummary.unsure | number }}</li>
+      <li>Skip: {{ verificationSummary.skip | number }}</li>
+    </ul>
+  </div>
 </ng-template>
