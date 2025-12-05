@@ -224,7 +224,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
         current.audioRecordings = [];
-        current.imports = [];
+        current.imports = null;
         return current;
       });
 

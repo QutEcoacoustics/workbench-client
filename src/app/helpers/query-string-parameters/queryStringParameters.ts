@@ -65,6 +65,43 @@ export const jsStringArray = {
   deserialize: queryStringArray,
 } as const satisfies SerializationTechnique;
 
+export const jsMap = <
+  Values,
+  T extends Map<Values, Set<Values>> = Map<Values, Set<Values>>,
+>(converter: (x: string) => Values): SerializationTechnique<T, string> => ({
+  serialize: (value: T): string => {
+    const entries = Array.from(value.entries()).map(([keys, values]) => {
+      if (values.size === 0) {
+        return `${keys}:`;
+      }
+
+      return Array.from(values)
+        .map((fileId) => `${keys}:${fileId}`)
+        .join(",");
+    });
+
+    return entries.join(",");
+  },
+  deserialize: (urlString: string): T => {
+    const stagedImports = new Map<Values, Set<Values>>() as T;
+
+    const importPairs = urlString.split(",");
+    for (const pair of importPairs) {
+      const [importIdString, fileIdString] = pair.split(":").map(converter);
+
+      const existingImport = stagedImports.get(importIdString);
+      if (existingImport) {
+        existingImport.add(fileIdString);
+      } else {
+        const newSet = new Set([fileIdString]);
+        stagedImports.set(importIdString, newSet);
+      }
+    }
+
+    return stagedImports;
+  },
+});
+
 /**
  * Converts a structured parameter model into an Angular `Params` object with
  * stringified values.
@@ -124,7 +161,7 @@ export function deserializeParamsToObject<T>(
       return;
     }
 
-    returnedObject[key]  = serializer.deserialize(qspValue);
+    returnedObject[key] = serializer.deserialize(qspValue);
   });
 
   return returnedObject as T;

@@ -15,15 +15,15 @@ import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
-  SerializationTechnique,
   jsBoolean,
+  jsMap,
   jsNumber,
   jsNumberArray,
   jsString,
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
-  withDefault,
+  withDefault
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { toNumber } from "@helpers/typing/toNumber";
 import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
@@ -144,43 +144,6 @@ export interface IAnnotationSearchParameters {
   verificationStatus: VerificationStatusKey;
 }
 
-const eventImportArraySerialization = {
-  serialize: (value: EventImports): string => {
-    const entries = Array.from(value.entries()).map(([importId, fileIds]) => {
-      if (fileIds.size === 0) {
-        return `${importId}:`;
-      }
-
-      return Array.from(fileIds)
-        .map((fileId) => `${importId}:${fileId}`)
-        .join(",");
-    });
-
-    return entries.join(",");
-  },
-  deserialize: (urlString: string): EventImports => {
-    const stagedImports = new Map<
-      Id<AudioEventImport>,
-      Ids<AudioEventImportFile>
-    >();
-
-    const importPairs = urlString.split(",");
-    for (const pair of importPairs) {
-      const [importIdString, fileIdString] = pair.split(":").map(toNumber);
-
-      const existingImport = stagedImports.get(importIdString);
-      if (existingImport) {
-        existingImport.add(fileIdString);
-      } else {
-        const newSet = new Set([fileIdString]);
-        stagedImports.set(importIdString, newSet);
-      }
-    }
-
-    return stagedImports;
-  },
-} as const satisfies SerializationTechnique;
-
 // we exclude project, region, and site from the serialization table because
 // we do not want them emitted in the query string
 const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
@@ -192,7 +155,7 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
 
-    imports: eventImportArraySerialization,
+    imports: jsMap(toNumber),
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -328,13 +291,11 @@ export class AnnotationSearchParameters
   }
 
   public updateEventImports(eventImports: AudioEventImport[]): void {
-    // We want to remove any items in audioEventImports.eventImports that are
-    // not in the provided eventImports array.
+    // We want to remove any items in imports that are not in the provided
+    // eventImports array.
     // Additionally, any items that are in the provided eventImports array but
-    // not in audioEventImports.eventImports should be added with a "null"
-    // audioEventImportFile.
-    // Any items that are in both arrays should retain their existing
-    // audioEventImportFile value.
+    // not in audioEventImports.eventImports should be added with an empty set
+    // of audioEventImportFile's.
     const updatedImports: EventImports[] = [];
 
     const existingImportsMap = new Map(
@@ -548,27 +509,37 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    let updatedFilters: InnerFilter<AudioEvent> = {};
-
-    if (!isInstantiated(this.imports) || this.imports.length === 0) {
+    if (!isInstantiated(this.imports)) {
       return initialFilter;
     }
 
-    for (const importPair of this.imports) {
-      const importId = importPair.audioEventImport;
-      const importFileId = importPair.audioEventImportFile;
+    let updatedFilters: InnerFilter<AudioEvent> = {};
 
-      if (isInstantiated(importFileId)) {
-        updatedFilters = filterOr(updatedFilters, {
-          audioEventImportFileId: { eq: importFileId },
-        });
-      } else {
+    for (const importPair of this.imports) {
+      const [importId, eventImportFileIds] = importPair;
+
+      // If the audio event import has no files, we want to filter by just the
+      // import id.
+      //
+      // This means that as soon as you add a file filter to an import, the rest
+      // of the files for that import are excluded.
+      // Additionally, if you have an import without any files selected, all
+      // events from that import will be included, even if there are other
+      // imports with files selected.
+      if (eventImportFileIds.size === 0) {
         // This "as InnerFilter" cast is necessary because our filter TypeScript
         // definitions do not currently recognize association filters.
         // However, this is a valid filter according to the API spec.
         updatedFilters = filterOr(updatedFilters, {
           "audioEventImports.id": { eq: importId },
         } as InnerFilter<AudioEvent>);
+      } else {
+        // Because an "in" filter condition is the same as multiple "eq"
+        // conditions joined by "or", we can use the "in" filter here to
+        // simplify the filter query.
+        updatedFilters = filterOr(updatedFilters, {
+          audioEventImportFileId: { in: Array.from(eventImportFileIds) },
+        });
       }
     }
 
