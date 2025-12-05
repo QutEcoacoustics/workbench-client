@@ -610,8 +610,8 @@ describe("AnnotationSearchFormComponent", () => {
       // audio event import "3" has been removed.
       expect(spec.component.searchParameters().imports).toEqual(
         new Map([
-          [1, new Set()],
-          [2, new Set()],
+          [1, new Set([1])],
+          [2, new Set([2])],
         ]),
       );
     }));
