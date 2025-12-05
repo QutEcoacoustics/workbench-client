@@ -301,7 +301,7 @@ export class AnnotationSearchParameters
     // By updating the event imports, we will also clear any import files
     // associated with imports that are no longer selected.
     for (const importId of importIds) {
-      const existingImport = importsMap.get(importId);
+      const existingImport = this.imports.get(importId);
       if (existingImport) {
         importsMap.set(importId, existingImport);
       } else {
