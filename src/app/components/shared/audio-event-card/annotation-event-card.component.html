@@ -36,6 +36,7 @@
             [class.tag-indent]="!isFirst"
             [ngbTooltip]="tagVerifications"
             [tooltipContext]="{ verificationSummary: tag.verificationSummary }"
+            [tooltipClass]="'baw-large-tooltip'"
           >
             @if (isFirst) {
               <fa-icon class="me-2" [icon]="['fas', 'tags']" />

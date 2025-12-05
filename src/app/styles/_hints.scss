@@ -23,3 +23,9 @@
     padding: 0;
   }
 }
+
+// Removes the Bootstrap tooltip max-width so the tooltip can fit its content
+.tooltip.baw-large-tooltip .tooltip-inner {
+  max-width: none;
+  width: max-content;
+}
