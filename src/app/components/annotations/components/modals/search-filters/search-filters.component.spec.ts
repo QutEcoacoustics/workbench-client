@@ -1,16 +1,17 @@
-import { createComponentFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
-import { IconsModule } from "@shared/icons/icons.module";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
-import { TagsService } from "@baw-api/tag/tags.service";
 import { SHALLOW_REGION, SHALLOW_SITE, TAG } from "@baw-api/ServiceTokens";
-import { of } from "rxjs";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { User } from "@models/User";
+import { createComponentFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
+import { generateAnnotationSearchUrlParams } from "@test/fakes/data/AnnotationSearchParameters";
 import { generateUser } from "@test/fakes/User";
+import { of } from "rxjs";
 import { AnnotationSearchParameters } from "../../annotation-search-form/annotationSearchParameters";
 import { SearchFiltersModalComponent } from "./search-filters.component";
 
@@ -19,16 +20,21 @@ describe("SearchFiltersModalComponent", () => {
   let injector: AssociationInjector;
   let successSpy: jasmine.Spy<SearchFiltersModalComponent["successCallback"]>;
 
-  let mockSitesApi: SpyObject<ShallowSitesService>;
-  let mockRegionsApi: SpyObject<ShallowRegionsService>;
-  let mockTagsApi: SpyObject<TagsService>;
+  let sitesApi: SpyObject<ShallowSitesService>;
+  let regionsApi: SpyObject<ShallowRegionsService>;
+  let tagsApi: SpyObject<TagsService>;
 
   let mockUser: User;
 
   const createComponent = createComponentFactory({
     component: SearchFiltersModalComponent,
     imports: [IconsModule],
-    providers: [provideMockBawApi()],
+    providers: [
+      provideMockBawApi(),
+      mockProvider(ShallowAudioEventImportFileService, {
+        filter: () => of([]),
+      }),
+    ],
   });
 
   beforeEach(() => {
@@ -47,14 +53,14 @@ describe("SearchFiltersModalComponent", () => {
       injector,
     );
 
-    mockSitesApi = spec.inject(SHALLOW_SITE.token);
-    mockSitesApi.show.andReturn(of());
+    sitesApi = spec.inject(SHALLOW_SITE.token);
+    sitesApi.show.andReturn(of());
 
-    mockRegionsApi = spec.inject(SHALLOW_REGION.token);
-    mockRegionsApi.show.andReturn(of())
+    regionsApi = spec.inject(SHALLOW_REGION.token);
+    regionsApi.show.andReturn(of())
 
-    mockTagsApi = spec.inject(TAG.token);
-    mockTagsApi.show.andReturn(of())
+    tagsApi = spec.inject(TAG.token);
+    tagsApi.show.andReturn(of())
 
     const mockModal = {
       close: () => undefined,

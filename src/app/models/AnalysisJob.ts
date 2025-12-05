@@ -1,8 +1,8 @@
+import { InnerFilter } from "@baw-api/baw-api.service";
 import { AUDIO_EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
-import { Duration } from "luxon";
-import { InnerFilter } from "@baw-api/baw-api.service";
 import { analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
+import { Duration } from "luxon";
 import {
   DateTimeTimezone,
   Description,
@@ -22,11 +22,11 @@ import {
   bawDuration,
   bawPersistAttr,
 } from "./AttributeDecorators";
+import { AudioEventImport } from "./AudioEventImport";
+import { AssociationInjector } from "./ImplementsInjector";
+import { Project } from "./Project";
 import type { Script } from "./Script";
 import type { User } from "./User";
-import { AssociationInjector } from "./ImplementsInjector";
-import { AudioEventImport } from "./AudioEventImport";
-import { Project } from "./Project";
 
 export type AnalysisJobStatus =
   | "beforeSave"

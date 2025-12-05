@@ -1,15 +1,20 @@
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  flush,
+  tick,
+} from "@angular/core/testing";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Site } from "@models/Site";
+import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
+import { IconsModule } from "@shared/icons/icons.module";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { of } from "rxjs";
-import { discardPeriodicTasks, fakeAsync, flush, tick } from "@angular/core/testing";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { IconsModule } from "@shared/icons/icons.module";
-import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TypeaheadInputComponent } from "./typeahead-input.component";
 
 describe("TypeaheadInputComponent", () => {
@@ -23,7 +28,20 @@ describe("TypeaheadInputComponent", () => {
     providers: [provideMockBawApi()],
   });
 
-  function setup(): void {
+  const inputLabel = () => spec.query<HTMLLabelElement>("label");
+  const inputBox = () => spec.query<HTMLInputElement>("input");
+  const itemPills = () => spec.queryAll<HTMLSpanElement>("span");
+  const dropdownOptions = () =>
+    spec.queryAll<HTMLButtonElement>(".dropdown-item");
+  const selectedDropdownOption = () =>
+    spec.query<HTMLButtonElement>("button.dropdown-item.active");
+
+  function typeInInput(text: string): void {
+    spec.typeInElement(text, inputBox());
+    spec.detectChanges();
+  }
+
+  beforeEach(() => {
     const testBedTemplate = `
       <ng-template #siteTypeaheadTemplate let-result="result" let-searchTerm="term">
         <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
@@ -43,7 +61,7 @@ describe("TypeaheadInputComponent", () => {
 
     defaultFakeSites = Array.from(
       { length: modelData.datatype.number({ min: 3, max: 10 }) },
-      () => new Site(generateSite())
+      () => new Site(generateSite()),
     );
 
     mockSitesService = spec.inject(SHALLOW_SITE.token);
@@ -51,23 +69,6 @@ describe("TypeaheadInputComponent", () => {
 
     // setHostInput will trigger a change detection cycle
     spec.setHostInput("searchCallback", mockSitesService.filter);
-  }
-
-  const inputLabel = () => spec.query<HTMLLabelElement>("label");
-  const inputBox = () => spec.query<HTMLInputElement>("input");
-  const itemPills = () => spec.queryAll<HTMLSpanElement>("span");
-  const dropdownOptions = () =>
-    spec.queryAll<HTMLButtonElement>(".dropdown-item");
-  const selectedDropdownOption = () =>
-    spec.query<HTMLButtonElement>("button.dropdown-item.active");
-
-  function typeInInput(text: string): void {
-    spec.typeInElement(text, inputBox());
-    spec.detectChanges();
-  }
-
-  beforeEach(() => {
-    setup();
   });
 
   it("should create", () => {
@@ -97,28 +98,31 @@ describe("TypeaheadInputComponent", () => {
   });
 
   it("should not create object pills if multiple inputs is disabled", () => {
-    spec.setHostInput("multipleInputs", false);
     const numberOfActiveItems = 1;
-
-    spec.setHostInput("value", defaultFakeSites.slice(
+    const startingValue = defaultFakeSites.slice(
       0,
-      defaultFakeSites.length - numberOfActiveItems
-    ));
+      defaultFakeSites.length - numberOfActiveItems,
+    );
 
-    const pillElements = itemPills();
-    expect(pillElements).toHaveLength(0);
+    spec.setHostInput({
+      multipleInputs: false,
+      value: startingValue,
+    });
+
+    expect(itemPills()).toHaveLength(0);
   });
 
   it("should create object pills if multiple inputs is enabled", () => {
-    spec.setHostInput("multipleInputs", true);
     const numberOfActiveItems = 2;
-
-    spec.setHostInput("value", defaultFakeSites.slice(
+    const startingValue = defaultFakeSites.slice(
       0,
-      defaultFakeSites.length - numberOfActiveItems
-    ));
+      defaultFakeSites.length - numberOfActiveItems,
+    );
 
-    spec.detectChanges();
+    spec.setHostInput({
+      multipleInputs: true,
+      value: startingValue,
+    });
 
     const pillElements = itemPills();
 
@@ -126,7 +130,7 @@ describe("TypeaheadInputComponent", () => {
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
         // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
-        (spec.component.value()[i] as Site).name
+        (spec.component.value()[i] as Site).name,
       );
     });
   });
@@ -193,18 +197,15 @@ describe("TypeaheadInputComponent", () => {
     // the last element should be removed from the active items array when the backspace key is pressed
     const expectedSites: Site[] = defaultFakeSites.slice(
       0,
-      defaultFakeSites.length - 1
+      defaultFakeSites.length - 1,
     );
 
     spec.setHostInput({
-      "multipleInputs": true,
-      "value": defaultFakeSites
+      multipleInputs: true,
+      value: defaultFakeSites,
     });
 
-    const inputBoxElement = inputBox();
-    inputBoxElement.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "Backspace" })
-    );
+    spec.dispatchKeyboardEvent(inputBox(), "keydown", "Backspace");
     spec.detectChanges();
     tick(defaultDebounceTime);
     spec.detectChanges();

@@ -16,8 +16,9 @@ const annotationSearchRouteQueryParamResolver = (
     ? {
         audioRecordings: params.audioRecordings,
         tags: params.tags,
-        importFiles: params.importFiles,
         score: params.score,
+
+        imports: params.imports,
 
         projects: params.projects,
         regions: params.regions,
@@ -39,8 +40,9 @@ const annotationMapRouteQueryParamResolver = (params) =>
     ? {
         audioRecordings: params.audioRecordings,
         tags: params.tags,
-        importFiles: params.importFiles,
         score: params.score,
+
+        imports: params.imports,
 
         projects: params.projects,
         regions: params.regions,

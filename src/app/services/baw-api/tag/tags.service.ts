@@ -1,12 +1,12 @@
-import { Injectable, Type } from "@angular/core";
+import { inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { createSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 import { Tag, TagType } from "@models/Tag";
 import { User } from "@models/User";
+import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
-import { createSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 import {
   emptyParam,
   filterParam,
@@ -29,7 +29,7 @@ const endpoint = stringTemplate`/tags/${tagId}${option}`;
 
 @Injectable()
 export class TagsService implements StandardApi<Tag> {
-  public constructor(private api: BawApiService<Tag>) {}
+  private readonly api = inject(BawApiService<Tag>);
 
   public list(): Observable<Tag[]> {
     return this.api.list(Tag, endpoint(emptyParam, emptyParam));

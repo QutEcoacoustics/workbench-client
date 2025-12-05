@@ -14,6 +14,9 @@ import { AccountsService } from "./account/accounts.service";
 import { AnalysisJobItemsService } from "./analysis/analysis-job-items.service";
 import { AnalysisJobsService } from "./analysis/analysis-jobs.service";
 import { BawApiInterceptor } from "./api.interceptor.service";
+import { AudioEventImportFileService, ShallowAudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
+import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
+import { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import {
   AudioEventsService,
   ShallowAudioEventsService,
@@ -41,6 +44,7 @@ import { SavedSearchesService } from "./saved-search/saved-searches.service";
 import { ScriptsService } from "./script/scripts.service";
 import { SecurityService } from "./security/security.service";
 import { serviceResolvers, services, serviceTokens } from "./ServiceProviders";
+import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { ShallowSitesService, SitesService } from "./site/sites.service";
 import { StatisticsService } from "./statistics/statistics.service";
 import {
@@ -56,12 +60,8 @@ import { TagGroupsService } from "./tag/tag-group.service";
 import { TaggingsService } from "./tag/taggings.service";
 import { TagsService } from "./tag/tags.service";
 import { UserService } from "./user/user.service";
-import { WebsiteStatusService } from "./website-status/website-status.service";
-import { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
-import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
-import { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
-import { SiteSettingsService } from "./site-settings/site-settings.service";
 import { VerificationService } from "./verification/verification.service";
+import { WebsiteStatusService } from "./website-status/website-status.service";
 
 // If you get the following error while trying to stub a service:
 //
@@ -104,11 +104,12 @@ export const mockProviders: Provider[] = [
   mockProvider(TaggingsService),
   mockProvider(UserService),
   mockProvider(WebsiteStatusService),
-  mockProvider(AudioEventImportService),
-  mockProvider(AudioEventImportFileService),
   mockProvider(AudioEventProvenanceService),
   mockProvider(SiteSettingsService),
   mockProvider(VerificationService),
+  mockProvider(AudioEventImportService),
+  mockProvider(AudioEventImportFileService),
+  mockProvider(ShallowAudioEventImportFileService),
 ];
 
 export function provideMockBawApi(): (EnvironmentProviders | Provider)[] {

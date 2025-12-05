@@ -5,8 +5,8 @@ import {
   input
 } from "@angular/core";
 import { toRelative } from "@interfaces/apiInterfaces";
-import { Duration } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { Duration } from "luxon";
 import { AbstractTemplateComponent } from "../abstract-template.component";
 
 type InputType = Duration | string;
@@ -18,15 +18,11 @@ type InputType = Duration | string;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationComponent extends AbstractTemplateComponent<InputType, Duration> {
-  public constructor() {
-    super();
-  }
-
   // an empty string is used to indicate that the attribute is present
   // eg. <baw-duration humanized> will cause the humanized attribute to be set to an empty string ("")
-  public humanized = input<boolean, string>(false, { transform: booleanAttribute });
-  public iso8601 = input<boolean, string>(false, { transform: booleanAttribute });
-  public sexagesimal = input<boolean, string>(false, { transform: booleanAttribute });
+  public readonly humanized = input<boolean, string>(false, { transform: booleanAttribute });
+  public readonly iso8601 = input<boolean, string>(false, { transform: booleanAttribute });
+  public readonly sexagesimal = input<boolean, string>(false, { transform: booleanAttribute });
 
   public update(): void {
     const value = this.value();

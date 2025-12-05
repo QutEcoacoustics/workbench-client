@@ -103,23 +103,6 @@ oe-spectrogram {
   color: var(--baw-text-color-secondary);
 }
 
-.summary-tooltip {
-  // NgbTooltips default to center-aligning text, although because we are trying
-  // to show a list of data, left-aligning the text makes more sense so that all
-  // of the categories are horizontally aligned left.
-  text-align: left;
-  padding-inline: 1rem;
-
-  // The ngb-tooltip adds some bottom padding by default, so we don't need to
-  // add any padding on the bottom here.
-  padding-top: 1rem;
-
-  .data-list {
-    list-style: none;
-    padding: 0;
-  }
-}
-
 .tag-indent {
   text-indent: 1.5rem;
 }

@@ -1,11 +1,12 @@
-import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
 import { ANALYSIS_JOB, USER } from "@baw-api/ServiceTokens";
 import { addAnnotationImportRoute, annotationImportRoute } from "@components/import-annotations/import-annotations.routes";
+import { DateTimeTimezone, Description, HasAllUsers, HasDescription, Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
-import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
-import { hasOne } from "./AssociationDecorators";
-import { User } from "./User";
 import { AnalysisJob } from "./AnalysisJob";
+import { hasOne } from "./AssociationDecorators";
+import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
+import { Project } from "./Project";
+import { User } from "./User";
 
 export interface IAudioEventImport extends HasAllUsers, HasDescription {
   id?: Id;
@@ -47,21 +48,21 @@ export class AudioEventImport
   public analysisJob?: AnalysisJob;
 
   public get viewUrl(): string {
-    throw new Error("Not implemented. Use createViewUrl() instead.");
+    throw new Error("Not implemented. Use createViewUrl() method instead.");
   }
 
   public get addAnnotationsUrl(): string {
-    throw new Error("Not implemented. Use createAddAnnotationsUrl() instead.");
+    throw new Error("Not implemented. Use createAddAnnotationsUrl() method instead.");
   }
 
-  public createViewUrl(projectId: Id): string {
+  public createViewUrl(projectId: Id<Project>): string {
     return annotationImportRoute.format({
       annotationId: this.id,
       projectId,
     });
   }
 
-  public createAddAnnotationsUrl(projectId: Id): string {
+  public createAddAnnotationsUrl(projectId: Id<Project>): string {
     return addAnnotationImportRoute.format({
       annotationId: this.id,
       projectId,

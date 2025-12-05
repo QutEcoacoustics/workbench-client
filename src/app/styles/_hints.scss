@@ -6,3 +6,26 @@
 .tooltip-hint {
   text-decoration: dotted underline;
 }
+
+.tooltip-left-aligned-content {
+  // NgbTooltips default to center-aligning text, although because we are trying
+  // to show a list of data, left-aligning the text makes more sense so that all
+  // of the categories are horizontally aligned left.
+  text-align: left;
+  padding-inline: 1rem;
+
+  // The ngb-tooltip adds some bottom padding by default, so we don't need to
+  // add any padding on the bottom here.
+  padding-top: 1rem;
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+// Removes the Bootstrap tooltip max-width so the tooltip can fit its content
+.tooltip.baw-large-tooltip .tooltip-inner {
+  max-width: none;
+  width: max-content;
+}

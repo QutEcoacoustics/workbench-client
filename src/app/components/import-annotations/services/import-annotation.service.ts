@@ -20,11 +20,10 @@ export class ImportAnnotationService {
   // have to either create a newInstance() or connect() to an existing instance.
   //
   // This prevents two consumers having write access to the importFileModel.
-  private importFileModels = signal<ImportedFileWithErrors[]>([]);
-
-  public importErrors = computed<ReadonlyArray<EventImportError>>(() =>
-      this.importFileModels().flatMap((model) => model.errors),
-    );
+  private readonly importFileModels = signal<ImportedFileWithErrors[]>([]);
+  public readonly importErrors = computed<ReadonlyArray<EventImportError>>(() =>
+    this.importFileModels().flatMap((model) => model.errors),
+  );
 
   /**
    * @description

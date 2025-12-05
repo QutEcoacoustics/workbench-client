@@ -36,6 +36,7 @@
             [class.tag-indent]="!isFirst"
             [ngbTooltip]="tagVerifications"
             [tooltipContext]="{ verificationSummary: tag.verificationSummary }"
+            [tooltipClass]="'baw-large-tooltip'"
           >
             @if (isFirst) {
               <fa-icon class="me-2" [icon]="['fas', 'tags']" />
@@ -113,7 +114,7 @@
 </div>
 
 <ng-template #tagVerifications let-verificationSummary="verificationSummary">
-  <div class="summary-tooltip">
+  <div class="tooltip-left-aligned-content">
     @if (verificationSummary.resolvedDecisionCount > 0) {
       Correct consensus: {{ verificationSummary.correctConsensus | percent }}
     } @else {

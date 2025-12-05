@@ -1,28 +1,28 @@
 import {
-  CollectionIds,
-  DateTimeTimezone,
-  FilePath,
-  Id,
-} from "@interfaces/apiInterfaces";
-import {
   ANALYSIS_JOB_ITEM,
   AUDIO_EVENT_IMPORT,
   TAG,
 } from "@baw-api/ServiceTokens";
 import {
+  CollectionIds,
+  DateTimeTimezone,
+  FilePath,
+  Id,
+} from "@interfaces/apiInterfaces";
+import { AbstractModel } from "./AbstractModel";
+import { AnalysisJobItem } from "./AnalysisJobItem";
+import { hasMany, hasOne } from "./AssociationDecorators";
+import {
   bawDateTime,
   bawPersistAttr,
   bawSubModelCollection,
 } from "./AttributeDecorators";
-import { AbstractModel } from "./AbstractModel";
-import { hasMany, hasOne } from "./AssociationDecorators";
-import { AnalysisJobItem } from "./AnalysisJobItem";
-import { Tag } from "./Tag";
 import { AudioEventImport } from "./AudioEventImport";
 import {
   IImportedAudioEvent,
   ImportedAudioEvent,
 } from "./AudioEventImport/ImportedAudioEvent";
+import { Tag } from "./Tag";
 
 export interface IAudioEventImportFile {
   id?: Id;
@@ -33,10 +33,10 @@ export interface IAudioEventImportFile {
   committed?: boolean;
   importedEvents?: IImportedAudioEvent[];
 
-  analysisJobsItemId?: Id;
-  audioEventImportId?: Id;
+  analysisJobsItemId?: Id<AnalysisJobItem>;
+  audioEventImportId?: Id<AudioEventImport>;
   file?: File;
-  additionalTagIds?: CollectionIds;
+  additionalTagIds?: CollectionIds<Tag>;
 }
 
 export class AudioEventImportFile
@@ -61,13 +61,13 @@ export class AudioEventImportFile
   public readonly importedEvents?: ImportedAudioEvent[];
 
   // form data fields
-  public readonly analysisJobsItemId?: Id;
+  public readonly analysisJobsItemId?: Id<AnalysisJobItem>;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
-  public readonly audioEventImportId?: Id;
+  public readonly audioEventImportId?: Id<AudioEventImport>;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly file: File;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
-  public readonly additionalTagIds: CollectionIds;
+  public readonly additionalTagIds: CollectionIds<Tag>;
 
   // Associations
   @hasMany(TAG, "additionalTagIds")

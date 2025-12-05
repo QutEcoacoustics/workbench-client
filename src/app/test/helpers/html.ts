@@ -75,22 +75,23 @@ export function inputFile<T>(
  * This function must be used inside a fakeAsync block
  */
 export function selectFromTypeahead<T>(
-  spectator: Spectator<T> | SpectatorHost<T>,
+  spec: Spectator<T> | SpectatorHost<T>,
   target: Element | HTMLElement,
   text: string,
   detectChanges = true
 ): void {
   const inputElement = target.querySelector<HTMLInputElement>("input");
-  spectator.typeInElement(text, inputElement);
+  spec.typeInElement(text, inputElement);
 
   // wait for the typeahead items to populate the dropdown with options
-  spectator.detectChanges();
+  spec.detectChanges();
   tick(1_000);
 
-  // we do a document level querySelector so that if the dropdown is not in the
-  // spectator hosts template, we can still select it
-  const selectedTypeaheadOption = document.querySelector<HTMLButtonElement>(
-    ".dropdown-item.active"
+  // We do a root (document) level querySelector so that if the dropdown is not
+  // in the spectator hosts template, we can still select it.
+  const selectedTypeaheadOption = spec.query<HTMLButtonElement>(
+    ".dropdown-item.active",
+    { root: true }
   );
 
   // We do not use the spectator.click() helper here because ng-neat spectator
@@ -100,7 +101,7 @@ export function selectFromTypeahead<T>(
   selectedTypeaheadOption.click();
 
   if (detectChanges) {
-    spectator.detectChanges();
+    spec.detectChanges();
   }
 
   flush();

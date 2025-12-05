@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { Settings, SystemZone, Zone } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { Settings, SystemZone, Zone } from "luxon";
 import { AbstractDatetimeComponent } from "../abstract-datetime.component";
 
 /**
@@ -17,10 +17,6 @@ import { AbstractDatetimeComponent } from "../abstract-datetime.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatetimeComponent extends AbstractDatetimeComponent {
-  public constructor() {
-    super();
-  }
-
   //! Warning: This method will break if we ever change the default timezone
   // which we should have no reason to do outside of tests
   public override extractTimezone(): Zone {

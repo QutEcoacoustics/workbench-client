@@ -2,6 +2,11 @@
   This is a shared template used by datetime, zoned datetime, duration, and time-since components
   and should be used in conjunction with the abstract-template.component.ts
 -->
-<time class="has-context d-inline-block" [dateTime]="isoDateTime" [ngbTooltip]="tooltipText">
+<time
+  class="d-inline-block"
+  [class.has-context]="withTooltip()"
+  [dateTime]="isoDateTime"
+  [ngbTooltip]="withTooltip() ? tooltipText : null"
+>
   {{ documentText }} {{ suffix }}
 </time>
