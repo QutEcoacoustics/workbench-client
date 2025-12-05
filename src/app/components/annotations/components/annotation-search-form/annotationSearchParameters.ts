@@ -23,7 +23,7 @@ import {
   luxonDateArray,
   luxonDurationArray,
   serializeObjectToParams,
-  withDefault
+  withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { toNumber } from "@helpers/typing/toNumber";
 import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
@@ -193,11 +193,6 @@ export class AnnotationSearchParameters
   public recordingTime: MonoTuple<Duration, 2>;
   public score: MonoTuple<number, 2>;
 
-  /**
-   * A grouping of audio_event_imports:audio_event_import_file
-   */
-  public imports: EventImports;
-
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
   // parameters will be used over these query string parameters.
@@ -218,12 +213,32 @@ export class AnnotationSearchParameters
   public verificationStatus: VerificationStatusKey;
   public sort: SortingKey;
 
+  /**
+   * @description
+   * A grouping of audio_event_imports:audio_event_import_file
+   * This field should be treated as private and should only be accessed and set
+   * through the eventImports and eventImportFiles computed properties.
+   *
+   * @private
+   */
+  public imports: EventImports;
+
   public constructor(
     protected queryStringParameters: Params = {},
     public user?: User,
     public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
+
+    // This property has a default value of an empty Map to simplify usage so that
+    // consumers don't need to check for undefined before using it.
+    // However, this means that when serializing to query string parameters it has
+    // a special case to omit it when it is an empty Map.
+    // This special case is similar to how we handle the serialization of empty
+    // arrays.
+    if (!isInstantiated(this.imports)) {
+      this.imports = new Map();
+    }
   }
 
   @hasMany(AUDIO_RECORDING, "audioRecordings")
@@ -280,6 +295,25 @@ export class AnnotationSearchParameters
     return Array.from(this.imports.keys());
   }
 
+  public set eventImports(importIds: ReadonlyArray<Id<AudioEventImport>>) {
+    const importsMap: EventImports = new Map();
+
+    // By updating the event imports, we will also clear any import files
+    // associated with imports that are no longer selected.
+    for (const importId of importIds) {
+      const existingImport = importsMap.get(importId);
+      if (existingImport) {
+        importsMap.set(importId, existingImport);
+      } else {
+        // If this is a new import being added, we initialize it with an empty
+        // set of files.
+        importsMap.set(importId, new Set());
+      }
+    }
+
+    this.imports = importsMap;
+  }
+
   public get eventImportFiles(): Id<AudioEventImportFile>[] {
     const fileIds: Id<AudioEventImportFile>[] = [];
 
@@ -290,79 +324,18 @@ export class AnnotationSearchParameters
     return fileIds;
   }
 
-  public updateEventImports(eventImports: AudioEventImport[]): void {
-    // We want to remove any items in imports that are not in the provided
-    // eventImports array.
-    // Additionally, any items that are in the provided eventImports array but
-    // not in audioEventImports.eventImports should be added with an empty set
-    // of audioEventImportFile's.
-    const updatedImports: EventImports[] = [];
+  public updateEventImportFiles(value: ReadonlyArray<AudioEventImportFile>) {
+    for (const file of value) {
+      const importId = file.audioEventImportId;
 
-    const existingImportsMap = new Map(
-      (this.imports ?? []).map((item) => [item.audioEventImport, item]),
-    );
-
-    for (const eventImport of eventImports) {
-      const existingImport = existingImportsMap.get(eventImport.id);
+      const existingImport = this.imports.get(importId);
       if (existingImport) {
-        // Retain existing audioEventImportFile value
-        updatedImports.push(existingImport);
+        existingImport.add(file.id);
       } else {
-        // Add new import with explicitly null audioEventImportFile
-        updatedImports.push({
-          audioEventImport: eventImport.id,
-          audioEventImportFile: null,
-        });
+        const newFileSet = new Set<Id<AudioEventImportFile>>([file.id]);
+        this.imports.set(importId, newFileSet);
       }
     }
-
-    this.imports = updatedImports;
-  }
-
-  public updateEventImportFiles(importFiles: AudioEventImportFile[]): void {
-    // Work on a shallow copy so we don't mutate the original reference
-    // and initialize to an empty array if undefined.
-    let updatedImports = (this.imports ?? []).slice();
-
-    for (const importFile of importFiles) {
-      // If there is currently an import without an audioEventImportFile (null)
-      // we want to delete that entry when updating the import files.
-      updatedImports = updatedImports.filter(
-        (item) =>
-          !(
-            item.audioEventImport === importFile.audioEventImportId &&
-            item.audioEventImportFile === null
-          ),
-      );
-
-      // Only add the new import file entry if it doesn't already exist to
-      // prevent duplicates when this method is called multiple times.
-      const exists = updatedImports.some(
-        (item) =>
-          item.audioEventImport === importFile.audioEventImportId &&
-          item.audioEventImportFile === importFile.id,
-      );
-
-      if (!exists) {
-        updatedImports.push({
-          audioEventImport: importFile.audioEventImportId,
-          audioEventImportFile: importFile.id,
-        });
-      }
-    }
-
-    const desiredFileIds = new Set(
-      importFiles.map((importFile) => importFile.id),
-    );
-
-    // Remove any import file entries that no longer exist in the provided list
-    updatedImports = updatedImports.filter(
-      (item) =>
-        item.audioEventImportFile === null ||
-        desiredFileIds.has(item.audioEventImportFile),
-    );
-
-    this.imports = updatedImports;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {

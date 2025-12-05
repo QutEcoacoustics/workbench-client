@@ -165,7 +165,7 @@
         [searchCallback]="eventImportApi.typeaheadCallback()"
         [resultTemplate]="nameTypeaheadTemplate"
         [value]="searchParameters().eventImportModels"
-        (modelChange)="updateAudioEventImports($event)"
+        (modelChange)="updateSubModel('eventImports', $event)"
       />
 
       <baw-typeahead-input
@@ -179,7 +179,7 @@
         [resultTemplate]="importFileTypeaheadTemplate"
         [value]="searchParameters().eventImportFileModels"
         [inputDisabled]="searchParameters().eventImports.length === 0"
-        (modelChange)="updateImportFiles($event)"
+        (modelChange)="updateEventImportFiles($event)"
       />
     </div>
   </div>

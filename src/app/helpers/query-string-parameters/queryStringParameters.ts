@@ -68,9 +68,16 @@ export const jsStringArray = {
 export const jsMap = <
   Values,
   T extends Map<Values, Set<Values>> = Map<Values, Set<Values>>,
->(converter: (x: string) => Values): SerializationTechnique<T, string> => ({
+>(
+  converter: (x: string) => Values,
+): SerializationTechnique<T, string> => ({
   serialize: (value: T): string => {
-    const entries = Array.from(value.entries()).map(([keys, values]) => {
+    const mapEntries = Array.from(value.entries());
+    if (mapEntries.length === 0) {
+      return null;
+    }
+
+    const entries = mapEntries.map(([keys, values]) => {
       if (values.size === 0) {
         return `${keys}:`;
       }
@@ -87,14 +94,29 @@ export const jsMap = <
 
     const importPairs = urlString.split(",");
     for (const pair of importPairs) {
-      const [importIdString, fileIdString] = pair.split(":").map(converter);
+      const [key, value] = pair.split(":").map(converter);
 
-      const existingImport = stagedImports.get(importIdString);
-      if (existingImport) {
-        existingImport.add(fileIdString);
+      if (!isInstantiated(key)) {
+        console.warn(
+          "Ignoring invalid map entry with missing key in query string " +
+            `parameter ${pair}`,
+        );
+        continue;
+      }
+
+      const existingImport = stagedImports.get(key);
+      if (!existingImport && !isInstantiated(value)) {
+        stagedImports.set(key, new Set());
+      } else if (!isInstantiated(value)) {
+        console.warn(
+          "Ignoring invalid map entry with missing value in query string " +
+            `parameter for key ${key}`,
+        );
+      } else if (existingImport) {
+        existingImport.add(value);
       } else {
-        const newSet = new Set([fileIdString]);
-        stagedImports.set(importIdString, newSet);
+        const newSet = new Set([value]);
+        stagedImports.set(key, newSet);
       }
     }
 

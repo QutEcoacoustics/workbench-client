@@ -223,8 +223,10 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
+        // By deleting all event imports, we will also delete any files
+        // associated with any imports.
+        current.eventImports = [];
         current.audioRecordings = [];
-        current.imports = null;
         return current;
       });
 
@@ -245,21 +247,8 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.emitUpdate();
   }
 
-  protected updateAudioEventImports(eventImports: AudioEventImport[]): void {
-    const currentFileModels = this.eventImportFilesTypeahead().value();
-    const filteredFileModels = currentFileModels.filter((fileModel) => {
-      return eventImports.some(
-        (eventImport) => eventImport.id === fileModel.audioEventImportId,
-      );
-    });
-
-    this.searchParameters().updateEventImports(eventImports);
-    this.searchParameters().updateEventImportFiles(filteredFileModels);
-    this.emitUpdate();
-  }
-
-  protected updateImportFiles(importFiles: AudioEventImportFile[]): void {
-    this.searchParameters().updateEventImportFiles(importFiles);
+  protected updateEventImportFiles(subModels: AudioEventImportFile[]): void {
+    this.searchParameters().updateEventImportFiles(subModels);
     this.emitUpdate();
   }
 
