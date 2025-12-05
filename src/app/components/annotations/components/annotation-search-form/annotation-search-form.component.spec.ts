@@ -608,10 +608,12 @@ describe("AnnotationSearchFormComponent", () => {
       // belong to audio event imports 1 and 2 respectively.
       // However, the import file "3" has been removed because its parent
       // audio event import "3" has been removed.
-      expect(spec.component.searchParameters().imports).toEqual([
-        { audioEventImport: 1, audioEventImportFile: 1 },
-        { audioEventImport: 2, audioEventImportFile: 2 },
-      ]);
+      expect(spec.component.searchParameters().imports).toEqual(
+        new Map([
+          [1, new Set()],
+          [2, new Set()],
+        ]),
+      );
     }));
 
     it("should clear import files when audio event imports are cleared", fakeAsync(() => {
@@ -636,7 +638,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
       spec.detectChanges();
 
-      expect(spec.component.searchParameters().imports).toEqual([]);
+      expect(spec.component.searchParameters().imports).toEqual(new Map());
       expect(spec.component.searchParameters().eventImportFiles).toEqual([]);
     }));
   });

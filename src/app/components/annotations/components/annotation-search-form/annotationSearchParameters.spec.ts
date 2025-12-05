@@ -141,9 +141,7 @@ describe("annotationSearchParameters", () => {
             { "audioRecordings.id": { in: [11, 12, 13] } },
             {
               or: [
-                { audioEventImportFileId: { eq: 1 } },
-                { audioEventImportFileId: { eq: 2 } },
-                { audioEventImportFileId: { eq: 3 } },
+                { audioEventImportFileId: { in: [1, 2, 3] } },
                 { "audioEventImports.id": { eq: 67 } },
               ],
             },

@@ -153,9 +153,16 @@ export class AnnotationSearchFormComponent implements OnInit {
     for (const key of advancedFilterKeys) {
       const value = this.searchParameters()[key];
 
-      if (Array.isArray(value) && value.length > 0) {
-        this.hideAdvancedFilters.set(false);
-        break;
+      if (value instanceof Map) {
+        if (value.size > 0) {
+          this.hideAdvancedFilters.set(false);
+          break;
+        }
+      } else if (Array.isArray(value)) {
+        if (value.length > 0) {
+          this.hideAdvancedFilters.set(false);
+          break;
+        }
       } else if (isInstantiated(value)) {
         this.hideAdvancedFilters.set(false);
         break;
