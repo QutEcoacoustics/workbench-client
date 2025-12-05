@@ -47,6 +47,17 @@ export class ConfigService {
       }
     };
 
+    // When we export to a web component target, we want to make it so that
+    // users can consume these web components without needing to provide an
+    // environment.json file at the root of their server.
+    // Therefore, we allow attaching a config at the window level.
+    const windowConfig: IConfiguration | undefined = (window as any)["API_CONFIG"];
+    if (windowConfig) {
+      this.setConfig(new Configuration(windowConfig));
+      await embedGoogleServicesIfValid();
+      return;
+    }
+
     if (defaultConfig) {
       this.setConfig(await defaultConfig);
       await embedGoogleServicesIfValid();
