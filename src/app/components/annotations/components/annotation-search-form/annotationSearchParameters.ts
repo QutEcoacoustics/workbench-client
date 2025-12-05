@@ -325,17 +325,24 @@ export class AnnotationSearchParameters
   }
 
   public updateEventImportFiles(value: ReadonlyArray<AudioEventImportFile>) {
-    for (const file of value) {
-      const importId = file.audioEventImportId;
+    const updatedImports: EventImports = new Map();
+    for (const [eventImport] of this.imports) {
+      updatedImports.set(eventImport, new Set());
+    }
 
-      const existingImport = this.imports.get(importId);
-      if (existingImport) {
-        existingImport.add(file.id);
+    for (const file of value) {
+      const eventImport = updatedImports.get(file.audioEventImportId);
+      if (eventImport) {
+        eventImport.add(file.id);
       } else {
-        const newFileSet = new Set<Id<AudioEventImportFile>>([file.id]);
-        this.imports.set(importId, newFileSet);
+        console.error(
+          "Attempted to add an audio event import file for an import that is " +
+            `not selected. The import file ${file.id} will be ignored.`,
+        );
       }
     }
+
+    this.imports = updatedImports;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {
