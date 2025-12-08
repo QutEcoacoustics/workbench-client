@@ -79,7 +79,9 @@ export const jsMap = <
 
     const entries = mapEntries.map(([keys, values]) => {
       if (values.size === 0) {
-        return `${keys}:`;
+        // I use a string template manually convert to a string here to avoid
+        // issues with typing.
+        return `${keys}`;
       }
 
       return Array.from(values)

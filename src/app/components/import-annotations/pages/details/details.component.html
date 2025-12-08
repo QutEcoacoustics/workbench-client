@@ -171,9 +171,7 @@
                   class="verify-button btn btn-sm btn-outline-primary"
                   [strongRoute]="verificationRoute.project"
                   [routeParams]="{ projectId: project.id }"
-                  [queryParams]="{
-                    imports: value.audioEventImportId + ':' + value.id ,
-                  }"
+                  [queryParams]="{ imports: verifyQsp(value) }"
                 >
                   Verify
                 </a>

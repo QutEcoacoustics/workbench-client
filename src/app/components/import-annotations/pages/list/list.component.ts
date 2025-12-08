@@ -15,6 +15,8 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
 import { UrlDirective } from "@directives/url/url.directive";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { jsMap } from "@helpers/query-string-parameters/queryStringParameters";
+import { toNumber } from "@helpers/typing/toNumber";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { Project } from "@models/Project";
@@ -62,6 +64,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   };
 
   protected readonly filters$ = new BehaviorSubject(this.defaultFilters);
+  private readonly jsIdMapQsp = jsMap(toNumber);
   private models: ResolvedModelList = {};
 
   public get project(): Project {
@@ -101,6 +104,10 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
         this.filters$.next(this.defaultFilters);
         this.notifications.success(`Successfully destroyed ${modelName}`);
       });
+  }
+
+  protected verifyQsp(model: AudioEventImport): string {
+    return this.jsIdMapQsp.serialize(new Map([[model.id, new Set()]]));
   }
 }
 

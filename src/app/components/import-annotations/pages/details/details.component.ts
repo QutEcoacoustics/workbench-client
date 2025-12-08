@@ -20,6 +20,8 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
+import { jsMap } from "@helpers/query-string-parameters/queryStringParameters";
+import { toNumber } from "@helpers/typing/toNumber";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -121,8 +123,9 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   protected importGroups: ImportGroup[] = [this.emptyImportGroup];
   protected audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
-  protected uploading: boolean = false;
+  protected uploading = false;
   private models: ResolvedModelList = {};
+  private readonly jsIdMapQsp = jsMap(toNumber);
 
   protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
   protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;
@@ -237,6 +240,14 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
           },
         });
     }
+  }
+
+  protected verifyQsp(fileModel: AudioEventImportFile): string {
+    return this.jsIdMapQsp.serialize(
+      new Map([
+        [fileModel.audioEventImportId, new Set([fileModel.id])],
+      ]),
+    )
   }
 }
 
