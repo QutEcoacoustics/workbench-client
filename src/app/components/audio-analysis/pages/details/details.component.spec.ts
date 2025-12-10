@@ -147,9 +147,7 @@ describe("AnalysisJobComponent", () => {
       },
     ];
 
-    for (const detail of details) {
-      assertDetail(detail);
-    }
+    details.forEach((detail) => assertDetail(detail));
   });
 });
 
