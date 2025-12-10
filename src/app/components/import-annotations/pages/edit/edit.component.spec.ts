@@ -3,6 +3,7 @@ import {
   audioEventImportResolvers,
 } from "@baw-api/audio-event-import/audio-event-import.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { Project } from "@models/Project";
 import {
@@ -21,7 +22,6 @@ import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { BehaviorSubject, Subject } from "rxjs";
 import schema from "../../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
-import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 
 describe("EditAnnotationsComponent", () => {
   const { fields } = schema;

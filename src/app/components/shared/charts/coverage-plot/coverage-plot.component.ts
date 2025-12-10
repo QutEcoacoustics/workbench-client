@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, viewChild } from "@angular/core";
+import { IDateRange } from "@models/Provenance/ReportGraphs";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { Map } from "immutable";
 import chartSchema from "./coveragePlot.schema.json";
-import { IDateRange } from "@models/Provenance/ReportGraphs";
 
 export interface CoverageGraphData {
   failedAnalysisCoverage: IDateRange[];
