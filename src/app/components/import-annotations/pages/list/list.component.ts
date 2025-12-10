@@ -1,10 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-<<<<<<< HEAD
 import { ActivatedRoute } from "@angular/router";
-=======
-import { PageComponent } from "@helpers/page/pageComponent";
-import { List } from "immutable";
->>>>>>> 5356579e (Improve code quality)
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
