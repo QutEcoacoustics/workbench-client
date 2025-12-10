@@ -86,14 +86,12 @@ export class AudioEvent
   public updater?: User;
   @deleter()
   public deleter?: User;
+  @hasOne(AUDIO_RECORDING, "audioRecordingId")
+  public audioRecording?: AudioRecording;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
   public provenance?: AudioEventProvenance;
   @hasMany(TAG, "tagIds")
   public tags?: Tag[];
-
-  // The audio recording is defined in the constructor and therefore does not
-  // use the hasOne decorator.
-  public audioRecording?: AudioRecording;
 
   public constructor(audioEvent: IAudioEvent, injector?: AssociationInjector) {
     super(audioEvent, injector);

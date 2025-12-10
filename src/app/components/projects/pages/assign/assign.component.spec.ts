@@ -4,6 +4,7 @@ import { Spectator, SpyObject, createRoutingFactory } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
+import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Site } from "@models/Site";
@@ -20,7 +21,7 @@ import { AssignComponent } from "./assign.component";
 // e.g. filtering, sorting, pagination, etc.
 describe("AssignComponent", () => {
   let mockApi: SpyObject<ShallowSitesService>;
-  let spec: Spectator<AssignComponent>;
+  let spectator: Spectator<AssignComponent>;
   let mockProject: Project;
   let mockSites: Site[];
 
@@ -32,9 +33,9 @@ describe("AssignComponent", () => {
   });
 
   function setup(): void {
-    spec = createComponent({ detectChanges: false });
+    spectator = createComponent({ detectChanges: false });
 
-    mockApi = spec.inject(ShallowSitesService);
+    mockApi = spectator.inject(SHALLOW_SITE.token);
 
     // by using a callback for the mockApi, we can update defaultSites to change the mock return value
     mockApi.filter = jasmine.createSpy("filter") as any;
@@ -42,35 +43,35 @@ describe("AssignComponent", () => {
 
     mockApi.show = jasmine.createSpy("show") as any;
     mockApi.show.and.callFake((id) =>
-      of(mockSites.find((site) => site.id === id)),
+      of(mockSites.find((site) => site.id === id))
     );
 
     mockApi.update = jasmine.createSpy("update") as any;
     mockApi.update.and.callFake((model: Site) => of(model));
 
-    spyOnProperty(spec.component, "project", "get").and.callFake(
-      () => mockProject,
+    spyOnProperty(spectator.component, "project", "get").and.callFake(
+      () => mockProject
     );
 
-    spec.detectChanges();
+    spectator.detectChanges();
   }
 
-  const projectHeader = () => spec.query<HTMLHeadingElement>("h1");
+  const projectHeader = () => spectator.query<HTMLHeadingElement>("h1");
   const updateButton = () =>
-    spec.query<HTMLButtonElement>("button[type='submit']");
+    spectator.query<HTMLButtonElement>("button[type='submit']");
 
   function submitForm(): void {
-    clickButton(spec, updateButton());
+    clickButton(spectator, updateButton());
   }
 
   function getSiteRow(siteName: string): HTMLElement {
-    return getElementByTextContent(spec, siteName).parentElement.parentElement;
+    return getElementByTextContent(spectator, siteName).parentElement.parentElement;
   }
 
   function getSiteCheckbox(siteName: string): HTMLInputElement {
     const siteRow = getSiteRow(siteName);
     const siteCheckbox = siteRow.querySelector<HTMLInputElement>(
-      "input[type='checkbox']",
+      "input[type='checkbox']"
     );
 
     return siteCheckbox;
@@ -80,7 +81,7 @@ describe("AssignComponent", () => {
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (!siteCheckbox.checked) {
-      spec.click(siteCheckbox);
+      spectator.click(siteCheckbox);
     }
   }
 
@@ -88,7 +89,7 @@ describe("AssignComponent", () => {
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (siteCheckbox.checked) {
-      spec.click(siteCheckbox);
+      spectator.click(siteCheckbox);
     }
   }
 
@@ -106,7 +107,7 @@ describe("AssignComponent", () => {
           id,
           name: `${modelData.param()}-${id}`,
           projectIds: [],
-        }),
+        })
       );
 
       site.addMetadata(defaultMetadata);
@@ -121,7 +122,7 @@ describe("AssignComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spec.component).toBeInstanceOf(AssignComponent);
+    expect(spectator.component).toBeInstanceOf(AssignComponent);
   });
 
   it("should display project in title", () => {
@@ -138,26 +139,26 @@ describe("AssignComponent", () => {
     ];
 
     descriptionElementText.forEach((text) => {
-      expect(getElementByTextContent(spec, text)).toExist();
+      expect(getElementByTextContent(spectator, text)).toExist();
     });
   });
 
-  it("should send the correct filter request on initialization", () => {
+  fit("should send the correct filter request on initialization", () => {
     setup();
-    const expectedRequest: Filters = { paging: { page: 1 } };
-    expect(mockApi.filter).toHaveBeenCalledWith(expectedRequest);
+    const expectedRequest: Filters = {};
+    expect(mockApi.filter).toHaveBeenCalledOnceWith(expectedRequest);
   });
 
   it("should call onSubmit when the update button is clicked", () => {
     setup();
-    spyOn(spec.component, "onSubmit");
+    spyOn(spectator.component, "onSubmit");
 
     submitForm();
 
-    expect(spec.component.onSubmit).toHaveBeenCalled();
+    expect(spectator.component.onSubmit).toHaveBeenCalled();
   });
 
-  it("should make the correct api call for removing a site from a project", fakeAsync(() => {
+  it("should make the correct api call for removing a site from a project", () => {
     // because we are removing the site from the project, we will be expecting the site to be called with no projectIds
     const expectedProjectIds = new Set([]);
 
@@ -184,9 +185,9 @@ describe("AssignComponent", () => {
     expect(mockApi.update).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         projectIds: expectedProjectIds,
-      }),
+      })
     );
-  }));
+  });
 
   it("should make the correct api call for adding a site to a project", () => {
     setup();

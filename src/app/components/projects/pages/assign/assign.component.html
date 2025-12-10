@@ -47,13 +47,14 @@
       [resizeable]="false"
       [sortable]="false"
       [width]="30"
-    />
+    >
+    </ngx-datatable-column>
     <ngx-datatable-column
       name="Site Id"
       [minWidth]="75"
       [maxWidth]="75"
-    />
-    <ngx-datatable-column name="Name" />
+    ></ngx-datatable-column>
+    <ngx-datatable-column name="Name"></ngx-datatable-column>
     <ngx-datatable-column name="Description" [sortable]="false">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <span [innerHTML]="value"></span>
@@ -61,7 +62,9 @@
     </ngx-datatable-column>
   </ngx-datatable>
 
-  <baw-form submitLabel="Update" (onSubmit)="onSubmit()" />
-} @else {
-  <baw-error-handler [error]="error" />
+  <baw-form submitLabel="Update" (onSubmit)="onSubmit()"></baw-form>
+}
+
+@if (error) {
+  <baw-error-handler [error]="error"></baw-error-handler>
 }

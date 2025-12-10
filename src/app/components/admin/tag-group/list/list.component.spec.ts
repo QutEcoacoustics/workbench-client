@@ -7,11 +7,7 @@ import {
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { TagGroup } from "@models/TagGroup";
-import {
-  NgbModal,
-  NgbModalConfig,
-  NgbModalRef,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { SpyObject } from "@ngneat/spectator";
 import { generateTagGroup } from "@test/fakes/TagGroup";
 import { assertPageInfo } from "@test/helpers/pageRoute";
@@ -92,12 +88,11 @@ describe("AdminTagGroupsComponent", () => {
 
       // Since there is a confirmation modal before the api call, we need to
       // open & confirm the modal before asserting api call parameters.
-      const modalRef = jasmine.createSpyObj<NgbModalRef>("NgbModalRef", [
-        "close",
-        "dismiss",
-      ]);
-      modalRef.result = Promise.resolve(true);
-      spyOn(modalService, "open").and.returnValue(modalRef);
+      spyOn(modalService, "open").and.returnValue(
+        jasmine.createSpyObj("NgbModalRef", ["close", "dismiss", "result"], {
+          result: Promise.resolve(true),
+        }),
+      );
 
       fixture.componentInstance.confirmTagGroupDeletion(null, mockTagGroup);
 

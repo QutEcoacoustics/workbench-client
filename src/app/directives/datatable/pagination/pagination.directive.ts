@@ -10,6 +10,7 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
+  distinctUntilChanged,
   map,
   Observable,
   of,
@@ -173,6 +174,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
           paging: { page: pageAndSort.page + 1 },
         })
       ),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       switchMap(
         (filters): Observable<Model[]> => this.pagination.getModels(filters)
       ),

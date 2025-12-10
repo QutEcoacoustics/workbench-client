@@ -84,9 +84,7 @@ describe("AnnotationSearchComponent", () => {
         createMediaUrl: () => `data:[audio/flac];base64,${exampleBase64}`,
       }),
       mockProvider(BawSessionService, {
-        get isLoggedIn() {
-          return true;
-        },
+        get isLoggedIn() { return true; },
         authTrigger: of({ user: mockUser }),
       }),
     ],
@@ -216,7 +214,7 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              audioEventImportFileId: {
+              "audioEventImportFileId": {
                 in: Array.from(mockSearchParameters.importFiles),
               },
             },
@@ -226,12 +224,12 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              score: {
+              "score": {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              score: {
+              "score": {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
@@ -265,7 +263,7 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              audioEventImportFileId: {
+              "audioEventImportFileId": {
                 in: Array.from(mockSearchParameters.importFiles),
               },
             },
@@ -275,22 +273,22 @@ describe("AnnotationSearchComponent", () => {
               },
             },
             {
-              score: {
+              "score": {
                 gteq: mockSearchParameters.scoreLowerBound,
               },
             },
             {
-              score: {
+              "score": {
                 lteq: mockSearchParameters.scoreUpperBound,
               },
             },
             {
               or: [
-                { "verifications.creatorId": { notEq: mockUser.id } },
+                { "verifications.creatorId": { notEq: mockUser.id} },
                 { "verifications.id": { eq: null } },
                 {
                   and: [
-                    { "verifications.creatorId": { eq: mockUser.id } },
+                    { "verifications.creatorId": { eq: mockUser.id} },
                     { "verifications.confirmed": { eq: "skip" } },
                   ],
                 },

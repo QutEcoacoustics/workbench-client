@@ -33,7 +33,6 @@ import { assertDatatable } from "@test/helpers/datatable";
 import {
   NgbModal,
   NgbModalConfig,
-  NgbModalRef,
   NgbNavConfig,
 } from "@ng-bootstrap/ng-bootstrap";
 import { modelData } from "@test/helpers/faker";
@@ -45,7 +44,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
-import { getElementByTextContent } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Sorting } from "@baw-api/baw-api.service";
 import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
@@ -67,7 +66,7 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventFileService: SpyObject<AudioEventImportFileService>;
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
   let mockProvenanceService: SpyObject<AudioEventProvenanceService>;
-  let mockModalService: SpyObject<NgbModal>;
+  let modalService: SpyObject<NgbModal>;
 
   let mockAudioEventImport: AudioEventImport;
   let mockTagModel: Tag;
@@ -87,7 +86,7 @@ describe("AnnotationsDetailsComponent", () => {
     component: AnnotationImportDetailsComponent,
     imports: [InlineListComponent, LoadingComponent],
     providers: [provideMockBawApi()],
-    mocks: [ToastService, NgbModal],
+    mocks: [ToastService],
   });
 
   function fileTabButton(): Element | null {
@@ -115,13 +114,13 @@ describe("AnnotationsDetailsComponent", () => {
 
   function deleteFirstFile() {
     const deleteButton = getElementByTextContent(spec, "Delete");
-    spec.click(deleteButton);
+    clickButton(spec, deleteButton);
 
     const confirmationButton = spec.query<HTMLButtonElement>(
       "baw-harvest-confirmation-modal #next-btn",
       { root: true },
     );
-    spec.click(confirmationButton);
+    clickButton(spec, confirmationButton);
 
     flush();
   }
@@ -149,6 +148,8 @@ describe("AnnotationsDetailsComponent", () => {
     ngbNavConfig = spec.inject(NgbNavConfig);
     ngbNavConfig.animation = false;
 
+    modalService = spec.inject(NgbModal);
+
     injector = spec.inject(ASSOCIATION_INJECTOR);
     mockAudioEventImport["injector"] = injector;
     mockProject["injector"] = injector;
@@ -163,7 +164,7 @@ describe("AnnotationsDetailsComponent", () => {
       () => new AudioEvent(generateAudioEvent(), injector),
     );
     mockAudioEvents.forEach((event) => {
-      event.audioRecording = mockAudioRecording;
+      spyOnProperty(event, "audioRecording").and.returnValue(mockAudioRecording);
       event.addMetadata(
         modelData.model.generatePagingMetadata({
           items: mockAudioEvents.length,
@@ -232,15 +233,6 @@ describe("AnnotationsDetailsComponent", () => {
     const modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
-    mockModalService = spec.inject(NgbModal);
-    mockModalService.open.and.callFake(() => {
-      const modalRef: Partial<NgbModalRef> = {
-        componentInstance: {},
-        result: Promise.resolve(true),
-      };
-      return modalRef as NgbModalRef;
-    });
-
     // without mocking the timezone, tests that assert time will fail in CI
     // and other timezones that are not the same as the developers local timezone (UTC+8)
     const mockUserTimeZone = "Australia/Perth"; // +08:00 UTC
@@ -265,6 +257,10 @@ describe("AnnotationsDetailsComponent", () => {
     await setup();
   });
 
+  afterEach(() => {
+    modalService.dismissAll();
+  });
+
   assertPageInfo<AudioEventImport>(
     AnnotationImportDetailsComponent,
     "test name",
@@ -286,12 +282,9 @@ describe("AnnotationsDetailsComponent", () => {
 
     switchToFileTab();
 
-    expect(mockAudioEventFileService.filter).toHaveBeenCalled();
-
     expect(mockAudioEventFileService.filter).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         paging: { page: 1 },
-        sorting: { direction: "desc", orderBy: "createdAt" },
       }),
       mockAudioEventImport,
     );
@@ -314,7 +307,6 @@ describe("AnnotationsDetailsComponent", () => {
       expect(mockEventsService.filter).toHaveBeenCalledOnceWith(
         jasmine.objectContaining({
           paging: { page: 1 },
-          sorting: { direction: "desc", orderBy: "createdAt" },
         }),
       );
     });

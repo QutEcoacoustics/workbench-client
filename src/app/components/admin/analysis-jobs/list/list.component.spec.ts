@@ -42,12 +42,8 @@ describe("AnalysisJobComponent", () => {
       defaultModels.push(new AnalysisJob(generateAnalysisJob(), injector));
     }
 
-    mockScriptsApi.show.and.returnValue(
-      of(new Script(generateScript(), injector)),
-    );
-    mockAccountsApi.show.and.returnValue(
-      of(new User(generateUser(), injector)),
-    );
+    mockScriptsApi.show.and.returnValue(of(new Script(generateScript(), injector)));
+    mockAccountsApi.show.and.returnValue(of(new User(generateUser(), injector)));
 
     this.defaultModels = defaultModels;
     this.fixture = spec.fixture;
