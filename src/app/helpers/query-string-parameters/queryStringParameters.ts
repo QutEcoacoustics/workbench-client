@@ -4,64 +4,127 @@ import { toNumber } from "@helpers/typing/toNumber";
 import { DateTime, Duration } from "luxon";
 
 export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
-  [K in keyof T]: ISerializationTechnique;
+  [K in keyof T]: SerializationTechnique;
 }>;
 
-interface ISerializationTechnique {
-  serialize: (value: any) => string;
-  deserialize: (value: string) => any;
+// TODO: We should probably have a function to create serializers so that we
+// don't have to repeat "as const satisfies SerializationTechnique" everywhere.
+export interface SerializationTechnique<Value = unknown, QSP = string> {
+  serialize: (value: Value) => QSP;
+  deserialize: (value: QSP) => Value;
   hasDefault?: boolean;
 }
 
 export const luxonDate = {
   serialize: dateToQueryString,
   deserialize: queryStringDate,
-};
+} as const satisfies SerializationTechnique;
 
 export const luxonDuration = {
   serialize: durationToQueryString,
   deserialize: queryStringDurationTime,
-};
+} as const satisfies SerializationTechnique;
 
 export const luxonDateArray = {
   serialize: dateArrayToQueryString,
   deserialize: queryStringDateArray,
-};
+} as const satisfies SerializationTechnique;
 
 export const luxonDurationArray = {
   serialize: durationArrayToQueryString,
   deserialize: queryStringDurationTimeArray,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsNumber = {
   serialize: (value: number) => value.toString(),
   deserialize: queryStringNumber,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsBoolean = {
   serialize: (value: boolean) => value.toString(),
   deserialize: queryStringBoolean,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsString = {
   serialize: (value: string) => value,
   deserialize: (value: string) => value,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsNumberArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringToNumberArray,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsBooleanArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringToBooleanArray,
-};
+} as const satisfies SerializationTechnique;
 
 export const jsStringArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringArray,
-};
+} as const satisfies SerializationTechnique;
+
+export const jsMap = <
+  Values,
+  T extends Map<Values, Set<Values>> = Map<Values, Set<Values>>,
+>(
+  converter: (x: string) => Values,
+): SerializationTechnique<T, string> => ({
+  serialize: (value: T): string => {
+    const mapEntries = Array.from(value.entries());
+    if (mapEntries.length === 0) {
+      return null;
+    }
+
+    const entries = mapEntries.map(([keys, values]) => {
+      if (values.size === 0) {
+        // I use a string template manually convert to a string here to avoid
+        // issues with typing.
+        return `${keys}`;
+      }
+
+      return Array.from(values)
+        .map((fileId) => `${keys}:${fileId}`)
+        .join(",");
+    });
+
+    return entries.join(",");
+  },
+  deserialize: (urlString: string): T => {
+    const stagedImports = new Map<Values, Set<Values>>() as T;
+
+    const importPairs = urlString.split(",");
+    for (const pair of importPairs) {
+      const [key, value] = pair.split(":").map(converter);
+
+      if (!isInstantiated(key)) {
+        console.warn(
+          "Ignoring invalid map entry with missing key in query string " +
+            `parameter ${pair}`,
+        );
+        continue;
+      }
+
+      const existingImport = stagedImports.get(key);
+      if (!existingImport && !isInstantiated(value)) {
+        stagedImports.set(key, new Set());
+      } else if (!isInstantiated(value)) {
+        console.warn(
+          "Ignoring invalid map entry with missing value in query string " +
+            `parameter for key ${key}`,
+        );
+      } else if (existingImport) {
+        existingImport.add(value);
+      } else {
+        const newSet = new Set([value]);
+        stagedImports.set(key, newSet);
+      }
+    }
+
+    return stagedImports;
+  },
+});
 
 /**
  * Converts a structured parameter model into an Angular `Params` object with
@@ -79,7 +142,7 @@ export function serializeObjectToParams<T>(
   // queryStringParameter model so that the qsp model can contain getters which
   // would not be returned by Object.entries.
   Object.entries(spec).forEach(
-    ([key, serializer]: [string, ISerializationTechnique]) => {
+    ([key, serializer]: [string, SerializationTechnique]) => {
       const value = queryStringParameters[key];
 
       // null and undefined values are omitted when used on angular HTTPParams
@@ -122,16 +185,16 @@ export function deserializeParamsToObject<T>(
       return;
     }
 
-    returnedObject[key]  = serializer.deserialize(qspValue);
+    returnedObject[key] = serializer.deserialize(qspValue);
   });
 
   return returnedObject as T;
 }
 
 export function withDefault(
-  serializationTechnique: ISerializationTechnique,
+  serializationTechnique: SerializationTechnique,
   defaultValue: any,
-): ISerializationTechnique {
+): SerializationTechnique {
   return {
     serialize: (value: any) => {
       // If the current value is the default value, we omit it from the query

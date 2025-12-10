@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
+import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   scriptResolvers,
   ScriptsService,
@@ -11,9 +13,13 @@ import {
   SCRIPT,
 } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
@@ -21,13 +27,7 @@ import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
 import { Subject } from "rxjs";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AdminScriptComponent } from "./details.component";
 
 describe("ScriptComponent", () => {

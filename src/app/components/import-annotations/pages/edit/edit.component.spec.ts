@@ -1,25 +1,24 @@
 import {
+  AudioEventImportService,
+  audioEventImportResolvers,
+} from "@baw-api/audio-event-import/audio-event-import.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { Project } from "@models/Project";
+import {
   SpectatorRouting,
   SpyObject,
   createRoutingFactory,
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { AudioEventImport } from "@models/AudioEventImport";
-import {
-  AudioEventImportService,
-  audioEventImportResolvers,
-} from "@baw-api/audio-event-import/audio-event-import.service";
-import { BehaviorSubject, Subject } from "rxjs";
-import { testFormlyFields } from "@test/helpers/formly";
-import { modelData } from "@test/helpers/faker";
-import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
-import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { FormComponent } from "@shared/form/form.component";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { generateProject } from "@test/fakes/Project";
+import { modelData } from "@test/helpers/faker";
+import { testFormlyFields } from "@test/helpers/formly";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
+import { BehaviorSubject, Subject } from "rxjs";
 import schema from "../../audio-event-import.schema.json";
 import { EditAnnotationsComponent } from "./edit.component";
 
@@ -38,7 +37,7 @@ describe("EditAnnotationsComponent", () => {
     mocks: [ToastService],
   });
 
-  function setup(): void {
+  beforeEach(() => {
     defaultModel = new AudioEventImport(
       generateAudioEventImport({
         name: modelData.name.jobTitle(),
@@ -61,14 +60,12 @@ describe("EditAnnotationsComponent", () => {
       },
     });
 
-    apiSpy = spectator.inject(AUDIO_EVENT_IMPORT.token);
+    apiSpy = spectator.inject(AudioEventImportService);
     apiSpy.update = jasmine.createSpy("update") as any;
     apiSpy.update.and.callFake(() => new Subject());
 
     spectator.detectChanges();
-  }
-
-  beforeEach(() => setup());
+  });
 
   assertPageInfo(EditAnnotationsComponent, "Edit");
 

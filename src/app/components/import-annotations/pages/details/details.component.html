@@ -14,7 +14,10 @@
       <ng-template ngbNavContent>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: eventFilters$, getModels: getEventModels }"
+          [bawDatatablePagination]="{
+            filters: eventFilters$,
+            getModels: getEventModels,
+          }"
         >
           <ngx-datatable-column prop="">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -23,7 +26,7 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               @if (value.audioRecording | isUnresolved) {
-                <baw-loading size="sm"></baw-loading>
+                <baw-loading size="sm" />
               } @else {
                 <a [bawUrl]="value.audioRecording.viewUrl">
                   {{ value.audioRecording.id }}
@@ -49,13 +52,13 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               @if (value.tags | isUnresolved) {
-                <baw-loading size="sm"></baw-loading>
+                <baw-loading size="sm" />
               } @else {
                 <baw-inline-list
                   [items]="value.tags"
                   [itemKey]="'text'"
                   [emptyTemplate]="noTagsTemplate"
-                ></baw-inline-list>
+                />
               }
             </ng-template>
           </ngx-datatable-column>
@@ -67,11 +70,11 @@
 
             <ng-template let-value="value" ngx-datatable-cell-template>
               @if (value.provenance | isUnresolved) {
-                <baw-loading size="sm"></baw-loading>
+                <baw-loading size="sm" />
               } @else if (value.provenance) {
                 {{ value.provenance }}
               } @else {
-                <ng-container [ngTemplateOutlet]="noProvenanceTemplate"></ng-container>
+                <ng-container [ngTemplateOutlet]="noProvenanceTemplate" />
               }
             </ng-template>
           </ngx-datatable-column>
@@ -82,10 +85,7 @@
             </ng-template>
 
             <ng-template let-value="value" ngx-datatable-cell-template>
-              <a
-                class="btn btn-sm btn-primary"
-                [bawUrl]="value.viewUrl"
-              >
+              <a class="btn btn-sm btn-primary" [bawUrl]="value.viewUrl">
                 View
               </a>
             </ng-template>
@@ -99,7 +99,10 @@
       <ng-template ngbNavContent>
         <ngx-datatable
           bawDatatableDefaults
-          [bawDatatablePagination]="{ filters: fileFilters$, getModels: getFileModels }"
+          [bawDatatablePagination]="{
+            filters: fileFilters$,
+            getModels: getFileModels,
+          }"
         >
           <ngx-datatable-column prop="id" [width]="30">
             <ng-template let-column="column" ngx-datatable-header-template>
@@ -141,7 +144,7 @@
                 [items]="value.additionalTags"
                 [itemKey]="'text'"
                 [emptyTemplate]="noTagsTemplate"
-              ></baw-inline-list>
+              />
             </ng-template>
           </ngx-datatable-column>
 
@@ -168,7 +171,7 @@
                   class="verify-button btn btn-sm btn-outline-primary"
                   [strongRoute]="verificationRoute.project"
                   [routeParams]="{ projectId: project.id }"
-                  [queryParams]="{ importFiles: value.id }"
+                  [queryParams]="{ imports: verifyQsp(value) }"
                 >
                   Verify
                 </a>

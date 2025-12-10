@@ -29,7 +29,11 @@
     (modelChange)="updateSubModel('projects', $event)"
   />
 
-  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  <!--
+    We disable the input and use a placeholder value if the form is immutably
+    scoped to a region/site so that the user doesn't get the impression they can
+    change the value.
+  -->
   @if (!site() || site()?.isPoint) {
     <baw-typeahead-input
       id="region-input"
@@ -152,6 +156,31 @@
         [value]="searchParameters().audioRecordingModels"
         (modelChange)="updateSubModel('audioRecordings', $event)"
       />
+
+      <baw-typeahead-input
+        #eventImportsTypeahead
+        id="event-imports-input"
+        label="Annotation imports"
+        inputPlaceholder="All"
+        [searchCallback]="eventImportApi.typeaheadCallback()"
+        [resultTemplate]="nameTypeaheadTemplate"
+        [value]="searchParameters().eventImportModels"
+        (modelChange)="updateSubModel('eventImports', $event)"
+      />
+
+      <baw-typeahead-input
+        #eventImportFilesTypeahead
+        id="event-imports-files-input"
+        label="Annotation import files"
+        inputPlaceholder="All"
+        [searchCallback]="
+          eventImportFileApi.typeaheadCallback(searchParameters().eventImports)
+        "
+        [resultTemplate]="importFileTypeaheadTemplate"
+        [value]="searchParameters().eventImportFileModels"
+        [inputDisabled]="searchParameters().eventImports.length === 0"
+        (modelChange)="updateEventImportFiles($event)"
+      />
     </div>
   </div>
 
@@ -160,9 +189,13 @@
       <label class="form-label w-100">Show annotations that</label>
       <baw-selectable-items
         [options]="verifiedStatusOptions()"
-        [selection]="searchParameters().verificationStatus ?? defaultVerificationStatus"
+        [selection]="
+          searchParameters().verificationStatus ?? defaultVerificationStatus
+        "
         [inline]="true"
-        (selectionChange)="updateParameterProperty('verificationStatus', $event)"
+        (selectionChange)="
+          updateParameterProperty('verificationStatus', $event)
+        "
       />
     </div>
   }
@@ -195,4 +228,41 @@
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
   <ngb-highlight [result]="result.text" [term]="searchTerm" />
+</ng-template>
+
+<ng-template
+  #importFileTypeaheadTemplate
+  let-result="result"
+  let-searchTerm="term"
+>
+  <ngb-highlight
+    [result]="result.name"
+    [term]="searchTerm"
+    [ngbTooltip]="importFileTooltip"
+    [tooltipContext]="{ result }"
+    [tooltipClass]="'baw-large-tooltip'"
+  />
+</ng-template>
+
+<!--
+  Users have expressed that it is common to have files with overlapping,
+  duplicate, or not very friendly file names and that other context such as
+  the created date would help differentiate files.
+  To prevent UI clutter (by showing all the information all the time), we
+  show extra information in a tooltip that appears when hovering over the
+  file name.
+-->
+<ng-template #importFileTooltip let-result="result">
+  <div class="tooltip-left-aligned-content">
+    <strong>{{ result.name }}</strong>
+
+    <hr />
+
+    <ul class="data-list">
+      <li>
+        Created:
+        <baw-zoned-datetime [value]="result.createdAt" [withTooltip]="false" />
+      </li>
+    </ul>
+  </div>
 </ng-template>

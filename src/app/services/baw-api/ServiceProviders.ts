@@ -1,15 +1,15 @@
-import { MediaService } from "@services/media/media.service";
 import { Provider } from "@angular/core";
 import {
   annotationSearchParametersResolvers,
 } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
 import {
-  annotationMapParameterResolvers,
-} from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import {
   verificationParametersResolvers,
 } from "@components/annotations/components/verification-form/verification-parameters.resolver";
+import {
+  annotationMapParameterResolvers,
+} from "@components/annotations/pages/annotation-map/annotation-map-parameters.resolver";
+import { MediaService } from "@services/media/media.service";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
 import { accountResolvers, AccountsService } from "./account/accounts.service";
 import {
   analysisJobItemResultResolvers,
@@ -23,10 +23,15 @@ import {
   analysisJobResolvers,
   AnalysisJobsService,
 } from "./analysis/analysis-jobs.service";
+import { AudioEventImportFileService, ShallowAudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
 import {
-  AudioEventImportService,
   audioEventImportResolvers,
+  AudioEventImportService,
 } from "./audio-event-import/audio-event-import.service";
+import {
+  audioEventProvenanceResolvers,
+  AudioEventProvenanceService,
+} from "./audio-event-provenance/audio-event-provenance.service";
 import {
   audioEventResolvers,
   AudioEventsService,
@@ -46,6 +51,7 @@ import {
   DatasetItemsService,
 } from "./dataset/dataset-items.service";
 import { datasetResolvers, DatasetsService } from "./dataset/datasets.service";
+import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
 import {
   harvestItemResolvers,
   HarvestItemsService,
@@ -68,10 +74,6 @@ import {
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
 import {
-  audioEventProvenanceResolvers,
-  AudioEventProvenanceService,
-} from "./audio-event-provenance/audio-event-provenance.service";
-import {
   regionResolvers,
   RegionsService,
   shallowRegionResolvers,
@@ -79,6 +81,10 @@ import {
 } from "./region/regions.service";
 import { ContactUsService } from "./report/contact-us.service";
 import { ReportProblemService } from "./report/report-problem.service";
+import {
+  EventSummaryReportService,
+  eventSummaryResolvers,
+} from "./reports/event-report/event-summary-report.service";
 import { BawProvider } from "./resolver-common";
 import {
   SavedSearchesService,
@@ -86,6 +92,7 @@ import {
 } from "./saved-search/saved-searches.service";
 import { scriptResolvers, ScriptsService } from "./script/scripts.service";
 import * as Tokens from "./ServiceTokens";
+import { SiteSettingsService } from "./site-settings/site-settings.service";
 import {
   shallowSiteResolvers,
   ShallowSitesService,
@@ -111,19 +118,12 @@ import { taggingResolvers, TaggingsService } from "./tag/taggings.service";
 import { tagResolvers, TagsService } from "./tag/tags.service";
 import { userResolvers, UserService } from "./user/user.service";
 import {
-  EventSummaryReportService,
-  eventSummaryResolvers,
-} from "./reports/event-report/event-summary-report.service";
-import { WebsiteStatusService } from "./website-status/website-status.service";
-import { AudioEventImportFileService } from "./audio-event-import-file/audio-event-import-file.service";
-import {
   shallowVerificationResolvers,
   ShallowVerificationService,
   verificationResolvers,
   VerificationService,
 } from "./verification/verification.service";
-import { SiteSettingsService } from "./site-settings/site-settings.service";
-import { GroupedAudioEventsService } from "./grouped-audio-events/grouped-audio-events.service";
+import { WebsiteStatusService } from "./website-status/website-status.service";
 
 interface ServiceProvider<T> {
   serviceToken: Tokens.ServiceToken<T>;
@@ -327,6 +327,10 @@ const serviceList = [
     service: AudioEventImportFileService,
   },
   {
+    serviceToken: Tokens.SHALLOW_AUDIO_EVENT_IMPORT_FILE,
+    service: ShallowAudioEventImportFileService,
+  },
+  {
     serviceToken: Tokens.WEBSITE_STATUS,
     service: WebsiteStatusService,
   },
@@ -381,4 +385,4 @@ for (const resolver of resolverProviders) {
   serviceResolvers.push(...resolver.providers);
 }
 
-export { services, serviceTokens, serviceResolvers };
+export { serviceResolvers, services, serviceTokens };

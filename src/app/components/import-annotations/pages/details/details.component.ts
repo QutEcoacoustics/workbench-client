@@ -1,55 +1,57 @@
+import { NgTemplateOutlet } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { List } from "immutable";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEventImport } from "@models/AudioEventImport";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  AudioEventImportService,
-  audioEventImportResolvers,
-} from "@baw-api/audio-event-import/audio-event-import.service";
-import { takeUntil, Observable, BehaviorSubject } from "rxjs";
-import { Id } from "@interfaces/apiInterfaces";
-import { AudioEvent } from "@models/AudioEvent";
-import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
-import { ToastService } from "@services/toasts/toasts.service";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
+  audioEventImportResolvers,
+  AudioEventImportService,
+} from "@baw-api/audio-event-import/audio-event-import.service";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
+import { verificationRoute } from "@components/annotations/annotation.routes";
+import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { jsMap } from "@helpers/query-string-parameters/queryStringParameters";
+import { toNumber } from "@helpers/typing/toNumber";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { ImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { Project } from "@models/Project";
+import {
+  NgbModal,
   NgbNav,
+  NgbNavContent,
   NgbNavItem,
   NgbNavItemRole,
   NgbNavLink,
   NgbNavLinkBase,
-  NgbNavContent,
   NgbNavOutlet,
-  NgbModal,
 } from "@ng-bootstrap/ng-bootstrap";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { UrlDirective } from "@directives/url/url.directive";
+import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
+import { ToastService } from "@services/toasts/toasts.service";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { IPageInfo } from "@helpers/page/pageInfo";
-import { hasResolvedSuccessfully, ResolvedModelList, retrieveResolvers } from "@baw-api/resolver-common";
-import { Project } from "@models/Project";
-import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { NgTemplateOutlet } from "@angular/common";
-import { verificationRoute } from "@components/annotations/annotation.routes";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { List } from "immutable";
+import { BehaviorSubject, Observable, takeUntil } from "rxjs";
 import {
+  addAnnotationImportMenuItem,
+  annotationImportMenuItem,
+  annotationsImportCategory,
   annotationsImportMenuItem,
   editAnnotationImportMenuItem,
-  annotationsImportCategory,
-  annotationImportMenuItem,
-  addAnnotationImportMenuItem,
 } from "../../import-annotations.menu";
 import { deleteAnnotationImportModal } from "../../import-annotations.modals";
 
@@ -116,13 +118,14 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     super();
   }
 
-  protected verificationRoute = verificationRoute;
+  protected readonly verificationRoute = verificationRoute;
   protected active = 1;
   protected importGroups: ImportGroup[] = [this.emptyImportGroup];
   protected audioEventImport: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
-  protected uploading: boolean = false;
+  protected uploading = false;
   private models: ResolvedModelList = {};
+  private readonly jsIdMapQsp = jsMap(toNumber);
 
   protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
   protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;
@@ -237,6 +240,14 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
           },
         });
     }
+  }
+
+  protected verifyQsp(fileModel: AudioEventImportFile): string {
+    return this.jsIdMapQsp.serialize(
+      new Map([
+        [fileModel.audioEventImportId, new Set([fileModel.id])],
+      ]),
+    )
   }
 }
 

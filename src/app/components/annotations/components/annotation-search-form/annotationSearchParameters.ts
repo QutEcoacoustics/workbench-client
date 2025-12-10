@@ -1,19 +1,22 @@
 import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
+  AUDIO_EVENT_IMPORT,
   AUDIO_RECORDING,
   PROJECT,
+  SHALLOW_AUDIO_EVENT_IMPORT_FILE,
   SHALLOW_REGION,
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
 import { MonoTuple } from "@helpers/advancedTypes";
 import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
-import { filterAnd, filterModelIds } from "@helpers/filters/filters";
+import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
   jsBoolean,
+  jsMap,
   jsNumber,
   jsNumberArray,
   jsString,
@@ -22,9 +25,12 @@ import {
   serializeObjectToParams,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
-import { CollectionIds, Id } from "@interfaces/apiInterfaces";
-import { hasMany } from "@models/AssociationDecorators";
+import { toNumber } from "@helpers/typing/toNumber";
+import { CollectionIds, Id, Ids } from "@interfaces/apiInterfaces";
+import { hasMany, hasManyFilter } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { AudioRecording } from "@models/AudioRecording";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import {
@@ -44,6 +50,8 @@ export type SortingKey =
   | "score-desc"
   | "created-asc"
   | "created-desc";
+
+type EventImports = Map<Id<AudioEventImport>, Ids<AudioEventImportFile>>;
 
 // prettier-ignore
 export const sortingOptions = new Map([
@@ -96,20 +104,21 @@ export function verificationStatusOptions(user?: User) {
 }
 
 export interface IAnnotationSearchParameters {
-  audioRecordings: CollectionIds;
-  tags: CollectionIds;
-  importFiles: CollectionIds;
+  audioRecordings: CollectionIds<AudioRecording>;
+  tags: CollectionIds<Tag>;
   daylightSavings: boolean;
   recordingDate: MonoTuple<DateTime, 2>;
   recordingTime: MonoTuple<Duration, 2>;
   score: MonoTuple<number, 2>;
 
+  imports: EventImports;
+
   // these parameters are used to filter by project, region, and site in the
   // query string parameters
   // e.g. /annotations?projects=1,2,3&regions=4,5,6&sites=7,8,9
-  projects: CollectionIds;
-  regions: CollectionIds;
-  sites: CollectionIds;
+  projects: CollectionIds<Project>;
+  regions: CollectionIds<Region>;
+  sites: CollectionIds<Site>;
 
   // these parameters are used to filter by project, region, and site in the
   // route parameters
@@ -117,9 +126,9 @@ export interface IAnnotationSearchParameters {
   // these exist in addition with the query string parameters to allow for
   // search parameters such as
   // /projects/1/regions/2?sites=3,4,5
-  routeProjectId: Id;
-  routeRegionId: Id;
-  routeSiteId: Id;
+  routeProjectId: Id<Project>;
+  routeRegionId: Id<Region>;
+  routeSiteId: Id<Site>;
 
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
@@ -141,11 +150,12 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
   {
     audioRecordings: jsNumberArray,
     tags: jsNumberArray,
-    importFiles: jsNumberArray,
     daylightSavings: jsBoolean,
     recordingDate: luxonDateArray,
     recordingTime: luxonDurationArray,
     score: jsNumberArray,
+
+    imports: jsMap(toNumber),
 
     // because the serialization of route parameters is handled by the angular
     // router, we only want to serialize the model filter query string parameters
@@ -176,9 +186,8 @@ export class AnnotationSearchParameters
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
-  public audioRecordings: CollectionIds;
-  public tags: CollectionIds;
-  public importFiles: CollectionIds;
+  public audioRecordings: CollectionIds<AudioRecording>;
+  public tags: CollectionIds<Tag>;
   public daylightSavings: boolean;
   public recordingDate: MonoTuple<DateTime, 2>;
   public recordingTime: MonoTuple<Duration, 2>;
@@ -187,13 +196,13 @@ export class AnnotationSearchParameters
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
   // parameters will be used over these query string parameters.
-  public projects: CollectionIds;
-  public regions: CollectionIds;
-  public sites: CollectionIds;
+  public projects: CollectionIds<Project>;
+  public regions: CollectionIds<Region>;
+  public sites: CollectionIds<Site>;
 
-  public routeProjectId: Id;
-  public routeRegionId: Id;
-  public routeSiteId: Id;
+  public routeProjectId: Id<Project>;
+  public routeRegionId: Id<Region>;
+  public routeSiteId: Id<Site>;
 
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
@@ -204,12 +213,32 @@ export class AnnotationSearchParameters
   public verificationStatus: VerificationStatusKey;
   public sort: SortingKey;
 
+  /**
+   * @description
+   * A grouping of audio_event_imports:audio_event_import_file
+   * This field should be treated as private and should only be accessed and set
+   * through the eventImports and eventImportFiles computed properties.
+   *
+   * @private
+   */
+  public imports: EventImports;
+
   public constructor(
     protected queryStringParameters: Params = {},
     public user?: User,
     public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
+
+    // This property has a default value of an empty Map to simplify usage so that
+    // consumers don't need to check for undefined before using it.
+    // However, this means that when serializing to query string parameters it has
+    // a special case to omit it when it is an empty Map.
+    // This special case is similar to how we handle the serialization of empty
+    // arrays.
+    if (!isInstantiated(this.imports)) {
+      this.imports = new Map();
+    }
   }
 
   @hasMany(AUDIO_RECORDING, "audioRecordings")
@@ -222,8 +251,14 @@ export class AnnotationSearchParameters
   public siteModels?: Site[];
   @hasMany(TAG, "tags")
   public tagModels?: Tag[];
+  @hasMany(AUDIO_EVENT_IMPORT, "eventImports")
+  public eventImportModels?: AudioEventImport[];
+  @hasManyFilter(SHALLOW_AUDIO_EVENT_IMPORT_FILE, "eventImportFiles", [
+    "eventImports",
+  ])
+  public eventImportFileModels?: AudioEventImportFile[];
 
-  // TODO: use resolvers here once the association resolver decorators return a promise
+  // TODO: Use associations here once we have async associations
   // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
   // @hasOne(PROJECT, "routeProjectId")
   public routeProjectModel?: Project;
@@ -254,6 +289,60 @@ export class AnnotationSearchParameters
 
   public get scoreUpperBound(): number | null {
     return this.score ? this.score[1] : null;
+  }
+
+  public get eventImports(): Id<AudioEventImport>[] {
+    return Array.from(this.imports.keys());
+  }
+
+  public set eventImports(importIds: ReadonlyArray<Id<AudioEventImport>>) {
+    const importsMap: EventImports = new Map();
+
+    // By updating the event imports, we will also clear any import files
+    // associated with imports that are no longer selected.
+    for (const importId of importIds) {
+      const existingImport = this.imports.get(importId);
+      if (existingImport) {
+        importsMap.set(importId, existingImport);
+      } else {
+        // If this is a new import being added, we initialize it with an empty
+        // set of files.
+        importsMap.set(importId, new Set());
+      }
+    }
+
+    this.imports = importsMap;
+  }
+
+  public get eventImportFiles(): Id<AudioEventImportFile>[] {
+    const fileIds: Id<AudioEventImportFile>[] = [];
+
+    this.imports.forEach((item) => {
+      fileIds.push(...item.values());
+    });
+
+    return fileIds;
+  }
+
+  public updateEventImportFiles(value: ReadonlyArray<AudioEventImportFile>) {
+    const updatedImports: EventImports = new Map();
+    for (const [eventImport] of this.imports) {
+      updatedImports.set(eventImport, new Set());
+    }
+
+    for (const file of value) {
+      const eventImport = updatedImports.get(file.audioEventImportId);
+      if (eventImport) {
+        eventImport.add(file.id);
+      } else {
+        console.error(
+          "Attempted to add an audio event import file for an import that is " +
+            `not selected. The import file ${file.id} will be ignored.`,
+        );
+      }
+    }
+
+    this.imports = updatedImports;
   }
 
   public toQueryParams({ includeVerification = true } = {}): Params {
@@ -400,20 +489,41 @@ export class AnnotationSearchParameters
   private annotationImportFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    if (
-      !isInstantiated(this.importFiles) ||
-      Array.from(this.importFiles).length === 0
-    ) {
+    if (!isInstantiated(this.imports)) {
       return initialFilter;
     }
 
-    const importFileFilters = {
-      audioEventImportFileId: {
-        in: Array.from(this.importFiles),
-      },
-    };
+    let updatedFilters: InnerFilter<AudioEvent> = {};
 
-    return filterAnd(initialFilter, importFileFilters);
+    for (const importPair of this.imports) {
+      const [importId, eventImportFileIds] = importPair;
+
+      // If the audio event import has no files, we want to filter by just the
+      // import id.
+      //
+      // This means that as soon as you add a file filter to an import, the rest
+      // of the files for that import are excluded.
+      // Additionally, if you have an import without any files selected, all
+      // events from that import will be included, even if there are other
+      // imports with files selected.
+      if (eventImportFileIds.size === 0) {
+        // This "as InnerFilter" cast is necessary because our filter TypeScript
+        // definitions do not currently recognize association filters.
+        // However, this is a valid filter according to the API spec.
+        updatedFilters = filterOr(updatedFilters, {
+          "audioEventImports.id": { eq: importId },
+        } as InnerFilter<AudioEvent>);
+      } else {
+        // Because an "in" filter condition is the same as multiple "eq"
+        // conditions joined by "or", we can use the "in" filter here to
+        // simplify the filter query.
+        updatedFilters = filterOr(updatedFilters, {
+          audioEventImportFileId: { in: Array.from(eventImportFileIds) },
+        });
+      }
+    }
+
+    return filterAnd(initialFilter, updatedFilters);
   }
 
   // TODO: We should add support for event date/time filtering once the api

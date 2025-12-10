@@ -1,54 +1,46 @@
-import {
-  SpectatorRouting,
-  SpyObject,
-  createRoutingFactory,
-} from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { ToastService } from "@services/toasts/toasts.service";
-import { AudioEventImport } from "@models/AudioEventImport";
-import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { Tag } from "@models/Tag";
-import { of, Subject } from "rxjs";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { AudioEvent } from "@models/AudioEvent";
-import {
-  AUDIO_EVENT_IMPORT,
-  AUDIO_EVENT_IMPORT_FILE,
-  AUDIO_EVENT_PROVENANCE,
-  AUDIO_RECORDING,
-  SHALLOW_AUDIO_EVENT,
-  TAG,
-} from "@baw-api/ServiceTokens";
-import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
-import { Settings } from "luxon";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { assertDatatable } from "@test/helpers/datatable";
-import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
-import { modelData } from "@test/helpers/faker";
-import { generateTag } from "@test/fakes/Tag";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { nStepObservable } from "@test/helpers/general";
 import { fakeAsync, flush } from "@angular/core/testing";
-import { getElementByTextContent } from "@test/helpers/html";
-import { Sorting } from "@baw-api/baw-api.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { Sorting } from "@baw-api/baw-api.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { verificationRoute } from "@components/annotations/annotation.routes";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Tag } from "@models/Tag";
+import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
+import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateProject } from "@test/fakes/Project";
+import { generateTag } from "@test/fakes/Tag";
+import { assertDatatable } from "@test/helpers/datatable";
+import { modelData } from "@test/helpers/faker";
+import { nStepObservable } from "@test/helpers/general";
+import { getElementByTextContent } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { Settings } from "luxon";
+import { of, Subject } from "rxjs";
 import { AnnotationImportDetailsComponent } from "./details.component";
 
 describe("AnnotationsDetailsComponent", () => {
@@ -181,10 +173,10 @@ describe("AnnotationsDetailsComponent", () => {
       ),
     );
 
-    mockRecordingsService = spec.inject(AUDIO_RECORDING.token);
+    mockRecordingsService = spec.inject(AudioRecordingsService);
     mockRecordingsService.show.and.callFake(() => of(mockAudioRecording));
 
-    mockAudioEventFileService = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
+    mockAudioEventFileService = spec.inject(AudioEventImportFileService);
     mockAudioEventFileService.list.and.callFake(() =>
       of(mockAudioEventImportFiles),
     );
@@ -193,7 +185,7 @@ describe("AnnotationsDetailsComponent", () => {
     );
     mockAudioEventFileService.destroy.andReturn(of());
 
-    mockAudioEventImportService = spec.inject(AUDIO_EVENT_IMPORT.token);
+    mockAudioEventImportService = spec.inject(AudioEventImportService);
     mockAudioEventImportService.show.and.callFake(() =>
       of(mockAudioEventImport),
     );
@@ -208,13 +200,13 @@ describe("AnnotationsDetailsComponent", () => {
       nStepObservable(provenanceSubject, () => mockProvenance as any),
     ]);
 
-    mockEventsService = spec.inject(SHALLOW_AUDIO_EVENT.token);
+    mockEventsService = spec.inject(ShallowAudioEventsService);
     mockEventsService.filter.and.callFake(() => audioEventSubject);
 
-    mockTagsService = spec.inject(TAG.token);
+    mockTagsService = spec.inject(TagsService);
     mockTagsService.show.and.callFake(() => tagsSubject);
 
-    mockProvenanceService = spec.inject(AUDIO_EVENT_PROVENANCE.token);
+    mockProvenanceService = spec.inject(AudioEventProvenanceService);
     mockProvenanceService.show.and.callFake(() => provenanceSubject);
 
     // When deleting a file, we use a modal to confirm that the user wants to
@@ -361,7 +353,10 @@ describe("AnnotationsDetailsComponent", () => {
       const expectedLinks = mockAudioEventImportFiles.map(
         (file: AudioEventImportFile) => {
           const routeParams = { projectId: mockProject.id };
-          const queryParams = { importFiles: file.id };
+          const queryParams = {
+            imports: `${file.audioEventImportId}:${file.id}`,
+          };
+
           return { routeParams, queryParams };
         },
       );

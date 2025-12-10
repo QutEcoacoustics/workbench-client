@@ -5,12 +5,6 @@ import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/aud
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import {
-  AUDIO_EVENT_IMPORT_FILE,
-  AUDIO_EVENT_PROVENANCE,
-  AUDIO_RECORDING,
-  TAG,
-} from "@baw-api/ServiceTokens";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -170,10 +164,10 @@ describe("AddAnnotationsComponent", () => {
     routeProject["injector"] = injectorSpy;
     spec.component.project = routeProject;
 
-    fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
-    tagServiceSpy = spec.inject(TAG.token);
-    provenanceServiceSpy = spec.inject(AUDIO_EVENT_PROVENANCE.token);
-    recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
+    fileImportSpy = spec.inject(AudioEventImportFileService);
+    tagServiceSpy = spec.inject(TagsService);
+    provenanceServiceSpy = spec.inject(AudioEventProvenanceService);
+    recordingServiceSpy = spec.inject(AudioRecordingsService);
 
     notificationsSpy = spec.inject(ToastService);
     routerSpy = spec.inject(Router);

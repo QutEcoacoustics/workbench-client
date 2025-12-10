@@ -45,6 +45,16 @@
       </a>
 
       <a
+        name="verify-button"
+        class="btn btn-sm btn-outline-primary ms-1"
+        [strongRoute]="verificationRoute.project"
+        [routeParams]="{ projectId: project.id }"
+        [queryParams]="{ imports: verifyQsp(value) }"
+      >
+        Verify
+      </a>
+
+      <a
         name="delete-button"
         class="btn btn-sm btn-outline-danger ms-1"
         (click)="deleteEventImport(deleteEventImportModal, value)"
