@@ -304,7 +304,7 @@ describe("DatatablePaginationDirective", () => {
       assertSort("id");
     });
 
-    fit("should use column prop from datatable column input", () => {
+    it("should use column prop from datatable column input", () => {
       generateModels();
       spec = createDirective(
         `
