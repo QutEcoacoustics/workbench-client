@@ -29,10 +29,6 @@ import {
   AudioEventImportService,
 } from "./audio-event-import/audio-event-import.service";
 import {
-  audioEventProvenanceResolvers,
-  AudioEventProvenanceService,
-} from "./audio-event-provenance/audio-event-provenance.service";
-import {
   audioEventResolvers,
   AudioEventsService,
   ShallowAudioEventsService,
@@ -73,6 +69,10 @@ import {
   ProgressEventsService,
 } from "./progress-event/progress-events.service";
 import { projectResolvers, ProjectsService } from "./project/projects.service";
+import {
+  provenanceResolvers,
+  ProvenanceService,
+} from "./provenance/provenance.service";
 import {
   regionResolvers,
   RegionsService,
@@ -309,8 +309,8 @@ const serviceList = [
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
-    service: AudioEventProvenanceService,
-    resolvers: audioEventProvenanceResolvers,
+    service: ProvenanceService,
+    resolvers: provenanceResolvers,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,

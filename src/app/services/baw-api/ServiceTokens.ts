@@ -13,7 +13,6 @@ import type { AnalysisJobItemResult } from "@models/AnalysisJobItemResult";
 import type { AudioEvent } from "@models/AudioEvent";
 import type { AudioEventImport } from "@models/AudioEventImport";
 import type { AudioEventImportFile } from "@models/AudioEventImportFile";
-import type { AudioEventProvenance } from "@models/AudioEventProvenance";
 import type { AudioRecording } from "@models/AudioRecording";
 import type { Bookmark } from "@models/Bookmark";
 import type { Annotation } from "@models/data/Annotation";
@@ -28,6 +27,7 @@ import type { HarvestItem } from "@models/HarvestItem";
 import type { Permission } from "@models/Permission";
 import type { ProgressEvent } from "@models/ProgressEvent";
 import type { Project } from "@models/Project";
+import { Provenance } from "@models/Provenance";
 import type { Question } from "@models/Question";
 import type { Region } from "@models/Region";
 import type { Response } from "@models/Response";
@@ -54,7 +54,6 @@ import type {
   ShallowAudioEventImportFileService,
 } from "./audio-event-import-file/audio-event-import-file.service";
 import type { AudioEventImportService } from "./audio-event-import/audio-event-import.service";
-import type { AudioEventProvenanceService } from "./audio-event-provenance/audio-event-provenance.service";
 import type {
   AudioEventsService,
   ShallowAudioEventsService,
@@ -76,6 +75,7 @@ import type {
 import type { PermissionsService } from "./permissions/permissions.service";
 import type { ProgressEventsService } from "./progress-event/progress-events.service";
 import type { ProjectsService } from "./project/projects.service";
+import { ProvenanceService } from "./provenance/provenance.service";
 import type {
   RegionsService,
   ShallowRegionsService,
@@ -160,9 +160,7 @@ export const TAG = new ServiceToken<TagsService, Tag>("TAG");
 export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>("TAG_GROUP");
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
-export const AUDIO_EVENT_PROVENANCE = new ServiceToken<AudioEventProvenanceService, AudioEventProvenance>(
-  "AUDIO_EVENT_PROVENANCE",
-);
+export const AUDIO_EVENT_PROVENANCE = new ServiceToken<ProvenanceService, Provenance>("AUDIO_EVENT_PROVENANCE");
 export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>(
   "AUDIO_EVENT_SUMMARY_REPORT",
 );

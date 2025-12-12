@@ -1,4 +1,4 @@
-import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
+import { EventGroup } from "@models/Provenance/EventGroup";
 import { IEventSummaryReport } from "@models/EventSummaryReport";
 import { modelData } from "@test/helpers/faker";
 

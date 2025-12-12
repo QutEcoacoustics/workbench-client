@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, viewChild } from "@angular/core";
-import { Map } from "immutable";
-import { IDateRange } from "@models/AudioEventProvenance/ReportGraphs";
+import { IDateRange } from "@models/Provenance/ReportGraphs";
 import { ChartComponent } from "@shared/chart/chart.component";
+import { Map } from "immutable";
 import chartSchema from "./coveragePlot.schema.json";
 
 export interface CoverageGraphData {

@@ -15,10 +15,10 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { hasMany } from "./AssociationDecorators";
 import { bawCollection, bawDateTime } from "./AttributeDecorators";
-import { AudioEventProvenance } from "./AudioEventProvenance";
-import { EventGroup } from "./AudioEventProvenance/EventGroup";
-import { IEventSummaryGraphs } from "./AudioEventProvenance/ReportGraphs";
-import { IAudioEventSummaryReportStatistics } from "./AudioEventProvenance/ReportStatistics";
+import { Provenance } from "./Provenance";
+import { EventGroup } from "./Provenance/EventGroup";
+import { IEventSummaryGraphs } from "./Provenance/ReportGraphs";
+import { IAudioEventSummaryReportStatistics } from "./Provenance/ReportStatistics";
 import { Region } from "./Region";
 import { Site } from "./Site";
 import { Tag } from "./Tag";
@@ -66,11 +66,11 @@ export class EventSummaryReport
   public sites?: Site[];
   @hasMany<EventSummaryReport, Tag>(TAG, "tagIds")
   public tags?: Tag[];
-  @hasMany<EventSummaryReport, AudioEventProvenance>(
+  @hasMany<EventSummaryReport, Provenance>(
     AUDIO_EVENT_PROVENANCE,
     "provenanceIds"
   )
-  public provenances?: AudioEventProvenance[];
+  public provenances?: Provenance[];
 
   public get viewUrl(): string {
     const reportLevel = this.generationParameters.sites

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   scriptResolvers,
@@ -13,14 +13,14 @@ import {
   SCRIPT,
 } from "@baw-api/ServiceTokens";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AssociationInjector } from "@models/ImplementsInjector";
+import { Provenance } from "@models/Provenance";
 import { Script } from "@models/Script";
 import { User } from "@models/User";
 import { SpyObject } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { generateBawApiError } from "@test/fakes/BawApiError";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { generateScript } from "@test/fakes/Script";
 import { assertDetail, Detail } from "@test/helpers/detail-view";
 import { nStepObservable } from "@test/helpers/general";
@@ -61,7 +61,7 @@ describe("ScriptComponent", () => {
     ) as SpyObject<ScriptsService>;
     const provenanceApi = TestBed.inject(
       AUDIO_EVENT_PROVENANCE.token,
-    ) as SpyObject<AudioEventProvenanceService>;
+    ) as SpyObject<ProvenanceService>;
 
     component = fixture.componentInstance;
 
@@ -69,7 +69,7 @@ describe("ScriptComponent", () => {
     accountsApi.show.and.callFake(() => accountsSubject);
     const scriptsSubject = new Subject<Script>();
     scriptsApi.show.and.callFake(() => scriptsSubject);
-    const provenanceSubject = new Subject<AudioEventProvenance>();
+    const provenanceSubject = new Subject<Provenance>();
     provenanceApi.show.andCallFake(() => provenanceSubject);
 
     // Update model to contain injector
@@ -89,8 +89,8 @@ describe("ScriptComponent", () => {
       nStepObservable(
         provenanceSubject,
         () =>
-          new AudioEventProvenance(
-            generateAudioEventProvenance({
+          new Provenance(
+            generateProvenance({
               id: 1,
               name: "BirdNET",
               version: "2.4",

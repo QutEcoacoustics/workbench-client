@@ -1,4 +1,4 @@
-<h1>Batch Annotation Import History</h1>
+<h1>Provenances</h1>
 
 <ngx-datatable
   bawDatatableDefaults
@@ -13,12 +13,33 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column prop="createdAt">
+  <ngx-datatable-column prop="version">
     <ng-template let-column="column" ngx-datatable-header-template>
-      Created at
+      Version
     </ng-template>
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <baw-datetime [value]="value" />
+      <span>
+        @if (value) {
+          {{ value }}
+        } @else {
+          <i>No version</i>
+        }
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="description">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Description
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>
+        @if (value) {
+          {{ value }}
+        } @else {
+          <i>No description</i>
+        }
+      </span>
     </ng-template>
   </ngx-datatable-column>
 
@@ -39,35 +60,25 @@
       <a
         name="view-button"
         class="btn btn-sm btn-primary"
-        [bawUrl]="value.createViewUrl(this.project.id)"
+        [bawUrl]="value.viewUrl"
       >
         View
       </a>
 
-      <a
-        name="verify-button"
-        class="btn btn-sm btn-outline-primary ms-1"
-        [strongRoute]="verificationRoute.project"
-        [routeParams]="{ projectId: project.id }"
-        [queryParams]="{ imports: verifyQsp(value) }"
-      >
-        Verify
-      </a>
-
-      <a
+      <button
         name="delete-button"
         class="btn btn-sm btn-outline-danger ms-1"
-        (click)="deleteEventImport(deleteEventImportModal, value)"
+        (click)="deleteProvenance(deleteProvenanceModal, value)"
       >
         Delete
-      </a>
+      </button>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
 
-<ng-template #deleteEventImportModal let-modal>
+<ng-template #deleteProvenanceModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title">Delete Annotation Import</h4>
+    <h4 class="modal-title">Delete Provenance</h4>
     <button
       type="button"
       class="btn-close"
@@ -78,14 +89,24 @@
 
   <div class="modal-body">
     <span id="subTitle">
-      <p>Are you certain you wish to delete this annotation import?</p>
-
-      <p>All annotations imported will be lost</p>
+      <p>Are you certain you wish to delete this provenance?</p>
     </span>
   </div>
 
   <div class="modal-footer">
-    <a class="btn btn-outline-primary" (click)="modal.close()">Cancel</a>
-    <a class="btn btn-danger text-white" (click)="modal.close(true)">Delete</a>
+    <button
+      class="btn btn-outline-primary"
+      data-testid="delete-cancel-button"
+      (click)="modal.close()"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-danger text-white"
+      data-testid="delete-confirm-button"
+      (click)="modal.close(true)"
+    >
+      Delete
+    </button>
   </div>
 </ng-template>

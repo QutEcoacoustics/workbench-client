@@ -1,19 +1,19 @@
 import { fakeAsync, flush } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
 import { AudioRecording } from "@models/AudioRecording";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
+import { Provenance } from "@models/Provenance";
 import { Tag } from "@models/Tag";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -25,9 +25,9 @@ import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { generateImportedAudioEvent } from "@test/fakes/AudioEventImport/ImportedAudioEvent";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
+import { generateProvenance } from "@test/fakes/Provenance";
 import { generateTag } from "@test/fakes/Tag";
 import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
@@ -48,7 +48,7 @@ describe("AddAnnotationsComponent", () => {
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
-  let provenanceServiceSpy: SpyObject<AudioEventProvenanceService>;
+  let provenanceServiceSpy: SpyObject<ProvenanceService>;
 
   let notificationsSpy: SpyObject<ToastService>;
   let routerSpy: SpyObject<Router>;
@@ -57,7 +57,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError<AudioEventImportFile>;
   let mockTagsResponse: Tag[];
-  let mockProvenanceResponse: AudioEventProvenance[];
+  let mockProvenanceResponse: Provenance[];
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -166,7 +166,7 @@ describe("AddAnnotationsComponent", () => {
 
     fileImportSpy = spec.inject(AudioEventImportFileService);
     tagServiceSpy = spec.inject(TagsService);
-    provenanceServiceSpy = spec.inject(AudioEventProvenanceService);
+    provenanceServiceSpy = spec.inject(ProvenanceService);
     recordingServiceSpy = spec.inject(AudioRecordingsService);
 
     notificationsSpy = spec.inject(ToastService);
@@ -192,7 +192,7 @@ describe("AddAnnotationsComponent", () => {
       1,
       10,
       () =>
-        new AudioEventProvenance(generateAudioEventProvenance(), injectorSpy),
+        new Provenance(generateProvenance(), injectorSpy),
     );
 
     mockRecordingsResponse = new AudioRecording(
@@ -230,10 +230,7 @@ describe("AddAnnotationsComponent", () => {
     setup();
   });
 
-  assertPageInfo<AudioEventImport>(
-    AddAnnotationsComponent,
-    "Add New Annotations",
-  );
+  assertPageInfo(AddAnnotationsComponent, "Add New Annotations");
 
   it("should create", fakeAsync(() => {
     expect(spec.component).toBeInstanceOf(AddAnnotationsComponent);

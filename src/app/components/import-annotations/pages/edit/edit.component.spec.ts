@@ -3,6 +3,7 @@ import {
   audioEventImportResolvers,
 } from "@baw-api/audio-event-import/audio-event-import.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
+import { AUDIO_EVENT_IMPORT } from "@baw-api/ServiceTokens";
 import { AudioEventImport } from "@models/AudioEventImport";
 import { Project } from "@models/Project";
 import {
@@ -25,7 +26,7 @@ import { EditAnnotationsComponent } from "./edit.component";
 describe("EditAnnotationsComponent", () => {
   const { fields } = schema;
 
-  let spectator: SpectatorRouting<EditAnnotationsComponent>;
+  let spec: SpectatorRouting<EditAnnotationsComponent>;
   let apiSpy: SpyObject<AudioEventImportService>;
   let defaultModel: AudioEventImport;
   let defaultProject: Project;
@@ -38,16 +39,10 @@ describe("EditAnnotationsComponent", () => {
   });
 
   beforeEach(() => {
-    defaultModel = new AudioEventImport(
-      generateAudioEventImport({
-        name: modelData.name.jobTitle(),
-        description: modelData.description(),
-      }),
-    );
-
+    defaultModel = new AudioEventImport(generateAudioEventImport());
     defaultProject = new Project(generateProject());
 
-    spectator = createComponent({
+    spec = createComponent({
       detectChanges: false,
       params: { projectId: defaultProject.id, annotationId: defaultModel.id },
       data: {
@@ -60,11 +55,11 @@ describe("EditAnnotationsComponent", () => {
       },
     });
 
-    apiSpy = spectator.inject(AudioEventImportService);
+    apiSpy = spec.inject(AUDIO_EVENT_IMPORT.token);
     apiSpy.update = jasmine.createSpy("update") as any;
     apiSpy.update.and.callFake(() => new Subject());
 
-    spectator.detectChanges();
+    spec.detectChanges();
   });
 
   assertPageInfo(EditAnnotationsComponent, "Edit");
@@ -93,7 +88,7 @@ describe("EditAnnotationsComponent", () => {
 
   describe("component", () => {
     it("should create", () => {
-      expect(spectator.component).toBeInstanceOf(EditAnnotationsComponent);
+      expect(spec.component).toBeInstanceOf(EditAnnotationsComponent);
     });
 
     it("should call the api with the correct model when the form is submitted", () => {
@@ -102,12 +97,8 @@ describe("EditAnnotationsComponent", () => {
         description: modelData.description(),
       });
 
-      spectator.component.submit(model);
+      spec.component.submit(model);
       expect(apiSpy.update).toHaveBeenCalledOnceWith(model);
-    });
-
-    it("should not call the api before the form is submitted", () => {
-      expect(apiSpy.update).not.toHaveBeenCalled();
     });
 
     it("should redirect to annotation import view after successful update", () => {
@@ -122,9 +113,11 @@ describe("EditAnnotationsComponent", () => {
         () => new BehaviorSubject<AudioEventImport>(updatedModel),
       );
 
-      spectator.component.submit(updatedModel);
+      expect(apiSpy.update).not.toHaveBeenCalled();
 
-      expect(spectator.router.navigateByUrl).toHaveBeenCalledWith(
+      spec.component.submit(updatedModel);
+
+      expect(spec.router.navigateByUrl).toHaveBeenCalledWith(
         updatedModel.createViewUrl(defaultProject.id),
       );
     });

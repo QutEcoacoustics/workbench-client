@@ -1,45 +1,45 @@
+import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { projectResolvers } from "@baw-api/project/projects.service";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { Site } from "@models/Site";
-import { Observable } from "rxjs";
+import { StandardApi } from "@baw-api/api-common";
 import { InnerFilter } from "@baw-api/baw-api.service";
-import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  ShallowSitesService,
-  siteResolvers,
-} from "@baw-api/site/sites.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   regionResolvers,
   ShallowRegionsService,
 } from "@baw-api/region/regions.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { Region } from "@models/Region";
-import { Project } from "@models/Project";
 import {
-  reportMenuItems,
-  reportCategories,
-} from "@components/reports/reports.menu";
+  ShallowSitesService,
+  siteResolvers,
+} from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { StrongRoute } from "@interfaces/strongRoute";
 import {
-  notIn,
+  reportCategories,
+  reportMenuItems,
+} from "@components/reports/reports.menu";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import {
+  contains,
   filterAnd,
   filterModel,
-  contains,
+  notIn,
 } from "@helpers/filters/filters";
-import { DateTimeFilterModel , DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { DateTime } from "luxon";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { Id } from "@interfaces/apiInterfaces";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { AbstractModel } from "@models/AbstractModel";
-import { TypeaheadSearchCallback , TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { StandardApi } from "@baw-api/api-common";
-import { FormsModule } from "@angular/forms";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
 import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { TitleCasePipe } from "@angular/common";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { DateTimeFilterComponent, DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
+import { TypeaheadInputComponent, TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTime } from "luxon";
+import { Observable } from "rxjs";
 import {
   BucketSize,
   EventSummaryReportParameters,
@@ -58,7 +58,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public constructor(
     protected sitesApi: ShallowSitesService,
     protected regionsApi: ShallowRegionsService,
-    protected provenanceApi: AudioEventProvenanceService,
+    protected provenanceApi: ProvenanceService,
     protected tagsApi: TagsService,
     private route: ActivatedRoute
   ) {

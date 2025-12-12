@@ -4,7 +4,8 @@
     [model]="model"
     [fields]="fields"
     [submitLoading]="loading"
-    submitLabel="Submit"
     (onSubmit)="submit($event)"
   />
+} @else {
+  <baw-error-handler [error]="error" />
 }
