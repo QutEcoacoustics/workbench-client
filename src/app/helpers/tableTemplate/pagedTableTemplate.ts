@@ -104,10 +104,21 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   }
 
   public setPage(pageInfo: TablePage) {
-    this.pageNumber = pageInfo.offset;
-    this.filters.paging = {
-      page: pageInfo.offset + 1,
-    };
+    const requestedOffset = pageInfo.offset;
+    if (requestedOffset === this.pageNumber && !this.filters.paging) {
+      return;
+    }
+
+    const requestedPage = requestedOffset + 1;
+    if (
+      requestedOffset === this.pageNumber &&
+      this.filters.paging?.page === requestedPage
+    ) {
+      return;
+    }
+
+    this.pageNumber = requestedOffset;
+    this.filters.paging = { page: requestedPage };
 
     this.getPageData();
   }
@@ -166,7 +177,29 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   }
 
   protected apiAction(filters: Filters<M>, args: AbstractModel[] = []) {
-    return this.api.filter(filters, ...args);
+    // Pass a snapshot to avoid later mutations (paging/sorting/filter updates)
+    // from changing the arguments recorded by spies or affecting in-flight requests.
+    const snapshot: Filters<M> = { ...filters };
+
+    if (filters?.paging) {
+      snapshot.paging = { ...filters.paging };
+    } else {
+      delete (snapshot as any).paging;
+    }
+
+    if (filters?.sorting) {
+      snapshot.sorting = { ...filters.sorting };
+    } else {
+      delete (snapshot as any).sorting;
+    }
+
+    if (filters?.filter) {
+      snapshot.filter = { ...filters.filter };
+    } else {
+      delete (snapshot as any).filter;
+    }
+
+    return this.api.filter(snapshot, ...args);
   }
 }
 

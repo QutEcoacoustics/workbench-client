@@ -12,7 +12,6 @@ import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { appLibraryImports } from "src/app/app.config";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
-import { fakeAsync } from "@angular/core/testing";
 import { Filters } from "@baw-api/baw-api.service";
 import { AssignComponent } from "./assign.component";
 
@@ -143,7 +142,7 @@ describe("AssignComponent", () => {
     });
   });
 
-  fit("should send the correct filter request on initialization", () => {
+  it("should send the correct filter request on initialization", () => {
     setup();
     const expectedRequest: Filters = {};
     expect(mockApi.filter).toHaveBeenCalledOnceWith(expectedRequest);
