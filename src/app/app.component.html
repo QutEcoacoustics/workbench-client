@@ -1,14 +1,17 @@
 <div id="app">
-  <baw-header />
-  <ngx-loading-bar diameter="18px" />
+  <baw-header></baw-header>
+  <ngx-loading-bar diameter="18px"></ngx-loading-bar>
 
-  <baw-toast-provider aria-live="polite" aria-atomic="true" />
+  <baw-toast-provider
+    aria-live="polite"
+    aria-atomic="true"
+  ></baw-toast-provider>
 
   <baw-side-nav>
-    <baw-primary-menu [isSideNav]="true" />
-    <baw-secondary-menu [isSideNav]="true" />
+    <baw-primary-menu [isSideNav]="true"></baw-primary-menu>
+    <baw-secondary-menu [isSideNav]="true"></baw-secondary-menu>
     @if (menu.isFullscreen && resolvedSuccessfully) {
-      <baw-action-menu [isSideNav]="true" />
+      <baw-action-menu [isSideNav]="true"></baw-action-menu>
     }
   </baw-side-nav>
 
@@ -22,7 +25,7 @@
   >
     <!-- Default and Error Segments -->
     <div id="page">
-      <baw-breadcrumbs />
+      <baw-breadcrumbs></baw-breadcrumbs>
 
       @if (resolvedSuccessfully) {
         <router-outlet
@@ -31,9 +34,9 @@
           (deactivate)="onRouterOutlet(null)"
           (attach)="onRouterOutlet($event)"
           (detach)="onRouterOutlet(null)"
-        />
+        ></router-outlet>
       } @else {
-        <router-outlet id="error" name="error" />
+        <router-outlet id="error" name="error"></router-outlet>
       }
     </div>
 
@@ -41,11 +44,11 @@
     @if (!fullscreen) {
       <div id="action">
         @if (resolvedSuccessfully) {
-          <baw-action-menu />
+          <baw-action-menu></baw-action-menu>
         }
       </div>
     }
   </div>
 
-  <baw-footer />
+  <baw-footer></baw-footer>
 </div>

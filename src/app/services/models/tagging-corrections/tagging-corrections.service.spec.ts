@@ -160,7 +160,7 @@ describe("TaggingCorrectionsService", () => {
 
       expect(
         verificationApiSpy.destroyUserVerification,
-      ).toHaveBeenCalledOnceWith(annotation, tagToRemove.id);
+      ).toHaveBeenCalledOnceWith(annotation as any, tagToRemove.id);
 
       expect(taggingApiSpy.destroy).toHaveBeenCalledOnceWith(
         taggingToRemove,
@@ -193,7 +193,7 @@ describe("TaggingCorrectionsService", () => {
 
       expect(
         verificationApiSpy.destroyUserVerification,
-      ).toHaveBeenCalledOnceWith(annotation, tagToRemove.id);
+      ).toHaveBeenCalledOnceWith(annotation as any, tagToRemove.id);
 
       expect(taggingApiSpy.destroy).not.toHaveBeenCalled();
     });

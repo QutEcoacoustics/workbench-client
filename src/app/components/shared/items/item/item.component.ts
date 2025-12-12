@@ -13,10 +13,12 @@ import { NgClass } from "@angular/common";
         class="me-2"
         [icon]="icon"
         [ngbTooltip]="tooltipText"
-      />
+      ></fa-icon>
 
+      <!-- Item name -->
       <span id="name">{{ name }}</span>
 
+      <!-- Item value -->
       <span
         id="value"
         class="badge rounded text-bg-secondary float-end"

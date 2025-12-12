@@ -14,11 +14,8 @@ import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
 import { provideClientHydration } from "@angular/platform-browser";
 import { provideBawApi } from "@baw-api/provide-baw-api";
-import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
-import { environment } from "src/environments/environment";
 import { appPageComponents } from "./app.pages";
 import { clientRoutes } from "./app.routes";
-import { defaultSlowLoadTime } from "./app.helper";
 
 export const appLibraryImports = [
   ReactiveFormsModule,
@@ -39,7 +36,7 @@ export const appConfig: ApplicationConfig = {
       withDisabledInitialNavigation(),
       withInMemoryScrolling({
         scrollPositionRestoration: "enabled",
-      }),
+      })
     ),
 
     importProvidersFrom(appLibraryImports),
@@ -50,13 +47,11 @@ export const appConfig: ApplicationConfig = {
     appLibraryImports,
 
     // Timeout API requests after set period
-    providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
+    // providerTimeoutInterceptor({ timeout: environment.browserTimeout }),
 
     { provide: TitleStrategy, useClass: PageTitleStrategy },
-    {
-      provide: LOADING_BAR_CONFIG,
-      useValue: { latencyThreshold: defaultSlowLoadTime },
-    },
+    // Show loading animation after 3 seconds
+    { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
     { provide: APP_ID, useValue: "workbench-client" },
 
     provideClientHydration(),

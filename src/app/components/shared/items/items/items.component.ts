@@ -26,7 +26,7 @@ import { IItem, ItemComponent } from "../item/item.component";
                 [tooltip]="stat.tooltip"
                 [value]="stat.value"
                 [color]="stat.color"
-              />
+              ></baw-items-item>
             </li>
           }
         </ul>
@@ -41,13 +41,14 @@ import { IItem, ItemComponent } from "../item/item.component";
                 [tooltip]="stat.tooltip"
                 [value]="stat.value"
                 [color]="stat.color"
-              />
+              ></baw-items-item>
             </li>
           }
         </ul>
       </div>
     </div>
   `,
+  // Pure Component
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ItemComponent],
 })
@@ -56,6 +57,8 @@ export class ItemsComponent implements OnInit, OnChanges {
 
   public groupOne: List<IItem>;
   public groupTwo: List<IItem>;
+
+  public constructor() {}
 
   public ngOnInit() {
     this.ngOnChanges();

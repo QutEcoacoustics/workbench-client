@@ -29,8 +29,14 @@ describe("AdminTagGroupsComponent", () => {
 
   beforeEach(function () {
     TestBed.configureTestingModule({
-      imports: [...appLibraryImports, AdminTagGroupsComponent],
-      providers: [provideMockBawApi(), provideRouter([])],
+      imports: [
+        ...appLibraryImports,
+        AdminTagGroupsComponent,
+      ],
+      providers: [
+        provideMockBawApi(),
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     TestBed.inject(ToastService);
@@ -38,14 +44,14 @@ describe("AdminTagGroupsComponent", () => {
     api = TestBed.inject(TagGroupsService);
 
     tagGroupApiSpy = TestBed.inject(
-      TagGroupsService,
+      TagGroupsService
     ) as SpyObject<TagGroupsService>;
     modalService = TestBed.inject(NgbModal) as SpyObject<NgbModal>;
 
     // inject the bootstrap modal config service so that we can disable animations
     // this is needed so that buttons can be clicked without waiting for the async animation
     modalConfigService = TestBed.inject(
-      NgbModalConfig,
+      NgbModalConfig
     ) as SpyObject<NgbModalConfig>;
     modalConfigService.animation = false;
 
@@ -76,7 +82,7 @@ describe("AdminTagGroupsComponent", () => {
 
       fixture.componentInstance.confirmTagGroupDeletion(
         undefined,
-        mockTagGroup,
+        mockTagGroup
       );
 
       expect(modalService.hasOpenModals()).toBeTrue();

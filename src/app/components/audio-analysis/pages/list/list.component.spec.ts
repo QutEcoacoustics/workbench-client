@@ -8,7 +8,7 @@ import { assertPagination } from "@test/helpers/pagedTableTemplate";
 import { ACCOUNT, ANALYSIS_JOB, SCRIPT } from "@baw-api/ServiceTokens";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { AssociationInjector } from "@models/ImplementsInjector";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
 import { Script } from "@models/Script";
 import { generateScript } from "@test/fakes/Script";
 import { User } from "@models/User";
@@ -17,6 +17,7 @@ import { Project } from "@models/Project";
 import { generateProject } from "@test/fakes/Project";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnalysesComponent } from "./list.component";
+import { nStepObservable } from "@test/helpers/general";
 
 describe("AnalysesComponent", () => {
   let spec: Spectator<AnalysesComponent>;
@@ -31,7 +32,7 @@ describe("AnalysesComponent", () => {
     providers: [provideMockBawApi()],
   });
 
-  beforeEach(function () {
+  beforeEach(async function () {
     const mockProject = new Project(generateProject());
 
     spec = createComponent({
@@ -58,7 +59,13 @@ describe("AnalysesComponent", () => {
       },
     } as const satisfies InnerFilter<AnalysisJob>;
 
-    mockScriptsApi.show.and.returnValue(of(new Script(generateScript(), injector)));
+    const scriptsSubject = new Subject<Script>();
+    mockScriptsApi.show.and.callFake(() => scriptsSubject);
+    await nStepObservable(
+      scriptsSubject,
+      () => new Script(generateScript(), injector),
+    );
+
     mockAccountsApi.show.and.returnValue(of(new User(generateUser(), injector)));
 
     this.defaultInnerFilters = expectedInnerFilters;

@@ -142,18 +142,20 @@ describe("ToastProviderComponent", () => {
   it("should stack multiple toasts with fixed template and text content correctly", () => {});
 
   describe("toast variants", () => {
-    const testCases: ToastVariantTest[] = [
+    const testCases = [
       { method: "success", expectedVariant: "success", expectedIcon: ["fas", "check"] },
       { method: "warning", expectedVariant: "warning", expectedIcon: ["fas", "exclamation-triangle"] },
       { method: "error", expectedVariant: "danger", expectedIcon: ["fas", "hand"] },
       { method: "info", expectedVariant: "info", expectedIcon: ["fas", "info-circle"] },
       { method: "show", expectedVariant: "default", expectedIcon: null },
-    ];
+    ] as const satisfies ToastVariantTest[];
 
     for (const test of testCases) {
       it(`should have the correct theming for a '${test.expectedVariant}' toast variant`, () => {
-        (toastServiceSpy[test.method] as any)();
-         spec.detectChanges();
+        const testMessage = modelData.lorem.sentence();
+
+        toastServiceSpy[test.method](testMessage);
+        spec.detectChanges();
 
         const targetToast = toasts()[0];
         expect(targetToast).toHaveClass(`bg-${test.expectedVariant}`);
@@ -161,7 +163,9 @@ describe("ToastProviderComponent", () => {
       });
 
       it(`should have the correct icon for a '${test.expectedVariant}' toast variant`, () => {
-        (toastServiceSpy[test.method] as any)();
+        const testMessage = modelData.lorem.sentence();
+
+        toastServiceSpy[test.method](testMessage);
         spec.detectChanges();
 
         const toastIcon = spec.query(FaIconComponent);

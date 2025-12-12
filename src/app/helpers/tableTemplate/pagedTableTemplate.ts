@@ -69,7 +69,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
     private rowsCallback: (models: M[]) => TableRow[],
     protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
-    private preselectRows: (rows: TableRow[]) => void = () => {},
+    private preselectRows: (rows: TableRow[]) => void = () => {}
   ) {
     super();
     this.pageNumber = 0;
@@ -79,7 +79,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       .pipe(
         debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
-        takeUntil(this.unsubscribe),
+        takeUntil(this.unsubscribe)
       )
       .subscribe({
         next: () => this.getPageData(),
@@ -104,21 +104,10 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   }
 
   public setPage(pageInfo: TablePage) {
-    const requestedOffset = pageInfo.offset;
-    if (requestedOffset === this.pageNumber && !this.filters.paging) {
-      return;
-    }
-
-    const requestedPage = requestedOffset + 1;
-    if (
-      requestedOffset === this.pageNumber &&
-      this.filters.paging?.page === requestedPage
-    ) {
-      return;
-    }
-
-    this.pageNumber = requestedOffset;
-    this.filters.paging = { page: requestedPage };
+    this.pageNumber = pageInfo.offset;
+    this.filters.paging = {
+      page: pageInfo.offset + 1,
+    };
 
     this.getPageData();
   }
@@ -177,29 +166,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   }
 
   protected apiAction(filters: Filters<M>, args: AbstractModel[] = []) {
-    // Pass a snapshot to avoid later mutations (paging/sorting/filter updates)
-    // from changing the arguments recorded by spies or affecting in-flight requests.
-    const snapshot: Filters<M> = { ...filters };
-
-    if (filters?.paging) {
-      snapshot.paging = { ...filters.paging };
-    } else {
-      delete (snapshot as any).paging;
-    }
-
-    if (filters?.sorting) {
-      snapshot.sorting = { ...filters.sorting };
-    } else {
-      delete (snapshot as any).sorting;
-    }
-
-    if (filters?.filter) {
-      snapshot.filter = { ...filters.filter };
-    } else {
-      delete (snapshot as any).filter;
-    }
-
-    return this.api.filter(snapshot, ...args);
+    return this.api.filter(filters, ...args);
   }
 }
 

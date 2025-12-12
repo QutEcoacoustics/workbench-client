@@ -87,10 +87,6 @@ describe("RecentAudioRecordingsComponent", () => {
   });
 
   describe("rows", () => {
-    function getCells() {
-      return datatableCells(spec);
-    }
-
     function getCellElements() {
       return spec
         .queryAll("datatable-body-cell")
@@ -107,7 +103,7 @@ describe("RecentAudioRecordingsComponent", () => {
     }
 
     describe("site", () => {
-      const getSiteCell = () => getCells()[0];
+      const getSiteCell = () => datatableCells(spec)[0];
       const getSiteCellElement = () => getCellElements()[0];
       it("should display column", async () => {
         await setup({

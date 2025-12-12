@@ -43,7 +43,12 @@ const serverConfig: ApplicationConfig = {
       provide: DeviceDetectorService,
       useClass: UniversalDeviceDetectorService,
     },
+    // we provide a different timeout interceptor for the server so that
+    // requests can timeout faster than on the browser so that the user sees
+    // their first content faster
     providerTimeoutInterceptor({ timeout: environment.ssrTimeout }),
+    // we explicitly provide NgHttpCachingModule with a disabled cache strategy
+    // to prevent caching on the server
     provideNgHttpCaching(serverCacheConfig),
   ],
 };

@@ -7,7 +7,7 @@ import {
 import { DatatableDefaultsDirective } from "./defaults.directive";
 
 describe("DatatableDefaultsDirective", () => {
-  let spec: SpectatorDirective<DatatableDefaultsDirective>;
+  let spectator: SpectatorDirective<DatatableDefaultsDirective>;
 
   const createDirective = createDirectiveFactory({
     directive: DatatableDefaultsDirective,
@@ -15,12 +15,12 @@ describe("DatatableDefaultsDirective", () => {
   });
 
   function datatable(): DatatableComponent {
-    return spec.query(DatatableComponent);
+    return spectator.query(DatatableComponent);
   }
 
   describe("Defaults", () => {
     beforeEach(() => {
-      spec = createDirective(
+      spectator = createDirective(
         `<ngx-datatable
           #table
           bawDatatableDefaults
@@ -63,7 +63,7 @@ describe("DatatableDefaultsDirective", () => {
 
   describe("Overrides", () => {
     it("should override default value", () => {
-      spec = createDirective(
+      spectator = createDirective(
         `<ngx-datatable
           #table
           bawDatatableDefaults
@@ -83,7 +83,7 @@ describe("DatatableDefaultsDirective", () => {
     });
 
     it("should override multiple default values", () => {
-      spec = createDirective(
+      spectator = createDirective(
         `<ngx-datatable
           #table
           bawDatatableDefaults

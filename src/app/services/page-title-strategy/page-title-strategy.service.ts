@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { RouterStateSnapshot, TitleStrategy } from "@angular/router";
 import { titleCase } from "@helpers/case-converter/case-converter";
@@ -8,8 +8,9 @@ import { ConfigService } from "@services/config/config.service";
 
 @Injectable({ providedIn: "root" })
 export class PageTitleStrategy extends TitleStrategy {
-  private readonly title = inject(Title);
-  private readonly config = inject(ConfigService);
+  public constructor(private title: Title, private config: ConfigService) {
+    super();
+  }
 
   private routerState: RouterStateSnapshot;
 

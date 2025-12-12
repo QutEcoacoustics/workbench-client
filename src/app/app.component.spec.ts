@@ -50,7 +50,7 @@ describe("AppComponent", () => {
         SecondaryMenuComponent,
         ActionMenuComponent,
         BreadcrumbComponent,
-        MenuButtonComponent,
+        MenuButtonComponent
       ),
     ],
   });
@@ -95,10 +95,6 @@ describe("AppComponent", () => {
   describe("side nav", () => {
     [true, false].forEach((isFullscreen) => {
       describe(`${isFullscreen ? "fullscreen" : "menu layout"}`, () => {
-        function sideNav() {
-          return spec.query("baw-side-nav");
-        }
-
         /**
          * @param target
          * A polymorphic object type that enforces the component contains the
@@ -169,7 +165,7 @@ describe("AppComponent", () => {
     function assertLayout(isFullscreen: boolean) {
       const container = spec.query("#container");
       expect(container).toHaveClass(
-        isFullscreen ? "fullscreen" : "menu-layout",
+        isFullscreen ? "fullscreen" : "menu-layout"
       );
 
       const actionMenu = spec.query("#container baw-action-menu");
@@ -205,8 +201,8 @@ describe("AppComponent", () => {
         generatePageInfo(
           generatePageInfoResolvers({
             model: new MockModel({ id: 1 }),
-          }),
-        ),
+          })
+        )
       );
       assertPageComponent(true);
     });
@@ -217,7 +213,7 @@ describe("AppComponent", () => {
           resolvers: generatePageInfoResolvers({
             error: generateBawApiError(),
           }),
-        }),
+        })
       );
       assertPageComponent(false);
     });

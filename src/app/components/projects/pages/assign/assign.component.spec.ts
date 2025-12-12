@@ -15,8 +15,7 @@ import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { Filters } from "@baw-api/baw-api.service";
 import { AssignComponent } from "./assign.component";
 
-// Some functionality for the sites table is not tested in this component because
-// it is tested by the PagedTableTemplate.
+// some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
 // e.g. filtering, sorting, pagination, etc.
 describe("AssignComponent", () => {
   let mockApi: SpyObject<ShallowSitesService>;
@@ -165,7 +164,7 @@ describe("AssignComponent", () => {
     const mockSiteId = 42;
 
     const mockSite = new Site(
-      generateSite({ id: mockSiteId, projectIds: [mockProjectId] }),
+      generateSite({ id: mockSiteId, projectIds: [mockProjectId] })
     );
     mockSite.addMetadata({
       paging: { items: 1, page: 0, total: 1, maxPage: 5 },
@@ -173,7 +172,7 @@ describe("AssignComponent", () => {
 
     mockSites = [mockSite];
     mockProject = new Project(
-      generateProject({ id: 0, siteIds: [mockSiteId] }),
+      generateProject({ id: 0, siteIds: [mockSiteId] })
     );
 
     setup();
@@ -198,7 +197,7 @@ describe("AssignComponent", () => {
     expect(mockApi.update).toHaveBeenCalledOnceWith(
       jasmine.objectContaining({
         projectIds: expectedProjectIds,
-      }),
+      })
     );
   });
 

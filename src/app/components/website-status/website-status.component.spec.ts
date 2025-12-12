@@ -22,7 +22,7 @@ interface GridItem {
 }
 
 describe("WebsiteStatusComponent", () => {
-  let spec: Spectator<WebsiteStatusComponent>;
+  let spectator: Spectator<WebsiteStatusComponent>;
   let userHasInternet: boolean;
   let mockApi: jasmine.SpyObj<WebsiteStatusService>;
 
@@ -42,20 +42,20 @@ describe("WebsiteStatusComponent", () => {
   function setup(
     fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus()),
   ) {
-    spec = createComponent({ detectChanges: false });
+    spectator = createComponent({ detectChanges: false });
 
-    mockApi = spec.inject(WebsiteStatusService);
+    mockApi = spectator.inject(WebsiteStatusService);
     mockApi.status$ = new BehaviorSubject(fakeWebsiteStatus);
 
     spyOnProperty(navigator, "onLine", "get").and.callFake(
-      () => userHasInternet,
+      () => userHasInternet
     );
 
-    spec.detectChanges();
+    spectator.detectChanges();
   }
 
   function assertGridItemText(itemName: string, expectedValue: string) {
-    const gridElement = getElementByTextContent(spec, itemName);
+    const gridElement = getElementByTextContent(spectator, itemName);
     const gridElementValue = gridElement.parentElement.querySelector("#value");
 
     expect(gridElementValue).toHaveExactTrimmedText(expectedValue);
@@ -65,7 +65,7 @@ describe("WebsiteStatusComponent", () => {
 
   it("should create", () => {
     setup();
-    expect(spec.component).toBeInstanceOf(WebsiteStatusComponent);
+    expect(spectator.component).toBeInstanceOf(WebsiteStatusComponent);
   });
 
   it("should display the correct text for a healthy response", () => {
@@ -94,7 +94,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString()),
+      assertGridItemText(item.name, item.value.toString())
     );
   });
 
@@ -124,7 +124,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString()),
+      assertGridItemText(item.name, item.value.toString())
     );
   });
 
@@ -154,7 +154,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString()),
+      assertGridItemText(item.name, item.value.toString())
     );
   });
 
@@ -176,7 +176,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValues.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString()),
+      assertGridItemText(item.name, item.value.toString())
     );
   });
 
@@ -198,7 +198,7 @@ describe("WebsiteStatusComponent", () => {
     setup(fakeWebsiteStatus);
 
     expectedValue.forEach((item) =>
-      assertGridItemText(item.name, item.value.toString()),
+      assertGridItemText(item.name, item.value.toString())
     );
   });
 });

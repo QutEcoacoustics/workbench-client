@@ -4,7 +4,6 @@ import {
   input,
   model,
   output,
-  TemplateRef,
 } from "@angular/core";
 import {
   NgbTypeaheadSelectItemEvent,
@@ -50,7 +49,7 @@ export class TypeaheadInputComponent<T = unknown> {
    * Describes how to convert an object model into a human readable form for
    * use in the pills and typeahead dropdown.
    */
-  public readonly resultTemplate = input<TemplateRef<any>>();
+  public readonly resultTemplate = input<NgbTypeahead["resultTemplate"]>();
   /** Whether the typeahead input should allow multiple inputs in pill form */
   public readonly multipleInputs = input(true);
   /** Text to show above the input field. Usually a one 1-2 word description. */
