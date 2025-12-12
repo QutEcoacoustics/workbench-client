@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import { List } from "immutable";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { AudioEventImport } from "@models/AudioEventImport";
@@ -26,6 +26,7 @@ import {
   NgbNavContent,
   NgbNavOutlet,
   NgbModal,
+  NgbModalRef,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
@@ -214,7 +215,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   };
 
   protected async deleteFile(
-    confirmationModal: any,
+    confirmationModal: TemplateRef<NgbModalRef>,
     fileModel: AudioEventImportFile,
   ) {
     const ref = this.modals.open(confirmationModal);

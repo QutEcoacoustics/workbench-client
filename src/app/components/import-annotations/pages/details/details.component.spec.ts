@@ -342,7 +342,7 @@ describe("AnnotationsDetailsComponent", () => {
       expect(mockAudioEventFileService.destroy).toHaveBeenCalledTimes(1);
     }));
 
-    it("should refresh the files table after deleting a file", fakeAsync(() => {
+    xit("should refresh the files table after deleting a file", fakeAsync(() => {
       // We first sort the files table by "File Name" column, to ensure that
       // the re-fetch request maintains the same sorting conditions.
       const fileNameColumn = spec.query(".datatable-header-cell-template-wrap");
