@@ -81,6 +81,7 @@ describe("MetadataReviewComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
+    harvestService.updateMappings.and.returnValue(of(null));
 
     spyOnProperty(spec.component, "project", "get").and.callFake(() => defaultProject);
     spyOnProperty(spec.component, "harvest", "get").and.callFake(() => defaultHarvest);
