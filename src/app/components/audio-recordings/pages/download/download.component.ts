@@ -78,16 +78,16 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public ngOnInit(): void {
     this.models = retrieveResolvers(this.route.snapshot.data);
 
-    const filters: Filters<AudioRecording> = {};
+    const initialFilters: Filters<AudioRecording> = {};
     if (this.site) {
-      filters.filter = filterModel<Site, AudioRecording>("sites", this.site, filters.filter);
+      initialFilters.filter = filterModel<Site, AudioRecording>("sites", this.site, initialFilters.filter);
     } else if (this.region) {
-      filters.filter = filterModel<Region, AudioRecording>("regions", this.region, filters.filter);
+      initialFilters.filter = filterModel<Region, AudioRecording>("regions", this.region, initialFilters.filter);
     } else if (this.project) {
-      filters.filter = filterModel<Project, AudioRecording>("projects", this.project, filters.filter);
+      initialFilters.filter = filterModel<Project, AudioRecording>("projects", this.project, initialFilters.filter);
     }
 
-    this.filters$.next(filters);
+    this.filters$.next(initialFilters);
 
     this.filters$
       .pipe(takeUntil(this.unsubscribe))

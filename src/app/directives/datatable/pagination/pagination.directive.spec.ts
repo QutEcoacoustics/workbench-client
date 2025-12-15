@@ -7,8 +7,7 @@ import {
   DatatableComponent,
   DataTableHeaderCellComponent,
   DataTablePagerComponent,
-  NgxDatatableModule,
-  SortDirection,
+  NgxDatatableModule
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
@@ -275,10 +274,7 @@ describe("DatatablePaginationDirective", () => {
   });
 
   describe("sorting", () => {
-    function assertSort(
-      sortKey: string,
-      direction: Direction = SortDirection.asc,
-    ): void {
+    function assertSort(sortKey: string, direction: Direction = "asc") {
       expect(spec.directive["pageAndSort$"].getValue().sort).toEqual({
         direction,
         orderBy: sortKey as keyof MockModel,
