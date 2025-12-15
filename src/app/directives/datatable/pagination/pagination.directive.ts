@@ -152,7 +152,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
       // Otherwise, use the sort from the filter observable as the default
       this.datatable.sorts = [
-        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+        { prop: filters.sorting.orderBy as any, dir: filters.sorting.direction },
       ];
       this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });

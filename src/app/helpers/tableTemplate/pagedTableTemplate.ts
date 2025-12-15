@@ -60,7 +60,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public failure: boolean;
   public loadingData: boolean;
   public models: ResolvedModelList = {};
-  public pageNumber: number;
+  public pageNumber: number = 0;
   public filterEvent$ = new Subject<string>();
   protected filters: Filters<M>;
 
@@ -104,6 +104,10 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   }
 
   public setPage(pageInfo: TablePage) {
+    if (pageInfo.offset === this.pageNumber) {
+      return;
+    }
+
     this.pageNumber = pageInfo.offset;
     this.filters.paging = {
       page: pageInfo.offset + 1,

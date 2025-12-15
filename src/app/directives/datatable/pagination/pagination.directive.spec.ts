@@ -8,11 +8,12 @@ import {
   DataTableHeaderCellComponent,
   DataTablePagerComponent,
   NgxDatatableModule,
+  SortDirection,
 } from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
-import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
+import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import { DatatablePaginationDirective } from "./pagination.directive";
 
 describe("DatatablePaginationDirective", () => {
@@ -274,7 +275,10 @@ describe("DatatablePaginationDirective", () => {
   });
 
   describe("sorting", () => {
-    function assertSort(sortKey: string, direction: Direction = "asc") {
+    function assertSort(
+      sortKey: string,
+      direction: Direction = SortDirection.asc,
+    ): void {
       expect(spec.directive["pageAndSort$"].getValue().sort).toEqual({
         direction,
         orderBy: sortKey as keyof MockModel,
