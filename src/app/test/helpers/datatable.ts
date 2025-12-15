@@ -66,7 +66,6 @@ export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: num
   const sortButton = targetCell.querySelector(".sort-btn");
 
   spec.click(sortButton);
-  spec.dispatchMouseEvent(sortButton, "click");
 }
 
 export async function selectDatatablePage(spec: SpectatorDirective<any>, page: number) {
@@ -80,7 +79,6 @@ export async function selectDatatablePage(spec: SpectatorDirective<any>, page: n
   const pageButton = pageListItem.querySelector("[role='button']");
 
   spec.click(pageButton);
-  spec.dispatchMouseEvent(pageButton, "click");
 }
 
 export function datatableCells(spec: Spectator<any>): any[] {

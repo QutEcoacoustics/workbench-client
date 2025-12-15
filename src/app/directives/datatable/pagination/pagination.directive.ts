@@ -3,7 +3,6 @@ import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
 import {
-  DataTableColumnDirective,
   DatatableComponent,
   TableColumn,
 } from "@swimlane/ngx-datatable";
@@ -279,5 +278,5 @@ export interface DatatablePageEvent {
 export interface DatatableSortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: DataTableColumnDirective<any> & { sortKey: string };
+  column: TableColumn & { sortKey?: string };
 }
