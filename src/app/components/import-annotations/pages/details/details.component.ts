@@ -1,9 +1,5 @@
-import { Component, OnInit, TemplateRef } from "@angular/core";
-import { List } from "immutable";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { AudioEventImport } from "@models/AudioEventImport";
 import { NgTemplateOutlet } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
@@ -34,6 +30,7 @@ import { AudioEventImportFile } from "@models/AudioEventImportFile";
 import { Project } from "@models/Project";
 import {
   NgbModal,
+  NgbModalRef,
   NgbNav,
   NgbNavContent,
   NgbNavItem,
@@ -41,8 +38,6 @@ import {
   NgbNavLink,
   NgbNavLinkBase,
   NgbNavOutlet,
-  NgbModal,
-  NgbModalRef,
 } from "@ng-bootstrap/ng-bootstrap";
 import { IsUnresolvedPipe } from "@pipes/is-unresolved/is-unresolved.pipe";
 import { ToastService } from "@services/toasts/toasts.service";
