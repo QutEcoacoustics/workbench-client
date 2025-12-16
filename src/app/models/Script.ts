@@ -1,6 +1,6 @@
 import { AUDIO_EVENT_PROVENANCE, SCRIPT } from "@baw-api/ServiceTokens";
-import { PbsResources } from "@interfaces/pbsInterfaces";
 import { scriptMenuItem } from "@components/scripts/scripts.menus";
+import { PbsResources } from "@interfaces/pbsInterfaces";
 import {
   DateTimeTimezone,
   Description,
@@ -13,8 +13,8 @@ import {
 import { AbstractModel } from "./AbstractModel";
 import { creator, hasOne } from "./AssociationDecorators";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
+import { Provenance } from "./Provenance";
 import type { User } from "./User";
-import { AudioEventProvenance } from "./AudioEventProvenance";
 
 /**
  * A script model
@@ -75,7 +75,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   @hasOne(SCRIPT, "groupId")
   public group?: Script;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
-  public provenance?: AudioEventProvenance;
+  public provenance?: Provenance;
 
   public get viewUrl(): string {
     return scriptMenuItem.route.format({ scriptId: this.id });

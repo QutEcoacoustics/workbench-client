@@ -1,13 +1,14 @@
-import { IAudioEventProvenance } from "@models/AudioEventProvenance";
+import { IProvenance } from "@models/Provenance";
 import { modelData } from "@test/helpers/faker";
 
-export function generateAudioEventProvenance(
-  data?: Partial<IAudioEventProvenance>
-): Required<IAudioEventProvenance> {
+export function generateProvenance(
+  data?: Partial<IProvenance>
+): Required<IProvenance> {
   return {
     id: modelData.id(),
     name: modelData.name.jobTitle(),
     version: modelData.version(),
+    url: modelData.internet.url(),
     description: modelData.description(),
     scoreMinimum: modelData.datatype.number(),
     scoreMaximum: modelData.datatype.number(),

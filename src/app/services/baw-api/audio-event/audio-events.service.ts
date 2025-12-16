@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
@@ -28,7 +28,7 @@ const shallowEndpoint = stringTemplate`/audio_events/${audioEventId}${option}`;
 export class AudioEventsService
   implements StandardApi<AudioEvent, [IdOr<AudioRecording>]>
 {
-  public constructor(private api: BawApiService<AudioEvent>) {}
+  private readonly api = inject(BawApiService<AudioEvent>);
 
   public list(audioRecording: IdOr<AudioRecording>): Observable<AudioEvent[]> {
     return this.api.list(
@@ -91,7 +91,7 @@ export class AudioEventsService
 
 @Injectable()
 export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
-  public constructor(private api: BawApiService<AudioEvent>) {}
+  private readonly api = inject(BawApiService<AudioEvent>);
 
   public filter(filters: Filters<AudioEvent>): Observable<AudioEvent[]> {
     return this.api.filter(

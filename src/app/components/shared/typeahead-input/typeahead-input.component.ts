@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,9 +6,11 @@ import {
   model,
   output,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import {
-  NgbTypeaheadSelectItemEvent,
   NgbTypeahead,
+  NgbTypeaheadSelectItemEvent,
 } from "@ng-bootstrap/ng-bootstrap";
 import {
   debounceTime,
@@ -19,9 +22,6 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { NgTemplateOutlet } from "@angular/common";
-import { FormsModule } from "@angular/forms";
 
 export type TypeaheadSearchCallback<T> = (
   text: string,

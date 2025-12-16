@@ -4,7 +4,7 @@
 <form #form="ngForm">
   <baw-date-time-filter
     (modelChange)="updateViewModelFromDateTimeModel($event)"
-  ></baw-date-time-filter>
+  />
 
   <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
   @if (!site || site?.isPoint) {
@@ -15,7 +15,7 @@
       [resultTemplate]="nameTypeaheadTemplate"
       [inputDisabled]="!!region"
       (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
-    ></baw-typeahead-input>
+    />
   }
 
   <baw-typeahead-input
@@ -25,7 +25,7 @@
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
     (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
-  ></baw-typeahead-input>
+  />
 
   <baw-typeahead-input
     label="Recogniser(s)"
@@ -33,7 +33,7 @@
     [searchCallback]="createSearchCallback(provenanceApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
-  ></baw-typeahead-input>
+  />
 
   <label for="provenancesCutOffInput" class="form-label">
     Recogniser Score Cut-Off
@@ -46,20 +46,8 @@
     type="number"
     class="form-control"
     placeholder="0"
-    step="0.01"
-    max="1"
-    min="0"
+    step="0.1"
   />
-
-  @if (provenanceCutOffInput.invalid && provenanceCutOffInput.dirty) {
-    <label
-      for="provenancesCutOffInput"
-      class="text-danger"
-    >
-      The recogniser score cut-off are outside the permitted boundary. Ensure that
-      the value is between 0 and 1.
-    </label>
-  }
 
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
@@ -84,7 +72,7 @@
     [searchCallback]="tagsApi.typeaheadCallback()"
     [resultTemplate]="tagsTypeaheadTemplate"
     (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
-  ></baw-typeahead-input>
+  />
 
   <a
     id="generateReportButton"
@@ -99,9 +87,9 @@
 </form>
 
 <ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.name" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.name" [term]="searchTerm" />
 </ng-template>
 
 <ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
-  <ngb-highlight [result]="result.text" [term]="searchTerm"></ngb-highlight>
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
 </ng-template>

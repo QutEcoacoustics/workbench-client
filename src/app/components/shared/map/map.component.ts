@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,14 +15,14 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
+import type { Algorithm, Renderer } from "@angular/google-maps";
 import {
   GoogleMap,
+  MapAdvancedMarker,
   MapAnchorPoint,
   MapInfoWindow,
   MapMarkerClusterer,
-  MapAdvancedMarker,
 } from "@angular/google-maps";
-import type { Algorithm, Renderer } from "@angular/google-maps";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
   GoogleMapsState,
@@ -29,6 +30,7 @@ import {
   MapOptions,
   MapsService,
 } from "@services/maps/maps.service";
+import { interpolateSinebow } from "d3-scale-chromatic";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { interpolateSinebow } from "d3-scale-chromatic";

@@ -1,17 +1,19 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
-  IdOr,
-  IdParamOptional,
-  StandardApi,
   emptyParam,
   filterParam,
   id,
+  IdOr,
+  IdParamOptional,
   option,
+  StandardApi,
 } from "@baw-api/api-common";
 import { BawApiService, Filters } from "@baw-api/baw-api.service";
 import { Resolvers } from "@baw-api/resolver-common";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
+import { createSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
 import { AudioEventImport } from "@models/AudioEventImport";
+import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 import { Observable } from "rxjs";
 
 const eventImportId: IdParamOptional<AudioEventImport> = id;
@@ -23,7 +25,7 @@ const endpoint = stringTemplate`/audio_event_imports/${eventImportId}${option}`;
  */
 @Injectable()
 export class AudioEventImportService implements StandardApi<AudioEventImport> {
-  public constructor(private api: BawApiService<AudioEventImport>) {}
+  private readonly api = inject(BawApiService<AudioEventImport>);
 
   public list(): Observable<AudioEventImport[]> {
     return this.api.list(AudioEventImport, endpoint(emptyParam, emptyParam));
@@ -64,6 +66,12 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
     model: IdOr<AudioEventImport>
   ): Observable<AudioEventImport | void> {
     return this.api.destroy(endpoint(model, emptyParam));
+  }
+
+  public typeaheadCallback(): TypeaheadSearchCallback<AudioEventImport> {
+    return createSearchCallback(this, "name", {}, {
+      include: ["id", "name"],
+    });
   }
 }
 

@@ -1,11 +1,11 @@
-import { Injectable, Type, Inject } from "@angular/core";
+import { Inject, Injectable, Type } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import {
+  ApiFilterShow,
   IdParamOptional,
+  emptyParam,
   id,
   option,
-  ApiFilterShow,
-  emptyParam,
 } from "@baw-api/api-common";
 import { ApiResponse, BawApiService, Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -20,9 +20,9 @@ import {
   EventSummaryReport,
   IEventSummaryReport,
 } from "@models/EventSummaryReport";
-import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
-import { Observable, map, of } from "rxjs";
+import { EventGroup } from "@models/Provenance/EventGroup";
 import { API_ROOT } from "@services/config/config.tokens";
+import { Observable, map, of } from "rxjs";
 
 // at the current moment, the api does not support fetching saved reports from id
 // however, this is planned for the future, so the service has been backfilled to support this
@@ -152,33 +152,33 @@ export class EventSummaryReportService
           { date: "2023-05-30", count: 21, error: 3 },
         ],
         speciesCompositionData: [
-          { date: "2023-05-22", tagId: 1, ratio: 0.55 },
-          { date: "2023-05-22", tagId: 39, ratio: 0.3 },
-          { date: "2023-05-22", tagId: 277, ratio: 0.15 },
-          { date: "2023-05-23", tagId: 1, ratio: 0.45 },
-          { date: "2023-05-23", tagId: 39, ratio: 0.2 },
-          { date: "2023-05-23", tagId: 277, ratio: 0.35 },
-          { date: "2023-05-24", tagId: 1, ratio: 0.05 },
-          { date: "2023-05-24", tagId: 39, ratio: 0.25 },
-          { date: "2023-05-24", tagId: 277, ratio: 0.7 },
-          { date: "2023-05-25", tagId: 1, ratio: 0.5 },
-          { date: "2023-05-25", tagId: 39, ratio: 0.2 },
-          { date: "2023-05-25", tagId: 277, ratio: 0.3 },
-          { date: "2023-05-26", tagId: 1, ratio: 0.25 },
-          { date: "2023-05-26", tagId: 39, ratio: 0.4 },
-          { date: "2023-05-26", tagId: 277, ratio: 0.35 },
-          { date: "2023-05-27", tagId: 1, ratio: 0.15 },
-          { date: "2023-05-27", tagId: 39, ratio: 0.3 },
-          { date: "2023-05-27", tagId: 277, ratio: 0.55 },
-          { date: "2023-05-28", tagId: 1, ratio: 0.1 },
-          { date: "2023-05-28", tagId: 39, ratio: 0.2 },
-          { date: "2023-05-28", tagId: 277, ratio: 0.7 },
-          { date: "2023-05-29", tagId: 1, ratio: 0.05 },
-          { date: "2023-05-29", tagId: 39, ratio: 0.15 },
-          { date: "2023-05-29", tagId: 277, ratio: 0.8 },
-          { date: "2023-05-30", tagId: 1, ratio: 0.05 },
-          { date: "2023-05-30", tagId: 39, ratio: 0.1 },
-          { date: "2023-05-30", tagId: 277, ratio: 0.85 },
+          { date: "2023-05-22", tagId: 1, ratio: 0.55, count: 55 },
+          { date: "2023-05-22", tagId: 39, ratio: 0.3, count: 30 },
+          { date: "2023-05-22", tagId: 277, ratio: 0.15, count: 15 },
+          { date: "2023-05-23", tagId: 1, ratio: 0.45, count: 45 },
+          { date: "2023-05-23", tagId: 39, ratio: 0.2, count: 20 },
+          { date: "2023-05-23", tagId: 277, ratio: 0.35, count: 35 },
+          { date: "2023-05-24", tagId: 1, ratio: 0.05, count: 5 },
+          { date: "2023-05-24", tagId: 39, ratio: 0.25, count: 25 },
+          { date: "2023-05-24", tagId: 277, ratio: 0.7, count: 70 },
+          { date: "2023-05-25", tagId: 1, ratio: 0.5, count: 50 },
+          { date: "2023-05-25", tagId: 39, ratio: 0.2, count: 20 },
+          { date: "2023-05-25", tagId: 277, ratio: 0.3, count: 30 },
+          { date: "2023-05-26", tagId: 1, ratio: 0.25, count: 25 },
+          { date: "2023-05-26", tagId: 39, ratio: 0.4, count: 40 },
+          { date: "2023-05-26", tagId: 277, ratio: 0.35, count: 35 },
+          { date: "2023-05-27", tagId: 1, ratio: 0.15, count: 15 },
+          { date: "2023-05-27", tagId: 39, ratio: 0.3, count: 30 },
+          { date: "2023-05-27", tagId: 277, ratio: 0.55, count: 55 },
+          { date: "2023-05-28", tagId: 1, ratio: 0.1, count: 10 },
+          { date: "2023-05-28", tagId: 39, ratio: 0.2, count: 20 },
+          { date: "2023-05-28", tagId: 277, ratio: 0.7, count: 70 },
+          { date: "2023-05-29", tagId: 1, ratio: 0.05, count: 5 },
+          { date: "2023-05-29", tagId: 39, ratio: 0.15, count: 15 },
+          { date: "2023-05-29", tagId: 277, ratio: 0.8, count: 80 },
+          { date: "2023-05-30", tagId: 1, ratio: 0.05, count: 5 },
+          { date: "2023-05-30", tagId: 39, ratio: 0.1, count: 10 },
+          { date: "2023-05-30", tagId: 277, ratio: 0.85, count: 85 },
         ],
         coverageData: {
           recordingCoverage: [

@@ -19,14 +19,23 @@ export abstract class AbstractTemplateComponent<
   NormalizedType
 > implements OnChanges
 {
-  public constructor() {}
-
   // we use a transform function on the [input] prop so that we can change the shape of the input
   // to a uniform type. This allows us to take multiple types as input and convert them into a single type
   // eg. the [input] can take a Luxon DateTime, JS Date, or string and convert this.value into a Luxon DateTime
   public readonly value = input.required<NormalizedType, InputType>({
     transform: (newValue) => this.normalizeValue(newValue),
   });
+
+  /**
+   * @description
+   * Whether to show a tooltip with "rich" date time information on hover.
+   * If this input is unset (false), no tooltip will be shown and the
+   * `.has-context` styling (underline) indicating that there is an action on
+   * hover will not be applied.
+   *
+   * @default true
+   */
+  public readonly withTooltip = input(true);
 
   // the ISO dateTime is used in the <time> elements "datetime" attribute
   // this attribute is used by screen readers and web scrapers to determine the date and time

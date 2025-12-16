@@ -1,29 +1,29 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   scriptResolvers,
   ScriptsService,
 } from "@baw-api/script/scripts.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Script } from "@models/Script";
 import { SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateScript } from "@test/fakes/Script";
 import { assertErrorHandler } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { appLibraryImports } from "src/app/app.config";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
 import { AdminScriptsEditComponent } from "./edit.component";
 
 describe("AdminScriptsEditComponent", () => {
   let api: SpyObject<ScriptsService>;
-  let provenanceApi: SpyObject<AudioEventProvenanceService>;
+  let provenanceApi: SpyObject<ProvenanceService>;
 
   let component: AdminScriptsEditComponent;
   let defaultModel: Script;
@@ -53,8 +53,8 @@ describe("AdminScriptsEditComponent", () => {
 
     api = TestBed.inject(ScriptsService) as SpyObject<ScriptsService>;
     provenanceApi = TestBed.inject(
-      AudioEventProvenanceService,
-    ) as SpyObject<AudioEventProvenanceService>;
+      ProvenanceService,
+    ) as SpyObject<ProvenanceService>;
 
     injector = TestBed.inject(ASSOCIATION_INJECTOR);
     if (model) {

@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { Params } from "@angular/router";
-import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { defaultApiPageSize, Filters, Sorting } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Project } from "@models/Project";
 import {
@@ -29,7 +29,8 @@ class MockComponent extends PaginationTemplate<Project> {
       api,
       "id",
       () => [],
-      () => {},
+      () => ({}),
+      () => ({}),
     );
   }
 }
@@ -139,6 +140,29 @@ describe("PaginationTemplate", () => {
         paging: { page: 1 },
         filter: { id: { contains: "filter" } },
       });
+    });
+
+    it("should override the default sorting filter if provided", () => {
+      const customSorting: Sorting<any> = { orderBy: "name", direction: "asc" };
+      component["defaultSortingFilter"] = () => customSorting;
+
+      expect(component["generateFilter"]()).toEqual(
+        jasmine.objectContaining({
+          filter: {},
+          sorting: customSorting,
+        }),
+      );
+    });
+
+    it("should override the default projection filter if provided", () => {
+      const customProjection: any = { add: ["name", "age"] };
+      component["defaultProjectionFilter"] = () => customProjection;
+
+      expect(component["generateFilter"]()).toEqual(
+        jasmine.objectContaining({
+          projection: customProjection,
+        }),
+      );
     });
   });
 

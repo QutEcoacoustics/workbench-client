@@ -4,8 +4,8 @@ import {
   booleanAttribute,
   input,
 } from "@angular/core";
-import { DateTime, IANAZone, Zone } from "luxon";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { DateTime, IANAZone, Zone } from "luxon";
 import { AbstractTemplateComponent } from "../abstract-template.component";
 
 export type InputTypes = DateTime | Date | string;
@@ -19,12 +19,8 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
   InputTypes,
   DateTime
 > {
-  public constructor() {
-    super();
-  }
-
-  public date = input<boolean, string>(false, { transform: booleanAttribute });
-  public time = input<boolean, string>(false, { transform: booleanAttribute });
+  public readonly date = input<boolean, string>(false, { transform: booleanAttribute });
+  public readonly time = input<boolean, string>(false, { transform: booleanAttribute });
 
   protected abstract extractTimezone(): Zone;
 

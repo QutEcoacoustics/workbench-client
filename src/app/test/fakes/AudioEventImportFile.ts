@@ -1,6 +1,6 @@
 import { IAudioEventImportFile } from "@models/AudioEventImportFile";
 import { modelData } from "@test/helpers/faker";
-import { generateImportedAudioEvent } from "./ImportedAudioEvent";
+import { generateImportedAudioEvent } from "./AudioEventImport/ImportedAudioEvent";
 
 export function generateAudioEventImportFile(
   data: Partial<IAudioEventImportFile> = {}

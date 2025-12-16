@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Errorable } from "@helpers/advancedTypes";
 import {
   BawApiError,
@@ -227,7 +227,10 @@ describe("PagedTableTemplate", () => {
         limit: 25,
         pageSize: defaultApiPageSize,
       });
-      expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
+
+      // If we make an initial call to offset 0, no paging parameter should be
+      // sent because it is the default value, and we can therefore omit it.
+      expect(api.filter).toHaveBeenCalledWith({ });
     });
 
     it("should handle 1 offset", async () => {

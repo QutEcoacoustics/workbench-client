@@ -1,0 +1,112 @@
+<h1>Provenances</h1>
+
+<ngx-datatable
+  bawDatatableDefaults
+  [bawDatatablePagination]="{ filters: filters$, getModels: getModels }"
+>
+  <ngx-datatable-column prop="name">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Name
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>{{ value }}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="version">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Version
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>
+        @if (value) {
+          {{ value }}
+        } @else {
+          <i>No version</i>
+        }
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="description">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Description
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span>
+        @if (value) {
+          {{ value }}
+        } @else {
+          <i>No description</i>
+        }
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Created By
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <baw-user-link [user]="value.creator" />
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column prop="">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      Action
+    </ng-template>
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <a
+        name="view-button"
+        class="btn btn-sm btn-primary"
+        [bawUrl]="value.viewUrl"
+      >
+        View
+      </a>
+
+      <button
+        name="delete-button"
+        class="btn btn-sm btn-outline-danger ms-1"
+        (click)="deleteProvenance(deleteProvenanceModal, value)"
+      >
+        Delete
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<ng-template #deleteProvenanceModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Delete Provenance</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.close()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <span id="subTitle">
+      <p>Are you certain you wish to delete this provenance?</p>
+    </span>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-primary"
+      data-testid="delete-cancel-button"
+      (click)="modal.close()"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-danger text-white"
+      data-testid="delete-confirm-button"
+      (click)="modal.close(true)"
+    >
+      Delete
+    </button>
+  </div>
+</ng-template>

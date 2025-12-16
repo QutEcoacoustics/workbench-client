@@ -12,30 +12,30 @@ import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
-  deserializeParamsToObject,
-  serializeObjectToParams,
-  jsNumberArray,
-  jsNumber,
-  jsString,
   jsBoolean,
+  jsNumber,
+  jsNumberArray,
+  jsString,
+  jsStringArray,
   luxonDateArray,
   luxonDurationArray,
-  jsStringArray,
+  serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
 import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
-import { IParameterModel } from "@models/data/parametersModel";
+import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
   speciesAccumulationCurve = "accumulation",
   speciesCompositionCurve = "composition",
+  speciesTimeSeries = "time-series",
   falseColorSpectrograms = "false-colour",
   none = "none",
 }
@@ -76,6 +76,7 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
+  extends ParameterModel<EventSummaryReport>(serializationTable)
   implements
     IEventSummaryReportParameters,
     HasAssociationInjector,
@@ -85,15 +86,7 @@ export class EventSummaryReportParameters
     queryStringParameters: Params = {},
     public injector?: AssociationInjector
   ) {
-    const deserializedObject: IEventSummaryReportParameters =
-      deserializeParamsToObject<IEventSummaryReportParameters>(
-        queryStringParameters,
-        serializationTable
-      );
-
-    Object.keys(deserializedObject).forEach((key: string) => {
-      this[key] = deserializedObject[key];
-    });
+    super(queryStringParameters);
   }
 
   // since these properties are exposed to the user in the form of query string parameters
@@ -115,11 +108,11 @@ export class EventSummaryReportParameters
   public siteModels?: Site[];
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany<EventSummaryReportParameters, AudioEventProvenance>(
+  @hasMany<EventSummaryReportParameters, Provenance>(
     AUDIO_EVENT_PROVENANCE,
     "provenances"
   )
-  public provenanceModels?: AudioEventProvenance[];
+  public provenanceModels?: Provenance[];
 
   public get dateStartedAfter(): DateTime | null {
     return this.date ? this.date[0] : null;

@@ -6,12 +6,7 @@
     <strong>all {{ totalModels }}</strong> audio recordings.
   </p>
 
-  <baw-date-time-filter
-    [project]="project"
-    [region]="region"
-    [site]="site"
-    [constructedFilters]="filters$"
-  />
+  <baw-date-time-filter [constructedFilters]="filters$" />
 
   <ngx-datatable
     #table
