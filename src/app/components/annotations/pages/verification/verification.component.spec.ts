@@ -63,7 +63,9 @@ import {
   TagPromptComponent,
   VerificationGridTileComponent,
 } from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-import { VerificationGridComponent } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+import {
+  VerificationGridComponent,
+} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 

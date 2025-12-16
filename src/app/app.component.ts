@@ -1,30 +1,30 @@
 import { Component, Inject, INJECTOR, Injector, OnInit } from "@angular/core";
+import { createCustomElement } from "@angular/elements";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import {
   hasResolvedSuccessfully,
   retrieveResolvers,
 } from "@baw-api/resolver-common";
+import {
+  GridTileContentComponent,
+  gridTileContentSelector,
+} from "@components/web-components/grid-tile-content/grid-tile-content.component";
 import { PageComponent } from "@helpers/page/pageComponent";
+import { LoadingBarModule } from "@ngx-loading-bar/core";
 import { GlobalsService } from "@services/globals/globals.service";
 import { MenuService } from "@services/menu/menu.service";
 import { SharedActivatedRouteService } from "@services/shared-activated-route/shared-activated-route.service";
 import { filter, Observable, takeUntil } from "rxjs";
-import { createCustomElement } from "@angular/elements";
-import {
-  GridTileContentComponent,
-  gridTileContentSelector,
-} from "./components/web-components/grid-tile-content/grid-tile-content.component";
-import { LoadingBarModule } from "@ngx-loading-bar/core";
 import { IS_SERVER_PLATFORM } from "./app.helper";
-import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
-import { HeaderComponent } from "./components/shared/menu/header/header.component";
-import { ToastProviderComponent } from "./components/shared/toast-provider/toast-provider.component";
-import { SideNavComponent } from "./components/shared/menu/side-nav/side-nav.component";
-import { PrimaryMenuComponent } from "./components/shared/menu/primary-menu/primary-menu.component";
-import { SecondaryMenuComponent } from "./components/shared/menu/secondary-menu/secondary-menu.component";
-import { ActionMenuComponent } from "./components/shared/menu/action-menu/action-menu.component";
 import { BreadcrumbComponent } from "./components/shared/breadcrumb/breadcrumb.component";
 import { FooterComponent } from "./components/shared/footer/footer.component";
+import { ActionMenuComponent } from "./components/shared/menu/action-menu/action-menu.component";
+import { HeaderComponent } from "./components/shared/menu/header/header.component";
+import { PrimaryMenuComponent } from "./components/shared/menu/primary-menu/primary-menu.component";
+import { SecondaryMenuComponent } from "./components/shared/menu/secondary-menu/secondary-menu.component";
+import { SideNavComponent } from "./components/shared/menu/side-nav/side-nav.component";
+import { ToastProviderComponent } from "./components/shared/toast-provider/toast-provider.component";
+import { withUnsubscribe } from "./helpers/unsubscribe/unsubscribe";
 
 declare const gtag: Gtag.Gtag;
 

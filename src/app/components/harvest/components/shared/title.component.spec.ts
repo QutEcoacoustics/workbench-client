@@ -2,20 +2,20 @@ import { fakeAsync, tick } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import {
-  SpyObject,
   createComponentFactory,
   Spectator,
+  SpyObject,
 } from "@ngneat/spectator";
-import { generateHarvest } from "@test/fakes/Harvest";
-import { generateProject } from "@test/fakes/Project";
 import { ToastService } from "@services/toasts/toasts.service";
 import { IconsModule } from "@shared/icons/icons.module";
-import { TitleComponent } from "./title.component";
+import { generateHarvest } from "@test/fakes/Harvest";
+import { generateProject } from "@test/fakes/Project";
 import { of } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
   let spectator: Spectator<TitleComponent>;

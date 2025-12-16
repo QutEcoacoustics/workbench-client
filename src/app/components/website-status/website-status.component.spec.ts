@@ -1,20 +1,20 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
+import { ActivatedRoute } from "@angular/router";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import {
   ServerTimeout,
   SsrContext,
   WebsiteStatus,
 } from "@models/WebsiteStatus";
-import { MockProvider } from "ng-mocks";
-import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
-import { BehaviorSubject } from "rxjs";
-import { ActivatedRoute } from "@angular/router";
-import { mockActivatedRoute } from "@test/helpers/testbed";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
+import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { IconsModule } from "@shared/icons/icons.module";
-import { WebsiteStatusComponent } from "./website-status.component";
+import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { getElementByTextContent } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { mockActivatedRoute } from "@test/helpers/testbed";
+import { MockProvider } from "ng-mocks";
+import { BehaviorSubject } from "rxjs";
+import { WebsiteStatusComponent } from "./website-status.component";
 
 interface GridItem {
   name: string;

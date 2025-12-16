@@ -10,14 +10,14 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import { NgElement, WithProperties } from "@angular/elements";
-import { SpectrogramComponent } from "../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { gridTileContext } from "../../../../../node_modules/@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
-import { Annotation } from "@models/data/Annotation";
-import { MediaControlsComponent, VerificationGridTileContext } from "../../../../../node_modules/@ecoacoustics/web-components/@types";
 import {
   ContextSubscription,
   WithContext,
 } from "@helpers/context/context-decorators";
+import { Annotation } from "@models/data/Annotation";
+import { MediaControlsComponent, VerificationGridTileContext } from "../../../../../node_modules/@ecoacoustics/web-components/@types";
+import { SpectrogramComponent } from "../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
+import { gridTileContext } from "../../../../../node_modules/@ecoacoustics/web-components/dist/components/helpers/constants/contextTokens";
 
 export const gridTileContentSelector = "baw-grid-tile-content";
 

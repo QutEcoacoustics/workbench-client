@@ -1,17 +1,17 @@
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { MockModel } from "@models/AbstractModel.spec";
-import { Observable } from "rxjs";
+import { selectDatatablePage } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { Observable } from "rxjs";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
-import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import { DatatablePaginationDirective } from "../pagination/pagination.directive";
+import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import {
   VirtualDatabaseModelInput,
   VirtualDatatablePaginationDirective,
 } from "./virtual-datatable-pagination.directive";
-import { selectDatatablePage } from "@test/helpers/datatable";
 
 // because this directive extends the bawDatatablePagination directive, most of
 // the table rendering logic is tested elsewhere. This spec will focus on the

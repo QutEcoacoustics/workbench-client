@@ -68,9 +68,13 @@ import {
   VerificationGridComponent,
   WhenPredicate,
 } from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-import { DecisionOptions } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
+import {
+  DecisionOptions,
+} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
 import { SubjectWrapper } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/subject";
-import { PageFetcherContext } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
+import {
+  PageFetcherContext,
+} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 
 interface PagingContext extends PageFetcherContext {
   page: number;

@@ -1,23 +1,23 @@
+import { ACCOUNT, ANALYSIS_JOB, SCRIPT } from "@baw-api/ServiceTokens";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { defaultApiPageSize, InnerFilter } from "@baw-api/baw-api.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnalysisJob } from "@models/AnalysisJob";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Script } from "@models/Script";
+import { User } from "@models/User";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { generateAnalysisJob } from "@test/fakes/AnalysisJob";
+import { generateProject } from "@test/fakes/Project";
+import { generateScript } from "@test/fakes/Script";
+import { generateUser } from "@test/fakes/User";
+import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPagination } from "@test/helpers/pagedTableTemplate";
-import { ACCOUNT, ANALYSIS_JOB, SCRIPT } from "@baw-api/ServiceTokens";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { of, Subject } from "rxjs";
-import { Script } from "@models/Script";
-import { generateScript } from "@test/fakes/Script";
-import { User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AnalysesComponent } from "./list.component";
-import { nStepObservable } from "@test/helpers/general";
 
 describe("AnalysesComponent", () => {
   let spec: Spectator<AnalysesComponent>;

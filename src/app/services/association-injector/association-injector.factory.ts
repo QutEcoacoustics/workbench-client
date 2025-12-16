@@ -1,12 +1,12 @@
 import { Injector, Provider } from "@angular/core";
+import { withBrand } from "@helpers/advancedTypes";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
 import { BawApiService, BawServiceOptions } from "../baw-api/baw-api.service";
-import { withBrand } from "@helpers/advancedTypes";
 import {
+  serviceResolvers,
   services,
   serviceTokens,
-  serviceResolvers,
 } from "../baw-api/ServiceProviders";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 

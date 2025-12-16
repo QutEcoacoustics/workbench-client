@@ -3,11 +3,11 @@ import {
   DatatableComponent,
   NgxDatatableModule,
 } from "@swimlane/ngx-datatable";
+import { sortDatatableByColumn } from "@test/helpers/datatable";
 import { getCallArgs } from "@test/helpers/general";
 import { MockComponent } from "ng-mocks";
 import { DatatableSortEvent } from "../pagination/pagination.directive";
 import { DatatableSortKeyDirective } from "./sort-key.directive";
-import { sortDatatableByColumn } from "@test/helpers/datatable";
 
 describe("DatatableSortKeyDirective", () => {
   let spec: SpectatorDirective<DatatableComponent>;

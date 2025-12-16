@@ -1,7 +1,7 @@
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SecurityService } from "@baw-api/security/security.service";
 import {
   ACCOUNT,
@@ -12,8 +12,10 @@ import {
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { Errorable } from "@helpers/advancedTypes";
+import { Id } from "@interfaces/apiInterfaces";
 import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
@@ -22,6 +24,8 @@ import {
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { IconsModule } from "@shared/icons/icons.module";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
@@ -29,19 +33,15 @@ import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
+import { generateUser } from "@test/fakes/User";
+import { datatableCells } from "@test/helpers/datatable";
+import { humanizedDuration } from "@test/helpers/dateTime";
+import { modelData } from "@test/helpers/faker";
 import {
   interceptMappedApiRequests,
   interceptShowApiRequest,
 } from "@test/helpers/general";
-import { humanizedDuration } from "@test/helpers/dateTime";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { Id } from "@interfaces/apiInterfaces";
-import { modelData } from "@test/helpers/faker";
-import { generateUser } from "@test/fakes/User";
-import { IconsModule } from "@shared/icons/icons.module";
 import { RecentAnnotationsComponent } from "./recent-annotations.component";
-import { datatableCells } from "@test/helpers/datatable";
 
 describe("RecentAnnotationsComponent", () => {
   let api: {

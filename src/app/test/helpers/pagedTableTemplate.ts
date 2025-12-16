@@ -174,8 +174,6 @@ export function assertPagination<
       const pageBtn = pager.querySelector("[aria-label='page 2'] [role='button']");
       click(pageBtn);
 
-      console.log(pageBtn);
-
       expect(testedApi()).toHaveBeenCalledWith(
         buildExpectedFilters({ page: 2 }),
       );
