@@ -879,9 +879,10 @@ describe("VerificationComponent", () => {
             );
 
             if (expectedApiCall) {
-              // expect(taggingCorrectionApiSpy[method]).toHaveBeenCalledOnceWith(
-              //   ...expectedApiCall.args,
-              // );
+              expect(correctionApi[method]).toHaveBeenCalledOnceWith(
+                expectedApiCall.args[0],
+                expectedApiCall.args[1],
+              );
             } else {
               expect(correctionApi[method]).not.toHaveBeenCalled();
             }
