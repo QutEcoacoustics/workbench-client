@@ -291,7 +291,7 @@ describe("StatisticsComponent", () => {
       spec.detectChanges();
       await promise.final;
       spec.detectChanges();
-      expect(getRecentAnnotations().annotations()).toEqual(audioEvents);
+      expect(getRecentAnnotations().annotations).toEqual(audioEvents);
     });
 
     it("should display recent audio recordings", async () => {
