@@ -51,12 +51,7 @@
   </div>
 }
 
-<baw-date-time-filter
-  [project]="project"
-  [region]="region"
-  [site]="site"
-  [constructedFilters]="filters$"
-></baw-date-time-filter>
+<baw-date-time-filter [constructedFilters]="filters$"></baw-date-time-filter>
 
 <div class="clearfix">
   <a
@@ -164,7 +159,7 @@
       <i><a [strongRoute]="loginStrongRoute">Log in</a> to see this command.</i>
     </div>
   }
-  
+
   @if (session.authToken) {
     <baw-hidden-copy
       tooltip="Show/Hide command"
