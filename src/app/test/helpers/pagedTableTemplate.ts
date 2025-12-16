@@ -158,8 +158,11 @@ export function assertPagination<
       datatableApiResponse(api, [], undefined, apiAction);
       fixture.detectChanges();
 
+      // We expect that there are no paging filters for the first page because
+      // we should be able to omit the page field when requesting the first page
+      // because it is the default value.
       expect(testedApi()).toHaveBeenCalledWith(
-        buildExpectedFilters({ page: 1 }),
+        buildExpectedFilters(),
       );
     });
 
