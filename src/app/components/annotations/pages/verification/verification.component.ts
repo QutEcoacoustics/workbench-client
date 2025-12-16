@@ -61,9 +61,6 @@ import { AnnotationService } from "@services/models/annotations/annotation.servi
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { firstValueFrom, map, Observable } from "rxjs";
-// import { DecisionOptions } from "../../../../../../@ecoacoustics/web-components/@types/models";
-// import { SubjectWrapper } from "../../../../../../@ecoacoustics/web-components/@types/models/subject";
-// import { PageFetcherContext } from "../../../../../../@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 import {
   DecisionMadeEvent,
   TagPromptComponent,
@@ -71,10 +68,9 @@ import {
   VerificationGridComponent,
   WhenPredicate,
 } from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-
-type DecisionOptions = any;
-type SubjectWrapper = any;
-type PageFetcherContext = any;
+import { DecisionOptions } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
+import { SubjectWrapper } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/subject";
+import { PageFetcherContext } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 
 interface PagingContext extends PageFetcherContext {
   page: number;

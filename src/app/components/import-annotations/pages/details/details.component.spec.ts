@@ -17,7 +17,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Provenance } from "@models/Provenance";
 import { Tag } from "@models/Tag";
-import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   SpectatorRouting,
@@ -27,18 +27,6 @@ import { ASSOCIATION_INJECTOR } from "@services/association-injector/association
 import { ToastService } from "@services/toasts/toasts.service";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import { assertDatatable } from "@test/helpers/datatable";
-import {
-  NgbModal,
-  NgbModalConfig,
-  NgbNavConfig,
-} from "@ng-bootstrap/ng-bootstrap";
-import { modelData } from "@test/helpers/faker";
-import { generateTag } from "@test/fakes/Tag";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
@@ -49,17 +37,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { assertDatatable } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { fakeAsync, flush } from "@angular/core/testing";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
-import { Sorting } from "@baw-api/baw-api.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { verificationRoute } from "@components/annotations/annotation.routes";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { getElementByTextContent } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Settings } from "luxon";
 import { of, Subject } from "rxjs";
@@ -217,8 +195,8 @@ describe("AnnotationsDetailsComponent", () => {
       of(mockAudioEventImport),
     );
 
-    const audioEventSubject = new Subject<AudioEventImport>();
-    const tagsSubject = new Subject<Tag[]>();
+    const audioEventSubject = new Subject<AudioEvent[]>();
+    const tagsSubject = new Subject<Tag>();
     const provenanceSubject = new Subject<Provenance>();
 
     const promise = Promise.all([

@@ -12,12 +12,6 @@ import {
   VerificationParameters,
   VerificationStatusKey,
 } from "@components/annotations/components/verification-form/verificationParameters";
-import {
-  DecisionComponent,
-  TagPromptComponent,
-  VerificationGridTileComponent,
-} from "@ecoacoustics/web-components/@types";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -50,13 +44,6 @@ import { generateVerificationUrlParams } from "@test/fakes/data/verificationPara
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { VerificationGridComponent } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { modelData } from "@test/helpers/faker";
-import { Tag } from "@models/Tag";
-import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { generateTag } from "@test/fakes/Tag";
 import { generateTagging } from "@test/fakes/Tagging";
 import { generateUser } from "@test/fakes/User";
@@ -69,42 +56,14 @@ import {
   waitUntil,
 } from "@test/helpers/html";
 import { nodeModule } from "@test/helpers/karma";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { Verification } from "@models/Verification";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { WIPComponent } from "@shared/wip/wip.component";
-import {
-  interceptFilterApiRequest,
-  interceptShowApiRequest,
-  viewports,
-} from "@test/helpers/general";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { Observable, of } from "rxjs";
 import {
   DecisionComponent,
   TagPromptComponent,
   VerificationGridTileComponent,
 } from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-import { IconsModule } from "@shared/icons/icons.module";
-import { User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
-import { SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
-import { Tagging } from "@models/Tagging";
-import { generateVerification } from "@test/fakes/Verification";
-import { generateTagging } from "@test/fakes/Tagging";
-import { ScrollService } from "@services/scroll/scroll.service";
-import { provideMockConfig } from "@services/config/provide-configMock";
-import { ConfigService } from "@services/config/config.service";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import {
-  VerificationParameters,
-  VerificationStatusKey,
-} from "@components/annotations/components/verification-form/verificationParameters";
-import { generateVerificationUrlParams } from "@test/fakes/data/verificationParameters";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { Observable, of } from "rxjs";
+import { VerificationGridComponent } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 

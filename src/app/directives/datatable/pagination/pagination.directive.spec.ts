@@ -3,17 +3,7 @@ import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { DatatableComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { modelData } from "@test/helpers/faker";
-import { BehaviorSubject, delay, Observable, of } from "rxjs";
 import { selectDatatablePage, sortDatatableByColumn } from "@test/helpers/datatable";
-import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
-import {
-  DataTableColumnDirective,
-  DatatableComponent,
-  DataTableHeaderCellComponent,
-  DataTablePagerComponent,
-  NgxDatatableModule
-} from "@swimlane/ngx-datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";

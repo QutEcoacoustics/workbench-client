@@ -81,8 +81,7 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Icon should not exist"),
   compare: (
     target: HTMLElement,
-    icon: IconProp,
-    props: Partial<Exclude<FaIconComponent, "icon">> = {},
+    expectedIcon: IconProp
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");

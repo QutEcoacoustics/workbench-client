@@ -41,21 +41,12 @@ import { generateMeta } from "@test/fakes/Meta";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
-import { fakeAsync } from "@angular/core/testing";
-import { SpectrogramComponent } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
-import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
-import {
-  VerificationParameters,
-  VerificationStatusKey,
-} from "@components/annotations/components/verification-form/verificationParameters";
-import { generateMeta } from "@test/fakes/Meta";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import { AnnotationSearchComponent } from "./search.component";
 
 describe("AnnotationSearchComponent", () => {

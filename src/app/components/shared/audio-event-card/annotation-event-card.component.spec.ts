@@ -8,9 +8,6 @@ import {
   TAG,
 } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { Site } from "@models/Site";
-import { generateSite } from "@test/fakes/Site";
-import { SpectrogramComponent } from "../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { AudioRecording } from "@models/AudioRecording";
