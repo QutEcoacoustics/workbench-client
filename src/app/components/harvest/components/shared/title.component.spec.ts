@@ -19,7 +19,6 @@ import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
   let spectator: Spectator<TitleComponent>;
-  let harvestApi: SpyObject<ShallowHarvestsService>;
   let mockHarvest: Harvest;
   let mockProject: Project;
 
@@ -39,7 +38,7 @@ describe("titleComponent", () => {
       detectChanges: false,
     });
 
-    harvestApi = spectator.inject(ShallowHarvestsService);
+    const harvestApi = spectator.inject(ShallowHarvestsService);
     harvestApi.updateName.and.returnValue(of(mockHarvest));
 
     spectator.detectChanges();
