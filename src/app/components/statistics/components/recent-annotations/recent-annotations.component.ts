@@ -1,16 +1,16 @@
 import { Component, computed, inject, input } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { AudioEvent } from "@models/AudioEvent";
+import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import {
   ColumnMode,
-  TableColumn,
   NgxDatatableModule,
+  TableColumn,
 } from "@swimlane/ngx-datatable";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { UrlDirective } from "@directives/url/url.directive";
-import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
@@ -30,7 +30,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       @if (session.isLoggedIn) {
         <ngx-datatable-column name="Site" [sortable]="false">
           <ng-template let-column="column" ngx-datatable-header-template>
-            <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']" />
+            <fa-icon class="me-2" [icon]="['fas', 'map-marker-alt']"></fa-icon>
             Site
           </ng-template>
 
@@ -39,7 +39,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
               (value.audioRecording | isUnresolved) ||
               (value.audioRecording?.site | isUnresolved)
             ) {
-              <baw-loading size="sm" />
+              <baw-loading size="sm"></baw-loading>
             } @else {
               <span>
                 {{ value.audioRecording?.site?.name ?? "Unknown Site" }}
@@ -53,13 +53,13 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       @if (session.isLoggedIn) {
         <ngx-datatable-column name="User" [sortable]="false">
           <ng-template let-column="column" ngx-datatable-header-template>
-            <fa-icon class="me-2" [icon]="['fas', 'user']" />
+            <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>
             User
           </ng-template>
 
           <ng-template let-value="value" ngx-datatable-cell-template>
             @if (value.creator | isUnresolved) {
-              <baw-loading size="sm" />
+              <baw-loading size="sm"></baw-loading>
             } @else {
               <a [bawUrl]="value.creator.viewUrl">
                 {{ value.creator.userName }}
@@ -72,7 +72,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       <!-- Tags -->
       <ngx-datatable-column name="Tags" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'tags']" />
+          <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
           Tags
         </ng-template>
 
@@ -84,7 +84,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
           }
 
           @if (value.tags | isUnresolved) {
-            <baw-loading size="sm" />
+            <baw-loading size="sm"></baw-loading>
           } @else {
             @if (value.tags.length === 0) {
               (none)
@@ -96,7 +96,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       <!-- Updated -->
       <ngx-datatable-column name="Updated" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'calendar-alt']" />
+          <fa-icon class="me-2" [icon]="['fas', 'calendar-alt']"></fa-icon>
           Updated
         </ng-template>
 
@@ -112,7 +112,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
         [maxWidth]="175"
         [sortable]="false"
       >
-        <ng-template let-column="column" ngx-datatable-header-template />
+        <ng-template let-column="column" ngx-datatable-header-template>
+        </ng-template>
         <ng-template let-value="value" ngx-datatable-cell-template>
           <a
             id="playBtn"

@@ -40,7 +40,7 @@ describe("WebsiteStatusComponent", () => {
   });
 
   function setup(
-    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus()),
+    fakeWebsiteStatus = new WebsiteStatus(generateWebsiteStatus())
   ) {
     spectator = createComponent({ detectChanges: false });
 
