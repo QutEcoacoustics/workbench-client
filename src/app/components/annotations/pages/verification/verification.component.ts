@@ -32,7 +32,21 @@ import {
 } from "@components/annotations/components/modals/search-verification-filters/search-verification-filters.component";
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
-import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+import {
+  DecisionMadeEvent,
+  TagPromptComponent,
+  TypeaheadCallback,
+  VerificationGridComponent,
+  WhenPredicate,
+} from "@ecoacoustics/web-components";
+import {
+  DecisionOptions,
+} from "@ecoacoustics/web-components/models/decisions/decision";
+import { decisionNotRequired } from "@ecoacoustics/web-components/models/decisions/decisionNotRequired";
+import { SubjectWrapper } from "@ecoacoustics/web-components/models/subject";
+import {
+  PageFetcherContext,
+} from "@ecoacoustics/web-components/services/gridPageFetcher/gridPageFetcher";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WithNavigationConfirmation } from "@guards/confirmation/confirmation.guard";
 import { filterAnd } from "@helpers/filters/filters";
@@ -61,20 +75,6 @@ import { AnnotationService } from "@services/models/annotations/annotation.servi
 import { TaggingCorrectionsService } from "@services/models/tagging-corrections/tagging-corrections.service";
 import { ScrollService } from "@services/scroll/scroll.service";
 import { firstValueFrom, map, Observable } from "rxjs";
-import {
-  DecisionMadeEvent,
-  TagPromptComponent,
-  TypeaheadCallback,
-  VerificationGridComponent,
-  WhenPredicate,
-} from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-import {
-  DecisionOptions,
-} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/decisions/decision";
-import { SubjectWrapper } from "../../../../../../node_modules/@ecoacoustics/web-components/@types/models/subject";
-import {
-  PageFetcherContext,
-} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
 
 interface PagingContext extends PageFetcherContext {
   page: number;

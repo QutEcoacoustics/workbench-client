@@ -12,6 +12,14 @@ import {
   VerificationParameters,
   VerificationStatusKey,
 } from "@components/annotations/components/verification-form/verificationParameters";
+import {
+  DecisionComponent,
+  TagPromptComponent,
+  VerificationGridTileComponent,
+} from "@ecoacoustics/web-components";
+import {
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -58,14 +66,6 @@ import {
 import { nodeModule } from "@test/helpers/karma";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Observable, of } from "rxjs";
-import {
-  DecisionComponent,
-  TagPromptComponent,
-  VerificationGridTileComponent,
-} from "../../../../../../node_modules/@ecoacoustics/web-components/@types";
-import {
-  VerificationGridComponent,
-} from "../../../../../../node_modules/@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
 import { exampleBase64 } from "../../../../../test-assets/example-0.5s.base64";
 import { VerificationComponent } from "./verification.component";
 
@@ -350,9 +350,7 @@ describe("VerificationComponent", () => {
     // the web components are loaded through the karma test server
     if (!customElements.get("oe-verification-grid")) {
       await import(
-        nodeModule(
-          "../../../../node_modules/@ecoacoustics/web-components/dist/components.js",
-        )
+        nodeModule("@ecoacoustics/web-components/dist/components.js")
       );
     }
   });

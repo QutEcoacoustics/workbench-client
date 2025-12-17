@@ -8,6 +8,10 @@ import {
   viewChild
 } from "@angular/core";
 import { UrlDirective } from "@directives/url/url.directive";
+import {
+  MediaControlsComponent,
+  SpectrogramComponent,
+} from "@ecoacoustics/web-components";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";
@@ -16,10 +20,6 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { isInstantiatedPipe } from "@pipes/is-instantiated/is-instantiated.pipe";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { scaleLinear } from "d3-scale";
-import {
-  MediaControlsComponent,
-  SpectrogramComponent,
-} from "../../../../../node_modules/@ecoacoustics/web-components/@types";
 import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pipe";
 import { ZonedDateTimeComponent } from "../datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 

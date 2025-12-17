@@ -1,4 +1,5 @@
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/components/spectrogram/spectrogram";
 import { AudioRecording } from "@models/AudioRecording";
 import { Annotation } from "@models/data/Annotation";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -14,7 +15,6 @@ import { generateAnnotation } from "@test/fakes/data/Annotation";
 import { detectChanges } from "@test/helpers/changes";
 import { getElementByTextContent } from "@test/helpers/html";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
-import { SpectrogramComponent } from "../../../../../node_modules/@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 
 describe("GridTileContentComponent", () => {
