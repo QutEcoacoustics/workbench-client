@@ -53,7 +53,8 @@
             "sourceMap": true,
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error",
-              "humanize-duration"
+              "humanize-duration",
+              "buffer"
             ],
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
