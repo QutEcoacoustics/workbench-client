@@ -29,7 +29,7 @@ class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit
 {
-  public readonly assignSitesLabel = assignSiteMenuItem.label;
+  public assignSitesLabel = assignSiteMenuItem.label;
 
   public constructor() {
     const api = inject(ShallowSitesService);

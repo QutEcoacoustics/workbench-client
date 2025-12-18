@@ -67,8 +67,7 @@ export class QuestionsService implements StandardApi<Question, [IdOr<Study>]> {
 
 @Injectable()
 export class ShallowQuestionsService implements StandardApi<Question> {
-  private api = inject<BawApiService<Question>>(BawApiService);
-
+  private readonly api = inject<BawApiService<Question>>(BawApiService);
 
   public list(): Observable<Question[]> {
     return this.api.list(Question, endpointShallow(emptyParam, emptyParam));

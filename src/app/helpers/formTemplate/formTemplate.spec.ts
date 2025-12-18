@@ -37,7 +37,7 @@ class MockModel extends AbstractModel {
   imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
-  protected notifications: ToastService;
+  protected readonly notifications: ToastService;
 
   public constructor() {
     const notifications = inject(ToastService);

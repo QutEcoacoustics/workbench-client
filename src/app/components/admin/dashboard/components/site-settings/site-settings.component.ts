@@ -21,7 +21,7 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
   private readonly api = inject(SiteSettingsService);
   private readonly notifications = inject(ToastService);
 
-  protected readonly settings = signal<SiteSetting[]>([]);
+  protected settings = signal<SiteSetting[]>([]);
 
   // A sort function that can be used to sort site settings by name
   private settingsSorter: SortFunction<SiteSetting> = (a, b) =>

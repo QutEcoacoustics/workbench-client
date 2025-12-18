@@ -67,8 +67,7 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
 
 @Injectable()
 export class ShallowResponsesService implements StandardApi<Response> {
-  private api = inject<BawApiService<Response>>(BawApiService);
-
+  private readonly api = inject<BawApiService<Response>>(BawApiService);
 
   public list(): Observable<Response[]> {
     return this.api.list(Response, endpointShallow(emptyParam, emptyParam));

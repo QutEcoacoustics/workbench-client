@@ -38,9 +38,9 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
   ],
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
-  protected readonly tagsApi: TagsService;
   protected readonly modals = inject(NgbModal);
   protected readonly notifications = inject(ToastService);
+  protected readonly tagsApi: TagsService;
 
   public columns = [
     { name: "Text" },
@@ -70,7 +70,6 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
       }))
     );
     this.tagsApi = tagsApi;
-
 
     this.filterKey = "text";
   }

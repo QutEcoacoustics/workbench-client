@@ -56,7 +56,7 @@ import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/web
     imports: [MenuToggleComponent, StrongRouteActiveDirective, StrongRouteDirective, PrimaryMenuComponent, WebsiteStatusIndicatorComponent]
 })
 export class HeaderComponent {
-  protected config = inject(ConfigService);
+  protected readonly config = inject(ConfigService);
 
   public readonly homeMenuItem = homeMenuItem;
 }

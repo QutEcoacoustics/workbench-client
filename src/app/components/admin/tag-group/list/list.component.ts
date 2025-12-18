@@ -43,9 +43,9 @@ export const adminTagGroupMenuItemActions = [
   ],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
-  protected readonly tagGroupsApi = inject(TagGroupsService);
   protected readonly notifications = inject(ToastService);
   protected readonly modals = inject(NgbModal);
+  protected readonly tagGroupsApi: TagGroupsService;
 
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
   public sortKeys = { tag: "tagId", group: "groupIdentifier" };

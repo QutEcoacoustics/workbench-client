@@ -31,10 +31,10 @@ class EditProvenanceComponent
   extends FormTemplate<Provenance>
   implements OnInit
 {
+  private readonly api = inject(ProvenanceService);
   protected readonly notifications: ToastService;
   protected readonly route: ActivatedRoute;
   protected readonly router: Router;
-  private readonly api = inject(ProvenanceService);
 
   public readonly fields = schema.fields;
   protected title: string;

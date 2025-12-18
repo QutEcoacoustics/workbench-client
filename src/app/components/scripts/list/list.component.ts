@@ -52,8 +52,8 @@ class AdminScriptsComponent
         model: script,
       }))
     );
-    this.api = api;
 
+    this.api = api;
 
     this.filterKey = "name";
   }
