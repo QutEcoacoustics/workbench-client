@@ -1,8 +1,6 @@
-import { Component, inject } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component } from "@angular/core";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   theirProfileCategory,
   theirProjectsMenuItem,
@@ -35,13 +33,6 @@ const accountKey = "account";
   ],
 })
 class TheirProjectsComponent extends MyProjectsComponent {
-  public constructor() {
-    const api = inject(ProjectsService);
-    const route = inject(ActivatedRoute);
-
-    super(api, route);
-  }
-
   public get account(): User {
     return this.models[accountKey] as User;
   }
