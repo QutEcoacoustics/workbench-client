@@ -1,5 +1,13 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, Renderer2, inject } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  OnInit,
+  Renderer2,
+  DOCUMENT
+} from "@angular/core";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";

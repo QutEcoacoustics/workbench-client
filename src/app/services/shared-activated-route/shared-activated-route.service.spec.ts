@@ -19,10 +19,11 @@ import {
   mockProvider,
   SpectatorService,
 } from "@ngneat/spectator";
-import { RouteOptions } from "@ngneat/spectator/lib/spectator-routing/route-options";
 import { generatePageInfo } from "@test/fakes/PageInfo";
 import { Observable, Subject } from "rxjs";
 import { SharedActivatedRouteService } from "./shared-activated-route.service";
+
+type RouteOptions = any;
 
 describe("SharedActivatedRouteService", () => {
   let routerEvents: Subject<RouterEvent>;

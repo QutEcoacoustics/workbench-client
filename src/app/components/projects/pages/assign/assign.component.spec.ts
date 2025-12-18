@@ -11,11 +11,12 @@ import { Site } from "@models/Site";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
 import { appLibraryImports } from "src/app/app.config";
-import { getElementByTextContent } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
+import { Filters } from "@baw-api/baw-api.service";
 import { AssignComponent } from "./assign.component";
 
 // some functionality for the sites table is not tested in this component because it is tested by the PagedTableTemplate
-// eg. filtering, sorting, pagination, etc.
+// e.g. filtering, sorting, pagination, etc.
 describe("AssignComponent", () => {
   let mockApi: SpyObject<ShallowSitesService>;
   let spectator: Spectator<AssignComponent>;
@@ -53,15 +54,12 @@ describe("AssignComponent", () => {
     spectator.detectChanges();
   }
 
-  const projectHeader = (): HTMLHeadingElement =>
-    spectator.query<HTMLHeadingElement>("h1");
-  const updateButton = (): HTMLButtonElement =>
+  const projectHeader = () => spectator.query<HTMLHeadingElement>("h1");
+  const updateButton = () =>
     spectator.query<HTMLButtonElement>("button[type='submit']");
 
   function submitForm(): void {
-    const updateButtonElement = updateButton();
-    updateButtonElement.click();
-    spectator.detectChanges();
+    clickButton(spectator, updateButton());
   }
 
   function getSiteRow(siteName: string): HTMLElement {
@@ -81,8 +79,7 @@ describe("AssignComponent", () => {
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (!siteCheckbox.checked) {
-      siteCheckbox.click();
-      spectator.detectChanges();
+      spectator.click(siteCheckbox);
     }
   }
 
@@ -90,8 +87,7 @@ describe("AssignComponent", () => {
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (siteCheckbox.checked) {
-      siteCheckbox.click();
-      spectator.detectChanges();
+      spectator.click(siteCheckbox);
     }
   }
 
@@ -147,7 +143,7 @@ describe("AssignComponent", () => {
 
   it("should send the correct filter request on initialization", () => {
     setup();
-    const expectedRequest = {};
+    const expectedRequest: Filters = {};
     expect(mockApi.filter).toHaveBeenCalledOnceWith(expectedRequest);
   });
 

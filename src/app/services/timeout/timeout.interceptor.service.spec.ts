@@ -14,7 +14,7 @@ import {
   TIMEOUT_OPTIONS,
 } from "./timeout.interceptor.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 class MockService {
   private readonly httpClient = inject(HttpClient);
 

@@ -50,7 +50,7 @@ describe("SiteMapComponent", () => {
     api.filter.and.returnValue(of(mockSites));
 
     const mapsService = spec.inject(MapsService);
-    spyOn(mapsService, "loadAsync").and.returnValue(Promise.resolve());
+    spyOn(mapsService, "loadAsync").and.returnValue(Promise.resolve(true));
   }
 
   function setComponentProps(

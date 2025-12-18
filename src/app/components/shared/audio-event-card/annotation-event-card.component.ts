@@ -11,7 +11,7 @@ import { UrlDirective } from "@directives/url/url.directive";
 import {
   MediaControlsComponent,
   SpectrogramComponent,
-} from "@ecoacoustics/web-components/@types";
+} from "@ecoacoustics/web-components";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { VerificationSummary } from "@models/AudioEvent/VerificationSummary";
 import { Annotation } from "@models/data/Annotation";

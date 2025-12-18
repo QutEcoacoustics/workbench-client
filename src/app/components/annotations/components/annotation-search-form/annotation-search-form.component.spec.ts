@@ -84,8 +84,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const advancedFiltersToggle = () =>
     spec.query<HTMLButtonElement>("#advanced-filters-toggle");
-  const advancedFiltersCollapsable = () =>
-    spec.query(".advanced-filters>[ng-reflect-collapsed]");
+  const advancedFiltersCollapsable = () => spec.query("#advanced-collapsable");
   const recordingsTypeahead = () => spec.query("#recordings-input");
 
   const eventImportTypeahead = () => spec.query("#event-imports-input");

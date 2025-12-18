@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
+import { provideServerRendering, withRoutes } from "@angular/ssr";
 import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
-import { provideServerRendering } from "@angular/platform-server";
 import {
   NgHttpCachingConfig,
   NgHttpCachingStrategy,
@@ -11,7 +11,6 @@ import { DeviceDetectorService } from "ngx-device-detector";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { environment } from "src/environments/environment";
-import { provideServerRouting } from "@angular/ssr";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { appConfig } from "./app.config";
@@ -38,11 +37,8 @@ export const serverCacheConfig = {
 
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(),
-    provideServerRouting(serverRoutes),
-
+    provideServerRendering(withRoutes(serverRoutes)),
     { provide: API_CONFIG, useFactory: readConfig },
-
     {
       provide: DeviceDetectorService,
       useClass: UniversalDeviceDetectorService,
