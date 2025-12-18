@@ -1,4 +1,4 @@
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -103,6 +103,7 @@ describe("AnnotationsDetailsComponent", () => {
   function deleteFirstFile() {
     const deleteButton = getElementByTextContent(spec, "Delete");
     clickButton(spec, deleteButton);
+    tick();
 
     const confirmationButton = spec.query<HTMLButtonElement>(
       "baw-harvest-confirmation-modal #next-btn",
