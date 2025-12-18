@@ -5,13 +5,14 @@ import { IPageInfo } from "@helpers/page/pageInfo";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { provideMockConfig } from "@services/config/provide-configMock";
+import { LoadingComponent } from "@shared/loading/loading.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { modelData } from "@test/helpers/faker";
 import { generatePageInfoResolvers, viewports } from "@test/helpers/general";
-import { BehaviorSubject } from "rxjs";
-import { BawClientComponent } from "./baw-client.component";
-import { LoadingComponent } from "@shared/loading/loading.component";
 import { waitUntil } from "@test/helpers/html";
+import { BehaviorSubject } from "rxjs";
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { BawClientComponent } from "./baw-client.component";
 
 // TODO Add tests for components page input if/when used
 describe("BawClientComponent", () => {
@@ -72,16 +73,24 @@ describe("BawClientComponent", () => {
     const event = new NavigationEnd(1, url, url);
 
     if (!events) {
+      // We cast to "any" here to remove the "readonly" modifier on the router.
+      //
+      // TODO: We should correctly mock the Router instead of doing this manual
+      // navigation event injection.
       events = new BehaviorSubject(event);
-      spec.component["router"] = { url, events } as Partial<Router> as Router;
+      (spec.component["router"] as any) = { url, events } as Partial<Router> as Router;
     } else {
       events.next(event);
     }
   }
 
-  function setup(data?: Partial<IPageInfo>) {
+  function setup(data?: Partial<IPageInfo>, isSsr = false) {
     events = undefined;
-    spec = createComponent({ detectChanges: false, data });
+    spec = createComponent({
+      detectChanges: false,
+      data,
+      providers: [{ provide: IS_SERVER_PLATFORM, useValue: isSsr }],
+    });
     config = spec.inject(ConfigService);
     sanitizer = spec.inject(DomSanitizer);
   }
@@ -94,9 +103,7 @@ describe("BawClientComponent", () => {
 
   describe("ssr", () => {
     it("should hide iframe if running on ssr", () => {
-      setup();
-      spec.component.isSsr = true;
-      spec.detectChanges();
+      setup(undefined, true);
       expect(getIframe()).toBeFalsy();
     });
   });

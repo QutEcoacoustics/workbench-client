@@ -47,7 +47,7 @@ import { adminSettingsMenuItem } from "./settings.menus";
   `,
 })
 class AdminSettingsComponent extends PageComponent {
-  protected readonly cacheSettings = inject<CacheSettings>(CACHE_SETTINGS);
+  public readonly cacheSettings = inject<CacheSettings>(CACHE_SETTINGS);
 }
 
 AdminSettingsComponent.linkToRoute({
