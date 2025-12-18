@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { DataRequest } from "@models/data/DataRequest";
@@ -9,7 +9,7 @@ const dataRequestEndpoint = stringTemplate`/data_request`;
 
 @Injectable()
 export class DataRequestService {
-  public constructor(private api: BawFormApiService<DataRequest>) {}
+  private readonly api = inject<BawFormApiService<DataRequest>>(BawFormApiService);
 
   public dataRequest(details: DataRequest): Observable<void> {
     const validateEmail = (page: string): void => {

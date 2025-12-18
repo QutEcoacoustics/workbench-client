@@ -1,5 +1,5 @@
 import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable, Optional } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { KeysOfType, Writeable, XOR } from "@helpers/advancedTypes";
 import { toSnakeCase } from "@helpers/case-converter/case-converter";
 import {
@@ -12,7 +12,6 @@ import {
   AbstractModelConstructor,
   AbstractModelWithoutId,
 } from "@models/AbstractModel";
-import { CacheSettings, CACHE_SETTINGS } from "@services/cache/cache-settings";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Observable, iif, of, throwError } from "rxjs";
@@ -96,6 +95,15 @@ export class BawApiService<
   Model extends AbstractModelWithoutId,
   ClassBuilder extends AbstractModelConstructor<Model> = AbstractModelConstructor<Model>
 > {
+  protected readonly apiRoot = inject(API_ROOT);
+  protected readonly isServer = inject(IS_SERVER_PLATFORM);
+  protected readonly cacheService = inject(NgHttpCachingService);
+  protected readonly http = inject(HttpClient);
+  protected readonly session = inject(BawSessionService);
+  protected readonly notifications = inject(ToastService);
+  protected readonly associationInjector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
+  private readonly options = inject<BawServiceOptions>(BAW_SERVICE_OPTIONS, { optional: true })!;
+
   /*
   Paths:
     list -> GET
@@ -182,18 +190,7 @@ export class BawApiService<
 
   private instanceOptions: Required<BawServiceOptions>;
 
-  public constructor(
-    @Inject(API_ROOT) protected apiRoot: string,
-    @Inject(IS_SERVER_PLATFORM) protected isServer: boolean,
-    protected cacheService: NgHttpCachingService,
-    protected http: HttpClient,
-    protected session: BawSessionService,
-    protected notifications: ToastService,
-    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(ASSOCIATION_INJECTOR)
-    protected associationInjector: AssociationInjector,
-    @Optional() @Inject(BAW_SERVICE_OPTIONS) private options: BawServiceOptions
-  ) {
+  public constructor() {
     // by merging the default options with the injected options, we can override
     // the default options by injecting a partial options object
     // by having a full default options object, we can ensure that all options

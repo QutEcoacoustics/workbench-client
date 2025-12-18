@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -35,7 +35,10 @@ const accountKey = "account";
   ],
 })
 class TheirProjectsComponent extends MyProjectsComponent {
-  public constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(ProjectsService);
+    const route = inject(ActivatedRoute);
+
     super(api, route);
   }
 

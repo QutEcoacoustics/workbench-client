@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable, OnDestroy, inject } from "@angular/core";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
@@ -34,6 +34,10 @@ import {
 
 @Injectable({ providedIn: "root" })
 export class HarvestStagesService implements OnDestroy {
+  private readonly notifications = inject(ToastService);
+  private readonly harvestApi = inject(HarvestsService);
+  private readonly harvestItemApi = inject(HarvestItemsService);
+
   public project: Project;
   /**
    * If true, state of harvest is in transition, and buttons to transition
@@ -47,11 +51,7 @@ export class HarvestStagesService implements OnDestroy {
   private harvestInterval: Subscription;
   private unsubscribe = new Subject<void>();
 
-  public constructor(
-    private notifications: ToastService,
-    private harvestApi: HarvestsService,
-    private harvestItemApi: HarvestItemsService
-  ) {
+  public constructor() {
     this.trackHarvest();
   }
 

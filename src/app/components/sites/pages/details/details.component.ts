@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -82,20 +82,16 @@ const siteKey = "site";
     imports: [SiteComponent]
 })
 class SiteDetailsComponent extends PageComponent implements OnInit {
+  protected readonly route = inject(ActivatedRoute);
+  private readonly sitesApi = inject(SitesService);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(ToastService);
+  private readonly config = inject(ConfigService);
+
   public project: Project;
   public region?: Region;
   public site: Site;
   public failure: boolean;
-
-  public constructor(
-    protected route: ActivatedRoute,
-    private sitesApi: SitesService,
-    private router: Router,
-    private notifications: ToastService,
-    private config: ConfigService,
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

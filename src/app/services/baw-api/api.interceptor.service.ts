@@ -8,7 +8,7 @@ import {
   HttpRequest,
   HttpResponse,
 } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   toCamelCase,
   toSnakeCase,
@@ -37,10 +37,8 @@ export const CREDENTIALS_CONTEXT = new HttpContextToken<boolean>(() => true);
  */
 @Injectable()
 export class BawApiInterceptor implements HttpInterceptor {
-  public constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    public session: BawSessionService
-  ) {}
+  private readonly apiRoot = inject(API_ROOT);
+  private readonly session = inject(BawSessionService);
 
   /**
    * Intercept http requests and handle appending login tokens and errors.

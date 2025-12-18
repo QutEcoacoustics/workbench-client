@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   tagGroupResolvers,
@@ -44,15 +44,16 @@ class AdminTagGroupsEditComponent
   extends FormTemplate<TagGroup>
   implements OnInit
 {
+  private readonly api = inject(TagGroupsService);
+
   public fields = schema.fields;
   public title: string;
 
-  public constructor(
-    private api: TagGroupsService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[tagGroupKey] as TagGroup,
       successMsg: (model) =>

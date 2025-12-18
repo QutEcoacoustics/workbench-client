@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   ApiCreateOrUpdate,
   emptyParam,
@@ -32,7 +32,7 @@ const endpoint =
 export class VerificationService
   implements ReadonlyApi<Verification, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
-  public constructor(private api: BawApiService<Verification>) {}
+  private readonly api = inject<BawApiService<Verification>>(BawApiService);
 
   public list(
     audioRecording: IdOr<AudioRecording>,
@@ -72,10 +72,8 @@ export class VerificationService
 export class ShallowVerificationService
   implements StandardApi<Verification, []>, ApiCreateOrUpdate<Verification, []>
 {
-  public constructor(
-    private api: BawApiService<Verification>,
-    private session: BawSessionService,
-  ) {}
+  private readonly api = inject<BawApiService<Verification>>(BawApiService);
+  private readonly session = inject(BawSessionService);
 
   public list(): Observable<Verification[]> {
     return this.api.list(Verification, endpointShallow(emptyParam, emptyParam));

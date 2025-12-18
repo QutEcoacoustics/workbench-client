@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import {
@@ -33,14 +33,15 @@ import schema from "../tag-group.schema.json";
   imports: [FormComponent],
 })
 class AdminTagGroupsNewComponent extends FormTemplate<TagGroup> {
+  private readonly api = inject(TagGroupsService);
+
   public fields = schema.fields;
 
-  public constructor(
-    private api: TagGroupsService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) =>
         defaultSuccessMsg("created", model.groupIdentifier),

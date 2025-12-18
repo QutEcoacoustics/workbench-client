@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IScript, Script } from "@models/Script";
 import { Observable } from "rxjs";
@@ -23,7 +23,7 @@ const endpoint = stringTemplate`/scripts/${scriptId}${option}`;
  */
 @Injectable()
 export class ScriptsService implements NonDestructibleApi<Script> {
-  public constructor(private api: BawApiService<Script>) {}
+  private readonly api = inject<BawApiService<Script>>(BawApiService);
 
   public list(): Observable<Script[]> {
     return this.api.list(Script, endpoint(emptyParam, emptyParam));

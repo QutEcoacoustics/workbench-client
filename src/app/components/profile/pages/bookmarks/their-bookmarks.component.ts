@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -33,7 +33,10 @@ const accountKey = "account";
   ],
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
-  public constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(BookmarksService);
+    const route = inject(ActivatedRoute);
+
     super(api, route);
   }
 

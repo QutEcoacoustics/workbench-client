@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, inject } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -23,13 +23,11 @@ export class RecentAnnotationsComponent
   extends withUnsubscribe()
   implements OnInit
 {
+  private readonly audioEventsApi = inject(ShallowAudioEventsService);
+
   @Input() public site: Site;
 
   public recentAudioEvents: AudioEvent[];
-
-  public constructor(private audioEventsApi: ShallowAudioEventsService) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.getAnnotations();

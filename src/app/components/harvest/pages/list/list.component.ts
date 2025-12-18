@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
@@ -51,18 +51,14 @@ const projectKey = "project";
   ],
 })
 class HarvestListComponent extends PageComponent implements OnInit {
+  private readonly modals = inject(NgbModal);
+  private readonly harvestsApi = inject(ShallowHarvestsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly notifications = inject(ToastService);
+
   public contactUs = contactUsMenuItem;
   public filters$: BehaviorSubject<Filters<Harvest>>;
   public canCreateHarvestCapability: boolean;
-
-  public constructor(
-    public modals: NgbModal,
-    private harvestsApi: ShallowHarvestsService,
-    private route: ActivatedRoute,
-    private notifications: ToastService,
-  ) {
-    super();
-  }
 
   // this is in a getter so that we can override it in the AllUploadsComponent
   public get project(): Project {

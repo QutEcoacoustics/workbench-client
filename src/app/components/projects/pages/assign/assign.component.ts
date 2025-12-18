@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -45,6 +45,8 @@ class AssignComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit
 {
+  private readonly notifications = inject(ToastService);
+
   public columns = [
     { name: "Site Id" },
     { name: "Name" },
@@ -55,11 +57,10 @@ class AssignComponent
   protected api: ShallowSitesService;
   private oldSiteIds: Id[];
 
-  public constructor(
-    siteApi: ShallowSitesService,
-    private notifications: ToastService,
-    route: ActivatedRoute
-  ) {
+  public constructor() {
+    const siteApi = inject(ShallowSitesService);
+    const route = inject(ActivatedRoute);
+
     super(
       siteApi,
       (sites) =>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   projectResolvers,
@@ -39,20 +39,28 @@ const projectKey = "project";
   imports: [FormComponent]
 })
 class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
+  private readonly api = inject(ProjectsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
   public title: string;
 
-  public constructor(
-    private api: ProjectsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[projectKey] as Project,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit() {

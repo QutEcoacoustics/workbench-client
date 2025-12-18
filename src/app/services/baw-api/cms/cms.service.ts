@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { API_ROOT } from "@services/config/config.tokens";
 import { Observable } from "rxjs";
@@ -27,10 +27,8 @@ const endpoint = stringTemplate`/cms/${page}`;
 
 @Injectable()
 export class CmsService {
-  public constructor(
-    private http: HttpClient,
-    @Inject(API_ROOT) private apiRoot: string
-  ) {}
+  private readonly http = inject(HttpClient);
+  private readonly apiRoot = inject(API_ROOT);
 
   public get(cms: CMS): Observable<string> {
     return this.http.get(this.apiRoot + endpoint(cms), {

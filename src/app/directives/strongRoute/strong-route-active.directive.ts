@@ -1,13 +1,4 @@
-import {
-  ChangeDetectorRef,
-  ContentChildren,
-  Directive,
-  ElementRef,
-  Input,
-  Optional,
-  QueryList,
-  Renderer2,
-} from "@angular/core";
+import { ChangeDetectorRef, ContentChildren, Directive, ElementRef, Input, QueryList, Renderer2, inject } from "@angular/core";
 import {
   IsActiveMatchOptions,
   Router,
@@ -40,13 +31,13 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
     super["routerLinkActiveOptions"] = data ?? { exact: false };
   }
 
-  public constructor(
-    _router: Router,
-    _element: ElementRef,
-    _renderer: Renderer2,
-    _cdr: ChangeDetectorRef,
-    @Optional() _link?: StrongRouteDirective
-  ) {
+  public constructor() {
+    const _router = inject(Router);
+    const _element = inject(ElementRef);
+    const _renderer = inject(Renderer2);
+    const _cdr = inject(ChangeDetectorRef);
+    const _link = inject(StrongRouteDirective, { optional: true });
+
     super(_router, _element, _renderer, _cdr, _link);
   }
 }

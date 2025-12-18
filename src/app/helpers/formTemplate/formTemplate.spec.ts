@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -37,12 +37,16 @@ class MockModel extends AbstractModel {
   imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
-  public constructor(
-    protected notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  protected notifications: ToastService;
+
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, formProps);
+  
+    this.notifications = notifications;
   }
 
   protected apiAction(model: Partial<MockModel>) {

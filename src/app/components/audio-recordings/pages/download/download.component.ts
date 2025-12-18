@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
@@ -52,6 +52,10 @@ const siteKey = "site";
   ],
 })
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
+  protected readonly session = inject(BawSessionService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly recordingsApi = inject(AudioRecordingsService);
+
   @ViewChild(NgForm) public form: NgForm;
 
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
@@ -66,14 +70,6 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public errors: {
     todBoundaryError?: boolean;
   } = {};
-
-  public constructor(
-    public session: BawSessionService,
-    private route: ActivatedRoute,
-    private recordingsApi: AudioRecordingsService
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.models = retrieveResolvers(this.route.snapshot.data);

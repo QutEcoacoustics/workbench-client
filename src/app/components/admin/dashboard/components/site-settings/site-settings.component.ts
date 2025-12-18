@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  signal,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
@@ -23,14 +18,10 @@ import { iif, map, takeUntil } from "rxjs";
   imports: [DebouncedInputDirective, RangeComponent, FormsModule],
 })
 export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
-  public constructor(
-    private api: SiteSettingsService,
-    private notifications: ToastService,
-  ) {
-    super();
-  }
+  private readonly api = inject(SiteSettingsService);
+  private readonly notifications = inject(ToastService);
 
-  protected settings = signal<SiteSetting[]>([]);
+  protected readonly settings = signal<SiteSetting[]>([]);
 
   // A sort function that can be used to sort site settings by name
   private settingsSorter: SortFunction<SiteSetting> = (a, b) =>

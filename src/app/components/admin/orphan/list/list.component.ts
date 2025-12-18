@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
@@ -29,9 +29,11 @@ class AdminOrphansComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit
 {
-  public assignSitesLabel = assignSiteMenuItem.label;
+  public readonly assignSitesLabel = assignSiteMenuItem.label;
 
-  public constructor(api: ShallowSitesService) {
+  public constructor() {
+    const api = inject(ShallowSitesService);
+
     super(api, (sites) =>
       sites.map((site) => ({
         id: site.id,

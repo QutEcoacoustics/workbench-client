@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { emptyParam, param } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import {
@@ -40,14 +40,14 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
  */
 @Injectable({ providedIn: "root" })
 export class SecurityService {
-  public constructor(
-    private api: BawApiService<Session>,
-    private formApi: BawFormApiService<Session>,
-    private userService: UserService,
-    private cookies: CookieService,
-    private session: BawSessionService,
-    private httpCache: NgHttpCachingService
-  ) {
+  private readonly api = inject<BawApiService<Session>>(BawApiService);
+  private readonly formApi = inject<BawFormApiService<Session>>(BawFormApiService);
+  private readonly userService = inject(UserService);
+  private readonly cookies = inject(CookieService);
+  private readonly session = inject(BawSessionService);
+  private readonly httpCache = inject(NgHttpCachingService);
+
+  public constructor() {
     this.updateAuthToken();
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -20,11 +20,9 @@ export class ResolverHandlerComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  public error: BawApiError;
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
 
-  public constructor(private sharedRoute: SharedActivatedRouteService) {
-    super();
-  }
+  public error: BawApiError;
 
   public ngOnInit() {
     // Detect any page errors

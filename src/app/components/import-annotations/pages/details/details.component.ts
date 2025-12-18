@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import {
@@ -106,17 +106,13 @@ interface ImportGroup {
   ],
 })
 class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
-  public constructor(
-    private route: ActivatedRoute,
-    private eventsApi: ShallowAudioEventsService,
-    private eventImportsApi: AudioEventImportService,
-    private eventImportFileApi: AudioEventImportFileService,
-    private notifications: ToastService,
-    private router: Router,
-    private modals: NgbModal,
-  ) {
-    super();
-  }
+  private readonly route = inject(ActivatedRoute);
+  private readonly eventsApi = inject(ShallowAudioEventsService);
+  private readonly eventImportsApi = inject(AudioEventImportService);
+  private readonly eventImportFileApi = inject(AudioEventImportFileService);
+  private readonly notifications = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly modals = inject(NgbModal);
 
   protected readonly verificationRoute = verificationRoute;
   protected active = 1;

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "@baw-api/user/user.service";
 import {
@@ -31,19 +31,27 @@ import schema from "./confirm-account.schema.json";
   imports: [FormComponent]
 })
 class ConfirmPasswordComponent extends FormTemplate<ConfirmPassword> {
+  private readonly api = inject(UserService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
 
-  public constructor(
-    private api: UserService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: () =>
         "If your user account exists in our database, " +
         "you will receive an email with instructions about how to confirm your account in a few minutes.",
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   protected apiAction(model: IConfirmPassword) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
@@ -43,14 +43,12 @@ export type UploadingInstructionTab = "Windows" | "Mac" | "Linux" | "RClone";
   ],
 })
 export class BatchUploadingComponent implements OnInit {
-  public active = 1;
+  private readonly stages = inject(HarvestStagesService);
+  private readonly modals = inject(NgbModal);
+  private readonly config = inject(ConfigService);
+  private readonly deviceDetector = inject(DeviceDetectorService);
 
-  public constructor(
-    public stages: HarvestStagesService,
-    public modals: NgbModal,
-    private config: ConfigService,
-    private deviceDetector: DeviceDetectorService
-  ) {}
+  public active = 1;
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);

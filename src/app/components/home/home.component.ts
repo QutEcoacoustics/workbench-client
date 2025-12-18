@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { CMS } from "@baw-api/cms/cms.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -40,6 +40,10 @@ import { homeCategory, homeMenuItem } from "./home.menus";
 ],
 })
 class HomeComponent extends PageComponent implements OnInit {
+  private readonly regionApi = inject(ShallowRegionsService);
+  private readonly projectApi = inject(ProjectsService);
+  private readonly config = inject(ConfigService);
+
   public brand: Brand;
   public page = CMS.home;
   public svg: {
@@ -52,14 +56,6 @@ class HomeComponent extends PageComponent implements OnInit {
   public viewMoreLink: { label: string; link: StrongRoute };
   public models$: Observable<List<Project | Region>>;
   public sourceRepo: string;
-
-  public constructor(
-    private regionApi: ShallowRegionsService,
-    private projectApi: ProjectsService,
-    public config: ConfigService
-  ) {
-    super();
-  }
 
   public ngOnInit() {
     const settings = this.config.settings;

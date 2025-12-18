@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, inject } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -92,11 +92,9 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
   ],
 })
 export class CardComponent implements OnInit {
-  public constructor(
-    private recordingApi: AudioRecordingsService,
-    private session: BawSessionService,
-    private licenseService: LicensesService,
-  ) {}
+  private readonly recordingApi = inject(AudioRecordingsService);
+  private readonly session = inject(BawSessionService);
+  private readonly licenseService = inject(LicensesService);
 
   @Input() public model: Project | Region;
 

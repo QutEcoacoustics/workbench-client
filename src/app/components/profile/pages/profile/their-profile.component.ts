@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -58,16 +58,16 @@ const accountKey = "account";
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
 
-  public constructor(
-    config: ConfigService,
-    session: BawSessionService,
-    route: ActivatedRoute,
-    audioEventsApi: ShallowAudioEventsService,
-    bookmarksApi: BookmarksService,
-    projectsApi: ProjectsService,
-    sitesApi: ShallowSitesService,
-    tagsApi: TagsService
-  ) {
+  public constructor() {
+    const config = inject(ConfigService);
+    const session = inject(BawSessionService);
+    const route = inject(ActivatedRoute);
+    const audioEventsApi = inject(ShallowAudioEventsService);
+    const bookmarksApi = inject(BookmarksService);
+    const projectsApi = inject(ProjectsService);
+    const sitesApi = inject(ShallowSitesService);
+    const tagsApi = inject(TagsService);
+
     super(
       config,
       session,

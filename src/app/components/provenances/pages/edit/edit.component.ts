@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -31,20 +31,28 @@ class EditProvenanceComponent
   extends FormTemplate<Provenance>
   implements OnInit
 {
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+  private readonly api = inject(ProvenanceService);
+
   public readonly fields = schema.fields;
   protected title: string;
 
-  public constructor(
-    protected readonly notifications: ToastService,
-    protected readonly route: ActivatedRoute,
-    protected readonly router: Router,
-    private readonly api: ProvenanceService,
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[provenanceKey] as Provenance,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit(): void {

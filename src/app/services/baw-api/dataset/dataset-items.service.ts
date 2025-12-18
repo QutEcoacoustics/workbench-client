@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Dataset } from "@models/Dataset";
 import { DatasetItem } from "@models/DatasetItem";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/datasets/${datasetId}/items/${datasetItemId}${o
 export class DatasetItemsService
   implements ImmutableApi<DatasetItem, [IdOr<Dataset>]>
 {
-  public constructor(private api: BawApiService<DatasetItem>) {}
+  private readonly api = inject<BawApiService<DatasetItem>>(BawApiService);
 
   public list(dataset: IdOr<Dataset>): Observable<DatasetItem[]> {
     return this.api.list(

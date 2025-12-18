@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { IProject, Project } from "@models/Project";
 import type { User } from "@models/User";
@@ -31,7 +31,7 @@ const annotationsEndpoint = stringTemplate`/projects/${projectId}/audio_events/d
  */
 @Injectable()
 export class ProjectsService implements StandardApi<Project> {
-  public constructor(private api: BawApiService<Project>) {}
+  private readonly api = inject<BawApiService<Project>>(BawApiService);
 
   public list(): Observable<Project[]> {
     return this.api.list(Project, endpoint(emptyParam, emptyParam));

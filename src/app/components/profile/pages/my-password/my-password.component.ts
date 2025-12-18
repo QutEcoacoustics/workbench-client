@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -37,20 +37,28 @@ const userKey = "user";
   imports: [FormComponent]
 })
 class MyPasswordComponent extends FormTemplate<User> {
+  private readonly api = inject(AccountsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
   public title: string;
 
-  public constructor(
-    private api: AccountsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[userKey] as User,
       successMsg: (model) => defaultSuccessMsg("updated", model.userName),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   protected apiAction(model: Partial<User>) {

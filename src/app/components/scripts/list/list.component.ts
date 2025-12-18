@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ScriptsService } from "@baw-api/script/scripts.service";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
@@ -37,10 +37,12 @@ class AdminScriptsComponent
   extends PagedTableTemplate<TableRow, Script>
   implements OnInit
 {
-  public constructor(
-    protected api: ScriptsService,
-    protected session: BawSessionService
-  ) {
+  protected readonly session = inject(BawSessionService);
+  protected readonly api: ScriptsService;
+
+  public constructor() {
+    const api = inject(ScriptsService);
+
     super(api, (scripts) =>
       scripts.map((script) => ({
         name: script.name,
@@ -50,6 +52,8 @@ class AdminScriptsComponent
         model: script,
       }))
     );
+    this.api = api;
+
 
     this.filterKey = "name";
   }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
@@ -31,18 +31,26 @@ import schema from "../../provenance.base.schema.json";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class NewProvenanceComponent extends FormTemplate<Provenance> {
+  protected readonly api = inject(ProvenanceService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public readonly fields = schema.fields;
 
-  public constructor(
-    protected api: ProvenanceService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router,
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   protected apiAction(model: Partial<Provenance>) {

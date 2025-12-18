@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewChild,
-  ViewContainerRef,
-} from "@angular/core";
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -52,6 +44,10 @@ import { MenuLinkComponent } from "../link/link.component";
   ],
 })
 export class MenuComponent implements OnChanges, AfterViewInit {
+  protected readonly menuService = inject(MenuService);
+  private readonly session = inject(BawSessionService);
+  private readonly modalService = inject(NgbModal);
+
   @Input() public isSideNav: boolean;
   @Input() public title?: LabelAndIcon;
   @Input() public links!: Set<AnyMenuItem | MenuModalWithoutAction>;
@@ -67,12 +63,6 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   public isExternalLink = isExternalLink;
   public isAction = isButton;
   public isModal = isMenuModal;
-
-  public constructor(
-    public menuService: MenuService,
-    private session: BawSessionService,
-    private modalService: NgbModal
-  ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.links ??= Set();

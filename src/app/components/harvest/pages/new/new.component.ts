@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -24,17 +24,13 @@ const projectKey = "project";
   imports: [TitleComponent],
 })
 class HarvestNewComponent extends PageComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(ToastService);
+  private readonly harvestApi = inject(HarvestsService);
+
   public loading: boolean;
   public project: Project;
-
-  public constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private notifications: ToastService,
-    private harvestApi: HarvestsService
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;

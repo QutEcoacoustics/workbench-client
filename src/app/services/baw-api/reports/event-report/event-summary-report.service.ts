@@ -1,4 +1,4 @@
-import { Inject, Injectable, Type } from "@angular/core";
+import { Injectable, Type, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import {
   ApiFilterShow,
@@ -35,11 +35,9 @@ const endpoint = stringTemplate`/reports/audio_event_summary/${reportId}${option
 export class EventSummaryReportService
   implements ApiFilterShow<EventSummaryReport>
 {
-  public constructor(
-    protected session: BawSessionService,
-    protected api: BawApiService<EventSummaryReport>,
-    @Inject(API_ROOT) private apiRoot: string
-  ) {}
+  protected readonly session = inject(BawSessionService);
+  protected readonly api = inject<BawApiService<EventSummaryReport>>(BawApiService);
+  private readonly apiRoot = inject(API_ROOT);
 
   // because filter returns an array of item, and we want to return one item given filter conditions
   // we cannot use the generalised filter service interface

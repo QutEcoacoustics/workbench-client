@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -51,7 +51,10 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   public annotationLink = dataRequestMenuItem.route;
   protected api: ShallowSitesService;
 
-  public constructor(api: ShallowSitesService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(ShallowSitesService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (sites) =>

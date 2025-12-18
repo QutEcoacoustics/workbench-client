@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -43,19 +43,27 @@ const projectKey = "project";
   imports: [FormComponent]
 })
 class RegionNewComponent extends FormTemplate<Region> {
+  private readonly api = inject(RegionsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   @Input() public hideTitle: boolean;
   public fields = schema.fields;
 
-  public constructor(
-    private api: RegionsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public get project(): Project {

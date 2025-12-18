@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -29,12 +29,12 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   ],
 })
 export class DownloadTableComponent {
+  private readonly recordingsApi = inject(AudioRecordingsService);
+
   @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;
-
-  public constructor(private recordingsApi: AudioRecordingsService) {}
 
   public getModels = (filters: Filters<AudioRecording>) =>
     this.recordingsApi.filter(filters);

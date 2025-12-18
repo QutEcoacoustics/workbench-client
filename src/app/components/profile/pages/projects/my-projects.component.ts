@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -39,7 +39,10 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
   ];
   public sortKeys = { project: "name" };
 
-  public constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(ProjectsService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (projects) =>

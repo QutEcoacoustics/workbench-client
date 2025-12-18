@@ -1,14 +1,4 @@
-import {
-  Component,
-  inject,
-  model,
-  signal,
-  OnInit,
-  Inject,
-  input,
-  contentChild,
-  TemplateRef,
-} from "@angular/core";
+import { Component, inject, model, signal, OnInit, input, contentChild, TemplateRef } from "@angular/core";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import {
@@ -81,7 +71,9 @@ export class ModelListComponent<Model extends ListModel>
   // render.
   protected groupBy: keyof Site;
 
-  public constructor(@Inject(MODEL_LIST_SERVICE) service: ApiFilter<Model>) {
+  public constructor() {
+    const service = inject<ApiFilter<Model>>(MODEL_LIST_SERVICE);
+
     super(
       service,
       "name",

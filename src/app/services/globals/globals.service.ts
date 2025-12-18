@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { CACHE_SETTINGS, CacheSettings } from "@services/cache/cache-settings";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
@@ -7,12 +7,10 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
  */
 @Injectable({ providedIn: "root" })
 export class GlobalsService {
-  private namespace = "__bawWorkbenchClient" as const;
+  private readonly cacheSettings = inject<CacheSettings>(CACHE_SETTINGS);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
-  public constructor(
-    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
-  ) {}
+  private namespace = "__bawWorkbenchClient" as const;
 
   public initialize(): void {
     if (this.isServer) {

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AnalysisJobsService } from "@baw-api/analysis/analysis-jobs.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -47,10 +47,12 @@ const projectKey = "project";
   ],
 })
 class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
-  public constructor(
-    protected api: AnalysisJobsService,
-    protected route: ActivatedRoute
-  ) {
+  protected readonly api: AnalysisJobsService;
+  protected readonly route = inject(ActivatedRoute);
+
+  public constructor() {
+    const api = inject(AnalysisJobsService);
+
     super(api, (analysisJobs) =>
       analysisJobs.map((analysisJob) => ({
         name: analysisJob.name,
@@ -62,6 +64,8 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
         model: analysisJob,
       }))
     );
+  
+    this.api = api;
   }
 
   public columns = [
