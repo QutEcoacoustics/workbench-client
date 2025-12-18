@@ -101,7 +101,7 @@ export class ConfigService {
   }
 
   private setConfig(config: Configuration): void {
-    this._config = new Proxy(config, {});
+    this._config = config;
 
     if (!isConfiguration(config, this.isServer)) {
       console.error("Detected invalid environment.");
