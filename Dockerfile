@@ -1,5 +1,5 @@
 # Check that this version matches the node versions in CI
-FROM node:22-alpine as BUILD_IMAGE
+FROM node:24-alpine AS BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -27,7 +27,7 @@ RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./sr
 
 RUN npm run build
 
-FROM node:20-alpine
+FROM node:24-alpine
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -58,4 +58,4 @@ COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
 EXPOSE 4000
 
-CMD [ "npm", "run", "serve:ssr"]
+CMD ["npm", "run", "serve:ssr"]

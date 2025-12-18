@@ -4,14 +4,10 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 
-/**
- * Item Component
- */
 @Component({
-    selector: "baw-items-item",
-    template: `
+  selector: "baw-items-item",
+  template: `
     <div class="clearfix" style="font-size: 0.925rem;">
-      <!-- Item icon -->
       <fa-icon
         id="icon"
         class="me-2"
@@ -31,9 +27,9 @@ import { NgClass } from "@angular/common";
         {{ value ?? "Unknown" }}
       </span>
     </div>
-    `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FaIconComponent, NgbTooltip, NgClass]
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FaIconComponent, NgbTooltip, NgClass],
 })
 export class ItemComponent {
   @Input() public icon: IconProp;

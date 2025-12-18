@@ -1,24 +1,22 @@
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { ISite, Site } from "@models/Site";
 import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import {
-  DataTableBodyCellComponent,
-  DatatableComponent,
-} from "@swimlane/ngx-datatable";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateSite } from "@test/fakes/Site";
-import { interceptShowApiRequest } from "@test/helpers/general";
-import { ToastService } from "@services/toasts/toasts.service";
+import { datatableCells } from "@test/helpers/datatable";
 import { humanizedDuration } from "@test/helpers/dateTime";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { interceptShowApiRequest } from "@test/helpers/general";
 import { RecentAudioRecordingsComponent } from "./recent-audio-recordings.component";
 
 describe("RecentAudioRecordingsComponent", () => {
@@ -89,10 +87,6 @@ describe("RecentAudioRecordingsComponent", () => {
   });
 
   describe("rows", () => {
-    function getCells() {
-      return spec.queryAll(DataTableBodyCellComponent);
-    }
-
     function getCellElements() {
       return spec
         .queryAll("datatable-body-cell")
@@ -109,7 +103,7 @@ describe("RecentAudioRecordingsComponent", () => {
     }
 
     describe("site", () => {
-      const getSiteCell = () => getCells()[0];
+      const getSiteCell = () => datatableCells(spec)[0];
       const getSiteCellElement = () => getCellElements()[0];
       it("should display column", async () => {
         await setup({

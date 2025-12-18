@@ -1,33 +1,34 @@
+import { DecimalPipe, NgStyle } from "@angular/common";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
+import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
+import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { SiteSelectorComponent } from "@components/harvest/components/inputs/site-selector.component";
+import { UTCOffsetSelectorComponent } from "@components/harvest/components/inputs/utc-offset-selector.component";
 import { FolderRowComponent } from "@components/harvest/components/metadata-review/folder-row.component";
 import { WhitespaceComponent } from "@components/harvest/components/metadata-review/whitespace.component";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
+import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
 import { StatisticItemComponent } from "@components/harvest/components/shared/statistics/item.component";
-import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StatisticsComponent } from "@components/harvest/components/shared/statistics/statistics.component";
+import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { menuRoute } from "@interfaces/menusInterfaces";
 import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
+import { HarvestItem } from "@models/HarvestItem";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { NgbModal, NgbModalConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { createRoutingFactory, SpectatorRouting, SpyObject, } from "@ngneat/spectator";
-import { generateHarvest } from "@test/fakes/Harvest";
-import { generateProject, generateProjectMeta } from "@test/fakes/Project";
-import { StatisticGroupComponent } from "@components/harvest/components/shared/statistics/group.component";
-import { HarvestItem } from "@models/HarvestItem";
-import { UTCOffsetSelectorComponent } from "@components/harvest/components/inputs/utc-offset-selector.component";
-import { SiteSelectorComponent } from "@components/harvest/components/inputs/site-selector.component";
-import { menuRoute } from "@interfaces/menusInterfaces";
-import { generateMenuRoute } from "@test/fakes/MenuItem";
-import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
-import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
-import { generateHarvestItem } from "@test/fakes/HarvestItem";
-import { IconsModule } from "@shared/icons/icons.module";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { NgStyle, DecimalPipe } from "@angular/common";
 import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
+import { generateHarvest } from "@test/fakes/Harvest";
+import { generateHarvestItem } from "@test/fakes/HarvestItem";
+import { generateMenuRoute } from "@test/fakes/MenuItem";
+import { generateProject, generateProjectMeta } from "@test/fakes/Project";
 import { MockProvider } from "ng-mocks";
+import { of } from "rxjs";
 import { FileRowComponent } from "../../components/metadata-review/file-row.component";
 import { LoadMoreComponent } from "../../components/metadata-review/load-more.component";
 import { MetadataReviewComponent } from "./metadata-review.component";
@@ -80,6 +81,7 @@ describe("MetadataReviewComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
+    harvestService.updateMappings.and.returnValue(of(null));
 
     spyOnProperty(spec.component, "project", "get").and.callFake(() => defaultProject);
     spyOnProperty(spec.component, "harvest", "get").and.callFake(() => defaultHarvest);
@@ -226,6 +228,8 @@ describe("MetadataReviewComponent", () => {
       // through expect(mappings).toEqual(expectedMappings). Therefore, by converting the objects to strings,
       // we can compare these two objects values without the injector class, but still retain verbose failed exceptions & output
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+
+      return of(null);
     });
 
     // modifying the mappings for path "A/aa" will trigger the mocked method above to asset if the correct parameters are called
@@ -263,6 +267,8 @@ describe("MetadataReviewComponent", () => {
 
       expect(model).toEqual(spec.component.harvest);
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+
+      return of(null);
     });
 
     clickEditMappingButton(4);
@@ -346,6 +352,7 @@ describe("MetadataReviewComponent", () => {
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
       expect(model).toEqual(spec.component.harvest);
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+      return of(null);
     });
 
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(1);

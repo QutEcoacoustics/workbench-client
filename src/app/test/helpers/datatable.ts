@@ -1,3 +1,6 @@
+import { By } from "@angular/platform-browser";
+import { Spectator, SpectatorDirective } from "@ngneat/spectator";
+
 // these are all callbacks because sometimes the datatable content/column names
 // are dependent on the state of the tested component
 type SetupFunction = () => {
@@ -16,10 +19,6 @@ export function assertDatatable(setup: SetupFunction): void {
   function tableRows(rootElement: Element): Element[] {
     return Array.from(rootElement.querySelectorAll("datatable-row-wrapper"));
   }
-
-  // function rowCells(row: Element): Element[] {
-  //   return Array.from(row.querySelectorAll(".datatable-body-cell-label"));
-  // }
 
   it("should have the correct column headings", () => {
     const { columns, root } = setup();
@@ -58,4 +57,32 @@ export function assertDatatableRow(row: HTMLDivElement, expectedValues: string[]
 
     expect(realizedValue).toHaveExactTrimmedText(expectedValue);
   }
+}
+
+export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: number) {
+  const headerCells = spec.queryAll<HTMLElement>("datatable-header-cell");
+  const targetCell = headerCells[column];
+
+  const sortButton = targetCell.querySelector(".sort-btn");
+
+  spec.click(sortButton);
+}
+
+export async function selectDatatablePage(spec: SpectatorDirective<any>, page: number) {
+  const pagerComponent = spec.query("datatable-pager");
+
+  const expectedAriaLabel = `page ${page}`;
+  const pageListItem = pagerComponent.querySelector<HTMLElement>(
+    `[aria-label="${expectedAriaLabel}"]`
+  );
+
+  const pageButton = pageListItem.querySelector("[role='button']");
+
+  spec.click(pageButton);
+}
+
+export function datatableCells(spec: Spectator<any>): any[] {
+  return spec.debugElement
+    .queryAll(By.css("datatable-body-cell"))
+    .map((element) => element.componentInstance);
 }

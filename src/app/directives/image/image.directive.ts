@@ -79,8 +79,8 @@ export class AuthenticatedImageDirective implements OnChanges {
 
       // Prepend new urls (except default urls) to urls set, and sort by image size
       this.images = newImages.sort((a, b) => {
-        const aPixels = a.height ?? 0 * a.width ?? 0;
-        const bPixels = b.height ?? 0 * b.width ?? 0;
+        const aPixels = (a.height ?? 0) * (a.width ?? 0);
+        const bPixels = (b.height ?? 0) * (b.width ?? 0);
 
         if (aPixels === bPixels) {
           return 0;

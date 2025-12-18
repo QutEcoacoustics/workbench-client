@@ -1,4 +1,4 @@
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -17,7 +17,7 @@ import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Provenance } from "@models/Provenance";
 import { Tag } from "@models/Tag";
-import { NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalConfig, NgbNavConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
   createRoutingFactory,
   SpectatorRouting,
@@ -37,7 +37,7 @@ import { generateTag } from "@test/fakes/Tag";
 import { assertDatatable } from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
-import { getElementByTextContent } from "@test/helpers/html";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { Settings } from "luxon";
 import { of, Subject } from "rxjs";
@@ -53,6 +53,7 @@ describe("AnnotationsDetailsComponent", () => {
   let mockAudioEventImportService: SpyObject<AudioEventImportService>;
   let mockAudioEventFileService: SpyObject<AudioEventImportFileService>;
   let mockRecordingsService: SpyObject<AudioRecordingsService>;
+  let modalService: SpyObject<NgbModal>;
   let mockProvenanceService: SpyObject<ProvenanceService>;
 
   let mockAudioEventImport: AudioEventImport;
@@ -101,13 +102,15 @@ describe("AnnotationsDetailsComponent", () => {
 
   function deleteFirstFile() {
     const deleteButton = getElementByTextContent(spec, "Delete");
-    spec.click(deleteButton);
+    clickButton(spec, deleteButton);
+    tick();
 
     const confirmationButton = spec.query<HTMLButtonElement>(
       "baw-harvest-confirmation-modal #next-btn",
       { root: true },
     );
-    spec.click(confirmationButton);
+    clickButton(spec, confirmationButton);
+
     flush();
   }
 
@@ -134,6 +137,8 @@ describe("AnnotationsDetailsComponent", () => {
     ngbNavConfig = spec.inject(NgbNavConfig);
     ngbNavConfig.animation = false;
 
+    modalService = spec.inject(NgbModal);
+
     injector = spec.inject(ASSOCIATION_INJECTOR);
     mockAudioEventImport["injector"] = injector;
     mockProject["injector"] = injector;
@@ -147,13 +152,14 @@ describe("AnnotationsDetailsComponent", () => {
       10,
       () => new AudioEvent(generateAudioEvent(), injector),
     );
-    mockAudioEvents.forEach((event) =>
+    mockAudioEvents.forEach((event) => {
+      spyOnProperty(event, "audioRecording").and.returnValue(mockAudioRecording);
       event.addMetadata(
         modelData.model.generatePagingMetadata({
           items: mockAudioEvents.length,
         }),
-      ),
-    );
+      );
+    });
 
     mockProvenance = new Provenance(
       generateProvenance(),
@@ -190,14 +196,14 @@ describe("AnnotationsDetailsComponent", () => {
       of(mockAudioEventImport),
     );
 
-    const audioEventSubject = new Subject<AudioEventImport>();
-    const tagsSubject = new Subject<Tag[]>();
+    const audioEventSubject = new Subject<AudioEvent[]>();
+    const tagsSubject = new Subject<Tag>();
     const provenanceSubject = new Subject<Provenance>();
 
     const promise = Promise.all([
-      nStepObservable(audioEventSubject, () => mockAudioEvents as any),
-      nStepObservable(tagsSubject, () => mockTagModel as any),
-      nStepObservable(provenanceSubject, () => mockProvenance as any),
+      nStepObservable(audioEventSubject, () => mockAudioEvents),
+      nStepObservable(tagsSubject, () => mockTagModel),
+      nStepObservable(provenanceSubject, () => mockProvenance),
     ]);
 
     mockEventsService = spec.inject(ShallowAudioEventsService);
@@ -238,6 +244,10 @@ describe("AnnotationsDetailsComponent", () => {
     mockAudioEventImport = new AudioEventImport(generateAudioEventImport());
     mockProject = new Project(generateProject());
     await setup();
+  });
+
+  afterEach(() => {
+    modalService.dismissAll();
   });
 
   assertPageInfo<AudioEventImport>(

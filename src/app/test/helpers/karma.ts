@@ -3,5 +3,5 @@ export function testAsset(name: string): string {
 }
 
 export function nodeModule(path: string): string {
-  return `/base/node_modules/${path}`;
+  return `/node_modules/${path}`;
 }

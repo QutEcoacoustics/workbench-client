@@ -405,7 +405,7 @@ describe("PagedTableTemplate", () => {
     }
 
     it("should handle no sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, undefined, "testing");
+      createSortEvent({ testing: "name" }, undefined, "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
@@ -413,38 +413,38 @@ describe("PagedTableTemplate", () => {
     }));
 
     it("should handle asc sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      createSortEvent({ testing: "name" }, "asc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
 
     it("should handle desc sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "desc", "testing");
+      createSortEvent({ testing: "name" }, "desc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "desc" },
+        sorting: { orderBy: "name", direction: "desc" },
       });
     }));
 
     it("should handle single sortKey", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      createSortEvent({ testing: "name" }, "asc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
 
     it("should handle multiple sortKeys", fakeAsync(() => {
       createSortEvent(
-        { testing: "customKey", testing2: "extraCustomKey" },
+        { testing: "name", testing2: "extraCustomKey" },
         "asc",
         "testing"
       );
@@ -452,7 +452,7 @@ describe("PagedTableTemplate", () => {
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
   });

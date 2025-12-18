@@ -81,10 +81,14 @@ describe("AdminTagsComponent", () => {
       const mockTag = new Tag(generateTag());
       tagsApiSpy.destroy.and.returnValue(of(null));
 
-      // since there is a confirmation modal before the api call, we need to open & confirm the modal before asserting api call parameters
-      spyOn(modalService, "open").and.returnValue({
-        result: new Promise((resolve) => resolve(true)),
-      });
+      // since there is a confirmation modal before the api call, we need to
+      // open & confirm the modal before asserting api call parameters.
+      spyOn(modalService, "open").and.returnValue(
+        jasmine.createSpyObj("NgbModalRef", ["close", "dismiss", "result"], {
+          result: Promise.resolve(true),
+        }),
+      );
+
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 
       tick();

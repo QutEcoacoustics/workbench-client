@@ -4,15 +4,12 @@
 import "zone.js/testing";
 
 import { getTestBed } from "@angular/core/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
 import { signalMatchers } from "@test/matchers/signals";
 import { mockGoogleNamespace } from "@test/helpers/googleMaps";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { environment } from "./environments/environment";
 import { applyMonkeyPatches } from "./patches/patches";
 
@@ -46,6 +43,6 @@ beforeEach(function () {
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
+  BrowserTestingModule,
+  platformBrowserTesting(),
 );
