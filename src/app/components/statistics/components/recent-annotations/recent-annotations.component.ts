@@ -147,7 +147,7 @@ export class RecentAnnotationsComponent {
   public readonly annotations = input.required<AudioEvent[] | undefined>();
 
   protected readonly columnMode = ColumnMode;
-  protected readonly columns: TableColumn[] =[
+  protected readonly columns: TableColumn[] = [
     { name: "Site" },
     { name: "User" },
     { name: "Tags" },
@@ -162,6 +162,6 @@ export class RecentAnnotationsComponent {
       tags: recording,
       updated: recording.updatedAt,
       model: recording,
-    }))
+    }));
   });
 }
