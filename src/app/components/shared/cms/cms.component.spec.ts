@@ -1,4 +1,3 @@
-import { SafeHtml } from "@angular/platform-browser";
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
@@ -28,7 +27,7 @@ describe("CmsComponent", () => {
     error?: BawApiError,
     expectation: (page: string) => void = () => {}
   ) {
-    const subject = new Subject<SafeHtml>();
+    const subject = new Subject<string>();
     cmsService.get.andCallFake((page: string) => {
       expectation(page);
       return subject;

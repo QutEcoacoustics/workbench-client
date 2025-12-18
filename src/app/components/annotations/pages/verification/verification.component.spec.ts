@@ -16,8 +16,10 @@ import {
   DecisionComponent,
   TagPromptComponent,
   VerificationGridTileComponent,
-} from "@ecoacoustics/web-components/@types";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+} from "@ecoacoustics/web-components";
+import {
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -876,7 +878,8 @@ describe("VerificationComponent", () => {
 
             if (expectedApiCall) {
               expect(correctionApi[method]).toHaveBeenCalledOnceWith(
-                ...expectedApiCall.args,
+                expectedApiCall.args[0],
+                expectedApiCall.args[1],
               );
             } else {
               expect(correctionApi[method]).not.toHaveBeenCalled();

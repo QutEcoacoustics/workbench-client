@@ -1,12 +1,16 @@
-import { Component, inject, Input, OnChanges } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { AudioEvent } from "@models/AudioEvent";
-import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
-import { LoadingComponent } from "@shared/loading/loading.component";
 import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { AudioEvent } from "@models/AudioEvent";
 import { TimeSinceComponent } from "@shared/datetime-formats/time-since/time-since.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import {
+  ColumnMode,
+  NgxDatatableModule,
+  TableColumn,
+} from "@swimlane/ngx-datatable";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 
 @Component({
@@ -19,7 +23,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       [externalPaging]="false"
       [externalSorting]="false"
       [footerHeight]="0"
-      [rows]="rows"
+      [rows]="rows()"
       [columns]="columns"
     >
       <!-- Site name (logged in only) -->
@@ -33,7 +37,8 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
           <ng-template let-value="value" ngx-datatable-cell-template>
             @if (
               (value.audioRecording | isUnresolved) ||
-              (value.audioRecording?.site | isUnresolved)) {
+              (value.audioRecording?.site | isUnresolved)
+            ) {
               <baw-loading size="sm"></baw-loading>
             } @else {
               <span>
@@ -125,7 +130,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-  `,
+ `,
   imports: [
     NgxDatatableModule,
     DatatableDefaultsDirective,
@@ -136,32 +141,27 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
     IsUnresolvedPipe,
   ],
 })
-export class RecentAnnotationsComponent implements OnChanges {
-  public readonly session = inject(BawSessionService);
+export class RecentAnnotationsComponent {
+  protected readonly session = inject(BawSessionService);
 
-  @Input() public annotations!: AudioEvent[] | undefined;
+  public readonly annotations = input.required<AudioEvent[] | undefined>();
 
-  public columnMode = ColumnMode;
-  public columns: TableColumn[];
-  public rows = [];
+  protected readonly columnMode = ColumnMode;
+  protected readonly columns: TableColumn[] = [
+    { name: "Site" },
+    { name: "User" },
+    { name: "Tags" },
+    { name: "Updated" },
+    { name: "Model" },
+  ];
 
-  public ngOnChanges(): void {
-    if (!this.columns) {
-      this.columns = [
-        { name: "Site" },
-        { name: "User" },
-        { name: "Tags" },
-        { name: "Updated" },
-        { name: "Model" },
-      ];
-    }
-
-    this.rows = (this.annotations ?? []).map((recording) => ({
+  protected readonly rows = computed(() => {
+    return (this.annotations() ?? []).map((recording) => ({
       site: recording,
       user: recording,
       tags: recording,
       updated: recording.updatedAt,
       model: recording,
     }));
-  }
+  });
 }

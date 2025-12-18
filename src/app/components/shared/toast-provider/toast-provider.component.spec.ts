@@ -8,6 +8,8 @@ import {
   ToastService,
   ToastVariant,
 } from "@services/toasts/toasts.service";
+import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { modelData } from "@test/helpers/faker";
 import { fakeAsync, tick } from "@angular/core/testing";
@@ -64,15 +66,9 @@ describe("ToastProviderComponent", () => {
     );
     spec.detectChanges();
 
-    const targetToast = toasts()[0];
-    expect(targetToast).toHaveAttribute(
-      "ng-reflect-autohide",
-      testedOptions.autoHide.toString()
-    );
-    expect(targetToast).toHaveAttribute(
-      "ng-reflect-delay",
-      testedOptions.delay.toString()
-    );
+    const targetToast = spec.query(NgbToast);
+    expect(targetToast.autohide).toEqual(testedOptions.autoHide);
+    expect(targetToast.delay).toEqual(testedOptions.delay);
   });
 
   it("should use the correct default values if no options are provided", () => {
@@ -84,15 +80,9 @@ describe("ToastProviderComponent", () => {
     toastServiceSpy.show(modelData.lorem.sentence());
     spec.detectChanges();
 
-    const targetToast = toasts()[0];
-    expect(targetToast).toHaveAttribute(
-      "ng-reflect-autohide",
-      expectedDefaultOptions.autoHide.toString()
-    );
-    expect(targetToast).toHaveAttribute(
-      "ng-reflect-delay",
-      expectedDefaultOptions.delay.toString()
-    );
+    const targetToast = spec.query(NgbToast);
+    expect(targetToast.autohide).toEqual(expectedDefaultOptions.autoHide);
+    expect(targetToast.delay).toEqual(expectedDefaultOptions.delay);
   });
 
   it("should remove a toast correctly after the auto hide triggers", fakeAsync(() => {
@@ -152,18 +142,20 @@ describe("ToastProviderComponent", () => {
   it("should stack multiple toasts with fixed template and text content correctly", () => {});
 
   describe("toast variants", () => {
-    const testCases: ToastVariantTest[] = [
+    const testCases = [
       { method: "success", expectedVariant: "success", expectedIcon: ["fas", "check"] },
       { method: "warning", expectedVariant: "warning", expectedIcon: ["fas", "exclamation-triangle"] },
       { method: "error", expectedVariant: "danger", expectedIcon: ["fas", "hand"] },
       { method: "info", expectedVariant: "info", expectedIcon: ["fas", "info-circle"] },
       { method: "show", expectedVariant: "default", expectedIcon: null },
-    ];
+    ] as const satisfies ToastVariantTest[];
 
     for (const test of testCases) {
       it(`should have the correct theming for a '${test.expectedVariant}' toast variant`, () => {
-        toastServiceSpy[test.method]();
-         spec.detectChanges();
+        const testMessage = modelData.lorem.sentence();
+
+        toastServiceSpy[test.method](testMessage);
+        spec.detectChanges();
 
         const targetToast = toasts()[0];
         expect(targetToast).toHaveClass(`bg-${test.expectedVariant}`);
@@ -171,17 +163,17 @@ describe("ToastProviderComponent", () => {
       });
 
       it(`should have the correct icon for a '${test.expectedVariant}' toast variant`, () => {
-        toastServiceSpy[test.method]();
+        const testMessage = modelData.lorem.sentence();
+
+        toastServiceSpy[test.method](testMessage);
         spec.detectChanges();
 
-        const targetToast = toasts()[0];
-        const toastIcon = targetToast.querySelector("fa-icon");
+        const toastIcon = spec.query(FaIconComponent);
 
-        const iconAttributeName = "ng-reflect-icon";
         if (test.expectedIcon === null) {
-          expect(toastIcon).not.toHaveAttribute(iconAttributeName,);
+          expect(toastIcon).toBeNull();
         } else {
-          expect(toastIcon).toHaveAttribute(iconAttributeName, test.expectedIcon.toString());
+          expect(toastIcon.icon()).toEqual(test.expectedIcon);
         }
       });
     }

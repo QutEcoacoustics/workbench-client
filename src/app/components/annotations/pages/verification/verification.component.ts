@@ -33,18 +33,20 @@ import {
 import { verificationParametersResolvers } from "@components/annotations/components/verification-form/verification-parameters.resolver";
 import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
 import {
+  DecisionMadeEvent,
   TagPromptComponent,
   TypeaheadCallback,
-  WhenPredicate,
-} from "@ecoacoustics/web-components/@types";
-import {
-  DecisionMadeEvent,
   VerificationGridComponent,
-} from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
-import { DecisionOptions } from "@ecoacoustics/web-components/@types/models/decisions/decision";
-import { SubjectWrapper } from "@ecoacoustics/web-components/@types/models/subject";
-import { PageFetcherContext } from "@ecoacoustics/web-components/@types/services/gridPageFetcher/gridPageFetcher";
-import { decisionNotRequired } from "@ecoacoustics/web-components/dist/models/decisions/decisionNotRequired";
+  WhenPredicate,
+} from "@ecoacoustics/web-components";
+import {
+  DecisionOptions,
+} from "@ecoacoustics/web-components/models/decisions/decision";
+import { decisionNotRequired } from "@ecoacoustics/web-components/models/decisions/decisionNotRequired";
+import { SubjectWrapper } from "@ecoacoustics/web-components/models/subject";
+import {
+  PageFetcherContext,
+} from "@ecoacoustics/web-components/services/gridPageFetcher/gridPageFetcher";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WithNavigationConfirmation } from "@guards/confirmation/confirmation.guard";
 import { filterAnd } from "@helpers/filters/filters";

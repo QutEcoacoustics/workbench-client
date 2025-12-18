@@ -1,19 +1,19 @@
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { SpectrogramComponent } from "@ecoacoustics/web-components/components/spectrogram/spectrogram";
+import { AudioRecording } from "@models/AudioRecording";
+import { Annotation } from "@models/data/Annotation";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import {
   createComponentFactory,
   Spectator,
   SpyObject,
 } from "@ngneat/spectator";
-import { getElementByTextContent } from "@test/helpers/html";
-import { SpectrogramComponent } from "@ecoacoustics/web-components/@types/components/spectrogram/spectrogram";
-import { Annotation } from "@models/data/Annotation";
-import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { AnnotationService } from "@services/models/annotations/annotation.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { detectChanges } from "@test/helpers/changes";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AnnotationService } from "@services/models/annotations/annotation.service";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateAnnotation } from "@test/fakes/data/Annotation";
+import { detectChanges } from "@test/helpers/changes";
+import { getElementByTextContent } from "@test/helpers/html";
 import { exampleBase64 } from "src/test-assets/example-0.5s.base64";
 import { GridTileContentComponent } from "./grid-tile-content.component";
 

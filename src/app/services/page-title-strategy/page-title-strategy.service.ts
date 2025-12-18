@@ -6,7 +6,7 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { MenuRoute, TitleOptionsHash } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class PageTitleStrategy extends TitleStrategy {
   public constructor(private title: Title, private config: ConfigService) {
     super();
