@@ -25,7 +25,7 @@ import { NgClass } from "@angular/common";
         <button
           id="next-btn"
           class="btn float-end"
-          [ngClass]="this.isDanger === 'true' ? 'btn-danger text-white' : 'btn-primary'"
+          [ngClass]="this.isDanger ? 'btn-danger text-white' : 'btn-primary'"
           (click)="continue()"
         >
           {{ nextLabel }}
@@ -38,7 +38,7 @@ import { NgClass } from "@angular/common";
 export class ConfirmationComponent {
   @Input() public nextLabel: string;
   @Input() public cancelLabel = "Cancel";
-  @Input() public isDanger;
+  @Input() public isDanger: boolean;
   @Input() public modal: NgbActiveModal;
 
   public close(): void {

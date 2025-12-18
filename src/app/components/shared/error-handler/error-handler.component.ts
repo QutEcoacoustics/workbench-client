@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, inject } from "@angular/core";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
@@ -34,6 +34,8 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
   imports: [StrongRouteDirective],
 })
 export class ErrorHandlerComponent implements OnInit {
+  private readonly isSsr = inject(IS_SERVER_PLATFORM);
+
   @Input() public error: ApiErrorDetails | BawApiError;
   public reportProblem = reportProblemMenuItem.route;
   public hideErrorDetails: boolean;
@@ -44,8 +46,6 @@ export class ErrorHandlerComponent implements OnInit {
     [REQUEST_TIMEOUT]: "Request Timed Out",
     [CLIENT_TIMEOUT]: "Connection Failure",
   } as const;
-
-  public constructor(@Inject(IS_SERVER_PLATFORM) private isSsr: boolean) {}
 
   public ngOnInit(): void {
     if (!this.error) {

@@ -1,4 +1,4 @@
-import { Directive, ViewContainerRef } from "@angular/core";
+import { Directive, ViewContainerRef, inject } from "@angular/core";
 
 /**
  * Widget Directive for menu layouts.
@@ -6,5 +6,5 @@ import { Directive, ViewContainerRef } from "@angular/core";
  */
 @Directive({ selector: "[bawMenuWidget]" })
 export class WidgetDirective {
-  public constructor(public viewContainerRef: ViewContainerRef) {}
+  public readonly viewContainerRef = inject(ViewContainerRef);
 }

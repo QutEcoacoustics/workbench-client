@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   emptyParam,
   filterParam,
@@ -27,7 +27,7 @@ const shallowEndpoint = stringTemplate`/harvests/${harvestId}/items/${harvestIte
 export class HarvestItemsService
   implements ReadonlyApi<HarvestItem, [IdOr<Project>, IdOr<Harvest>]>
 {
-  public constructor(private api: BawApiService<HarvestItem>) {}
+  private readonly api = inject<BawApiService<HarvestItem>>(BawApiService);
 
   public list(
     project: IdOr<Project>,
@@ -84,7 +84,7 @@ export class HarvestItemsService
 export class ShallowHarvestItemsService
   implements ReadonlyApi<HarvestItem, [IdOr<Harvest>]>
 {
-  public constructor(private api: BawApiService<HarvestItem>) {}
+  private readonly api = inject<BawApiService<HarvestItem>>(BawApiService);
 
   public list(harvest: IdOr<Harvest>): Observable<HarvestItem[]> {
     return this.api.list(

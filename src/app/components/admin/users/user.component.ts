@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import {
   adminCategory,
@@ -42,7 +42,9 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
   public sortKeys = { user: "userName", lastLogin: "lastSeenAt" };
   public editPath = theirEditMenuItem.route;
 
-  public constructor(api: AccountsService) {
+  public constructor() {
+    const api = inject(AccountsService);
+
     super(api, (accounts) =>
       accounts.map((account) => ({
         account,

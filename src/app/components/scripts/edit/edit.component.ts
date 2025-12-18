@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   scriptResolvers,
@@ -38,17 +38,25 @@ const scriptKey = "script";
   imports: [FormComponent],
 })
 class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
-  public constructor(
-    private api: ScriptsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  private readonly api = inject(ScriptsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[scriptKey] as Script,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public fields = schema.fields;

@@ -1,11 +1,12 @@
 import { Injector, Provider } from "@angular/core";
+import { withBrand } from "@helpers/advancedTypes";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { BAW_SERVICE_OPTIONS } from "../baw-api/api-common";
 import { BawApiService, BawServiceOptions } from "../baw-api/baw-api.service";
 import {
+  serviceResolvers,
   services,
   serviceTokens,
-  serviceResolvers,
 } from "../baw-api/ServiceProviders";
 import { ASSOCIATION_INJECTOR } from "./association-injector.tokens";
 
@@ -39,9 +40,5 @@ function associationInjectorFactory(
     ],
   });
 
-  // cast associationInjector so that we return the correct branded type
-  // warning: using "as" here disables type-checking for this line. Make sure
-  // that you have correctly type-checked the association injector before this
-  // type cast
-  return associationInjector as AssociationInjector;
+  return withBrand<AssociationInjector>(associationInjector);
 }

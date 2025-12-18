@@ -1,5 +1,5 @@
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { AudioEvent } from "@models/AudioEvent";
 import { Tagging } from "@models/Tagging";
 import { Observable } from "rxjs";
@@ -26,7 +26,7 @@ const endpoint = stringTemplate`/audio_recordings/${audioRecordingId}/audio_even
 export class TaggingsService
   implements StandardApi<Tagging, [IdOr<AudioRecording>, IdOr<AudioEvent>]>
 {
-  public constructor(private api: BawApiService<Tagging>) {}
+  private readonly api = inject<BawApiService<Tagging>>(BawApiService);
 
   public list(
     audioRecording: IdOr<AudioRecording>,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -36,12 +36,9 @@ export class WebsiteStatusIndicatorComponent
   extends withUnsubscribe()
   implements OnInit
 {
-  public constructor(
-    protected config: ConfigService,
-    protected api: WebsiteStatusService
-  ) {
-    super();
-  }
+  protected readonly config = inject(ConfigService);
+  protected readonly api = inject(WebsiteStatusService);
+
 
   public ngOnInit(): void {
     this.api.status$.pipe(takeUntil(this.unsubscribe)).subscribe((model) => {

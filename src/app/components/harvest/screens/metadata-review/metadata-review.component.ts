@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
@@ -60,6 +60,12 @@ export class MetadataReviewComponent
   extends withUnsubscribe()
   implements OnInit, UnsavedInputCheckingComponent
 {
+  private readonly modals = inject(NgbModal);
+  private readonly stages = inject(HarvestStagesService);
+  private readonly config = inject(ConfigService);
+  private readonly notification = inject(ToastService);
+  private readonly harvestApi = inject(ShallowHarvestsService);
+
   /** Changes to harvest have not yet been saved to the server */
   public hasUnsavedChanges: boolean;
   public newSiteMenuItem = newSiteMenuItem;
@@ -72,16 +78,6 @@ export class MetadataReviewComponent
   private userInputBuffer$ = new Subject<
     MetaReviewFolder | MetaReviewLoadMore
   >();
-
-  public constructor(
-    public modals: NgbModal,
-    private stages: HarvestStagesService,
-    private config: ConfigService,
-    private notification: ToastService,
-    private harvestApi: ShallowHarvestsService
-  ) {
-    super();
-  }
 
   public get project(): Project {
     return this.stages.project;

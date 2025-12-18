@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, inject } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -81,6 +81,9 @@ export class MenuLinkComponent
   extends withUnsubscribe()
   implements OnInit, OnChanges
 {
+  private readonly apiRoot = inject(API_ROOT);
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+
   @Input() public link: MenuRoute | MenuLink;
   @Input() public tooltip: string;
 
@@ -94,13 +97,6 @@ export class MenuLinkComponent
     paths: "exact",
     fragment: "ignored",
   };
-
-  public constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    public sharedRoute: SharedActivatedRouteService
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     /*

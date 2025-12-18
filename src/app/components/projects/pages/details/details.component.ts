@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -158,6 +158,11 @@ const projectKey = "project";
 class ProjectDetailsComponent
   extends PaginationTemplate<Site | Region>
   implements OnInit {
+  private readonly projectsApi = inject(ProjectsService);
+  private readonly regionsApi = inject(RegionsService);
+  private readonly sitesApi = inject(SitesService);
+  private readonly notifications = inject(ToastService);
+
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
   public defaultDescription = "<i>No description found</i>";
@@ -171,12 +176,7 @@ class ProjectDetailsComponent
    */
   private apiReturnCount = 0;
 
-  public constructor(
-    private projectsApi: ProjectsService,
-    private regionsApi: RegionsService,
-    private sitesApi: SitesService,
-    public notifications: ToastService,
-  ) {
+  public constructor() {
     super(
       undefined,
       "name",

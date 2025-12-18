@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ResolvedModel } from "@baw-api/resolver-common";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -8,10 +8,10 @@ import {
   SpectatorRouting,
   SpectatorRoutingOverrides,
 } from "@ngneat/spectator";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { FormComponent } from "@shared/form/form.component";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.config";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
@@ -37,11 +37,11 @@ class MockModel extends AbstractModel {
   imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
-  public constructor(
-    protected notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, formProps);
   }
 

@@ -1,7 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { homeMenuItem } from "@components/home/home.menus";
 import { ConfigService } from "@services/config/config.service";
-import { MenuService } from "@services/menu/menu.service";
 import { StrongRouteActiveDirective } from "@directives/strongRoute/strong-route-active.directive";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MenuToggleComponent } from "../menu-toggle/menu-toggle.component";
@@ -57,7 +56,7 @@ import { WebsiteStatusIndicatorComponent } from "../website-status-indicator/web
     imports: [MenuToggleComponent, StrongRouteActiveDirective, StrongRouteDirective, PrimaryMenuComponent, WebsiteStatusIndicatorComponent]
 })
 export class HeaderComponent {
-  public homeMenuItem = homeMenuItem;
+  protected readonly config = inject(ConfigService);
 
-  public constructor(public menu: MenuService, public config: ConfigService) {}
+  public readonly homeMenuItem = homeMenuItem;
 }

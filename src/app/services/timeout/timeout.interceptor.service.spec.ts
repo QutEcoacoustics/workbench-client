@@ -1,5 +1,5 @@
 import { HttpClient, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import {
   createHttpFactory,
@@ -14,9 +14,9 @@ import {
   TIMEOUT_OPTIONS,
 } from "./timeout.interceptor.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 class MockService {
-  public constructor(private httpClient: HttpClient) {}
+  private readonly httpClient = inject(HttpClient);
 
   public get(): Observable<any> {
     return this.httpClient.get("/api/v1/getResources");

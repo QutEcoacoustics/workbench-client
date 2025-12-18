@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { NgForm, FormsModule } from "@angular/forms";
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
+import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -14,6 +14,8 @@ import {
   audioRecordingsCategory,
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { filterModel } from "@helpers/filters/filters";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -25,12 +27,11 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbDate } from "@ng-bootstrap/ng-bootstrap";
+import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
+import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { List } from "immutable";
 import { BehaviorSubject, takeUntil } from "rxjs";
 import { loginMenuItem } from "src/app/components/security/security.menus";
-import { DateTimeFilterComponent } from "@shared/date-time-filter/date-time-filter.component";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
 import { DownloadTableComponent } from "../../components/download-table/download-table.component";
 import { SitesWithoutTimezonesComponent } from "../../components/sites-without-timezones/sites-without-timezones.component";
 
@@ -51,6 +52,10 @@ const siteKey = "site";
   ],
 })
 class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
+  protected readonly session = inject(BawSessionService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly recordingsApi = inject(AudioRecordingsService);
+
   @ViewChild(NgForm) public form: NgForm;
 
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
@@ -66,16 +71,19 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
     todBoundaryError?: boolean;
   } = {};
 
-  public constructor(
-    public session: BawSessionService,
-    private route: ActivatedRoute,
-    private recordingsApi: AudioRecordingsService
-  ) {
-    super();
-  }
-
   public ngOnInit(): void {
     this.models = retrieveResolvers(this.route.snapshot.data);
+
+    const initialFilters: Filters<AudioRecording> = {};
+    if (this.site) {
+      initialFilters.filter = filterModel<Site, AudioRecording>("sites", this.site, initialFilters.filter);
+    } else if (this.region) {
+      initialFilters.filter = filterModel<Region, AudioRecording>("regions", this.region, initialFilters.filter);
+    } else if (this.project) {
+      initialFilters.filter = filterModel<Project, AudioRecording>("projects", this.project, initialFilters.filter);
+    }
+
+    this.filters$.next(initialFilters);
 
     this.filters$
       .pipe(takeUntil(this.unsubscribe))

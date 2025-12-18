@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   getRoute,
@@ -56,12 +51,12 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
   imports: [StrongRouteActiveDirective, StrongRouteDirective, NgTemplateOutlet],
 })
 export class HeaderItemComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+
   @Input() public link: NavigableMenuItem | HeaderItem;
 
   public hasStrongRoute: boolean;
   public label: string;
-
-  public constructor(private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.label = camelCase(this.link.label);

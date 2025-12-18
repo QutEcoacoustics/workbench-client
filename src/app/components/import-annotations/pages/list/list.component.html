@@ -27,7 +27,7 @@
       Created By
     </ng-template>
     <ng-template let-value="value" ngx-datatable-cell-template>
-      <baw-user-link [user]="value.creator"></baw-user-link>
+      <baw-user-link [user]="value.creator" />
     </ng-template>
   </ngx-datatable-column>
 
@@ -42,6 +42,16 @@
         [bawUrl]="value.createViewUrl(this.project.id)"
       >
         View
+      </a>
+
+      <a
+        name="verify-button"
+        class="btn btn-sm btn-outline-primary ms-1"
+        [strongRoute]="verificationRoute.project"
+        [routeParams]="{ projectId: project.id }"
+        [queryParams]="{ imports: verifyQsp(value) }"
+      >
+        Verify
       </a>
 
       <a

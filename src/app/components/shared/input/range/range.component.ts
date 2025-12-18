@@ -13,8 +13,8 @@ import { toNumber } from "@helpers/typing/toNumber";
   selector: "baw-range",
   templateUrl: "./range.component.html",
   styleUrl: "./range.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RangeComponent implements ControlValueAccessor, OnInit {
   public readonly label = input("");

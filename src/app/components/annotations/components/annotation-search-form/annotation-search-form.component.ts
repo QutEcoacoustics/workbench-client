@@ -9,45 +9,50 @@ import {
   signal,
   viewChild,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { AudioEventImportService } from "@baw-api/audio-event-import/audio-event-import.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { InnerFilter } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { ShallowRegionsService } from "@baw-api/region/regions.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { Writeable } from "@helpers/advancedTypes";
+import { filterModel } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { AudioRecording } from "@models/AudioRecording";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { Site } from "@models/Site";
-import {
-  NgbDate,
-  NgbCollapse,
-  NgbHighlight,
-  NgbTooltip,
-} from "@ng-bootstrap/ng-bootstrap";
-import {
-  DateTimeFilterModel,
-  DateTimeFilterComponent,
-} from "@shared/date-time-filter/date-time-filter.component";
 import {
   createIdSearchCallback,
   createSearchCallback,
 } from "@helpers/typeahead/typeaheadCallbacks";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { DateTime } from "luxon";
-import { FormsModule } from "@angular/forms";
-import { filterModel } from "@helpers/filters/filters";
-import { InnerFilter } from "@baw-api/baw-api.service";
-import { Writeable } from "@helpers/advancedTypes";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { toNumber } from "@helpers/typing/toNumber";
-import { BawSessionService } from "@baw-api/baw-session.service";
+import { AbstractModel } from "@models/AbstractModel";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { AudioRecording } from "@models/AudioRecording";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { Tag } from "@models/Tag";
+import {
+  NgbCollapse,
+  NgbDate,
+  NgbHighlight,
+  NgbTooltip,
+} from "@ng-bootstrap/ng-bootstrap";
+import {
+  DateTimeFilterComponent,
+  DateTimeFilterModel,
+} from "@shared/date-time-filter/date-time-filter.component";
+import { ZonedDateTimeComponent } from "@shared/datetime-formats/datetime/zoned-datetime/zoned-datetime.component";
 import {
   ISelectableItem,
   SelectableItemsComponent,
 } from "@shared/items/selectable-items/selectable-items.component";
-import { Tag } from "@models/Tag";
-import { AbstractModel } from "@models/AbstractModel";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { DateTime } from "luxon";
 import { VerificationStatusKey } from "../verification-form/verificationParameters";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
@@ -70,9 +75,12 @@ enum ScoreRangeBounds {
     NgbHighlight,
     NgbTooltip,
     FormsModule,
+    ZonedDateTimeComponent,
   ],
 })
 export class AnnotationSearchFormComponent implements OnInit {
+  protected readonly eventImportApi = inject(AudioEventImportService);
+  protected readonly eventImportFileApi = inject(ShallowAudioEventImportFileService);
   protected readonly recordingsApi = inject(AudioRecordingsService);
   protected readonly projectsApi = inject(ProjectsService);
   protected readonly regionsApi = inject(ShallowRegionsService);
@@ -80,33 +88,29 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected readonly tagsApi = inject(TagsService);
   private readonly session = inject(BawSessionService);
 
-  public constructor() {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.session.authTrigger.subscribe(() => {
-      this.verifiedStatusOptions.update((current) => {
-        current[0].disabled = !this.session.isLoggedIn;
-        return current;
-      });
-    });
-  }
-
   public readonly searchParameters =
     model.required<AnnotationSearchParameters>();
   public readonly searchParametersChange = output<AnnotationSearchParameters>();
 
   public readonly showVerificationOptions = input<boolean>(true);
 
-  private recordingsTypeahead = viewChild<
+  private readonly recordingsTypeahead = viewChild<
     TypeaheadInputComponent<AudioRecording>
   >("recordingsTypeahead");
+  private readonly eventImportTypeahead = viewChild<
+    TypeaheadInputComponent<AudioEventImport>
+  >("eventImportsTypeahead");
+  private readonly eventImportFilesTypeahead = viewChild<
+    TypeaheadInputComponent<AudioEventImportFile>
+  >("eventImportFilesTypeahead");
 
   protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
   protected readonly hideAdvancedFilters = signal(true);
   protected readonly createSearchCallback = createSearchCallback;
   protected readonly createIdSearchCallback = createIdSearchCallback;
 
-  protected scoreRangeBounds = ScoreRangeBounds;
-  protected verifiedStatusOptions = signal<
+  protected readonly scoreRangeBounds = ScoreRangeBounds;
+  protected readonly verifiedStatusOptions = signal<
     ISelectableItem<VerificationStatusKey>[]
   >([
     // I disabled prettier for this line because prettier wants to reformat the
@@ -119,28 +123,46 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "are verified or unverified", value: "any" },
   ]);
 
-  protected project = computed(() => this.searchParameters().routeProjectModel);
-  protected region = computed(() => this.searchParameters().routeRegionModel);
-  protected site = computed(() => this.searchParameters().routeSiteModel);
+  protected readonly project = computed(() => this.searchParameters().routeProjectModel);
+  protected readonly region = computed(() => this.searchParameters().routeRegionModel);
+  protected readonly site = computed(() => this.searchParameters().routeSiteModel);
+
+  public constructor() {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.session.authTrigger.subscribe(() => {
+      this.verifiedStatusOptions.update((current) => {
+        current[0].disabled = !this.session.isLoggedIn;
+        return current;
+      });
+    });
+  }
 
   protected get defaultVerificationStatus(): VerificationStatusKey {
     return this.session.isLoggedIn ? "unverified-for-me" : "unverified";
   }
 
   public ngOnInit(): void {
-    // if there are advanced filters when we initially load the page, we should
+    // If there are advanced filters when we initially load the page, we should
     // automatically open the advanced filters accordion so that the user can
-    // see that advanced filters are applied
+    // see that advanced filters are applied.
     const advancedFilterKeys: (keyof AnnotationSearchParameters)[] = [
       "audioRecordings",
+      "imports",
     ];
 
     for (const key of advancedFilterKeys) {
       const value = this.searchParameters()[key];
 
-      if (Array.isArray(value) && value.length > 0) {
-        this.hideAdvancedFilters.set(false);
-        break;
+      if (value instanceof Map) {
+        if (value.size > 0) {
+          this.hideAdvancedFilters.set(false);
+          break;
+        }
+      } else if (Array.isArray(value)) {
+        if (value.length > 0) {
+          this.hideAdvancedFilters.set(false);
+          break;
+        }
       } else if (isInstantiated(value)) {
         this.hideAdvancedFilters.set(false);
         break;
@@ -208,24 +230,15 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     if (this.hideAdvancedFilters()) {
       this.searchParameters.update((current) => {
-        current.audioRecordings = null;
+        // By deleting all event imports, we will also delete any files
+        // associated with any imports.
+        current.eventImports = [];
+        current.audioRecordings = [];
         return current;
       });
-    } else {
-      const recordingIds = this.recordingsTypeahead().value().map(
-        (recordingModel: AudioRecording) => recordingModel.id,
-      );
 
-      if (recordingIds.length > 0) {
-        this.searchParameters.update((current) => {
-          current.audioRecordings = recordingIds;
-          return current;
-        });
-      }
-      // Do not set taskTag here, it will be set by the typeahead input
+      this.emitUpdate();
     }
-
-    this.emitUpdate();
   }
 
   protected updateSubModel<T extends AbstractModel>(
@@ -238,6 +251,11 @@ export class AnnotationSearchFormComponent implements OnInit {
       return current;
     });
 
+    this.emitUpdate();
+  }
+
+  protected updateEventImportFiles(subModels: AudioEventImportFile[]): void {
+    this.searchParameters().updateEventImportFiles(subModels);
     this.emitUpdate();
   }
 

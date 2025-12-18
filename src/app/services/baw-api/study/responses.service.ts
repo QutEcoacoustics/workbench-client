@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Response } from "@models/Response";
 import { Study } from "@models/Study";
@@ -23,7 +23,7 @@ const endpointShallow = stringTemplate`/responses/${responseId}${option}`;
 
 @Injectable()
 export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
-  public constructor(private api: BawApiService<Response>) {}
+  private readonly api = inject<BawApiService<Response>>(BawApiService);
 
   public list(study: IdOr<Study>): Observable<Response[]> {
     return this.api.list(Response, endpoint(study, emptyParam, emptyParam));
@@ -67,7 +67,7 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
 
 @Injectable()
 export class ShallowResponsesService implements StandardApi<Response> {
-  public constructor(private api: BawApiService<Response>) {}
+  private readonly api = inject<BawApiService<Response>>(BawApiService);
 
   public list(): Observable<Response[]> {
     return this.api.list(Response, endpointShallow(emptyParam, emptyParam));

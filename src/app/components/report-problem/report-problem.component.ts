@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportProblemService } from "@baw-api/report/report-problem.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
@@ -37,22 +37,30 @@ class ReportProblemComponent
   extends FormTemplate<ReportProblem>
   implements OnInit
 {
+  private readonly api = inject(ReportProblemService);
+  private readonly config = inject(ConfigService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
   public sourceRepoLink: string;
 
-  public constructor(
-    private api: ReportProblemService,
-    private config: ConfigService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: () =>
         "Thank you, your report was successfully submitted." +
         "If you entered an email address, we will let you know if the problems you describe are resolved.",
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit() {

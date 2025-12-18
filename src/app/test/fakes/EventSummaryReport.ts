@@ -1,4 +1,4 @@
-import { EventGroup } from "@models/AudioEventProvenance/EventGroup";
+import { EventGroup } from "@models/Provenance/EventGroup";
 import { IEventSummaryReport } from "@models/EventSummaryReport";
 import { modelData } from "@test/helpers/faker";
 
@@ -50,7 +50,8 @@ export function generateEventSummaryReport(
         Object({
           date: modelData.date.soon(),
           tagId: modelData.datatype.number(),
-          ratio: modelData.percentage()
+          ratio: modelData.percentage(),
+          count: modelData.percentage()
         })
       ),
       coverageData: {

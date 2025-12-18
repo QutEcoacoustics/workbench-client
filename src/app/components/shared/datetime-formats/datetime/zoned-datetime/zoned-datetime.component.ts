@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-import { FixedOffsetZone, IANAZone, Zone } from "luxon";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { TimezoneInformation } from "@interfaces/apiInterfaces";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { FixedOffsetZone, IANAZone, Zone } from "luxon";
 import { AbstractDatetimeComponent } from "../abstract-datetime.component";
 
 type BawTimezoneUnion = Zone | TimezoneInformation | string;
@@ -15,11 +15,7 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZonedDateTimeComponent extends AbstractDatetimeComponent {
-  public constructor() {
-    super();
-  }
-
-  public timezone = input<Zone, BawTimezoneUnion>(null, {
+  public readonly timezone = input<Zone, BawTimezoneUnion>(null, {
     transform: (newValue) => {
       if (isInstantiated(newValue)) {
         const timezoneIdentifier = newValue?.["identifier"] ?? newValue;

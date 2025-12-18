@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -29,14 +29,12 @@ import { metaReviewIcons } from "../screens/metadata-review/metadata-review.type
   imports: [FaIconComponent, StrongRouteDirective, AsyncPipe, SafePipe],
 })
 export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
+  private readonly stages = inject(HarvestStagesService);
+  private readonly config = inject(ConfigService);
+
   public contactUs = contactUsMenuItem;
   public icons = metaReviewIcons;
   public isMetaReviewStage$: Observable<boolean>;
-
-  public constructor(
-    private stages: HarvestStagesService,
-    private config: ConfigService
-  ) {}
 
   public ngOnInit(): void {
     this.isMetaReviewStage$ = this.stages.harvest$.pipe(

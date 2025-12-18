@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ProgressEvent } from "@models/ProgressEvent";
 import { Observable } from "rxjs";
@@ -19,7 +19,7 @@ const endpoint = stringTemplate`/progress_events/${progressEventId}${option}`;
 
 @Injectable()
 export class ProgressEventsService implements ReadAndCreateApi<ProgressEvent> {
-  public constructor(private api: BawApiService<ProgressEvent>) {}
+  private readonly api = inject<BawApiService<ProgressEvent>>(BawApiService);
 
   public list(): Observable<ProgressEvent[]> {
     return this.api.list(ProgressEvent, endpoint(emptyParam, emptyParam));

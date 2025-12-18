@@ -10,7 +10,6 @@ import {
 import { NgForm, FormsModule } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
-import { filterModel } from "@helpers/filters/filters";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -60,9 +59,6 @@ export class DateTimeFilterComponent
   implements AfterViewInit
 {
   @ViewChild(NgForm) public form: NgForm;
-  @Input() public project: Project;
-  @Input() public region: Region;
-  @Input() public site: Site;
   @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
 
   @Input() public disableStartDate = false;
@@ -107,7 +103,6 @@ export class DateTimeFilterComponent
   private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, model: DateTimeFilterModel): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
-    newInnerFilters = this.setModelFilters(newInnerFilters);
     newInnerFilters = this.setDateFilters(model, newInnerFilters);
     newInnerFilters = this.setTimeOfDayFilters(model, newInnerFilters);
 
@@ -120,18 +115,6 @@ export class DateTimeFilterComponent
     const changed = !fromJS(newFilters)?.equals(previousFilters) && newFilters !== previousFilters;
 
     return [changed, newFilters];
-  }
-
-  private setModelFilters(filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
-    if (this.site) {
-      filters = filterModel<Site, AudioRecording>("sites", this.site, filters);
-    } else if (this.region) {
-      filters = filterModel<Region, AudioRecording>("regions", this.region, filters);
-    } else if (this.project) {
-      filters = filterModel<Project, AudioRecording>("projects", this.project, filters);
-    }
-
-    return filters;
   }
 
   private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {

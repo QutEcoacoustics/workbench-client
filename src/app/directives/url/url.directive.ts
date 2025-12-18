@@ -1,5 +1,5 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, ElementRef, Input, Renderer2 } from "@angular/core";
+import { Directive, ElementRef, Input, Renderer2, inject } from "@angular/core";
 import {
   ActivatedRoute,
   DefaultUrlSerializer,
@@ -20,13 +20,13 @@ export class UrlDirective extends withUnsubscribe(RouterLink) {
   @Input() public bawUrl: string;
   @Input() public queryParams: Params;
 
-  public constructor(
-    _element: ElementRef,
-    _renderer: Renderer2,
-    router: Router,
-    route: ActivatedRoute,
-    locationStrategy: LocationStrategy,
-  ) {
+  public constructor() {
+    const _element = inject(ElementRef);
+    const _renderer = inject(Renderer2);
+    const router = inject(Router);
+    const route = inject(ActivatedRoute);
+    const locationStrategy = inject(LocationStrategy);
+
     // the `null` value in this constructor is used for the tabIndexAttribute
     // since this is a generic directive, tab indexes should be set by the parent anchor element
     super(router, route, null, _renderer, _element, locationStrategy);

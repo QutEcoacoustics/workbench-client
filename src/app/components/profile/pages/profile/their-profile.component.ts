@@ -1,13 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
-import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
-import { ProjectsService } from "@baw-api/project/projects.service";
 import { ResolvedModel } from "@baw-api/resolver-common";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { TagsService } from "@baw-api/tag/tags.service";
 import {
   theirAnnotationsMenuItem,
   theirBookmarksMenuItem,
@@ -18,7 +11,6 @@ import {
   theirSitesMenuItem,
 } from "@components/profile/profile.menus";
 import { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
 import { List } from "immutable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -57,28 +49,6 @@ const accountKey = "account";
 })
 class TheirProfileComponent extends MyProfileComponent implements OnInit {
   public thirdPerson = true;
-
-  public constructor(
-    config: ConfigService,
-    session: BawSessionService,
-    route: ActivatedRoute,
-    audioEventsApi: ShallowAudioEventsService,
-    bookmarksApi: BookmarksService,
-    projectsApi: ProjectsService,
-    sitesApi: ShallowSitesService,
-    tagsApi: TagsService
-  ) {
-    super(
-      config,
-      session,
-      route,
-      audioEventsApi,
-      bookmarksApi,
-      projectsApi,
-      sitesApi,
-      tagsApi
-    );
-  }
 
   public ngOnInit() {
     const accountModel: ResolvedModel<User> =

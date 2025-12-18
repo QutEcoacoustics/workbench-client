@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   ApiCreate,
   ApiDestroy,
@@ -28,7 +28,7 @@ export class SiteSettingsService
     ApiUpdate<SiteSetting>,
     ApiDestroy<SiteSetting>
 {
-  public constructor(private api: BawApiService<SiteSetting>) {}
+  private readonly api = inject<BawApiService<SiteSetting>>(BawApiService);
 
   public list() {
     return this.api.list(SiteSetting, endpoint(emptyParam));

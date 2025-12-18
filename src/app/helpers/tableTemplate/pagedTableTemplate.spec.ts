@@ -1,10 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MockModel } from "@baw-api/mock/baseApiMock.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Errorable } from "@helpers/advancedTypes";
 import {
   BawApiError,
@@ -37,7 +37,10 @@ class MockComponent extends PagedTableTemplate<
 > {
   public columns = [{ prop: "id" }];
 
-  public constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(ProjectsService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (models) => models.map((model) => ({ id: model.id, name: model.name })),
@@ -227,7 +230,10 @@ describe("PagedTableTemplate", () => {
         limit: 25,
         pageSize: defaultApiPageSize,
       });
-      expect(api.filter).toHaveBeenCalledWith({ paging: { page: 1 } });
+
+      // If we make an initial call to offset 0, no paging parameter should be
+      // sent because it is the default value, and we can therefore omit it.
+      expect(api.filter).toHaveBeenCalledWith({ });
     });
 
     it("should handle 1 offset", async () => {
@@ -402,7 +408,7 @@ describe("PagedTableTemplate", () => {
     }
 
     it("should handle no sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, undefined, "testing");
+      createSortEvent({ testing: "name" }, undefined, "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
@@ -410,38 +416,38 @@ describe("PagedTableTemplate", () => {
     }));
 
     it("should handle asc sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      createSortEvent({ testing: "name" }, "asc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
 
     it("should handle desc sorting", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "desc", "testing");
+      createSortEvent({ testing: "name" }, "desc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "desc" },
+        sorting: { orderBy: "name", direction: "desc" },
       });
     }));
 
     it("should handle single sortKey", fakeAsync(() => {
-      createSortEvent({ testing: "customKey" }, "asc", "testing");
+      createSortEvent({ testing: "name" }, "asc", "testing");
       spec.detectChanges();
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
 
     it("should handle multiple sortKeys", fakeAsync(() => {
       createSortEvent(
-        { testing: "customKey", testing2: "extraCustomKey" },
+        { testing: "name", testing2: "extraCustomKey" },
         "asc",
         "testing"
       );
@@ -449,7 +455,7 @@ describe("PagedTableTemplate", () => {
 
       spec.tick(defaultDebounceTime);
       expect(api.filter).toHaveBeenCalledWith({
-        sorting: { orderBy: "customKey", direction: "asc" },
+        sorting: { orderBy: "name", direction: "asc" },
       });
     }));
   });

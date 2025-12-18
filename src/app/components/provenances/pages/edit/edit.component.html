@@ -1,0 +1,11 @@
+@if (!failure) {
+  <baw-form
+    [title]="title"
+    [model]="model"
+    [fields]="fields"
+    [submitLoading]="loading"
+    (onSubmit)="submit($event)"
+  />
+} @else {
+  <baw-error-handler [error]="error" />
+}

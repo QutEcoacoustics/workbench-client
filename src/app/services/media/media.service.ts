@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Params } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { AudioRecording } from "@models/AudioRecording";
@@ -6,10 +6,8 @@ import { API_ROOT } from "@services/config/config.tokens";
 
 @Injectable()
 export class MediaService {
-  public constructor(
-    private session: BawSessionService,
-    @Inject(API_ROOT) private apiRoot: string
-  ) {}
+  private readonly session = inject(BawSessionService);
+  private readonly apiRoot = inject(API_ROOT);
 
   /**
    * Generates a media URL for an audio recording with specified start and end offsets.

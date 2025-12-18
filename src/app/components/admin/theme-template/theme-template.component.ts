@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
   ThemeColor,
@@ -32,6 +23,10 @@ class AdminThemeTemplateComponent
   extends PageComponent
   implements OnInit, AfterViewInit
 {
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly theme = inject(ThemeService);
+  private readonly ref = inject(ChangeDetectorRef);
+
   @ViewChildren("colorBox") private colorBoxes!: QueryList<
     ElementRef<HTMLElement>
   >;
@@ -41,14 +36,6 @@ class AdminThemeTemplateComponent
   public themeVariants: readonly ThemeVariant[];
   protected darkBackground = false;
   protected disableButtons = false;
-
-  public constructor(
-    @Inject(IS_SERVER_PLATFORM) public isServer: boolean,
-    private theme: ThemeService,
-    private ref: ChangeDetectorRef
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.themeColors = this.theme.themeColors;

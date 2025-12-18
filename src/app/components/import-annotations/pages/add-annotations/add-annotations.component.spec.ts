@@ -1,50 +1,44 @@
-import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
-import { AudioEventImport } from "@models/AudioEventImport";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { ToastService } from "@services/toasts/toasts.service";
-import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
+import { fakeAsync, flush } from "@angular/core/testing";
+import { Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
-import {
-  AUDIO_EVENT_IMPORT_FILE,
-  AUDIO_EVENT_PROVENANCE,
-  AUDIO_RECORDING,
-  TAG,
-} from "@baw-api/ServiceTokens";
-import { assertPageInfo } from "@test/helpers/pageRoute";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AudioEventImport } from "@models/AudioEventImport";
+import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
 import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { modelData } from "@test/helpers/faker";
+import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Project } from "@models/Project";
+import { Provenance } from "@models/Provenance";
+import { Tag } from "@models/Tag";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
+import { generateImportedAudioEvent } from "@test/fakes/AudioEventImport/ImportedAudioEvent";
 import { generateAudioEventImportFile } from "@test/fakes/AudioEventImportFile";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
+import { generateProject } from "@test/fakes/Project";
+import { generateProvenance } from "@test/fakes/Provenance";
+import { generateTag } from "@test/fakes/Tag";
+import { assertDatatable, assertDatatableRow } from "@test/helpers/datatable";
+import { modelData } from "@test/helpers/faker";
 import {
   clickButton,
   inputFile,
   selectFromTypeahead,
 } from "@test/helpers/html";
-import { generateAudioEventImport } from "@test/fakes/AudioEventImport";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { Tag } from "@models/Tag";
-import { generateTag } from "@test/fakes/Tag";
-import { Observable, of, Subject, throwError } from "rxjs";
-import { Router } from "@angular/router";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { assertPageInfo } from "@test/helpers/pageRoute";
 import { UNPROCESSABLE_ENTITY } from "http-status";
-import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { fakeAsync, flush } from "@angular/core/testing";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { generateAudioEventProvenance } from "@test/fakes/AudioEventProvenance";
-import { IImportedAudioEvent } from "@models/AudioEventImport/ImportedAudioEvent";
-import { generateImportedAudioEvent } from "@test/fakes/ImportedAudioEvent";
+import { Observable, of, Subject, throwError } from "rxjs";
 import { AddAnnotationsComponent } from "./add-annotations.component";
 
 describe("AddAnnotationsComponent", () => {
@@ -54,7 +48,7 @@ describe("AddAnnotationsComponent", () => {
   let fileImportSpy: SpyObject<AudioEventImportFileService>;
   let tagServiceSpy: SpyObject<TagsService>;
   let recordingServiceSpy: SpyObject<AudioRecordingsService>;
-  let provenanceServiceSpy: SpyObject<AudioEventProvenanceService>;
+  let provenanceServiceSpy: SpyObject<ProvenanceService>;
 
   let notificationsSpy: SpyObject<ToastService>;
   let routerSpy: SpyObject<Router>;
@@ -63,7 +57,7 @@ describe("AddAnnotationsComponent", () => {
   let routeProject: Project;
   let mockImportResponse: AudioEventImportFile | BawApiError<AudioEventImportFile>;
   let mockTagsResponse: Tag[];
-  let mockProvenanceResponse: AudioEventProvenance[];
+  let mockProvenanceResponse: Provenance[];
   let mockRecordingsResponse: AudioRecording;
 
   const createComponent = createRoutingFactory({
@@ -170,10 +164,10 @@ describe("AddAnnotationsComponent", () => {
     routeProject["injector"] = injectorSpy;
     spec.component.project = routeProject;
 
-    fileImportSpy = spec.inject(AUDIO_EVENT_IMPORT_FILE.token);
-    tagServiceSpy = spec.inject(TAG.token);
-    provenanceServiceSpy = spec.inject(AUDIO_EVENT_PROVENANCE.token);
-    recordingServiceSpy = spec.inject(AUDIO_RECORDING.token);
+    fileImportSpy = spec.inject(AudioEventImportFileService);
+    tagServiceSpy = spec.inject(TagsService);
+    provenanceServiceSpy = spec.inject(ProvenanceService);
+    recordingServiceSpy = spec.inject(AudioRecordingsService);
 
     notificationsSpy = spec.inject(ToastService);
     routerSpy = spec.inject(Router);
@@ -198,7 +192,7 @@ describe("AddAnnotationsComponent", () => {
       1,
       10,
       () =>
-        new AudioEventProvenance(generateAudioEventProvenance(), injectorSpy),
+        new Provenance(generateProvenance(), injectorSpy),
     );
 
     mockRecordingsResponse = new AudioRecording(
@@ -206,7 +200,14 @@ describe("AddAnnotationsComponent", () => {
       injectorSpy,
     );
 
-    fileImportSpy.create.and.callFake(() => of(mockImportResponse));
+    fileImportSpy.create.and.callFake(() => {
+      if (mockImportResponse instanceof BawApiError) {
+        return throwError(() => mockImportResponse);
+      }
+
+      return of(mockImportResponse);
+    });
+
     fileImportSpy.dryCreate.and.callFake(() => {
       if (mockImportResponse instanceof BawApiError) {
         return throwError(() => mockImportResponse);
@@ -236,10 +237,7 @@ describe("AddAnnotationsComponent", () => {
     setup();
   });
 
-  assertPageInfo<AudioEventImport>(
-    AddAnnotationsComponent,
-    "Add New Annotations",
-  );
+  assertPageInfo(AddAnnotationsComponent, "Add New Annotations");
 
   it("should create", fakeAsync(() => {
     expect(spec.component).toBeInstanceOf(AddAnnotationsComponent);
@@ -350,14 +348,14 @@ describe("AddAnnotationsComponent", () => {
 
       // Delay the observable completing so that we can check the loading state
       // after removing a file.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       removeFile(0);
 
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as AudioEventImportFile);
       spec.detectChanges();
 
       // After the observable completes emits a value for the dry run, we should
@@ -522,14 +520,14 @@ describe("AddAnnotationsComponent", () => {
       // We provide a observable that we manually trigger so that we can assert
       // that the loading spinner is correctly shown when a dry run is in
       // progress and that it is removed when the dry run errors.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       addFiles([modelData.file()]);
 
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as any);
       spec.detectChanges();
 
       // After we send the dry run response, we should see that the loading
@@ -582,7 +580,7 @@ describe("AddAnnotationsComponent", () => {
       it("should enter a loading state when additional tags are added to a file", fakeAsync(() => {
         addFiles([modelData.file()]);
 
-        const response = new Subject();
+        const response = new Subject<AudioEventImportFile>();
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedTag = mockTagsResponse[0];
@@ -590,7 +588,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-        response.next(mockImportResponse);
+        response.next(mockImportResponse as any);
         spec.detectChanges();
 
         expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
@@ -658,7 +656,7 @@ describe("AddAnnotationsComponent", () => {
       it("should enter a loading state when a provenance is added to a file", fakeAsync(() => {
         addFiles([modelData.file()]);
 
-        const response = new Subject();
+        const response = new Subject<AudioEventImportFile>();
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedProvenance = mockProvenanceResponse[0];
@@ -666,7 +664,7 @@ describe("AddAnnotationsComponent", () => {
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-        response.next(mockImportResponse);
+        response.next(mockImportResponse as any);
         spec.detectChanges();
 
         expect(fileListItems()[0]).not.toHaveDescendant("baw-loading");
@@ -752,7 +750,7 @@ describe("AddAnnotationsComponent", () => {
     it("should enter a loading state when committing an import", fakeAsync(() => {
       addFiles([modelData.file()]);
 
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.create.and.returnValue(response);
 
       commitImport();
@@ -761,7 +759,7 @@ describe("AddAnnotationsComponent", () => {
       // spinner for the file being uploaded
       expect(fileListItems()[0]).toHaveDescendant("baw-loading");
 
-      response.next(mockImportResponse);
+      response.next(mockImportResponse as any);
       spec.detectChanges();
 
       // after the create completes, the loading spinner should be removed
@@ -888,7 +886,7 @@ describe("AddAnnotationsComponent", () => {
       // We provide a observable that we manually trigger so that we can assert
       // that the loading spinner is correctly shown when a dry run is in
       // progress and that it is removed when the dry run errors.
-      const response = new Subject();
+      const response = new Subject<AudioEventImportFile>();
       fileImportSpy.dryCreate.and.returnValue(response);
 
       addFiles([modelData.file()]);

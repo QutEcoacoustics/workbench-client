@@ -5,7 +5,7 @@ import { hasOne } from "@models/AssociationDecorators";
 import { bawPersistAttr, bawSubModelCollection } from "@models/AttributeDecorators";
 import { IAudioEvent } from "@models/AudioEvent";
 import { AudioEventImport } from "@models/AudioEventImport";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
+import { Provenance } from "@models/Provenance";
 import { AudioRecording } from "@models/AudioRecording";
 import { ITag, Tag } from "@models/Tag";
 
@@ -55,7 +55,7 @@ export class ImportedAudioEvent
   @hasOne(AUDIO_EVENT_IMPORT, "audioEventImportId")
   public audioEventImport?: AudioEventImport;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
-  public provenance?: AudioEventProvenance;
+  public provenance?: Provenance;
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");

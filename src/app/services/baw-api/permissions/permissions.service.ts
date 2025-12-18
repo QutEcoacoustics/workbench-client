@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   emptyParam,
   filterParam,
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/projects/${projectId}/permissions/${permissionI
 export class PermissionsService
   implements StandardApi<Permission, [IdOr<Project>]>
 {
-  public constructor(private api: BawApiService<Permission>) {}
+  private readonly api = inject<BawApiService<Permission>>(BawApiService);
 
   public list(project: IdOr<Project>): Observable<Permission[]> {
     return this.api.list(Permission, endpoint(project, emptyParam, emptyParam));

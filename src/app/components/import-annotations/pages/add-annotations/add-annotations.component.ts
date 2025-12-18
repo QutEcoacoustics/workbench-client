@@ -1,3 +1,4 @@
+import { AsyncPipe, NgTemplateOutlet } from "@angular/common";
 import {
   Component,
   computed,
@@ -8,14 +9,54 @@ import {
   viewChild,
   viewChildren,
 } from "@angular/core";
-import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
-import { PageComponent } from "@helpers/page/pageComponent";
-import {
-  ImportedAudioEvent,
-  EventImportError,
-} from "@models/AudioEventImport/ImportedAudioEvent";
-import { Id } from "@interfaces/apiInterfaces";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
+import { audioEventImportResolvers } from "@baw-api/audio-event-import/audio-event-import.service";
+import { projectResolvers } from "@baw-api/project/projects.service";
+import { ProvenanceService } from "@baw-api/provenance/provenance.service";
+import {
+  hasResolvedSuccessfully,
+  retrieveResolvers,
+} from "@baw-api/resolver-common";
+import { TagsService } from "@baw-api/tag/tags.service";
+import {
+  ImportAnnotationService,
+} from "@components/import-annotations/services/import-annotation.service";
+import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
+import {
+  VirtualDatatablePaginationDirective,
+} from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { Id } from "@interfaces/apiInterfaces";
+import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
+import { AudioEventImport } from "@models/AudioEventImport";
+import {
+  EventImportError,
+  ImportedAudioEvent,
+} from "@models/AudioEventImport/ImportedAudioEvent";
+import { AudioEventImportFile } from "@models/AudioEventImportFile";
+import { Project } from "@models/Project";
+import { Provenance } from "@models/Provenance";
+import { Tag } from "@models/Tag";
+import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
+import { ErrorCardComponent, ErrorCardStyle } from "@shared/error-card/error-card.component";
+import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { INTERNAL_SERVER_ERROR } from "http-status";
+import { List } from "immutable";
 import {
   BehaviorSubject,
   catchError,
@@ -29,54 +70,13 @@ import {
   takeUntil,
   throwError,
 } from "rxjs";
-import { AudioEventImport } from "@models/AudioEventImport";
-import { AudioEventImportFile } from "@models/AudioEventImportFile";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ToastService } from "@services/toasts/toasts.service";
-import { UnsavedInputCheckingComponent } from "@guards/input/input.guard";
-import { IPageInfo } from "@helpers/page/pageInfo";
-import {
-  hasResolvedSuccessfully,
-  retrieveResolvers,
-} from "@baw-api/resolver-common";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { ErrorCardStyle, ErrorCardComponent } from "@shared/error-card/error-card.component";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import { INTERNAL_SERVER_ERROR } from "http-status";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { TypeaheadInputComponent } from "@shared/typeahead-input/typeahead-input.component";
-import { FormsModule } from "@angular/forms";
-import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
-import { NgbTooltip, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import {
-  VirtualDatatablePaginationDirective,
-} from "@directives/datatable/virtual-datatable-pagination/virtual-datatable-pagination.directive";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { SafeNumberComponent } from "@shared/datatypes/number/number.component";
-import { UrlDirective } from "@directives/url/url.directive";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { FileValueAccessorDirective } from "@shared/formly/file-input/file-input.directive";
-import { Tag } from "@models/Tag";
-import { List } from "immutable";
-import {
-  ImportAnnotationService,
-} from "@components/import-annotations/services/import-annotation.service";
-import { DatatableCompactDirective } from "@directives/datatable/compact/compact.directive";
-import { projectResolvers } from "@baw-api/project/projects.service";
-import { Project } from "@models/Project";
-import { AudioEventProvenanceService } from "@baw-api/audio-event-provenance/audio-event-provenance.service";
-import { AudioEventProvenance } from "@models/AudioEventProvenance";
-import { annotationImportRoute } from "../../import-annotations.routes";
+import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
+import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
 import {
   addAnnotationImportMenuItem,
   annotationsImportCategory,
 } from "../../import-annotations.menu";
-import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
-import { isInstantiatedPipe } from "../../../../pipes/is-instantiated/is-instantiated.pipe";
+import { annotationImportRoute } from "../../import-annotations.routes";
 import { annotationImportIssueWidgetMenuItem } from "../../widgets/annotation-import-issue.component";
 
 interface QueuedFile {
@@ -171,7 +171,7 @@ class AddAnnotationsComponent
   implements OnInit, UnsavedInputCheckingComponent
 {
   protected readonly tagsApi = inject(TagsService);
-  protected readonly provenanceApi = inject(AudioEventProvenanceService);
+  protected readonly provenanceApi = inject(ProvenanceService);
   private readonly api = inject(AudioEventImportFileService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -189,7 +189,7 @@ class AddAnnotationsComponent
   >("additionalFileTagInput");
 
   private readonly provenanceFileInputs = viewChildren<
-    TypeaheadInputComponent<AudioEventProvenance>
+    TypeaheadInputComponent<Provenance>
   >("additionalProvenanceInput");
 
   /** The route model that the annotation import is scoped to */
@@ -392,8 +392,8 @@ class AddAnnotationsComponent
   }
 
   protected updateExtraProvenances(
-    extraProvenance: AudioEventProvenance,
-    host: TypeaheadInputComponent<AudioEventProvenance>,
+    extraProvenance: Provenance,
+    host: TypeaheadInputComponent<Provenance>,
   ): void {
     // when the user applies "provenances" we want to immediately set the import
     // state to "UPLOADING" so that the UI elements get locked while the extra

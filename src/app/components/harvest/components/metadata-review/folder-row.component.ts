@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -141,6 +135,8 @@ import { WhitespaceComponent } from "./whitespace.component";
   ],
 })
 export class FolderRowComponent {
+  protected readonly injector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
+
   @Input() public harvest: Harvest;
   @Input() public project: Project;
   @Input() public row: MetaReviewFolder;
@@ -161,10 +157,6 @@ export class FolderRowComponent {
   public get report(): HarvestItemReport {
     return this.harvestItem.report;
   }
-
-  public constructor(
-    @Inject(ASSOCIATION_INJECTOR) protected injector: AssociationInjector
-  ) {}
 
   public createMapping(row: MetaReviewFolder): void {
     const mapping = new HarvestMapping(

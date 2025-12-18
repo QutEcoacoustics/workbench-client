@@ -2,18 +2,19 @@ import { fakeAsync, tick } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Harvest } from "@models/Harvest";
 import { Project } from "@models/Project";
 import {
-  SpyObject,
   createComponentFactory,
   Spectator,
+  SpyObject,
 } from "@ngneat/spectator";
-import { generateHarvest } from "@test/fakes/Harvest";
-import { generateProject } from "@test/fakes/Project";
-import { MockProvider } from "ng-mocks";
 import { ToastService } from "@services/toasts/toasts.service";
 import { IconsModule } from "@shared/icons/icons.module";
+import { generateHarvest } from "@test/fakes/Harvest";
+import { generateProject } from "@test/fakes/Project";
+import { of } from "rxjs";
 import { TitleComponent } from "./title.component";
 
 describe("titleComponent", () => {
@@ -24,6 +25,7 @@ describe("titleComponent", () => {
   const createComponent = createComponentFactory({
     component: TitleComponent,
     imports: [FormsModule, IconsModule],
+    providers: [provideMockBawApi()],
     mocks: [ToastService],
   });
 
@@ -33,17 +35,15 @@ describe("titleComponent", () => {
         project: mockProject,
         harvest: mockHarvest,
       },
-      providers: [MockProvider(ShallowHarvestsService, {})],
+      detectChanges: false,
     });
 
-    const mockHarvestApi = spectator.inject<SpyObject<ShallowHarvestsService>>(
-      ShallowHarvestsService as any
-    );
-    mockHarvestApi.updateName = jasmine.createSpy("updateName") as any;
+    const harvestApi = spectator.inject(ShallowHarvestsService);
+    harvestApi.updateName.and.returnValue(of(mockHarvest));
 
     spectator.detectChanges();
 
-    return mockHarvestApi;
+    return harvestApi;
   }
 
   const getHarvestTitle = (): HTMLElement =>

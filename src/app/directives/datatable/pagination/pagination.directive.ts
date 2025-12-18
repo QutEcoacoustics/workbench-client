@@ -1,9 +1,8 @@
-import { AfterContentInit, Directive, Host, Input } from "@angular/core";
+import { AfterContentInit, Directive, Input, inject } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
 import {
-  DataTableColumnDirective,
   DatatableComponent,
   TableColumn,
 } from "@swimlane/ngx-datatable";
@@ -100,9 +99,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
   implements AfterContentInit
 {
-  public constructor(@Host() private datatable: DatatableComponent) {
-    super();
-  }
+  private readonly datatable = inject(DatatableComponent, { host: true });
 
   /**
    * @param filters Base api filters for table. If this is an observable, on
@@ -150,9 +147,11 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
         return;
       }
 
+      const orderBy = filters.sorting.orderBy as any;
+
       // Otherwise, use the sort from the filter observable as the default
       this.datatable.sorts = [
-        { prop: filters.sorting.orderBy, dir: filters.sorting.direction },
+        { prop: orderBy, dir: filters.sorting.direction },
       ];
       this.pageAndSort$.next({ page: pageAndSort.page, sort: filters.sorting });
     });
@@ -183,6 +182,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
   /** Re-triggers the pageAndSort$ observable with the new page number */
   public setPage = (page: DatatablePageEvent): void => {
+    if (page.offset === this.pageAndSort$.getValue().page) {
+      return;
+    }
+
     this.pageAndSort$.next({
       page: page.offset,
       sort: this.pageAndSort$.getValue().sort,
@@ -216,7 +219,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
     });
 
     // Set sorting whenever changed
-    this.datatable.sort.subscribe((sort): void => {
+    this.datatable.sort.subscribe((sort: DatatableSortEvent): void => {
       this.onSort(sort);
     });
   }
@@ -275,5 +278,5 @@ export interface DatatablePageEvent {
 export interface DatatableSortEvent {
   newValue: Direction;
   prevValue: Direction;
-  column: DataTableColumnDirective & { sortKey: string };
+  column: TableColumn & { sortKey?: string };
 }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
@@ -33,14 +33,15 @@ import schema from "../../project.schema.json";
   imports: [FormComponent],
 })
 class ProjectNewComponent extends FormTemplate<Project> {
+  private readonly api = inject(ProjectsService);
+
   public fields = schema.fields;
 
-  public constructor(
-    private api: ProjectsService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),

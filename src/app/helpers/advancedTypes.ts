@@ -97,4 +97,10 @@ export type Brand<T, BrandName extends string> = T & {
   [key in typeof brandSymbol]: BrandName;
 };
 
+export function withBrand<BrandedType extends Brand<unknown, string>>(
+  value: unknown,
+): BrandedType {
+  return value as BrandedType;
+}
+
 export type Constructor<T> = new (...args: any[]) => T;

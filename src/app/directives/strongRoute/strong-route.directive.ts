@@ -1,5 +1,5 @@
 import { LocationStrategy } from "@angular/common";
-import { Directive, ElementRef, Input, OnInit, Renderer2 } from "@angular/core";
+import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from "@angular/core";
 import {
   ActivatedRoute,
   Params,
@@ -26,6 +26,9 @@ export class StrongRouteDirective
   extends withUnsubscribe(RouterLink)
   implements OnInit
 {
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+  private readonly _router: Router;
+
   @Input() public strongRoute: StrongRoute;
   /**
    * Additional route parameters to apply to the StrongRoute. By default, all
@@ -45,17 +48,18 @@ export class StrongRouteDirective
     activatedRoute: null as ActivatedRoute,
   };
 
-  public constructor(
-    private _router: Router,
-    _element: ElementRef,
-    _renderer: Renderer2,
-    _route: ActivatedRoute,
-    private sharedRoute: SharedActivatedRouteService,
-    _locationStrategy: LocationStrategy
-  ) {
+  public constructor() {
+    const _router = inject(Router);
+    const _element = inject(ElementRef);
+    const _renderer = inject(Renderer2);
+    const _route = inject(ActivatedRoute);
+    const _locationStrategy = inject(LocationStrategy);
+
     // the `null` value in this constructor is used for the tabIndexAttribute
     // since this is a generic directive, tab indexes should be set by the parent anchor element
     super(_router, _route, null, _renderer, _element, _locationStrategy);
+  
+    this._router = _router;
   }
 
   public ngOnInit(): void {

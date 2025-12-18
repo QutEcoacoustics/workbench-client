@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowHarvestItemsService } from "@baw-api/harvest/harvest-items.service";
@@ -49,14 +49,12 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
   ],
 })
 export class CompleteComponent implements OnInit {
+  private readonly stages = inject(HarvestStagesService);
+  private readonly harvestItemsApi = inject(ShallowHarvestItemsService);
+  private readonly recordingsApi = inject(AudioRecordingsService);
+
   public projectMenuItem = projectMenuItem;
   public audioRecordingsRoute = audioRecordingsRoutes.project;
-
-  public constructor(
-    public stages: HarvestStagesService,
-    private harvestItemsApi: ShallowHarvestItemsService,
-    private recordingsApi: AudioRecordingsService
-  ) {}
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);
