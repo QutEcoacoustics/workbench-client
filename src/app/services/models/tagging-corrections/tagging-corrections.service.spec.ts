@@ -1,25 +1,25 @@
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TaggingsService } from "@baw-api/tag/taggings.service";
+import { ShallowVerificationService } from "@baw-api/verification/verification.service";
+import { Id } from "@interfaces/apiInterfaces";
+import { Annotation } from "@models/data/Annotation";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Tag } from "@models/Tag";
+import { Tagging } from "@models/Tagging";
+import { ConfirmedStatus, Verification } from "@models/Verification";
 import {
   createServiceFactory,
   mockProvider,
   SpectatorService,
   SpyObject,
 } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { ShallowVerificationService } from "@baw-api/verification/verification.service";
-import { TaggingsService } from "@baw-api/tag/taggings.service";
-import { firstValueFrom, of } from "rxjs";
-import { modelData } from "@test/helpers/faker";
-import { Tagging } from "@models/Tagging";
-import { generateTagging } from "@test/fakes/Tagging";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ConfirmedStatus, Verification } from "@models/Verification";
-import { generateVerification } from "@test/fakes/Verification";
-import { Annotation } from "@models/data/Annotation";
 import { generateAnnotation } from "@test/fakes/data/Annotation";
-import { Tag } from "@models/Tag";
 import { generateTag } from "@test/fakes/Tag";
-import { Id } from "@interfaces/apiInterfaces";
+import { generateTagging } from "@test/fakes/Tagging";
+import { generateVerification } from "@test/fakes/Verification";
+import { modelData } from "@test/helpers/faker";
+import { firstValueFrom, of } from "rxjs";
 import { TaggingCorrectionsService } from "./tagging-corrections.service";
 
 describe("TaggingCorrectionsService", () => {

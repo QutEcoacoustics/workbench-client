@@ -8,7 +8,7 @@ import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 export class DatatableSortKeyDirective implements OnChanges {
   @Input() public sortKey: string;
 
-  public constructor(@Host() private column: DataTableColumnDirective<any>) {}
+  public constructor(@Host() private column: DataTableColumnDirective<unknown>) {}
 
   public ngOnChanges(): void {
     // We use the square bracket notation that bypasses type checking because

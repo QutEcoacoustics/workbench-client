@@ -53,8 +53,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       @if (session.isLoggedIn) {
         <ngx-datatable-column name="User" [sortable]="false">
           <ng-template let-column="column" ngx-datatable-header-template>
-            <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>
-            User
+            <fa-icon class="me-2" [icon]="['fas', 'user']"></fa-icon>User
           </ng-template>
 
           <ng-template let-value="value" ngx-datatable-cell-template>
@@ -72,8 +71,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
       <!-- Tags -->
       <ngx-datatable-column name="Tags" [sortable]="false">
         <ng-template let-column="column" ngx-datatable-header-template>
-          <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>
-          Tags
+          <fa-icon class="me-2" [icon]="['fas', 'tags']"></fa-icon>Tags
         </ng-template>
 
         <ng-template let-value="value" ngx-datatable-cell-template>

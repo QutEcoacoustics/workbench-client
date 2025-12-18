@@ -9,7 +9,6 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
-  distinctUntilChanged,
   map,
   Observable,
   of,
@@ -173,7 +172,6 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
           paging: { page: pageAndSort.page + 1 },
         })
       ),
-      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       switchMap(
         (filters): Observable<Model[]> => this.pagination.getModels(filters)
       ),
@@ -186,6 +184,10 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
 
   /** Re-triggers the pageAndSort$ observable with the new page number */
   public setPage = (page: DatatablePageEvent): void => {
+    if (page.offset === this.pageAndSort$.getValue().page) {
+      return;
+    }
+
     this.pageAndSort$.next({
       page: page.offset,
       sort: this.pageAndSort$.getValue().sort,
