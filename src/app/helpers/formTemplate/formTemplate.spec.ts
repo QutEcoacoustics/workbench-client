@@ -8,10 +8,10 @@ import {
   SpectatorRouting,
   SpectatorRoutingOverrides,
 } from "@ngneat/spectator";
-import { generateBawApiError } from "@test/fakes/BawApiError";
 import { ToastService } from "@services/toasts/toasts.service";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { FormComponent } from "@shared/form/form.component";
+import { generateBawApiError } from "@test/fakes/BawApiError";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { appLibraryImports } from "src/app/app.config";
 import { defaultSuccessMsg, FormProps, FormTemplate } from "./formTemplate";
 
@@ -37,16 +37,12 @@ class MockModel extends AbstractModel {
   imports: [FormComponent],
 })
 class MockComponent extends FormTemplate<MockModel> {
-  protected readonly notifications: ToastService;
-
   public constructor() {
     const notifications = inject(ToastService);
     const route = inject(ActivatedRoute);
     const router = inject(Router);
 
     super(notifications, route, router, formProps);
-  
-    this.notifications = notifications;
   }
 
   protected apiAction(model: Partial<MockModel>) {

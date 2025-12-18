@@ -102,7 +102,7 @@ export class BawApiService<
   protected readonly session = inject(BawSessionService);
   protected readonly notifications = inject(ToastService);
   protected readonly associationInjector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
-  private readonly options = inject<BawServiceOptions>(BAW_SERVICE_OPTIONS, { optional: true })!;
+  private readonly options = inject<BawServiceOptions>(BAW_SERVICE_OPTIONS, { optional: true });
 
   /*
   Paths:
