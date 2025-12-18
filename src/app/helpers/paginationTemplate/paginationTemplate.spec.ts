@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Params } from "@angular/router";
 import { defaultApiPageSize, Filters, Sorting } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -24,7 +24,9 @@ const pageKey = "page";
   template: "",
 })
 class MockComponent extends PaginationTemplate<Project> {
-  public constructor(api: ProjectsService) {
+  public constructor() {
+    const api = inject(ProjectsService);
+
     super(
       api,
       "id",

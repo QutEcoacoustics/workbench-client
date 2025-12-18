@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  Signal,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, Signal, inject } from "@angular/core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -24,7 +19,9 @@ type ErrorPredicate = string | ((value: string) => boolean);
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationImportIssueWidgetComponent implements WidgetComponent {
-  public constructor(protected annotationImport: ImportAnnotationService) {
+  protected readonly annotationImport = inject(ImportAnnotationService);
+
+  public constructor() {
     this.importFiles = this.annotationImport.connect();
   }
 

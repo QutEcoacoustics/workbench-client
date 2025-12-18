@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnChanges, inject } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl, isImageUrl } from "@interfaces/apiInterfaces";
@@ -120,16 +120,14 @@ export class RenderFieldComponent
   extends withUnsubscribe()
   implements OnChanges
 {
+  private readonly ref = inject(ChangeDetectorRef);
+
   @Input() public value: ModelView;
   public children: ModelView[];
   public display: Display;
   public fieldStyling = FieldStyling;
   public model: AbstractModel;
   public styling: FieldStyling = FieldStyling.plain;
-
-  public constructor(private ref: ChangeDetectorRef) {
-    super();
-  }
 
   public ngOnChanges(): void {
     this.humanize(this.value);

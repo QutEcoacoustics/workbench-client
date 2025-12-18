@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Bookmark } from "@models/Bookmark";
 import type { User } from "@models/User";
@@ -20,7 +20,7 @@ const endpoint = stringTemplate`/bookmarks/${bookmarkId}${option}`;
 
 @Injectable()
 export class BookmarksService implements StandardApi<Bookmark> {
-  public constructor(private api: BawApiService<Bookmark>) {}
+  private readonly api = inject<BawApiService<Bookmark>>(BawApiService);
 
   public list(): Observable<Bookmark[]> {
     return this.api.list(Bookmark, endpoint(emptyParam, emptyParam));

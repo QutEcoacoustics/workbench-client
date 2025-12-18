@@ -1,8 +1,6 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { accountResolvers } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
-import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import {
   theirBookmarksMenuItem,
   theirProfileCategory,
@@ -33,10 +31,6 @@ const accountKey = "account";
   ],
 })
 class TheirBookmarksComponent extends MyBookmarksComponent {
-  public constructor(api: BookmarksService, route: ActivatedRoute) {
-    super(api, route);
-  }
-
   public get account(): User {
     return this.models[accountKey] as User;
   }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -73,6 +73,12 @@ class PermissionsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  private readonly notifications = inject(ToastService);
+  private readonly permissionsApi = inject(PermissionsService);
+  private readonly accountsApi = inject(AccountsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly injector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
+
   public project: Project;
   /** Permissions for anonymous guests */
   public anonymousPermission: Permission;
@@ -109,16 +115,6 @@ class PermissionsComponent
     ...this.anonymousOptions,
     { label: "Writer access", value: PermissionLevel.writer },
   ];
-
-  public constructor(
-    private notifications: ToastService,
-    private permissionsApi: PermissionsService,
-    private accountsApi: AccountsService,
-    private route: ActivatedRoute,
-    @Inject(ASSOCIATION_INJECTOR) private injector: AssociationInjector
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     const projectModel: ResolvedModel<Project> =

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { harvestResolvers } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -54,15 +54,11 @@ class HarvestDetailsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit, OnDestroy
 {
+  protected readonly stages = inject(HarvestStagesService);
+  private readonly route = inject(ActivatedRoute);
+
   public project: Project;
   public harvest: Harvest;
-
-  public constructor(
-    public stages: HarvestStagesService,
-    private route: ActivatedRoute
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     const routeData = this.route.snapshot.data;

@@ -1,4 +1,4 @@
-import { Component, TemplateRef } from "@angular/core";
+import { Component, TemplateRef, inject } from "@angular/core";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -38,6 +38,10 @@ export const adminTagsMenuItemActions = [adminNewTagMenuItem];
   ],
 })
 class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
+  protected readonly modals = inject(NgbModal);
+  protected readonly notifications = inject(ToastService);
+  protected readonly tagsApi: TagsService;
+
   public columns = [
     { name: "Text" },
     { name: "Taxonomic" },
@@ -53,11 +57,9 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
   };
   public editPath = adminEditTagMenuItem.route;
 
-  public constructor(
-    protected tagsApi: TagsService,
-    protected modals: NgbModal,
-    protected notifications: ToastService,
-  ) {
+  public constructor() {
+    const tagsApi = inject(TagsService);
+
     super(tagsApi, (tags) =>
       tags.map((tag) => ({
         text: tag.text,
@@ -67,6 +69,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
         tag,
       }))
     );
+    this.tagsApi = tagsApi;
 
     this.filterKey = "text";
   }

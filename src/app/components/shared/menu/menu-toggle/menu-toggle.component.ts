@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from "@angular/core";
+import { Component, Input, OnInit, Output, inject } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { MenuType } from "@helpers/generalTypes";
@@ -43,6 +43,8 @@ export enum MenuState {
   imports: [NgClass, FaIconComponent]
 })
 export class MenuToggleComponent implements OnInit {
+  public readonly menu = inject(MenuService);
+
   @Input() public menuType: MenuType;
   @Input() public color: BootstrapColorTypes = "light";
   @Input() public alignment: LeftOrRight = "left";
@@ -52,8 +54,6 @@ export class MenuToggleComponent implements OnInit {
   }
 
   private _menuToggle = new BehaviorSubject<MenuState>(MenuState.closed);
-
-  public constructor(public menu: MenuService) {}
 
   public ngOnInit(): void {
     this._menuToggle.next(this.getMenuState());

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -40,17 +40,21 @@ class RegisterComponent
   extends FormTemplate<RegisterDetails>
   implements OnInit
 {
+  private readonly securityApi = inject(SecurityService);
+  private readonly session = inject(BawSessionService);
+  private readonly accountsApi = inject(AccountsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
 
-  public constructor(
-    private securityApi: SecurityService,
-    private session: BawSessionService,
-    private accountsApi: AccountsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       hasFormCheck: false,
       successMsg: () => "Successfully registered new account",
@@ -58,6 +62,10 @@ class RegisterComponent
         this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
       },
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit() {

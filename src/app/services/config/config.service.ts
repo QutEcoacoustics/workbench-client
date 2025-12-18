@@ -1,5 +1,5 @@
 import { HttpBackend, HttpClient } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   Configuration,
   Endpoints,
@@ -23,16 +23,17 @@ export const assetRoot = "/assets";
  */
 @Injectable({ providedIn: "root" })
 export class ConfigService {
+  private readonly notification = inject(ToastService);
+  private readonly theme = inject(ThemeService);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+
   private _validConfig: boolean;
   private _config: Configuration;
   private http: HttpClient;
 
-  public constructor(
-    private notification: ToastService,
-    private theme: ThemeService,
-    handler: HttpBackend,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-  ) {
+  public constructor() {
+    const handler = inject(HttpBackend);
+
     // This is to bypass the interceptor and prevent circular dependencies
     // (interceptor requires API_ROOT)
     // https://stackoverflow.com/questions/57850927/angular-app-initializer-circular-dependencies-at-runtime

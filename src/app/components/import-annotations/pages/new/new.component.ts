@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { List } from "immutable";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -42,12 +42,16 @@ export const newAnnotationMenuItemActions = [
   imports: [FormComponent]
 })
 class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
-  public constructor(
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router,
-    private api: AudioEventImportService
-  ) {
+  private readonly api = inject(AudioEventImportService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) =>
@@ -55,6 +59,10 @@ class NewAnnotationsComponent extends FormTemplate<AudioEventImport> {
           model.createAddAnnotationsUrl(this.project.id),
         ),
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public fields = schema.fields;

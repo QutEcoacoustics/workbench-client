@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { StandardApi } from "@baw-api/api-common";
@@ -55,13 +55,13 @@ const siteKey = "site";
   imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
-  public constructor(
-    protected sitesApi: ShallowSitesService,
-    protected regionsApi: ShallowRegionsService,
-    protected provenanceApi: ProvenanceService,
-    protected tagsApi: TagsService,
-    private route: ActivatedRoute
-  ) {
+  protected readonly sitesApi = inject(ShallowSitesService);
+  protected readonly regionsApi = inject(ShallowRegionsService);
+  protected readonly provenanceApi = inject(ProvenanceService);
+  protected readonly tagsApi = inject(TagsService);
+  private readonly route = inject(ActivatedRoute);
+
+  public constructor() {
     super();
     this.model = new EventSummaryReportParameters();
   }

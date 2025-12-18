@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { TagGroup } from "@models/TagGroup";
 import { Observable } from "rxjs";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/tag_groups/${tagGroupId}${option}`;
  */
 @Injectable()
 export class TagGroupsService implements StandardApi<TagGroup> {
-  public constructor(private api: BawApiService<TagGroup>) {}
+  private readonly api = inject<BawApiService<TagGroup>>(BawApiService);
 
   public list(): Observable<TagGroup[]> {
     return this.api.list(TagGroup, endpoint(emptyParam, emptyParam));

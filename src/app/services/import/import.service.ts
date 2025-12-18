@@ -1,9 +1,9 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable({ providedIn: "root" })
 export class ImportsService {
-  public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {}
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public async init(): Promise<void> {
     if (this.isServer) {

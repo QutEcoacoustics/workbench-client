@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -51,6 +51,8 @@ class StatisticsComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  private readonly stats = inject(StatisticsService);
+
   private groupOne = {
     projects: item({
       name: "Projects",
@@ -114,10 +116,6 @@ class StatisticsComponent
   };
 
   public recent: StatisticsRecent;
-
-  public constructor(private stats: StatisticsService) {
-    super();
-  }
 
   public ngOnInit() {
     this.stats

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   regionResolvers,
@@ -133,17 +133,18 @@ const regionKey = "region";
   ],
 })
 class RegionDetailsComponent extends PaginationTemplate<Site> implements OnInit {
+  private readonly regionsApi = inject(RegionsService);
+  private readonly notifications = inject(ToastService);
+  private readonly clientConfig = inject(ConfigService);
+
   public defaultDescription = "<i>No description found</i>";
   public project: Project;
   public region: Region;
   public sites: List<Site> = List([]);
 
-  public constructor(
-    sitesApi: SitesService,
-    private regionsApi: RegionsService,
-    private notifications: ToastService,
-    private clientConfig: ConfigService
-  ) {
+  public constructor() {
+    const sitesApi = inject(SitesService);
+
     super(
       sitesApi,
       "name",

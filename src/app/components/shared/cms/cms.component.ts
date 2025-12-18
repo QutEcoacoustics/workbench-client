@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
+  inject,
   Input,
   OnInit,
   Renderer2,
@@ -34,20 +34,16 @@ import { ErrorHandlerComponent } from "../error-handler/error-handler.component"
   imports: [LoadingComponent, ErrorHandlerComponent]
 })
 export class CmsComponent extends withUnsubscribe() implements OnInit {
+  private readonly cms = inject(CmsService);
+  private readonly renderer = inject(Renderer2);
+  private readonly elRef = inject(ElementRef);
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly ref = inject(ChangeDetectorRef);
+
   @Input() public page: CMS;
   public error: BawApiError;
   public loading: boolean;
-
-  public constructor(
-    private cms: CmsService,
-    private renderer: Renderer2,
-    private elRef: ElementRef,
-    @Inject(DOCUMENT) private document: Document,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private ref: ChangeDetectorRef
-  ) {
-    super();
-  }
 
   public ngOnInit() {
     this.loading = true;

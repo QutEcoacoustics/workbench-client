@@ -1,5 +1,5 @@
 import { HttpHeaders } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
 import {
   BawApiError,
@@ -28,10 +28,10 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable()
 export class WebsiteStatusService {
-  public constructor(
-    private api: BawApiService<WebsiteStatus>,
-    @Inject(IS_SERVER_PLATFORM) private isSsr: boolean
-  ) {
+  private readonly api = inject<BawApiService<WebsiteStatus>>(BawApiService);
+  private readonly isSsr = inject(IS_SERVER_PLATFORM);
+
+  public constructor() {
     if (this.isSsr) {
       this.status$ = of(SsrContext.instance);
     } else {

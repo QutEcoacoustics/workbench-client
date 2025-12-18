@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -38,15 +38,16 @@ const userKey = "user";
   ],
 })
 class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
+  private readonly session = inject(BawSessionService);
+
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
   public sortKeys = { updated: "updatedAt" };
   protected api: ShallowAudioEventsService;
 
-  public constructor(
-    api: ShallowAudioEventsService,
-    route: ActivatedRoute,
-    private session: BawSessionService
-  ) {
+  public constructor() {
+    const api = inject(ShallowAudioEventsService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (audioEvents) =>

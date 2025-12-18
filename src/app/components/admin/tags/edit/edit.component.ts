@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import {
@@ -40,15 +40,16 @@ const tagTypesKey = "tagTypes";
   imports: [FormComponent],
 })
 class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
+  private readonly api = inject(TagsService);
+
   public fields = schema.fields;
   public title: string;
 
-  public constructor(
-    private api: TagsService,
-    notifications: ToastService,
-    route: ActivatedRoute,
-    router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[tagKey] as Tag,
       successMsg: (model) => defaultSuccessMsg("updated", model.text),

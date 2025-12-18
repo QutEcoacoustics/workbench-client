@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -71,6 +71,9 @@ class AudioRecordingsListComponent
   extends PagedTableTemplate<TableRow, AudioRecording>
   implements OnInit, AfterViewInit
 {
+  protected readonly apiRoot = inject(API_ROOT);
+  private readonly config = inject(ConfigService);
+
   public columns = [
     { name: "Recorded" },
     { name: "Duration" },
@@ -87,12 +90,10 @@ class AudioRecordingsListComponent
     new BehaviorSubject({});
   protected api: AudioRecordingsService;
 
-  public constructor(
-    @Inject(API_ROOT) public apiRoot: string,
-    api: AudioRecordingsService,
-    route: ActivatedRoute,
-    private config: ConfigService
-  ) {
+  public constructor() {
+    const api = inject(AudioRecordingsService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (recordings): TableRow[] =>

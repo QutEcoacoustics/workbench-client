@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   emptyParam,
   filterParam,
@@ -31,7 +31,7 @@ export class AnalysisJobItemResultsService
       [IdOr<AnalysisJob>, IdOr<AudioRecording>]
     >
 {
-  public constructor(private api: BawApiService<AnalysisJobItemResult>) {}
+  private readonly api = inject<BawApiService<AnalysisJobItemResult>>(BawApiService);
 
   public list(
     analysisJob: IdOr<AnalysisJob>,

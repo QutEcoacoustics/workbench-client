@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { fakeAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
@@ -37,7 +37,10 @@ class MockComponent extends PagedTableTemplate<
 > {
   public columns = [{ prop: "id" }];
 
-  public constructor(api: ProjectsService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(ProjectsService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (models) => models.map((model) => ({ id: model.id, name: model.name })),

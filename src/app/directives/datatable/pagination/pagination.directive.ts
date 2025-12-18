@@ -1,4 +1,4 @@
-import { AfterContentInit, Directive, Host, Input } from "@angular/core";
+import { AfterContentInit, Directive, Input, inject } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -99,9 +99,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   extends withUnsubscribe()
   implements AfterContentInit
 {
-  public constructor(@Host() private datatable: DatatableComponent) {
-    super();
-  }
+  private readonly datatable = inject(DatatableComponent, { host: true });
 
   /**
    * @param filters Base api filters for table. If this is an observable, on

@@ -1,4 +1,4 @@
-import { Component, TemplateRef } from "@angular/core";
+import { Component, TemplateRef, inject } from "@angular/core";
 import { TagGroupsService } from "@baw-api/tag/tag-group.service";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
@@ -43,15 +43,17 @@ export const adminTagGroupMenuItemActions = [
   ],
 })
 class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
+  protected readonly notifications = inject(ToastService);
+  protected readonly modals = inject(NgbModal);
+  protected readonly tagGroupsApi: TagGroupsService;
+
   public columns = [{ name: "Tag" }, { name: "Group" }, { name: "Model" }];
   public sortKeys = { tag: "tagId", group: "groupIdentifier" };
   public editPath = adminEditTagGroupMenuItem.route;
 
-  public constructor(
-    protected tagGroupsApi: TagGroupsService,
-    protected notifications: ToastService,
-    protected modals: NgbModal,
-  ) {
+  public constructor() {
+    const tagGroupsApi = inject(TagGroupsService);
+
     super(tagGroupsApi, (tagGroups) =>
       tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,
@@ -59,6 +61,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
         model: tagGroup,
       }))
     );
+    this.tagGroupsApi = tagGroupsApi;
 
     this.filterKey = "groupIdentifier";
   }

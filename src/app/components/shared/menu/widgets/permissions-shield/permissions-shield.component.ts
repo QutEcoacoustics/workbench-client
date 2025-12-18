@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
@@ -53,15 +53,13 @@ export class PermissionsShieldComponent
   extends withUnsubscribe()
   implements OnInit, WidgetComponent
 {
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+
   public accessLevel: string;
   public badges = [];
   public model: AbstractModel;
   public pageData: IPageInfo;
   private project: Project;
-
-  public constructor(private sharedRoute: SharedActivatedRouteService) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.sharedRoute.pageInfo

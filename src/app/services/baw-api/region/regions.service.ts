@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
@@ -29,7 +29,7 @@ const annotationsEndpoint = stringTemplate`/projects/${projectId}/regions/${regi
  */
 @Injectable()
 export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
-  public constructor(private api: BawApiService<Region>) {}
+  private readonly api = inject<BawApiService<Region>>(BawApiService);
 
   public list(project: IdOr<Project>): Observable<Region[]> {
     return this.api.list(Region, endpoint(project, emptyParam, emptyParam));
@@ -89,7 +89,7 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
  */
 @Injectable()
 export class ShallowRegionsService implements StandardApi<Region> {
-  public constructor(private api: BawApiService<Region>) {}
+  private readonly api = inject<BawApiService<Region>>(BawApiService);
 
   public list(): Observable<Region[]> {
     return this.api.list(Region, endpointShallow(emptyParam, emptyParam));

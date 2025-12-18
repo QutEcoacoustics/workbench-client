@@ -1,5 +1,5 @@
 import { NgClass, NgTemplateOutlet } from "@angular/common";
-import { ChangeDetectionStrategy, Component, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, TemplateRef, inject } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -12,7 +12,7 @@ import { ToastService } from "@services/toasts/toasts.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastProviderComponent {
-  public constructor(protected toastService: ToastService) {}
+  protected readonly toastService = inject(ToastService);
 
   protected isTemplateRef(value: unknown): value is TemplateRef<unknown> {
     return value instanceof TemplateRef;

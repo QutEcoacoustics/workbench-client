@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
@@ -29,10 +29,8 @@ const authTokenRegex = /name="authenticity_token" value="(.+?)"/;
  */
 @Injectable()
 export class BawFormApiService<Model extends AbstractModelWithoutId> {
-  public constructor(
-    private api: BawApiService<Model>,
-    private http: HttpClient
-  ) {}
+  private readonly api = inject<BawApiService<Model>>(BawApiService);
+  private readonly http = inject(HttpClient);
 
   /**
    * Make a form request on non-JSON api endpoints with recaptcha

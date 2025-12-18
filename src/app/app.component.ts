@@ -1,4 +1,4 @@
-import { Component, Inject, INJECTOR, Injector, OnInit } from "@angular/core";
+import { Component, INJECTOR, Injector, OnInit, inject } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -49,19 +49,22 @@ declare const gtag: Gtag.Gtag;
   ],
 })
 export class AppComponent extends withUnsubscribe() implements OnInit {
+  protected readonly menu = inject(MenuService);
+  protected readonly injector = inject<Injector>(INJECTOR);
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+  private readonly router = inject(Router);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+
   public fullscreen: boolean;
   public delayedProgress$: Observable<number>;
   public resolvedSuccessfully: boolean;
 
-  public constructor(
-    public menu: MenuService,
-    private sharedRoute: SharedActivatedRouteService,
-    private router: Router,
-    @Inject(INJECTOR) protected injector: Injector,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    globals: GlobalsService
-  ) {
+  public constructor() {
+    const globals = inject(GlobalsService);
+
     super();
+    const injector = this.injector;
+
     /*
      * Perform the initial navigation of the router, this is because we have
      * disabled this in the app routing module

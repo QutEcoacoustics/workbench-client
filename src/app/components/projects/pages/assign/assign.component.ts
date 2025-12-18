@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -6,21 +6,21 @@ import {
   assignSiteMenuItem,
   projectCategory,
 } from "@components/projects/projects.menus";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { PagedTableTemplate } from "@helpers/tableTemplate/pagedTableTemplate";
 import { Id } from "@interfaces/apiInterfaces";
 import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
+import { FormComponent } from "@shared/form/form.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { List } from "immutable";
 import { forkJoin } from "rxjs";
 import { mergeMap, takeUntil } from "rxjs/operators";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
-import { FormComponent } from "@shared/form/form.component";
-import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
@@ -45,6 +45,9 @@ class AssignComponent
   extends PagedTableTemplate<TableRow, Site>
   implements OnInit
 {
+  private readonly notifications = inject(ToastService);
+  protected readonly api: ShallowSitesService;
+
   public columns = [
     { name: "Site Id" },
     { name: "Name" },
@@ -54,11 +57,10 @@ class AssignComponent
   public error: BawApiError;
   private oldSiteIds: Id[];
 
-  public constructor(
-    protected api: ShallowSitesService,
-    private notifications: ToastService,
-    route: ActivatedRoute
-  ) {
+  public constructor() {
+    const api = inject(ShallowSitesService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (sites) =>

@@ -1,4 +1,4 @@
-import { Inject, Injectable, DOCUMENT } from "@angular/core";
+import { inject, Injectable, DOCUMENT } from "@angular/core";
 import { hsl, rgb, HSLColor, RGBColor } from "d3-color";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
@@ -38,6 +38,9 @@ export type BawTheme = { [color in ThemeColor]?: string };
   providedIn: "root",
 })
 export class ThemeService {
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+
   /** List of colour options in theme */
   public themeColors = themeColors;
   /** List of variants for each colour option in theme */
@@ -48,10 +51,7 @@ export class ThemeService {
   /** Stored styles of the website */
   private root: HTMLElement;
 
-  public constructor(
-    @Inject(DOCUMENT) private document: Document,
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean
-  ) {
+  public constructor() {
     // Read the root style of the website
     this.root = this.document.documentElement;
   }

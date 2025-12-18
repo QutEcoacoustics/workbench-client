@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import {
   FaIconLibrary,
   FontAwesomeModule,
@@ -10,7 +10,9 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
   exports: [FontAwesomeModule],
 })
 export class IconsModule {
-  public constructor(library: FaIconLibrary) {
+  public constructor() {
+    const library = inject(FaIconLibrary);
+
     library.addIconPacks(fas);
   }
 }

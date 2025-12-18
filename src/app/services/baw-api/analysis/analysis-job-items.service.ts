@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AnalysisJob } from "@models/AnalysisJob";
 import { AnalysisJobItem } from "@models/AnalysisJobItem";
@@ -24,7 +24,7 @@ const endpoint = stringTemplate`/analysis_jobs/${analysisJobId}/audio_recordings
 export class AnalysisJobItemsService
   implements ReadonlyApi<AnalysisJobItem, [IdOr<AnalysisJob>]>
 {
-  public constructor(private api: BawApiService<AnalysisJobItem>) {}
+  private readonly api = inject<BawApiService<AnalysisJobItem>>(BawApiService);
 
   public list(analysisJob: IdOr<AnalysisJob>): Observable<AnalysisJobItem[]> {
     return this.api.list(

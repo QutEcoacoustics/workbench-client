@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -61,6 +61,12 @@ export interface HeaderDropdown {
   ],
 })
 export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
+  protected readonly menu = inject(MenuService);
+  private readonly api = inject(SecurityService);
+  private readonly session = inject(BawSessionService);
+  private readonly config = inject(ConfigService);
+  private readonly router = inject(Router);
+
   @Input() public isSideNav: boolean;
 
   public links: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
@@ -72,16 +78,6 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
     profile: myAccountMenuItem,
     register: registerMenuItem,
   };
-
-  public constructor(
-    public menu: MenuService,
-    private api: SecurityService,
-    private session: BawSessionService,
-    private config: ConfigService,
-    private router: Router
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.setHeaderLinks();

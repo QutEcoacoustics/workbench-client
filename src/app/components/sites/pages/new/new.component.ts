@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -30,14 +30,18 @@ const regionKey = "region";
   imports: [FormComponent],
 })
 class SiteNewComponent extends FormTemplate<Site> implements OnInit {
+  protected readonly api = inject(SitesService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public title = "";
 
-  public constructor(
-    protected api: SitesService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: (model) => defaultSuccessMsg("created", model.name),
       redirectUser: (model) =>
@@ -60,6 +64,10 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
         return { projectIds };
       },
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit(): void {

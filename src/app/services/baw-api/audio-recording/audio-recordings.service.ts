@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { AudioRecording } from "@models/AudioRecording";
 import { Harvest } from "@models/Harvest";
@@ -40,7 +40,7 @@ export const audioRecordingMediaEndpoint = stringTemplate`/audio_recordings/${au
 
 @Injectable()
 export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
-  public constructor(private api: BawApiService<AudioRecording>) {}
+  private readonly api = inject<BawApiService<AudioRecording>>(BawApiService);
 
   public list(): Observable<AudioRecording[]> {
     return this.api.list(AudioRecording, endpoint(emptyParam, emptyParam));

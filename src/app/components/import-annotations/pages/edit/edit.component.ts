@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { List } from "immutable";
 import {
   AudioEventImportService,
@@ -41,17 +41,25 @@ class EditAnnotationsComponent
   extends FormTemplate<AudioEventImport>
   implements OnInit
 {
-  public constructor(
-    private api: AudioEventImportService,
-    protected route: ActivatedRoute,
-    protected notifications: ToastService,
-    protected router: Router
-  ) {
+  private readonly api = inject(AudioEventImportService);
+  protected readonly route: ActivatedRoute;
+  protected readonly notifications: ToastService;
+  protected readonly router: Router;
+
+  public constructor() {
+    const route = inject(ActivatedRoute);
+    const notifications = inject(ToastService);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       getModel: (models) => models[audioEventImportKey] as AudioEventImport,
       successMsg: (model) => defaultSuccessMsg("updated", model.name),
       redirectUser: (model) => this.router.navigateByUrl(model.createViewUrl(this.project.id)),
     });
+  
+    this.route = route;
+    this.notifications = notifications;
+    this.router = router;
   }
 
   public fields = schema.fields;
