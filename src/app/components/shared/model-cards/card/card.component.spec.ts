@@ -105,6 +105,10 @@ describe("CardComponent", () => {
     );
   }
 
+  beforeEach(() => {
+    mockProject = new Project(generateProject());
+  });
+
   function validateCard<T extends Project | Region>(
     createModel: (data?: any) => T,
   ) {
