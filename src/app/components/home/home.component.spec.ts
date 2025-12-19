@@ -7,7 +7,7 @@ import { Errorable } from "@helpers/advancedTypes";
 import { Settings } from "@helpers/app-initializer/app-initializer";
 import { IProject, Project } from "@models/Project";
 import { IRegion, Region } from "@models/Region";
-import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
+import { createRoutingFactory, mockProvider, Spectator, SpyObject } from "@ngneat/spectator";
 import { ConfigService } from "@services/config/config.service";
 import { testApiConfig } from "@services/config/configMock.service";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -50,7 +50,13 @@ describe("HomeComponent", () => {
       WithLoadingPipe,
       CardsComponent,
     ],
-    providers: [provideMockConfig(), provideMockBawApi()],
+    providers: [
+      provideMockConfig(),
+      provideMockBawApi(),
+      mockProvider(ProjectsService, {
+        getProjectFor: () => of([]),
+      }),
+    ],
   });
 
   async function awaitRegions(regions: Errorable<Region[]>) {
@@ -140,7 +146,8 @@ describe("HomeComponent", () => {
 
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
-    projectApi.show.andReturn(of());
+    const mockProject = new Project(generateProject(), injector);
+    projectApi.show.andReturn(of(mockProject));
 
     recordingService.filterByRegion.andReturn(of([]));
     recordingService.filterByProject.andReturn(of([]));

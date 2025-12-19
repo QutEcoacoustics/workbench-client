@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { License } from "@models/data/License";
 import { createItemSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
+import { License } from "@models/data/License";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 
 // If you do not do a type import here, the bundle size will increase by 5MB
@@ -68,7 +68,7 @@ export class LicensesService {
     return licenses.has(identifier);
   }
 
-  public async licenseText(identifier: string | undefined): Promise<string> {
+  public async licenseText(identifier: string | null): Promise<string> {
     if (!identifier) {
       return "No License";
     }

@@ -1,12 +1,12 @@
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
-import { IProject, Project } from "@models/Project";
-import type { User } from "@models/User";
-import { iif, Observable } from "rxjs";
-import { AudioRecording } from "@models/AudioRecording";
-import { Site } from "@models/Site";
-import { Region } from "@models/Region";
 import { Id } from "@interfaces/apiInterfaces";
+import { AudioRecording } from "@models/AudioRecording";
+import { IProject, Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import type { User } from "@models/User";
+import { iif, map, Observable } from "rxjs";
 import {
   emptyParam,
   filterParam,
@@ -94,7 +94,7 @@ export class ProjectsService implements StandardApi<Project> {
     let siteIds: Id[] | undefined;
 
     if (model instanceof Region) {
-      siteIds = Array.from(model.siteIds);
+      return this.show(model.projectId).pipe(map((project) => [project]));
     } else if (model instanceof Site) {
       siteIds = [model.id];
     } else if (model instanceof AudioRecording) {
