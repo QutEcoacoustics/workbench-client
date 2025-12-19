@@ -12,7 +12,6 @@ import {
   ImageUrl,
   Param,
 } from "@interfaces/apiInterfaces";
-import { firstValueFrom, map } from "rxjs";
 import { assetRoot } from "@services/config/config.service";
 import { AbstractModel } from "./AbstractModel";
 import {
@@ -91,17 +90,6 @@ export class Region
   public updater?: User;
   @deleter()
   public deleter?: User;
-
-  public get license(): Promise<string | null> {
-    // TODO: Use the "project" association once we support async associations
-    // see: https://github.com/QutEcoacoustics/workbench-client/issues/2148
-    const projectsApi = this.injector.get(PROJECT.token);
-    const request$ = projectsApi
-      .show(this.projectId)
-      .pipe(map((project: Project) => project.license ?? null));
-
-    return firstValueFrom(request$);
-  }
 
   public get viewUrl(): string {
     return regionRoute.format({

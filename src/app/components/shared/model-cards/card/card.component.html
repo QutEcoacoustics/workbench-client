@@ -28,7 +28,7 @@
         <div id="owner" class="badge text-bg-highlight">Owner</div>
       }
 
-      @if (!!license.value()) {
+      @if (!!licenseResource.value()) {
         <div
           class="license-badge badge text-bg-secondary tooltip-hint"
           [ngbTooltip]="
@@ -36,14 +36,7 @@
           "
           container="body"
         >
-          <!--
-            TODO: We can remove this async pipe by making licenseText a resource
-            signal once we upgrade the Angular 20.
-
-            We can't do this yet because the resource signal API in Angular
-            19 does not support the "params" option.
-          -->
-          {{ licenseText() | async }}
+          {{ licenseText.value() }}
         </div>
       }
 

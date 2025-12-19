@@ -1,15 +1,23 @@
+import { fakeAsync, flush } from "@angular/core/testing";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
+import { IUser, User } from "@models/User";
 import { createRoutingFactory, mockProvider, Spectator } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { assetRoot } from "@services/config/config.service";
+import { LicensesService } from "@services/licenses/licenses.service";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
+import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import {
   interceptShowApiRequest,
@@ -17,20 +25,13 @@ import {
 } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { websiteHttpUrl } from "@test/helpers/url";
-import { Subject } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { ProjectsService } from "@baw-api/project/projects.service";
-import { BawSessionService } from "@baw-api/baw-session.service";
-import { IUser, User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { fakeAsync, flush } from "@angular/core/testing";
-import { LicensesService } from "@services/licenses/licenses.service";
+import { of, Subject } from "rxjs";
 import spdxLicenseList from "spdx-license-list";
 import { CardComponent } from "./card.component";
 
 describe("CardComponent", () => {
   let spec: Spectator<CardComponent>;
+  let mockProject: Project;
 
   const createComponent = createRoutingFactory({
     component: CardComponent,
@@ -56,6 +57,9 @@ describe("CardComponent", () => {
         mockProvider(AudioRecordingsService, {
           filterByProject: () => subject,
           filterByRegion: () => subject,
+        }),
+        mockProvider(ProjectsService, {
+          getProjectFor: () => of(mockProject),
         }),
       ],
     });
@@ -339,8 +343,16 @@ describe("CardComponent", () => {
         delete data.license;
       }
 
-      const model = new Region(generateRegion(data ?? {}));
-      spyOnProperty(model, "license", "get").and.returnValue(licenseData);
+      mockProject = new Project(
+        generateProject({ license: licenseData }),
+      );
+
+      const model = new Region(
+        generateRegion({
+          ...data,
+          projectId: mockProject.id,
+        })
+      );
 
       return model;
     });
