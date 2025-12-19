@@ -61,8 +61,10 @@ export class CardComponent {
       // However, because regions can become orphaned, I need a nullish check
       // before accessing the license property so that if no project is found,
       // we do not throw an error.
+      //
       // I also use nullish coalescing to return null if no license is found
-      // so that we don't mix undefined and null return types.
+      // so that we don't mix undefined and null return types when there are no
+      // projects associated with the region.
       const projectLicense = this.projectService.getProjectFor(cardModel).pipe(
         map((project) => project[0]?.license ?? null),
       );

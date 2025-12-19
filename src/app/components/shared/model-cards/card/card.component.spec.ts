@@ -59,7 +59,7 @@ describe("CardComponent", () => {
           filterByRegion: () => subject,
         }),
         mockProvider(ProjectsService, {
-          getProjectFor: () => of(mockProject),
+          getProjectFor: () => of([mockProject]),
         }),
       ],
     });
@@ -283,19 +283,18 @@ describe("CardComponent", () => {
         expect(realizedBadges).toHaveLength(0);
       });
 
-      it("should display a valid license correctly", fakeAsync(async () => {
+      it("should display a valid license correctly", fakeAsync(() => {
         const mockLicense = modelData.licenseName();
         const model = createModel({ license: mockLicense });
 
         setup(model);
         spec.detectChanges();
 
-        // flush so that the model effect completes and updates the license
-        // signal.
+        // flush so that the license resource completes.
         flush();
         spec.detectChanges();
 
-        // We need to flush again so that the licenseText async pipe resolves.
+        // We need to flush again so that the licenseText resource completes.
         flush();
         spec.detectChanges();
 
@@ -313,8 +312,11 @@ describe("CardComponent", () => {
         setup(model);
         spec.detectChanges();
 
-        // We don't have to do a double flush here because the tooltip is static
-        // and does not depend on the licenseText async pipe.
+        // flush so that the license resource completes.
+        flush();
+        spec.detectChanges();
+
+        // flush again so that the licenseText resource completes.
         flush();
         spec.detectChanges();
 
