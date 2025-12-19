@@ -70,9 +70,11 @@ export class CardComponent {
         map((license) => license ?? null),
       ) satisfies Observable<Project["license"]>;
 
-      const license = await firstValueFrom(projectLicense);
+      const licenseText = projectLicense.pipe(
+        map((license) => this.licenseService.licenseText(license)),
+      );
 
-      return await this.licenseService.licenseText(license);
+      return await firstValueFrom(licenseText);
     },
   });
 

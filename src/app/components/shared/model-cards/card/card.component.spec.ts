@@ -294,10 +294,6 @@ describe("CardComponent", () => {
         setup(model);
         spec.detectChanges();
 
-        // flush so that the license resource completes.
-        flush();
-        spec.detectChanges();
-
         // We need to flush again so that the licenseText resource completes.
         flush();
         spec.detectChanges();
@@ -314,10 +310,6 @@ describe("CardComponent", () => {
           "This license has been applied to all data, metadata, and analysis results";
 
         setup(model);
-        spec.detectChanges();
-
-        // flush so that the license resource completes.
-        flush();
         spec.detectChanges();
 
         // flush again so that the licenseText resource completes.
