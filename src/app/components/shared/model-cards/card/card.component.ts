@@ -56,7 +56,7 @@ export class CardComponent {
         return Promise.resolve(cardModel.license);
       }
 
-      // Because regions can only have a maximum of on project, it is safe to
+      // Because regions can only have a maximum of one project, it is safe to
       // take the first result.
       // However, because regions can become orphaned, I need a nullish check
       // before accessing the license property so that if no project is found,
