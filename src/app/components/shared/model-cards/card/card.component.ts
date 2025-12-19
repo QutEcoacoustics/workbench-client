@@ -13,6 +13,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { UrlDirective } from "@directives/url/url.directive";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -56,18 +57,18 @@ export class CardComponent {
         return Promise.resolve(cardModel.license);
       }
 
-      // Because regions can only have a maximum of one project, it is safe to
-      // take the first result.
-      // However, because regions can become orphaned, I need a nullish check
-      // before accessing the license property so that if no project is found,
-      // we do not throw an error.
-      //
-      // I also use nullish coalescing to return null if no license is found
-      // so that we don't mix undefined and null return types when there are no
-      // projects associated with the region.
       const projectLicense = this.projectService.getProjectFor(cardModel).pipe(
-        map((project) => project[0]?.license ?? null),
-      );
+        map((projects) => {
+          return projects
+            .map((project) => project.license)
+            .find(isInstantiated);
+        }),
+        // I use nullish coalescing so that the projectLicense matches the type
+        // signature on the project.license property (string | null).
+        // If I did not use nullish coalescing, the type would be
+        // string | undefined if there were no instantiated licenses.
+        map((license) => license ?? null),
+      ) satisfies Observable<Project["license"]>;
 
       return firstValueFrom(projectLicense);
     },
