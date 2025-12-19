@@ -49,9 +49,9 @@ export class CardComponent {
 
   public readonly model = input<Project | Region>();
 
-  protected readonly licenseResource = resource({
+  protected readonly licenseTextResource = resource({
     params: () => ({ cardModel: this.model() }),
-    loader: ({ params }): Promise<string | null> => {
+    loader: async ({ params }) => {
       const cardModel = params.cardModel;
       if (cardModel instanceof Project) {
         return Promise.resolve(cardModel.license);
@@ -70,14 +70,9 @@ export class CardComponent {
         map((license) => license ?? null),
       ) satisfies Observable<Project["license"]>;
 
-      return firstValueFrom(projectLicense);
-    },
-  });
+      const license = await firstValueFrom(projectLicense);
 
-  protected readonly licenseTextResource = resource({
-    params: () => ({ license: this.licenseResource.value() }),
-    loader: async ({ params }) => {
-      return await this.licenseService.licenseText(params.license);
+      return await this.licenseService.licenseText(license);
     },
   });
 
