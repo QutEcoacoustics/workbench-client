@@ -71,7 +71,7 @@ export class CardComponent {
     },
   });
 
-  protected readonly licenseText = resource({
+  protected readonly licenseTextResource = resource({
     params: () => ({ license: this.licenseResource.value() }),
     loader: async ({ params }) => {
       return await this.licenseService.licenseText(params.license);
