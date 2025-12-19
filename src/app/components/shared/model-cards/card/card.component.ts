@@ -1,26 +1,25 @@
+import { AsyncPipe, NgTemplateOutlet } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
-  signal,
+  resource
 } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { UrlDirective } from "@directives/url/url.directive";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
-import { LicensesService } from "@services/licenses/licenses.service";
-import { map, Observable } from "rxjs";
-import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
-import { UrlDirective } from "@directives/url/url.directive";
-import { AuthenticatedImageDirective } from "@directives/image/image.directive";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { LoadingComponent } from "@shared/loading/loading.component";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
+import { LicensesService } from "@services/licenses/licenses.service";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { map, Observable } from "rxjs";
 
 /**
  * Card Image Component
@@ -47,9 +46,15 @@ export class CardComponent {
 
   public readonly model = input<Project | Region>();
 
-  protected readonly license = signal<string | null>(null);
+  protected readonly license = resource({
+    params: () => ({ model: this.model() }),
+    loader: async ({ params }) => {
+      return await params.model.license;
+    },
+  });
+
   protected readonly licenseText = computed(() =>
-    this.licenseService.licenseText(this.license()),
+    this.licenseService.licenseText(this.license.value()),
   );
 
   protected readonly isOwner = computed(
@@ -58,13 +63,6 @@ export class CardComponent {
 
   protected readonly hasNoAudio$: Observable<boolean> =
     this.getRecordings().pipe(map((recordings) => recordings.length === 0));
-
-  public constructor() {
-    effect(async () => {
-      const modelIdentifier = await this.model().license;
-      this.license.set(modelIdentifier);
-    });
-  }
 
   private getRecordings(): Observable<AudioRecording[]> {
     const filters: Filters<AudioRecording> = { paging: { items: 1 } };

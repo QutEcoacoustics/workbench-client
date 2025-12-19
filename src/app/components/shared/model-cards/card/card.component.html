@@ -28,7 +28,7 @@
         <div id="owner" class="badge text-bg-highlight">Owner</div>
       }
 
-      @if (!!license()) {
+      @if (!!license.value()) {
         <div
           class="license-badge badge text-bg-secondary tooltip-hint"
           [ngbTooltip]="
