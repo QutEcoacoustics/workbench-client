@@ -1,23 +1,23 @@
-import { existsSync, readFileSync } from "node:fs";
-import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
+import { ApplicationConfig, mergeApplicationConfig } from "@angular/core";
 import { provideServerRendering } from "@angular/platform-server";
+import { provideServerRouting } from "@angular/ssr";
+import { Configuration } from "@helpers/app-initializer/app-initializer";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
+import { API_CONFIG } from "@services/config/config.tokens";
+import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
+import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
 import {
   NgHttpCachingConfig,
   NgHttpCachingStrategy,
   provideNgHttpCaching,
 } from "ng-http-caching";
-import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { DeviceDetectorService } from "ngx-device-detector";
-import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
-import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
+import { existsSync, readFileSync } from "node:fs";
 import { environment } from "src/environments/environment";
-import { provideServerRouting } from "@angular/ssr";
-import { API_CONFIG } from "@services/config/config.tokens";
-import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { appConfig } from "./app.config";
 import { serverRoutes } from "./app.routes";
 
-function readConfig() {
+function readConfig(): Configuration | undefined {
   const environmentPath = environment.production
     ? "/environment.json"
     : "./src/assets/environment.json";

@@ -5,8 +5,10 @@ import { createApplication } from "@angular/platform-browser";
 // import { Id } from "@interfaces/apiInterfaces";
 // import { AudioEventGroup } from "@models/AudioEventGroup";
 // import { Site } from "@models/Site";
+// import { IConfiguration } from "@helpers/app-initializer/app-initializer";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 
+const bawConfigName = "__baw_config__";
 const webComponentMappings = new Map<string, any>([
   ["baw-event-map", EventMapWebComponent],
 ]);
@@ -29,6 +31,7 @@ const webComponentMappings = new Map<string, any>([
       // provideBawApi(),
 
       { provide: APP_ID, useValue: "workbench-client" },
+      // { provide: API_CONFIG, useFactory: () => {}},
     ],
   });
 
@@ -37,6 +40,11 @@ const webComponentMappings = new Map<string, any>([
     customElements.define(selector, customElementComponent);
   }
 })();
+
+// function configFactory(): Configuration {
+//   const rawConfig = window[bawConfigName];
+//   return new Configuration(rawConfig);
+// }
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -47,4 +55,8 @@ declare global {
       siteFocused: number;
     }>;
   }
+
+  // interface Window {
+  //   [bawConfigName]: IConfiguration;
+  // }
 }
