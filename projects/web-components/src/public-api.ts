@@ -1,11 +1,11 @@
 import { APP_ID } from "@angular/core";
-import { createCustomElement } from "@angular/elements";
+import { createCustomElement, NgElement, WithProperties } from "@angular/elements";
 import { GoogleMap, MapAdvancedMarker, MapInfoWindow, MapMarkerClusterer } from "@angular/google-maps";
 import { createApplication } from "@angular/platform-browser";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 
 const webComponentMappings = new Map<string, any>([
-  ["oe-baw-event-map", EventMapWebComponent],
+  ["baw-event-map", EventMapWebComponent],
 ]);
 
 (async () => {
@@ -34,3 +34,12 @@ const webComponentMappings = new Map<string, any>([
     customElements.define(selector, customElementComponent);
   }
 })();
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'baw-event-map': NgElement & WithProperties<{
+      events: import("@models/AudioEventGroup").AudioEventGroup[];
+      siteFocused: import("@interfaces/apiInterfaces").Id<import("@models/Site").Site>;
+    }>;
+  }
+}
