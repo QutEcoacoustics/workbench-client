@@ -18,6 +18,8 @@ const webComponentMappings = new Map<string, any>([
   ["baw-event-map", EventMapWebComponent],
 ]);
 
+// We bootstrap the application using an async IIFE because top-level await is
+// not supported in all browsers/build environments yet.
 (async () => {
   applyMonkeyPatches();
 
@@ -59,6 +61,21 @@ function configFactory(): Configuration {
 
 declare global {
   interface Window {
+    /**
+     * @description
+     * Provide a baw configuration object at the window level to override the
+     * default configuration.
+     *
+     * @example
+     * ```html
+     * <script type="module">
+     * window.__baw_config__ = {
+     *   apiUrl: "https://api.example.com",
+     *   googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY",
+     * };
+     * </script>
+     * ```
+     */
     [bawConfigName]: IConfiguration;
   }
 }
