@@ -15,7 +15,7 @@ on:
         type: string
 
 jobs:
-  publish:
+  publish-image:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
     # cancel any other CI attempting to publish to docker
@@ -47,3 +47,19 @@ jobs:
         run: ./scripts/build_docker.ps1
           -github_actor '${{ github.actor }}'
           -release_tag '${{ inputs.release_tag }}'
+
+  publish-web-components:
+    name: "Publish Web Components to NPM"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout Workbench Client
+        uses: nschloe/action-cached-lfs-checkout@v1
+
+      - name: Build Web Components
+        run: |
+          npm ci
+          npm run build:web-components
+
+      - name: Publish to NPM
+        run: npm run publish:web-components

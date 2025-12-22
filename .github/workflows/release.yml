@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-release:
+    name: Create Release request
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    permissions: write-all
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          # we use a service account because GitHub has a restriction where if we use the GITHUB_TOKEN
+          # workflow will not trigger on the PR created by the bot
+          # this is done to prevent recusive workflows
+          # see: https://github.com/peter-evans/create-pull-request/issues/48#issuecomment-536184102
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+          config-file: release-please-config.json
+
+  publish-release:
+    needs: create-release
+    if: >
+      github.actor != 'dependabot[bot]' &&
+      github.actor != 'kodiakhq[bot]' &&
+      (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag')) &&
+      needs.Create-Release.outputs.release_created == 'true'
+    uses: ./.github/workflows/publish.yml
+    with:
+      release_tag: "beta"
+      tag_name: ${{ needs.create-release.outputs.tag_name }}
+    secrets: inherit
