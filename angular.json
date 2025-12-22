@@ -174,11 +174,20 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/web-components/ng-package.json"
-          },
+          "builder": "@angular/build:application",
           "defaultConfiguration": "production",
+          "options": {
+            "index": "projects/web-components/src/public-api.ts",
+            "browser": "projects/web-components/src/public-api.ts",
+            "outputPath": "dist/web-components",
+            "assets": [
+              {
+                "glob": "package.json",
+                "input": "projects/web-components",
+                "output": "."
+              }
+            ]
+          },
           "configurations": {
             "production": {
               "tsConfig": "projects/web-components/tsconfig.lib.json"

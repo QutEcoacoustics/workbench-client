@@ -5,14 +5,14 @@ import "zone.js/testing";
 
 import { getTestBed } from "@angular/core/testing";
 import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
+import { mockGoogleNamespace } from "@test/helpers/googleMaps";
 import { computedStyleMatchers } from "@test/matchers/computedStyle";
 import { htmlMatchers } from "@test/matchers/html";
 import { injectableMatchers } from "@test/matchers/injectables";
 import { signalMatchers } from "@test/matchers/signals";
-import { mockGoogleNamespace } from "@test/helpers/googleMaps";
 import { environment } from "./environments/environment";
 import { applyMonkeyPatches } from "./patches/patches";
 

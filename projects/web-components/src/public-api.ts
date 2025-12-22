@@ -1,11 +1,15 @@
+import { NgTemplateOutlet } from "@angular/common";
 import { APP_ID } from "@angular/core";
-import { createCustomElement, NgElement, WithProperties } from "@angular/elements";
+import { createCustomElement } from "@angular/elements";
 import { GoogleMap, MapAdvancedMarker, MapInfoWindow, MapMarkerClusterer } from "@angular/google-maps";
 import { createApplication } from "@angular/platform-browser";
-// import { Id } from "@interfaces/apiInterfaces";
-// import { AudioEventGroup } from "@models/AudioEventGroup";
-// import { Site } from "@models/Site";
-// import { IConfiguration } from "@helpers/app-initializer/app-initializer";
+import { provideBawApi } from "@baw-api/provide-baw-api";
+import { Configuration, IConfiguration } from "@helpers/app-initializer/app-initializer";
+import { API_CONFIG } from "@services/config/config.tokens";
+import { provideConfig } from "@services/config/provide-config";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { MapComponent } from "@shared/map/map.component";
+import { defaultConfig } from "./defaultConfig";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 
 const bawConfigName = "__baw_config__";
@@ -17,21 +21,21 @@ const webComponentMappings = new Map<string, any>([
   const app = await createApplication({
     providers: [
       // event-map.component dependencies
-      // MapComponent,
+      MapComponent,
 
       // map.component dependencies
       GoogleMap,
       MapAdvancedMarker,
       MapMarkerClusterer,
       MapInfoWindow,
-      // LoadingComponent,
-      // NgTemplateOutlet,
+      LoadingComponent,
+      NgTemplateOutlet,
 
-      // provideConfig(),
-      // provideBawApi(),
+      provideConfig(),
+      provideBawApi(),
 
       { provide: APP_ID, useValue: "workbench-client" },
-      // { provide: API_CONFIG, useFactory: () => {}},
+      { provide: API_CONFIG, useFactory: configFactory },
     ],
   });
 
@@ -41,22 +45,17 @@ const webComponentMappings = new Map<string, any>([
   }
 })();
 
-// function configFactory(): Configuration {
-//   const rawConfig = window[bawConfigName];
-//   return new Configuration(rawConfig);
-// }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'baw-event-map': NgElement & WithProperties<{
-      // siteFocused: Id<Site>;
-      // events: any[];
-      events: any[];
-      siteFocused: number;
-    }>;
+function configFactory(): Configuration {
+  const windowLevelConfig = window[bawConfigName];
+  if (windowLevelConfig) {
+    return new Configuration(windowLevelConfig);
   }
 
-  // interface Window {
-  //   [bawConfigName]: IConfiguration;
-  // }
+  return new Configuration(defaultConfig);
+}
+
+declare global {
+  interface Window {
+    [bawConfigName]: IConfiguration;
+  }
 }

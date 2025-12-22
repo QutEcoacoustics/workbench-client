@@ -9,25 +9,7 @@
     "inlineSources": true,
     "types": [
       "@types/gtag.js",
-    ],
-    "paths": {
-      "@assets/*": ["./dist/workbench-client/assets/*"],
-      "@shared/*": ["./dist/workbench-client/components/shared/*"],
-      "@components/*": ["./dist/workbench-client/components/shared/*"],
-      "@directives/*": ["./dist/workbench-client/directives/*"],
-      "@pipes/*": ["./dist/workbench-client/pipes/*"],
-      "@guards/*": ["./dist/workbench-client/guards/*"],
-      "@helpers/*": ["./dist/workbench-client/helpers/*"],
-      "@interfaces/*": ["./dist/workbench-client/interfaces/*"],
-      "@models/*": ["./dist/workbench-client/models/*"],
-      "@baw-api/*": ["./dist/workbench-client/services/baw-api/*"],
-      "@services/*": ["./dist/workbench-client/services/*"],
-      "@test/*": ["./dist/workbench-client/test/*"]
-      // "@menu/*": [
-      //   "./dist/workbench-client/components/shared/menu/widgets/*",
-      //   "./dist/workbench-client/components/shared/menu/*"
-      // ],
-    }
+    ]
   },
   "angularCompilerOptions": {
     // We use "full" compilation mode because we pre-link the library during
