@@ -8,7 +8,7 @@
   "version": "3.0.0",
   "scripts": {
     "ci": "npm ci --force",
-    "build": "npm run build:web-components && npm run build:workbench-client",
+    "build": "npm run build:workbench-client && npm run build:web-components",
     "build:workbench-client": "ng build --configuration production",
     "build:web-components": "ng build --project web-components && node ./scripts/build-web-components.mjs",
     "publish:web-components": "npm publish ./dist/web-components --access public",
