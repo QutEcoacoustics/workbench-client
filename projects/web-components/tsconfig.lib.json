@@ -17,5 +17,9 @@
     // that the consumer app uses.
     "compilationMode": "full",
     "enableIvy": true
-  }
+  },
+  "files": [
+    "src/public-api.ts",
+    "../../src/polyfills.ts",
+  ]
 }

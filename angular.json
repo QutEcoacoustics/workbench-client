@@ -180,6 +180,14 @@
             "index": "projects/web-components/src/public-api.ts",
             "browser": "projects/web-components/src/public-api.ts",
             "outputPath": "dist/web-components",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
+            "allowedCommonJsDependencies": [
+              "zone.js/dist/zone-error",
+              "humanize-duration",
+              "buffer"
+            ],
             "assets": [
               {
                 "glob": "package.json",

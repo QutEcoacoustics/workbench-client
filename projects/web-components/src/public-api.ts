@@ -9,6 +9,7 @@ import { API_CONFIG } from "@services/config/config.tokens";
 import { provideConfig } from "@services/config/provide-config";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { MapComponent } from "@shared/map/map.component";
+import { applyMonkeyPatches } from "src/patches/patches";
 import { defaultConfig } from "./defaultConfig";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 
@@ -18,6 +19,8 @@ const webComponentMappings = new Map<string, any>([
 ]);
 
 (async () => {
+  applyMonkeyPatches();
+
   const app = await createApplication({
     providers: [
       // event-map.component dependencies
