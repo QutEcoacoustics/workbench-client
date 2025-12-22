@@ -50,6 +50,13 @@ const webComponentMappings = new Map<string, any>([
   }
 })();
 
+/**
+ * @description
+ * A DI provider factory that returns the application {@linkcode Configuration}
+ * object.
+ * This factory differs from the standard workbench provider as it allows for
+ * `window`-level overrides.
+ */
 function configFactory(): Configuration {
   const windowLevelConfig = window[bawConfigName];
   if (windowLevelConfig) {
