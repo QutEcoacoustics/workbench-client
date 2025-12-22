@@ -1,12 +1,6 @@
 {
   "name": "@ecoacoustics/baw-web-components",
   "version": "0.0.1",
-  "exports": {
-    ".": {
-      "types": "./@types/index.d.ts",
-      "import": "./fesm2020/ecoacoustics-baw-web-components.mjs"
-    }
-  },
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0"
