@@ -1,3 +1,7 @@
+// The polyfills must be imported first to ensure that they are applied before
+// any Angular components are registered.
+import "../../../src/polyfills";
+
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
 import { registerWebComponents } from "./register";

@@ -13,7 +13,7 @@ export async function registerWebComponents(
   mappings: Map<string, any>,
   configNamespace: string,
 ): Promise<void> {
-  await injectDependencies();
+  await injectStyles();
   applyMonkeyPatches();
 
   const app = await createApplication({
@@ -37,10 +37,6 @@ export async function registerWebComponents(
  * @description
  * Injects dependencies like styling and polyfills (zone.js).
  */
-async function injectDependencies(): Promise<void> {
-  await Promise.all([injectStyles(), injectPolyfills()]);
-}
-
 async function injectStyles(): Promise<void> {
   const stylesUrl = new URL("styles.css", import.meta.url);
 
@@ -49,12 +45,6 @@ async function injectStyles(): Promise<void> {
   styleSheet.replaceSync(styleContent);
 
   document.adoptedStyleSheets?.push(styleSheet);
-}
-
-async function injectPolyfills(): Promise<void> {
-  const polyfillsUrl = new URL("polyfills.js", import.meta.url);
-
-  await import(polyfillsUrl.href);
 }
 
 /**
