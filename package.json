@@ -11,7 +11,7 @@
     "build": "npm run build:workbench-client && npm run build:web-components",
     "build:workbench-client": "ng build --configuration production",
     "build:web-components": "ng build --project web-components",
-    "publish:web-components": "npm publish ./dist/web-components --access public",
+    "publish:web-components": "npm publish ./dist/browser/web-components --access public",
     "lint": "ng lint",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host development.ecosounds.org",

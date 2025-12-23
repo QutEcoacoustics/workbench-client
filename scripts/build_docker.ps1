@@ -12,7 +12,7 @@ param(
   # release tag
   [Parameter(Mandatory = $false)]
   [string]
-  $release_tag = 'beta'
+  $docker_version = 'beta'
 )
 
 function Test-CI() {
@@ -20,7 +20,7 @@ function Test-CI() {
 }
 
 . $PSScriptRoot/exec.ps1
-$version = . $PSScriptRoot/version.ps1 $release_tag
+$version = . $PSScriptRoot/version.ps1 $docker_version
 Write-Output $version
 
 # tag version on github
@@ -36,7 +36,7 @@ exec { git tag -a "$git_tag_name" -m "$git_tag_message" }
 # docker containing and push to docker hub
 Write-Output "Build docker container"
 $docker_name = "qutecoacoustics/workbench-client";
-$docker_release_tag = [string]::Format("{0}:{1}", $docker_name, $release_tag);
+$docker_release_tag = [string]::Format("{0}:{1}", $docker_name, $docker_version);
 $docker_version_tag = [string]::Format("{0}:{1}", $docker_name, $version.DockerTag);
 
 exec {

@@ -3,15 +3,18 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - master
 
+# This workflow contains two mutually exclusive jobs.
+# Only one of these jobs will run per workflow execution.
 jobs:
+  # If the commit to the master branch is not a release commit, we create a new
+  # release PR against master using release-please.
   create-release:
-    name: Create Release request
+    name: Create release please pull request
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     permissions: write-all
     steps:
       - uses: google-github-actions/release-please-action@v4
@@ -24,15 +27,13 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
           config-file: release-please-config.json
 
+  # If the most recent commit to master is a release commit, we run this job
+  # instead of the create-release job.
   publish-release:
+    name: Publish Release to Docker and NPM
     needs: create-release
-    if: >
-      github.actor != 'dependabot[bot]' &&
-      github.actor != 'kodiakhq[bot]' &&
-      (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag')) &&
-      needs.Create-Release.outputs.release_created == 'true'
+    if: ${{ needs.create-release.outputs.release_created }}
     uses: ./.github/workflows/publish.yml
     with:
-      release_tag: "beta"
-      tag_name: ${{ needs.create-release.outputs.tag_name }}
+      docker_tag: "beta"
     secrets: inherit
