@@ -20,6 +20,12 @@ import { EventMapComponent } from "@shared/event-map/event-map.component";
         position: relative;
         contain: content;
       }
+
+      baw-event-map {
+        display: block !important;
+        width: 100%;
+        height: 40rem;
+      }
     `,
   ],
   imports: [EventMapComponent],
