@@ -15,7 +15,7 @@ export async function injectStyles(): Promise<void> {
   const styleContent = await styleFile.text();
 
   const styleSheet = new CSSStyleSheet();
-  styleSheet.replaceSync(styleContent);
+  styleSheet.replace(styleContent);
 
   document.adoptedStyleSheets?.push(styleSheet);
 }

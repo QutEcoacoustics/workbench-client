@@ -20,6 +20,30 @@ Full page example:
 
   <body>
     <oe-event-map></oe-event-map>
+
+    <script type="module">
+        const eventMap = document.querySelector("oe-event-map");
+        eventMap.events = [
+          {
+            siteId: 3605,
+            eventCount: 67,
+            latitude: -27.4975,
+            longitude: 153.0136,
+          },
+          {
+            siteId: 3606,
+            eventCount: 42,
+            latitude: -27.4773,
+            longitude: 153.0271,
+          },
+          {
+            siteId: 3873,
+            eventCount: 9,
+            latitude: 4.522871,
+            longitude: 6.118915,
+          },
+        ];
+    </script>
   </body>
 </html>
 ```
