@@ -51,9 +51,9 @@ export class ConfigService {
 
     // During SSR and the web components target, there is a default config
     // provided through the DI system.
-    const defaultConfig = this.defaultConfig;
+    const defaultConfig = await this.defaultConfig;
     if (defaultConfig) {
-      this.setConfig(await defaultConfig);
+      this.setConfig(defaultConfig);
       await embedGoogleServicesIfValid();
       return;
     }
