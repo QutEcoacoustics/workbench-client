@@ -18,7 +18,7 @@ on:
         type: string
 
 jobs:
-  publish-image:
+  publish-website-image:
     name: "Publish Docker Container"
     runs-on: "ubuntu-latest"
     # cancel any other CI attempting to publish to docker
