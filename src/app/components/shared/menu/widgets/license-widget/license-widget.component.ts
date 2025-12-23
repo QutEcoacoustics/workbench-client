@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  signal,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from "@angular/core";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   hasResolvedSuccessfully,
@@ -45,13 +40,11 @@ import { firstValueFrom, map } from "rxjs";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LicenseWidgetComponent implements OnInit, WidgetComponent {
-  public constructor(
-    private sharedRoute: SharedActivatedRouteService,
-    private projectsApi: ProjectsService,
-    private licenseService: LicensesService,
-  ) {}
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+  private readonly projectsApi = inject(ProjectsService);
+  private readonly licenseService = inject(LicensesService);
 
-  protected licenses = signal<(string | null)[]>([null]);
+  protected readonly licenses = signal<(string | null)[]>([null]);
 
   public ngOnInit(): void {
     const routeInformation = this.sharedRoute.pageInfo.pipe(

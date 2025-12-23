@@ -81,8 +81,7 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Icon should not exist"),
   compare: (
     target: HTMLElement,
-    icon: IconProp,
-    props: Partial<Exclude<FaIconComponent, "icon">> = {},
+    expectedIcon: IconProp
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -94,14 +93,23 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     }
 
     const component = ng.getComponent<FaIconComponent>(targetIcon);
-    const expectedProps = { icon, ...props };
-
     if (!component) {
       return matcherFailure("FaIconComponent should exist");
     }
 
-    const result = validateAttributes(util, component, expectedProps);
-    return result ? result : matcherSuccess();
+    // Icon is a signal and therefore needs to be called like a function to get
+    // its value, otherwise we would be comparing functions.
+    const realizedIcon = component.icon();
+
+    if (!util.equals(realizedIcon, expectedIcon)) {
+      return matcherFailure(
+        `Expected icon to be ${util.pp(expectedIcon)}, got ${util.pp(
+          realizedIcon
+        )} instead`
+      );
+    }
+
+    return matcherSuccess();
   },
 });
 

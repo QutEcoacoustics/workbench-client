@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  Inject,
-  Input,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild, inject } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
@@ -44,6 +36,12 @@ import { IS_SERVER_PLATFORM } from "src/app/app.helper";
   `],
 })
 export class BawClientComponent extends withUnsubscribe() implements OnInit {
+  public readonly isSsr = inject(IS_SERVER_PLATFORM);
+  private readonly config = inject(ConfigService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly sanitizer = inject(DomSanitizer);
+
   @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;
   /**
    * Forces baw-client to render a specific page. The page url should be relative,
@@ -72,16 +70,6 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
     if (meta?.height > 0) {
       this.updateIframeSize(meta.height);
     }
-  }
-
-  public constructor(
-    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean,
-    private config: ConfigService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private sanitizer: DomSanitizer
-  ) {
-    super();
   }
 
   public ngOnInit(): void {

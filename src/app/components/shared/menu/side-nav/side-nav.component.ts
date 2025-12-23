@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MenuService } from "@services/menu/menu.service";
 
 @Component({
@@ -11,5 +11,5 @@ import { MenuService } from "@services/menu/menu.service";
   styleUrl: "./side-nav.component.scss",
 })
 export class SideNavComponent {
-  public constructor(public menu: MenuService) {}
+  protected readonly menu = inject(MenuService);
 }

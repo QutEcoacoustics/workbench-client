@@ -1,4 +1,4 @@
-import { Inject, Injectable, INJECTOR, Injector } from "@angular/core";
+import { Injectable, INJECTOR, Injector, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
@@ -57,6 +57,12 @@ export type BreadcrumbsData = OrderedSet<Breadcrumb>;
 // TODO Make outputs observables, and expose a snapshot of the current state. Similar to activated route
 @Injectable({ providedIn: "root" })
 export class MenuService extends withUnsubscribe() {
+  private readonly session = inject(BawSessionService);
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+  private readonly defaultMenu = inject<IDefaultMenu>(DEFAULT_MENU);
+  private readonly injector = inject<Injector>(INJECTOR);
+  private readonly config = inject(ConfigService);
+
   private _actionMenu: ActionMenuData;
   private _breadcrumbs: BreadcrumbsData;
   private _hasActions: boolean;
@@ -67,13 +73,7 @@ export class MenuService extends withUnsubscribe() {
   private _secondaryMenu: SecondaryMenuData;
   private _user: User;
 
-  public constructor(
-    private session: BawSessionService,
-    private sharedRoute: SharedActivatedRouteService,
-    @Inject(DEFAULT_MENU) private defaultMenu: IDefaultMenu,
-    @Inject(INJECTOR) private injector: Injector,
-    private config: ConfigService
-  ) {
+  public constructor() {
     super();
 
     const updateState = (): void => {

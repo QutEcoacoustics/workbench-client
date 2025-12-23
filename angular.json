@@ -18,9 +18,7 @@
           "builder": "@angular/build:application",
           "defaultConfiguration": "development",
           "options": {
-            "outputPath": {
-              "base": "dist/workbench-client"
-            },
+            "outputPath": "dist/workbench-client",
             "index": "src/index.html",
             "polyfills": [
               "src/polyfills.ts"
@@ -92,7 +90,6 @@
             },
             "development": {
               "optimization": false,
-              "outputHashing": "all",
               "sourceMap": true,
               "extractLicenses": true
             }
@@ -115,7 +112,8 @@
             },
             "development": {
               "host": "development.ecosounds.org",
-              "port": 4200
+              "port": 4200,
+              "ssl": true
             }
           }
         },
@@ -139,7 +137,7 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@ecoacoustics/web-components/",
-                "output": "base/node_modules/@ecoacoustics/web-components/"
+                "output": "node_modules/@ecoacoustics/web-components/"
               }
             ],
             "styles": [
@@ -242,6 +240,30 @@
     },
     "@angular-eslint/schematics:library": {
       "setParserOptionsProject": true
+    },
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

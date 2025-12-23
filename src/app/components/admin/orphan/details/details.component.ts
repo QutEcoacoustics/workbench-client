@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -34,13 +34,11 @@ class AdminOrphanComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  private readonly route = inject(ActivatedRoute);
+
   public site: Site;
   public failure: boolean;
   public fields = [...baseSchema.fields, ...extendedSchema.fields];
-
-  public constructor(private route: ActivatedRoute) {
-    super();
-  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

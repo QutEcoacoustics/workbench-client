@@ -16,6 +16,7 @@ import {
   theirProfilePageComponents,
 } from "@components/profile/profile.pages";
 import { projectPageComponents } from "@components/projects/projects.pages";
+import { provenancePageComponents } from "@components/provenances/provenances.pages";
 import { regionPageComponents } from "@components/regions/regions.pages";
 import { reportProblemPageComponents } from "@components/report-problem/report-problem.pages";
 import { securityPageComponents } from "@components/security/security.pages";
@@ -49,6 +50,7 @@ export const appPageComponents: Type<PageComponent>[] = [
   myProfilePageComponents,
   theirProfilePageComponents,
   projectPageComponents,
+  provenancePageComponents,
   regionPageComponents,
   reportProblemPageComponents,
   securityPageComponents,

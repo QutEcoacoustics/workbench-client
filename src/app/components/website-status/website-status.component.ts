@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { List } from "immutable";
@@ -7,7 +7,6 @@ import { takeUntil } from "rxjs/operators";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import {
@@ -30,12 +29,7 @@ import {
   imports: [ItemsComponent, StrongRouteDirective],
 })
 class WebsiteStatusComponent extends PageComponent implements OnInit {
-  public constructor(
-    private api: WebsiteStatusService,
-    @Inject(IS_SERVER_PLATFORM) public isSsr: boolean
-  ) {
-    super();
-  }
+  private readonly api = inject(WebsiteStatusService);
 
   protected reportProblemRoute = reportProblemMenuItem.route;
 

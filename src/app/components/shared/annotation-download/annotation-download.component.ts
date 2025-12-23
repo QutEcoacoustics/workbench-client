@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
   hasResolvedSuccessfully,
@@ -86,6 +86,11 @@ export class AnnotationDownloadComponent
   extends withUnsubscribe()
   implements OnInit, ModalComponent
 {
+  private readonly siteApi = inject(SitesService);
+  private readonly regionApi = inject(RegionsService);
+  private readonly projectApi = inject(ProjectsService);
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
+
   public closeModal!: (result: any) => void;
   public dismissModal!: (reason: any) => void;
   public fields: FormlyFieldConfig[] = schema.fields;
@@ -94,15 +99,6 @@ export class AnnotationDownloadComponent
   public project: Project;
   public region?: Region;
   public site?: Site;
-
-  public constructor(
-    private siteApi: SitesService,
-    private regionApi: RegionsService,
-    private projectApi: ProjectsService,
-    private sharedRoute: SharedActivatedRouteService
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.sharedRoute.pageInfo

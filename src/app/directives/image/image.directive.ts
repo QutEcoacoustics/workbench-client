@@ -1,11 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  Inject,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
+import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
@@ -24,6 +17,10 @@ export const notFoundImage: ImageUrl = {
   selector: "img",
 })
 export class AuthenticatedImageDirective implements OnChanges {
+  private readonly apiRoot = inject(API_ROOT);
+  private readonly session = inject(BawSessionService);
+  private readonly imageRef = inject<ElementRef<HTMLImageElement>>(ElementRef);
+
   /** Image src, only accessible if using [src] */
   @Input() public src: ImageUrl[] | string;
   /** Do not append auth token to image url */
@@ -44,12 +41,6 @@ export class AuthenticatedImageDirective implements OnChanges {
    * Contains url for default image
    */
   private defaultImage: ImageUrl;
-
-  public constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    private session: BawSessionService,
-    private imageRef: ElementRef<HTMLImageElement>
-  ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.disableAuth || typeof this.src === "string") {
@@ -79,8 +70,8 @@ export class AuthenticatedImageDirective implements OnChanges {
 
       // Prepend new urls (except default urls) to urls set, and sort by image size
       this.images = newImages.sort((a, b) => {
-        const aPixels = a.height ?? 0 * a.width ?? 0;
-        const bPixels = b.height ?? 0 * b.width ?? 0;
+        const aPixels = (a.height ?? 0) * (a.width ?? 0);
+        const bPixels = (b.height ?? 0) * (b.width ?? 0);
 
         if (aPixels === bPixels) {
           return 0;

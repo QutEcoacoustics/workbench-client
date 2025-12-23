@@ -150,4 +150,3 @@ describe("AnalysisJobComponent", () => {
     details.forEach((detail) => assertDetail(detail));
   });
 });
-

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from "@angular/core";
 import { SitesService } from "@baw-api/site/sites.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
@@ -80,6 +73,9 @@ import { UrlDirective } from "@directives/url/url.directive";
   imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
+  private readonly config = inject(ConfigService);
+  private readonly sitesApi = inject(SitesService);
+
   @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
   @Input() public project: Project;
   @Input() public site: Site | null;
@@ -90,13 +86,6 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   public search$: OperatorFunction<string, readonly Site[]>;
 
   public prevValue: Site;
-
-  public constructor(
-    private config: ConfigService,
-    private sitesApi: SitesService
-  ) {
-    super();
-  }
 
   public ngOnInit(): void {
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {

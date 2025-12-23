@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ReportProblem } from "@models/data/ReportProblem";
@@ -9,7 +9,7 @@ const reportProblemEndpoint = stringTemplate`/bug_report`;
 
 @Injectable()
 export class ReportProblemService {
-  public constructor(private api: BawFormApiService<ReportProblem>) {}
+  private readonly api = inject<BawFormApiService<ReportProblem>>(BawFormApiService);
 
   public reportProblem(details: ReportProblem): Observable<void> {
     const validateEmail = (page: string): void => {

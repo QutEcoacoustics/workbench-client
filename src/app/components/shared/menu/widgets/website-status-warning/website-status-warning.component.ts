@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
 import { KeysOfType } from "@helpers/advancedTypes";
@@ -32,7 +32,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
   imports: [StrongRouteDirective, AsyncPipe],
 })
 export class WebsiteStatusWarningComponent {
-  public constructor(protected api: WebsiteStatusService) {}
+  protected readonly api = inject(WebsiteStatusService);
 
   public feature: KeysOfType<WebsiteStatus, boolean> = "isStatusHealthy";
   public message?: string;

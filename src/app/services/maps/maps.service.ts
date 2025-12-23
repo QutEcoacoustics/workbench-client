@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { sleep } from "@helpers/timing/sleep";
 import { Id } from "@interfaces/apiInterfaces";
 import { Site } from "@models/Site";
@@ -23,13 +23,13 @@ export type MapOptions = google.maps.MapOptions;
 
 @Injectable({ providedIn: "root" })
 export class MapsService {
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly config = inject(ConfigService);
+
   // By embedding the google maps script in the services constructor, we can
   // start loading the script as soon as the service is injected, and we don't
   // have to wait for the underlying component to be created.
-  public constructor(
-    @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
-    private config: ConfigService
-  ) {
+  public constructor() {
     this.loadPromise = this.embedGoogleMaps();
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { License } from "@models/data/License";
 import { createItemSearchCallback } from "@helpers/typeahead/typeaheadCallbacks";
+import { License } from "@models/data/License";
 import { TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
 
 // If you do not do a type import here, the bundle size will increase by 5MB
@@ -23,7 +23,7 @@ export class LicensesService {
     // TODO: When we have an API endpoint to fetch available licenses, this
     // dependency can be removed and the API can be used instead.
     // see: https://github.com/QutEcoacoustics/baw-server/issues/750
-    const licenses = await import("node_modules/spdx-license-list/full");
+    const licenses = await import("spdx-license-list/full");
     return licenses.default;
   }
 
@@ -68,7 +68,7 @@ export class LicensesService {
     return licenses.has(identifier);
   }
 
-  public async licenseText(identifier: string | undefined): Promise<string> {
+  public async licenseText(identifier: string | null): Promise<string> {
     if (!identifier) {
       return "No License";
     }
@@ -78,7 +78,7 @@ export class LicensesService {
   }
 
   private async licenseIdentifiers(): Promise<Readonly<Set<string>>> {
-    const licenses = await import("node_modules/spdx-license-list/simple");
+    const licenses = await import("spdx-license-list/simple");
     return licenses.default;
   }
 }

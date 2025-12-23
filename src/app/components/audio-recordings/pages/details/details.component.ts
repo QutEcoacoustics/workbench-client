@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { audioRecordingResolvers } from "@baw-api/audio-recording/audio-recordings.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -43,13 +43,11 @@ const siteKey = "site";
   imports: [DetailViewComponent],
 })
 class AudioRecordingsDetailsComponent extends PageComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+
+  public readonly fields = schema.fields;
   public failure: boolean;
   private models: ResolvedModelList;
-  public fields = schema.fields;
-
-  public constructor(private route: ActivatedRoute) {
-    super();
-  }
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

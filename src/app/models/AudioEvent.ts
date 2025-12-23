@@ -30,9 +30,9 @@ import {
   VerificationSummary,
 } from "./AudioEvent/VerificationSummary";
 import { AudioEventImportFile } from "./AudioEventImportFile";
-import { AudioEventProvenance } from "./AudioEventProvenance";
 import type { AudioRecording } from "./AudioRecording";
 import { AssociationInjector } from "./ImplementsInjector";
+import { Provenance } from "./Provenance";
 import type { Tag } from "./Tag";
 import { ITagging, Tagging } from "./Tagging";
 import type { User } from "./User";
@@ -49,7 +49,7 @@ export interface IAudioEvent extends HasAllUsers {
   isReference?: boolean;
   score?: number;
   taggings?: ITagging[] | Tagging[];
-  provenanceId?: Id<AudioEventProvenance>;
+  provenanceId?: Id<Provenance>;
   audioEventImportFileId?: Id<AudioEventImportFile>;
 
   // These fields are not included in the standard response, and must be
@@ -115,7 +115,7 @@ export class AudioEvent
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")
-  public provenance?: AudioEventProvenance;
+  public provenance?: Provenance;
   @hasMany(TAG, "tagIds")
   public tags?: Tag[];
 

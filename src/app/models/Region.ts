@@ -98,10 +98,6 @@ export class Region
     });
   }
 
-  public get license() {
-    return this.project?.license;
-  }
-
   public getAudioRecordingsUrl(): string {
     return audioRecordingsRoutes.region.format({
       projectId: this.projectId,

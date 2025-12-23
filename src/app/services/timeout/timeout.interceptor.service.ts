@@ -1,5 +1,5 @@
 import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Inject, Injectable, InjectionToken } from "@angular/core";
+import { Injectable, InjectionToken, inject } from "@angular/core";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { REQUEST_TIMEOUT } from "http-status";
 import { NEVER, Observable, of, throwError } from "rxjs";
@@ -24,11 +24,9 @@ export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>(
  * @author IKatsuba (Igor Katsuba)
  * @link https://github.com/IKatsuba/ngx-ssr
  */
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class TimeoutInterceptor implements HttpInterceptor {
-  public constructor(
-    @Inject(TIMEOUT_OPTIONS) private timeoutOptions: TimeoutOptions
-  ) {}
+  private readonly timeoutOptions = inject<TimeoutOptions>(TIMEOUT_OPTIONS);
 
   public intercept(
     request: HttpRequest<any>,

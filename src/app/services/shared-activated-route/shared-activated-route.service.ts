@@ -1,4 +1,4 @@
-import { Injectable, Type } from "@angular/core";
+import { Injectable, Type, inject } from "@angular/core";
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -46,7 +46,10 @@ export class SharedActivatedRouteService extends withUnsubscribe() {
   private _pageComponentInstance: PageComponent;
   private _snapshot: Observable<ActivatedRouteSnapshot>;
 
-  public constructor(router: Router, route: ActivatedRoute) {
+  public constructor() {
+    const router = inject(Router);
+    const route = inject(ActivatedRoute);
+
     super();
     this.setActivatedRoute(route);
     this.observeRouterEvents(router, route);

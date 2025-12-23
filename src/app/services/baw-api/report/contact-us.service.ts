@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { ContactUs } from "@models/data/ContactUs";
@@ -8,7 +8,7 @@ const contactUsEndpoint = stringTemplate`/contact_us`;
 
 @Injectable()
 export class ContactUsService {
-  public constructor(private api: BawFormApiService<ContactUs>) {}
+  private readonly api = inject<BawFormApiService<ContactUs>>(BawFormApiService);
 
   public contactUs(details: ContactUs): Observable<void> {
     return this.api.makeFormRequestWithoutOutput(

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
@@ -33,15 +33,13 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
   ],
 })
 export class StreamUploadingComponent implements OnInit {
+  private readonly modals = inject(NgbModal);
+  private readonly stages = inject(HarvestStagesService);
+  private readonly config = inject(ConfigService);
+
   public active = 1;
   public audioRecordings = audioRecordingMenuItems.list.project;
   public mappings: HarvestMapping[];
-
-  public constructor(
-    public modals: NgbModal,
-    private stages: HarvestStagesService,
-    private config: ConfigService
-  ) {}
 
   public get harvest(): Harvest {
     return this.stages.harvest;

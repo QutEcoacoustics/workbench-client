@@ -1,9 +1,9 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
 @Injectable({ providedIn: "root" })
 export class ImportsService {
-  public constructor(@Inject(IS_SERVER_PLATFORM) private isServer: boolean) {}
+  private readonly isServer = inject(IS_SERVER_PLATFORM);
 
   public async init(): Promise<void> {
     if (this.isServer) {
@@ -29,7 +29,9 @@ export class ImportsService {
     // measure so that if this bug resurfaces, it will not cause the entire
     // website to fail.
     if (customElements.get("oe-verification-grid") === undefined) {
-      await import("node_modules/@ecoacoustics/web-components/dist/components.js");
+      await import(
+        "../../../../node_modules/@ecoacoustics/web-components/dist/components.js",
+      );
     } else {
       console.warn("Attempted to import web components, but they are already defined");
       console.warn("Skipping re-declaration of web components to prevent a hard failure");

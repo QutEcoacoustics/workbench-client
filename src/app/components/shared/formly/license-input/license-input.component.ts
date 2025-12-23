@@ -8,8 +8,9 @@ import {
   signal,
   viewChild,
 } from "@angular/core";
-import { FieldType } from "@ngx-formly/core";
+import { License } from "@models/data/License";
 import { NgbHighlight, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FieldType } from "@ngx-formly/core";
 import {
   LicensesService,
   SpdxLicense,
@@ -18,7 +19,6 @@ import {
   TypeaheadInputComponent,
   TypeaheadSearchCallback,
 } from "@shared/typeahead-input/typeahead-input.component";
-import { License } from "@models/data/License";
 import { asFormControl } from "../helper";
 import { LicenseInformationModalComponent } from "../modals/license-information.component";
 
@@ -32,12 +32,12 @@ type LicenseMap = Record<string, SpdxLicense>;
   selector: "baw-license-input",
   templateUrl: "./license-input.component.html",
   styleUrl: "./license-input.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TypeaheadInputComponent,
     LicenseInformationModalComponent,
     NgbHighlight,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LicenseInputComponent
   extends FieldType

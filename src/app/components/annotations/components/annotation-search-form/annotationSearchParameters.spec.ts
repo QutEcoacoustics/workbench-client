@@ -1,11 +1,11 @@
-import { modelData } from "@test/helpers/faker";
-import { Project } from "@models/Project";
+import { Params } from "@angular/router";
 import { Filters, Sorting } from "@baw-api/baw-api.service";
 import { AudioEvent } from "@models/AudioEvent";
-import { Params } from "@angular/router";
-import { DateTime } from "luxon";
+import { Project } from "@models/Project";
 import { User } from "@models/User";
 import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
+import { DateTime } from "luxon";
 import { AnnotationSearchParameters } from "./annotationSearchParameters";
 
 interface SearchParameterTest {
@@ -31,10 +31,7 @@ describe("annotationSearchParameters", () => {
 
     const expectedFilters = {
       filter: {
-        and: [
-          { "sites.id": { in: [] } },
-          { "verifications.id": { eq: null } },
-        ],
+        and: [{ "sites.id": { in: [] } }, { "verifications.id": { eq: null } }],
       },
       sorting: {
         orderBy: "createdAt",
@@ -44,6 +41,26 @@ describe("annotationSearchParameters", () => {
     const realizedFilters = dataModel.toFilter();
 
     expect(realizedFilters).toEqual(expectedFilters);
+  });
+
+  // Because the import files are expected to be a subset of the annotation
+  // imports, we should always see both parameters or neither.
+  // If there is only an annotation import file parameter, this indicates that
+  // something has gone wrong, and we should delete the file parameter.
+  // We delete the parameter instead of silently ignoring it so that the user
+  // gets some feedback that the parameter was ignored because the url will
+  // change with the file parameter removed.
+  it("should remove annotation import file parameters if there are no annotation import parameters", () => {
+    const params: Params = {
+      importFiles: "1,2,3",
+    };
+
+    const dataModel = new AnnotationSearchParameters(
+      params,
+      new User(generateUser()),
+    );
+
+    expect("importFiles" in dataModel.toQueryParams()).toBeFalse();
   });
 
   function createParameterModel(params?: Params): AnnotationSearchParameters {
@@ -96,11 +113,11 @@ describe("annotationSearchParameters", () => {
       }),
     },
     {
-      name: "should create correct filter when filters is set",
+      name: "should create correct filter when filters are set",
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
-        importFiles: "1,12,23",
+        imports: "42:1,42:2,42:3,67:",
         recordingDate: ",2020-03-01",
         score: "0.5,0.9",
 
@@ -122,7 +139,12 @@ describe("annotationSearchParameters", () => {
               },
             },
             { "audioRecordings.id": { in: [11, 12, 13] } },
-            { audioEventImportFileId: { in: [1, 12, 23] } },
+            {
+              or: [
+                { audioEventImportFileId: { in: [1, 2, 3] } },
+                { "audioEventImports.id": { eq: 67 } },
+              ],
+            },
             {
               "sites.id": {
                 in: [6, 7, 8, 9],
@@ -235,6 +257,31 @@ describe("annotationSearchParameters", () => {
                 { "verifications.confirmed": { eq: null } },
                 { "verifications.confirmed": { eq: "skip" } },
               ],
+            },
+          ],
+        },
+        sorting: defaultSorting,
+      }),
+    },
+    {
+      name: "should create correct filter when event imports are set",
+      inputParams: {
+        imports: "1:,2:,3:",
+      },
+      expectedFilters: () => ({
+        filter: {
+          and: [
+            {
+              or: [
+                { "audioEventImports.id": { eq: 1 } },
+                { "audioEventImports.id": { eq: 2 } },
+                { "audioEventImports.id": { eq: 3 } },
+              ],
+            },
+            {
+              "projects.id": {
+                in: [routeProject.id],
+              },
             },
           ],
         },

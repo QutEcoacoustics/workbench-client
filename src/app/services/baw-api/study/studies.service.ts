@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { Study } from "@models/Study";
 import { Observable } from "rxjs";
@@ -19,7 +19,7 @@ const endpoint = stringTemplate`/studies/${studyId}${option}`;
 
 @Injectable()
 export class StudiesService implements StandardApi<Study> {
-  public constructor(private api: BawApiService<Study>) {}
+  private readonly api = inject<BawApiService<Study>>(BawApiService);
 
   public list(): Observable<Study[]> {
     return this.api.list(Study, endpoint(emptyParam, emptyParam));

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, inject } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { unknownErrorCode } from "@baw-api/baw-api.service";
@@ -20,9 +20,9 @@ import { ErrorHandlerComponent } from "./error-handler.component";
   providers: [provideMockConfig()],
 })
 class MockComponent implements OnInit {
-  public error: BawApiError;
+  private readonly ref = inject(ChangeDetectorRef);
 
-  public constructor(private ref: ChangeDetectorRef) {}
+  public error: BawApiError;
 
   public ngOnInit() {
     this.error = new BawApiError(

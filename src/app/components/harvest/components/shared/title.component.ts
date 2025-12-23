@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -16,15 +16,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   imports: [FormsModule, FaIconComponent]
 })
 export class TitleComponent extends withUnsubscribe()  {
+  private readonly harvestService = inject(ShallowHarvestsService);
+  private readonly notifications = inject(ToastService);
+
   @Input() public project: Project;
   @Input() public harvest: Harvest;
 
   public editingHarvestName = false;
-
-  public constructor(
-    public harvestService: ShallowHarvestsService,
-    private notifications: ToastService,
-  ){ super() }
 
   public updateHarvestName(form: NgForm) {
     const newHarvestName = form.value["harvestNameInput"];

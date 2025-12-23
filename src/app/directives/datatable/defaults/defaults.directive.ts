@@ -1,4 +1,4 @@
-import { Directive, Host } from "@angular/core";
+import { Directive, inject } from "@angular/core";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
 import {
   ColumnMode,
@@ -16,7 +16,9 @@ import {
  */
 @Directive({ selector: "ngx-datatable[bawDatatableDefaults]" })
 export class DatatableDefaultsDirective {
-  public constructor(@Host() protected datatable: DatatableComponent) {
+  protected readonly datatable = inject(DatatableComponent, { host: true });
+
+  public constructor() {
     // A Component/Directive's @Input attributes are processed after the
     // constructor and before the ngOnInit lifecycle hook is run.
     // This means that these constructor defaults, can be overwritten if the

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -28,10 +28,8 @@ const endpoint = stringTemplate`/my_account/${param}${option}`;
  */
 @Injectable()
 export class UserService implements ApiShow<User> {
-  public constructor(
-    private api: BawApiService<User>,
-    private formApi: BawFormApiService<User>
-  ) {}
+  private readonly api = inject<BawApiService<User>>(BawApiService);
+  private readonly formApi = inject<BawFormApiService<User>>(BawFormApiService);
 
   public show(): Observable<User> {
     return this.api.show(User, endpoint(emptyParam, emptyParam));

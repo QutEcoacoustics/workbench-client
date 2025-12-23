@@ -16,10 +16,12 @@ import {
   validateCustomApiFilter,
   validateStandardApi,
 } from "@test/helpers/api-common";
+import { of } from "rxjs";
 
 interface ProjectForTest {
   model: Parameters<ProjectsService["getProjectFor"]>[0];
-  expectedFilters: InnerFilter;
+  expectedShowId: number | null;
+  expectedFilters: InnerFilter | null;
 }
 
 describe("ProjectsService", (): void => {
@@ -33,7 +35,7 @@ describe("ProjectsService", (): void => {
     providers: mockServiceProviders,
   });
 
-  beforeEach((): void => {
+  beforeEach(() => {
     spec = createService();
   });
 
@@ -64,20 +66,21 @@ describe("ProjectsService", (): void => {
     const testCases: ProjectForTest[] = [
       {
         model: new Site(generateSite({ id: 3 })),
+        expectedShowId: null,
         expectedFilters: {
           "sites.id": { in: [3] },
         } as any,
       },
       {
-        model: new Region(generateRegion({ siteIds: [1,2,3] })),
-        expectedFilters: {
-          "sites.id": { in: [1,2,3] },
-        } as any,
+        model: new Region(generateRegion({ projectId: 42 })),
+        expectedShowId: 42,
+        expectedFilters: null,
       },
       {
         model: new AudioRecording(generateAudioRecording({
           siteId: 42,
         })),
+        expectedShowId: null,
         expectedFilters: {
           "sites.id": { in: [42] },
         } as any,
@@ -86,13 +89,24 @@ describe("ProjectsService", (): void => {
 
     for (const testCase of testCases) {
       it(`should make the correct filter request for a ${testCase.model.kind} model`, () => {
-        const filterApi = spyOn(spec.service, "filter").and.stub();
+        const filterApi = spyOn(spec.service, "filter").and.returnValue(of([]));
+        const showApi = spyOn(spec.service, "show").and.returnValue(of());
 
         spec.service.getProjectFor(testCase.model);
 
-        expect(filterApi).toHaveBeenCalledOnceWith({
-          filter: testCase.expectedFilters,
-        });
+        if (testCase.expectedFilters !== null) {
+          expect(filterApi).toHaveBeenCalledOnceWith({
+            filter: testCase.expectedFilters,
+          });
+        } else {
+          expect(filterApi).not.toHaveBeenCalled();
+        }
+
+        if (testCase.expectedShowId !== null) {
+          expect(showApi).toHaveBeenCalledOnceWith(testCase.expectedShowId);
+        } else {
+          expect(showApi).not.toHaveBeenCalled();
+        }
       });
     }
   });

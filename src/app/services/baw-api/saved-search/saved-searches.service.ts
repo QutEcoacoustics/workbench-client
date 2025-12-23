@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
 import { SavedSearch } from "@models/SavedSearch";
 import { Observable } from "rxjs";
@@ -19,7 +19,7 @@ const endpoint = stringTemplate`/saved_searches/${savedSearchId}${option}`;
 
 @Injectable()
 export class SavedSearchesService implements ImmutableApi<SavedSearch> {
-  public constructor(private api: BawApiService<SavedSearch>) {}
+  private readonly api = inject<BawApiService<SavedSearch>>(BawApiService);
 
   public list(): Observable<SavedSearch[]> {
     return this.api.list(SavedSearch, endpoint(emptyParam, emptyParam));

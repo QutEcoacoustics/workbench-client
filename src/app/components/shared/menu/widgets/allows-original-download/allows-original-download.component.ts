@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { hasRequiredAccessLevelOrHigher } from "@interfaces/apiInterfaces";
@@ -33,7 +33,7 @@ import { AsyncPipe } from "@angular/common";
 export class AllowsOriginalDownloadComponent
   implements OnInit, WidgetComponent
 {
-  public constructor(private sharedRoute: SharedActivatedRouteService) {}
+  private readonly sharedRoute = inject(SharedActivatedRouteService);
 
   public project$: Observable<Project>;
 

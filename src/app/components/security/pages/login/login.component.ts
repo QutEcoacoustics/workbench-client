@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -70,6 +70,15 @@ export const loginMenuItemActions = [
   imports: [FormComponent, ToastComponent],
 })
 class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
+  private readonly apiRoot = inject(API_ROOT);
+  private readonly securityApi = inject(SecurityService);
+  private readonly session = inject(BawSessionService);
+  private readonly location = inject(Location);
+  private readonly accountsApi = inject(AccountsService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
   private redirectBack: boolean;
   private redirectUrl: string | StrongRoute;
@@ -77,16 +86,11 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   @ViewChild("communicationsToast")
   private communicationsToastElement: ToastComponent;
 
-  public constructor(
-    @Inject(API_ROOT) private apiRoot: string,
-    private securityApi: SecurityService,
-    private session: BawSessionService,
-    private location: Location,
-    private accountsApi: AccountsService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       hasFormCheck: false,
       successMsg: () => "Successfully signed in",
@@ -127,6 +131,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
         }
       },
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit() {

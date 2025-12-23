@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -36,7 +36,10 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
     { name: "Description" },
   ];
 
-  public constructor(api: BookmarksService, route: ActivatedRoute) {
+  public constructor() {
+    const api = inject(BookmarksService);
+    const route = inject(ActivatedRoute);
+
     super(
       api,
       (bookmarks) =>

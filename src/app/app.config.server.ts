@@ -1,18 +1,18 @@
 import { ApplicationConfig, mergeApplicationConfig } from "@angular/core";
-import { provideServerRendering } from "@angular/platform-server";
 import { provideServerRouting } from "@angular/ssr";
 import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
+import { existsSync, readFileSync } from "node:fs";
+import { provideServerRendering, withRoutes } from "@angular/ssr";
 import {
   NgHttpCachingConfig,
   NgHttpCachingStrategy,
   provideNgHttpCaching,
 } from "ng-http-caching";
 import { DeviceDetectorService } from "ngx-device-detector";
-import { existsSync, readFileSync } from "node:fs";
 import { environment } from "src/environments/environment";
 import { appConfig } from "./app.config";
 import { IS_WEB_COMPONENT_TARGET } from "./app.helper";
@@ -39,9 +39,7 @@ export const serverCacheConfig = {
 
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(),
-    provideServerRouting(serverRoutes),
-
+    provideServerRendering(withRoutes(serverRoutes)),
     { provide: API_CONFIG, useFactory: readConfig },
     { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
@@ -80,6 +80,19 @@ class MyProfileComponent
   extends withUnsubscribe(PageComponent)
   implements OnInit
 {
+  public readonly router? = inject(Router);
+  protected readonly session = inject(BawSessionService);
+  protected readonly route = inject(ActivatedRoute);
+  protected readonly audioEventsApi = inject(ShallowAudioEventsService);
+  protected readonly bookmarksApi = inject(BookmarksService);
+  protected readonly projectsApi = inject(ProjectsService);
+  protected readonly sitesApi = inject(ShallowSitesService);
+  protected readonly tagsApi = inject(TagsService);
+  protected readonly securityApi? = inject(SecurityService);
+  private readonly accountsApi = inject(AccountsService);
+  private readonly notifications = inject(ToastService);
+  private readonly config = inject(ConfigService);
+
   public dataRequest = dataRequestMenuItem.route;
   public lastSeenAt: string;
   public membershipLength: string;
@@ -126,23 +139,6 @@ class MyProfileComponent
       value: "…",
     },
   ]);
-
-  public constructor(
-    public config: ConfigService,
-    public session: BawSessionService,
-    protected route: ActivatedRoute,
-    protected audioEventsApi: ShallowAudioEventsService,
-    protected bookmarksApi: BookmarksService,
-    protected projectsApi: ProjectsService,
-    protected sitesApi: ShallowSitesService,
-    protected tagsApi: TagsService,
-    public router?: Router,
-    protected securityApi?: SecurityService,
-    private accountsApi?: AccountsService,
-    private notifications?: ToastService
-  ) {
-    super();
-  }
 
   public ngOnInit() {
     const userModel: ResolvedModel<User> = this.route.snapshot.data[userKey];

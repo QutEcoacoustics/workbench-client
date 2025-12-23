@@ -1,16 +1,13 @@
-import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import {
-  DataTableColumnDirective,
-  DataTablePagerComponent,
-  NgxDatatableModule,
-} from "@swimlane/ngx-datatable";
-import { MockModel } from "@models/AbstractModel.spec";
-import { Observable } from "rxjs";
-import { modelData } from "@test/helpers/faker";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
+import { MockModel } from "@models/AbstractModel.spec";
+import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { selectDatatablePage } from "@test/helpers/datatable";
+import { modelData } from "@test/helpers/faker";
+import { Observable } from "rxjs";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
-import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import { DatatablePaginationDirective } from "../pagination/pagination.directive";
+import { DatatableSortKeyDirective } from "../sort-key/sort-key.directive";
 import {
   VirtualDatabaseModelInput,
   VirtualDatatablePaginationDirective,
@@ -25,7 +22,6 @@ describe("bawVirtualDatatablePagination", () => {
 
   const createDirective = createDirectiveFactory({
     directive: VirtualDatatablePaginationDirective<MockModel>,
-    declarations: [DataTableColumnDirective],
     imports: [
       NgxDatatableModule,
       DatatablePaginationDirective,
@@ -77,7 +73,7 @@ describe("bawVirtualDatatablePagination", () => {
   }
 
   function setPage(page: number) {
-    spec.query(DataTablePagerComponent).selectPage(page);
+    selectDatatablePage(spec, page);
     spec.detectChanges();
   }
 

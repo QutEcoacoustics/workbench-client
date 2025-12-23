@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestReport } from "@models/Harvest";
 import { ProgressComponent } from "@shared/progress/progress/progress.component";
@@ -42,7 +42,7 @@ import { EtaComponent } from "../../components/shared/eta.component";
   ],
 })
 export class ProcessingComponent implements OnInit {
-  public constructor(private stages: HarvestStagesService) {}
+  private readonly stages = inject(HarvestStagesService);
 
   public ngOnInit(): void {
     this.stages.startPolling(5000);

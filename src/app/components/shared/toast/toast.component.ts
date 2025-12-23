@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  ContentChild,
-  input,
-  TemplateRef,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, ContentChild, input, TemplateRef, inject } from "@angular/core";
 import {
   ToastInfo,
   ToastOptions,
@@ -27,7 +20,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent {
-  public constructor(private toastService: ToastService) {}
+  private readonly toastService = inject(ToastService);
 
   public variant = input<ToastVariant>("default");
   public title = input<string>("");

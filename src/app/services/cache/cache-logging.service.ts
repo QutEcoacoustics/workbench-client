@@ -1,5 +1,5 @@
 import { HttpContext, HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { CacheSettings, CACHE_SETTINGS } from "./cache-settings";
 
@@ -11,9 +11,7 @@ export const withCacheLogging = (context = new HttpContext()) =>
 
 @Injectable()
 export class CacheLoggingService implements HttpInterceptor {
-  public constructor(
-    @Inject(CACHE_SETTINGS) private cacheSettings: CacheSettings
-  ) {}
+  private readonly cacheSettings = inject<CacheSettings>(CACHE_SETTINGS);
 
   public intercept(
     req: HttpRequest<any>,

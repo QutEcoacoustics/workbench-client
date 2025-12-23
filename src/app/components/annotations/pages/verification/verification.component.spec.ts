@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { discardPeriodicTasks, fakeAsync, tick } from "@angular/core/testing";
 import { Params, Router } from "@angular/router";
+import { ShallowAudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { ShallowVerificationService } from "@baw-api/verification/verification.service";
@@ -15,8 +16,10 @@ import {
   DecisionComponent,
   TagPromptComponent,
   VerificationGridTileComponent,
-} from "@ecoacoustics/web-components/@types";
-import { VerificationGridComponent } from "@ecoacoustics/web-components/@types/components/verification-grid/verification-grid";
+} from "@ecoacoustics/web-components";
+import {
+  VerificationGridComponent,
+} from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -131,6 +134,10 @@ describe("VerificationComponent", () => {
     ],
     providers: [
       provideMockBawApi(),
+      mockProvider(ShallowAudioEventImportFileService, {
+        filter: () => of([]),
+      }),
+
       provideMockConfig(),
 
       // The verification grid will automatically scroll into view once it has
@@ -366,9 +373,9 @@ describe("VerificationComponent", () => {
     spec.query<HTMLButtonElement>(".filter-button");
 
   const tagsTypeahead = () =>
-    document.querySelector<HTMLElement>("#tags-input");
+    spec.query<HTMLElement>("#tags-input", { root: true });
   const updateFiltersButton = () =>
-    document.querySelector<HTMLButtonElement>("#update-filters-btn");
+    spec.query<HTMLButtonElement>("#update-filters-btn", { root: true });
 
   const verificationGrid = () =>
     spec.query<VerificationGridComponent>("oe-verification-grid");
@@ -380,13 +387,13 @@ describe("VerificationComponent", () => {
     );
 
   const decisionComponents = () =>
-    document.querySelectorAll<DecisionComponent>(
+    spec.queryAll<DecisionComponent>(
       "oe-verification, oe-classification, oe-tag-prompt, oe-skip",
+      { root: true },
     );
 
   const tagPromptComponent = () =>
-    document.querySelector<TagPromptComponent>("oe-tag-prompt");
-
+    spec.query<TagPromptComponent>("oe-tag-prompt", { root: true });
   const tagPromptTypeaheadComponent = () =>
     tagPromptComponent().shadowRoot.querySelector("oe-typeahead");
 
@@ -395,7 +402,7 @@ describe("VerificationComponent", () => {
       ".typeahead-result-action",
     );
 
-  function decisionButton(decision: DecisionOptions) {
+  function decisionButton(decision: DecisionOptions): HTMLButtonElement {
     const decisions = [
       DecisionOptions.TRUE,
       DecisionOptions.FALSE,
@@ -409,14 +416,14 @@ describe("VerificationComponent", () => {
       throw new Error("Could not find decision button");
     }
 
-    return decisionComponents()[index].shadowRoot.querySelector<HTMLButtonElement>(
+    return decisionComponents()[index].shadowRoot.querySelector(
       "#decision-button",
     );
   }
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
-    spec.click(target);
+    clickButton(spec, target);
   }
 
   function showParameters(): void {
@@ -871,7 +878,8 @@ describe("VerificationComponent", () => {
 
             if (expectedApiCall) {
               expect(correctionApi[method]).toHaveBeenCalledOnceWith(
-                ...expectedApiCall.args,
+                expectedApiCall.args[0],
+                expectedApiCall.args[1],
               );
             } else {
               expect(correctionApi[method]).not.toHaveBeenCalled();

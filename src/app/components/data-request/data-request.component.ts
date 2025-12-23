@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataRequestService } from "@baw-api/data-request/data-request.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
@@ -50,18 +50,26 @@ import schema from "./data-request.schema.json";
   imports: [FormComponent],
 })
 class DataRequestComponent extends FormTemplate<DataRequest> implements OnInit {
+  private readonly api = inject(DataRequestService);
+  protected readonly notifications: ToastService;
+  protected readonly route: ActivatedRoute;
+  protected readonly router: Router;
+
   public fields = schema.fields;
 
-  public constructor(
-    private api: DataRequestService,
-    protected notifications: ToastService,
-    protected route: ActivatedRoute,
-    protected router: Router,
-  ) {
+  public constructor() {
+    const notifications = inject(ToastService);
+    const route = inject(ActivatedRoute);
+    const router = inject(Router);
+
     super(notifications, route, router, {
       successMsg: () =>
         "Your request was successfully submitted. We will be in contact shortly.",
     });
+  
+    this.notifications = notifications;
+    this.route = route;
+    this.router = router;
   }
 
   public ngOnInit() {

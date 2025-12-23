@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Params } from "@angular/router";
 import { defaultApiPageSize, Filters, Sorting } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
@@ -24,7 +24,9 @@ const pageKey = "page";
   template: "",
 })
 class MockComponent extends PaginationTemplate<Project> {
-  public constructor(api: ProjectsService) {
+  public constructor() {
+    const api = inject(ProjectsService);
+
     super(
       api,
       "id",
@@ -36,6 +38,8 @@ class MockComponent extends PaginationTemplate<Project> {
 }
 
 describe("PaginationTemplate", () => {
+  // I overwrite the filter method on the service so that I can test calling
+  // the service methods with additional parameters.
   let api: SpyObject<ProjectsService>;
   let spectator: SpectatorRouting<MockComponent>;
   let component: MockComponent;
@@ -107,7 +111,15 @@ describe("PaginationTemplate", () => {
     it("should create api filter request with additional parameters", () => {
       component["apiParams"] = () => [1, 2, 3];
       spectator.detectChanges();
-      expect(api.filter).toHaveBeenCalledWith(generateFilter(1), 1, 2, 3);
+
+      const expectedFilter = generateFilter(1);
+
+      // Because the typing of the api is a Projects API, this would normally
+      // fail type checking because we have passed in too many parameters.
+      // However, because we want to test that additional parameters are passed
+      // through, we use 'as any' to bypass type checking here and expect that
+      // the mock api received the correct parameters.
+      expect(api.filter as any).toHaveBeenCalledWith(expectedFilter, 1, 2, 3);
     });
 
     it("should create api filter request with default inner filter values", () => {

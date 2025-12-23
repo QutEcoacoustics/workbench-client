@@ -42,9 +42,9 @@ describe("MenuToggleComponent", () => {
 
   function validateIcon(state: MenuState) {
     if (state === MenuState.opened) {
-      expect(spec.query(FaIconComponent).icon).toEqual(["fas", "times"]);
+      expect(spec.query(FaIconComponent).icon()).toEqual(["fas", "times"]);
     } else {
-      expect(spec.query(FaIconComponent).icon).toEqual(["fas", "bars"]);
+      expect(spec.query(FaIconComponent).icon()).toEqual(["fas", "bars"]);
     }
   }
 
@@ -111,8 +111,8 @@ describe("MenuToggleComponent", () => {
 
   describe("toggle menu", () => {
     function clickButton() {
-      spec.query<HTMLButtonElement>("button").click();
-      spec.detectChanges();
+      const buttonElement = spec.query<HTMLButtonElement>("button");
+      spec.click(buttonElement);
     }
 
     function setMenuState(isFullscreen: boolean, isMenuOpen: boolean) {
