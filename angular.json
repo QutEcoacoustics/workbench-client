@@ -199,7 +199,20 @@
                 "input": "node_modules/@googlemaps/markerclusterer/dist/",
                 "output": "@googlemaps/markerclusterer/dist/"
               }
-            ]
+            ],
+            "styles": [
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles",
+                "inject": false
+              }
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles",
+                "node_modules"
+              ]
+            }
           },
           "configurations": {
             "production": {
