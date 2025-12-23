@@ -6,7 +6,7 @@ import { Site } from "@models/Site";
 import { EventMapComponent } from "@shared/event-map/event-map.component";
 
 @Component({
-  selector: "baw-event-map",
+  selector: "private-oe-event-map",
   template: `
     <baw-event-map
       [events]="events()"
@@ -27,7 +27,7 @@ import { EventMapComponent } from "@shared/event-map/event-map.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapWebComponent {
-  public readonly events = input.required<AudioEventGroup[]>();
+  public readonly events = input<AudioEventGroup[]>([]);
   public readonly siteFocused = output<Id<Site>>();
 }
 
