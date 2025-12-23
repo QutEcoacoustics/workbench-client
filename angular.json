@@ -193,6 +193,11 @@
                 "glob": "package.json",
                 "input": "projects/web-components",
                 "output": "."
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@googlemaps/markerclusterer/dist/",
+                "output": "@googlemaps/markerclusterer/dist/"
               }
             ]
           },
