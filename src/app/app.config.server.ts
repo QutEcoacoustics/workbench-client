@@ -1,23 +1,22 @@
-import { ApplicationConfig, mergeApplicationConfig } from "@angular/core";
+import { existsSync, readFileSync } from "node:fs";
 import { provideServerRendering, withRoutes } from "@angular/ssr";
-import { Configuration } from "@helpers/app-initializer/app-initializer";
-import { disableCache } from "@services/cache/ngHttpCachingConfig";
-import { API_CONFIG } from "@services/config/config.tokens";
-import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
-import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
+import { mergeApplicationConfig, ApplicationConfig } from "@angular/core";
 import {
   NgHttpCachingConfig,
   NgHttpCachingStrategy,
   provideNgHttpCaching,
 } from "ng-http-caching";
+import { disableCache } from "@services/cache/ngHttpCachingConfig";
 import { DeviceDetectorService } from "ngx-device-detector";
-import { existsSync, readFileSync } from "node:fs";
+import { UniversalDeviceDetectorService } from "@services/universal-device-detector/universal-device-detector.service";
+import { providerTimeoutInterceptor } from "@services/timeout/provide-timeout";
 import { environment } from "src/environments/environment";
+import { API_CONFIG } from "@services/config/config.tokens";
+import { Configuration } from "@helpers/app-initializer/app-initializer";
 import { appConfig } from "./app.config";
-import { IS_WEB_COMPONENT_TARGET } from "./app.helper";
 import { serverRoutes } from "./app.routes";
 
-function readConfig(): Configuration | undefined {
+function readConfig() {
   const environmentPath = environment.production
     ? "/environment.json"
     : "./src/assets/environment.json";
@@ -40,8 +39,6 @@ const serverConfig: ApplicationConfig = {
   providers: [
     provideServerRendering(withRoutes(serverRoutes)),
     { provide: API_CONFIG, useFactory: readConfig },
-    { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
-
     {
       provide: DeviceDetectorService,
       useClass: UniversalDeviceDetectorService,
