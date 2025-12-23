@@ -1,22 +1,24 @@
-// The polyfills must be imported first to ensure that they are applied before
-// any Angular components are registered.
-import "../../../src/polyfills";
-
-import { IConfiguration } from "@helpers/app-initializer/app-initializer";
-import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
-import { registerWebComponents } from "./register";
-
 // Anything exported from this file is intended to be used as a public API.
 //
 // Note at the moment, there is nothing exported from this file.
 // Therefore the file is intended to be used as a module only for its
 // custom-element and typing side-effects.
 
+// The polyfills must be imported first to ensure that they are applied before
+// any Angular components are registered..
+import "../../../src/polyfills";
+
+import { IConfiguration } from "@helpers/app-initializer/app-initializer";
+import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
+import { registerWebComponents, WebComponentSelector } from "./register";
+
 const bawConfigName = "__baw_config__";
-const webComponentMappings = new Map<string, any>([
+const webComponentMappings = new Map<WebComponentSelector, any>([
   ["oe-event-map", EventMapWebComponent],
 ]);
 
+// By calling this function, the web components will be registered as a
+// side-effect.
 registerWebComponents(webComponentMappings, bawConfigName);
 
 // Patch the global namespace to include the custom baw config property.
