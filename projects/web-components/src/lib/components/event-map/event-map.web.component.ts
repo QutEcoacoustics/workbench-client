@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input, output, ViewEncapsulation } from "@angular/core";
 import { NgElement, WithProperties } from "@angular/elements";
 import { Id } from "@interfaces/apiInterfaces";
-import { AudioEventGroup } from "@models/AudioEventGroup";
+import { AudioEventGroup, IAudioEventGroup } from "@models/AudioEventGroup";
 import { Site } from "@models/Site";
 import { EventMapComponent } from "@shared/event-map/event-map.component";
 
@@ -9,7 +9,7 @@ import { EventMapComponent } from "@shared/event-map/event-map.component";
   selector: "private-oe-event-map",
   template: `
     <baw-event-map
-      [events]="events()"
+      [events]="constructedEvents()"
       (siteFocused)="siteFocused.emit($event)"
     />
   `,
@@ -27,8 +27,12 @@ import { EventMapComponent } from "@shared/event-map/event-map.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMapWebComponent {
-  public readonly events = input<AudioEventGroup[]>([]);
+  public readonly events = input<IAudioEventGroup[]>([]);
   public readonly siteFocused = output<Id<Site>>();
+
+  protected readonly constructedEvents = computed(() => {
+    return this.events().map((model) => new AudioEventGroup(model));
+  });
 }
 
 declare global {
