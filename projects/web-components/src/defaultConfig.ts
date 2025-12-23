@@ -30,14 +30,9 @@ export const defaultConfig: IConfiguration = {
     },
     hideProjects: false,
     homePageAndProjectListMaps: true,
-    customMenu: [
-      {
-        title: "Research",
-        items: []
-      }
-    ],
+    customMenu: [],
     theme: {
-      highlight: "#304f3b"
+      highlight: "#00467f"
     }
   },
 };
