@@ -195,6 +195,16 @@
                 "output": "."
               },
               {
+                "glob": "README.md",
+                "input": "projects/web-components",
+                "output": "."
+              },
+              {
+                "glob": "LICENSE",
+                "input": "LICENSE",
+                "output": "."
+              },
+              {
                 "glob": "**/*",
                 "input": "node_modules/@googlemaps/markerclusterer/dist/",
                 "output": "@googlemaps/markerclusterer/dist/"
