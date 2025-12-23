@@ -15,6 +15,7 @@ import { DeviceDetectorService } from "ngx-device-detector";
 import { existsSync, readFileSync } from "node:fs";
 import { environment } from "src/environments/environment";
 import { appConfig } from "./app.config";
+import { IS_WEB_COMPONENT_TARGET } from "./app.helper";
 import { serverRoutes } from "./app.routes";
 
 function readConfig(): Configuration | undefined {
@@ -42,6 +43,7 @@ const serverConfig: ApplicationConfig = {
     provideServerRouting(serverRoutes),
 
     { provide: API_CONFIG, useFactory: readConfig },
+    { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
 
     {
       provide: DeviceDetectorService,

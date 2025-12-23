@@ -11,7 +11,7 @@ import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics"
 import { ThemeService } from "@services/theme/theme.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { IS_SERVER_PLATFORM, IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 import { API_CONFIG } from "./config.tokens";
 
@@ -33,6 +33,7 @@ export class ConfigService {
     handler: HttpBackend,
     @Inject(IS_SERVER_PLATFORM) private isServer: boolean,
     @Optional() @Inject(API_CONFIG) private defaultConfig: Promise<Configuration>,
+    @Inject(IS_WEB_COMPONENT_TARGET) private isWebComponentTarget: boolean
   ) {
     // This is to bypass the interceptor and prevent circular dependencies
     // (interceptor requires API_ROOT)
@@ -42,8 +43,8 @@ export class ConfigService {
 
   public async init(): Promise<void> {
     const embedGoogleServicesIfValid = async () => {
-      // Only insert if valid config, and not SSR
-      if (this.validConfig && !this.isServer) {
+      // Only insert if valid config, and not SSR or web component target
+      if (this.validConfig && !this.isServer && !this.isWebComponentTarget) {
         embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
       }
     };

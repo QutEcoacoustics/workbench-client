@@ -5,6 +5,7 @@ import { provideBawApi } from "@baw-api/provide-baw-api";
 import { Configuration, IConfiguration } from "@helpers/app-initializer/app-initializer";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { provideConfig } from "@services/config/provide-config";
+import { IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
 import { applyMonkeyPatches } from "src/patches/patches";
 import { defaultConfig } from "./defaultConfig";
 import { EventMapWebComponent } from "./lib/components/event-map/event-map.web.component";
@@ -26,6 +27,7 @@ const webComponentMappings = new Map<string, any>([
 
       { provide: APP_ID, useValue: "workbench-client" },
       { provide: API_CONFIG, useFactory: configFactory },
+      { provide: IS_WEB_COMPONENT_TARGET, useValue: true },
     ],
   });
 
