@@ -43,7 +43,7 @@ export class EventMapWebComponent {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'baw-event-map': NgElement & WithProperties<{
+    'oe-event-map': NgElement & WithProperties<{
       siteFocused: Id<Site>;
       events: AudioEventGroup[];
     }>;

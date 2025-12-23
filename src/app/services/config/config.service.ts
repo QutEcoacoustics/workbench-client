@@ -1,11 +1,11 @@
 import { HttpBackend, HttpClient } from "@angular/common/http";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   Configuration,
   Endpoints,
   isConfiguration,
   Keys,
-  Settings
+  Settings,
 } from "@helpers/app-initializer/app-initializer";
 import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics";
 import { ThemeService } from "@services/theme/theme.service";

@@ -20,7 +20,7 @@ import { injectStyles } from "./dependencies";
  *   4. The selector MUST not conflict with any existing HTML or Angular
  *      elements.
  *
- * We use to `oe-` prefix here instead of the `baw-` prefix used by the
+ * We use the `oe-` prefix here instead of the `baw-` prefix used by the
  * workbench to avoid potential conflicts with internal workbench selectors.
  *
  * @example

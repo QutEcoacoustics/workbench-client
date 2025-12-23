@@ -19,9 +19,9 @@ export const defaultConfig: IConfiguration = {
   },
   settings: {
     brand: {
-      short: "<<brandName>>",
-      long: "<<brandName>>| Acoustic Workbench",
-      organization: "<< organisationName >>"
+      short: "Baw Web Components",
+      long: "Baw Web Components",
+      organization: "Open Ecoacoustics"
     },
     links: {
       sourceRepository: "https://github.com/QutEcoacoustics/workbench-client",

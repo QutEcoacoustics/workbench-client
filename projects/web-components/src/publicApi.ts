@@ -5,7 +5,7 @@
 // custom-element and typing side-effects.
 
 // The polyfills must be imported first to ensure that they are applied before
-// any Angular components are registered..
+// any Angular components are registered.
 import "../../../src/polyfills";
 
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
