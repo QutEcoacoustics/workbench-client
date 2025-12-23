@@ -201,7 +201,7 @@
               },
               {
                 "glob": "LICENSE",
-                "input": "LICENSE",
+                "input": "",
                 "output": "."
               },
               {
