@@ -177,8 +177,8 @@
           "builder": "@angular/build:application",
           "defaultConfiguration": "production",
           "options": {
-            "index": "projects/web-components/src/public-api.ts",
-            "browser": "projects/web-components/src/public-api.ts",
+            "index": "projects/web-components/src/publicApi.ts",
+            "browser": "projects/web-components/src/publicApi.ts",
             "outputPath": "dist/web-components",
             "polyfills": [
               "src/polyfills.ts"

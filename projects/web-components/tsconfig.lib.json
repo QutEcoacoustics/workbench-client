@@ -19,7 +19,7 @@
     "enableIvy": true
   },
   "files": [
-    "src/public-api.ts",
+    "src/publicApi.ts",
     "../../src/polyfills.ts",
   ]
 }
