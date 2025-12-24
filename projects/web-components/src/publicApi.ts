@@ -16,7 +16,7 @@ const webComponentMappings = new Map<WebComponentSelector, any>([
   ["oe-event-map", EventMapWebComponent],
 ]);
 
-export type WebComponentConfig = IConfiguration;
+export interface WebComponentConfig extends IConfiguration {}
 
 // By calling this function, the web components will be registered as a
 // side-effect.
