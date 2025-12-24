@@ -2,7 +2,7 @@ import { APP_ID } from "@angular/core";
 import { createCustomElement } from "@angular/elements";
 import { createApplication } from "@angular/platform-browser";
 import { provideBawApi } from "@baw-api/provide-baw-api";
-import { Configuration } from "@helpers/app-initializer/app-initializer";
+import { Configuration, IConfiguration } from "@helpers/app-initializer/app-initializer";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { provideConfig } from "@services/config/provide-config";
 import { IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
@@ -24,7 +24,7 @@ import { injectStyles } from "./dependencies";
  * workbench to avoid potential conflicts with internal workbench selectors.
  *
  * @example
- * ```typescript
+ * ```ts
  * const selector: WebComponentSelector = "oe-my-custom-element";
  * ```
  */
@@ -38,7 +38,7 @@ export type WebComponentSelector = `oe-${Lowercase<string>}`;
  */
 export async function registerWebComponents(
   mappings: Map<WebComponentSelector, any>,
-  configNamespace: string,
+  configObject: IConfiguration = defaultConfig,
 ): Promise<void> {
   // We inject web component styles before registering any web components so
   // that the styles are available when the components are initially created to
@@ -46,13 +46,17 @@ export async function registerWebComponents(
   await injectStyles();
   applyMonkeyPatches();
 
+  // Create a configuration instance from an object so that we don't have to
+  // export the Configuration constructor.
+  const config = new Configuration(configObject);
+
   const app = await createApplication({
     providers: [
       provideConfig(),
       provideBawApi(),
 
       { provide: APP_ID, useValue: "baw-web-components" },
-      { provide: API_CONFIG, useFactory: configFactory(configNamespace) },
+      { provide: API_CONFIG, useValue: config },
       { provide: IS_WEB_COMPONENT_TARGET, useValue: true },
     ],
   });
@@ -61,22 +65,4 @@ export async function registerWebComponents(
     const customElementComponent = createCustomElement(component, app);
     customElements.define(selector, customElementComponent);
   }
-}
-
-/**
- * @description
- * A DI provider factory that returns the application {@linkcode Configuration}
- * object.
- * This factory differs from the standard workbench provider as it allows for
- * `window`-level overrides.
- */
-function configFactory(configNamespace: string): () => Configuration {
-  return () => {
-    const windowLevelConfig = window[configNamespace];
-    if (windowLevelConfig) {
-      return new Configuration(windowLevelConfig);
-    }
-
-    return new Configuration(defaultConfig);
-  };
 }
