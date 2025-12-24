@@ -8,6 +8,7 @@ import {
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
+import { IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
@@ -23,6 +24,8 @@ describe("ConfigService", () => {
       mockProvider(ToastService),
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
+
+      { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
     ],
   });
 
@@ -38,6 +41,7 @@ describe("ConfigService", () => {
     service = spec.inject(ConfigService);
 
     const promise = spec.service.init();
+    await Promise.resolve();
     const req = spec.expectOne("assets/environment.json", HttpMethod.GET);
     req.flush(apiConfig);
     await promise;

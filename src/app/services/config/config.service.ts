@@ -26,8 +26,8 @@ export class ConfigService {
   private readonly notification = inject(ToastService);
   private readonly theme = inject(ThemeService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
-  private readonly defaultConfig = inject<Configuration>(API_CONFIG, { optional: true });
-  private readonly isWebComponentTarget = inject<boolean>(IS_WEB_COMPONENT_TARGET);
+  private readonly defaultConfig = inject(API_CONFIG, { optional: true });
+  private readonly isWebComponentTarget = inject(IS_WEB_COMPONENT_TARGET);
 
   private _validConfig: boolean;
   private _config: Configuration;
@@ -52,7 +52,7 @@ export class ConfigService {
 
     // During SSR and the web components target, there is a default config
     // provided through the DI system.
-    const defaultConfig = this.defaultConfig;
+    const defaultConfig = await this.defaultConfig;
     if (defaultConfig) {
       this.setConfig(defaultConfig);
       await embedGoogleServicesIfValid();
