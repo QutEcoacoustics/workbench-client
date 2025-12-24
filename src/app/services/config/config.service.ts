@@ -1,9 +1,8 @@
 import { HttpBackend, HttpClient } from "@angular/common/http";
-import { Injectable, inject } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   Configuration,
   Endpoints,
-  IConfiguration,
   isConfiguration,
   Keys,
   Settings,
@@ -12,8 +11,9 @@ import { embedGoogleAnalytics } from "@helpers/embedScript/embedGoogleAnalytics"
 import { ThemeService } from "@services/theme/theme.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { catchError, firstValueFrom, mergeMap, of, retry } from "rxjs";
-import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import { IS_SERVER_PLATFORM, IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
+import { API_CONFIG } from "./config.tokens";
 
 export const assetRoot = "/assets";
 
@@ -26,6 +26,8 @@ export class ConfigService {
   private readonly notification = inject(ToastService);
   private readonly theme = inject(ThemeService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
+  private readonly defaultConfig = inject(API_CONFIG, { optional: true });
+  private readonly isWebComponentTarget = inject(IS_WEB_COMPONENT_TARGET);
 
   private _validConfig: boolean;
   private _config: Configuration;
@@ -40,16 +42,19 @@ export class ConfigService {
     this.http = new HttpClient(handler);
   }
 
-  public async init(defaultConfig?: Promise<IConfiguration>): Promise<void> {
+  public async init(): Promise<void> {
     const embedGoogleServicesIfValid = async () => {
-      // Only insert if valid config, and not SSR
-      if (this.validConfig && !this.isServer) {
+      // Only insert if valid config, and not SSR or web component target
+      if (this.validConfig && !this.isServer && !this.isWebComponentTarget) {
         embedGoogleAnalytics(this.keys.googleAnalytics.trackingId);
       }
     };
 
+    // During SSR and the web components target, there is a default config
+    // provided through the DI system.
+    const defaultConfig = await this.defaultConfig;
     if (defaultConfig) {
-      this.setConfig(await defaultConfig);
+      this.setConfig(defaultConfig);
       await embedGoogleServicesIfValid();
       return;
     }

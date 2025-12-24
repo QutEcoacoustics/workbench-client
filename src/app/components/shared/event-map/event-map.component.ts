@@ -4,14 +4,14 @@ import {
   computed,
   input,
   output,
-  signal,
+  signal
 } from "@angular/core";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEventGroup } from "@models/AudioEventGroup";
+import { Site } from "@models/Site";
 import { MapMarkerOptions } from "@services/maps/maps.service";
 import { MapComponent } from "@shared/map/map.component";
 import { List } from "immutable";
-import { Site } from "@models/Site";
-import { AudioEventGroup } from "@models/AudioEventGroup";
-import { Id } from "@interfaces/apiInterfaces";
 
 @Component({
   selector: "baw-event-map",
