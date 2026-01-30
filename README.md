@@ -44,6 +44,18 @@ $ npm run serve:ssr
 
 Then open a web browser to `http://localhost:4000`.
 
+### The old baw-client
+
+This is a hybrid SPA where we still load in a few pages from the old baw-client.
+You'll need to have a copy of the baw-client in the assets folder to have these pages work.
+
+You'll also need a copy for all the tests to pass.
+
+You can copy a build from a recent [github actions run](https://github.com/QutEcoacoustics/workbench-client/actions/runs/2)
+where we build the baw-client as an artifact.
+
+Then copy it to `./src/assets/old-client`.
+
 ### Environment
 
 This website can be customised through the environment file located at `./src/assets/environment.json` (note: look at the docker section for deploying environment files). Here is a list of settings and some example values:
