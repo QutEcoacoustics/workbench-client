@@ -140,7 +140,16 @@ export class MapsService {
     // from our own server (via angular.json assets), meaning that it can re-use
     // the same keep-alive connection as the rest of the app.
     // https://github.com/angular/components/blob/974d42f04/src/google-maps/map-marker-clusterer/README.md?plain=1#L5
-    return "@googlemaps/markerclusterer/dist/index.min.js";
+    //
+    // We construct a URL using the import.meta.url so that when this service is
+    // exported as a web component, the consumer can load the file from any
+    // sub-path because the URL will be relative to the web component bundle.
+    const url = new URL(
+      "@googlemaps/markerclusterer/dist/index.min.js",
+      import.meta.url,
+    );
+
+    return url.href;
   }
 
   private logWarning(message: string): void {

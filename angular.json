@@ -164,6 +164,71 @@
           }
         }
       }
+    },
+    "web-components": {
+      "projectType": "library",
+      "root": "projects/web-components",
+      "sourceRoot": "projects/web-components/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "defaultConfiguration": "production",
+          "options": {
+            "index": "projects/web-components/src/publicApi.ts",
+            "browser": "projects/web-components/src/publicApi.ts",
+            "outputPath": "dist/web-components",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
+            "allowedCommonJsDependencies": [
+              "zone.js/dist/zone-error",
+              "humanize-duration",
+              "buffer"
+            ],
+            "assets": [
+              {
+                "glob": "package.json",
+                "input": "projects/web-components",
+                "output": "."
+              },
+              {
+                "glob": "README.md",
+                "input": "projects/web-components",
+                "output": "."
+              },
+              {
+                "glob": "LICENSE",
+                "input": "",
+                "output": "."
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@googlemaps/markerclusterer/dist/",
+                "output": "@googlemaps/markerclusterer/dist/"
+              }
+            ],
+            "styles": [
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles",
+                "inject": false
+              }
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles",
+                "node_modules"
+              ]
+            }
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/web-components/tsconfig.lib.json"
+            }
+          }
+        }
+      }
     }
   },
   "cli": {

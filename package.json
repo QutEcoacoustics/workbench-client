@@ -8,7 +8,10 @@
   "version": "3.0.0",
   "scripts": {
     "ci": "npm ci --force",
-    "build": "ng build --configuration production",
+    "build": "npm run build:workbench-client && npm run build:web-components",
+    "build:workbench-client": "ng build --configuration production",
+    "build:web-components": "ng build --project web-components",
+    "publish:web-components": "npm publish ./dist/web-components/browser --access public",
     "lint": "ng lint",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host development.ecosounds.org",

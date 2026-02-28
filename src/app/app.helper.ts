@@ -26,3 +26,11 @@ export const IS_SERVER_PLATFORM = new InjectionToken<boolean>("Is server?", {
     return isPlatformServer(inject(PLATFORM_ID));
   },
 });
+
+/**
+ * @description
+ * Injection token to determine if the current build target is web components.
+ */
+export const IS_WEB_COMPONENT_TARGET = new InjectionToken<boolean>(
+  "is-web-components-target",
+);
