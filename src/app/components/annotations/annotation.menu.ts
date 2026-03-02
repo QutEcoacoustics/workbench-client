@@ -1,10 +1,15 @@
-import { Category, menuRoute, MenuRoute } from "@interfaces/menusInterfaces";
-import { siteMenuItem } from "@components/sites/sites.menus";
-import { pointMenuItem } from "@components/sites/points.menus";
-import { regionMenuItem } from "@components/regions/regions.menus";
 import { projectMenuItem } from "@components/projects/projects.menus";
-import { isLoggedInPredicate, isWorkInProgressPredicate } from "src/app/app.menus";
-import { annotationSearchRoute, verificationRoute, AnnotationRoute, annotationMapRoute } from "./annotation.routes";
+import { regionMenuItem } from "@components/regions/regions.menus";
+import { pointMenuItem } from "@components/sites/points.menus";
+import { siteMenuItem } from "@components/sites/sites.menus";
+import { Category, menuRoute, MenuRoute } from "@interfaces/menusInterfaces";
+import { isLoggedInPredicate } from "src/app/app.menus";
+import {
+  annotationMapRoute,
+  AnnotationRoute,
+  annotationSearchRoute,
+  verificationRoute,
+} from "./annotation.routes";
 
 export type AnnotationMenuRoutes = Record<AnnotationRoute, MenuRoute>;
 
@@ -67,9 +72,6 @@ function makeAnnotationMapMenuItem(
     icon: ["fas", "bullseye"],
     label: "Annotation Map",
     tooltip: () => "Annotation Map",
-    // TODO: Remove this predicate once the we have an API backed event-map
-    // see: https://github.com/QutEcoacoustics/baw-server/issues/852
-    predicate: isWorkInProgressPredicate,
     route: annotationMapRoute[subRoute],
     parent,
   });
@@ -90,22 +92,34 @@ const verificationMenuItem: AnnotationMenuRoutes = {
   /** /project/:projectId/site/:siteId/annotations/verify */
   site: makeVerificationMenuItem("site", annotationSearchMenuitem.site),
   /** /project/:projectId/region/:regionId/site/:siteId/annotations/verify */
-  siteAndRegion: makeVerificationMenuItem("siteAndRegion", annotationSearchMenuitem.siteAndRegion),
+  siteAndRegion: makeVerificationMenuItem(
+    "siteAndRegion",
+    annotationSearchMenuitem.siteAndRegion,
+  ),
   /** /project/:projectId/region/:regionId/annotations/verify */
   region: makeVerificationMenuItem("region", annotationSearchMenuitem.region),
   /** /project/:projectId/annotations/verify */
-  project: makeVerificationMenuItem("project", annotationSearchMenuitem.project),
+  project: makeVerificationMenuItem(
+    "project",
+    annotationSearchMenuitem.project,
+  ),
 };
 
 const annotationMapMenuItem: AnnotationMenuRoutes = {
   /** /project/:projectId/site/:siteId/annotations/map */
   site: makeAnnotationMapMenuItem("site", annotationSearchMenuitem.site),
   /** /project/:projectId/region/:regionId/site/:siteId/annotations/map */
-  siteAndRegion: makeAnnotationMapMenuItem("siteAndRegion", annotationSearchMenuitem.siteAndRegion),
+  siteAndRegion: makeAnnotationMapMenuItem(
+    "siteAndRegion",
+    annotationSearchMenuitem.siteAndRegion,
+  ),
   /** /project/:projectId/region/:regionId/annotations/map */
   region: makeAnnotationMapMenuItem("region", annotationSearchMenuitem.region),
   /** /project/:projectId/annotations/map */
-  project: makeAnnotationMapMenuItem("project", annotationSearchMenuitem.project),
+  project: makeAnnotationMapMenuItem(
+    "project",
+    annotationSearchMenuitem.project,
+  ),
 };
 
 const verificationCategory = {
