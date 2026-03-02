@@ -1,5 +1,5 @@
 import { DateExpressions, InnerFilter } from "@baw-api/baw-api.service";
-import { AudioRecording as AudioEvent } from "@models/AudioRecording";
+import { AudioEvent } from "@models/AudioEvent";
 import { DateTime, Duration } from "luxon";
 import { filterAnd } from "./filters";
 
