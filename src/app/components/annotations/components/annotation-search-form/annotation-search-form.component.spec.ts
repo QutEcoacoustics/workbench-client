@@ -73,6 +73,8 @@ describe("AnnotationSearchFormComponent", () => {
   const projectsInput = () => projectsTypeahead().querySelector("input");
 
   const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
+  const startDateInput = () =>
+    spec.query<HTMLInputElement>("#date-started-after");
   const endDateInput = () =>
     spec.query<HTMLInputElement>("#date-finished-before");
 
@@ -264,27 +266,43 @@ describe("AnnotationSearchFormComponent", () => {
     }));
 
     // check the population of an external component that is not a typeahead input
-    it("should pre-populate the date filters if provided in the search parameters model", fakeAsync(() => {
+    it("should pre-populate the end date filter if provided in the search parameters model", fakeAsync(() => {
       const testEndDate = modelData.dateTime();
       const testEndDateString = testEndDate.toFormat("yyyy-MM-dd");
 
-      setup({ recordingDate: `,${testEndDateString}` });
+      setup({ eventDate: `,${testEndDateString}` });
       waitForDropdown(spec);
 
       expect(endDateInput()).toHaveValue(testEndDate.toFormat("yyyy-MM-dd"));
       expect(
-        spec.component.searchParameters().recordingDateStartedAfter,
+        spec.component.searchParameters().eventDateStartedAfter,
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters().recordingDateFinishedBefore,
+        spec.component.searchParameters().eventDateFinishedBefore,
       ).toBeTruthy();
+    }));
+
+    it("should pre-populate the start date filter if provided in the search parameters model", fakeAsync(() => {
+      const testStartDate = modelData.dateTime();
+      const testStartDateString = testStartDate.toFormat("yyyy-MM-dd");
+
+      setup({ eventDate: `${testStartDateString},` });
+      waitForDropdown(spec);
+
+      expect(startDateInput()).toHaveValue(testStartDate.toFormat("yyyy-MM-dd"));
+      expect(
+        spec.component.searchParameters().eventDateStartedAfter,
+      ).toBeTruthy();
+      expect(
+        spec.component.searchParameters().eventDateFinishedBefore,
+      ).toBeFalsy();
     }));
 
     it("should not apply date filters if the dropdown is closed", fakeAsync(() => {
       const testEndDate = modelData.dateTime();
       const testEndDateString = testEndDate.toFormat("yyyy-MM-dd");
 
-      setup({ recordingDate: `,${testEndDateString}` });
+      setup({ eventDate: `,${testEndDateString}` });
       // wait for the initial date/time filters to open
       waitForDropdown(spec);
 
@@ -294,10 +312,10 @@ describe("AnnotationSearchFormComponent", () => {
       waitForDropdown(spec);
 
       expect(
-        spec.component.searchParameters().recordingDateStartedAfter,
+        spec.component.searchParameters().eventDateStartedAfter,
       ).toBeFalsy();
       expect(
-        spec.component.searchParameters().recordingDateFinishedBefore,
+        spec.component.searchParameters().eventDateFinishedBefore,
       ).toBeFalsy();
     }));
 
@@ -425,7 +443,7 @@ describe("AnnotationSearchFormComponent", () => {
     it("should emit the correct model if the date filters are updated", fakeAsync(() => {
       const testedDate = "2021-10-10";
       const expectedNewModel = jasmine.objectContaining({
-        recordingDate: [null, jasmine.any(DateTime)],
+        eventDate: [null, jasmine.any(DateTime)],
       });
 
       modelChangeSpy.calls.reset();

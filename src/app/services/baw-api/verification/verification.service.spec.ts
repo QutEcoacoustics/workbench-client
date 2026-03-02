@@ -1,25 +1,25 @@
+import { IdOr } from "@baw-api/api-common";
+import { BawApiService, Filters } from "@baw-api/baw-api.service";
+import { BawSessionService } from "@baw-api/baw-session.service";
+import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
+import { Tag } from "@models/Tag";
+import { User } from "@models/User";
 import { Verification } from "@models/Verification";
-import { generateVerification } from "@test/fakes/Verification";
-import { modelData } from "@test/helpers/faker";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateTag } from "@test/fakes/Tag";
+import { generateUser } from "@test/fakes/User";
+import { generateVerification } from "@test/fakes/Verification";
 import {
   mockServiceProviders,
   validateApiCreateOrUpdate,
   validateReadonlyApi,
   validateStandardApi,
 } from "@test/helpers/api-common";
-import { IdOr } from "@baw-api/api-common";
-import { AudioRecording } from "@models/AudioRecording";
-import { AudioEvent } from "@models/AudioEvent";
-import { User } from "@models/User";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { generateUser } from "@test/fakes/User";
-import { BawApiService, Filters } from "@baw-api/baw-api.service";
-import { BawApiError } from "@helpers/custom-errors/baw-api-error";
+import { modelData } from "@test/helpers/faker";
 import { firstValueFrom, of, throwError } from "rxjs";
-import { Tag } from "@models/Tag";
-import { generateTag } from "@test/fakes/Tag";
-import { BawSessionService } from "@baw-api/baw-session.service";
 import {
   ShallowVerificationService,
   VerificationService,
@@ -42,7 +42,7 @@ describe("VerificationService", () => {
       generateVerification({
         id: testModelId,
         audioEventId: testAudioEventId,
-      })
+      }),
     );
 
   const baseUrl = `/audio_recordings/${testAudioRecordingId}/audio_events/${testAudioEventId}/verifications/`;
@@ -67,7 +67,7 @@ describe("VerificationService", () => {
     createModel,
     testModelId,
     testAudioRecordingId,
-    testAudioEventId
+    testAudioEventId,
   );
 });
 
@@ -95,7 +95,7 @@ describe("ShallowVerificationService", () => {
     baseUrl + "filter",
     updateUrl,
     createModel,
-    testModelId
+    testModelId,
   );
 
   validateApiCreateOrUpdate<Model, ShallowParams, ShallowService>(
@@ -175,7 +175,7 @@ describe("ShallowVerificationService", () => {
         expect(api.filter).toHaveBeenCalledOnceWith(
           Verification,
           jasmine.anything(),
-          expectedFilters,
+          expectedFilters as Filters,
         );
       });
 

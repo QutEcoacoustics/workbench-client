@@ -1,21 +1,26 @@
 import {
   AfterViewInit,
-  Component,
-  Input,
-  ViewChild,
-  EventEmitter,
-  Output,
   ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
 } from "@angular/core";
-import { NgForm, FormsModule } from "@angular/forms";
+import { FormsModule, NgForm } from "@angular/forms";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbDate, NgbCollapse, NgbInputDatepicker } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbCollapse,
+  NgbDate,
+  NgbInputDatepicker,
+} from "@ng-bootstrap/ng-bootstrap";
 import { FromJS, fromJS } from "immutable";
 import { DateTime, Duration } from "luxon";
 import {
@@ -25,7 +30,6 @@ import {
   takeUntil,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { TimeComponent } from "../input/time/time.component";
 
 export interface DateTimeFilterModel {
@@ -66,6 +70,7 @@ export class DateTimeFilterComponent
   @Input() public disableStartTime = false;
   @Input() public disableEndTime = false;
   @Input() public disableIgnoreDaylightSavings = false;
+  @Input() public label = "recording";
 
   @Output() public modelChange = new EventEmitter<DateTimeFilterModel>();
   @Input() public model: DateTimeFilterModel = { ignoreDaylightSavings: true };
@@ -77,7 +82,7 @@ export class DateTimeFilterComponent
       .pipe(
         debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe((model: DateTimeFilterModel) => this.emitFilterUpdate(model));
   }
@@ -89,7 +94,10 @@ export class DateTimeFilterComponent
       return;
     }
 
-    const [changed, newFilters] = this.generateFilters(this.previousFilters, model);
+    const [changed, newFilters] = this.generateFilters(
+      this.previousFilters,
+      model,
+    );
 
     if (changed) {
       // since this component can output a model, and/or a filter
@@ -100,7 +108,10 @@ export class DateTimeFilterComponent
     }
   }
 
-  private generateFilters(previousFilters: FromJS<Filters<AudioRecording>>, model: DateTimeFilterModel): [boolean, Filters] {
+  private generateFilters(
+    previousFilters: FromJS<Filters<AudioRecording>>,
+    model: DateTimeFilterModel,
+  ): [boolean, Filters] {
     let newInnerFilters: InnerFilter<AudioRecording> = {};
 
     newInnerFilters = this.setDateFilters(model, newInnerFilters);
@@ -108,16 +119,24 @@ export class DateTimeFilterComponent
 
     // if there are no filters, we should allow a filter event to be emitted with zero filter conditions
     // without this check, a filter with no conditions would have an inner filter of undefined rather than zero conditions
-    const newFilters = Object.keys(newInnerFilters).length === 0 ? {} : { filter: newInnerFilters };
+    const newFilters =
+      Object.keys(newInnerFilters).length === 0
+        ? {}
+        : { filter: newInnerFilters };
 
     // to prevent duplicate filters from being emitted, we compare the new filter to the previous filter's value
     // e.g. if a user types in a valid filter condition, inputs an invalid filter condition, then inputs a valid filter condition
-    const changed = !fromJS(newFilters)?.equals(previousFilters) && newFilters !== previousFilters;
+    const changed =
+      !fromJS(newFilters)?.equals(previousFilters) &&
+      newFilters !== previousFilters;
 
     return [changed, newFilters];
   }
 
-  private setDateFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setDateFilters(
+    model: DateTimeFilterModel,
+    filters: InnerFilter<AudioRecording>,
+  ): InnerFilter<AudioRecording> {
     const modelStartDate = model?.dateStartedAfter;
     const modelEndDate = model?.dateFinishedBefore;
 
@@ -135,7 +154,10 @@ export class DateTimeFilterComponent
     return filterDate(filters, startDate, endDate);
   }
 
-  private setTimeOfDayFilters(model: DateTimeFilterModel, filters: InnerFilter<AudioRecording>): InnerFilter<AudioRecording> {
+  private setTimeOfDayFilters(
+    model: DateTimeFilterModel,
+    filters: InnerFilter<AudioRecording>,
+  ): InnerFilter<AudioRecording> {
     const modelStartTime = model?.timeStartedAfter;
     const modelEndTime = model?.timeFinishedBefore;
 
@@ -148,7 +170,7 @@ export class DateTimeFilterComponent
       filters,
       model.ignoreDaylightSavings,
       modelStartTime,
-      modelEndTime
+      modelEndTime,
     );
   }
 }

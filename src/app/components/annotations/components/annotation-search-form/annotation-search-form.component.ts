@@ -80,7 +80,9 @@ enum ScoreRangeBounds {
 })
 export class AnnotationSearchFormComponent implements OnInit {
   protected readonly eventImportApi = inject(AudioEventImportService);
-  protected readonly eventImportFileApi = inject(ShallowAudioEventImportFileService);
+  protected readonly eventImportFileApi = inject(
+    ShallowAudioEventImportFileService,
+  );
   protected readonly recordingsApi = inject(AudioRecordingsService);
   protected readonly projectsApi = inject(ProjectsService);
   protected readonly regionsApi = inject(ShallowRegionsService);
@@ -104,7 +106,9 @@ export class AnnotationSearchFormComponent implements OnInit {
     TypeaheadInputComponent<AudioEventImportFile>
   >("eventImportFilesTypeahead");
 
-  protected readonly recordingDateTimeFilters = signal<DateTimeFilterModel>({});
+  protected readonly annotationDateTimeFilters = signal<DateTimeFilterModel>(
+    {},
+  );
   protected readonly hideAdvancedFilters = signal(true);
   protected readonly createSearchCallback = createSearchCallback;
   protected readonly createIdSearchCallback = createIdSearchCallback;
@@ -123,9 +127,15 @@ export class AnnotationSearchFormComponent implements OnInit {
     { label: "are verified or unverified", value: "any" },
   ]);
 
-  protected readonly project = computed(() => this.searchParameters().routeProjectModel);
-  protected readonly region = computed(() => this.searchParameters().routeRegionModel);
-  protected readonly site = computed(() => this.searchParameters().routeSiteModel);
+  protected readonly project = computed(
+    () => this.searchParameters().routeProjectModel,
+  );
+  protected readonly region = computed(
+    () => this.searchParameters().routeRegionModel,
+  );
+  protected readonly site = computed(
+    () => this.searchParameters().routeSiteModel,
+  );
 
   public constructor() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -171,18 +181,31 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     // we want to set the initial model the date/time filters
     // TODO: this should probably be moved to a different spot
-    const hasDateFilters = this.searchParameters().recordingDate?.length > 0;
+    const hasDateFilters = this.searchParameters().eventDate?.length > 0;
     if (hasDateFilters) {
-      const dateFinishedBefore = new NgbDate(
-        this.searchParameters().recordingDateFinishedBefore.year,
-        this.searchParameters().recordingDateFinishedBefore.month,
-        this.searchParameters().recordingDateFinishedBefore.day,
-      );
-
-      this.recordingDateTimeFilters.set({
+      const dateTimeFilter: DateTimeFilterModel = {
         dateFiltering: true,
-        dateFinishedBefore,
-      });
+      };
+
+      const startDateValue = this.searchParameters().eventDateStartedAfter;
+      if (startDateValue) {
+        dateTimeFilter.dateStartedAfter = new NgbDate(
+          startDateValue.year,
+          startDateValue.month,
+          startDateValue.day,
+        );
+      }
+
+      const endDateValue = this.searchParameters().eventDateFinishedBefore;
+      if (endDateValue) {
+        dateTimeFilter.dateFinishedBefore = new NgbDate(
+          endDateValue.year,
+          endDateValue.month,
+          endDateValue.day,
+        );
+      }
+
+      this.annotationDateTimeFilters.set(dateTimeFilter);
     }
   }
 
@@ -259,10 +282,12 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.emitUpdate();
   }
 
-  protected updateRecordingDateTime(dateTimeModel: DateTimeFilterModel): void {
+  protected updateAnnotationDateTimeFilters(
+    dateTimeModel: DateTimeFilterModel,
+  ): void {
     this.searchParameters.update((current) => {
-      if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
-        current.recordingDate = [
+      if (dateTimeModel.dateFiltering) {
+        current.eventDate = [
           dateTimeModel.dateStartedAfter
             ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
             : null,
@@ -270,21 +295,18 @@ export class AnnotationSearchFormComponent implements OnInit {
             ? DateTime.fromObject(dateTimeModel.dateFinishedBefore)
             : null,
         ];
+      } else {
+        current.eventDate = null;
       }
 
-      if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
-        current.recordingTime = [
-          dateTimeModel.timeStartedAfter,
-          dateTimeModel.timeFinishedBefore,
+      if (dateTimeModel.timeFiltering) {
+        current.eventTime = [
+          dateTimeModel.timeStartedAfter ?? null,
+          dateTimeModel.timeFinishedBefore ?? null,
+          dateTimeModel.ignoreDaylightSavings,
         ];
-      }
-
-      if (!dateTimeModel.dateFiltering) {
-        current.recordingDate = null;
-      }
-
-      if (!dateTimeModel.timeFiltering) {
-        current.recordingTime = null;
+      } else {
+        current.eventTime = null;
       }
 
       return current;

@@ -85,6 +85,9 @@
       "**/tsconfig*.json",
       "**/vscode-extension/**"
     ],
+    "htmlhint.options": {
+      "attr-lowercase": false,
+    },
     "workbench.colorCustomizations": {
       "activityBar.background": "#3795b0",
       "activityBar.activeBackground": "#3795b0",
@@ -97,12 +100,22 @@
       "titleBar.inactiveBackground": "#2b748999",
       "titleBar.activeForeground": "#e7e7e7",
       "titleBar.inactiveForeground": "#e7e7e799",
+<<<<<<< HEAD
       "statusBar.background": "#2b7489",
       "statusBarItem.hoverBackground": "#3795b0",
       "statusBar.foreground": "#e7e7e7",
       "sash.hoverBorder": "#3795b0",
       "statusBarItem.remoteBackground": "#2b7489",
       "statusBarItem.remoteForeground": "#e7e7e7"
+=======
+      "statusBarItem.hoverBackground": "#31859d",
+      "sash.hoverBorder": "#31859d",
+      "statusBarItem.remoteBackground": "#256476",
+      "statusBarItem.remoteForeground": "#e7e7e7",
+      "activityBar.activeBackground": "#31859d",
+      "activityBar.background": "#31859d",
+      "commandCenter.border": "#e7e7e799",
+>>>>>>> cd6a5c70 (index on ci-node-version24: d2df4d65 Regenerate pack-lock.json)
     },
     "files.eol": "\n",
     "files.insertFinalNewline": true

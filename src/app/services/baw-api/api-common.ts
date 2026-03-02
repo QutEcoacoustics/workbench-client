@@ -1,10 +1,10 @@
+import { InjectionToken } from "@angular/core";
 import { PartialWith } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Param } from "@interfaces/apiInterfaces";
+import { AbstractData } from "@models/AbstractData";
 import { AbstractModel, AbstractModelWithoutId } from "@models/AbstractModel";
 import { Observable } from "rxjs";
-import { InjectionToken } from "@angular/core";
-import { AbstractData } from "@models/AbstractData";
 import { BawServiceOptions, Filters } from "./baw-api.service";
 
 /**
@@ -142,7 +142,7 @@ export interface ApiShow<M extends AbstractModel, P extends any[] = [] > {
  * have an id.
  */
 export interface ApiFilterGroupBy<
-  Model extends AbstractModel,
+  FilterModel extends AbstractModel,
   ReturnedModel extends AbstractModelWithoutId | AbstractData,
   Parameters extends unknown[] = [],
 > {
@@ -150,7 +150,7 @@ export interface ApiFilterGroupBy<
    * Get a list of grouped models filtered by conditions.
    */
   filterGroupBy(
-    filter: Pick<Filters<Model>, "filter">,
+    filter: Pick<Filters<FilterModel>, "filter">,
     ...urlParameters: Parameters
   ): Observable<ReturnedModel[]>;
 }

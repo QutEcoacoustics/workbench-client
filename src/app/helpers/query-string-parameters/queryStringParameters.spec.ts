@@ -9,7 +9,9 @@ import {
   luxonDuration,
   luxonDurationArray,
   serializeObjectToParams,
+  timeOfDay,
 } from "./queryStringParameters";
+import { Duration } from "luxon";
 
 describe("queryStringParameters", () => {
   describe("serialization", () => {
@@ -131,7 +133,7 @@ describe("queryStringParameters", () => {
     it("should not serialize arrays that only have null values", () => {
       const testInput = {
         testing: "test,mangos",
-        score: [null,null],
+        score: [null, null],
       };
       const expectedOutput: Params = {
         testing: "test,mangos",
@@ -271,6 +273,27 @@ describe("queryStringParameters", () => {
 
       const result = deserializeParamsToObject(testInput, testSpec);
       expect(result["badId"]).toBeNull();
+    });
+  });
+
+  describe("compound types", () => {
+    it("can round trip a time of day filter", () => {
+      const testSpec: IQueryStringParameterSpec = {
+        time: timeOfDay,
+      };
+
+      const testInput = {
+        time: [
+          Duration.fromObject({ hours: 1, minutes: 30 }),
+          Duration.fromObject({ hours: 2, minutes: 45 }),
+          true,
+        ] as [Duration, Duration, boolean],
+      };
+
+      const serialized = serializeObjectToParams(testInput, testSpec);
+      const deserialized = deserializeParamsToObject(serialized, testSpec);
+
+      expect(deserialized).toEqual(testInput);
     });
   });
 });

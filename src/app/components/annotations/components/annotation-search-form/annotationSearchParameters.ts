@@ -9,20 +9,23 @@ import {
   SHALLOW_SITE,
   TAG,
 } from "@baw-api/ServiceTokens";
-import { MonoTuple } from "@helpers/advancedTypes";
-import { filterEventRecordingDate } from "@helpers/filters/audioEventFilters";
+import { IsomorphicTuple as UniformTuple } from "@helpers/advancedTypes";
+import {
+  filterEventDate,
+  filterEventTime,
+} from "@helpers/filters/audioEventFilters";
 import { filterAnd, filterModelIds, filterOr } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   IQueryStringParameterSpec,
-  jsBoolean,
   jsMap,
   jsNumber,
   jsNumberArray,
   jsString,
   luxonDateArray,
-  luxonDurationArray,
   serializeObjectToParams,
+  timeOfDay,
+  TimeOfDayIntervalTuple,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { toNumber } from "@helpers/typing/toNumber";
@@ -106,10 +109,12 @@ export function verificationStatusOptions(user?: User) {
 export interface IAnnotationSearchParameters {
   audioRecordings: CollectionIds<AudioRecording>;
   tags: CollectionIds<Tag>;
-  daylightSavings: boolean;
-  recordingDate: MonoTuple<DateTime, 2>;
-  recordingTime: MonoTuple<Duration, 2>;
-  score: MonoTuple<number, 2>;
+  // note: now that we can filter by annotation date and time, we don't need to filter
+  // by recording date and time. I'm going to disable them until we have a clear purpose for them.
+  // daylightSavings: boolean;
+  // recordingDate: UniformTuple<DateTime, 2>;
+  // recordingTime: UniformTuple<Duration, 2>;
+  score: UniformTuple<number, 2>;
 
   imports: EventImports;
 
@@ -130,11 +135,8 @@ export interface IAnnotationSearchParameters {
   routeRegionId: Id<Region>;
   routeSiteId: Id<Site>;
 
-  // TODO: this is a placeholder for future implementation once the api
-  // supports filtering by event date time
-  // https://github.com/QutEcoacoustics/baw-server/issues/687
-  eventDate: MonoTuple<DateTime, 2>;
-  eventTime: MonoTuple<Duration, 2>;
+  eventDate: UniformTuple<DateTime, 2>;
+  eventTime: TimeOfDayIntervalTuple;
 
   sort: SortingKey;
 
@@ -150,9 +152,6 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
   {
     audioRecordings: jsNumberArray,
     tags: jsNumberArray,
-    daylightSavings: jsBoolean,
-    recordingDate: luxonDateArray,
-    recordingTime: luxonDurationArray,
     score: jsNumberArray,
 
     imports: jsMap(toNumber),
@@ -162,6 +161,9 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     projects: jsNumberArray,
     regions: jsNumberArray,
     sites: jsNumberArray,
+
+    eventDate: luxonDateArray,
+    eventTime: timeOfDay,
 
     sort: withDefault(jsString, "created-asc"),
 
@@ -188,10 +190,13 @@ export class AnnotationSearchParameters
 {
   public audioRecordings: CollectionIds<AudioRecording>;
   public tags: CollectionIds<Tag>;
-  public daylightSavings: boolean;
-  public recordingDate: MonoTuple<DateTime, 2>;
-  public recordingTime: MonoTuple<Duration, 2>;
-  public score: MonoTuple<number, 2>;
+
+  // note: now that we can filter by annotation date and time, we don't need to filter
+  // by recording date and time. I'm going to disable them until we have a clear purpose for them.
+  // public daylightSavings: boolean;
+  // public recordingDate: UniformTuple<DateTime, 2>;
+  // public recordingTime: UniformTuple<Duration, 2>;
+  public score: UniformTuple<number, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -207,8 +212,8 @@ export class AnnotationSearchParameters
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  public eventDate: MonoTuple<DateTime, 2>;
-  public eventTime: MonoTuple<Duration, 2>;
+  public eventDate: UniformTuple<DateTime, 2>;
+  public eventTime: TimeOfDayIntervalTuple;
 
   public verificationStatus: VerificationStatusKey;
   public sort: SortingKey;
@@ -267,20 +272,20 @@ export class AnnotationSearchParameters
   // @hasOne(SHALLOW_SITE, "routeSiteId")
   public routeSiteModel?: Site;
 
-  public get recordingDateStartedAfter(): DateTime | null {
-    return this.recordingDate ? this.recordingDate[0] : null;
+  public get eventDateStartedAfter(): DateTime | null {
+    return this.eventDate ? this.eventDate[0] : null;
   }
 
-  public get recordingDateFinishedBefore(): DateTime | null {
-    return this.recordingDate ? this.recordingDate[1] : null;
+  public get eventDateFinishedBefore(): DateTime | null {
+    return this.eventDate ? this.eventDate[1] : null;
   }
 
-  public get recordingTimeStartedAfter(): Duration | null {
-    return this.recordingTime ? this.recordingTime[0] : null;
+  public get eventTimeStartedAfter(): Duration | null {
+    return this.eventTime ? this.eventTime[0] : null;
   }
 
-  public get recordingTimeFinishedBefore(): Duration | null {
-    return this.recordingTime ? this.recordingTime[1] : null;
+  public get eventTimeFinishedBefore(): Duration | null {
+    return this.eventTime ? this.eventTime[1] : null;
   }
 
   public get scoreLowerBound(): number | null {
@@ -452,35 +457,17 @@ export class AnnotationSearchParameters
   private addRecordingFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
-    const dateFilter = filterEventRecordingDate(
-      initialFilter,
-      this.recordingDateStartedAfter,
-      this.recordingDateFinishedBefore,
-    );
-
-    // time filtering is currently disabled until we can filter on custom fields
-    // and association
-    // see https://github.com/QutEcoacoustics/baw-server/issues/689
-    // TODO: enable time filtering once the api adds support
-    //
-    // const dateTimeFilter = filterTime(
-    //   dateFilter,
-    //   this.daylightSavings,
-    //   this.recordingTimeStartedAfter,
-    //   this.recordingTimeFinishedBefore
-    // );
-
     if (
       !isInstantiated(this.audioRecordings) ||
       Array.from(this.audioRecordings).length === 0
     ) {
-      return dateFilter;
+      return initialFilter;
     }
 
     const recordingFilter = filterModelIds(
       "audioRecordings",
       this.audioRecordings,
-      dateFilter,
+      initialFilter,
     );
 
     return recordingFilter;
@@ -532,6 +519,23 @@ export class AnnotationSearchParameters
   private addEventFilters(
     initialFilter: InnerFilter<AudioEvent>,
   ): InnerFilter<AudioEvent> {
+    if (isInstantiated(this.eventDate)) {
+      initialFilter = filterEventDate(
+        initialFilter,
+        this.eventDateStartedAfter,
+        this.eventDateFinishedBefore,
+      );
+    }
+
+    if (isInstantiated(this.eventTime)) {
+      initialFilter = filterEventTime(
+        initialFilter,
+        this.eventTime[2],
+        this.eventTime[0],
+        this.eventTime[1],
+      );
+    }
+
     // I purposely use a falsy condition here.
     // Because this falsy condition will match against a score of zero, this
     // method will short circuit and return the initial filter if the score is

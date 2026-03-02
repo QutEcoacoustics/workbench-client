@@ -19,9 +19,10 @@ export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
  * Allow either type, but not both
  * TODO Add support for infinite number of types using variadic tuple types
  */
-export type XOR<T, U> = T | U extends Record<string, any>
-  ? (Without<T, U> & U) | (Without<U, T> & T)
-  : T | U;
+export type XOR<T, U> =
+  T | U extends Record<string, any>
+    ? (Without<T, U> & U) | (Without<U, T> & T)
+    : T | U;
 
 /**
  * Response may be a promise, or may return in real time
@@ -42,12 +43,28 @@ export type Option<T> = T | null;
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-/** Create a tuple (extends Array type and sets fixed length) */
-export interface MonoTuple<T, L extends number> extends Array<T> {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  0: T;
-  length: L;
-}
+/**
+ * Helper type that recursively builds a tuple of length L with elements of type T.
+ * @internal
+ */
+type BuildTuple<
+  T,
+  L extends number,
+  Acc extends T[] = [],
+> = Acc["length"] extends L ? Acc : BuildTuple<T, L, [...Acc, T]>;
+
+/**
+ * Create a tuple type with a fixed length where all elements are of type T.
+ * All indices (0, 1, 2, ...) are properly typed when L is a literal number.
+ *
+ * The intersection with T[] ensures array methods (map, length, etc.) are
+ * always available, even when L is a dependent/generic type that TypeScript
+ * can't evaluate at compile time.
+ */
+export type IsomorphicTuple<T, L extends number> = (number extends L
+  ? T[]
+  : BuildTuple<T, L>) &
+  T[];
 
 /** Indicates an object can either be that object, or an error response */
 export type Errorable<T> = T | BawApiError;
@@ -57,8 +74,8 @@ export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? RecursivePartial<U>[]
     : T[P] extends object
-    ? RecursivePartial<T[P]>
-    : T[P];
+      ? RecursivePartial<T[P]>
+      : T[P];
 };
 
 /** This value may be asynchronous */

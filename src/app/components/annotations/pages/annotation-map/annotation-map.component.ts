@@ -1,3 +1,4 @@
+import { AsyncPipe, Location } from "@angular/common";
 import {
   Component,
   computed,
@@ -7,44 +8,39 @@ import {
   signal,
   viewChild,
 } from "@angular/core";
-import { PageComponent } from "@helpers/page/pageComponent";
-import { IPageInfo } from "@helpers/page/pageInfo";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
+import { Filters } from "@baw-api/baw-api.service";
+import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
-import { siteResolvers } from "@baw-api/site/sites.service";
-import { EventMapComponent } from "@shared/event-map/event-map.component";
-import { AudioEvent } from "@models/AudioEvent";
-import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { InlineListComponent } from "@shared/inline-list/inline-list.component";
-import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { Site } from "@models/Site";
-import { Filters } from "@baw-api/baw-api.service";
-import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
-import { first, firstValueFrom, takeUntil } from "rxjs";
-import { GroupedAudioEventsService } from "@baw-api/grouped-audio-events/grouped-audio-events.service";
-import { AsyncPipe, Location } from "@angular/common";
-import { ActivatedRoute, Params, Router } from "@angular/router";
 import { retrieveResolvers } from "@baw-api/resolver-common";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { Project } from "@models/Project";
-import { Region } from "@models/Region";
-import { EventModalComponent } from "@shared/event-modal/event-modal.component";
-import { UrlDirective } from "@directives/url/url.directive";
-import { Id } from "@interfaces/apiInterfaces";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { annotationSearchRoute } from "@components/annotations/annotation.routes";
-import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import {
-  annotationSearchParametersResolvers,
-} from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
-import {
-  AnnotationSearchParameters,
-} from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { siteResolvers } from "@baw-api/site/sites.service";
 import {
   annotationCategories,
   annotationMenuItems,
 } from "@components/annotations/annotation.menu";
+import { annotationSearchRoute } from "@components/annotations/annotation.routes";
+import { annotationSearchParametersResolvers } from "@components/annotations/components/annotation-search-form/annotation-search-parameters.resolver";
+import { AnnotationSearchParameters } from "@components/annotations/components/annotation-search-form/annotationSearchParameters";
+import { SearchFiltersModalComponent } from "@components/annotations/components/modals/search-filters/search-filters.component";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
+import { PageComponent } from "@helpers/page/pageComponent";
+import { IPageInfo } from "@helpers/page/pageInfo";
+import { Id } from "@interfaces/apiInterfaces";
+import { AudioEvent } from "@models/AudioEvent";
+import { Project } from "@models/Project";
+import { Region } from "@models/Region";
+import { Site } from "@models/Site";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { EventMapComponent } from "@shared/event-map/event-map.component";
+import { EventModalComponent } from "@shared/event-modal/event-modal.component";
+import { InlineListComponent } from "@shared/inline-list/inline-list.component";
+import { first, firstValueFrom, takeUntil } from "rxjs";
 import { annotationMapParameterResolvers } from "./annotation-map-parameters.resolver";
 import { AnnotationMapParameters } from "./annotationMapParameters";
 
@@ -82,12 +78,14 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
   protected readonly mapParameters = signal<AnnotationMapParameters | null>(
     null,
   );
+  // We use a custom equality function to ensure that the signal always
+  // triggers dependents (e.g. eventGroups computed) when search parameters
+  // are updated, even if the same object reference is passed in.
   protected readonly annotationSearchParameters =
-    signal<AnnotationSearchParameters | null>(null);
+    signal<AnnotationSearchParameters | null>(null, { equal: () => false });
 
   protected readonly eventGroups = computed(() => {
     const searchFilters = this.annotationSearchParameters().toFilter?.() ?? {};
-
     const request = this.groupedEventsService
       .filterGroupBy({ filter: searchFilters.filter })
       .pipe(first(), takeUntil(this.unsubscribe));
@@ -139,9 +137,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
       return newModel;
     });
 
-    this.mapParameters.set(
-      models[mapParametersKey] as AnnotationMapParameters,
-    );
+    this.mapParameters.set(models[mapParametersKey] as AnnotationMapParameters);
 
     // We use isInstantiated instead of a truthy check because a focused site id
     // of 0 is valid but would fail a truthy assertion.

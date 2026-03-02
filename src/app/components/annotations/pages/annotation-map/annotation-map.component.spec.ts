@@ -66,21 +66,30 @@ describe("AnnotationMapPageComponent", () => {
   const mockAudioEvents = [
     new AudioEventGroup({
       siteId: 3605,
-      eventCount: 67,
+      regionId: 500,
+      projectIds: new Set([100]),
+      audioEventCount: 67,
       latitude: -27.4975,
       longitude: 153.0136,
+      locationObfuscated: true,
     }),
     new AudioEventGroup({
       siteId: 3606,
-      eventCount: 42,
+      regionId: null,
+      projectIds: new Set([100]),
+      audioEventCount: 42,
       latitude: -27.4773,
       longitude: 153.0271,
+      locationObfuscated: false,
     }),
     new AudioEventGroup({
       siteId: 3873,
-      eventCount: 9,
+      regionId: 501,
+      projectIds: new Set([100, 101]),
+      audioEventCount: 9,
       latitude: 4.522871,
       longitude: 6.118915,
+      locationObfuscated: false,
     }),
   ];
 
@@ -379,9 +388,7 @@ describe("AnnotationMapPageComponent", () => {
       // test.
       const componentInstance = (window as any).ng.getComponent(form);
 
-      expect(componentInstance.searchParameters()).toEqual(
-        searchParameters,
-      );
+      expect(componentInstance.searchParameters()).toEqual(searchParameters);
     }));
 
     // TODO: This test is disabled because I was getting
