@@ -1,4 +1,5 @@
 import { Params } from "@angular/router";
+import { Duration } from "luxon";
 import {
   IQueryStringParameterSpec,
   deserializeParamsToObject,
@@ -6,12 +7,12 @@ import {
   jsNumber,
   jsNumberArray,
   jsString,
+  luxonDateArray,
   luxonDuration,
   luxonDurationArray,
   serializeObjectToParams,
   timeOfDay,
 } from "./queryStringParameters";
-import { Duration } from "luxon";
 
 describe("queryStringParameters", () => {
   describe("serialization", () => {
@@ -241,6 +242,27 @@ describe("queryStringParameters", () => {
         isDaylightSavings: jsBoolean,
         siteIds: jsNumberArray,
       };
+
+      const result = deserializeParamsToObject(testInput, testSpec);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it("should be able to deserialize an empty string into an array with null values", () => {
+      const testSpec: IQueryStringParameterSpec = {
+        siteIds: jsNumberArray,
+        eventDate: luxonDateArray,
+      };
+
+      const testInput: Params = {
+        siteIds: "",
+        eventDate: "",
+      };
+
+      // this is not such a useful test since the deserializer automatically
+      // does not run the deserialize function for empty strings.
+      // Leaving this test though because it documents this behavior and ensures that it does not change in the future.
+      const expectedOutput = {};
 
       const result = deserializeParamsToObject(testInput, testSpec);
 

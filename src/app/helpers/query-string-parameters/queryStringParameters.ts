@@ -268,7 +268,7 @@ function queryStringDateArray(value: string): DateIntervalTuple {
 function queryStringDate(value: string): DateTime | null {
   // if a null or undefined value is passed into luxon's DateTime.fromISO, it will return the current time
   // this can be confusing and lead to lots of bugs. We therefore return the null value here
-  if (value === "") {
+  if (value === "" || !isInstantiated(value)) {
     return null;
   }
 
