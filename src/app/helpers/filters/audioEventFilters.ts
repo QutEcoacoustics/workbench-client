@@ -13,8 +13,8 @@ import { filterAnd } from "./filters";
  * Adds date range conditions to an existing filter in the ISO8601 date format
  *
  * @param filters An existing filter to add the date range conditions to. If no filter is provided, a new filter will be created
- * @param minimumDate (optional) The minimum `recordedDate` of the date range
- * @param maximumDate (optional) The maximum `recordedEndDate` allowed
+ * @param minimumDate (optional) The minimum event `endDate` of the date range
+ * @param maximumDate (optional) The maximum event `startDate` allowed
  * @returns A new filter with all the same conditions as the initial filter, with the date range conditions added in an `and` expression
  */
 export function filterEventDate(
