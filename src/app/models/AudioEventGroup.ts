@@ -38,7 +38,7 @@ export class AudioEventGroup
   public readonly region?: Region;
 
   @hasMany(PROJECT, "projectIds")
-  public readonly projects: Project[];
+  public readonly projects?: Project[];
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
