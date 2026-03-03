@@ -1,32 +1,32 @@
+import { fakeAsync, tick } from "@angular/core/testing";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { TagsService } from "@baw-api/tag/tags.service";
+import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
+import { AssociationInjector } from "@models/ImplementsInjector";
+import { Tag } from "@models/Tag";
+import { Tagging } from "@models/Tagging";
 import {
   createServiceFactory,
   SpectatorService,
   SpyObject,
 } from "@ngneat/spectator";
-import { TagsService } from "@baw-api/tag/tags.service";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { MediaService } from "@services/media/media.service";
-import { AudioEvent } from "@models/AudioEvent";
-import { generateAudioEvent } from "@test/fakes/AudioEvent";
-import { of } from "rxjs";
-import { Tag } from "@models/Tag";
-import { AudioRecording } from "@models/AudioRecording";
-import { generateAudioRecording } from "@test/fakes/AudioRecording";
-import { AssociationInjector } from "@models/ImplementsInjector";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { Tagging } from "@models/Tagging";
-import { generateTagging } from "@test/fakes/Tagging";
+import { MediaService } from "@services/media/media.service";
+import { generateAudioEvent } from "@test/fakes/AudioEvent";
+import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateTag } from "@test/fakes/Tag";
+import { generateTagging } from "@test/fakes/Tagging";
 import { modelData } from "@test/helpers/faker";
-import { VerificationParameters } from "@components/annotations/components/verification-form/verificationParameters";
+import { of } from "rxjs";
 import { AnnotationService } from "./annotation.service";
 
 describe("AnnotationService", () => {
   let spec: SpectatorService<AnnotationService>;
   let injector: SpyObject<AssociationInjector>;
   let tagApiSpy: SpyObject<TagsService>;
-
 
   let mockAudioEvent: AudioEvent;
   let mockRecording: AudioRecording;
@@ -101,10 +101,13 @@ describe("AnnotationService", () => {
       expect(result.audioRecording).toEqual(mockRecording);
     });
 
-    it("should resolve all the associated tag models", async () => {
+    it("should resolve all the associated tag models", fakeAsync(async () => {
       const result = await spec.service.show(mockAudioEvent, []);
+      // fails in CI without the extra tick()
+      tick();
+      tick();
       expect(result.tags).toEqual(mockTags);
-    });
+    }));
   });
 
   describe("tag priority", () => {
@@ -148,7 +151,7 @@ describe("AnnotationService", () => {
       // Note that the sorting algorithm is stable.
       // Meaning that relative order is maintained for the filtered tags.
       const expectedIds = [3, 1, 2, 4, 6, 8, 7, 5];
-      const tagPriority = [ verificationParameters.taskTag, ...filteredTags];
+      const tagPriority = [verificationParameters.taskTag, ...filteredTags];
 
       const realizedResult = await spec.service.show(testedEvent, tagPriority);
       const realizedIds = realizedResult.tags.map((tag) => tag.id);
@@ -174,9 +177,7 @@ describe("AnnotationService", () => {
     it("should make a single SHOW api call if there is one tagging", async () => {
       const audioEvent = new AudioEvent(
         generateAudioEvent({
-          taggings: [
-            new Tagging(generateTagging({ tagId: 42 }), injector),
-          ],
+          taggings: [new Tagging(generateTagging({ tagId: 42 }), injector)],
         }),
         injector,
       );

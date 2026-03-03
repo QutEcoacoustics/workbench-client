@@ -6,7 +6,7 @@
       "source.fixAll": "explicit",
       "source.organizeImports": "always",
       "source.addMissingImports.ts": "always",
-      "source.removeUnusedImports": "always"
+      "source.removeUnusedImports": "always",
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "cSpell.words": [
@@ -70,10 +70,7 @@
       "clusterer",
       "combinators",
     ],
-    "cSpell.flagWords": [
-      "yuo",
-      "nto",
-    ],
+    "cSpell.flagWords": ["yuo", "nto"],
     "cSpell.ignorePaths": [
       "workbench-client.code-workspace",
       "**/.git/objects/**",
@@ -83,21 +80,19 @@
       "**/package-lock.json",
       "**/tsconfig.json",
       "**/tsconfig*.json",
-      "**/vscode-extension/**"
+      "**/vscode-extension/**",
     ],
     "htmlhint.options": {
       "attr-lowercase": false,
     },
     "workbench.colorCustomizations": {
-      "activityBar.background": "#3795b0",
-      "activityBar.activeBackground": "#3795b0",
       "activityBar.activeBorder": "#922e7b",
       "activityBar.foreground": "#e7e7e7",
       "activityBar.inactiveForeground": "#e7e7e799",
-      "activityBarBadge.background": "#922e7b",
-      "activityBarBadge.foreground": "#e7e7e7",
-      "titleBar.activeBackground": "#2b7489",
-      "titleBar.inactiveBackground": "#2b748999",
+      "activityBarBadge.background": "#e19ed2",
+      "activityBarBadge.foreground": "#15202b",
+      "titleBar.activeBackground": "#256476",
+      "titleBar.inactiveBackground": "#25647699",
       "titleBar.activeForeground": "#e7e7e7",
       "titleBar.inactiveForeground": "#e7e7e799",
       "statusBar.background": "#2b7489",
@@ -109,7 +104,8 @@
       "commandCenter.border": "#e7e7e799"
     },
     "files.eol": "\n",
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "peacock.color": "#256476",
   },
   "extensions": {
     "recommendations": [
@@ -122,6 +118,6 @@
       "esbenp.prettier-vscode",
       "editorconfig.editorconfig",
       "redhat.vscode-yaml",
-    ]
-  }
+    ],
+  },
 }
