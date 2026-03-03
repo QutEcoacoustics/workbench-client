@@ -6,7 +6,7 @@ import {
   TAG,
 } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
-import { MonoTuple } from "@helpers/advancedTypes";
+import { IsomorphicTuple } from "@helpers/advancedTypes";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -23,9 +23,12 @@ import {
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { hasMany } from "@models/AssociationDecorators";
-import { Provenance } from "@models/Provenance";
 import { EventSummaryReport } from "@models/EventSummaryReport";
-import { AssociationInjector, HasAssociationInjector } from "@models/ImplementsInjector";
+import {
+  AssociationInjector,
+  HasAssociationInjector,
+} from "@models/ImplementsInjector";
+import { Provenance } from "@models/Provenance";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
@@ -57,8 +60,8 @@ export interface IEventSummaryReportParameters {
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
-  time: MonoTuple<Duration, 2>;
-  date: MonoTuple<DateTime, 2>;
+  time: IsomorphicTuple<Duration, 2>;
+  date: IsomorphicTuple<DateTime, 2>;
   charts: Chart[];
 }
 
@@ -84,7 +87,7 @@ export class EventSummaryReportParameters
 {
   public constructor(
     queryStringParameters: Params = {},
-    public injector?: AssociationInjector
+    public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
   }
@@ -98,8 +101,8 @@ export class EventSummaryReportParameters
   public score: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings: boolean;
-  public time: MonoTuple<Duration, 2>;
-  public date: MonoTuple<DateTime, 2>;
+  public time: IsomorphicTuple<Duration, 2>;
+  public date: IsomorphicTuple<DateTime, 2>;
   public charts: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
@@ -110,7 +113,7 @@ export class EventSummaryReportParameters
   public tagModels?: Tag[];
   @hasMany<EventSummaryReportParameters, Provenance>(
     AUDIO_EVENT_PROVENANCE,
-    "provenances"
+    "provenances",
   )
   public provenanceModels?: Provenance[];
 
@@ -137,7 +140,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "region",
         Array.from(this.sites),
-        filter
+        filter,
       );
     }
 
@@ -145,7 +148,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "site",
         Array.from(this.points),
-        filter
+        filter,
       );
     }
 
@@ -153,7 +156,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "provenance",
         Array.from(this.provenances),
-        filter
+        filter,
       );
     }
 
@@ -161,7 +164,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "tag",
         Array.from(this.tags),
-        filter
+        filter,
       );
     }
 
@@ -186,7 +189,7 @@ export class EventSummaryReportParameters
       filter = filterDate(
         filter,
         this.dateStartedAfter,
-        this.dateFinishedBefore
+        this.dateFinishedBefore,
       );
     }
 
@@ -195,7 +198,7 @@ export class EventSummaryReportParameters
         filter,
         this.daylightSavings,
         this.timeStartedAfter,
-        this.timeFinishedBefore
+        this.timeFinishedBefore,
       );
     }
 
@@ -206,7 +209,7 @@ export class EventSummaryReportParameters
     const queryParameters =
       serializeObjectToParams<IEventSummaryReportParameters>(
         this,
-        serializationTable
+        serializationTable,
       );
 
     return queryParameters;

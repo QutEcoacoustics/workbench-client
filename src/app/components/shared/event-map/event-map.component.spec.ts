@@ -1,12 +1,12 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
-import { MapComponent } from "@shared/map/map.component";
-import { MockModule } from "ng-mocks";
 import { GoogleMapsModule, MapAdvancedMarker } from "@angular/google-maps";
+import { provideRouter } from "@angular/router";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AudioEventGroup } from "@models/AudioEventGroup";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { GoogleMapsState, MapsService } from "@services/maps/maps.service";
+import { MapComponent } from "@shared/map/map.component";
 import { generateAudioEventGroup } from "@test/fakes/AudioEventGroup";
-import { provideRouter } from "@angular/router";
+import { MockModule } from "ng-mocks";
 import { EventMapComponent } from "./event-map.component";
 
 describe("EventMapComponent", () => {
@@ -82,7 +82,7 @@ describe("EventMapComponent", () => {
         };
 
         expect(realized.position).toEqual(expected);
-        expect(realized.title).toEqual(`${targetEvent.eventCount} Events`);
+        expect(realized.title).toEqual(`${targetEvent.audioEventCount} Events`);
       }
     });
 
@@ -94,7 +94,7 @@ describe("EventMapComponent", () => {
       expect(markerTemplate).toExist();
 
       const count = markerTemplate.querySelector(".marker-count");
-      expect(count).toHaveExactTrimmedText(event.eventCount.toFixed());
+      expect(count).toHaveExactTrimmedText(event.audioEventCount.toFixed());
     });
   });
 

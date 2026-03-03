@@ -1,4 +1,5 @@
 import { Params } from "@angular/router";
+import { Duration } from "luxon";
 import {
   IQueryStringParameterSpec,
   deserializeParamsToObject,
@@ -6,9 +7,11 @@ import {
   jsNumber,
   jsNumberArray,
   jsString,
+  luxonDateArray,
   luxonDuration,
   luxonDurationArray,
   serializeObjectToParams,
+  timeOfDay,
 } from "./queryStringParameters";
 
 describe("queryStringParameters", () => {
@@ -131,7 +134,7 @@ describe("queryStringParameters", () => {
     it("should not serialize arrays that only have null values", () => {
       const testInput = {
         testing: "test,mangos",
-        score: [null,null],
+        score: [null, null],
       };
       const expectedOutput: Params = {
         testing: "test,mangos",
@@ -245,6 +248,27 @@ describe("queryStringParameters", () => {
       expect(result).toEqual(expectedOutput);
     });
 
+    it("should be able to deserialize an empty string into an array with null values", () => {
+      const testSpec: IQueryStringParameterSpec = {
+        siteIds: jsNumberArray,
+        eventDate: luxonDateArray,
+      };
+
+      const testInput: Params = {
+        siteIds: "",
+        eventDate: "",
+      };
+
+      // this is not such a useful test since the deserializer automatically
+      // does not run the deserialize function for empty strings.
+      // Leaving this test though because it documents this behavior and ensures that it does not change in the future.
+      const expectedOutput = {};
+
+      const result = deserializeParamsToObject(testInput, testSpec);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
     it("should emit null values in an array when deserializing a params duration object array", () => {
       const testSpec: IQueryStringParameterSpec = {
         time: luxonDurationArray,
@@ -271,6 +295,27 @@ describe("queryStringParameters", () => {
 
       const result = deserializeParamsToObject(testInput, testSpec);
       expect(result["badId"]).toBeNull();
+    });
+  });
+
+  describe("compound types", () => {
+    it("can round trip a time of day filter", () => {
+      const testSpec: IQueryStringParameterSpec = {
+        time: timeOfDay,
+      };
+
+      const testInput = {
+        time: [
+          Duration.fromObject({ hours: 1, minutes: 30 }),
+          Duration.fromObject({ hours: 2, minutes: 45 }),
+          true,
+        ] as [Duration, Duration, boolean],
+      };
+
+      const serialized = serializeObjectToParams(testInput, testSpec);
+      const deserialized = deserializeParamsToObject(serialized, testSpec);
+
+      expect(deserialized).toEqual(testInput);
     });
   });
 });

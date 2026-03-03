@@ -3,6 +3,16 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { toNumber } from "@helpers/typing/toNumber";
 import { DateTime, Duration } from "luxon";
 
+const DstToken = "DST";
+
+export type DateIntervalTuple = [DateTime | null, DateTime | null];
+export type DurationIntervalTuple = [Duration | null, Duration | null];
+export type TimeOfDayIntervalTuple = [
+  Duration | null,
+  Duration | null,
+  boolean,
+];
+
 export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
   [K in keyof T]: SerializationTechnique;
 }>;
@@ -33,6 +43,11 @@ export const luxonDateArray = {
 export const luxonDurationArray = {
   serialize: durationArrayToQueryString,
   deserialize: queryStringDurationTimeArray,
+} as const satisfies SerializationTechnique;
+
+export const timeOfDay = {
+  serialize: timeOfDayToQueryString,
+  deserialize: queryStringToTimeOfDay,
 } as const satisfies SerializationTechnique;
 
 export const jsNumber = {
@@ -230,6 +245,10 @@ function queryStringNumber(value: string): number | null {
 }
 
 function queryStringArray(value: string): string[] {
+  if (value === "") {
+    return [];
+  }
+
   return value.split(",");
 }
 
@@ -241,22 +260,33 @@ function queryStringToBooleanArray(value: string): boolean[] {
   return queryStringArray(value).map(queryStringBoolean);
 }
 
-function queryStringDateArray(value: string): (DateTime | null)[] {
-  return queryStringArray(value).map(queryStringDate);
+function queryStringDateArray(value: string): DateIntervalTuple {
+  const [start, end] = queryStringArray(value);
+  return [queryStringDate(start), queryStringDate(end)];
 }
 
 function queryStringDate(value: string): DateTime | null {
   // if a null or undefined value is passed into luxon's DateTime.fromISO, it will return the current time
   // this can be confusing and lead to lots of bugs. We therefore return the null value here
-  if (value === "") {
+  if (value === "" || !isInstantiated(value)) {
     return null;
   }
 
   return DateTime.fromISO(value, { zone: "utc" });
 }
 
-function queryStringDurationTimeArray(value: string): Duration[] {
-  return queryStringArray(value).map(queryStringDurationTime);
+function queryStringDurationTimeArray(value: string): DurationIntervalTuple {
+  const [start, end] = queryStringArray(value);
+  return [queryStringDurationTime(start), queryStringDurationTime(end)];
+}
+
+function queryStringToTimeOfDay(value: string): TimeOfDayIntervalTuple {
+  const [start, end, dst] = queryStringArray(value);
+  return [
+    queryStringDurationTime(start),
+    queryStringDurationTime(end),
+    dst === DstToken,
+  ];
 }
 
 function queryStringDurationTime(value: string): Duration {
@@ -278,14 +308,35 @@ function durationToQueryString(value: Duration): string {
   return value ? value.toFormat("hh:mm") : "";
 }
 
-function dateArrayToQueryString(value: DateTime[]): string {
+function dateArrayToQueryString(value: DateIntervalTuple): string | null {
+  if (!isInstantiated(value[0]) && !isInstantiated(value[1])) {
+    return null;
+  }
+
   return value.map((date: DateTime) => dateToQueryString(date)).join(",");
 }
 
-function durationArrayToQueryString(value: Duration[]): string {
+function durationArrayToQueryString(
+  value: DurationIntervalTuple,
+): string | null {
+  if (!isInstantiated(value[0]) && !isInstantiated(value[1])) {
+    return null;
+  }
   return value
     .map((duration: Duration) => durationToQueryString(duration))
     .join(",");
+}
+
+function timeOfDayToQueryString(value: TimeOfDayIntervalTuple): string | null {
+  if (!isInstantiated(value[0]) && !isInstantiated(value[1])) {
+    return null;
+  }
+
+  return [
+    durationToQueryString(value[0]),
+    durationToQueryString(value[1]),
+    value[2] === true ? DstToken : null,
+  ].join(",");
 }
 
 function arrayToQueryString(value: unknown[]): string | null {

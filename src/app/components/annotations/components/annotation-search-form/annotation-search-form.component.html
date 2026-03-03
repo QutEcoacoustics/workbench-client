@@ -1,10 +1,10 @@
 <form #form="ngForm">
   <baw-date-time-filter
-    [model]="recordingDateTimeFilters()"
-    (modelChange)="updateRecordingDateTime($event)"
-    [disableStartDate]="true"
+    [model]="annotationDateTimeFilters()"
+    (modelChange)="updateAnnotationDateTimeFilters($event)"
     [disableStartTime]="true"
     [disableEndTime]="true"
+    label="annotation"
   />
 
   <baw-typeahead-input
@@ -66,9 +66,7 @@
         <label class="input-group">
           <span
             class="input-group-text tooltip-hint"
-            [ngbTooltip]="
-              'Any event with an empty score, will also be filtered out.'
-            "
+            [ngbTooltip]="'Any event with an empty score, will also be filtered out.'"
           >
             Minimum Score
           </span>
@@ -93,9 +91,7 @@
         <label class="input-group">
           <span
             class="input-group-text tooltip-hint"
-            [ngbTooltip]="
-              'Any event with an empty score, will also be filtered out.'
-            "
+            [ngbTooltip]="'Any event with an empty score, will also be filtered out.'"
           >
             Maximum Score
           </span>
