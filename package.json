@@ -25,7 +25,7 @@
     "@angular/animations": "20.3.13",
     "@angular/cdk": "^20.2.3",
     "@angular/common": "20.3.13",
-    "@angular/compiler": "20.3.13",
+    "@angular/compiler": "20.3.16",
     "@angular/core": "20.3.13",
     "@angular/elements": "20.3.13",
     "@angular/forms": "20.3.13",
