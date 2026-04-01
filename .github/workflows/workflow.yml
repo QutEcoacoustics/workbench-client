@@ -225,16 +225,3 @@ jobs:
           files: artifacts/**/TESTS-*.xml
           test_changes_limit: 0
           deduplicate_classes_by_file_name: true
-
-  publish:
-    name: "Publish Docker Container"
-    needs: [test, ssr, build]
-    if: >
-      github.actor != 'dependabot[bot]' &&
-      github.actor != 'kodiakhq[bot]' &&
-      (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tag'))
-
-    uses: ./.github/workflows/publish.yml
-    with:
-      release_tag: 'beta'
-    secrets: inherit
