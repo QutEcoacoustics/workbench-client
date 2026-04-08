@@ -4,7 +4,7 @@ import {
   computed,
   input,
   output,
-  signal,
+  signal
 } from "@angular/core";
 import { Id } from "@interfaces/apiInterfaces";
 import { AudioEventGroup } from "@models/AudioEventGroup";
