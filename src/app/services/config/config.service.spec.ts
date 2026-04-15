@@ -1,3 +1,4 @@
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
 import {
@@ -7,8 +8,8 @@ import {
   SpectatorHttp,
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
+import { IS_WEB_COMPONENT_TARGET } from "src/app/app.helper";
 import { environment } from "src/environments/environment";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
 import { testApiConfig } from "./configMock.service";
@@ -23,6 +24,8 @@ describe("ConfigService", () => {
       mockProvider(ToastService),
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
+
+      { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
     ],
   });
 
@@ -38,6 +41,7 @@ describe("ConfigService", () => {
     service = spec.inject(ConfigService);
 
     const promise = spec.service.init();
+    await Promise.resolve();
     const req = spec.expectOne("assets/environment.json", HttpMethod.GET);
     req.flush(apiConfig);
     await promise;
@@ -63,7 +67,7 @@ describe("ConfigService", () => {
     toastr = spec.inject(ToastService);
     service = spec.inject(ConfigService);
 
-    await spec.service.init(spec.inject(API_CONFIG));
+    await spec.service.init();
   }
 
   [
