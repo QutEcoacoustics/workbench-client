@@ -1,19 +1,20 @@
 import { APP_ID, ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { provideClientHydration } from "@angular/platform-browser";
 import {
   provideRouter,
   TitleStrategy,
   withDisabledInitialNavigation,
   withInMemoryScrolling,
 } from "@angular/router";
+import { provideBawApi } from "@baw-api/provide-baw-api";
 import { menuProviders } from "@menu/provide-menu";
 import { LOADING_BAR_CONFIG } from "@ngx-loading-bar/core";
 import { provideConfig } from "@services/config/provide-config";
 import { PageTitleStrategy } from "@services/page-title-strategy/page-title-strategy.service";
 import { CustomInputsModule } from "@shared/formly/custom-inputs.module";
 import { DateValueAccessorModule } from "angular-date-value-accessor";
-import { provideClientHydration } from "@angular/platform-browser";
-import { provideBawApi } from "@baw-api/provide-baw-api";
+import { IS_WEB_COMPONENT_TARGET } from "./app.helper";
 import { appPageComponents } from "./app.pages";
 import { clientRoutes } from "./app.routes";
 
@@ -52,6 +53,7 @@ export const appConfig: ApplicationConfig = {
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Show loading animation after 3 seconds
     { provide: LOADING_BAR_CONFIG, useValue: { latencyThreshold: 200 } },
+    { provide: IS_WEB_COMPONENT_TARGET, useValue: false },
     { provide: APP_ID, useValue: "workbench-client" },
 
     provideClientHydration(),
