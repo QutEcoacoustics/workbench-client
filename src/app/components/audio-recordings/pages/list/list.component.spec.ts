@@ -1,6 +1,9 @@
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
+import { of } from "rxjs";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { AudioRecordingsListComponent } from "./list.component";
 
@@ -9,12 +12,14 @@ describe("AudioRecordingsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AudioRecordingsListComponent,
+    shallow: true,
     imports: [WebsiteStatusWarningComponent],
     providers: [provideMockBawApi()],
   });
 
   function setup(): void {
     spectator = createComponent({ detectChanges: false });
+    spectator.inject(FaIconLibrary).addIconPacks(fas);
   }
 
   beforeEach(() => setup());
@@ -25,8 +30,11 @@ describe("AudioRecordingsListComponent", () => {
     expect(spectator.component).toBeInstanceOf(AudioRecordingsListComponent);
   });
 
-  it("should include styles for horizontal table scrolling", () => {
-    const styles = (AudioRecordingsListComponent as any).ɵcmp.styles.join(" ");
-    expect(styles).toContain(".audio-recordings-table-scroll");
+  it("should wrap the datatable in a horizontal scroll container", () => {
+    spyOn<any>(spectator.component, "apiAction").and.returnValue(of([]));
+    spectator.detectChanges();
+
+    const wrapper = spectator.query(".audio-recordings-table-scroll");
+    expect(wrapper).toBeTruthy();
   });
 });
