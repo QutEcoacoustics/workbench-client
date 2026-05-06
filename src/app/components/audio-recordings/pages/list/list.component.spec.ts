@@ -3,7 +3,7 @@ import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { createRoutingFactory, Spectator } from "@ngneat/spectator";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { WebsiteStatusWarningComponent } from "@menu/website-status-warning/website-status-warning.component";
 import { AudioRecordingsListComponent } from "./list.component";
 
@@ -12,7 +12,6 @@ describe("AudioRecordingsListComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: AudioRecordingsListComponent,
-    shallow: true,
     imports: [WebsiteStatusWarningComponent],
     providers: [provideMockBawApi()],
   });
@@ -31,7 +30,11 @@ describe("AudioRecordingsListComponent", () => {
   });
 
   it("should wrap the datatable in a horizontal scroll container", () => {
-    spyOn<any>(spectator.component, "apiAction").and.returnValue(of([]));
+    spectator.component.rows = [];
+    const componentWithApiAction = spectator.component as AudioRecordingsListComponent & {
+      apiAction: () => Observable<unknown[]>;
+    };
+    spyOn(componentWithApiAction, "apiAction").and.returnValue(of([]));
     spectator.detectChanges();
 
     const wrapper = spectator.query(".audio-recordings-table-scroll");
