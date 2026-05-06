@@ -89,7 +89,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
       this.scopeFilter = filterModel<Project, AudioRecording>("projects", this.project);
     }
 
-    // Merge the scope filter with any date/time filters whenever either changes
+    // Merge the scope filter with any date/time filters whenever date/time filters change
     this.dateTimeFilters$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((dateFilters: Filters<AudioRecording>) => {
