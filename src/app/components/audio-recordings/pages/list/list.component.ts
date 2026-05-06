@@ -51,6 +51,7 @@ const siteKey = "site";
 @Component({
   selector: "baw-audio-recordings",
   templateUrl: "./list.component.html",
+  styleUrl: "./list.component.css",
   imports: [
     DateTimeFilterComponent,
     NgxDatatableModule,

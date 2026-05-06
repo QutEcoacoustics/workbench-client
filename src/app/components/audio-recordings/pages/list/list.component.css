@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.audio-recordings-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}

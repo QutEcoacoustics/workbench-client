@@ -24,4 +24,9 @@ describe("AudioRecordingsListComponent", () => {
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(AudioRecordingsListComponent);
   });
+
+  it("should include styles for horizontal table scrolling", () => {
+    const styles = (AudioRecordingsListComponent as any).ɵcmp.styles.join(" ");
+    expect(styles).toContain(".audio-recordings-table-scroll");
+  });
 });

@@ -8,112 +8,114 @@
 
   <baw-date-time-filter [constructedFilters]="filters$" />
 
-  <ngx-datatable
-    #table
-    bawDatatableDefaults
-    [columns]="columns"
-    [rows]="rows"
-    [count]="totalModels"
-    [offset]="pageNumber"
-    (page)="setPage($event)"
-    (sort)="onSort($event)"
-  >
-    <ngx-datatable-column name="Recorded">
-      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        <baw-zoned-datetime
-          [value]="value.recordedDate"
-          [timezone]="value.recordedDateTimezone"
-        />
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Duration">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <baw-duration [value]="value" humanized />
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Uploader">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <baw-user-link [user]="value.uploader"></baw-user-link>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Site">
-      <ng-template let-column="column" ngx-datatable-header-template>
-        {{ siteColumnName }}
-      </ng-template>
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <!-- Show loading animation while site is unresolved -->
-        @if (site ?? value.site | isUnresolved) {
-          <baw-loading size="sm"></baw-loading>
-        } @else {
-          <ng-container
-            *ngTemplateOutlet="siteLink; context: { model: site ?? value.site }"
-          ></ng-container>
-        }
-        <!-- Create site link when site is loaded-->
-        <!-- Template for showing site link -->
-        <ng-template #siteLink let-model="model">
-          <!-- Use project in link if exists -->
-          @if (projectId) {
-            <a [bawUrl]="model.getViewUrl(projectId)">
-              {{ model.name }}
-            </a>
-          } @else {
-            <a [bawUrl]="model.viewUrl">
-              {{ model.name }}
-            </a>
-          }
-          <!-- Let site handle link if no definitive project-->
-        </ng-template>
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column
-      name="Model"
-      [width]="170"
-      [maxWidth]="170"
-      [sortable]="false"
+  <div class="audio-recordings-table-scroll">
+    <ngx-datatable
+      #table
+      bawDatatableDefaults
+      [columns]="columns"
+      [rows]="rows"
+      [count]="totalModels"
+      [offset]="pageNumber"
+      (page)="setPage($event)"
+      (sort)="onSort($event)"
     >
-      <ng-template let-column="column" ngx-datatable-header-template>
-      </ng-template>
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        <a
-          class="btn btn-sm btn-highlight me-1"
-          placement="left"
-          [ngbTooltip]="'Listen to this audio recording'"
-          [bawUrl]="value.playUrl"
-        >
-          <fa-icon [icon]="['fas', 'play']"></fa-icon>
-        </a>
-        <a
-          class="btn btn-sm btn-default me-1"
-          placement="left"
-          [ngbTooltip]="'Download audio recording'"
-          [href]="value.getDownloadUrl(apiRoot)"
-        >
-          <fa-icon [icon]="['fas', 'download']"></fa-icon>
-        </a>
-
-        <span [ngbTooltip]="'BETA: Will be available soon. Download audio recording analyses'">
-          <button
+      <ngx-datatable-column name="Recorded">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <baw-zoned-datetime
+            [value]="value.recordedDate"
+            [timezone]="value.recordedDateTimezone"
+          />
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Duration">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-duration [value]="value" humanized />
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Uploader">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <baw-user-link [user]="value.uploader"></baw-user-link>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Site">
+        <ng-template let-column="column" ngx-datatable-header-template>
+          {{ siteColumnName }}
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <!-- Show loading animation while site is unresolved -->
+          @if (site ?? value.site | isUnresolved) {
+            <baw-loading size="sm"></baw-loading>
+          } @else {
+            <ng-container
+              *ngTemplateOutlet="siteLink; context: { model: site ?? value.site }"
+            ></ng-container>
+          }
+          <!-- Create site link when site is loaded-->
+          <!-- Template for showing site link -->
+          <ng-template #siteLink let-model="model">
+            <!-- Use project in link if exists -->
+            @if (projectId) {
+              <a [bawUrl]="model.getViewUrl(projectId)">
+                {{ model.name }}
+              </a>
+            } @else {
+              <a [bawUrl]="model.viewUrl">
+                {{ model.name }}
+              </a>
+            }
+            <!-- Let site handle link if no definitive project-->
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Model"
+        [width]="170"
+        [maxWidth]="170"
+        [sortable]="false"
+      >
+        <ng-template let-column="column" ngx-datatable-header-template>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a
+            class="btn btn-sm btn-highlight me-1"
+            placement="left"
+            [ngbTooltip]="'Listen to this audio recording'"
+            [bawUrl]="value.playUrl"
+          >
+            <fa-icon [icon]="['fas', 'play']"></fa-icon>
+          </a>
+          <a
             class="btn btn-sm btn-default me-1"
             placement="left"
-            [disabled]="true"
+            [ngbTooltip]="'Download audio recording'"
+            [href]="value.getDownloadUrl(apiRoot)"
           >
-            <fa-icon [icon]="['fas', 'file-arrow-down']"></fa-icon>
-          </button>
-        </span>
+            <fa-icon [icon]="['fas', 'download']"></fa-icon>
+          </a>
 
-        <!-- Change this link dynamically -->
-        <a
-          class="btn btn-sm btn-default"
-          placement="left"
-          [ngbTooltip]="'View audio recording details'"
-          [bawUrl]="value.getDetailsUrl(projectId, region, site)"
-        >
-          <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
-        </a>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
+          <span [ngbTooltip]="'BETA: Will be available soon. Download audio recording analyses'">
+            <button
+              class="btn btn-sm btn-default me-1"
+              placement="left"
+              [disabled]="true"
+            >
+              <fa-icon [icon]="['fas', 'file-arrow-down']"></fa-icon>
+            </button>
+          </span>
+
+          <!-- Change this link dynamically -->
+          <a
+            class="btn btn-sm btn-default"
+            placement="left"
+            [ngbTooltip]="'View audio recording details'"
+            [bawUrl]="value.getDetailsUrl(projectId, region, site)"
+          >
+            <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
 }
 
 @if (error) {
