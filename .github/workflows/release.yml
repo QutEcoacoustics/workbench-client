@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+# This workflow contains two mutually exclusive jobs.
+# Only one of these jobs will run per workflow execution.
+jobs:
+  # If the commit to the master branch is not a release commit, we create a new
+  # release PR against master using release-please.
+  create-release:
+    name: Create release please pull request
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+    permissions: write-all
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          # we use a service account because GitHub has a restriction where if we use the GITHUB_TOKEN
+          # workflow will not trigger on the PR created by the bot
+          # this is done to prevent recusive workflows
+          # see: https://github.com/peter-evans/create-pull-request/issues/48#issuecomment-536184102
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+          config-file: release-please-config.json
+
+  # If the most recent commit to master is a release commit, we run this job
+  # instead of the create-release job.
+  publish-release:
+    name: Publish Release to Docker and NPM
+    needs: create-release
+    if: ${{ needs.create-release.outputs.release_created }}
+    uses: ./.github/workflows/publish.yml
+    with:
+      docker_tag: "beta"
+    secrets: inherit
