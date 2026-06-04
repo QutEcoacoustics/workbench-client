@@ -1,4 +1,4 @@
-import { AUDIO_EVENT_PROVENANCE, TAG } from "@baw-api/ServiceTokens";
+﻿import { AUDIO_EVENT_PROVENANCE, TAG } from "@baw-api/ServiceTokens";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
 import { hasOne } from "@models/AssociationDecorators";
@@ -20,9 +20,9 @@ export class EventGroup
 {
   public provenanceId: Id;
   public tagId: Id;
-  public detections: number;
-  public bucketsWithDetections: number;
-  public score: IEventScore;
+  public detections!: number;
+  public bucketsWithDetections!: number;
+  public score!: IEventScore;
 
   // associations
   @hasOne(AUDIO_EVENT_PROVENANCE, "provenanceId")

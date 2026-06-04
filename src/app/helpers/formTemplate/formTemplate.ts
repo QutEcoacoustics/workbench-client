@@ -1,4 +1,4 @@
-import { Directive, OnInit } from "@angular/core";
+﻿import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -64,19 +64,19 @@ export abstract class FormTemplate<Model extends AbstractModel>
   implements OnInit
 {
   /** Form submission processing */
-  public loading: boolean;
+  public loading!: boolean;
   /** Initial setup failed */
-  public failure: boolean;
+  public failure!: boolean;
   /** Model to edit using form */
-  public model: Partial<Model>;
+  public model!: Partial<Model>;
   /** Extra models stored in data */
   public models: ResolvedModelList = {};
   /** Formly fields */
   public fields: FormlyFieldConfig[] = [];
   /** Recaptcha state tracker, undefined if not used */
-  public recaptchaSeed: RecaptchaState;
+  public recaptchaSeed!: RecaptchaState;
   /** Success message */
-  private successMessage: string;
+  private successMessage!: string;
   /** Form template options */
   private opts: FormProps<Model>;
 
@@ -144,6 +144,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     this.apiAction(event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
+        // @ts-expect-error: strict mode fix
         next: (model: Model) => {
           /*
            * First pass attempt a generating success message. This is required

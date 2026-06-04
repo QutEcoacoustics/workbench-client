@@ -63,7 +63,7 @@ export class BatchUploadingComponent implements OnInit {
   }
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   public get project(): Project {
@@ -79,7 +79,7 @@ export class BatchUploadingComponent implements OnInit {
   }
 
   public exampleSite(project: Project): Site {
-    return project.sites[0];
+    return project.sites![0];
   }
 
   public async finishUpload(template: any): Promise<void> {

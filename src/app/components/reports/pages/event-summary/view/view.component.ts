@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   ElementRef,
   HostListener,
@@ -96,23 +96,24 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
   private readonly location = inject(Location);
   private readonly modalService = inject(NgbModal);
 
-  public parameterDataModel: EventSummaryReportParameters;
-  public report: EventSummaryReport;
-  public user: User;
-  public project: Project;
+  public parameterDataModel!: EventSummaryReportParameters;
+  public report!: EventSummaryReport;
+  public user!: User;
+  public project!: Project;
   public region?: Region;
   public site?: Site;
 
   protected readonly chartTypes = Chart;
 
+  // @ts-expect-error: strict mode fix
   public filters$: BehaviorSubject<Filters<any>> = new BehaviorSubject({
     paging: { page: 1 },
     sorting: { direction: "asc", orderBy: "tag" },
   });
 
-  @ViewChild("printingModal") public printingModal: ElementRef;
-  @ViewChild("compositionChart") public compositionChart: SpeciesCompositionGraphComponent;
-  @ViewChild("timeSeriesChart") public timeSeriesChart: SpeciesTimeSeriesComponent;
+  @ViewChild("printingModal") public printingModal!: ElementRef;
+  @ViewChild("compositionChart") public compositionChart!: SpeciesCompositionGraphComponent;
+  @ViewChild("timeSeriesChart") public timeSeriesChart!: SpeciesTimeSeriesComponent;
 
   public ngOnInit(): void {
     // we can use "as" here to provide stronger typing because the data property is a standard object type without any typing
@@ -123,7 +124,9 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     this.project = models[projectKey] as Project;
     this.region = models[regionKey] as Region;
     this.site = models[siteKey] as Site;
+    // @ts-expect-error: strict mode indexing
     this.report = models[reportKey]?.[0] as EventSummaryReport;
+    // @ts-expect-error: strict mode indexing
     this.parameterDataModel = models[
       reportKey
     ]?.[1] as EventSummaryReportParameters;
@@ -142,6 +145,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     new Observable((subscriber) => subscriber.next(this.report.eventGroups));
 
   protected vegaTagTextFormatter = (tagId: number): string =>
+    // @ts-expect-error: strict mode fix
     this.parameterDataModel.tagModels.find(
       (tagModel: Tag) => tagModel.id === tagId
     )?.text;
@@ -177,18 +181,19 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
 
   protected filteredSites(): Site[] {
     // the most common case is when the user has selected sites using the site selector
+    // @ts-expect-error: strict mode fix
     if (this.report.sites.length > 0) {
-      return this.report.sites;
+      return this.report.sites!;
     }
 
     // if the user didn't select any sites, the report will default to all sites
     if (this.site) {
       return [this.site];
     } else if (this.region) {
-      return this.region.sites;
+      return this.region.sites!;
     }
 
-    return this.project.sites;
+    return this.project.sites!;
   }
 
   protected shouldShowChart(chart: Chart): boolean {
@@ -222,7 +227,7 @@ class ViewEventReportComponent extends PageComponent implements OnInit {
     if (this.parameterDataModel.charts.length === 0) {
       this.parameterDataModel.charts = [];
     } else if (this.parameterDataModel.charts.length === 4) {
-      this.parameterDataModel.charts = null;
+      this.parameterDataModel.charts = null!;
     }
 
     this.updateQueryStringParameters();

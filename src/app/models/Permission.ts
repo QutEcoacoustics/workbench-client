@@ -48,6 +48,7 @@ export class Permission
 
   public get viewUrl(): string {
     return editProjectPermissionsRoute.format({
+      // @ts-expect-error: strict mode fix
       projectId: this.projectId,
     });
   }

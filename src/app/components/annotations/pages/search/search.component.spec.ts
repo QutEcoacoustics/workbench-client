@@ -95,6 +95,7 @@ describe("AnnotationSearchComponent", () => {
         get isLoggedIn() {
           return true;
         },
+        // @ts-expect-error: strict mode fix
         authTrigger: of({ user: mockUser }),
       }),
     ],
@@ -178,6 +179,7 @@ describe("AnnotationSearchComponent", () => {
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = spec.query(`[aria-valuetext="${value}"]`);
+    // @ts-expect-error: strict mode fix
     clickButton(spec, target);
   }
 
@@ -334,7 +336,8 @@ describe("AnnotationSearchComponent", () => {
     it("should display the correct error message if there are no search results", () => {
       const expectedText = "No annotations found";
 
-      spec.component.searchParameters().verificationStatus = "any";
+      // @ts-expect-error: strict mode fix
+      spec!.component.searchParameters().verificationStatus = "any";
 
       spec.component.searchResults.set([]);
       spec.component.loading = false;

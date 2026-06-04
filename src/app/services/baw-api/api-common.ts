@@ -33,8 +33,10 @@ export type IdOrName<T extends AbstractModel> = IdOr<T> | Param;
  */
 export function id<T extends AbstractModel>(x: IdOr<T> | Empty): Param {
   if (x === emptyParam || !isInstantiated(x)) {
-    return x;
+    return x!;
+  // @ts-expect-error: strict mode indexing
   } else if (isInstantiated(x?.["id"])) {
+    // @ts-expect-error: strict mode indexing
     return x?.["id"].toString();
   } else {
     return x.toString();
@@ -49,10 +51,14 @@ export function id<T extends AbstractModel>(x: IdOr<T> | Empty): Param {
  */
 export function nameOrId<T extends AbstractModel>(x: IdOrName<T> | Empty): Param {
   if (x === emptyParam || !isInstantiated(x)) {
-    return x;
+    return x!;
+  // @ts-expect-error: strict mode indexing
   } else if (isInstantiated(x?.["name"])) {
+    // @ts-expect-error: strict mode indexing
     return x?.["name"];
+  // @ts-expect-error: strict mode indexing
   } else if (isInstantiated(x?.["id"])) {
+    // @ts-expect-error: strict mode indexing
     return x?.["id"].toString();
   } else {
     return x.toString();

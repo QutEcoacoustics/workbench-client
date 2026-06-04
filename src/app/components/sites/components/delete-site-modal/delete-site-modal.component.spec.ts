@@ -37,8 +37,10 @@ describe("DeleteSiteModalComponent", () => {
   beforeEach(() => setup());
 
   const getDeleteButton = (): HTMLAnchorElement =>
+    // @ts-expect-error: strict mode fix
     getElementByTextContent<HTMLAnchorElement>(spectator, "Delete");
   const getCancelButton = (): HTMLAnchorElement =>
+    // @ts-expect-error: strict mode fix
     getElementByTextContent<HTMLAnchorElement>(spectator, "Cancel");
 
   it("should create", () => {
@@ -47,6 +49,7 @@ describe("DeleteSiteModalComponent", () => {
 
   // duplicate test from delete-modal.component.spec.ts to ensure no extended functionality is lost
   it("should invoke the success callback when the delete button is clicked", () => {
+    // @ts-expect-error: strict mode fix
     spyOn(spectator.component, "successCallback").and.stub();
     spectator.click(getDeleteButton());
     expect(spectator.component.successCallback).toHaveBeenCalledTimes(1);
@@ -67,6 +70,7 @@ describe("DeleteSiteModalComponent", () => {
   });
 
   it("should dismiss the modal when the 'Contact Us' link is clicked", () => {
+    // @ts-expect-error: strict mode fix
     const contactUsLinkElement: HTMLAnchorElement =
       getElementByTextContent<HTMLAnchorElement>(spectator, "Contact Us");
     spyOn(spectator.component, "dismissModal").and.stub();

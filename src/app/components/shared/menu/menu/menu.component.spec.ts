@@ -131,6 +131,7 @@ describe("MenuComponent", () => {
           pageInfo: data,
           isFullscreen: opts?.isFullscreen ?? false,
         }),
+        // @ts-expect-error: strict mode fix
         MockProvider(BawSessionService, {
           loggedInUser: opts?.localUser ?? null,
         }),
@@ -150,6 +151,7 @@ describe("MenuComponent", () => {
 
   describe("menu", () => {
     function getTitle(): HTMLHeadingElement {
+      // @ts-expect-error: strict mode fix
       return spec.query("h6");
     }
 
@@ -216,7 +218,7 @@ describe("MenuComponent", () => {
 
     describe("widgets", () => {
       function validateNumWidgets(numWidgets: number) {
-        expect(getWidget().childElementCount).toBe(numWidgets);
+        expect(getWidget()!.childElementCount).toBe(numWidgets);
       }
 
       it("should not create widget when none provided", () => {
@@ -286,7 +288,7 @@ describe("MenuComponent", () => {
         spec.detectChanges();
 
         const widget = spec.query(MockWidgetComponent);
-        expect(widget.testProperty).toBe("test");
+        expect(widget!.testProperty).toBe("test");
       });
     });
 
@@ -334,6 +336,7 @@ describe("MenuComponent", () => {
         const link = getMenuModals()[0].link as MenuModal;
         link.action();
 
+        // @ts-expect-error: strict mode fix
         mockComponentInstance.dismissModal("test dismissal");
         expect(dismissSpy).toHaveBeenCalledWith("test dismissal");
       });
@@ -355,28 +358,28 @@ describe("MenuComponent", () => {
     {
       title: "Menu Action",
       baseLink: () => defaultMenuAction,
-      create: (data) => menuAction(data),
+      create: (data: any) => menuAction(data),
       getLink: () => getMenuActions(),
       action: true,
     },
     {
       title: "Menu External Link",
       baseLink: () => defaultMenuLink,
-      create: (data) => menuLink(data),
+      create: (data: any) => menuLink(data),
       getLink: () => getMenuLinks(),
       link: true,
     },
     {
       title: "Menu Internal Link",
       baseLink: () => defaultMenuRoute,
-      create: (data) => menuRoute(data),
+      create: (data: any) => menuRoute(data),
       getLink: () => getMenuRoutes(),
       route: true,
     },
     {
       title: "Menu Modal",
       baseLink: () => defaultMenuModal,
-      create: (data) => menuModal(data),
+      create: (data: any) => menuModal(data),
       getLink: () => getMenuModals(),
       modal: true,
     },
@@ -411,6 +414,7 @@ describe("MenuComponent", () => {
         const link = createLink();
         setup({ menuType: "action", links: OrderedSet([link]) });
         spec.detectChanges();
+        // @ts-expect-error: strict mode fix
         expect(test.getLink()[0].tooltip).toBe(link.tooltip());
       });
 

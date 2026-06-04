@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { List } from "immutable";
 import {
   AudioEventImportService,
@@ -53,7 +53,7 @@ class EditAnnotationsComponent
 
     super(notifications, route, router, {
       getModel: (models) => models[audioEventImportKey] as AudioEventImport,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.createViewUrl(this.project.id)),
     });
   
@@ -63,7 +63,7 @@ class EditAnnotationsComponent
   }
 
   public fields = schema.fields;
-  protected title: string;
+  protected title!: string;
 
   protected get project(): Project {
     return this.models.project as Project;

@@ -1,4 +1,4 @@
-import { Type } from "@angular/core";
+﻿import { Type } from "@angular/core";
 import { Params, Route } from "@angular/router";
 import { ServerRoute } from "@angular/ssr";
 import { ResolvedModelList } from "@baw-api/resolver-common";
@@ -29,7 +29,7 @@ export class StrongRoute {
    * of this StrongRoute. If no pageComponent is supplied, the StrongRoute
    * will display a page not found error message when navigated to.
    */
-  public pageComponent: Option<Type<PageComponent>>;
+  public pageComponent!: Option<Type<PageComponent>>;
   /**
    * Root StrongRoute of this StrongRoute, all children of this root
    * StrongRoute will be compiled together
@@ -102,7 +102,7 @@ export class StrongRoute {
     public readonly angularRouteConfig: Partial<Route> = {},
     isRoot?: boolean,
   ) {
-    this.#parent = parent;
+    this.#parent = parent!;
 
     // Check pathFragment does not have a leading '/'
     if (pathFragment.startsWith("/")) {
@@ -333,8 +333,8 @@ export class StrongRoute {
         return a.path === StrongRoute.rootPath ? -1 : 1;
       }
 
-      const aRoutes = a.path.split("/");
-      const bRoutes = b.path.split("/");
+      const aRoutes = a.path!.split("/");
+      const bRoutes = b.path!.split("/");
       const aParamRoute = aRoutes[aRoutes.length - 1].startsWith(":");
       const bParamRoute = bRoutes[bRoutes.length - 1].startsWith(":");
 
@@ -378,7 +378,7 @@ export class StrongRoute {
         if (
           !(
             route.path === StrongRoute.rootPath &&
-            route.children[0].component === undefined
+            route.children![0].component === undefined
           )
         ) {
           output.push(route);
@@ -412,7 +412,7 @@ export class StrongRoute {
     return [fragments.reverse(), parameters.reverse()];
   }
 
-  private linkChild(child) {
+  private linkChild(child: any) {
     this.children.push(child);
   }
 }

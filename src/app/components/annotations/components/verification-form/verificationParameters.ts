@@ -1,4 +1,4 @@
-import { Params } from "@angular/router";
+﻿import { Params } from "@angular/router";
 import { TAG } from "@baw-api/ServiceTokens";
 import {
   IQueryStringParameterSpec,
@@ -33,7 +33,9 @@ export interface IVerificationParameters {
 
 const serializationTable: IQueryStringParameterSpec<IVerificationParameters> = {
   taskTag: jsNumber,
+  // @ts-expect-error: strict mode fix
   verificationStatus: withDefault(jsString, "unverified-for-me"),
+  // @ts-expect-error: strict mode fix
   taskBehavior: withDefault(jsString, "verify"),
 };
 
@@ -42,8 +44,8 @@ export class VerificationParameters
   implements IVerificationParameters, IParameterModel<AudioEvent>
 {
   public taskTag: Id<Tag>;
-  public taskBehavior: TaskBehaviorKey;
-  public verificationStatus: VerificationStatusKey;
+  public taskBehavior!: TaskBehaviorKey;
+  public verificationStatus!: VerificationStatusKey;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -68,6 +70,7 @@ export class VerificationParameters
       this.verificationStatus,
     );
 
-    return { filter };
+    // @ts-expect-error: strict mode fix
+    return { filter }!;
   }
 }

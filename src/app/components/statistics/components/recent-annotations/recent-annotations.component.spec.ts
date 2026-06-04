@@ -88,10 +88,12 @@ describe("RecentAnnotationsComponent", () => {
 
   function interceptTagsRequest(data: Errorable<Tag>[]): Promise<void>[] {
     const tagsApiResponses = new Map<Id, Errorable<Tag>>();
+    // @ts-expect-error: strict mode fix
     data.forEach((tag: Tag) => {
       tagsApiResponses.set(tag.id, tag);
     });
 
+    // @ts-expect-error: strict mode fix
     return interceptMappedApiRequests(api.tags.show, tagsApiResponses);
   }
 
@@ -124,6 +126,7 @@ describe("RecentAnnotationsComponent", () => {
     tags: Errorable<Tag>[] = defaultTags,
   ) {
     const promise = interceptRequests(site, user, recording, tags);
+    // @ts-expect-error: strict mode fix
     setLoggedInState(state?.isLoggedIn);
     setAnnotations(annotations);
     spec.detectChanges();
@@ -199,17 +202,17 @@ describe("RecentAnnotationsComponent", () => {
 
     it("should not have external paging", async () => {
       await setup();
-      expect(getTable().externalPaging).toBeFalsy();
+      expect(getTable()!.externalPaging).toBeFalsy();
     });
 
     it("should not have external sorting", async () => {
       await setup();
-      expect(getTable().externalSorting).toBeFalsy();
+      expect(getTable()!.externalSorting).toBeFalsy();
     });
 
     it("should not have footer", async () => {
       await setup();
-      expect(getTable().footerHeight).toBe(0);
+      expect(getTable()!.footerHeight).toBe(0);
     });
   });
 
@@ -245,11 +248,13 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while audio recording unresolved", async () => {
         await setup({ isLoggedIn: true });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getSiteCellElement(), true);
       });
 
       it("should display loading spinner while site unresolved", async () => {
         await setup({ isLoggedIn: true, awaitInitialRequests: true });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getSiteCellElement(), true);
       });
 
@@ -259,6 +264,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getSiteCellElement(), false);
       });
 
@@ -268,6 +274,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         expect(getSiteCellElement()).toContainText(defaultSite.name);
       });
 
@@ -304,6 +311,7 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while user is unresolved", async () => {
         await setup({ isLoggedIn: true });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getUsernameCellElement(), true);
       });
 
@@ -313,6 +321,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getUsernameCellElement(), false);
       });
 
@@ -322,6 +331,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         expect(getUsernameCellElement()).toContainText(defaultUser.userName);
       });
     });
@@ -344,6 +354,7 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while tags are unresolved", async () => {
         await setup({ isLoggedIn: true });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getTagsCellElement(true), true);
       });
 
@@ -353,6 +364,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getTagsCellElement(true), false);
       });
 
@@ -384,7 +396,8 @@ describe("RecentAnnotationsComponent", () => {
           awaitFinalRequests: true,
         });
 
-        for (const tag of defaultAnnotation.tags) {
+        for (const tag of defaultAnnotation.tags!) {
+          // @ts-expect-error: strict mode fix
           expect(getTagsCellElement(true)).toContainText(tag.text);
         }
       });
@@ -395,17 +408,20 @@ describe("RecentAnnotationsComponent", () => {
         getCellElements()[isLoggedIn ? 3 : 1];
 
       function assertTimestamp(cell: Element, annotation: AudioEvent) {
+        // @ts-expect-error: strict mode fix
         const expectedText = humanizedDuration(annotation.updatedAt);
         expect(cell).toContainText(expectedText);
       }
 
       it("should display time since updated when logged in", async () => {
         await setup({ isLoggedIn: true });
+        // @ts-expect-error: strict mode fix
         assertTimestamp(getUpdatedCellElement(true), defaultAnnotation);
       });
 
       it("should display time since updated when not logged in", async () => {
         await setup({ isLoggedIn: false });
+        // @ts-expect-error: strict mode fix
         assertTimestamp(getUpdatedCellElement(false), defaultAnnotation);
       });
     });
@@ -414,11 +430,11 @@ describe("RecentAnnotationsComponent", () => {
       const getActionCellElement = (isLoggedIn: boolean) =>
         getCellElements()[isLoggedIn ? 4 : 2];
       const getPlayButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
+        getActionCellElement(isLoggedIn)!.querySelector<HTMLAnchorElement>(
           "#playBtn",
         );
       const getAnnotationButton = (isLoggedIn: boolean) =>
-        getActionCellElement(isLoggedIn).querySelector<HTMLAnchorElement>(
+        getActionCellElement(isLoggedIn)!.querySelector<HTMLAnchorElement>(
           "#annotationBtn",
         );
 

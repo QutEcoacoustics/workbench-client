@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { Params } from "@angular/router";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { BreadcrumbsData, MenuService } from "@services/menu/menu.service";
@@ -53,9 +53,9 @@ export class BreadcrumbComponent implements OnInit {
   private readonly sharedRoute = inject(SharedActivatedRouteService);
   private readonly menu = inject(MenuService);
 
-  public queryParams$: Observable<Params>;
-  public routeParams$: Observable<Params>;
-  public breadcrumbs$: Observable<BreadcrumbsData>;
+  public queryParams$!: Observable<Params>;
+  public routeParams$!: Observable<Params>;
+  public breadcrumbs$!: Observable<BreadcrumbsData>;
 
   public ngOnInit(): void {
     this.breadcrumbs$ = this.menu.menuUpdate.pipe(

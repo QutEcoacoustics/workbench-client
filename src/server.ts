@@ -40,6 +40,7 @@ export function app(path: string): express.Express {
 
   // eslint-disable-next-line no-console
   console.log("Using config file ", configPath);
+  // @ts-expect-error: strict mode fix
   const rawConfig = readFileSync(configPath, "utf-8");
 
   server.set("view engine", "html");

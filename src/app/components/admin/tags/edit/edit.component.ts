@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { tagResolvers, TagsService } from "@baw-api/tag/tags.service";
 import {
@@ -43,7 +43,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
   private readonly api = inject(TagsService);
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -52,7 +52,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[tagKey] as Tag,
-      successMsg: (model) => defaultSuccessMsg("updated", model.text),
+      successMsg: (model) => defaultSuccessMsg("updated", model.text!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -66,6 +66,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
     }
 
     this.title = `Edit ${this.model.text}`;
+    // @ts-expect-error: strict mode fix
     this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,
@@ -83,7 +84,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.model.text));
+          this.notifications.success(defaultSuccessMsg("destroyed", this.model.text!));
           this.router.navigateByUrl(adminTagsMenuItem.route.toRouterLink());
         },
       });

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   tagGroupResolvers,
@@ -47,7 +47,7 @@ class AdminTagGroupsEditComponent
   private readonly api = inject(TagGroupsService);
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -57,7 +57,7 @@ class AdminTagGroupsEditComponent
     super(notifications, route, router, {
       getModel: (models) => models[tagGroupKey] as TagGroup,
       successMsg: (model) =>
-        defaultSuccessMsg("updated", model.groupIdentifier),
+        defaultSuccessMsg("updated", model.groupIdentifier!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -75,7 +75,7 @@ class AdminTagGroupsEditComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.model?.groupIdentifier));
+          this.notifications.success(defaultSuccessMsg("destroyed", this.model?.groupIdentifier!));
           this.router.navigateByUrl(adminTagGroupsRoute.toRouterLink());
         },
       });

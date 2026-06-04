@@ -1,4 +1,4 @@
-import {
+﻿import {
   Directive,
   Injectable,
   QueryList,
@@ -28,7 +28,7 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
     extends base
     implements FormCheckingComponent
   {
-    @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
+    @ViewChildren(FormComponent) public appForms!: QueryList<FormComponent>;
 
     /**
      * Determine if any forms have been touched
@@ -55,7 +55,7 @@ export function withFormCheck<T extends Type<any>>(base: T = class {} as any) {
  */
 @Injectable({ providedIn: "root" })
 export class FormTouchedGuard implements CanDeactivate<FormCheckingComponent> {
-  @ViewChildren(FormComponent) public appForms: QueryList<FormComponent>;
+  @ViewChildren(FormComponent) public appForms!: QueryList<FormComponent>;
 
   public canDeactivate(component: FormCheckingComponent): boolean {
     // canDeactivate guards can be called with null components: https://github.com/angular/angular/issues/40545

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
 import { WebsiteStatus } from "@models/WebsiteStatus";
 import { List } from "immutable";
@@ -39,7 +39,7 @@ class WebsiteStatusComponent extends PageComponent implements OnInit {
       .subscribe((model) => (this.model = model));
   }
 
-  protected model: WebsiteStatus;
+  protected model!: WebsiteStatus;
   private healthyListItem = { value: "Healthy", color: "success" } as const;
   private unhealthyListItem = { value: "Unhealthy", color: "danger" } as const;
   private unknownListItem = { value: "Unknown", color: "secondary" } as const;

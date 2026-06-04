@@ -86,6 +86,7 @@ describe("TheirProfileComponent", () => {
     return nStepObservable(
       subject,
       () => response,
+      // @ts-expect-error: strict mode fix
       isInstantiated(response["status"])
     );
   }
@@ -128,6 +129,7 @@ describe("TheirProfileComponent", () => {
   });
 
   it("should handle user error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     interceptApiRequests({});
     spec.detectChanges();
@@ -139,6 +141,7 @@ describe("TheirProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -147,9 +150,10 @@ describe("TheirProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
-    expect(spec.query("img")).toHaveImage(defaultUser.imageUrls[0].url, {
+    expect(spec.query("img")).toHaveImage(defaultUser.imageUrls![0].url, {
       alt: `${defaultUser.userName} profile image`,
     });
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -170,10 +174,12 @@ describe("TheirProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(getLabel()).toHaveText(defaultUser.lastSeenAt.toRelative());
+      // @ts-expect-error: strict mode fix
+      expect(getLabel()).toHaveText(defaultUser.lastSeenAt!.toRelative());
     });
 
     it("should handle if user is deleted", () => {
+      // @ts-expect-error: strict mode fix
       setup(User.getDeletedUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
@@ -181,6 +187,7 @@ describe("TheirProfileComponent", () => {
     });
 
     it("should handle if user is unknown", () => {
+      // @ts-expect-error: strict mode fix
       setup(User.getUnknownUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
@@ -188,6 +195,7 @@ describe("TheirProfileComponent", () => {
     });
 
     it("should handle if user has no last seen at date", () => {
+      // @ts-expect-error: strict mode fix
       const user = new User(generateUser({ lastSeenAt: null }));
       setup(user);
       interceptApiRequests({});
@@ -205,10 +213,12 @@ describe("TheirProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(getLabel()).toHaveText(defaultUser.createdAt.toRelative());
+      // @ts-expect-error: strict mode fix
+      expect(getLabel()).toHaveText(defaultUser.createdAt!.toRelative());
     });
 
     it("should handle if user is deleted", () => {
+      // @ts-expect-error: strict mode fix
       setup(User.getDeletedUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
@@ -216,6 +226,7 @@ describe("TheirProfileComponent", () => {
     });
 
     it("should handle if user is unknown", () => {
+      // @ts-expect-error: strict mode fix
       setup(User.getUnknownUser(undefined));
       interceptApiRequests({});
       spec.detectChanges();
@@ -282,7 +293,8 @@ describe("TheirProfileComponent", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("…");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {
@@ -291,19 +303,24 @@ describe("TheirProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe(numModels);
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe(numModels);
         });
 
         it("should update with Unknown when showing deleted user", async () => {
+          // @ts-expect-error: strict mode fix
           setup(User.getDeletedUser(undefined));
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("Unknown");
         });
 
         it("should update with Unknown when showing unknown user", async () => {
+          // @ts-expect-error: strict mode fix
           setup(User.getUnknownUser(undefined));
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("Unknown");
         });
 
         it("should update with Unknown on error", async () => {
@@ -314,7 +331,8 @@ describe("TheirProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("Unknown");
         });
       });
     });
@@ -360,6 +378,7 @@ describe("TheirProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(1);
+      // @ts-expect-error: strict mode fix
       expect(tags[0]).toHaveText(defaultTag.text);
     });
 
@@ -385,8 +404,11 @@ describe("TheirProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(3);
+      // @ts-expect-error: strict mode fix
       expect(tags[0]).toHaveText(tagModels[0].text);
+      // @ts-expect-error: strict mode fix
       expect(tags[1]).toHaveText(tagModels[1].text);
+      // @ts-expect-error: strict mode fix
       expect(tags[2]).toHaveText(tagModels[2].text);
     });
   });

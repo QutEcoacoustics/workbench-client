@@ -1,4 +1,4 @@
-import { Param } from "@interfaces/apiInterfaces";
+﻿import { Param } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 
@@ -13,9 +13,9 @@ export class ResetPassword
 {
   public readonly kind = "Reset Password";
   @bawPersistAttr()
-  public readonly login: Param;
+  public readonly login!: Param;
   @bawPersistAttr()
-  public readonly recaptchaToken: string;
+  public readonly recaptchaToken!: string;
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();

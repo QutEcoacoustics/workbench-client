@@ -63,6 +63,7 @@ describe("DownloadTableComponent", () => {
   }
 
   function getRowItem(columnIndex: number): HTMLElement {
+    // @ts-expect-error: strict mode fix
     return spec.query(`datatable-body-cell:nth-child(${columnIndex + 1})`);
   }
 
@@ -79,7 +80,7 @@ describe("DownloadTableComponent", () => {
   it("should show id in table row", async () => {
     setup(new BehaviorSubject({}));
     await loadRows([defaultRecording], defaultSite);
-    expect(getRowItem(0)).toContainText(defaultRecording.id.toString());
+    expect(getRowItem(0)).toContainText(defaultRecording.id!.toString());
   });
 
   describe("site", () => {
@@ -106,6 +107,7 @@ describe("DownloadTableComponent", () => {
     it("should show site name when resolved", async () => {
       setup(new BehaviorSubject({}));
       await loadRows([defaultRecording], defaultSite);
+      // @ts-expect-error: strict mode fix
       expect(getCell()).toHaveText(defaultSite.name);
     });
 
@@ -150,12 +152,14 @@ describe("DownloadTableComponent", () => {
   it("should show media type in table row", async () => {
     setup(new BehaviorSubject({}));
     await loadRows([defaultRecording], defaultSite);
+    // @ts-expect-error: strict mode fix
     expect(getRowItem(4)).toContainText(defaultRecording.mediaType);
   });
 
   it("should show original file name in table row", async () => {
     setup(new BehaviorSubject({}));
     await loadRows([defaultRecording], defaultSite);
+    // @ts-expect-error: strict mode fix
     expect(getRowItem(5)).toContainText(defaultRecording.originalFileName);
   });
 });

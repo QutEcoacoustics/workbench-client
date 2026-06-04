@@ -61,14 +61,15 @@ export class CompleteComponent implements OnInit {
   }
 
   public getModels = (filters: Filters<AudioRecording>) =>
-    this.recordingsApi.filterByHarvest(filters, this.stages.harvest);
+    this.recordingsApi.filterByHarvest(filters, this.stages.harvest!);
 
   public asRecording(model: any): AudioRecording {
     return model;
   }
 
   public get report(): HarvestReport {
-    return this.stages.harvest.report;
+    // @ts-expect-error: strict mode fix
+    return this.stages.harvest.report!;
   }
 
   public get project(): Project {
@@ -76,11 +77,11 @@ export class CompleteComponent implements OnInit {
   }
 
   public get recordingsReportUrl(): string {
-    return this.recordingsApi.harvestCsvReportUrl(this.stages.harvest);
+    return this.recordingsApi.harvestCsvReportUrl(this.stages.harvest!);
   }
 
   public get harvestItemsReportUrl(): string {
-    return this.harvestItemsApi.harvestCsvReportUrl(this.stages.harvest);
+    return this.harvestItemsApi.harvestCsvReportUrl(this.stages.harvest!);
   }
 
   public getStatistics(report: HarvestReport): Statistic[][] {
@@ -90,7 +91,7 @@ export class CompleteComponent implements OnInit {
           bgColor: "success",
           icon: ["fas", "folder-tree"],
           label: "Total Files",
-          value: report.itemsTotal.toLocaleString(),
+          value: report.itemsTotal!.toLocaleString(),
         },
       ],
       [
@@ -98,8 +99,9 @@ export class CompleteComponent implements OnInit {
           bgColor: "success",
           icon: ["fas", "hard-drive"],
           label: "Total Size",
+          // @ts-expect-error: strict mode fix
           value: report.itemsSize,
-          tooltip: report.itemsSizeBytes.toLocaleString() + " bytes",
+          tooltip: report.itemsSizeBytes!.toLocaleString() + " bytes",
         },
       ],
       [
@@ -107,11 +109,11 @@ export class CompleteComponent implements OnInit {
           bgColor: "success",
           icon: ["fas", "clock"],
           label: "Total Duration",
-          value: toRelative(report.itemsDuration, {
+          value: toRelative(report.itemsDuration!, {
             largest: 1,
             maxDecimalPoint: 0,
           }),
-          tooltip: report.itemsDurationSeconds.toLocaleString() + " seconds",
+          tooltip: report.itemsDurationSeconds!.toLocaleString() + " seconds",
         },
       ],
       [
@@ -120,7 +122,7 @@ export class CompleteComponent implements OnInit {
           bgColor: "danger",
           icon: ["fas", "xmark"],
           label: "Failures",
-          value: (report.itemsErrored + report.itemsFailed).toLocaleString(),
+          value: (report.itemsErrored! + report.itemsFailed!).toLocaleString(),
         },
       ],
     ];

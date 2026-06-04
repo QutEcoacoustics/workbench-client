@@ -87,6 +87,7 @@ describe("AdminTagsEditComponent", () => {
 
     it("should handle tag error", () => {
       configureTestingModule(
+        // @ts-expect-error: strict mode fix
         undefined,
         generateBawApiError(),
         defaultTagTypes,
@@ -116,6 +117,7 @@ describe("AdminTagsEditComponent", () => {
       it("should make the correct api calls when the deleteModel() method is called", () => {
         configureTestingModule(defaultTag);
         component.model = defaultTag;
+        // @ts-expect-error: strict mode fix
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();
@@ -126,6 +128,7 @@ describe("AdminTagsEditComponent", () => {
         const expectedRoute = "/admin/tags";
         configureTestingModule(defaultTag);
         component.model = defaultTag;
+        // @ts-expect-error: strict mode fix
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();

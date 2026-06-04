@@ -1,4 +1,4 @@
-import { InnerFilter } from "@baw-api/baw-api.service";
+﻿import { InnerFilter } from "@baw-api/baw-api.service";
 import { AUDIO_EVENT_IMPORT, PROJECT, SCRIPT } from "@baw-api/ServiceTokens";
 import { adminAnalysisJobMenuItem } from "@components/admin/analysis-jobs/analysis-jobs.menus";
 import { analysisJobMenuItem } from "@components/audio-analysis/analysis-jobs.menus";
@@ -136,16 +136,18 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
 
   // Associations
   @creator()
-  public creator: User;
+  public creator!: User;
   @updater()
   public updater?: User;
   @deleter()
   public deleter?: User;
   @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @hasMany(SCRIPT, "scriptIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany(SCRIPT, "scriptIds"!)
   public scripts?: Script[];
-  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImportIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany(AUDIO_EVENT_IMPORT, "audioEventImportIds"!)
   public audioEventImports?: AudioEventImport[];
 
   public constructor(analysisJob: IAnalysisJob, injector?: AssociationInjector) {
@@ -159,6 +161,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     }
 
     return analysisJobMenuItem.route.format({
+      // @ts-expect-error: strict mode fix
       analysisJobId: this.id,
       projectId,
     });
@@ -171,6 +174,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     }
 
     return analysisJobMenuItem.route.format({
+      // @ts-expect-error: strict mode fix
       analysisJobId: this.id,
       projectId,
     });
@@ -181,6 +185,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
    */
   public get adminViewUrl(): string {
     return adminAnalysisJobMenuItem.route.format({
+      // @ts-expect-error: strict mode fix
       analysisJobId: this.id,
     });
   }

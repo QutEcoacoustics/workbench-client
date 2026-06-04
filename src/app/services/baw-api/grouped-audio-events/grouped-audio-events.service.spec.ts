@@ -22,6 +22,7 @@ xdescribe("GroupedAudioEventsService", () => {
 
   validateApiFilterGroupBy(
     () => spec,
+    // @ts-expect-error: strict mode fix
     AudioEventGroup,
     "/site/group/audio_events",
   );

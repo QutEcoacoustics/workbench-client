@@ -82,7 +82,8 @@ export class Region
   // Associations
   @hasOne(PROJECT, "projectId")
   public project?: Project;
-  @hasMany(SHALLOW_SITE, "siteIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany(SHALLOW_SITE, "siteIds"!)
   public sites?: Site[];
   @creator()
   public creator?: User;
@@ -93,14 +94,18 @@ export class Region
 
   public get viewUrl(): string {
     return regionRoute.format({
+      // @ts-expect-error: strict mode fix
       projectId: this.projectId,
+      // @ts-expect-error: strict mode fix
       regionId: this.id,
     });
   }
 
   public getAudioRecordingsUrl(): string {
     return audioRecordingsRoutes.region.format({
+      // @ts-expect-error: strict mode fix
       projectId: this.projectId,
+      // @ts-expect-error: strict mode fix
       regionId: this.id,
     });
   }

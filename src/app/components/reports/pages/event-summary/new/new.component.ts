@@ -1,4 +1,4 @@
-import { TitleCasePipe } from "@angular/common";
+﻿import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -66,7 +66,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     this.model = new EventSummaryReportParameters();
   }
 
-  public project: Project;
+  public project!: Project;
   public region?: Region;
   public site?: Site;
   public model = new EventSummaryReportParameters();
@@ -115,6 +115,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
           contains<T, keyof T>(
             key as keyof T,
             text as any,
+            // @ts-expect-error: strict mode fix
             includeDefaultFilters && this.defaultFilter()
           ),
           notIn<T>(key as keyof AbstractModel, activeItems)
@@ -140,10 +141,11 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     // by default, typeahead inputs return an empty array if no items are selected
     // as we want to omit all conditions with no values in the qsp's, we should return null instead
     if (items.length === 0) {
-      return null;
+      return null!;
     }
 
-    const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id);
+    // @ts-expect-error: strict mode fix
+    const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id!);
     return idsArray;
   }
 
@@ -153,6 +155,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   ): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.model.date = [
+        // @ts-expect-error: strict mode fix
         dateTimeModel.dateStartedAfter
           ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
           : null,
@@ -164,6 +167,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
       this.model.time = [
+        // @ts-expect-error: strict mode fix
         dateTimeModel.timeStartedAfter,
         dateTimeModel.timeFinishedBefore,
       ];

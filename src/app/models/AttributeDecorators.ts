@@ -57,7 +57,7 @@ function persistAttr(
  */
 export function bawPersistAttr(opts?: Partial<BawAttributeOptions>) {
   return function (model: AbstractModel, key: string): void {
-    persistAttr(model, key, opts);
+    persistAttr(model, key, opts!);
   };
 }
 
@@ -99,8 +99,8 @@ export function bawImage<Model>(
       return -1;
     }
 
-    const imageASize = a.height * a.width;
-    const imageBSize = b.height * b.width;
+    const imageASize = a.height! * a.width!;
+    const imageBSize = b.height! * b.width!;
     return imageASize === imageBSize ? 0 : imageASize > imageBSize ? -1 : 1;
   };
 
@@ -194,6 +194,7 @@ export function bawSubModel<ParentModel, SubModel>(
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, value: SubModel) =>
+      // @ts-expect-error: strict mode indexing
       (model[key] = new classConstructor(value, model["injector"]))
   );
 }
@@ -212,7 +213,9 @@ export function bawSubModelCollection<ParentModel, SubModel>(
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, values: SubModel[]) =>
+      // @ts-expect-error: strict mode indexing
       (model[key] = values?.map(
+        // @ts-expect-error: strict mode fix
         (value) => new classConstructor(value, model["injector"])
       ))
   );
@@ -320,6 +323,7 @@ function createDecorator<Model>(
     } else {
       // Whenever someone tries to set attribute, update decorated value instead
       keySetter = function (args: any): void {
+        // @ts-expect-error: strict mode fix
         setValue(this, decoratedKey, args);
       };
     }
@@ -333,7 +337,7 @@ function createDecorator<Model>(
         }
         return this[decoratedKey];
       },
-      set: keySetter,
+      set: keySetter!,
       configurable: true,
     });
 

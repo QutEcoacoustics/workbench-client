@@ -1,4 +1,4 @@
-import { Param } from "@interfaces/apiInterfaces";
+﻿import { Param } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 
@@ -13,9 +13,9 @@ export class LoginDetails
 {
   public readonly kind = "Login Details";
   @bawPersistAttr()
-  public readonly login: Param;
+  public readonly login!: Param;
   @bawPersistAttr()
-  public readonly password: Param;
+  public readonly password!: Param;
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();

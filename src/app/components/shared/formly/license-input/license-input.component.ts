@@ -55,7 +55,7 @@ export class LicenseInputComponent
   protected readonly selectedLicense = signal<License | null>(null);
   protected readonly availableLicenses = signal<LicenseMap>({});
   protected readonly searchCallback =
-    signal<TypeaheadSearchCallback<SpdxLicense>>(null);
+    signal<TypeaheadSearchCallback<SpdxLicense>>(null!);
 
   public async ngOnInit() {
     const licenses = await this.licenses.availableLicenses();
@@ -72,11 +72,12 @@ export class LicenseInputComponent
     }
 
     const searchCallback = await this.licenses.typeaheadCallback();
+    // @ts-expect-error: strict mode fix
     this.searchCallback.set(searchCallback);
   }
 
   public ngAfterViewInit(): void {
-    this.licenseTypeahead().inputModel.set(this.formControl.value);
+    this.licenseTypeahead()!.inputModel.set(this.formControl.value);
   }
 
   protected updateSelectedLicense(value: Readonly<any[]>): void {
@@ -91,13 +92,13 @@ export class LicenseInputComponent
     // a component that can be used as a form control.
     // TODO: If we get time, we should make the typeahead input a form control
     // and doubly bind the value to this components form control.
-    this.formControl.setValue(this.selectedLicense().identifier);
+    this.formControl.setValue(this.selectedLicense()!.identifier);
   }
 
   protected removeLicense(): void {
     this.selectedLicense.set(null);
     this.formControl.setValue(null);
-    this.licenseTypeahead().inputModel.set(null);
+    this.licenseTypeahead()!.inputModel.set(null);
   }
 
   protected openLicenseInformation(): void {

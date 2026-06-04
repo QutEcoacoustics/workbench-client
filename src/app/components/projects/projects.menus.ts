@@ -32,6 +32,7 @@ export const projectsMenuItem = menuRoute({
   order: 4,
   route: projectsRoute,
   tooltip: () => "View projects I have access to",
+  // @ts-expect-error: strict mode fix
   title: (_routerState: RouterStateSnapshot, titleOptions: TitleOptionsHash) =>
     titleOptions.hideProjects ? "Sites" : "Projects",
 });
@@ -70,10 +71,12 @@ export const projectMenuItem = menuRoute({
   parent: projectsMenuItem,
   route: projectRoute,
   tooltip: () => "The current project",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Project)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel?.project?.model?.name ?? "Unknown";
   },
 });

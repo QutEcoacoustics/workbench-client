@@ -48,7 +48,9 @@ describe("MetadataReviewComponent", () => {
     providers: [
       provideMockBawApi(),
       MockProvider(HarvestStagesService, {
+        // @ts-expect-error: strict mode fix
         project: defaultProject,
+        // @ts-expect-error: strict mode fix
         harvest: defaultHarvest,
         transition: (_stage: HarvestStatus) => {}
       }),
@@ -81,6 +83,7 @@ describe("MetadataReviewComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
+    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.returnValue(of(null));
 
     spyOnProperty(spec.component, "project", "get").and.callFake(() => defaultProject);
@@ -123,6 +126,7 @@ describe("MetadataReviewComponent", () => {
 
   const folderStructureFactory = (folders: string[] = []): HarvestItem[] =>
     folders.map((folder) =>
+      // @ts-expect-error: strict mode fix
       new HarvestItem(generateHarvestItem({ id: null, path: folder }))
     );
 
@@ -170,7 +174,7 @@ describe("MetadataReviewComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalCancelButton().click();
+    getModalCancelButton()!.click();
     tick();
 
     expect(stages.transition).not.toHaveBeenCalled();
@@ -182,7 +186,7 @@ describe("MetadataReviewComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalNextButton().click();
+    getModalNextButton()!.click();
     tick();
 
     expect(stages.transition).toHaveBeenCalledWith("complete");
@@ -212,12 +216,15 @@ describe("MetadataReviewComponent", () => {
 
     // assert that the mappings for the model are updated correctly by using a mocked updateMappings() method
     // which asserts if it was called with the correct parameters
+    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
       const expectedMappings = [
         new HarvestMapping({
           path: "A/aa",
           recursive: false,
+          // @ts-expect-error: strict mode fix
           siteId: null,
+          // @ts-expect-error: strict mode fix
           utcOffset: null
         })
       ];
@@ -249,18 +256,23 @@ describe("MetadataReviewComponent", () => {
     clickFolder("B");
 
     // assert mappings for path "A/aa" have been retained once it is no longer visible in the DOM and mappings have been applied to "B/bb"
+    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
       const expectedMappings = [
         new HarvestMapping({
           path: "A/aa",
           recursive: false,
+          // @ts-expect-error: strict mode fix
           siteId: null,
+          // @ts-expect-error: strict mode fix
           utcOffset: null
         }),
         new HarvestMapping({
           path: "B/bb",
           recursive: false,
+          // @ts-expect-error: strict mode fix
           siteId: null,
+          // @ts-expect-error: strict mode fix
           utcOffset: null
         })
       ];
@@ -289,7 +301,9 @@ describe("MetadataReviewComponent", () => {
       new HarvestMapping({
         path: "B",
         recursive: true,
+        // @ts-expect-error: strict mode fix
         siteId: null,
+        // @ts-expect-error: strict mode fix
         utcOffset: null
       }, injector),
       new HarvestMapping({
@@ -301,6 +315,7 @@ describe("MetadataReviewComponent", () => {
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
+        // @ts-expect-error: strict mode fix
         siteId: null,
         utcOffset: "-08:00"
       }, injector)
@@ -317,6 +332,7 @@ describe("MetadataReviewComponent", () => {
     updateComponent();
 
     clickEditMappingButton(1);
+    // @ts-expect-error: strict mode fix
     const utcInputDropdown: HTMLSelectElement = spec.query<HTMLSelectElement>("select", { root: true });
     utcInputDropdown.value = utcInputDropdown.options[2].value;
     utcInputDropdown.dispatchEvent(new Event("change"));
@@ -332,6 +348,7 @@ describe("MetadataReviewComponent", () => {
       new HarvestMapping({
         path: "B",
         recursive: true,
+        // @ts-expect-error: strict mode fix
         siteId: null,
         utcOffset: "-11:00"
       }, injector),
@@ -344,11 +361,13 @@ describe("MetadataReviewComponent", () => {
       new HarvestMapping({
         path: "C/ca",
         recursive: false,
+        // @ts-expect-error: strict mode fix
         siteId: null,
         utcOffset: "-08:00"
       }, injector),
     ];
 
+    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
       expect(model).toEqual(spec.component.harvest);
       expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));

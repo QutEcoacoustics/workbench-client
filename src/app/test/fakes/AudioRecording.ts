@@ -29,6 +29,7 @@ export function generateAudioRecording(
     id: modelData.id(),
     uuid: modelData.uuid(),
     uploaderId: modelData.id(),
+    // @ts-expect-error: strict mode fix
     recordedDate: recordedDate.toISO(),
     siteId: modelData.id(),
     durationSeconds,
@@ -43,6 +44,7 @@ export function generateAudioRecording(
     status: modelData.helpers.arrayElement(statuses),
     notes: modelData.notes(),
     originalFileName: modelData.system.commonFileName(".mpg"),
+    // @ts-expect-error: strict mode fix
     recordedDateTimezone: recordedDate.zoneName,
     ...modelData.model.generateAllUsers(),
     ...data,

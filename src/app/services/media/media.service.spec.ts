@@ -54,8 +54,8 @@ describe("MediaService", () => {
         const test = () => {
           spec.service.createMediaUrl(
             mockAudio,
-            mockAudio.durationSeconds + 0.01,
-            mockAudio.durationSeconds + 10
+            mockAudio.durationSeconds! + 0.01,
+            mockAudio.durationSeconds! + 10
           );
         };
 
@@ -69,7 +69,7 @@ describe("MediaService", () => {
           spec.service.createMediaUrl(
             mockAudio,
             0,
-            mockAudio.durationSeconds + 0.01
+            mockAudio.durationSeconds! + 0.01
           );
         };
 
@@ -88,6 +88,7 @@ describe("MediaService", () => {
         const expectedStart = 0;
         const end = mockAudio.durationSeconds;
 
+        // @ts-expect-error: strict mode fix
         const url = spec.service.createMediaUrl(mockAudio, start, end);
 
         expect(url).toContain(`start_offset=${expectedStart}`);
@@ -198,11 +199,12 @@ describe("MediaService", () => {
       });
 
       it("should not pad the end time if the end time is the same as the duration of the audio recording", () => {
-        const start = mockAudio.durationSeconds - 0.1;
+        const start = mockAudio.durationSeconds! - 0.1;
         const end = mockAudio.durationSeconds;
 
-        const expectedStart = mockAudio.durationSeconds - 1;
+        const expectedStart = mockAudio.durationSeconds! - 1;
 
+        // @ts-expect-error: strict mode fix
         const url = spec.service.createMediaUrl(mockAudio, start, end);
 
         expect(url).toContain(`start_offset=${expectedStart}`);
@@ -225,10 +227,10 @@ describe("MediaService", () => {
       });
 
       it("should pad to the recordings duration if the end time is close to the end", () => {
-        const start = mockAudio.durationSeconds - 0.2;
-        const end = mockAudio.durationSeconds - 0.1;
+        const start = mockAudio.durationSeconds! - 0.2;
+        const end = mockAudio.durationSeconds! - 0.1;
 
-        const expectedStart = mockAudio.durationSeconds - 1;
+        const expectedStart = mockAudio.durationSeconds! - 1;
         const expectedEnd = mockAudio.durationSeconds;
 
         const url = spec.service.createMediaUrl(mockAudio, start, end);

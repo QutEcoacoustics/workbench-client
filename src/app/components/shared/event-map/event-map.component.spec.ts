@@ -30,7 +30,7 @@ describe("EventMapComponent", () => {
     mapsServiceSpy.mapsState = GoogleMapsState.Loaded;
 
     const mapComponent = spec.query(MapComponent);
-    mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    mapComponent!["mapsLoadState"].set(mapsServiceSpy.mapsState);
     spec.detectChanges();
 
     const markers = mapMarkers();
@@ -93,7 +93,7 @@ describe("EventMapComponent", () => {
       const markerTemplate = spec.query(".marker-template");
       expect(markerTemplate).toExist();
 
-      const count = markerTemplate.querySelector(".marker-count");
+      const count = markerTemplate!.querySelector(".marker-count");
       expect(count).toHaveExactTrimmedText(event.eventCount.toFixed());
     });
   });

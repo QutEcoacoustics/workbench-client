@@ -68,7 +68,7 @@ export abstract class BawResolver<
         const modelId = this.getModelId(route);
         const additionalArgs = this.getServiceArguments(route);
 
-        return resolverFn(route, this.api, modelId, additionalArgs).pipe(
+        return resolverFn(route, this.api, modelId!, additionalArgs).pipe(
           map((model) => ({ model })), // Modify output to match ResolvedModel interface
           first(), // Only take first response
           catchError((error: BawApiError) => {
@@ -104,13 +104,14 @@ export abstract class BawResolver<
         route: ActivatedRouteSnapshot
       ): ServiceParams {
         if (!serviceArgs || serviceArgs.length === 0) {
+          // @ts-expect-error: strict mode fix
           return [] as ServiceParams;
         }
 
         return serviceArgs.map((urlId) => {
           const id =
             route.paramMap.get(urlId) ?? route.queryParamMap.get(urlId);
-          return convertToId(id);
+          return convertToId(id!);
         }) as ServiceParams;
       }
     }
@@ -174,6 +175,7 @@ export class Resolvers<
    */
   public create<T extends object & { providers: BawProvider[] }>(
     name: string,
+    // @ts-expect-error: strict mode fix
     extra: T = null
   ) {
     const { serviceDeps, uniqueId, params } = this;
@@ -320,6 +322,7 @@ export class ShowOptionalResolver<
     return super.create(name, required);
   }
 
+  // @ts-expect-error: strict mode override
   public resolverFn(_: any, api: Service, id: Id, ids: Params) {
     return id ? api.show(id, ...ids) : of(undefined);
   }
@@ -397,7 +400,7 @@ export function retrieveResolvers(data: IPageInfo): ResolvedModelList {
     } else if (resolvedModel.error) {
       models[key] = resolvedModel.error;
     } else {
-      models[key] = resolvedModel.model;
+      models[key] = resolvedModel.model!;
     }
   }
 

@@ -212,7 +212,7 @@ class VerificationComponent
     });
 
     this.hasCorrectionTask.set(
-      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters()!.taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -220,8 +220,8 @@ class VerificationComponent
     this.updateGridCallback();
 
     if (this.hasCorrectionTask()) {
-      this.tagPromptElement().nativeElement.search = this.tagSearchCallback();
-      this.tagPromptElement().nativeElement.when = this.addTagWhenPredicate();
+      this.tagPromptElement()!.nativeElement.search = this.tagSearchCallback();
+      this.tagPromptElement()!.nativeElement.when = this.addTagWhenPredicate();
     }
 
     const verificationDecisions = this.verificationDecisionElements();
@@ -250,7 +250,7 @@ class VerificationComponent
   }
 
   protected tagTextFormatter(tag: Tag): string {
-    return tag.text;
+    return tag.text!;
   }
 
   protected openSearchFiltersModal(): void {
@@ -297,12 +297,12 @@ class VerificationComponent
       return;
     }
 
-    this.verificationGridElement().nativeElement.getPage =
+    this.verificationGridElement()!.nativeElement.getPage =
       this.getPageCallback();
     this.updateUrlParameters();
 
     this.hasCorrectionTask.set(
-      this.verificationParameters().taskBehavior === "verify-and-correct-tag",
+      this.verificationParameters()!.taskBehavior === "verify-and-correct-tag",
     );
   }
 
@@ -346,7 +346,7 @@ class VerificationComponent
         newTagDecision === decisionNotRequired ||
         newTagDecision?.["confirmed"] === "skip"
       ) {
-        this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection);
+        this.deleteTagCorrectionDecision(subject, oldSubjectTagCorrection!);
       } else if (newTagDecision) {
         // If there was a newTag (tag correction) applied in the previous
         // subject model, we need to delete it before applying the new
@@ -382,8 +382,8 @@ class VerificationComponent
    * when displaying the tag that is being verified.
    */
   private tagPriority(): Id<Tag>[] {
-    const taskTag = this.verificationParameters().taskTag;
-    const searchTags = this.searchParameters().tags ?? [];
+    const taskTag = this.verificationParameters()!.taskTag;
+    const searchTags = this.searchParameters()!.tags ?? [];
 
     if (isInstantiated(taskTag)) {
       const uniqueIds = new Set([taskTag, ...searchTags]);
@@ -399,9 +399,10 @@ class VerificationComponent
     // I have to use "as string" here because the upstream typing is incorrect
     // TODO: We should remove this "as string" and improve the upstream typing
     const mappedDecision =
+      // @ts-expect-error: strict mode indexing
       confirmedMapping[(subjectWrapper.verification as any).confirmed];
 
-    const tagId = subjectWrapper.tag.id;
+    const tagId = subjectWrapper.tag!.id;
 
     const verificationData: IVerification = {
       audioEventId: subject.id,
@@ -480,25 +481,26 @@ class VerificationComponent
   }
 
   private scrollToVerificationGrid(): void {
-    this.scrollService.scrollToElement(this.verificationGridElement(), {
+    this.scrollService.scrollToElement(this.verificationGridElement()!, {
       behavior: "smooth",
       block: "end",
     });
   }
 
   private filterConditions(page: number): Filters<AudioEvent> {
-    const verificationFilters = this.verificationParameters().toFilter();
-    const searchFilters = this.searchParameters().toFilter({
+    const verificationFilters = this.verificationParameters()!.toFilter();
+    const searchFilters = this.searchParameters()!.toFilter({
       includeVerification: false,
     });
 
     const paging: Paging = { page };
 
     const filter = filterAnd<AudioEvent>(
-      verificationFilters.filter,
-      searchFilters.filter,
+      verificationFilters.filter!,
+      searchFilters.filter!,
     );
 
+    // @ts-expect-error: strict mode fix
     const sorting: Sorting<keyof AudioEvent> = {
       ...verificationFilters.sorting,
       ...searchFilters.sorting,
@@ -508,12 +510,12 @@ class VerificationComponent
   }
 
   private updateUrlParameters(): void {
-    const searchParameters = this.searchParameters().toQueryParams({
+    const searchParameters = this.searchParameters()!.toQueryParams({
       includeVerification: false,
     });
 
     const verificationParameters =
-      this.verificationParameters().toQueryParams();
+      this.verificationParameters()!.toQueryParams();
 
     const queryParams = mergeParameters(
       searchParameters,
@@ -542,12 +544,14 @@ class VerificationComponent
   // see: https://github.com/ecoacoustics/web-components/issues/444
   private tagVerificationPredicate(): WhenPredicate {
     // The user can only verify a tag if there is a tag applied to the subject.
+    // @ts-expect-error: strict mode fix
     return (subject: SubjectWrapper) => {
       return subject.tag !== null;
     };
   }
 
   private addTagWhenPredicate(): WhenPredicate {
+    // @ts-expect-error: strict mode fix
     return (subject: SubjectWrapper) => {
       // If there is no tag applied to the subject, we cannot perform a tag
       // correction task.

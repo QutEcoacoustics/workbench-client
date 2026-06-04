@@ -178,7 +178,7 @@ describe("RegisterComponent", () => {
         spec.detectChanges();
         const button = spec.query<HTMLButtonElement>("button[type='submit']");
         expect(button).toBeTruthy();
-        expect(button.disabled).toBeTruthy();
+        expect(button!.disabled).toBeTruthy();
       });
     });
 

@@ -91,7 +91,7 @@ export function nStepObservable<T>(
  */
 export function interceptCustomApiRequest<
   Service,
-  Data,
+  Data extends Record<string, any>,
   Model extends AbstractModel
 >(
   service: Service,
@@ -239,7 +239,7 @@ export function generatePageInfoResolvers(
 
   models.forEach((model, index) => {
     const key = "model" + index;
-    data.resolvers[key] = "resolver";
+    data.resolvers![key] = "resolver";
     data[key] = model;
   });
 

@@ -33,14 +33,15 @@ export class BawSessionService {
 
   public get currentUser(): User {
     if (this.isLoggedIn) {
-      return this.loggedInUser;
+      return this.loggedInUser!;
     }
 
-    return User.getUnknownUser(undefined);
+    return User.getUnknownUser(undefined!);
   }
 
   public get isContactable(): UserConcent {
-    return this.loggedInUser.contactable;
+    // @ts-expect-error: strict mode fix
+    return this.loggedInUser.contactable!;
   }
 
   /** Is user logged in */

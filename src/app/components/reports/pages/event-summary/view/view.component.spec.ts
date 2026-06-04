@@ -70,9 +70,11 @@ describe("ViewEventReportComponent", () => {
   });
 
   const printButtonElement = (): HTMLAnchorElement =>
+    // @ts-expect-error: strict mode fix
     spectator.query<HTMLAnchorElement>("a#print-button");
   // there are two locations in the view where the raw events can be download from in the report
   const pointMaps = (): SiteMapComponent =>
+    // @ts-expect-error: strict mode fix
     spectator.query(SiteMapComponent);
 
   function setPrintDialogPreference(showPrintDialog: boolean): void {

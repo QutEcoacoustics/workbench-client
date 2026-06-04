@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+﻿import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 @Component({
   selector: "baw-meta-review-whitespace",
@@ -51,6 +51,6 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WhitespaceComponent {
-  @Input() public indentation: void[];
-  @Input() public isFolder: boolean;
+  @Input() public indentation!: void[];
+  @Input() public isFolder!: boolean;
 }

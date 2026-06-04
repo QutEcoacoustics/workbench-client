@@ -4,7 +4,8 @@ import { toNumber } from "@helpers/typing/toNumber";
 import { DateTime, Duration } from "luxon";
 
 export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
-  [K in keyof T]: SerializationTechnique;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [K in keyof T]: SerializationTechnique<any, any>;
 }>;
 
 // TODO: We should probably have a function to create serializers so that we
@@ -18,52 +19,52 @@ export interface SerializationTechnique<Value = unknown, QSP = string> {
 export const luxonDate = {
   serialize: dateToQueryString,
   deserialize: queryStringDate,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const luxonDuration = {
   serialize: durationToQueryString,
   deserialize: queryStringDurationTime,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const luxonDateArray = {
   serialize: dateArrayToQueryString,
   deserialize: queryStringDateArray,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const luxonDurationArray = {
   serialize: durationArrayToQueryString,
   deserialize: queryStringDurationTimeArray,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsNumber = {
   serialize: (value: number) => value.toString(),
   deserialize: queryStringNumber,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsBoolean = {
   serialize: (value: boolean) => value.toString(),
   deserialize: queryStringBoolean,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsString = {
   serialize: (value: string) => value,
   deserialize: (value: string) => value,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsNumberArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringToNumberArray,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsBooleanArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringToBooleanArray,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsStringArray = {
   serialize: arrayToQueryString,
   deserialize: queryStringArray,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<any, any>;
 
 export const jsMap = <
   Values,
@@ -74,7 +75,7 @@ export const jsMap = <
   serialize: (value: T): string => {
     const mapEntries = Array.from(value.entries());
     if (mapEntries.length === 0) {
-      return null;
+      return null!;
     }
 
     const entries = mapEntries.map(([keys, values]) => {
@@ -142,7 +143,9 @@ export function serializeObjectToParams<T>(
   // queryStringParameter model so that the qsp model can contain getters which
   // would not be returned by Object.entries.
   Object.entries(spec).forEach(
+    // @ts-expect-error: strict mode fix
     ([key, serializer]: [string, SerializationTechnique]) => {
+      // @ts-expect-error: strict mode indexing
       const value = queryStringParameters[key];
 
       // null and undefined values are omitted when used on angular HTTPParams
@@ -181,11 +184,12 @@ export function deserializeParamsToObject<T>(
 
   Object.entries(spec).forEach(([key, serializer]) => {
     const qspValue = queryString[key];
-    if (!qspValue && !serializer.hasDefault) {
+    if (!qspValue && !serializer!.hasDefault) {
       return;
     }
 
-    returnedObject[key] = serializer.deserialize(qspValue);
+    // @ts-expect-error: strict mode indexing
+    returnedObject[key] = serializer!.deserialize(qspValue);
   });
 
   return returnedObject as T;
@@ -196,6 +200,7 @@ export function withDefault(
   defaultValue: any,
 ): SerializationTechnique {
   return {
+    // @ts-expect-error: strict mode fix
     serialize: (value: any) => {
       // If the current value is the default value, we omit it from the query
       // string to reduce clutter in the URL.
@@ -263,7 +268,7 @@ function queryStringDurationTime(value: string): Duration {
   // if a null or undefined value is passed into luxon's Duration.fromISOTime, it will return the current time
   // this can be confusing and lead to lots of bugs. We therefore return the null value here
   if (value === "") {
-    return null;
+    return null!;
   }
 
   return Duration.fromISOTime(value);

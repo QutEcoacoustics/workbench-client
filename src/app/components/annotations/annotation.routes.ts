@@ -1,3 +1,4 @@
+import { Params } from "@angular/router";
 import { projectRoute } from "@components/projects/projects.routes";
 import { regionRoute } from "@components/regions/regions.routes";
 import { pointRoute } from "@components/sites/points.routes";
@@ -10,7 +11,7 @@ const verificationRouteName = "verify";
 const annotationMapRouteName = "map";
 
 const annotationSearchRouteQueryParamResolver = (
-  params: Record<string, string>,
+  params?: Params,
 ) =>
   params
     ? {
@@ -35,7 +36,7 @@ const annotationSearchRouteQueryParamResolver = (
       }
     : {};
 
-const annotationMapRouteQueryParamResolver = (params) =>
+const annotationMapRouteQueryParamResolver = (params?: Params) =>
   params
     ? {
         audioRecordings: params.audioRecordings,

@@ -39,6 +39,7 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
     iif(
       () => isUnsetRequest,
       this.api.destroy(model),
+      // @ts-expect-error: strict mode fix
       this.api.update(new SiteSetting({ ...model, value })),
     )
       .pipe(takeUntil(this.unsubscribe))

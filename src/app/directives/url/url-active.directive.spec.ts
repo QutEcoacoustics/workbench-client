@@ -17,9 +17,9 @@ import { UrlDirective } from "./url.directive";
   imports: [UrlDirective, UrlActiveDirective],
 })
 class MockComponent {
-  @Input() public url: string;
-  @Input() public klass: string;
-  @Input() public activeOptions: { exact: boolean };
+  @Input() public url!: string;
+  @Input() public klass!: string;
+  @Input() public activeOptions!: { exact: boolean };
 }
 
 describe("UrlActiveDirective", () => {
@@ -76,6 +76,6 @@ describe("UrlActiveDirective", () => {
 
   it("should accept active options", () => {
     setup("/home", "active", { exact: true });
-    expect(getDirective().routerLinkActiveOptions).toEqual({ exact: true });
+    expect(getDirective()!.routerLinkActiveOptions).toEqual({ exact: true });
   });
 });

@@ -126,6 +126,7 @@ describe("MenuService", () => {
     Object.entries(expectedState).forEach((entry) => {
       const key = entry[0];
       const expected = entry[1];
+      // @ts-expect-error: strict mode fix
       const actual = actualState[key];
       expect(actual).toEqual(expected);
     });
@@ -376,7 +377,7 @@ describe("MenuService", () => {
       });
       setup({ pageRoute: menuItem });
       const breadcrumb = spec.service.breadcrumbs.first();
-      expect(breadcrumb.label).toEqual("Breadcrumb");
+      expect(breadcrumb!.label).toEqual("Breadcrumb");
     });
 
     it("should return breadcrumbs for a top level route", () => {
@@ -443,9 +444,13 @@ describe("MenuService", () => {
           setup({ fullscreen, menuData: { actions: links } }),
         () => spec.service.actionMenu.links,
         [
+          // @ts-expect-error: strict mode fix
           { type: "menu link", createLink: generateMenuLink },
+          // @ts-expect-error: strict mode fix
           { type: "menu route", createLink: generateMenuRoute },
+          // @ts-expect-error: strict mode fix
           { type: "menu action", createLink: generateMenuAction },
+          // @ts-expect-error: strict mode fix
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
         ]
       );
@@ -497,6 +502,7 @@ describe("MenuService", () => {
       });
 
       it("ensures order is stable if not specified", () => {
+        // @ts-expect-error: strict mode fix
         setLinks(arrange(noOrder, noOrder, noOrder, noOrder));
         assertLinks([linkA, linkB, linkC, linkD]);
       });
@@ -507,6 +513,7 @@ describe("MenuService", () => {
       });
 
       it("should order links with ordered link first", () => {
+        // @ts-expect-error: strict mode fix
         setLinks(arrange(noOrder, noOrder, noOrder, -3));
         assertLinks([linkD, linkA, linkB, linkC]);
       });
@@ -553,8 +560,11 @@ describe("MenuService", () => {
           }),
         () => spec.service.secondaryMenu.links,
         [
+          // @ts-expect-error: strict mode fix
           { type: "menu link", createLink: generateMenuLink },
+          // @ts-expect-error: strict mode fix
           { type: "menu route", createLink: generateMenuRoute },
+          // @ts-expect-error: strict mode fix
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
         ],
         // Home Menu Item is the pageRoute
@@ -680,6 +690,7 @@ describe("MenuService", () => {
       });
 
       it("ensures order is stable if not specified", () => {
+        // @ts-expect-error: strict mode fix
         setLinks(arrange(noOrder, noOrder, noOrder));
         assertLinks([linkA, linkB, linkC]);
       });
@@ -690,6 +701,7 @@ describe("MenuService", () => {
       });
 
       it("should order links with ordered link first", () => {
+        // @ts-expect-error: strict mode fix
         setLinks(arrange(noOrder, noOrder, -3));
         assertLinks([linkC, linkA, linkB]);
       });
@@ -734,6 +746,7 @@ describe("MenuService", () => {
     }
 
     it("should handle undefined links", () => {
+      // @ts-expect-error: strict mode fix
       linkSetup(undefined, false);
       assertLinks([]);
     });
@@ -851,6 +864,7 @@ describe("MenuService", () => {
     getWidgets: () => OrderedSet<WidgetMenuItem>
   ) {
     it("should handle undefined widgets", () => {
+      // @ts-expect-error: strict mode fix
       widgetSetup(undefined);
       expect(getWidgets()).toEqual(OrderedSet());
     });

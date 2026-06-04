@@ -77,6 +77,7 @@ describe("DurationComponent", () => {
   });
 
   function timeElement(): HTMLTimeElement {
+    // @ts-expect-error: strict mode fix
     return spec.query("time");
   }
 

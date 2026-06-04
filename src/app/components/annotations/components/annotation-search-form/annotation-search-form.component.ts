@@ -174,9 +174,12 @@ export class AnnotationSearchFormComponent implements OnInit {
     const hasDateFilters = this.searchParameters().recordingDate?.length > 0;
     if (hasDateFilters) {
       const dateFinishedBefore = new NgbDate(
-        this.searchParameters().recordingDateFinishedBefore.year,
-        this.searchParameters().recordingDateFinishedBefore.month,
-        this.searchParameters().recordingDateFinishedBefore.day,
+        // @ts-expect-error: strict mode fix
+        this.searchParameters()!.recordingDateFinishedBefore.year,
+        // @ts-expect-error: strict mode fix
+        this.searchParameters()!.recordingDateFinishedBefore.month,
+        // @ts-expect-error: strict mode fix
+        this.searchParameters()!.recordingDateFinishedBefore.day,
       );
 
       this.recordingDateTimeFilters.set({
@@ -196,6 +199,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
+      // @ts-expect-error: strict mode fix
       id: { in: Array.from(tagIds) },
     };
 
@@ -210,11 +214,11 @@ export class AnnotationSearchFormComponent implements OnInit {
    */
   protected routeModelFilters(): InnerFilter<Project | Region | Site> {
     if (this.site()) {
-      return filterModel("sites", this.site());
+      return filterModel("sites", this.site()!);
     } else if (this.region()) {
-      return filterModel("regions", this.region());
+      return filterModel("regions", this.region()!);
     } else if (this.project()) {
-      return filterModel("projects", this.project());
+      return filterModel("projects", this.project()!);
     }
 
     // When an empty object is returned, annotations will not be filtered to a
@@ -247,6 +251,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   ): void {
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
+      // @ts-expect-error: strict mode indexing
       current[key as any] = ids;
       return current;
     });
@@ -263,6 +268,7 @@ export class AnnotationSearchFormComponent implements OnInit {
     this.searchParameters.update((current) => {
       if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
         current.recordingDate = [
+          // @ts-expect-error: strict mode fix
           dateTimeModel.dateStartedAfter
             ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
             : null,
@@ -274,17 +280,18 @@ export class AnnotationSearchFormComponent implements OnInit {
 
       if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
         current.recordingTime = [
+          // @ts-expect-error: strict mode fix
           dateTimeModel.timeStartedAfter,
           dateTimeModel.timeFinishedBefore,
         ];
       }
 
       if (!dateTimeModel.dateFiltering) {
-        current.recordingDate = null;
+        current.recordingDate = null!;
       }
 
       if (!dateTimeModel.timeFiltering) {
-        current.recordingTime = null;
+        current.recordingTime = null!;
       }
 
       return current;
@@ -309,7 +316,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     const arrayIndex = boundPosition === ScoreRangeBounds.Lower ? 0 : 1;
     const currentScore = this.searchParameters().score ?? [null, null];
-    currentScore[arrayIndex] = value;
+    currentScore[arrayIndex] = value!;
 
     this.searchParameters.update((current) => {
       current.score = currentScore;

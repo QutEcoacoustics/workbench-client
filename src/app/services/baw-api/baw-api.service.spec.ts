@@ -245,7 +245,9 @@ describe("BawApiService", () => {
     responses = {
       single: model,
       multi: [model],
+      // @ts-expect-error: strict mode fix
       error: new BawApiError(UNAUTHORIZED, "Unauthorized Access", null),
+      // @ts-expect-error: strict mode fix
       errorInfo: new BawApiError(
         UNPROCESSABLE_ENTITY,
         "Record could not be saved",
@@ -320,6 +322,7 @@ describe("BawApiService", () => {
           complete: () => void = noop
         ): void {
           (
+            // @ts-expect-error: strict mode fix
             service[httpMethod.functionName](
               testedApiPath,
               ...opts
@@ -438,6 +441,7 @@ describe("BawApiService", () => {
             },
             shouldNotFail
           );
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
@@ -451,6 +455,7 @@ describe("BawApiService", () => {
             },
             shouldNotFail
           );
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
@@ -460,6 +465,7 @@ describe("BawApiService", () => {
             expect(err).toEqual(responses.error);
             done();
           });
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
@@ -469,6 +475,7 @@ describe("BawApiService", () => {
             expect(err).toEqual(responses.errorInfo);
             done();
           });
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
@@ -477,6 +484,7 @@ describe("BawApiService", () => {
           functionCall(undefined, shouldNotSucceed, (err) => {
             expect(err).toEqual(responses.error);
           });
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
@@ -486,18 +494,21 @@ describe("BawApiService", () => {
             assertOk();
             done();
           });
+          // @ts-expect-error: strict mode fix
           flushResponse(catchFunctionCall(), response);
         });
 
         // If http method can accept body inputs
         if (httpMethod.hasBody) {
           it("should accept empty body", () => {
+            // @ts-expect-error: strict mode fix
             service[httpMethod.functionName](testedApiPath, {}).subscribe();
             const req = catchRequest(testedApiPath, httpMethod.method);
             expect(req.request.body).toEqual({});
           });
 
           it("should accept body", () => {
+            // @ts-expect-error: strict mode fix
             service[httpMethod.functionName](testedApiPath, {
               key: "value",
             }).subscribe();
@@ -506,6 +517,7 @@ describe("BawApiService", () => {
           });
 
           it("should convert body keys", () => {
+            // @ts-expect-error: strict mode fix
             service[httpMethod.functionName](testedApiPath, {
               caseConversion: "value",
             }).subscribe();
@@ -515,6 +527,7 @@ describe("BawApiService", () => {
           });
 
           it("should convert nested body keys", () => {
+            // @ts-expect-error: strict mode fix
             service[httpMethod.functionName](testedApiPath, {
               caseConversion: {
                 nestedConversion: 42,
@@ -737,6 +750,7 @@ describe("BawApiService", () => {
                   new MockModel(defaultBody, associationInjector)
                 );
               case "destroy":
+                // @ts-expect-error: strict mode fix
                 return service[method](testedApiPath);
               case "createOrUpdate":
                 return service[method](
@@ -754,6 +768,7 @@ describe("BawApiService", () => {
             const response = singleResult
               ? { meta: meta.single, data: responses.single }
               : { meta: meta.multi, data: [] };
+            // @ts-expect-error: strict mode fix
             const spy = successRequest(response);
             functionCall().subscribe();
 
@@ -800,13 +815,16 @@ describe("BawApiService", () => {
             it("should handle response", (done) => {
               const response = { meta: meta.single, data: responses.single };
               const model = new MockModel(response.data, associationInjector);
+              // @ts-expect-error: strict mode fix
               model.addMetadata(response.meta);
 
+              // @ts-expect-error: strict mode fix
               successRequest(response);
               functionCall().subscribe({
                 next: (data) => {
                   // Destroy returns void
                   if (method === "destroy") {
+                    // @ts-expect-error: strict mode fix
                     expect(data).toBe(null);
                   } else {
                     expect(data).toEqual(model);
@@ -820,6 +838,7 @@ describe("BawApiService", () => {
 
           if (multiResult) {
             it("should handle empty response", (done) => {
+              // @ts-expect-error: strict mode fix
               successRequest({ meta: meta.multi, data: [] });
               functionCall().subscribe({
                 next: (data) => {
@@ -834,10 +853,12 @@ describe("BawApiService", () => {
               const response = { meta: meta.multi, data: responses.multi };
               const models = response.data.map((_data) => {
                 const model = new MockModel(_data, associationInjector);
+                // @ts-expect-error: strict mode fix
                 model.addMetadata(response.meta);
                 return model;
               });
 
+              // @ts-expect-error: strict mode fix
               successRequest(response);
               functionCall().subscribe({
                 next: (data) => {
@@ -882,6 +903,7 @@ describe("BawApiService", () => {
             cachingSpy.clearCache.and.callThrough();
 
             const response = { meta: meta.single, data: responses.single };
+            // @ts-expect-error: strict mode fix
             successRequest(response);
 
             functionCall().subscribe({
@@ -902,8 +924,10 @@ describe("BawApiService", () => {
                   responses.single,
                   associationInjector
                 );
+                // @ts-expect-error: strict mode fix
                 model.addMetadata(response.meta);
 
+                // @ts-expect-error: strict mode fix
                 successRequest(response);
                 functionCall().subscribe({
                   next: (data): void => {
@@ -927,10 +951,12 @@ describe("BawApiService", () => {
                 const response = { meta: meta.multi, data: responses.multi };
                 const models = responses.multi.map((_data) => {
                   const model = new MockModel(_data, associationInjector);
+                  // @ts-expect-error: strict mode fix
                   model.addMetadata(response.meta);
                   return model;
                 });
 
+                // @ts-expect-error: strict mode fix
                 successRequest(response);
                 functionCall().subscribe({
                   next: (data): void => {
@@ -952,6 +978,7 @@ describe("BawApiService", () => {
               const response = singleResult
                 ? { meta: meta.single, data: responses.single }
                 : { meta: meta.multi, data: responses.multi };
+              // @ts-expect-error: strict mode fix
               successRequest(response);
               functionCall().subscribe({
                 error: shouldNotFail,

@@ -72,17 +72,17 @@ describe("RecentAudioRecordingsComponent", () => {
 
     it("should not have external paging", async () => {
       await setup();
-      expect(getTable().externalPaging).toBeFalsy();
+      expect(getTable()!.externalPaging).toBeFalsy();
     });
 
     it("should not have external sorting", async () => {
       await setup();
-      expect(getTable().externalSorting).toBeFalsy();
+      expect(getTable()!.externalSorting).toBeFalsy();
     });
 
     it("should not have footer", async () => {
       await setup();
-      expect(getTable().footerHeight).toBe(0);
+      expect(getTable()!.footerHeight).toBe(0);
     });
   });
 
@@ -117,6 +117,7 @@ describe("RecentAudioRecordingsComponent", () => {
         await setup({
           recordings: [defaultRecording],
         });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getSiteCellElement(), true);
       });
 
@@ -125,6 +126,7 @@ describe("RecentAudioRecordingsComponent", () => {
           recordings: [defaultRecording],
           awaitRequests: true,
         });
+        // @ts-expect-error: strict mode fix
         assertCellLoading(getSiteCellElement(), false);
       });
 
@@ -151,12 +153,14 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[1];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
+        // @ts-expect-error: strict mode fix
         const expectedText = humanizedDuration(recording.duration);
         expect(cell).toHaveExactTrimmedText(expectedText);
       }
 
       it("should display time since updated", async () => {
         await setup({ recordings: [defaultRecording] });
+        // @ts-expect-error: strict mode fix
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });
@@ -165,12 +169,14 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[2];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
+        // @ts-expect-error: strict mode fix
         const expectedText = humanizedDuration(recording.recordedDate);
         expect(cell).toHaveExactTrimmedText(`${expectedText} ago`);
       }
 
       it("should display time since updated", async () => {
         await setup({ recordings: [defaultRecording] });
+        // @ts-expect-error: strict mode fix
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });
@@ -178,7 +184,7 @@ describe("RecentAudioRecordingsComponent", () => {
     describe("actions", () => {
       const getActionCellElement = () => getCellElements()[3];
       const getPlayButton = () =>
-        getActionCellElement().querySelector<HTMLAnchorElement>("#playBtn");
+        getActionCellElement()!.querySelector<HTMLAnchorElement>("#playBtn");
 
       it("should link to listen page", async () => {
         await setup({ recordings: [defaultRecording] });

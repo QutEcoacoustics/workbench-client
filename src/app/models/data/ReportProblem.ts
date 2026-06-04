@@ -1,4 +1,4 @@
-import { Param, Description } from "@interfaces/apiInterfaces";
+﻿import { Param, Description } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr, bawDateTime } from "@models/AttributeDecorators";
 import { DateTime } from "luxon";
@@ -18,17 +18,17 @@ export class ReportProblem
 {
   public readonly kind = "Report Problem";
   @bawPersistAttr()
-  public readonly name: Param;
+  public readonly name!: Param;
   @bawPersistAttr()
-  public readonly email: Param;
+  public readonly email!: Param;
   @bawDateTime({ persist: true })
-  public readonly date: DateTime;
+  public readonly date!: DateTime;
   @bawPersistAttr()
-  public readonly description: Description;
+  public readonly description!: Description;
   @bawPersistAttr()
-  public readonly content: Description;
+  public readonly content!: Description;
   @bawPersistAttr()
-  public readonly recaptchaToken: string;
+  public readonly recaptchaToken!: string;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

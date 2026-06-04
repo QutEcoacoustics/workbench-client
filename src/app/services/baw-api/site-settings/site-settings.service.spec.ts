@@ -33,6 +33,7 @@ describe("SiteSettingsService", () => {
 
   validateApiList<SiteSetting, [], SiteSettingsService>(
     createService,
+    // @ts-expect-error: strict mode fix
     SiteSetting,
     baseUrl,
   );
@@ -65,6 +66,7 @@ describe("SiteSettingsService", () => {
 
     validateApiShow<SiteSetting, [IdOrName<SiteSetting>], SiteSettingsService>(
       () => spec,
+      // @ts-expect-error: strict mode fix
       SiteSetting,
       updateUrl(),
       modelIdentifier(),
@@ -76,14 +78,17 @@ describe("SiteSettingsService", () => {
       SiteSetting,
       [IdOrName<SiteSetting>],
       SiteSettingsService
+    // @ts-expect-error: strict mode fix
     >(createService, SiteSetting, baseUrl, updateUrl(), () => model, undefined);
 
     validateApiUpdate<
       SiteSetting,
       [IdOrName<SiteSetting>],
       SiteSettingsService
+    // @ts-expect-error: strict mode fix
     >(createService, SiteSetting, updateUrl(), () => model, undefined);
 
+    // @ts-expect-error: strict mode fix
     validateApiDestroy<SiteSetting, [], SiteSettingsService>(
       createService,
       updateUrl(),

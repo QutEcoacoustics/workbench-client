@@ -163,7 +163,8 @@ describe("ProjectDetailsComponent", () => {
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
     const title = spectator.query<HTMLHeadingElement>("h1");
-    expect(title.innerText.trim()).toBe(defaultProject.name);
+    // @ts-expect-error: strict mode fix
+    expect(title!.innerText.trim()).toBe(defaultProject.name);
   });
 
   it("should display default description if model has none", () => {
@@ -177,7 +178,7 @@ describe("ProjectDetailsComponent", () => {
     const description = spectator.query<HTMLParagraphElement>(
       "#project_description"
     );
-    expect(description.innerHTML.trim()).toContain(
+    expect(description!.innerHTML.trim()).toContain(
       "<i>No description found</i>"
     );
   });
@@ -189,7 +190,8 @@ describe("ProjectDetailsComponent", () => {
     const description = spectator.query<HTMLParagraphElement>(
       "#project_description"
     );
-    expect(description.innerHTML.trim()).toContain(
+    expect(description!.innerHTML.trim()).toContain(
+      // @ts-expect-error: strict mode fix
       defaultProject.descriptionHtml
     );
   });
@@ -197,6 +199,7 @@ describe("ProjectDetailsComponent", () => {
   it("should invoke the correct api calls when the deleteModel() method is called", () => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
+    // @ts-expect-error: strict mode fix
     projectApi.destroy.and.callFake(() => of(null));
     spectator.detectChanges();
 
@@ -210,6 +213,7 @@ describe("ProjectDetailsComponent", () => {
 
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
+    // @ts-expect-error: strict mode fix
     projectApi.destroy.and.callFake(() => of(null));
     spectator.detectChanges();
 
@@ -279,7 +283,7 @@ describe("ProjectDetailsComponent", () => {
       );
       spectator.detectChanges();
       await awaitChanges(promise);
-      expect(getMap().projects).toEqual([defaultProject]);
+      expect(getMap()!.projects).toEqual([defaultProject]);
     });
   });
 
@@ -395,7 +399,9 @@ describe("ProjectDetailsComponent", () => {
       filterText?: string
     ) {
       const promise = interceptApiRequest(
+        // @ts-expect-error: strict mode fix
         [initialResponse, []],
+        // @ts-expect-error: strict mode fix
         [initialResponse, []],
         isSite ? expectations : undefined,
         !isSite ? expectations : undefined
@@ -406,6 +412,7 @@ describe("ProjectDetailsComponent", () => {
       }
     }
 
+    // @ts-expect-error: strict mode fix
     const initialResponse = [];
     const initialExpectation = () => {};
 
@@ -429,7 +436,7 @@ describe("ProjectDetailsComponent", () => {
         describe(test, () => {
           it(`should create initial ${test} api filter request`, (done) => {
             setup(defaultProject);
-            const expectation = (filters, project) => {
+            const expectation = (filters: any, project: any) => {
               expect(project).toEqual(defaultProject.id);
               expect(filters).toEqual({ paging: { page: 1 }, filter: {} });
               done();
@@ -439,7 +446,7 @@ describe("ProjectDetailsComponent", () => {
 
           it(`should create paged ${test} api filter request`, (done) => {
             setup(defaultProject);
-            const expectation = (filters, project) => {
+            const expectation = (filters: any, project: any) => {
               expect(project).toEqual(defaultProject.id);
               expect(filters).toEqual({ paging: { page: 5 }, filter: {} });
               done();
@@ -455,7 +462,7 @@ describe("ProjectDetailsComponent", () => {
                 paging: { page: 1 },
                 filter: undefined,
               }));
-              const expectation = (filters) => {
+              const expectation = (filters: any) => {
                 expect(filters).toEqual({
                   paging: { page: 1 },
                   filter: undefined,
@@ -467,7 +474,7 @@ describe("ProjectDetailsComponent", () => {
 
             it("should not override site api filter request with regionId", (done) => {
               setup(defaultProject);
-              const expectation = (filters) => {
+              const expectation = (filters: any) => {
                 expect(filters).toEqual({
                   paging: { page: 5 },
                   filter: { name: { contains: "custom filter" } },
@@ -489,6 +496,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"]([]);
+            // @ts-expect-error: strict mode fix
             expect(component[list].toArray()).toEqual([]);
           });
 
@@ -499,6 +507,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"](models[0]);
+            // @ts-expect-error: strict mode fix
             expect(component[list].toArray()).toEqual(models[0]);
           });
 
@@ -508,6 +517,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"]([]);
+            // @ts-expect-error: strict mode fix
             expect(component[stateTracker]).toBeFalsy();
           });
 
@@ -518,6 +528,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"](models[0]);
+            // @ts-expect-error: strict mode fix
             expect(component[stateTracker]).toBeTruthy();
           });
         });

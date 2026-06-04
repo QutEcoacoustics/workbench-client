@@ -35,7 +35,9 @@ describe("AudioRecordingsFilter", () => {
     const resolvers = {};
     const models = {};
 
+    // @ts-expect-error: strict mode fix
     resolvers["project"] = "resolver";
+    // @ts-expect-error: strict mode fix
     models["project"] = { model: project };
 
     spectator = createComponent({
@@ -100,24 +102,24 @@ describe("AudioRecordingsFilter", () => {
 
   function toggleTimeOfDayFilters(): void {
     const input = getTimeOfDayToggleInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
+    input!.click();
+    input!.dispatchEvent(new Event("input"));
 
     updateForm();
   }
 
   function toggleDateFilters(): void {
     const input = getDateToggleInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
+    input!.click();
+    input!.dispatchEvent(new Event("input"));
 
     updateForm();
   }
 
   function toggleIgnoreDaylightSavings(): void {
     const input = getIgnoreDaylightSavingsInput();
-    input.click();
-    input.dispatchEvent(new Event("input"));
+    input!.click();
+    input!.dispatchEvent(new Event("input"));
 
     updateForm();
   }
@@ -138,12 +140,14 @@ describe("AudioRecordingsFilter", () => {
   describe("date filter input", () => {
     it("should initially hide date filter input", fakeAsync(() => {
       expect(getDateToggleInput()).toExist();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getDateInputWrapper())).toBeTrue();
     }));
 
     it("should show date filter input when the date filter checkbox is set", fakeAsync(() => {
       toggleDateFilters();
       expect(getDateToggleInput()).toBeTruthy();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getDateInputWrapper())).toBeFalse();
     }));
 
@@ -151,6 +155,7 @@ describe("AudioRecordingsFilter", () => {
       toggleDateFilters();
       toggleDateFilters();
       expect(getDateToggleInput()).toExist();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getDateInputWrapper())).toBeTrue();
     }));
   });
@@ -158,12 +163,14 @@ describe("AudioRecordingsFilter", () => {
   describe("time filter input", () => {
     it("should initially hide time of day filters", fakeAsync(() => {
       expect(getTimeOfDayToggleInput()).toExist();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeTrue();
     }));
 
     it("should show time of day filter input when the time of day filter checkbox is set", fakeAsync(() => {
       toggleTimeOfDayFilters();
       expect(getTimeOfDayToggleInput()).toExist();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeFalse();
     }));
 
@@ -171,12 +178,13 @@ describe("AudioRecordingsFilter", () => {
       toggleTimeOfDayFilters();
       toggleTimeOfDayFilters();
       expect(getTimeOfDayToggleInput()).toExist();
+      // @ts-expect-error: strict mode fix
       expect(isDivCollapsed(getTimeOfDayInputWrapper())).toBeTrue();
     }));
 
     it("should initially have day light savings time enabled", fakeAsync(() => {
       toggleTimeOfDayFilters();
-      expect(getIgnoreDaylightSavingsInput().checked).toBeTrue();
+      expect(getIgnoreDaylightSavingsInput()!.checked).toBeTrue();
     }));
   });
 
@@ -193,12 +201,14 @@ describe("AudioRecordingsFilter", () => {
 
     it("should display an error if the user inputs an invalid date into the start date input", fakeAsync(() => {
       const invalidDate = "-1999-13-02";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), invalidDate);
       expect(getElementByInnerText(invalidDateErrorMessage)).toExist();
     }));
 
     it("should not display an error if the user inputs a valid date into the start date input", fakeAsync(() => {
       const validDate = "2020-12-31";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), validDate);
       expect(getElementByInnerText(invalidDateErrorMessage)).not.toExist();
     }));
@@ -206,12 +216,14 @@ describe("AudioRecordingsFilter", () => {
     it("should display an error if the user types in an invalid date into the end date input", fakeAsync(() => {
       // in this test, the user mixed their month and day, where the month (21) is greater than 12
       const invalidDate = "2020-21-12";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), invalidDate);
       expect(getElementByInnerText(invalidDateErrorMessage)).toExist();
     }));
 
     it("should not display an error if the user inputs a valid date into the end date input", fakeAsync(() => {
       const validDate = "2020-12-31";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), validDate);
       expect(getElementByInnerText(invalidDateErrorMessage)).not.toExist();
     }));
@@ -227,7 +239,9 @@ describe("AudioRecordingsFilter", () => {
       const startDate = "2020-10-10";
       const endDate = "2019-12-10";
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       expect(getElementByInnerText(outOfBoundsDateErrorMessage)).toExist();
@@ -237,7 +251,9 @@ describe("AudioRecordingsFilter", () => {
       const startDate = "2019-12-10";
       const endDate = "2020-10-10";
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       expect(getElementByInnerText(outOfBoundsDateErrorMessage)).not.toExist();
@@ -245,12 +261,14 @@ describe("AudioRecordingsFilter", () => {
 
     it("should not show an out of bounds date error if the user has only input a start date", fakeAsync(() => {
       const startDate = "2021-10-12";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
       expect(getElementByInnerText(outOfBoundsDateErrorMessage)).not.toExist();
     }));
 
     it("should not show an out of bounds date error if the user has only input an end date", fakeAsync(() => {
       const endDate = "2021-09-01";
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
       expect(getElementByInnerText(outOfBoundsDateErrorMessage)).not.toExist();
     }));
@@ -264,7 +282,9 @@ describe("AudioRecordingsFilter", () => {
       const startDate = "2020-10-10";
       const endDate = "2020-10-10";
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       expect(getElementByInnerText(outOfBoundsDateErrorMessage)).not.toExist();
@@ -277,7 +297,9 @@ describe("AudioRecordingsFilter", () => {
       const endTime = "11:34";
       const invalidInputClass = "is-invalid";
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
       // is-invalid is a bootstrap validation class that will be added to an invalid time input (added by time.component.ts)
@@ -294,7 +316,9 @@ describe("AudioRecordingsFilter", () => {
       const endTime = "01:56";
       const invalidInputClass = "is-invalid";
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
       expect(getTimeOfDayStartedAfterInput()).not.toHaveClass(
@@ -339,6 +363,7 @@ describe("AudioRecordingsFilter", () => {
       const malformedStartDate = "testing";
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), malformedStartDate);
 
       expect(filterChangeSpy).not.toHaveBeenCalled();
@@ -349,6 +374,7 @@ describe("AudioRecordingsFilter", () => {
       const malformedEndDate = "2021-20-12";
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), malformedEndDate);
 
       expect(filterChangeSpy).not.toHaveBeenCalled();
@@ -363,10 +389,12 @@ describe("AudioRecordingsFilter", () => {
       // After the start date is entered, we should see that a filter update is
       // emitted. However, because we don't want the out of bounds date to emit
       // a filter, we need to reset the spy calls after entering the start date.
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
       expect(filterChangeSpy).toHaveBeenCalledTimes(1);
       filterChangeSpy.calls.reset();
 
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       expect(filterChangeSpy).not.toHaveBeenCalled();
@@ -383,6 +411,7 @@ describe("AudioRecordingsFilter", () => {
       } as Filters<AudioRecording>;
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
 
       assertLastFilterUpdate(expectedFilters);
@@ -397,6 +426,7 @@ describe("AudioRecordingsFilter", () => {
       };
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       assertLastFilterUpdate(expectedFilters);
@@ -421,7 +451,9 @@ describe("AudioRecordingsFilter", () => {
       };
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       assertLastFilterUpdate(expectedFilters);
@@ -433,7 +465,9 @@ describe("AudioRecordingsFilter", () => {
       const endDate = "2022-03-18";
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateFinishedBeforeInput(), endDate);
 
       toggleDateFilters();
@@ -446,6 +480,7 @@ describe("AudioRecordingsFilter", () => {
       const startTime = "25:00";
 
       toggleTimeOfDayFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
 
       expect(filterChangeSpy).not.toHaveBeenCalled();
@@ -455,6 +490,7 @@ describe("AudioRecordingsFilter", () => {
       const endTime = "01:98";
 
       toggleTimeOfDayFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
       expect(filterChangeSpy).not.toHaveBeenCalled();
@@ -465,7 +501,9 @@ describe("AudioRecordingsFilter", () => {
       const endTime = "12:12";
 
       toggleTimeOfDayFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
       toggleTimeOfDayFilters();
@@ -485,8 +523,10 @@ describe("AudioRecordingsFilter", () => {
       } as Filters<AudioRecording>;
 
       toggleTimeOfDayFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
 
       // the time of day filters are now hidden and should not be emitted in the filter update
@@ -511,8 +551,10 @@ describe("AudioRecordingsFilter", () => {
       } as Filters<AudioRecording>;
 
       toggleDateFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getDateStartedAfterInput(), startDate);
       toggleTimeOfDayFilters();
+      // @ts-expect-error: strict mode fix
       typeInElement(getTimeOfDayStartedAfterInput(), startTime);
 
       // the date filters are now hidden and should not be emitted in the filter update
@@ -576,10 +618,14 @@ describe("AudioRecordingsFilter", () => {
           updateForm();
         }
 
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
         toggleDateFilters();
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateStartedAfterInput(), startDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateFinishedBeforeInput(), endDate);
 
         assertLastFilterUpdate(expectedFilter);
@@ -608,6 +654,7 @@ describe("AudioRecordingsFilter", () => {
           updateForm();
         }
 
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
 
         assertLastFilterUpdate(expectedFilters);
@@ -634,6 +681,7 @@ describe("AudioRecordingsFilter", () => {
           updateForm();
         }
 
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
         assertLastFilterUpdate(expectedFilters);
@@ -674,7 +722,9 @@ describe("AudioRecordingsFilter", () => {
           updateForm();
         }
 
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
         assertLastFilterUpdate(expectedFilters);
@@ -713,7 +763,9 @@ describe("AudioRecordingsFilter", () => {
         }
 
         toggleDateFilters();
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateStartedAfterInput(), startDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
 
         assertLastFilterUpdate(expectedFilters);
@@ -770,9 +822,13 @@ describe("AudioRecordingsFilter", () => {
         }
 
         toggleDateFilters();
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateStartedAfterInput(), startDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateFinishedBeforeInput(), endDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
         assertLastFilterUpdate(expectedFilters);
@@ -793,9 +849,13 @@ describe("AudioRecordingsFilter", () => {
         }
 
         toggleDateFilters();
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateStartedAfterInput(), startDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getDateFinishedBeforeInput(), endDate);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayStartedAfterInput(), startTime);
+        // @ts-expect-error: strict mode fix
         typeInElement(getTimeOfDayFinishedBeforeInput(), endTime);
 
         // remove the filters

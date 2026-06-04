@@ -30,8 +30,9 @@ export const scriptMenuItem = menuRoute({
   tooltip: () => "Manage script",
   predicate: isLoggedInPredicate,
   parent: scriptsMenuItem,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     const scriptName = componentModel.script.model?.name;
     return scriptName;
   }

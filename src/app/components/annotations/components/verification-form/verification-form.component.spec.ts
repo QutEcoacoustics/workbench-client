@@ -33,7 +33,7 @@ xdescribe("VerificationFormComponent", () => {
   });
 
   const taskTagTypeahead = () => spec.query("#task-tag-input");
-  const taskTagInput = () => taskTagTypeahead().querySelector("input");
+  const taskTagInput = () => taskTagTypeahead()!.querySelector("input");
 
   function setup(params: Partial<SupportedParams> = {}) {
     spec = createComponent({ detectChanges: false });
@@ -64,8 +64,8 @@ xdescribe("VerificationFormComponent", () => {
     const testedTag = mockTagsResponse[0];
 
     const response = setup({
-      tags: testedTag.id.toString(),
-      taskTag: testedTag.id.toString(),
+      tags: testedTag.id!.toString(),
+      taskTag: testedTag.id!.toString(),
     });
 
     spec.detectChanges();
@@ -73,6 +73,7 @@ xdescribe("VerificationFormComponent", () => {
     spec.detectChanges();
 
     expect(spec.component.verificationParameters().taskTag).toEqual(testedTag.id);
+    // @ts-expect-error: strict mode fix
     expect(taskTagInput()).toHaveValue(testedTag.text);
   }));
 

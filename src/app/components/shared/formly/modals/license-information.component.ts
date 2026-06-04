@@ -23,10 +23,10 @@ export class LicenseInformationModalComponent implements ModalComponent {
       return [];
     }
 
-    return this.license().licenseText.split("\n");
+    return this.license()!.licenseText.split("\n");
   });
 
   public closeModal(): void {
-    this.modal().close();
+    this.modal()!.close();
   }
 }

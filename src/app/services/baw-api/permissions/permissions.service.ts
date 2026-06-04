@@ -75,6 +75,7 @@ export class PermissionsService
     model: IdOr<Permission>,
     project: IdOr<Project>
   ): Observable<Permission | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 }

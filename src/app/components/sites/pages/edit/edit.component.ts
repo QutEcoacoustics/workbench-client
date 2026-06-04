@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -42,7 +42,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
   protected readonly route: ActivatedRoute;
   protected readonly router: Router;
 
-  protected title: string;
+  protected title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -51,7 +51,7 @@ class SiteEditComponent extends FormTemplate<Site> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[siteKey] as Site,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) =>
         this.router.navigateByUrl(model.getViewUrl(this.project)),
     });

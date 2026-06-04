@@ -55,7 +55,7 @@ export abstract class AbstractDatetimeComponent extends AbstractTemplateComponen
     // degrading the readability of the tooltip and user experience
     this.tooltipText = `${tooltipDateTime} ${timezoneName}`;
     this.documentText = valueInZone.toFormat(this.dateTimeFormat());
-    this.isoDateTime = valueInZone.toISO();
+    this.isoDateTime = valueInZone.toISO()!;
   }
 
   protected override normalizeValue(value: InputTypes): DateTime {

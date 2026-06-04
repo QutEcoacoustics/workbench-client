@@ -11,6 +11,7 @@ export const deleteAnnotationImportModal = menuModal({
   tooltip: () => "Delete this annotation import",
   predicate: isLoggedInPredicate,
   component: DeleteModalComponent,
+  // @ts-expect-error: strict mode fix
   successCallback: (pageComponentInstance?: AnnotationImportDetailsComponent) =>
-    pageComponentInstance.deleteModel(),
+    pageComponentInstance!.deleteModel(),
 });

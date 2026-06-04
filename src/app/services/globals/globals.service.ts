@@ -17,6 +17,7 @@ export class GlobalsService {
       return;
     }
 
+    // @ts-expect-error: strict mode fix
     window[this.namespace] = this;
     this.logToConsole(`
       ~~~~~~~~~~~~~~~~~~~~

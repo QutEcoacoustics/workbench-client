@@ -1,4 +1,4 @@
-import {
+﻿import {
   AfterViewInit,
   Component,
   Input,
@@ -58,8 +58,8 @@ export class DateTimeFilterComponent
   extends withUnsubscribe()
   implements AfterViewInit
 {
-  @ViewChild(NgForm) public form: NgForm;
-  @Input() public constructedFilters: BehaviorSubject<Filters<AudioRecording>>;
+  @ViewChild(NgForm) public form!: NgForm;
+  @Input() public constructedFilters!: BehaviorSubject<Filters<AudioRecording>>;
 
   @Input() public disableStartDate = false;
   @Input() public disableEndDate = false;
@@ -73,6 +73,7 @@ export class DateTimeFilterComponent
   private previousFilters: FromJS<Filters<AudioRecording>> = fromJS({});
 
   public ngAfterViewInit(): void {
+    // @ts-expect-error: strict mode fix
     this.form.valueChanges
       .pipe(
         debounceTime(defaultDebounceTime),
@@ -146,7 +147,7 @@ export class DateTimeFilterComponent
 
     return filterTime(
       filters,
-      model.ignoreDaylightSavings,
+      model.ignoreDaylightSavings!,
       modelStartTime,
       modelEndTime
     );

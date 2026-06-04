@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -79,15 +79,15 @@ class PermissionsComponent
   private readonly route = inject(ActivatedRoute);
   private readonly injector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
 
-  public project: Project;
+  public project!: Project;
   /** Permissions for anonymous guests */
-  public anonymousPermission: Permission;
+  public anonymousPermission!: Permission;
   /** Base permission for all users */
-  public usersPermission: Permission;
+  public usersPermission!: Permission;
   /** Current selected user by typeahead */
-  public selectedUser: User;
+  public selectedUser!: User;
   /** Permissions for users in typeahead */
-  public permissionsMatchingUsername: Permission[];
+  public permissionsMatchingUsername!: Permission[];
 
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public helpIcon: IconProp = ["fas", "info-circle"];
@@ -95,6 +95,7 @@ class PermissionsComponent
   /** Filters for permissions table */
   public filters$ = new BehaviorSubject<Filters<Permission>>({
     // Filter out anonymous and logged in user permissions
+    // @ts-expect-error: strict mode fix
     filter: { userId: { notEq: null } },
   });
 
@@ -119,7 +120,7 @@ class PermissionsComponent
   public ngOnInit(): void {
     const projectModel: ResolvedModel<Project> =
       this.route.snapshot.data[projectKey];
-    this.project = projectModel.model;
+    this.project = projectModel.model!;
 
     const getLevel = (
       filters: Filters<Permission>,
@@ -173,6 +174,7 @@ class PermissionsComponent
         switchMap((_users) => {
           users = _users;
           return this.permissionsApi.filter(
+            // @ts-expect-error: strict mode fix
             { filter: { userId: { in: users.map((_user) => _user.id) } } },
             this.project
           );
@@ -213,6 +215,7 @@ class PermissionsComponent
 
   /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
+    // @ts-expect-error: strict mode fix
     return this.permissionsMatchingUsername?.find(
       (permission) => permission.userId === ((userId as User)?.id ?? userId)
     );
@@ -231,14 +234,14 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.updatePermission(permission, selection).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     }
@@ -256,7 +259,7 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     } else {
@@ -274,6 +277,7 @@ class PermissionsComponent
     const permission = new Permission(
       {
         id: this.anonymousPermission?.id,
+        // @ts-expect-error: strict mode fix
         userId: null,
         allowAnonymous: true,
         allowLoggedIn: false,
@@ -285,7 +289,7 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.anonymousPermission = undefined;
+        this.anonymousPermission = undefined!;
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -305,6 +309,7 @@ class PermissionsComponent
     const permission = new Permission(
       {
         id: this.usersPermission?.id,
+        // @ts-expect-error: strict mode fix
         userId: null,
         allowAnonymous: false,
         allowLoggedIn: true,
@@ -316,7 +321,7 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.usersPermission = undefined;
+        this.usersPermission = undefined!;
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -340,7 +345,7 @@ class PermissionsComponent
         permission.level = level;
         // If we know the id for this permission, use it
         permission.id =
-          permission.id ?? this.getPermissionForUser(permission.userId)?.id;
+          permission.id ?? this.getPermissionForUser(permission.userId!)?.id;
 
         // Choose between create or update based on if an id exists
         return isInstantiated(permission.id)

@@ -18,10 +18,10 @@ export function assertPageInfo<T>(
   modelState?: IRouteModel<T>
 ) {
   describe("pageRoute", () => {
-    const componentPageInfo: PageInfo[] = getPageInfos(componentType);
+    const componentPageInfo: PageInfo[] = getPageInfos(componentType) ?? [];
     const componentPageRoutes: MenuRoute[] = componentPageInfo.map(
       (pageInfo: IPageInfo) => pageInfo.pageRoute
-    );
+    ).filter((route): route is MenuRoute => route !== undefined);
     const testedTitleOptions: TitleOptionsHash[] = [
       { hideProjects: false },
       { hideProjects: true },
@@ -70,7 +70,7 @@ export function assertPageInfo<T>(
         testedTitleOptions.forEach((testingTitleOption: TitleOptionsHash, j: number) => {
           it(`should use the correct page title for the route "/${pageRoutePath}" with projects ${testingTitleOption.hideProjects}`, () => {
             const expectedTitle = expectedPageTitles[i + j];
-            const observedTitle = pageRoute.title(
+            const observedTitle = pageRoute.title!(
               mockRouteState,
               testingTitleOption
             );

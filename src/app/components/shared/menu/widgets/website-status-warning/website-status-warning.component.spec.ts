@@ -37,6 +37,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
 
     jasmine.clock().install();
 
+    // @ts-expect-error: strict mode fix
     spectator.component.feature = feature;
     spectator.component.message = message;
 
@@ -65,6 +66,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       })
     );
 
+    // @ts-expect-error: strict mode fix
     setup(goodWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).not.toExist();
@@ -88,6 +90,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       })
     );
 
+    // @ts-expect-error: strict mode fix
     setup(badWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).toExist();
@@ -105,6 +108,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       })
     );
 
+    // @ts-expect-error: strict mode fix
     setup(mockWebsiteStatus, "isUploadingHealthy", "upload audio");
 
     expect(warningMessage()).not.toExist();
@@ -117,6 +121,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       })
     );
 
+    // @ts-expect-error: strict mode fix
     setup(mockWebsiteStatus, "isStorageHealthy", "download audio");
 
     expect(warningMessage()).toExist();

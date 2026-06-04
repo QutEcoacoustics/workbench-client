@@ -110,7 +110,7 @@ describe("RegionDetailsComponent", () => {
     const description = spectator.query<HTMLParagraphElement>(
       "#region_description"
     );
-    expect(description.innerHTML.trim()).toContain(
+    expect(description!.innerHTML.trim()).toContain(
       "<i>No description found</i>"
     );
   });
@@ -122,13 +122,15 @@ describe("RegionDetailsComponent", () => {
     const description = spectator.query<HTMLParagraphElement>(
       "#region_description"
     );
-    expect(description.innerHTML.trim()).toContain(
+    expect(description!.innerHTML.trim()).toContain(
+      // @ts-expect-error: strict mode fix
       defaultRegion.descriptionHtml
     );
   });
 
   describe("error handling", () => {
     it("should handle failure to retrieve project", () => {
+      // @ts-expect-error: strict mode fix
       setup(undefined, defaultRegion, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
@@ -136,6 +138,7 @@ describe("RegionDetailsComponent", () => {
     });
 
     it("should handle failure to retrieve region", () => {
+      // @ts-expect-error: strict mode fix
       setup(defaultProject, undefined, undefined, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
@@ -162,6 +165,7 @@ describe("RegionDetailsComponent", () => {
 
       it("should invoke the correct api calls when the deleteModel() method is called", () => {
         interceptApiRequest([]);
+        // @ts-expect-error: strict mode fix
         regionsApi.destroy.and.callFake(() => of(null));
         spectator.detectChanges();
 
@@ -173,6 +177,7 @@ describe("RegionDetailsComponent", () => {
       it(`should navigate to the ${projectsHidden ? "regions list" : "parent project details"} page when deleteModel() succeeds`, () => {
         const expectedRoute = projectsHidden ? "/regions" : `/projects/${defaultProject.id}`;
         interceptApiRequest([]);
+        // @ts-expect-error: strict mode fix
         regionsApi.destroy.and.callFake(() => of(null));
         spectator.detectChanges();
 
@@ -212,7 +217,7 @@ describe("RegionDetailsComponent", () => {
       spectator.detectChanges();
       await promise;
       spectator.detectChanges();
-      expect(getMap().regions).toEqual([defaultRegion]);
+      expect(getMap()!.regions).toEqual([defaultRegion]);
     });
   });
 

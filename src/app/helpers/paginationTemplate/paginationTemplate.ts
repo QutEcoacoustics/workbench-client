@@ -1,4 +1,4 @@
-import { Directive, inject, OnInit } from "@angular/core";
+﻿import { Directive, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import {
@@ -37,7 +37,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Maximum number of elements for current filter
    */
-  public collectionSize: number;
+  public collectionSize!: number;
   // TODO: this condition seems to be an artifact of an underlying bug
   // we should find why we have to use this condition with ngb-pagination and
   // fix the root cause of the bug
@@ -47,15 +47,15 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    * all query string parameters (such as page=2) will be removed when the page
    * first loads
    */
-  public displayPagination: boolean;
+  public displayPagination!: boolean;
   /**
    * Tracks whether an error has occurred
    */
-  public error: BawApiError;
+  public error!: BawApiError;
   /**
    * Tracks whether an api request is in process
    */
-  public loading: boolean;
+  public loading!: boolean;
   /**
    * Tracks whether we are currently waiting for the first api request to
    * complete.
@@ -69,7 +69,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Tracks the current user filter input
    */
-  public filter: string;
+  public filter!: string;
   /**
     * A configuraiton property that can be used to overwrite how many
     * items are fetched in a page of results
@@ -78,7 +78,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Tracks the current filter page
    */
-  private _page: number;
+  private _page!: number;
 
   public constructor(
     /**
@@ -186,14 +186,18 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   protected updateQueryParams(page: number, query?: string) {
     const params = {};
     if (page > 1) {
+      // @ts-expect-error: strict mode indexing
       params[pageKey] = page;
     } else {
+      // @ts-expect-error: strict mode indexing
       params[pageKey] = null;
     }
 
     if (query) {
+      // @ts-expect-error: strict mode indexing
       params[queryKey] = query;
     } else {
+      // @ts-expect-error: strict mode indexing
       params[queryKey] = null;
     }
 

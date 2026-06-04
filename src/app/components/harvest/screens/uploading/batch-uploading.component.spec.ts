@@ -90,8 +90,9 @@ describe("BatchUploadingComponent", () => {
     return spec.query("baw-harvest-confirmation-modal", { root: true });
   }
 
-  function launchModal(btnSelector, modalText) {
+  function launchModal(btnSelector: any, modalText: any) {
     const btn = spec.query(btnSelector);
+    // @ts-expect-error: strict mode fix
     spec.click(btn);
     spec.detectChanges();
     const modal = getModal();
@@ -100,13 +101,14 @@ describe("BatchUploadingComponent", () => {
     spec.detectChanges();
   }
 
-  function clickModal(button, callback) {
+  function clickModal(button: any, callback: any) {
     let btn;
     if (button === "cancel") {
       btn = getModalCancelBtn();
     } else {
       btn = getModalNextBtn();
     }
+    // @ts-expect-error: strict mode fix
     spec.click(btn);
     spec.detectChanges();
     const interval = setInterval(() => {
@@ -119,14 +121,14 @@ describe("BatchUploadingComponent", () => {
     }, 50);
   }
 
-  function cancelModal(done) {
+  function cancelModal(done: any) {
     clickModal("cancel", () => {
       expect(stages.transition).not.toHaveBeenCalled();
       done();
     });
   }
 
-  function clickModalNext(callback) {
+  function clickModalNext(callback: any) {
     clickModal("next", callback);
   }
 
@@ -193,7 +195,7 @@ describe("BatchUploadingComponent", () => {
         spec.detectChanges();
         const interval = setInterval(() => {
           spec.detectChanges();
-          if (getCurrentTabBody().textContent.includes(description)) {
+          if (getCurrentTabBody()!.textContent.includes(description)) {
             expect(getCurrentTabBody()).toContainText(description);
             clearInterval(interval);
             done();

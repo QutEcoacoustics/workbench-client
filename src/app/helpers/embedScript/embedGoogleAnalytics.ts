@@ -23,16 +23,19 @@ export function embedGoogleAnalytics(key?: string): void {
 
   // Create Create dataLayer for google analytics:
   // developers.google.com/tag-platform/tag-manager/web/datalayer
+  // @ts-expect-error: strict mode fix
   window["dataLayer"] = window["dataLayer"] || [];
   window["gtag"] = function () {
     // Arguments creates an array like object, which is not the same as ...args.
     // Google analytics is depdenant on this behaviour, and will not work
     // otherwise
     // eslint-disable-next-line prefer-rest-params
+    // @ts-expect-error: strict mode fix
     window["dataLayer"].push(arguments);
   };
 
   gtag("js", new Date());
+  // @ts-expect-error: strict mode fix
   gtag("config", key);
 
   const node: HTMLScriptElement = document.createElement("script");
@@ -48,5 +51,5 @@ export function embedGoogleAnalytics(key?: string): void {
  * only be accessed by unit tests.
  */
 export function destroyGoogleAnalytics(): void {
-  document.getElementById("google-analytics").remove();
+  document.getElementById("google-analytics")!.remove();
 }

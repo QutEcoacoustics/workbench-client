@@ -35,6 +35,7 @@ class AdminOrphansComponent
     const api = inject(ShallowSitesService);
 
     super(api, (sites) =>
+      // @ts-expect-error: strict mode fix
       sites.map((site) => ({
         id: site.id,
         site: site.name,

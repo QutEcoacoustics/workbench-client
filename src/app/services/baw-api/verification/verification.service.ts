@@ -108,6 +108,7 @@ export class ShallowVerificationService
     );
   }
 
+  // @ts-expect-error: strict mode override
   public destroy(model: IdOr<Verification>): Observable<null> {
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
@@ -135,8 +136,8 @@ export class ShallowVerificationService
     audioEvent: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
   ): Observable<Verification[]> {
-    const eventId = typeof audioEvent === "number" ? audioEvent : audioEvent.id;
-    const tagId = typeof tag === "number" ? tag : tag.id;
+    const eventId = typeof audioEvent! === "number" ? audioEvent : audioEvent!.id;
+    const tagId = typeof tag === "number" ? tag : tag!.id;
 
     const filter: Filters<Verification> = {
       filter: {
@@ -160,8 +161,8 @@ export class ShallowVerificationService
     audioEvent: IdOr<AudioEvent>,
     tag: IdOr<Tag>,
   ): Observable<Verification | null> {
-    const eventId = typeof audioEvent === "number" ? audioEvent : audioEvent.id;
-    const tagId = typeof tag === "number" ? tag : tag.id;
+    const eventId = typeof audioEvent! === "number" ? audioEvent : audioEvent!.id;
+    const tagId = typeof tag === "number" ? tag : tag!.id;
 
     const user = this.session.currentUser;
 
@@ -222,3 +223,4 @@ export const shallowVerificationResolvers = new Resolvers<Verification, []>(
   [ShallowVerificationService],
   "verificationId",
 ).create("ShallowVerification");
+

@@ -1,4 +1,4 @@
-import { provenanceMenuItem } from "@components/provenances/provenances.menus";
+﻿import { provenanceMenuItem } from "@components/provenances/provenances.menus";
 import { DateTimeTimezone, HasAllUsers, HasDescription, Id } from "../interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import { bawDateTime, bawPersistAttr } from "./AttributeDecorators";
@@ -22,17 +22,17 @@ export class Provenance
 {
   public readonly kind = "Provenance";
   @bawPersistAttr()
-  public readonly name: string;
+  public readonly name!: string;
   @bawPersistAttr()
-  public readonly version: string;
+  public readonly version!: string;
   @bawPersistAttr()
-  public readonly url: string;
+  public readonly url!: string;
   @bawPersistAttr()
-  public readonly description: string;
+  public readonly description!: string;
   @bawPersistAttr()
-  public readonly scoreMinimum: number;
+  public readonly scoreMinimum!: number;
   @bawPersistAttr()
-  public readonly scoreMaximum: number;
+  public readonly scoreMaximum!: number;
 
   public readonly creatorId?: Id;
   public readonly updaterId?: Id;
@@ -54,6 +54,7 @@ export class Provenance
 
   public get viewUrl(): string {
     return provenanceMenuItem.route.format({
+      // @ts-expect-error: strict mode fix
       provenanceId: this.id,
     });
   }

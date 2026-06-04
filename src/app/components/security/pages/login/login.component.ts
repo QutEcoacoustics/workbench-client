@@ -1,4 +1,4 @@
-import { Location } from "@angular/common";
+﻿import { Location } from "@angular/common";
 import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
@@ -80,11 +80,11 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   protected readonly router: Router;
 
   public fields = schema.fields;
-  private redirectBack: boolean;
-  private redirectUrl: string | StrongRoute;
+  private redirectBack!: boolean;
+  private redirectUrl!: string | StrongRoute;
 
   @ViewChild("communicationsToast")
-  private communicationsToastElement: ToastComponent;
+  private communicationsToastElement!: ToastComponent;
 
   public constructor() {
     const notifications = inject(ToastService);

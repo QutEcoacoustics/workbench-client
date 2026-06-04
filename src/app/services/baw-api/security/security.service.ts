@@ -76,7 +76,7 @@ export class SecurityService {
     const getPageError = (page: string): [string, string] => {
       const pageError = / id="(.+)" \/><span class="help-block">(.+)<\/span>/;
       const match = page.match(pageError);
-      return match?.length === 3 ? [match[1], match[2]] : undefined;
+      return match?.length === 3 ? [match[1], match[2]] : undefined!;
     };
 
     /** Read page response for unique username error */
@@ -155,6 +155,7 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
+    // @ts-expect-error: strict mode fix
     return (
       this.api
         // Sign out without notification so that signUp and signIn endpoints
@@ -209,6 +210,7 @@ export class SecurityService {
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Save to local storage
+        // @ts-expect-error: strict mode fix
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
         switchMap(() => this.userService.showWithoutNotification()),
@@ -236,6 +238,7 @@ export class SecurityService {
     let authToken: AuthToken;
     this.sessionDetails()
       .pipe(
+        // @ts-expect-error: strict mode fix
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
         first()

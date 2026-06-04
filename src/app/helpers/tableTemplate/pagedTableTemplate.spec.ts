@@ -43,6 +43,7 @@ class MockComponent extends PagedTableTemplate<
 
     super(
       api,
+      // @ts-expect-error: strict mode fix
       (models) => models.map((model) => ({ id: model.id, name: model.name })),
       route
     );
@@ -69,6 +70,7 @@ describe("PagedTableTemplate", () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute(
             resolvers.reduce((obj, resolver) => {
+              // @ts-expect-error: strict mode fix
               obj[resolver] = "resolver";
               return obj;
             }, {}),
@@ -191,6 +193,7 @@ describe("PagedTableTemplate", () => {
     it("should handle single model response", async () => {
       defaultProject.addMetadata(generateMetaData());
       await setProjects([defaultProject]);
+      // @ts-expect-error: strict mode fix
       assertRows([{ id: defaultProject.id, name: defaultProject.name }]);
     });
 
@@ -204,6 +207,7 @@ describe("PagedTableTemplate", () => {
       );
 
       await setProjects(projects);
+      // @ts-expect-error: strict mode fix
       assertRows(projects.map(({ id, name }) => ({ id, name })));
     });
   });
@@ -398,6 +402,7 @@ describe("PagedTableTemplate", () => {
       component.sortKeys = sortKeys;
       component.onSort({
         newValue: value,
+        // @ts-expect-error: strict mode fix
         prevValue: undefined,
         column: {
           sortable: true,
@@ -408,6 +413,7 @@ describe("PagedTableTemplate", () => {
     }
 
     it("should handle no sorting", fakeAsync(() => {
+      // @ts-expect-error: strict mode fix
       createSortEvent({ testing: "name" }, undefined, "testing");
       spec.detectChanges();
 

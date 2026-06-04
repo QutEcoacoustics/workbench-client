@@ -82,12 +82,12 @@ describe("SearchFiltersModalComponent", () => {
   });
 
   it("should not use the success callback if the cancel button is clicked", () => {
-    exitButton().click();
+    exitButton()!.click();
     expect(successSpy).not.toHaveBeenCalled();
   });
 
   it("should use the success callback if the update button is clicked", () => {
-    updateButton().click();
+    updateButton()!.click();
     expect(successSpy).toHaveBeenCalled();
   });
 

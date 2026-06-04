@@ -21,7 +21,7 @@ export function assertPaginationTemplate<
 
     describe("filter input", () => {
       function getFilterInput(): HTMLInputElement {
-        return spectator.query("input[type='text']");
+        return spectator.query("input[type='text']") as HTMLInputElement;
       }
 
       function getInputDirective() {
@@ -44,7 +44,7 @@ export function assertPaginationTemplate<
         const spy = jasmine.createSpy().and.stub();
         spectator.component.onFilter = spy;
         const filter = getInputDirective();
-        filter.valueChange.emit("Custom Filter");
+        filter!.valueChange.emit("Custom Filter");
         spectator.detectChanges();
         expect(spy).toHaveBeenCalled();
       });
@@ -71,7 +71,7 @@ export function assertPaginationTemplate<
         spectator.component.displayPagination = true;
         spectator.component.collectionSize = 100;
         spectator.detectChanges();
-        expect(getPagination().collectionSize).toBe(100);
+        expect(getPagination()!.collectionSize).toBe(100);
       });
 
       // TODO Figure out
@@ -80,7 +80,7 @@ export function assertPaginationTemplate<
         spectator.component.displayPagination = true;
         spectator.component.apiRequest$.next = spy;
         spectator.detectChanges();
-        getPagination().page = 5;
+        getPagination()!.page = 5;
         spectator.detectChanges();
         expect(spy).toHaveBeenCalledWith({ page: 5, filterText: "" });
       });

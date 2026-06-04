@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from "@angular/core";
+﻿import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from "@angular/core";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
   ThemeColor,
@@ -31,9 +31,9 @@ class AdminThemeTemplateComponent
     ElementRef<HTMLElement>
   >;
 
-  public selectedColorIndex: number;
-  public themeColors: readonly ThemeColor[];
-  public themeVariants: readonly ThemeVariant[];
+  public selectedColorIndex!: number;
+  public themeColors!: readonly ThemeColor[];
+  public themeVariants!: readonly ThemeVariant[];
   protected darkBackground = false;
   protected disableButtons = false;
 
@@ -70,7 +70,7 @@ class AdminThemeTemplateComponent
 
     const boxIndex = colorIndex * this.themeVariants.length + variantIndex;
     const styles = getComputedStyle(
-      this.colorBoxes.get(boxIndex).nativeElement
+      this.colorBoxes.get(boxIndex)!.nativeElement
     );
     return rgb(styles.backgroundColor).formatHex();
   }

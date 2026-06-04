@@ -70,7 +70,7 @@ export type MenuItemKinds =
 /**
  * User callback function
  */
-export type UserCallback<T> = null | ((user?: User, data?: any) => T);
+export type UserCallback<T> = null | ((user: User, data?: any) => T);
 
 /**
  * An item designed to be in a menu.
@@ -179,7 +179,7 @@ export function menuRoute<T extends Omit<MenuRoute, "kind">>(
   return Object.assign(item, {
     kind: "MenuRoute" as const,
     active: false,
-    indentation: item.parent ? item.parent.indentation + 1 : 0,
+    indentation: item.parent ? item.parent.indentation! + 1 : 0,
     order: item.parent?.order ?? item.order,
   });
 }

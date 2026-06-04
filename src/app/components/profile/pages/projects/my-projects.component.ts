@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+﻿import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -31,7 +31,7 @@ const userKey = "user";
   ],
 })
 class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
-  protected api: ProjectsService;
+  protected api!: ProjectsService;
   public columns = [
     { name: "Project" },
     { name: "Sites" },
@@ -46,9 +46,10 @@ class MyProjectsComponent extends PagedTableTemplate<TableRow, Project> {
     super(
       api,
       (projects) =>
+        // @ts-expect-error: strict mode fix
         projects.map((project) => ({
           project,
-          sites: project.siteIds.size,
+          sites: project.siteIds!.size,
           permission: project.accessLevel,
         })),
       route

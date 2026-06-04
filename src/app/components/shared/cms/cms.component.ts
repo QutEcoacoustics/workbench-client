@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -41,9 +41,9 @@ export class CmsComponent extends withUnsubscribe() implements OnInit {
   private readonly isServer = inject(IS_SERVER_PLATFORM);
   private readonly ref = inject(ChangeDetectorRef);
 
-  @Input() public page: CMS;
-  public error: BawApiError;
-  public loading: boolean;
+  @Input() public page!: CMS;
+  public error!: BawApiError;
+  public loading!: boolean;
 
   public ngOnInit() {
     this.loading = true;

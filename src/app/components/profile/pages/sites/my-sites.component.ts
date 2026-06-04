@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+﻿import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -49,7 +49,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   ];
   public sortKeys = { site: "name", lastModified: "updatedAt" };
   public annotationLink = dataRequestMenuItem.route;
-  protected api: ShallowSitesService;
+  protected api!: ShallowSitesService;
 
   public constructor() {
     const api = inject(ShallowSitesService);
@@ -58,6 +58,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
     super(
       api,
       (sites) =>
+        // @ts-expect-error: strict mode fix
         sites.map((site) => ({
           site,
           lastModified: site.updatedAt,
@@ -73,7 +74,7 @@ class MySitesComponent extends PagedTableTemplate<TableRow, Site> {
   }
 
   public hasViewUrl(site: Site): boolean {
-    return site.projectIds.size > 0;
+    return site.projectIds!.size > 0;
   }
 }
 

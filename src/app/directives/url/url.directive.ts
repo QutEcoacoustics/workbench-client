@@ -1,4 +1,4 @@
-import { LocationStrategy } from "@angular/common";
+﻿import { LocationStrategy } from "@angular/common";
 import { Directive, ElementRef, Input, Renderer2, inject } from "@angular/core";
 import {
   ActivatedRoute,
@@ -17,8 +17,8 @@ import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
  */
 @Directive({ selector: "a[bawUrl]" })
 export class UrlDirective extends withUnsubscribe(RouterLink) {
-  @Input() public bawUrl: string;
-  @Input() public queryParams: Params;
+  @Input() public bawUrl!: string;
+  @Input() public queryParams!: Params;
 
   public constructor() {
     const _element = inject(ElementRef);
@@ -34,7 +34,7 @@ export class UrlDirective extends withUnsubscribe(RouterLink) {
 
   public get urlTree(): UrlTree {
     if (!this.bawUrl) {
-      return super.urlTree;
+      return super.urlTree!;
     }
 
     const tree = new DefaultUrlSerializer().parse(this.bawUrl);

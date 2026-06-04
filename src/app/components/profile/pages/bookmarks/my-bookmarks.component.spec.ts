@@ -73,10 +73,12 @@ describe("MyBookmarksComponent", () => {
     setup(defaultUser);
     interceptRequest([]);
     spec.detectChanges();
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
@@ -94,6 +96,7 @@ describe("MyBookmarksComponent", () => {
         interceptRequest([defaultBookmark]);
         spec.detectChanges();
 
+        // @ts-expect-error: strict mode fix
         expect(getCells()[0]).toHaveText(defaultBookmark.name);
       });
 
@@ -112,6 +115,7 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
+      // @ts-expect-error: strict mode fix
       expect(getCells()[1]).toHaveText(defaultBookmark.category);
     });
 
@@ -120,7 +124,8 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
-      expect(getCells()[2].querySelector("span").innerHTML).toContain(
+      expect(getCells()![2]!.querySelector("span")!.innerHTML).toContain(
+        // @ts-expect-error: strict mode fix
         defaultBookmark.descriptionHtmlTagline
       );
     });

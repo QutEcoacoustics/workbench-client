@@ -5,7 +5,7 @@ import CustomMatcherFactories = jasmine.CustomMatcherFactories;
 import CustomMatcher = jasmine.CustomMatcher;
 
 function isSignalWritable<T>(value: Signal<T>): value is WritableSignal<T> {
-  const hasSetFunction = typeof value["set"] === "function";
+  const hasSetFunction = typeof (value as any)["set"] === "function";
   return hasSetFunction;
 }
 

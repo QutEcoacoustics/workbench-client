@@ -22,9 +22,10 @@ import { ErrorHandlerComponent } from "./error-handler.component";
 class MockComponent implements OnInit {
   private readonly ref = inject(ChangeDetectorRef);
 
-  public error: BawApiError;
+  public error!: BawApiError;
 
   public ngOnInit() {
+    // @ts-expect-error: strict mode fix
     this.error = new BawApiError(
       UNAUTHORIZED,
       "You need to log in or register before continuing.",
@@ -150,9 +151,12 @@ describe("ErrorHandlerComponent", () => {
     { test: "undefined", value: undefined },
   ].forEach(({ test, value }) => {
     it(`should handle ${test} status code`, () => {
+      // @ts-expect-error: strict mode fix
       component.error = value;
       fixture.detectChanges();
+      // @ts-expect-error: strict mode fix
       assertTitle(undefined);
+      // @ts-expect-error: strict mode fix
       assertDescription(undefined);
     });
   });

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -36,8 +36,8 @@ class AdminOrphanComponent
 {
   private readonly route = inject(ActivatedRoute);
 
-  public site: Site;
-  public failure: boolean;
+  public site!: Site;
+  public failure!: boolean;
   public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public ngOnInit(): void {

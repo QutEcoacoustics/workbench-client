@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from "@angular/common";
+﻿import { NgTemplateOutlet } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -88,14 +88,14 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
    */
   public readonly markerClicked = output<MapMarkerOptions>();
 
-  public bounds: google.maps.LatLngBounds;
-  public validMarkersOptions: MapMarkerOptions[];
+  public bounds!: google.maps.LatLngBounds;
+  public validMarkersOptions!: MapMarkerOptions[];
   public hasMarkers = false;
   protected readonly clusterRenderer: Renderer =
     new ClusterRenderer() as unknown as Renderer;
   protected readonly clusterAlgorithm: Algorithm =
     new WeightedSuperClusterAlgorithm() as unknown as Algorithm;
-  private _map: GoogleMap;
+  private _map!: GoogleMap;
 
   protected readonly focusedMarker = signal<MapMarkerOptions | null>(null);
   protected readonly infoOptions = computed<google.maps.InfoWindowOptions>(
@@ -219,7 +219,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     marker: MapAnchorPoint,
   ): void {
     this.focusedMarker.set(options);
-    this.info().open(marker);
+    this.info()!.open(marker);
   }
 
   /**
@@ -233,7 +233,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
 
     this.bounds = new google.maps.LatLngBounds();
     this.validMarkersOptions.forEach((marker) => {
-      this.bounds.extend(marker.position);
+      this.bounds.extend(marker.position!);
     });
 
     this._map.fitBounds(this.bounds);
@@ -250,6 +250,7 @@ export class MapComponent extends withUnsubscribe() implements OnChanges {
     const customTemplate = this.markerTemplate()?.elementRef?.nativeElement;
     if (customTemplate) {
       const container = this.viewContainer.createEmbeddedView(
+        // @ts-expect-error: strict mode fix
         this.markerTemplate(),
         { marker },
       );

@@ -35,6 +35,7 @@ describe("EventSummaryReportService", () => {
       );
 
       mockApi.filterShow(
+        // @ts-expect-error: strict mode fix
         EventSummaryReport,
         baseUrl + "filter",
         defaultFilters

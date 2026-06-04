@@ -40,10 +40,12 @@ export const provenanceMenuItem = menuRoute({
   parent: provenancesMenuItem,
   route: provenanceRoute,
   tooltip: () => "View provenance",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Provenance)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel?.provenance?.model?.name ?? "Unknown";
   },
 });

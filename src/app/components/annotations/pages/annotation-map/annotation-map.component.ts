@@ -86,7 +86,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     signal<AnnotationSearchParameters | null>(null);
 
   protected readonly eventGroups = computed(() => {
-    const searchFilters = this.annotationSearchParameters().toFilter?.() ?? {};
+    const searchFilters = this.annotationSearchParameters()!.toFilter?.() ?? {};
 
     const request = this.groupedEventsService
       .filterGroupBy({ filter: searchFilters.filter })
@@ -103,15 +103,15 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
     // We use isInstantiated instead of a truthy check because a project with an
     // id of 0 is valid but would fail a truthy assertion.
-    if (isInstantiated(searchParams.routeProjectId)) {
+    if (isInstantiated(searchParams!.routeProjectId)) {
       return annotationSearchRoute.project;
-    } else if (isInstantiated(searchParams.routeRegionId)) {
-      if (isInstantiated(searchParams.routeSiteId)) {
+    } else if (isInstantiated(searchParams!.routeRegionId)) {
+      if (isInstantiated(searchParams!.routeSiteId)) {
         return annotationSearchRoute.siteAndRegion;
       } else {
         return annotationSearchRoute.region;
       }
-    } else if (isInstantiated(searchParams.routeSiteId)) {
+    } else if (isInstantiated(searchParams!.routeSiteId)) {
       return annotationSearchRoute.site;
     }
 
@@ -145,7 +145,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
     // We use isInstantiated instead of a truthy check because a focused site id
     // of 0 is valid but would fail a truthy assertion.
-    const initialFocusedSite = this.mapParameters().focused;
+    const initialFocusedSite = this.mapParameters()!.focused;
     if (isInstantiated(initialFocusedSite)) {
       this.handleSiteFocused(initialFocusedSite);
     }
@@ -197,8 +197,8 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
 
   private updateUrlParameters(): void {
     const queryParams: Params = {
-      ...this.mapParameters().toQueryParams(),
-      ...this.annotationSearchParameters().toQueryParams(),
+      ...this.mapParameters()!.toQueryParams(),
+      ...this.annotationSearchParameters()!.toQueryParams(),
     };
 
     const urlTree = this.router.createUrlTree([], { queryParams });
@@ -211,12 +211,12 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     // If we do not have a focused site, we do not load the events because
     // otherwise it would be loading events for all sites which does not make
     // much from a ux standpoint.
-    if (!isInstantiated(this.mapParameters().focused)) {
+    if (!isInstantiated(this.mapParameters()!.focused)) {
       return;
     }
 
     const filters: Filters<AudioEvent> = {
-      filter: this.annotationSearchParameters().toFilter()?.filter ?? {},
+      filter: this.annotationSearchParameters()!.toFilter()?.filter ?? {},
       paging: {
         items: 5,
       },
@@ -227,7 +227,7 @@ class AnnotationMapPageComponent extends PageComponent implements OnInit {
     };
 
     this.audioEventsApi
-      .filterBySite(filters, this.mapParameters().focused)
+      .filterBySite(filters, this.mapParameters()!.focused)
       .pipe(first(), takeUntil(this.unsubscribe))
       .subscribe((events) => {
         this.focusedEvents.set(events);

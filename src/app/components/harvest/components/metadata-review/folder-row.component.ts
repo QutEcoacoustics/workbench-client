@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
+﻿import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
 import { Harvest, HarvestMapping } from "@models/Harvest";
 import { HarvestItem, HarvestItemReport } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
@@ -137,9 +137,9 @@ import { WhitespaceComponent } from "./whitespace.component";
 export class FolderRowComponent {
   protected readonly injector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
 
-  @Input() public harvest: Harvest;
-  @Input() public project: Project;
-  @Input() public row: MetaReviewFolder;
+  @Input() public harvest!: Harvest;
+  @Input() public project!: Project;
+  @Input() public row!: MetaReviewFolder;
   /** Triggers when this folder is opened/closed */
   @Output() public toggleFolder = new EventEmitter<void>();
   @Output() public mappingsChange = new EventEmitter<void>();
@@ -147,15 +147,15 @@ export class FolderRowComponent {
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    return this.row.mapping;
+    return this.row.mapping!;
   }
 
   public get harvestItem(): HarvestItem {
-    return this.row.harvestItem;
+    return this.row.harvestItem!;
   }
 
   public get report(): HarvestItemReport {
-    return this.harvestItem.report;
+    return this.harvestItem.report!;
   }
 
   public createMapping(row: MetaReviewFolder): void {
@@ -163,14 +163,17 @@ export class FolderRowComponent {
       {
         // Root folder is not a harvest item, so root folder row does not have
         // a harvest item
-        path: row.isRoot ? row.path : row.harvestItem.path,
+        path: row.isRoot ? row.path : row.harvestItem!.path,
         recursive: true,
+        // @ts-expect-error: strict mode fix
         siteId: null,
+        // @ts-expect-error: strict mode fix
         utcOffset: null,
       },
       this.injector
     );
     row.mapping = mapping;
+    // @ts-expect-error: strict mode fix
     this.harvest.mappings.push(mapping);
   }
 

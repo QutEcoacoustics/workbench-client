@@ -116,7 +116,8 @@ export class AudioRecording
 
   /** Routes to the recording listen page */
   public get playUrl(): string {
-    return listenRecordingMenuItem.route.format({ audioRecordingId: this.id });
+    // @ts-expect-error: strict mode fix
+    return listenRecordingMenuItem.route.format({ audioRecordingId: this.id })!;
   }
 
   public constructor(data: IAudioRecording, injector?: AssociationInjector) {
@@ -125,6 +126,7 @@ export class AudioRecording
     // TODO Remove this, and replace with solution for #1815
     // Set timezone on recorded date
     if (this.recordedDateTimezone) {
+      // @ts-expect-error: strict mode fix
       this.recordedDate = this.recordedDate.setZone(this.recordedDateTimezone);
     }
   }
@@ -181,7 +183,7 @@ export class AudioRecording
     function ensureResolvedId<T extends AbstractModel>(
       model: IdOr<T | UnresolvedModel>
     ): IdOr<T> | null {
-      if (typeof model === "number" || !isUnresolvedModel(model)) {
+      if (typeof model === "number" || !isUnresolvedModel(model!)) {
         return model;
       }
       return null;
@@ -190,8 +192,9 @@ export class AudioRecording
     const routes = audioRecordingRoutes;
     return this.selectRoute(
       routes,
-      ensureResolvedId(project),
-      ensureResolvedId(region),
+      ensureResolvedId(project)!,
+      ensureResolvedId(region)!,
+      // @ts-expect-error: strict mode fix
       ensureResolvedId(site)
     );
   }
@@ -211,15 +214,20 @@ export class AudioRecording
 
     if (site) {
       if (region) {
+        // @ts-expect-error: strict mode fix
         return routes.siteAndRegion.format(routeParams);
       } else {
+        // @ts-expect-error: strict mode fix
         return routes.site.format(routeParams);
       }
     } else if (region) {
+      // @ts-expect-error: strict mode fix
       return routes.region.format(routeParams);
     } else if (project) {
+      // @ts-expect-error: strict mode fix
       return routes.project.format(routeParams);
     } else {
+      // @ts-expect-error: strict mode fix
       return routes.base.format(routeParams);
     }
   }

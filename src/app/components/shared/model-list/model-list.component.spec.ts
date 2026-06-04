@@ -110,7 +110,7 @@ describe("ModelListComponent", () => {
   }
 
   function getCards() {
-    return getCardsComponent().models();
+    return getCardsComponent()!.models();
   }
 
   beforeEach(() => {
@@ -150,13 +150,13 @@ describe("ModelListComponent", () => {
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => {
-      expect(filter.paging.page).toBe(1);
+      expect(filter.paging!.page).toBe(1);
     });
   });
 
   describe("tile tab", () => {
     function assertCard(index: number, model: Project) {
-      expect(getCards()[index]).toBe(model);
+      expect(getCards()![index]).toBe(model);
     }
 
     it("should handle zero projects", async () => {
@@ -219,10 +219,11 @@ describe("ModelListComponent", () => {
   describe("map tab", () => {
     beforeEach(fakeAsync(() => {
       spec.detectChanges();
-      const mapTabLink = getElementByTextContent(spec, "Map").querySelector(
+      const mapTabLink = getElementByTextContent(spec, "Map")!.querySelector(
         "a",
       );
 
+      // @ts-expect-error: strict mode fix
       spec.click(mapTabLink);
 
       spec.detectChanges();
@@ -251,12 +252,13 @@ describe("ModelListComponent", () => {
         return marker;
       });
 
-      expect(siteMap.markers().toArray()).toEqual(expectedSites);
+      expect(siteMap!.markers().toArray()).toEqual(expectedSites);
     });
   });
 
   describe("filtering", () => {
     function getFilterInput(): HTMLInputElement {
+      // @ts-expect-error: strict mode fix
       return spec.query("input[type='text']");
     }
 
@@ -282,7 +284,7 @@ describe("ModelListComponent", () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
       spyOn(spec.component, "onFilter").and.stub();
-      getInputDirective().valueChange.emit("custom value");
+      getInputDirective()!.valueChange.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

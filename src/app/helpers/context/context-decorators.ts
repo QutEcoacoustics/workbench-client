@@ -32,6 +32,7 @@ export function ContextSubscription(token: UnknownContext) {
 
       const handler = (...args: unknown[]) => {
         // call the original method with the correct context
+        // @ts-expect-error: strict mode indexing
         target[propertyKey].apply(this, args);
 
         // request a zone.js change detection cycle

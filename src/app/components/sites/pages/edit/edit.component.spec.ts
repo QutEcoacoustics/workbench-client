@@ -107,7 +107,9 @@ describe("SiteEditComponent", () => {
       };
 
       if (region) {
+        // @ts-expect-error: strict mode fix
         resolvers["region"] = "resolver";
+        // @ts-expect-error: strict mode fix
         models["region"] = getResolvedModel(region);
       }
 
@@ -121,14 +123,17 @@ describe("SiteEditComponent", () => {
     }
 
     const longitudeInputElement = (): HTMLInputElement =>
+      // @ts-expect-error: strict mode fix
       spec.query<HTMLInputElement>("#longitude");
     const latitudeInputElement = (): HTMLInputElement =>
+      // @ts-expect-error: strict mode fix
       spec.query<HTMLInputElement>("#latitude");
 
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
         beforeEach(() => {
           defaultProject = new Project(generateProject());
+          // @ts-expect-error: strict mode fix
           defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
           defaultSite = new Site(
             generateSite(withRegion ? { regionId: defaultRegion.id } : {})

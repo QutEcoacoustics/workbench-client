@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   EventEmitter,
   inject,
@@ -34,7 +34,7 @@ export class FormComponent extends withUnsubscribe() {
   @Input() public model: Record<string, any> = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
-  @Input() public submitLoading: boolean;
+  @Input() public submitLoading!: boolean;
   @Input() public subTitle?: string;
   @Input() public title?: string;
   /**
@@ -92,7 +92,7 @@ export class FormComponent extends withUnsubscribe() {
     }
   }
 
-  public onModelChange($event): void {
+  public onModelChange($event: any): void {
     this.modelChange.next($event);
   }
 }

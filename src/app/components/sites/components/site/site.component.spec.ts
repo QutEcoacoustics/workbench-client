@@ -66,6 +66,7 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => audioEvents,
+      // @ts-expect-error: strict mode fix
       isInstantiated(audioEvents["status"])
     );
   }
@@ -78,7 +79,7 @@ describe("SiteComponent", () => {
     const subject = new Subject<AudioRecording[]>();
 
     recordingsApi.filterBySite.andCallFake((filters, site) => {
-      if (filters.sorting.direction === "asc") {
+      if (filters.sorting!.direction === "asc") {
         oldExpectation(filters, site);
       } else {
         newExpectation(filters, site);
@@ -90,6 +91,7 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => recordings,
+      // @ts-expect-error: strict mode fix
       isInstantiated(recordings["status"])
     );
   }
@@ -119,7 +121,8 @@ describe("SiteComponent", () => {
 
       const title = spec.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
-      expect(title.innerText).toContain(defaultSite.name);
+      // @ts-expect-error: strict mode fix
+      expect(title!.innerText).toContain(defaultSite.name);
     });
 
     it("should display default site image", () => {
@@ -143,7 +146,8 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      expect(image).toHaveImage(defaultSite.imageUrls.at(0).url, {
+      // @ts-expect-error: strict mode fix
+      expect(image).toHaveImage(defaultSite!.imageUrls.at(0).url, {
         alt: `${defaultSite.name} image`,
       });
     });
@@ -157,7 +161,7 @@ describe("SiteComponent", () => {
 
       const description = spec.query("#site_description");
       expect(description).toBeTruthy();
-      expect(description.innerHTML).toContain("<i>No description found</i>");
+      expect(description!.innerHTML).toContain("<i>No description found</i>");
     });
 
     it("should display site description with html markup", () => {
@@ -168,7 +172,8 @@ describe("SiteComponent", () => {
 
       const description = spec.query("#site_description");
       expect(description).toBeTruthy();
-      expect(description.innerHTML).toContain(defaultSite.descriptionHtml);
+      // @ts-expect-error: strict mode fix
+      expect(description!.innerHTML).toContain(defaultSite.descriptionHtml);
     });
   });
 
@@ -189,7 +194,7 @@ describe("SiteComponent", () => {
 
     it("should create site marker", () => {
       const maps = spec.query(MapComponent);
-      expect(maps.markers().toArray()).toEqual([defaultSite.getMapMarker()]);
+      expect(maps!.markers().toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });
 

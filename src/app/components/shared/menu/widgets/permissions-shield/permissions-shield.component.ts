@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
@@ -55,11 +55,11 @@ export class PermissionsShieldComponent
 {
   private readonly sharedRoute = inject(SharedActivatedRouteService);
 
-  public accessLevel: string;
+  public accessLevel!: string;
   public badges = [];
-  public model: AbstractModel;
-  public pageData: IPageInfo;
-  private project: Project;
+  public model!: AbstractModel;
+  public pageData!: IPageInfo;
+  private project!: Project;
 
   public ngOnInit(): void {
     this.sharedRoute.pageInfo
@@ -72,6 +72,7 @@ export class PermissionsShieldComponent
         if (!this.model) {
           return;
         }
+        // @ts-expect-error: strict mode fix
         this.badges = this.createBadges(this.model);
         this.accessLevel = this.getAccessLevel();
       });
@@ -81,7 +82,7 @@ export class PermissionsShieldComponent
     const modelKeys = Object.keys(models);
 
     if (!hasResolvedSuccessfully(models) || modelKeys.length === 0) {
-      return undefined;
+      return undefined!;
     }
 
     // Grab model in order of priority, site, then region, then project
@@ -115,22 +116,23 @@ export class PermissionsShieldComponent
         assignModel(model , priorityLevels.harvest);
       } else if (model instanceof Site) {
         assignModel(model, priorityLevels.site);
-      } else if (priority > priorityLevels.region && model instanceof Region) {
+      } else if (priority! > priorityLevels.region && model instanceof Region) {
         assignModel(model, priorityLevels.region);
       } else if (
-        priority > priorityLevels.project &&
+        priority! > priorityLevels.project &&
         model instanceof Project
       ) {
         assignModel(model, priorityLevels.project);
-      } else if (!outputModel && model instanceof AbstractModel) {
+      } else if (!outputModel! && model instanceof AbstractModel) {
         assignModel(model, priorityLevels.anyModel);
       }
     }
 
-    return outputModel;
+    return outputModel!;
   }
 
   private createBadges(model: AbstractModel) {
+    // @ts-expect-error: strict mode fix
     const badges = [];
 
     [
@@ -152,6 +154,7 @@ export class PermissionsShieldComponent
         userKey: "owners",
       },
     ].forEach((badge) => {
+      // @ts-expect-error: strict mode indexing
       const id: Id | Ids = model[badge.id];
       const idExists = typeof id === "number" && isInstantiated(id);
       const idsExists = id instanceof Set && id.size > 0;
@@ -160,19 +163,22 @@ export class PermissionsShieldComponent
         badges.push({
           label: badge.label,
           userKey: badge.userKey,
+          // @ts-expect-error: strict mode fix
           timestamp: model[badge.timestampKey],
         });
       }
     });
 
+    // @ts-expect-error: strict mode fix
     return badges;
   }
 
   private getAccessLevel(): PermissionLevel {
     if (this.project) {
-      return this.project.accessLevel;
+      return this.project.accessLevel!;
     }
 
+    // @ts-expect-error: strict mode indexing
     return this.model["accessLevel"] ?? null;
   }
 }

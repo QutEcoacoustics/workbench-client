@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+﻿import { Component, inject, OnInit } from "@angular/core";
 import { analysisJobResolvers } from "@baw-api/analysis/analysis-jobs.service";
 import {
   analysisCategory,
@@ -34,10 +34,10 @@ class AnalysisJobComponent
 {
   private readonly route = inject(ActivatedRoute);
 
-  public analysisJob: AnalysisJob;
-  public failure: boolean;
+  public analysisJob!: AnalysisJob;
+  public failure!: boolean;
   public fields = schema.fields;
-  public project: Project;
+  public project!: Project;
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data;

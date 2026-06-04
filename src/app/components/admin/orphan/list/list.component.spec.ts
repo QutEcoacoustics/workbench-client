@@ -32,8 +32,11 @@ describe("AdminOrphansComponent", () => {
       defaultModels.push(new Site(generateSite()));
     }
 
+    // @ts-expect-error: strict mode fix
     this.defaultModels = defaultModels;
+    // @ts-expect-error: strict mode fix
     this.fixture = fixture;
+    // @ts-expect-error: strict mode fix
     this.api = api;
   });
 

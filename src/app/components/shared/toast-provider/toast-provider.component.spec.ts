@@ -67,8 +67,10 @@ describe("ToastProviderComponent", () => {
     spec.detectChanges();
 
     const targetToast = spec.query(NgbToast);
-    expect(targetToast.autohide).toEqual(testedOptions.autoHide);
-    expect(targetToast.delay).toEqual(testedOptions.delay);
+    // @ts-expect-error: strict mode fix
+    expect(targetToast!.autohide).toEqual(testedOptions.autoHide);
+    // @ts-expect-error: strict mode fix
+    expect(targetToast!.delay).toEqual(testedOptions.delay);
   });
 
   it("should use the correct default values if no options are provided", () => {
@@ -81,8 +83,10 @@ describe("ToastProviderComponent", () => {
     spec.detectChanges();
 
     const targetToast = spec.query(NgbToast);
-    expect(targetToast.autohide).toEqual(expectedDefaultOptions.autoHide);
-    expect(targetToast.delay).toEqual(expectedDefaultOptions.delay);
+    // @ts-expect-error: strict mode fix
+    expect(targetToast!.autohide).toEqual(expectedDefaultOptions.autoHide);
+    // @ts-expect-error: strict mode fix
+    expect(targetToast!.delay).toEqual(expectedDefaultOptions.delay);
   });
 
   it("should remove a toast correctly after the auto hide triggers", fakeAsync(() => {
@@ -147,6 +151,7 @@ describe("ToastProviderComponent", () => {
       { method: "warning", expectedVariant: "warning", expectedIcon: ["fas", "exclamation-triangle"] },
       { method: "error", expectedVariant: "danger", expectedIcon: ["fas", "hand"] },
       { method: "info", expectedVariant: "info", expectedIcon: ["fas", "info-circle"] },
+      // @ts-expect-error: strict mode fix
       { method: "show", expectedVariant: "default", expectedIcon: null },
     ] as const satisfies ToastVariantTest[];
 
@@ -173,7 +178,7 @@ describe("ToastProviderComponent", () => {
         if (test.expectedIcon === null) {
           expect(toastIcon).toBeNull();
         } else {
-          expect(toastIcon.icon()).toEqual(test.expectedIcon);
+          expect(toastIcon!.icon()).toEqual(test.expectedIcon);
         }
       });
     }

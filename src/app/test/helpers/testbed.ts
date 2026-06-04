@@ -32,8 +32,8 @@ export function addStandardFormImportsToMockBuilder(builder: IMockBuilder) {
   const module = builder.build();
 
   // https://github.com/help-me-mom/ng-mocks/issues/197#issuecomment-705431358
-  module.imports = [...module.imports, ...testFormImports];
-  module.providers = [...module.providers, ...testFormProviders];
+  module.imports = [...(module.imports || []), ...testFormImports];
+  module.providers = [...(module.providers || []), ...testFormProviders];
 
   return TestBed.configureTestingModule(module).compileComponents();
 }

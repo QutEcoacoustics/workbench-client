@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { NgClass, NgStyle } from "@angular/common";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -28,10 +28,10 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
   imports: [NgClass, NgStyle, NgbTooltip]
 })
 export class ProgressBarComponent {
-  @Input() public progress: number;
+  @Input() public progress!: number;
   @Input() public color: BootstrapColorTypes = "primary";
   @Input() public textColor: BootstrapColorTypes = "light";
-  @Input() public description: string;
+  @Input() public description!: string;
   @Input() public striped = true;
   // TODO Add options for all progress-bar settings
 

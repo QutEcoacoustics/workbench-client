@@ -1,4 +1,4 @@
-import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
+﻿import { AUDIO_RECORDING, SHALLOW_AUDIO_EVENT } from "@baw-api/ServiceTokens";
 import { statisticsMenuItem } from "@components/statistics/statistics.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModelWithoutId } from "@models/AbstractModel";
@@ -34,25 +34,25 @@ export interface IStatisticsSummary {
 
 export class StatisticsSummary extends AbstractModelWithoutId {
   public readonly kind = "Statistics Summary";
-  public readonly usersOnline: number;
-  public readonly usersTotal: number;
+  public readonly usersOnline!: number;
+  public readonly usersTotal!: number;
   @bawDateTime()
-  public readonly onlineWindowStart: DateTimeTimezone;
-  public readonly projectsTotal: number;
-  public readonly regionsTotal: number;
-  public readonly sitesTotal: number;
-  public readonly annotationsTotal: number;
+  public readonly onlineWindowStart!: DateTimeTimezone;
+  public readonly projectsTotal!: number;
+  public readonly regionsTotal!: number;
+  public readonly sitesTotal!: number;
+  public readonly annotationsTotal!: number;
   @bawDuration()
-  public readonly annotationsTotalDuration: Duration;
-  public readonly annotationsRecent: number;
-  public readonly audioRecordingsTotal: number;
-  public readonly audioRecordingsRecent: number;
+  public readonly annotationsTotalDuration!: Duration;
+  public readonly annotationsRecent!: number;
+  public readonly audioRecordingsTotal!: number;
+  public readonly audioRecordingsRecent!: number;
   @bawDuration()
-  public readonly audioRecordingsTotalDuration: Duration;
-  public readonly audioRecordingsTotalSize: number;
-  public readonly tagsTotal: number;
-  public readonly tagsAppliedTotal: number;
-  public readonly tagsAppliedUniqueTotal: number;
+  public readonly audioRecordingsTotalDuration!: Duration;
+  public readonly audioRecordingsTotalSize!: number;
+  public readonly tagsTotal!: number;
+  public readonly tagsAppliedTotal!: number;
+  public readonly tagsAppliedUniqueTotal!: number;
 
   public get viewUrl(): string {
     throw Error();
@@ -71,16 +71,16 @@ export interface IStatisticsRecent {
 export class StatisticsRecent extends AbstractModelWithoutId {
   public readonly kind = "Statistics Recent";
   @bawCollection()
-  public readonly audioRecordingIds: Ids;
+  public readonly audioRecordingIds!: Ids;
   @bawCollection()
-  public readonly audioEventIds: Ids;
+  public readonly audioEventIds!: Ids;
   @hasMany<StatisticsRecent, AudioRecording>(
     AUDIO_RECORDING,
     "audioRecordingIds"
   )
-  public audioRecordings: AudioRecording[];
+  public audioRecordings!: AudioRecording[];
   @hasManyFilter<StatisticsRecent, AudioEvent>(SHALLOW_AUDIO_EVENT, "audioEventIds")
-  public audioEvents: AudioEvent[];
+  public audioEvents!: AudioEvent[];
 
   public get viewUrl(): string {
     throw Error();

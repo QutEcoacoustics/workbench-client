@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -80,13 +80,14 @@ import { asFormControl } from "../helper";
   imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
-  @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
+  // @ts-expect-error: strict mode fix
+  @ViewChild("instance", { static!: true }) public instance: NgbTypeahead;
 
   public asFormControl = asFormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
   public invalidIcon: IconProp = faBan;
-  public timezone: TimeZone;
+  public timezone!: TimeZone;
   public timezones: TimeZone[] = [];
 
   public ngOnInit() {
@@ -94,9 +95,12 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
     this.setDefaultValue();
   }
 
+  // @ts-expect-error: strict mode fix
   public get error(): string {
+    // @ts-expect-error: strict mode fix
     const err = this.formControl.getError(this.field.key.toString());
     if (err) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 

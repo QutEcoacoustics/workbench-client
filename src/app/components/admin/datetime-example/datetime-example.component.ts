@@ -34,7 +34,7 @@ class DateTimeExampleComponent extends PageComponent {
   });
   private dateTimeFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
-  protected updateFakeDuration(event): void {
+  protected updateFakeDuration(event: any): void {
     const inputValue: string = event.target.value;
     const newDuration = Duration.fromISO(inputValue);
 
@@ -43,7 +43,7 @@ class DateTimeExampleComponent extends PageComponent {
     }
   }
 
-  protected updateFakeDate(event): void {
+  protected updateFakeDate(event: any): void {
     const inputValue: string = event.target.value;
     let newDate = DateTime.fromFormat(inputValue, this.dateTimeFormat);
 
@@ -56,7 +56,7 @@ class DateTimeExampleComponent extends PageComponent {
     }
   }
 
-  protected updateFakeImplicitTimezone(event): void {
+  protected updateFakeImplicitTimezone(event: any): void {
     this.fakeImplicitTimezone = event.target.value;
 
     const newFakeDate = this.fakeDate.setZone(this.fakeImplicitTimezone, {

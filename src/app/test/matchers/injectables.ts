@@ -29,7 +29,7 @@ declare const ng: Ng;
  * @param el HTML Element
  * @param directive Directive to extract
  */
-function getDirective<D>(
+function getDirective<D extends {}>(
   el: Element,
   directive: Constructor<unknown>,
 ): D | undefined {
@@ -47,7 +47,7 @@ function validateAttributes(
   util: MatchersUtil,
   injectable: any,
   props: Record<string, any>,
-): CustomMatcherResult {
+): CustomMatcherResult | undefined {
   for (const key of Object.keys(props)) {
     const expected = props[key];
     const actual = injectable[key];
@@ -370,7 +370,7 @@ const toBeProvidedBy = (): CustomMatcher => ({
       return matcherFailure("Injectable was not defined");
     }
 
-    const actualInjector = target["injector"];
+    const actualInjector = (target as any)["injector"];
     if (!actualInjector) {
       return matcherFailure("Injectable does not have a provider");
     }

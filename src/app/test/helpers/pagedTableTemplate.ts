@@ -62,7 +62,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   };
 
   assignModelMetadata(models, paging);
-  api[apiAction].and.callFake(() => new BehaviorSubject<M[]>(models));
+  (api as any)[apiAction].and.callFake(() => new BehaviorSubject<M[]>(models));
 }
 
 /**
@@ -88,7 +88,7 @@ export function assertPagination<
     let defaultPaging: Paging;
     let fixture: ComponentFixture<any>;
 
-    const testedApi = () => api[apiAction];
+    const testedApi = () => (api as any)[apiAction];
 
     function mockApiResponse(models: MockModel[]) {
       assignModelMetadata(models, {
@@ -141,7 +141,7 @@ export function assertPagination<
       return result;
     }
 
-    beforeEach(function () {
+    beforeEach(function (this: any) {
       api = this.api;
       fixture = this.fixture;
       defaultModels = this.defaultModels;

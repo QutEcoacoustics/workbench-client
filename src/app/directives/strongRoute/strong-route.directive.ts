@@ -1,4 +1,4 @@
-import { LocationStrategy } from "@angular/common";
+﻿import { LocationStrategy } from "@angular/common";
 import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from "@angular/core";
 import {
   ActivatedRoute,
@@ -29,22 +29,23 @@ export class StrongRouteDirective
   private readonly sharedRoute = inject(SharedActivatedRouteService);
   private readonly _router: Router;
 
-  @Input() public strongRoute: StrongRoute;
+  @Input() public strongRoute!: StrongRoute;
   /**
    * Additional route parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public routeParams: RouteParams;
+  @Input() public routeParams!: RouteParams;
   /**
    * Additional query parameters to apply to the StrongRoute. By default, all
    * of the angular route parameters are already given to the StrongRoute.
    */
-  @Input() public queryParams: Params;
+  @Input() public queryParams!: Params;
 
   private routeState = {
     resolvedModels: {} as ResolvedModelList,
     routeParams: {} as Params,
     queryParams: {} as Params,
+    // @ts-expect-error: strict mode fix
     activatedRoute: null as ActivatedRoute,
   };
 
@@ -106,7 +107,7 @@ export class StrongRouteDirective
 
   public get urlTree(): UrlTree {
     if (!this["routerLinkInput"]) {
-      return super.urlTree;
+      return super.urlTree!;
     }
 
     const queryParams =

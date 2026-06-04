@@ -62,16 +62,16 @@ describe("FormlyCheckboxInput", () => {
   it("should activate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
-    checkbox.click();
-    expect(checkbox.checked).toBeTruthy();
+    checkbox!.click();
+    expect(checkbox!.checked).toBeTruthy();
   });
 
   it("should deactivate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
-    checkbox.click();
-    checkbox.click();
-    expect(checkbox.checked).toBeFalsy();
+    checkbox!.click();
+    checkbox!.click();
+    expect(checkbox!.checked).toBeFalsy();
   });
 
   // TODO Implement

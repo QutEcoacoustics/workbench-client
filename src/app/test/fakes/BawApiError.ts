@@ -24,6 +24,7 @@ export function generateBawApiError(
         message = "Unknown";
         break;
       default:
+        // @ts-expect-error: strict mode fix
         message = httpCodes[status] as string;
     }
   }

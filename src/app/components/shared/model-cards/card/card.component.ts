@@ -57,7 +57,7 @@ export class CardComponent {
         return Promise.resolve(cardModel.license);
       }
 
-      const projectLicense = this.projectService.getProjectFor(cardModel).pipe(
+      const projectLicense = this.projectService.getProjectFor(cardModel!).pipe(
         map((projects) => {
           return projects
             .map((project) => project.license)
@@ -79,7 +79,7 @@ export class CardComponent {
   });
 
   protected readonly isOwner = computed(
-    () => this.model().creatorId === this.session.loggedInUser?.id,
+    () => this.model()!.creatorId === this.session.loggedInUser?.id,
   );
 
   protected readonly hasNoAudio$: Observable<boolean> =

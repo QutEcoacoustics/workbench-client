@@ -1,4 +1,4 @@
-import { Writeable, XOR } from "@helpers/advancedTypes";
+﻿import { Writeable, XOR } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
@@ -36,7 +36,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .reduce((acc, attr) => {
+        // @ts-expect-error: strict mode indexing
         const value = raw[attr.key];
+        // @ts-expect-error: strict mode indexing
         acc[attr.key] = isInstantiated(value) ? camelCase(value) : value;
         return acc;
       }, {});
@@ -69,7 +71,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * match up with what the baw-server names the model. It will be converted to
    * snake case.
    */
-  public readonly kind: string;
+  public readonly kind!: string;
 
   /**
    * Redirect path to view model on website. This is a string which can be used
@@ -104,11 +106,13 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * @param meta Metadata
    */
   public addMetadata(meta: Meta): void {
+    // @ts-expect-error: strict mode indexing
     this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
   public getMetadata(): Meta {
+    // @ts-expect-error: strict mode indexing
     return this[AbstractModel.keys.meta];
   }
 
@@ -118,11 +122,13 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 
   public getPersistentAttributes(): BawAttributeMeta[] {
     // TODO #1005 Store this statically in the model
+    // @ts-expect-error: strict mode indexing
     return (this[AbstractModel.keys.attributes] ??= []);
   }
 
   public can(capability: CapabilityKey): Capability {
-    return this.getMetadata().capabilities[capability];
+    // @ts-expect-error: strict mode fix
+    return this.getMetadata()!.capabilities[capability];
   }
 
   /**
@@ -265,7 +271,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    return this.getModelAttributes({ ...opts, formData: false }).some((attr) =>
+    // @ts-expect-error: strict mode fix
+    return this.getModelAttributes({ ...opts, formData: false }!).some((attr) =>
+      // @ts-expect-error: strict mode indexing
       isInstantiated(this[attr])
     );
   }
@@ -283,7 +291,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * in a multipart form API request
    */
   private hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    return this.getModelAttributes({ ...opts, formData: true }).some((attr) =>
+    // @ts-expect-error: strict mode fix
+    return this.getModelAttributes({ ...opts, formData: true }!).some((attr) =>
+      // @ts-expect-error: strict mode indexing
       isInstantiated(this[attr])
     );
   }
@@ -297,7 +307,8 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     opts?: ModelSerializationOptions
   ): FormData {
     const output = new FormData();
-    const keys = this.getModelAttributes({ ...opts, formData: true });
+    // @ts-expect-error: strict mode fix
+    const keys = this.getModelAttributes({ ...opts, formData: true }!);
     const data = this.toObject(keys, opts);
 
     if (!this.kind) {
@@ -306,6 +317,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     }
 
     for (const attr of Object.keys(data)) {
+      // @ts-expect-error: strict mode indexing
       const dataValue = data[attr];
 
       if (!isInstantiated(dataValue)) {
@@ -358,20 +370,28 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     opts?: ModelSerializationOptions
   ): Partial<this> {
     const output: Partial<Writeable<this>> = {};
+    // @ts-expect-error: strict mode fix
     keys.forEach((attribute: keyof AbstractModel) => {
+      // @ts-expect-error: strict mode indexing
       const value = this[attribute];
       if (value instanceof Set) {
         const valueAsArray = Array.from(value);
+        // @ts-expect-error: strict mode indexing
         output[attribute] = opts?.convertCase
           ? valueAsArray.map(snakeCase)
           : valueAsArray;
       } else if (value instanceof DateTime) {
+        // @ts-expect-error: strict mode indexing
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
+        // @ts-expect-error: strict mode indexing
         output[attribute] = value.as("seconds");
       } else {
+        // @ts-expect-error: strict mode indexing
         output[attribute] = opts?.convertCase
+          // @ts-expect-error: strict mode indexing
           ? snakeCase(this[attribute])
+          // @ts-expect-error: strict mode indexing
           : this[attribute];
       }
     });
@@ -396,6 +416,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           // when a File value is present, we send the value in the formData request
           // The null/json scenario is used to support deleting images.
           .filter((meta) =>
+            // @ts-expect-error: strict mode indexing
             this[meta.key] instanceof File ? opts.formData : true
           )
           .filter((meta) =>
@@ -421,9 +442,12 @@ export abstract class AbstractModel<
    * @param value Display custom value
    */
   public override toString(value?: string): string {
+    // @ts-expect-error: strict mode indexing
     if (!value && this["name"]) {
+      // @ts-expect-error: strict mode indexing
       value = this["name"];
     }
+    // @ts-expect-error: strict mode fix
     const identifier = value ? `${value} (${this.id})` : this.id.toString();
     return super.toString(identifier);
   }

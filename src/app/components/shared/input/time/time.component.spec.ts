@@ -17,7 +17,9 @@ describe("TimeComponent", () => {
 
   beforeEach(() => setup());
 
+  // @ts-expect-error: strict mode fix
   const inputElement = (): HTMLInputElement => spectator.query("input");
+  // @ts-expect-error: strict mode fix
   const errorsElement = (): HTMLDivElement => spectator.query(".invalid-feedback");
 
   function typeInTimeValue(value: string): void {

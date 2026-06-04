@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -88,10 +88,10 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
   private readonly notifications = inject(ToastService);
   private readonly config = inject(ConfigService);
 
-  public project: Project;
+  public project!: Project;
   public region?: Region;
-  public site: Site;
-  public failure: boolean;
+  public site!: Site;
+  public failure!: boolean;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -111,12 +111,13 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.site?.name));
+          this.notifications.success(defaultSuccessMsg("destroyed", this.site?.name!));
 
           // points have a parent region. Therefore, if the site is a point, navigate to the region details page
           // if the site is not a point, the parent item is conditional on if projects are hidden
           // if projects are hidden, navigate to the sites list page, if projects are shown, navigate to the parent project details page
           if (this.site.isPoint) {
+            // @ts-expect-error: strict mode fix
             this.router.navigateByUrl(this.region.viewUrl);
           } else {
             const hideProjects = this.config.settings.hideProjects;

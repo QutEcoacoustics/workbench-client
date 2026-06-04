@@ -12,7 +12,8 @@ export const deleteRegionModal = menuModal({
   tooltip: () => "Delete this site",
   predicate: isProjectEditorPredicate,
   component: DeleteModalComponent,
-  successCallback: (pageComponentInstance?: RegionDetailsComponent) => pageComponentInstance.deleteModel(),
+  // @ts-expect-error: strict mode fix
+  successCallback: (pageComponentInstance?: RegionDetailsComponent) => pageComponentInstance!.deleteModel(),
 });
 
 export const regionAnnotationsModal = menuModal({
@@ -23,3 +24,4 @@ export const regionAnnotationsModal = menuModal({
   component: AnnotationDownloadComponent,
   modalOpts: {},
 });
+

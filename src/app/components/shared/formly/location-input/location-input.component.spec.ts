@@ -77,7 +77,9 @@ describe("FormlyLocationInput", () => {
   ) {
     // Using typeInElement dispatches the "input" event that Angular listens to
     // https://github.com/ngneat/spectator/blob/549c63c43e9/projects/spectator/src/lib/type-in-element.ts#L18
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(latitude.toString(), getLatitudeInput());
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(longitude.toString(), getLongitudeInput());
 
     spec.detectChanges();
@@ -102,8 +104,10 @@ describe("FormlyLocationInput", () => {
     latitude: number,
     longitude: number,
   ) {
-    expect(map.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
-    expect(map.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
+    // @ts-expect-error: strict mode fix
+    expect(map!.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
+    // @ts-expect-error: strict mode fix
+    expect(map!.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
   }
 
   it("should create", () => {
@@ -116,8 +120,8 @@ describe("FormlyLocationInput", () => {
 
     explicitlySetMarker(defaultLatitudeValue, defaultLongitudeValue);
 
-    expect(getLatitudeInput().value).toEqual(defaultLatitudeValue.toString());
-    expect(getLongitudeInput().value).toEqual(defaultLongitudeValue.toString());
+    expect(getLatitudeInput()!.value).toEqual(defaultLatitudeValue.toString());
+    expect(getLongitudeInput()!.value).toEqual(defaultLongitudeValue.toString());
   }));
 
   it("should update the marker model if the location is updated through the input field/form", fakeAsync(() => {
@@ -135,6 +139,7 @@ describe("FormlyLocationInput", () => {
     updateMarkerThroughInput(updatedLatitudeValue, updatedLongitudeValue);
 
     // assert that the marker location has changed to the new location
+    // @ts-expect-error: strict mode fix
     assertMapModelCoordinates(map, updatedLatitudeValue, updatedLongitudeValue);
   }));
 
@@ -155,12 +160,15 @@ describe("FormlyLocationInput", () => {
     const newPosition: google.maps.LatLng = {
       lat: () => updatedLatitude,
       lng: () => updatedLongitude,
+      // @ts-expect-error: strict mode fix
       equals: () => null,
+      // @ts-expect-error: strict mode fix
       toJSON: () => null,
+      // @ts-expect-error: strict mode fix
       toUrlValue: () => null,
     };
 
-    map.newLocation.emit({
+    map!.newLocation.emit({
       domEvent: new Event("mapDragend"),
       latLng: newPosition,
       stop: () => {},
@@ -174,6 +182,7 @@ describe("FormlyLocationInput", () => {
       newPosition.lat(),
       newPosition.lng(),
     );
+    // @ts-expect-error: strict mode fix
     assertMapModelCoordinates(map, updatedLatitude, updatedLongitude);
   }));
 

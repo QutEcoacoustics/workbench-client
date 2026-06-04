@@ -96,11 +96,13 @@ describe("AnnotationMapPageComponent", () => {
     // We use a document query instead of spec.query here because ng-bootstrap
     // modals are attached to the document body, not within the component's
     // template, meaning that ng-neat spectator queries cannot find them.
+    // @ts-expect-error: strict mode fix
     return document.querySelector("baw-annotation-search-form");
   }
 
   function openSearchForm() {
     const toggleButton = getElementByTextContent(spec, "Edit Filters");
+    // @ts-expect-error: strict mode fix
     clickButton(spec, toggleButton);
     flush();
   }
@@ -203,7 +205,7 @@ describe("AnnotationMapPageComponent", () => {
     // rejects the load state update (for some reason), the map component won't
     // incorrectly think that maps are loaded.
     const mapComponent = spec.query(MapComponent);
-    mapComponent["mapsLoadState"].set(mapsServiceSpy.mapsState);
+    mapComponent!["mapsLoadState"].set(mapsServiceSpy.mapsState);
     spec.detectChanges();
 
     const markers = mapMarkers();
@@ -316,6 +318,7 @@ describe("AnnotationMapPageComponent", () => {
       setup();
       clickMarker(0);
 
+      // @ts-expect-error: strict mode fix
       const showMoreLink = getElementByTextContent(
         spec,
         "Show More",
@@ -326,8 +329,11 @@ describe("AnnotationMapPageComponent", () => {
       expect(showMoreLink).toHaveStrongRoute(annotationSearchRoute.project, {
         queryParams: searchParameters.toQueryParams(),
         routeParams: {
+          // @ts-expect-error: strict mode fix
           projectId: project.id,
+          // @ts-expect-error: strict mode fix
           regionId: region.id,
+          // @ts-expect-error: strict mode fix
           siteId: site.id,
         },
       });
@@ -349,6 +355,7 @@ describe("AnnotationMapPageComponent", () => {
       clickMarker(0);
 
       const previewButton = spec.query(".preview-event");
+      // @ts-expect-error: strict mode fix
       clickButton(spec, previewButton);
 
       expect(modalSpy.open).toHaveBeenCalledOnceWith(
@@ -398,6 +405,7 @@ describe("AnnotationMapPageComponent", () => {
       const form = annotationSearchForm();
       const tagsTypeahead = form.querySelector("#tags-input");
 
+      // @ts-expect-error: strict mode fix
       selectFromTypeahead(spec, tagsTypeahead, tags[0].text);
 
       // We have to use a root selector here because the update button is
@@ -406,11 +414,13 @@ describe("AnnotationMapPageComponent", () => {
         root: true,
       });
 
+      // @ts-expect-error: strict mode fix
       clickButton(spec, updateButton);
 
       // We expect that the annotationSearchParameters now include the newly
       // selected tag.
-      expect(spec.component["annotationSearchParameters"]().tags).toContain(
+      // @ts-expect-error: strict mode fix
+      expect(spec!.component["annotationSearchParameters"]().tags).toContain(
         tags[0].id,
       );
 

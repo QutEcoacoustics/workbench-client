@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   EventEmitter,
   Input,
@@ -57,19 +57,20 @@ import { FormsModule } from "@angular/forms";
 export class ModelSelectorComponent<Model extends AbstractModel>
   implements OnInit
 {
-  @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
+  // @ts-expect-error: strict mode fix
+  @ViewChild("selector", { static!: true }) public selector: NgbTypeahead;
 
-  @Input() public label: string;
-  @Input() public placeholder: string;
-  @Input() public model: Model;
-  @Input() public getModels: (input: Model | string) => Observable<Model[]>;
-  @Input() public formatter: (model: AbstractModel) => string;
-  @Input() public resultTemplate: NgbTypeahead["resultTemplate"];
+  @Input() public label!: string;
+  @Input() public placeholder!: string;
+  @Input() public model!: Model;
+  @Input() public getModels!: (input: Model | string) => Observable<Model[]>;
+  @Input() public formatter!: (model: AbstractModel) => string;
+  @Input() public resultTemplate!: NgbTypeahead["resultTemplate"];
   @Output() public modelChange = new EventEmitter<Model>();
 
   public focus$ = new Subject<Model>();
   public click$ = new Subject<Model>();
-  public search$: OperatorFunction<string, readonly Model[]>;
+  public search$!: OperatorFunction<string, readonly Model[]>;
 
   public ngOnInit(): void {
     this.search$ = (text$: Observable<string>): Observable<Model[]> => {

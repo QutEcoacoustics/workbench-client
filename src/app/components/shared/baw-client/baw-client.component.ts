@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild, inject } from "@angular/core";
+﻿import { Component, ElementRef, HostListener, Input, OnInit, ViewChild, inject } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
@@ -42,16 +42,16 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly sanitizer = inject(DomSanitizer);
 
-  @ViewChild("content") private iframeRef: ElementRef<HTMLIFrameElement>;
+  @ViewChild("content") private iframeRef!: ElementRef<HTMLIFrameElement>;
   /**
    * Forces baw-client to render a specific page. The page url should be relative,
    * beginning with a `/`
    */
-  @Input() public page: string;
+  @Input() public page!: string;
 
   public loading = false;
-  public error: boolean;
-  public url: SafeResourceUrl;
+  public error!: boolean;
+  public url!: SafeResourceUrl;
 
   @HostListener("window:message", ["$event"])
   private onBawClientMessage(event: MessageEvent): void {
@@ -67,8 +67,8 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
       // Ignore message
     }
 
-    if (meta?.height > 0) {
-      this.updateIframeSize(meta.height);
+    if (meta!?.height > 0) {
+      this.updateIframeSize(meta!.height);
     }
   }
 
@@ -78,7 +78,7 @@ export class BawClientComponent extends withUnsubscribe() implements OnInit {
 
     // Don't load client on SSR or if error occurs
     if (!hasResolvedSuccessfully(models) || this.isSsr) {
-      this.url = undefined;
+      this.url = undefined!;
       return;
     }
 

@@ -56,7 +56,9 @@ describe("TableTemplate", () => {
 
   describe("loadTable", () => {
     it("should handle zero rows", () => {
+      // @ts-expect-error: strict mode fix
       const rows = [];
+      // @ts-expect-error: strict mode fix
       createRows(rows);
       fixture.detectChanges();
 
@@ -86,7 +88,9 @@ describe("TableTemplate", () => {
 
   describe("updateFilter", () => {
     it("should handle no rows", () => {
+      // @ts-expect-error: strict mode fix
       const rows = [];
+      // @ts-expect-error: strict mode fix
       createRows(rows);
       checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();

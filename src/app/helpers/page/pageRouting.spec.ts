@@ -34,7 +34,8 @@ function createMockStrongRoute(
   testRoute.pageComponent = jasmine.createSpyObj("pageComponent", [
     "pageInfos",
   ]);
-  testRoute.pageComponent["pageInfos"] = [testPageInfo];
+  // @ts-expect-error: strict mode fix
+  testRoute.pageComponent!["pageInfos"] = [testPageInfo];
 
   return testRoute;
 }

@@ -55,6 +55,7 @@ describe("SpeciesTimeSeriesComponent", () => {
     spec = createComponent({
       props: {
         data: mockData,
+        // @ts-expect-error: strict mode fix
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });

@@ -21,7 +21,7 @@ describe("Luxon Duration Monkey Patches", () => {
   describe("monkey patch changes", () => {
     for (const method of patchedMethods) {
       const patchedMethod = target.prototype[method] as () => any;
-      const originalMethod = target.prototype[`_${method}`] as () => any;
+      const originalMethod = (target.prototype as any)[`_${method}`] as () => any;
 
       it(`should patch ${method}`, () => {
         expect(patchedMethod).not.toBe(originalMethod);
@@ -49,7 +49,7 @@ describe("Luxon Duration Monkey Patches", () => {
       });
 
       it("should have the expected luxon output", () => {
-        expect(input["_toFormat"](format)).toEqual(expectedLuxonOutput);
+        expect((input as any)["_toFormat"](format)).toEqual(expectedLuxonOutput);
       });
     }
   });
@@ -73,7 +73,7 @@ describe("Luxon Duration Monkey Patches", () => {
       });
 
       it("should have the expected luxon output", () => {
-        expect(input["_toISO"]()).toEqual(expectedLuxonOutput);
+        expect((input as any)["_toISO"]()).toEqual(expectedLuxonOutput);
       });
     }
   });
@@ -98,7 +98,7 @@ describe("Luxon Duration Monkey Patches", () => {
       });
 
       it("should have the expected luxon output", () => {
-        expect(Duration["_fromISO"](input)).toEqual(expectedLuxonOutput);
+        expect((Duration as any)["_fromISO"](input)).toEqual(expectedLuxonOutput);
       });
     }
   });

@@ -51,6 +51,7 @@ export class MapsService {
     // using the StaticMapService
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2442
     if (environment.testing || this.isServer) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 

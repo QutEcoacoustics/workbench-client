@@ -64,7 +64,7 @@ export class AnnotationService {
   private async showTags(audioEvent: AudioEvent): Promise<Tag[]> {
     // If there are no taggings, we can short-circuit and return an empty list
     // without making any API calls.
-    const tagIds = audioEvent.taggings.map((tagging) => tagging.tagId);
+    const tagIds = audioEvent.taggings!.map((tagging) => tagging.tagId);
     if (tagIds.length === 0) {
       return [];
     }

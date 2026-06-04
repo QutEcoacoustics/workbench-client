@@ -71,8 +71,9 @@ describe("ProjectsListComponent", () => {
   });
 
   it("should make the correct API calls when loading the 'map' tab", () => {
-    const mapTabLink = getElementByTextContent(spec, "Map").querySelector("a");
+    const mapTabLink = getElementByTextContent(spec, "Map")!.querySelector("a");
 
+    // @ts-expect-error: strict mode fix
     spec.click(mapTabLink);
     spec.detectChanges();
 

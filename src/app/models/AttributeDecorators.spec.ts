@@ -69,7 +69,7 @@ describe("Attribute Decorators", () => {
       it("should append key to model create attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ create: true, update: false })
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, ["name"]);
@@ -79,7 +79,7 @@ describe("Attribute Decorators", () => {
       it("should append key to model update attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ create: false, update: true })
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, []);
@@ -89,9 +89,9 @@ describe("Attribute Decorators", () => {
       it("should append multiple keys to model create attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ create: true, update: false })
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr({ create: true, update: false })
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, ["name", "value"]);
@@ -101,9 +101,9 @@ describe("Attribute Decorators", () => {
       it("should append multiple keys to model update attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ create: false, update: true })
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr({ create: false, update: true })
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, []);
@@ -113,7 +113,7 @@ describe("Attribute Decorators", () => {
       it("should append key to model attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr()
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, ["name"]);
@@ -123,9 +123,9 @@ describe("Attribute Decorators", () => {
       it("should append multiple keys to model attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr()
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr()
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateJsonAttributes(model, ["name", "value"]);
@@ -141,7 +141,7 @@ describe("Attribute Decorators", () => {
             update: false,
             supportedFormats: ["formData"],
           })
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, ["name"]);
@@ -155,7 +155,7 @@ describe("Attribute Decorators", () => {
             update: true,
             supportedFormats: ["formData"],
           })
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, []);
@@ -169,13 +169,13 @@ describe("Attribute Decorators", () => {
             update: false,
             supportedFormats: ["formData"],
           })
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr({
             create: true,
             update: false,
             supportedFormats: ["formData"],
           })
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, ["name", "value"]);
@@ -189,13 +189,13 @@ describe("Attribute Decorators", () => {
             update: true,
             supportedFormats: ["formData"],
           })
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr({
             create: false,
             update: true,
             supportedFormats: ["formData"],
           })
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, []);
@@ -205,7 +205,7 @@ describe("Attribute Decorators", () => {
       it("should append key to model attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ supportedFormats: ["formData"] })
-          public readonly name: string;
+          public readonly name!: string;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, ["name"]);
@@ -215,9 +215,9 @@ describe("Attribute Decorators", () => {
       it("should append multiple keys to model attributes", () => {
         class MockModel extends BaseModel {
           @bawPersistAttr({ supportedFormats: ["formData"] })
-          public readonly name: string;
+          public readonly name!: string;
           @bawPersistAttr({ supportedFormats: ["formData"] })
-          public readonly value: number;
+          public readonly value!: number;
         }
         const model = new MockModel({});
         assertCreateFormDataAttributes(model, ["name", "value"]);
@@ -246,14 +246,15 @@ describe("Attribute Decorators", () => {
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
-        public readonly images: ImageUrl[];
-        public readonly imageUrls: ImageUrl[];
+        public readonly images!: ImageUrl[];
+        public readonly imageUrls!: ImageUrl[];
 
         public override toString() {
           return "Mock Model";
         }
       }
 
+      // @ts-expect-error: strict mode fix
       return new MockModel(data, injector);
     }
 
@@ -299,6 +300,7 @@ describe("Attribute Decorators", () => {
     });
 
     it("should convert null", () => {
+      // @ts-expect-error: strict mode fix
       const model = createModel({ images: null });
       expect(model.images).toEqual([defaultImageUrl]);
     });
@@ -383,8 +385,8 @@ describe("Attribute Decorators", () => {
     ) {
       class MockModel extends BaseModel {
         @bawCollection(opts)
-        public readonly ids: Ids;
-        public readonly overrideIds: Id[];
+        public readonly ids!: Ids;
+        public readonly overrideIds!: Id[];
       }
 
       return new MockModel(data);
@@ -429,6 +431,7 @@ describe("Attribute Decorators", () => {
     });
 
     it("should convert null", () => {
+      // @ts-expect-error: strict mode fix
       const model = createModel({ ids: null });
       expect(model.ids).toEqual(new Set([]));
     });
@@ -464,8 +467,8 @@ describe("Attribute Decorators", () => {
     ) {
       class MockModel extends BaseModel {
         @bawDateTime(opts)
-        public readonly date: DateTime;
-        public readonly timestamp: string;
+        public readonly date!: DateTime;
+        public readonly timestamp!: string;
       }
 
       return new MockModel(data);
@@ -473,6 +476,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel(
+        // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
         { persist: true }
       );
@@ -482,6 +486,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on create option", () => {
       const model = createModel(
+        // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
         { persist: { create: true, update: false } }
       );
@@ -491,6 +496,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on update option", () => {
       const model = createModel(
+        // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
         { persist: { create: false, update: true } }
       );
@@ -500,24 +506,30 @@ describe("Attribute Decorators", () => {
 
     it("should handle override key option", () => {
       const model = createModel(
+        // @ts-expect-error: strict mode fix
         { timestamp: defaultDate.toISO() },
         { key: "timestamp" }
       );
       expect(model.date).toEqual(defaultDate);
+      // @ts-expect-error: strict mode fix
       expect(model.timestamp).toEqual(defaultDate.toISO());
     });
 
     it("should convert undefined", () => {
       const model = createModel({ date: undefined });
+      // @ts-expect-error: strict mode fix
       expect(model.date).toEqual(null);
     });
 
     it("should convert null", () => {
+      // @ts-expect-error: strict mode fix
       const model = createModel({ date: null });
+      // @ts-expect-error: strict mode fix
       expect(model.date).toEqual(null);
     });
 
     it("should convert timestamp string", () => {
+      // @ts-expect-error: strict mode fix
       const model = createModel({ date: defaultDate.toISO() });
       expect(model.date).toEqual(defaultDate);
     });
@@ -533,8 +545,8 @@ describe("Attribute Decorators", () => {
     ) {
       class MockModel extends BaseModel {
         @bawDuration(opts)
-        public readonly duration: Duration;
-        public readonly seconds: number;
+        public readonly duration!: Duration;
+        public readonly seconds!: number;
       }
 
       return new MockModel(data);
@@ -589,11 +601,14 @@ describe("Attribute Decorators", () => {
 
     it("should convert undefined", () => {
       const model = createModel({ duration: undefined });
+      // @ts-expect-error: strict mode fix
       expect(model.duration).toEqual(null);
     });
 
     it("should convert null", () => {
+      // @ts-expect-error: strict mode fix
       const model = createModel({ duration: null });
+      // @ts-expect-error: strict mode fix
       expect(model.duration).toEqual(null);
     });
 

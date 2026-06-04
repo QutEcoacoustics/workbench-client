@@ -75,11 +75,11 @@ describe("Association Decorators", () => {
       ...modelParameters: string[]
     ) {
       class MockModel extends AbstractModel {
-        public readonly ids: Ids;
+        public readonly ids!: Ids;
         public readonly param1: Id;
         public readonly param2: Id;
         @hasMany<MockModel, AbstractModel>(MOCK, "ids", modelParameters as any)
-        public readonly childModels: AbstractModel[];
+        public readonly childModels!: AbstractModel[];
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
@@ -249,7 +249,7 @@ describe("Association Decorators", () => {
           modelParameters as any,
           failureValue
         )
-        public readonly childModel: AbstractModel;
+        public readonly childModel!: AbstractModel;
 
         public get viewUrl(): string {
           throw new Error("Method not implemented.");
@@ -266,6 +266,7 @@ describe("Association Decorators", () => {
     function interceptApiRequest(model?: ChildModel, error?: BawApiError) {
       const subject = new Subject<ChildModel>();
       const promise = nStepObservable(
+        // @ts-expect-error: strict mode fix
         subject,
         () => (model ? model : error),
         !model
@@ -276,6 +277,7 @@ describe("Association Decorators", () => {
 
     it("should handle undefined modelIdentifier", () => {
       const model = createModel({ id: undefined }, injector);
+      // @ts-expect-error: strict mode fix
       expect(model.childModel).toEqual(null);
     });
 
@@ -328,6 +330,7 @@ describe("Association Decorators", () => {
         generateBawApiError(UNAUTHORIZED)
       );
       const model = createModel({ id: 1 }, injector);
+      // @ts-expect-error: strict mode fix
       await assertModel(promise, model, "childModel", null);
     });
 

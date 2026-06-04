@@ -51,7 +51,7 @@ describe("MenuLinkComponent", () => {
 
   function assertTooltip(text: string) {
     const tooltip = getTooltip();
-    tooltip.open();
+    tooltip!.open();
     spec.detectChanges();
     expect(spec.query(".tooltip-inner")).toHaveText(text);
   }
@@ -236,7 +236,8 @@ describe("MenuLinkComponent", () => {
       const route = StrongRoute.newRoot().add("brokenlink");
       setup({ link: menuRoute({ ...defaultRoute, route }) });
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(route);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(StrongRouteDirective).strongRoute).toEqual(route);
     });
 
     it("should set strong route active property", () => {

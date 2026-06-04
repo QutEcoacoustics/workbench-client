@@ -29,7 +29,9 @@ export class ImportsService {
     // measure so that if this bug resurfaces, it will not cause the entire
     // website to fail.
     if (customElements.get("oe-verification-grid") === undefined) {
+      // @ts-ignore: no type declarations for web-components
       await import(
+        // @ts-ignore: no type declarations
         "../../../../node_modules/@ecoacoustics/web-components/dist/components.js",
       );
     } else {

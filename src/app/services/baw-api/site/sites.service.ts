@@ -71,6 +71,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     model: IdOr<Site>,
     project: IdOr<Project>
   ): Observable<Site | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
@@ -87,6 +88,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "regionId", region),
       project
     );
@@ -156,6 +158,7 @@ export class ShallowSitesService implements StandardApi<Site> {
   }
 
   public destroy(model: IdOr<Site>): Observable<Site | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
@@ -170,6 +173,7 @@ export class ShallowSitesService implements StandardApi<Site> {
     user: IdOr<User>
   ): Observable<Site[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
@@ -185,6 +189,7 @@ export class ShallowSitesService implements StandardApi<Site> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "regionId", region)
     );
   }

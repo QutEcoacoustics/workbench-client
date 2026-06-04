@@ -97,7 +97,7 @@ describe("DatatablePaginationDirective", () => {
       defaultModels.forEach((model, index) => {
         const row = getRowValues(index);
         expect(row).toHaveLength(1);
-        expect(row[0]).toHaveText(model.id.toString());
+        expect(row[0]).toHaveText(model.id!.toString());
       });
     });
 
@@ -113,7 +113,8 @@ describe("DatatablePaginationDirective", () => {
       defaultModels.forEach((model, index) => {
         const row = getRowValues(index);
         expect(row).toHaveLength(2);
-        expect(row[0]).toHaveText(model.id.toString());
+        expect(row[0]).toHaveText(model.id!.toString());
+        // @ts-expect-error: strict mode fix
         expect(row[1]).toHaveText(model["name"].toString());
       });
     });
@@ -123,7 +124,8 @@ describe("DatatablePaginationDirective", () => {
     const delayMs = 10000;
 
     function assertLoading(isLoading: boolean) {
-      expect(spec.query(DatatableComponent).loadingIndicator).toBe(isLoading);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).loadingIndicator).toBe(isLoading);
     }
 
     function flushGetModels() {
@@ -202,7 +204,8 @@ describe("DatatablePaginationDirective", () => {
 
   describe("total", () => {
     function assertTotal(total: number) {
-      expect(spec.query(DatatableComponent).count).toBe(total);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).count).toBe(total);
     }
 
     it("should initially be 0", () => {
@@ -228,7 +231,8 @@ describe("DatatablePaginationDirective", () => {
   describe("page", () => {
     function assertPage(page: number) {
       // Offset is the current page number, minus one
-      expect(spec.query(DatatableComponent).offset).toBe(page - 1);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).offset).toBe(page - 1);
     }
 
     it("should update on page event", () => {

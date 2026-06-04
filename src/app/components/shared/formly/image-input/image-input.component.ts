@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+﻿import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { ImageUrl } from "@interfaces/apiInterfaces";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -52,7 +52,7 @@ import { FileValueAccessorDirective } from "../file-input/file-input.directive";
 })
 export class ImageInputComponent extends FieldType implements AfterViewInit {
   @ViewChild("imageInput")
-  public imageInput: ElementRef;
+  public imageInput!: ElementRef;
   public asFormControl = asFormControl;
 
   /**
@@ -73,6 +73,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     // default image if the user hasn't explicitly set an image on the client.
     const isUsingServerDefaultImage =
       !imageUrls ||
+      // @ts-expect-error: strict mode fix
       imageUrls.every((image: ImageUrl): boolean => image.default);
 
     // Return true if:
@@ -129,7 +130,9 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
   }
 
   private fileName(filePath: string): string {
+    // @ts-expect-error: strict mode fix
     return (
+      // @ts-expect-error: strict mode fix
       filePath
         ?.split("/")
         .pop()

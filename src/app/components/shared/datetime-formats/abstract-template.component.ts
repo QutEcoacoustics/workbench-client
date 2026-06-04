@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   OnChanges,
@@ -39,10 +39,10 @@ export abstract class AbstractTemplateComponent<
 
   // the ISO dateTime is used in the <time> elements "datetime" attribute
   // this attribute is used by screen readers and web scrapers to determine the date and time
-  protected isoDateTime: string;
-  protected documentText: string;
-  protected tooltipText: string;
-  protected suffix: string;
+  protected isoDateTime!: string;
+  protected documentText!: string;
+  protected tooltipText!: string;
+  protected suffix!: string;
 
   /**
    * A method that should update formattedValue, tooltipValue, and rawDateTime

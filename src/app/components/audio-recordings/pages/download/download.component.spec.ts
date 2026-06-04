@@ -92,15 +92,21 @@ describe("DownloadAudioRecordingsComponent", () => {
     const models = {};
 
     if (site) {
+      // @ts-expect-error: strict mode fix
       resolvers["site"] = "resolver";
+      // @ts-expect-error: strict mode fix
       models["site"] = { model: site };
     }
     if (region) {
+      // @ts-expect-error: strict mode fix
       resolvers["region"] = "resolver";
+      // @ts-expect-error: strict mode fix
       models["region"] = { model: region };
     }
     if (project) {
+      // @ts-expect-error: strict mode fix
       resolvers["project"] = "resolver";
+      // @ts-expect-error: strict mode fix
       models["project"] = { model: project };
     }
 
@@ -131,6 +137,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
+        // @ts-expect-error: strict mode fix
         expect(getProjectInput()).toHaveValue(defaultProject.name);
       }));
 
@@ -160,6 +167,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
         loadForm();
+        // @ts-expect-error: strict mode fix
         expect(getRegionInput()).toHaveValue(defaultRegion.name);
       }));
 
@@ -198,6 +206,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
         loadForm();
+        // @ts-expect-error: strict mode fix
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 
@@ -229,6 +238,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
         loadForm();
+        // @ts-expect-error: strict mode fix
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 
@@ -257,35 +267,35 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().project).toBe(defaultProject);
+        expect(getSitesWithoutTimezones()!.project).toBe(defaultProject);
       }));
 
       it("should pass region to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().region).toBe(defaultRegion);
+        expect(getSitesWithoutTimezones()!.region).toBe(defaultRegion);
       }));
 
       it("should not pass region to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().region).toBeFalsy();
+        expect(getSitesWithoutTimezones()!.region).toBeFalsy();
       }));
 
       it("should pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().site).toBe(defaultSite);
+        expect(getSitesWithoutTimezones()!.site).toBe(defaultSite);
       }));
 
       it("should not pass site to sites without timezones component if exists", fakeAsync(() => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        expect(getSitesWithoutTimezones().site).toBeFalsy();
+        expect(getSitesWithoutTimezones()!.site).toBeFalsy();
       }));
     });
   });
@@ -317,8 +327,8 @@ describe("DownloadAudioRecordingsComponent", () => {
 
       const hiddenCopy = spec.query(HiddenCopyComponent);
       expect(hiddenCopy).toBeTruthy();
-      expect(hiddenCopy.tooltip()).toBe("Show/Hide command");
-      expect(hiddenCopy.value()).toBe(
+      expect(hiddenCopy!.tooltip()).toBe("Show/Hide command");
+      expect(hiddenCopy!.value()).toBe(
         `./download_audio_files.ps1 -auth_token "${authToken}"`
       );
     });

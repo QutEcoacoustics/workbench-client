@@ -84,12 +84,15 @@ describe("LoginComponent", () => {
     username = modelData.internet.userName(),
     password = modelData.internet.password()
   ): void {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(username, usernameField());
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(password, passwordField());
     spec.detectChanges();
   }
 
   function submitForm(): void {
+    // @ts-expect-error: strict mode fix
     clickButton(spec, submitButton());
     spec.detectChanges();
   }
@@ -197,7 +200,7 @@ describe("LoginComponent", () => {
       spyOn(api, "signIn").and.callThrough();
       spec.detectChanges();
 
-      component().submit({ login: "username", password: "password" });
+      component()!.submit({ login: "username", password: "password" });
       expect(api.signIn).toHaveBeenCalledWith(
         new LoginDetails({ login: "username", password: "password" })
       );
@@ -206,6 +209,7 @@ describe("LoginComponent", () => {
 
   describe("redirection", () => {
     function redirectUser() {
+      // @ts-expect-error: strict mode fix
       component()["opts"].redirectUser(undefined);
     }
 
@@ -390,12 +394,14 @@ describe("LoginComponent", () => {
       });
 
       it("should not make any api calls if the toast is dismissed without a response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsDismissButton());
         expect(accountSpy.optInContactable).not.toHaveBeenCalled();
         expect(accountSpy.optOutContactable).not.toHaveBeenCalled();
       });
 
       it("should make the correct api calls for a 'yes' response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsYesButton());
         expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
           session.currentUser.id
@@ -403,6 +409,7 @@ describe("LoginComponent", () => {
       });
 
       it("should make the correct api calls for a 'no' response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsNoButton());
         expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
           session.currentUser.id

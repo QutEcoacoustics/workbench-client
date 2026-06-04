@@ -60,12 +60,12 @@ describe("FormlyTimezoneInput", () => {
 
     it("should display label", () => {
       setup({ label: "custom label" });
-      expect(getLabel().innerHTML.trim()).toBe("custom label");
+      expect(getLabel()!.innerHTML.trim()).toBe("custom label");
     });
 
     it("should display required label", () => {
       setup({ label: "custom label", required: true });
-      expect(getLabel().innerHTML.includes("*")).toBeTrue();
+      expect(getLabel()!.innerHTML.includes("*")).toBeTrue();
     });
   });
 

@@ -83,6 +83,7 @@ describe("WithFormCheck", () => {
 
     public ngOnInit() {
       for (let i = 0; i < this.numForms; i++) {
+        // @ts-expect-error: strict mode fix
         this.schemas.push({
           model: {},
           fields: [

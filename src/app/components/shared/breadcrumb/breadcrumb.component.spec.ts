@@ -145,6 +145,7 @@ describe("BreadcrumbComponent", () => {
         ...generateBreadcrumb(),
         route: StrongRoute.newRoot().addFeatureModule(
           modelData.random.word(),
+          // @ts-expect-error: strict mode fix
           (params) => ({ projectId: params.projectId })
         ),
       };

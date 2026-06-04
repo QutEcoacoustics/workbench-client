@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -37,7 +37,7 @@ class EditProvenanceComponent
   protected readonly router: Router;
 
   public readonly fields = schema.fields;
-  protected title: string;
+  protected title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -46,7 +46,7 @@ class EditProvenanceComponent
 
     super(notifications, route, router, {
       getModel: (models) => models[provenanceKey] as Provenance,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

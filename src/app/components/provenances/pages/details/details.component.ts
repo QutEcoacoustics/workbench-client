@@ -63,12 +63,12 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
 
   public deleteModel(): void {
     this.provenancesApi
-      .destroy(this.provenance())
+      .destroy(this.provenance()!)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.provenance()?.name),
+            defaultSuccessMsg("destroyed", this.provenance()?.name!),
           );
           this.router.navigateByUrl(provenancesMenuItem.route.toRouterLink());
         },

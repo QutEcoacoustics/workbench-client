@@ -335,6 +335,7 @@ describe("PaginationTemplate", () => {
     });
 
     it("should clear filter if not exists in QSP", () => {
+      // @ts-expect-error: strict mode fix
       spectator.setRouteQueryParam("query", undefined);
       expect(component.filter).toBe("");
     });
@@ -345,6 +346,7 @@ describe("PaginationTemplate", () => {
     });
 
     it("should set page number to 1 if not exists in QSP", () => {
+      // @ts-expect-error: strict mode fix
       spectator.setRouteQueryParam("page", undefined);
       expect(component.page).toBe(1);
     });

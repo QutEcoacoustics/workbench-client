@@ -83,9 +83,9 @@ describe("HiddenCopyComponent", () => {
 
     it("should toggle visibility on click", () => {
       setup({});
-      getVisibilityButton().click();
+      getVisibilityButton()!.click();
       expect(spec.component.visible()).toBe(true);
-      getVisibilityButton().click();
+      getVisibilityButton()!.click();
       expect(spec.component.visible()).toBe(false);
     });
   });
@@ -103,12 +103,14 @@ describe("HiddenCopyComponent", () => {
       // breaking css and clipping
 
       // if we hover over the "Copied!" tooltip element, it should not show
+      // @ts-expect-error: strict mode fix
       spec.focus(getCopyButton());
 
       // Tooltip should only show on click
       expect(getCopiedTooltip()).not.toBeVisible();
 
       // after the button is clicked, we expect that the tooltip will be visible
+      // @ts-expect-error: strict mode fix
       spec.click(getCopyButton());
       expect(getCopiedTooltip()).not.toBeVisible();
     });
@@ -123,12 +125,14 @@ describe("HiddenCopyComponent", () => {
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2146
     it("should copy if the copy icon is clicked", () => {
       setup({ content: modelData.authToken() });
+      // @ts-expect-error: strict mode fix
       spec.click(getCopyIcon());
       expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
     });
 
     it("should copy if the copy button is clicked", () => {
       setup({ content: modelData.authToken() });
+      // @ts-expect-error: strict mode fix
       spec.click(getCopyButton());
       expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
     });
@@ -143,7 +147,7 @@ describe("HiddenCopyComponent", () => {
     it("should display content when visible", () => {
       const content = modelData.random.words();
       setup({ content });
-      getVisibilityButton().click();
+      getVisibilityButton()!.click();
       spec.detectChanges();
       expect(spec.query("pre")).toHaveText(content);
     });
@@ -154,7 +158,7 @@ describe("HiddenCopyComponent", () => {
         `<baw-hidden-copy><span>${content}</span></baw-hidden-copy>`,
         { hostProps: { value: "value" } }
       );
-      getVisibilityButton().click();
+      getVisibilityButton()!.click();
       spec.detectChanges();
       expect(spec.query("pre")).toHaveText(content);
     });
@@ -182,6 +186,7 @@ describe("HiddenCopyComponent", () => {
 
     it("should not copy if disabled and the copy button is clicked", () => {
       setup({ content: modelData.authToken(), disabled: "true" });
+      // @ts-expect-error: strict mode fix
       spec.click(getCopyButton());
       expect(clipboardService.copyFromContent).not.toHaveBeenCalled();
     });

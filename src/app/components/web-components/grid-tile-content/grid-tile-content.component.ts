@@ -38,7 +38,7 @@ export class GridTileContentComponent implements WithContext {
   private readonly contextMediaControls =
     viewChild<ElementRef<MediaControlsComponent>>("contextMediaControls");
 
-  protected readonly model = signal<Annotation>(undefined);
+  protected readonly model = signal<Annotation>(undefined!);
   protected readonly contextExpanded = signal(false);
 
   protected get listenLink(): string {
@@ -76,7 +76,7 @@ export class GridTileContentComponent implements WithContext {
   }
 
   protected contextSpectrogramLoaded(): void {
-    this.contextMediaControls().nativeElement.for = this.contextSpectrogram().nativeElement;
+    this.contextMediaControls()!.nativeElement.for = this.contextSpectrogram()!.nativeElement;
   }
 }
 

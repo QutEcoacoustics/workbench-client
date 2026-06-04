@@ -65,6 +65,7 @@ export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: num
 
   const sortButton = targetCell.querySelector(".sort-btn");
 
+  // @ts-expect-error: strict mode fix
   spec.click(sortButton);
 }
 
@@ -72,12 +73,13 @@ export async function selectDatatablePage(spec: SpectatorDirective<any>, page: n
   const pagerComponent = spec.query("datatable-pager");
 
   const expectedAriaLabel = `page ${page}`;
-  const pageListItem = pagerComponent.querySelector<HTMLElement>(
+  const pageListItem = pagerComponent!.querySelector<HTMLElement>(
     `[aria-label="${expectedAriaLabel}"]`
   );
 
-  const pageButton = pageListItem.querySelector("[role='button']");
+  const pageButton = pageListItem!.querySelector("[role='button']");
 
+  // @ts-expect-error: strict mode fix
   spec.click(pageButton);
 }
 

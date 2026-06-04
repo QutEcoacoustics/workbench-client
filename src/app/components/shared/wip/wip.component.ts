@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   inject,
@@ -33,10 +33,10 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   imports: [NgbTooltip, FaIconComponent]
 })
 export class WIPComponent {
-  public production: boolean;
+  public production!: boolean;
   private session = inject(BawSessionService);
 
   public get showWipContent(): boolean {
-    return this.session.loggedInUser?.isAdmin;
+    return this.session.loggedInUser?.isAdmin!;
   }
 }

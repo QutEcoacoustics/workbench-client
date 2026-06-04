@@ -102,6 +102,7 @@ describe("annotationSearchParameters", () => {
   const testCases: SearchParameterTest[] = [
     {
       name: "should create correct default filters for an authenticated user",
+      // @ts-expect-error: strict mode fix
       inputParams: undefined,
       expectedFilters: () => ({
         filter: {

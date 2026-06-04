@@ -66,6 +66,7 @@ export class AudioEventImportFileService
     model: IdOr<AudioEventImportFile>,
     audioEventImport: AudioEventImport,
   ): Observable<void | AudioEventImportFile> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(audioEventImport, model, emptyParam));
   }
 

@@ -8,5 +8,6 @@ export function getErrorMessages(errors: ValidationErrors, errorTypes: Map<strin
   if (!errors) {
     return [];
   }
+  // @ts-expect-error: strict mode fix
   return Object.keys(errors).map((key): string => errorTypes.get(key)());
 }

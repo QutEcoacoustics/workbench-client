@@ -68,6 +68,7 @@ describe("PermissionsShieldComponent", () => {
     // Set injectors on models
     models.forEach((model) => {
       if (model.model) {
+        // @ts-expect-error: strict mode fix
         model.model["injector"] = injector;
       }
     });
@@ -170,12 +171,14 @@ describe("PermissionsShieldComponent", () => {
     it("should not display if no resolvers found", () => {
       setup([]);
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       expect(spec.component.model).toEqual(undefined);
     });
 
     it("should not display if no single abstract model found", () => {
       setup([{ model: [defaultModel] }]);
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       expect(spec.component.model).toEqual(undefined);
     });
   });
@@ -267,6 +270,7 @@ describe("PermissionsShieldComponent", () => {
           const project = new Project(generateProject({ [id]: undefined }));
           setup([{ model: project }]);
           spec.detectChanges();
+          // @ts-expect-error: strict mode fix
           expect(spec.component.badges[index]?.label).not.toBe(label);
         });
 
@@ -308,6 +312,7 @@ describe("PermissionsShieldComponent", () => {
 
           if (timestampKey) {
             expect(getUserBadge().timestamp).toEqual(
+              // @ts-expect-error: strict mode fix
               defaultProject[timestampKey]
             );
           } else {

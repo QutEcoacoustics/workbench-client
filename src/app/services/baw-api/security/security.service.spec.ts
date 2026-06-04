@@ -124,7 +124,7 @@ describe("SecurityService", () => {
       userShowWithoutNotification: new Subject(),
     };
 
-    const handleError = (err) => {
+    const handleError = (err: any) => {
       const error = isBawApiError(err)
         ? err
         : new BawApiError(unknownErrorCode, err.message, null);
@@ -343,6 +343,7 @@ describe("SecurityService", () => {
 
       it("should throw error if no recaptcha token", () => {
         const registerDetails = new RegisterDetails(
+          // @ts-expect-error: strict mode fix
           generateRegisterDetails({ recaptchaToken: null })
         );
         const page = `<input name="authenticity_token" value="${defaults.authToken}"></input>`;

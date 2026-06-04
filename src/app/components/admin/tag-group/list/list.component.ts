@@ -55,6 +55,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
     const tagGroupsApi = inject(TagGroupsService);
 
     super(tagGroupsApi, (tagGroups) =>
+      // @ts-expect-error: strict mode fix
       tagGroups.map((tagGroup) => ({
         tag: tagGroup.tagId,
         group: tagGroup.groupIdentifier,
@@ -74,7 +75,7 @@ class AdminTagGroupsComponent extends PagedTableTemplate<TableRow, TagGroup> {
       this.tagGroupsApi.destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
-          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.groupIdentifier)),
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.groupIdentifier!)),
         });
     }
   }

@@ -62,12 +62,12 @@ export function inputFile<T>(
 
   // Set the Image Input file field to the DataTransferItemList Objects list of
   // items by value
-  element.files = dataTransfer.files;
+  element!.files = dataTransfer.files;
 
-  element.dispatchEvent(new Event("change"));
+  element!.dispatchEvent(new Event("change"));
   spectator.detectChanges();
 
-  expect(element.value).toBeTruthy();
+  expect(element!.value).toBeTruthy();
 }
 
 /**
@@ -81,7 +81,7 @@ export function selectFromTypeahead<T>(
   detectChanges = true
 ): void {
   const inputElement = target.querySelector<HTMLInputElement>("input");
-  spec.typeInElement(text, inputElement);
+  spec.typeInElement(text, inputElement!);
 
   // wait for the typeahead items to populate the dropdown with options
   spec.detectChanges();
@@ -98,7 +98,7 @@ export function selectFromTypeahead<T>(
   // will call detectChanges() after the click event.
   // Because we want to conditionally detect changes, we manually call click
   // and detect changes.
-  selectedTypeaheadOption.click();
+  selectedTypeaheadOption!.click();
 
   if (detectChanges) {
     spec.detectChanges();
@@ -190,7 +190,7 @@ export function assertTooltip(element: HTMLElement, content: string) {
   // we do not use toExist() and toHaveExactText() here because they are ngNeat assertions and do not work when used
   // with Angular's TestBed
   expect(tooltipElement).toBeTruthy();
-  expect(tooltipElement.textContent.trim()).toBe(content);
+  expect(tooltipElement!.textContent.trim()).toBe(content);
 
   element.dispatchEvent(new MouseEvent("mouseleave"));
 }

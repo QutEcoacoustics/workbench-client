@@ -143,27 +143,31 @@ export class Harvest extends AbstractModel implements IHarvest {
     this.mappings = ((data.mappings as IHarvestMapping[]) ?? []).map(
       (mapping) => new HarvestMapping(mapping, injector)
     );
-    this.report = new HarvestReport(data.report, injector);
+    this.report = new HarvestReport(data.report!, injector);
     if (this.uploadUrl) {
       const matches = this.uploadUrl.match(/sftp:\/\/([^:]+):([0-9]+)$/)
-      this.uploadHost = matches[1];
-      this.uploadPort = parseInt(matches[2], 10);
+      this.uploadHost = matches![1];
+      this.uploadPort = parseInt(matches![2], 10);
     }
   }
 
   public get viewUrl(): string {
     return harvestRoute.format({
+      // @ts-expect-error: strict mode fix
       projectId: this.projectId,
+      // @ts-expect-error: strict mode fix
       harvestId: this.id,
     });
   }
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
+    // @ts-expect-error: strict mode fix
     return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
   }
 
   public get uploadUrlWithAuth(): string {
+    // @ts-expect-error: strict mode fix
     return this.uploadUrl.replace(
       "://",
       `://${this.uploadUser}:${this.uploadPassword}@`
@@ -177,7 +181,7 @@ export class Harvest extends AbstractModel implements IHarvest {
       "processing"
     ];
 
-    return !notTransitionableStates.includes(this.status);
+    return !notTransitionableStates.includes(this.status!);
   }
 
   public isAbortable(): boolean {

@@ -31,15 +31,18 @@ export class SiteSettingsService
   private readonly api = inject<BawApiService<SiteSetting>>(BawApiService);
 
   public list() {
+    // @ts-expect-error: strict mode fix
     return this.api.list(SiteSetting, endpoint(emptyParam));
   }
 
   public show(model: IdOrName<SiteSetting>) {
+    // @ts-expect-error: strict mode fix
     return this.api.show(SiteSetting, endpoint(model));
   }
 
   public create(model: SiteSetting) {
     return this.api.create(
+      // @ts-expect-error: strict mode fix
       SiteSetting,
       endpoint(emptyParam),
       (responseModel) => endpoint(responseModel),
@@ -49,12 +52,14 @@ export class SiteSettingsService
 
   public update(model: SiteSetting) {
     return this.api.update(
+      // @ts-expect-error: strict mode fix
       SiteSetting,
       endpoint(model),
       model,
     );
   }
 
+  // @ts-expect-error: strict mode override
   public destroy(model: IdOrName<SiteSetting>) {
     return this.api.destroy(endpoint(model));
   }

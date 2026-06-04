@@ -68,9 +68,13 @@ describe("AnalysesComponent", () => {
 
     mockAccountsApi.show.and.returnValue(of(new User(generateUser(), injector)));
 
+    // @ts-expect-error: strict mode fix
     this.defaultInnerFilters = expectedInnerFilters;
+    // @ts-expect-error: strict mode fix
     this.defaultModels = defaultModels;
+    // @ts-expect-error: strict mode fix
     this.fixture = spec.fixture;
+    // @ts-expect-error: strict mode fix
     this.api = api;
   });
 

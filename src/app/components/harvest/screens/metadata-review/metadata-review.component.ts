@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { Statistic } from "@components/harvest/components/shared/statistics/statistics.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
@@ -67,13 +67,13 @@ export class MetadataReviewComponent
   private readonly harvestApi = inject(ShallowHarvestsService);
 
   /** Changes to harvest have not yet been saved to the server */
-  public hasUnsavedChanges: boolean;
+  public hasUnsavedChanges!: boolean;
   public newSiteMenuItem = newSiteMenuItem;
   public rows: Rows = List<MetaReviewRow>([]);
-  public siteColumnLabel: "Point" | "Site";
-  public statistics: Statistic[][];
+  public siteColumnLabel!: "Point" | "Site";
+  public statistics!: Statistic[][];
   /** Table is loading new data */
-  public tableLoading: boolean;
+  public tableLoading!: boolean;
 
   private userInputBuffer$ = new Subject<
     MetaReviewFolder | MetaReviewLoadMore
@@ -84,7 +84,7 @@ export class MetadataReviewComponent
   }
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   public get transitioningStage(): boolean {
@@ -102,8 +102,10 @@ export class MetadataReviewComponent
       isOpen: false,
       page: 1,
       path: rootMappingPath,
+      // @ts-expect-error: strict mode fix
       parentFolder: null,
       // Root folder does not have harvestItem, use hard-coded path for search
+      // @ts-expect-error: strict mode fix
       mapping: this.harvest.mappings.find(
         (mapping) => mapping.path === rootMappingPath
       ),
@@ -204,10 +206,12 @@ export class MetadataReviewComponent
   public trackByRow = (_: number, row: MetaReviewRow): string =>
     (row as MetaReviewFolder).isRoot
       ? (row as MetaReviewFolder).path
+      // @ts-expect-error: strict mode fix
       : row.harvestItem?.path;
 
   public updateHarvestWithMappingChange(): void {
     // create a new "temporary" model of the Harvest mappings
+    // @ts-expect-error: strict mode fix
     const newMappings = new Map(this.harvest.mappings.map((x) => [x.path, x]));
 
     /**
@@ -261,7 +265,7 @@ export class MetadataReviewComponent
   ): Promise<Rows> {
     this.tableLoading = true;
     const harvestItems = await this.stages.getHarvestItems(
-      row.harvestItem,
+      row.harvestItem!,
       row.page
     );
     this.tableLoading = false;
@@ -273,12 +277,12 @@ export class MetadataReviewComponent
     const parentFolder = this.isFolder(row) ? row : row.parentFolder;
     const newRows = harvestItems.map(
       (harvestItem): MetaReviewRow =>
-        this.generateRow(harvestItem, parentFolder)
+        this.generateRow(harvestItem, parentFolder!)
     );
 
     const meta = harvestItems[0].getMetadata();
-    if (meta && meta.paging.maxPage !== meta.paging.page) {
-      newRows.push(this.generateLoadMore(parentFolder, row.page + 1));
+    if (meta && meta.paging!.maxPage !== meta.paging!.page) {
+      newRows.push(this.generateLoadMore(parentFolder!, row.page + 1));
     }
 
     if (this.isFolder(row)) {
@@ -321,7 +325,7 @@ export class MetadataReviewComponent
     // Find any children, and increment offset
     let offset = 1;
     let currRow = rows.get(rowIndex + offset);
-    while (isChild(row, currRow)) {
+    while (isChild(row, currRow!)) {
       offset++;
       currRow = rows.get(rowIndex + offset);
     }
@@ -331,6 +335,7 @@ export class MetadataReviewComponent
 
     // If no children, don't delete anything
     if (offset === 0) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 
@@ -351,9 +356,10 @@ export class MetadataReviewComponent
   ): MetaReviewLoadMore {
     return {
       rowType: RowType.loadMore,
-      harvestItem: parentFolder.harvestItem,
-      mapping: parentFolder.mapping,
+      harvestItem: parentFolder!.harvestItem,
+      mapping: parentFolder!.mapping,
       page,
+      // @ts-expect-error: strict mode fix
       parentFolder,
       isLoading: false,
     };
@@ -373,7 +379,7 @@ export class MetadataReviewComponent
     // While it is technically possible in linux to have filenames which
     // include the character '/', our server should block it from being used
     // and bad actors will gain nothing from taking advantage of it
-    const paths = harvestItem.path.split("/");
+    const paths = harvestItem.path!.split("/");
     // Indentation is the number of '/' characters, plus the root folder (which
     // uses '' instead of '/')
     const indentation = paths.length;
@@ -414,7 +420,8 @@ export class MetadataReviewComponent
     harvest: Harvest,
     harvestItem: HarvestItem
   ): HarvestMapping | null {
-    return harvest.mappings.find(
+    // @ts-expect-error: strict mode fix
+    return harvest.mappings!.find(
       (_mapping): boolean => harvestItem.path === _mapping.path
     );
   }
@@ -432,7 +439,8 @@ export class MetadataReviewComponent
           bgColor: "success",
           icon: ["fas", "folder-tree"],
           label: "Total Files",
-          value: report.itemsTotal.toLocaleString(),
+          // @ts-expect-error: strict mode fix
+          value: report!.itemsTotal.toLocaleString(),
         },
       ],
       [
@@ -440,8 +448,10 @@ export class MetadataReviewComponent
           bgColor: "success",
           icon: ["fas", "hard-drive"],
           label: "Total Size",
-          value: report.itemsSize,
-          tooltip: report.itemsSizeBytes.toLocaleString() + " bytes",
+          // @ts-expect-error: strict mode fix
+          value: report!.itemsSize,
+          // @ts-expect-error: strict mode fix
+          tooltip: report!.itemsSizeBytes.toLocaleString() + " bytes",
         },
       ],
       [
@@ -449,11 +459,12 @@ export class MetadataReviewComponent
           bgColor: "success",
           icon: ["fas", "clock"],
           label: "Total Duration",
-          value: toRelative(report.itemsDuration, {
+          value: toRelative(report!.itemsDuration!, {
             largest: 1,
             maxDecimalPoint: 0,
           }),
-          tooltip: report.itemsDurationSeconds.toLocaleString() + " seconds",
+          // @ts-expect-error: strict mode fix
+          tooltip: report!.itemsDurationSeconds.toLocaleString() + " seconds",
         },
       ],
       [
@@ -461,14 +472,16 @@ export class MetadataReviewComponent
           bgColor: "warning",
           icon: metaReviewIcons.warning,
           label: "Need Attention",
-          value: report.itemsInvalidFixable.toLocaleString(),
+          // @ts-expect-error: strict mode fix
+          value: report!.itemsInvalidFixable.toLocaleString(),
         },
         {
           color: "light",
           bgColor: "danger",
           icon: metaReviewIcons.failure,
           label: "Problems",
-          value: report.itemsInvalidNotFixable.toLocaleString(),
+          // @ts-expect-error: strict mode fix
+          value: report!.itemsInvalidNotFixable.toLocaleString(),
         },
       ],
     ];

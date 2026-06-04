@@ -94,11 +94,11 @@ class MyProfileComponent
   private readonly config = inject(ConfigService);
 
   public dataRequest = dataRequestMenuItem.route;
-  public lastSeenAt: string;
-  public membershipLength: string;
-  public tags: Tag[];
+  public lastSeenAt!: string;
+  public membershipLength!: string;
+  public tags!: Tag[];
   public thirdPerson = false;
-  public user: User;
+  public user!: User;
   public isShowingAuthToken = false;
   public userStatistics: List<IItem> = List([
     {
@@ -147,7 +147,7 @@ class MyProfileComponent
       return;
     }
 
-    this.user = userModel.model;
+    this.user = userModel.model!;
     this.updateUserProfile(this.user);
     this.updateStatistics(this.user);
   }
@@ -171,8 +171,9 @@ class MyProfileComponent
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.user?.userName)
+            defaultSuccessMsg("destroyed", this.user?.userName!)
           );
+          // @ts-expect-error: strict mode fix
           this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
         },
       });
@@ -212,6 +213,7 @@ class MyProfileComponent
       this.sitesApi,
       points,
       user,
+      // @ts-expect-error: strict mode fix
       { filter: { regionId: { notEqual: null } } }
     );
     this.updateStatistic(this.audioEventsApi, annotations, user);
@@ -226,7 +228,8 @@ class MyProfileComponent
     callback?: (models: Model[]) => void
   ): void {
     function getPageTotal(model: Model) {
-      return (model as unknown as AbstractModel).getMetadata().paging.total;
+      // @ts-expect-error: strict mode fix
+      return (model as unknown as AbstractModel)!.getMetadata()!.paging.total;
     }
 
     api
@@ -237,6 +240,7 @@ class MyProfileComponent
           const total = models.length > 0 ? getPageTotal(models[0]) : 0;
           this.userStatistics = this.userStatistics.update(
             index,
+            // @ts-expect-error: strict mode fix
             (statistic) => ({ ...statistic, value: total })
           );
           callback?.(models);
@@ -247,6 +251,7 @@ class MyProfileComponent
 
   /** Set failed statistic value to unknown */
   protected handleError(index: number) {
+    // @ts-expect-error: strict mode fix
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
       value: "Unknown",

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+﻿import { Component, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -43,7 +43,7 @@ class MyEditComponent extends FormTemplate<User> {
   protected readonly router: Router;
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -52,7 +52,7 @@ class MyEditComponent extends FormTemplate<User> {
 
     super(notifications, route, router, {
       getModel: (models) => models[userKey] as User,
-      successMsg: (model) => defaultSuccessMsg("updated", model.userName),
+      successMsg: (model) => defaultSuccessMsg("updated", model.userName!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

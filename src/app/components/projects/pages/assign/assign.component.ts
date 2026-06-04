@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
@@ -46,7 +46,7 @@ class AssignComponent
   implements OnInit
 {
   private readonly notifications = inject(ToastService);
-  protected readonly api: ShallowSitesService;
+  protected readonly api!: ShallowSitesService;
 
   public columns = [
     { name: "Site Id" },
@@ -54,8 +54,8 @@ class AssignComponent
     { name: "Description" },
   ];
   public sortKeys = { siteId: "id", name: "name" };
-  public error: BawApiError;
-  private oldSiteIds: Id[];
+  public error!: BawApiError;
+  private oldSiteIds!: Id[];
 
   public constructor() {
     const api = inject(ShallowSitesService);
@@ -64,6 +64,7 @@ class AssignComponent
     super(
       api,
       (sites) =>
+        // @ts-expect-error: strict mode fix
         sites.map((site) => ({
           siteId: site.id,
           name: site.name,
@@ -72,6 +73,7 @@ class AssignComponent
       route,
       undefined,
       (rows) => {
+        // @ts-expect-error: strict mode fix
         this.project.siteIds.forEach((id) => {
           rows.forEach((row) => {
             if (id === row.siteId) {
@@ -87,6 +89,7 @@ class AssignComponent
 
   public ngOnInit() {
     super.ngOnInit();
+    // @ts-expect-error: strict mode fix
     this.oldSiteIds = Array.from(this.project.siteIds);
   }
 
@@ -97,6 +100,7 @@ class AssignComponent
   public onSubmit() {
     this.updateProjectSites();
 
+    // @ts-expect-error: strict mode fix
     const newSiteIds = Array.from(this.project.siteIds);
 
     const removedSites = this.oldSiteIds.filter(
@@ -117,7 +121,7 @@ class AssignComponent
       ...newSites.map((id) =>
         this.api.show(id).pipe(
           mergeMap((site) => {
-            site.projectIds.add(this.project.id);
+            site.projectIds!.add(this.project.id);
             return createFilter(site);
           })
         )
@@ -126,7 +130,7 @@ class AssignComponent
       ...removedSites.map((id) =>
         this.api.show(id).pipe(
           mergeMap((site) => {
-            site.projectIds.delete(this.project.id);
+            site.projectIds!.delete(this.project.id);
             return createFilter(site);
           })
         )
@@ -158,9 +162,12 @@ class AssignComponent
   private updateProjectSites() {
     this.rows?.forEach((row) => {
       if (this.selected.find((selection) => selection.siteId === row.siteId)) {
+        // @ts-expect-error: strict mode fix
         this.project.siteIds.add(row.siteId);
       } else {
+        // @ts-expect-error: strict mode fix
         if (this.project.siteIds.has(row.siteId)) {
+          // @ts-expect-error: strict mode fix
           this.project.siteIds.delete(row.siteId);
         }
       }

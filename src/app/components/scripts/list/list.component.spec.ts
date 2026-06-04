@@ -29,8 +29,11 @@ describe("AdminScriptsComponent", () => {
       defaultModels.push(new Script(generateScript({ id })));
     }
 
+    // @ts-expect-error: strict mode fix
     this.defaultModels = defaultModels;
+    // @ts-expect-error: strict mode fix
     this.fixture = fixture;
+    // @ts-expect-error: strict mode fix
     this.api = api;
   });
 

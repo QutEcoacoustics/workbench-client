@@ -60,8 +60,11 @@ describe("AdminTagGroupsComponent", () => {
       defaultModels.push(new TagGroup(generateTagGroup()));
     }
 
+    // @ts-expect-error: strict mode fix
     this.defaultModels = defaultModels;
+    // @ts-expect-error: strict mode fix
     this.fixture = fixture;
+    // @ts-expect-error: strict mode fix
     this.api = api;
   });
 
@@ -78,9 +81,11 @@ describe("AdminTagGroupsComponent", () => {
 
     it("should display a modal when confirmTagGroupDeletion() is called", () => {
       const mockTagGroup = new TagGroup(generateTagGroup());
+      // @ts-expect-error: strict mode fix
       tagGroupApiSpy.destroy.and.returnValue(of(null));
 
       fixture.componentInstance.confirmTagGroupDeletion(
+        // @ts-expect-error: strict mode fix
         undefined,
         mockTagGroup
       );
@@ -90,6 +95,7 @@ describe("AdminTagGroupsComponent", () => {
 
     it("should make the correct api calls when confirmTagGroupDeletion() is successful", fakeAsync(() => {
       const mockTagGroup = new TagGroup(generateTagGroup());
+      // @ts-expect-error: strict mode fix
       tagGroupApiSpy.destroy.and.returnValue(of(null));
 
       // Since there is a confirmation modal before the api call, we need to
@@ -100,6 +106,7 @@ describe("AdminTagGroupsComponent", () => {
         }),
       );
 
+      // @ts-expect-error: strict mode fix
       fixture.componentInstance.confirmTagGroupDeletion(null, mockTagGroup);
 
       tick();

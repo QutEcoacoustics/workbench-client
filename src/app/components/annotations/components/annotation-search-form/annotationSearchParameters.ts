@@ -1,4 +1,4 @@
-import { Params } from "@angular/router";
+﻿import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_EVENT_IMPORT,
@@ -22,6 +22,7 @@ import {
   jsString,
   luxonDateArray,
   luxonDurationArray,
+  SerializationTechnique,
   serializeObjectToParams,
   withDefault,
 } from "@helpers/query-string-parameters/queryStringParameters";
@@ -100,7 +101,7 @@ export function verificationStatusOptions(user?: User) {
       },
     ],
     ["any", null],
-  ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
+  ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent> | null>;
 }
 
 export interface IAnnotationSearchParameters {
@@ -163,11 +164,11 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
     regions: jsNumberArray,
     sites: jsNumberArray,
 
-    sort: withDefault(jsString, "created-asc"),
+    sort: withDefault(jsString as SerializationTechnique, "created-asc"),
 
     // Unlike the verification parameters, we want to show all audio events when
     // only using the annotation search parameters by default.
-    verificationStatus: withDefault(jsString, "any"),
+    verificationStatus: withDefault(jsString as SerializationTechnique, "any"),
   };
 
 const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
@@ -186,19 +187,19 @@ export class AnnotationSearchParameters
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
-  public audioRecordings: CollectionIds<AudioRecording>;
-  public tags: CollectionIds<Tag>;
-  public daylightSavings: boolean;
-  public recordingDate: MonoTuple<DateTime, 2>;
-  public recordingTime: MonoTuple<Duration, 2>;
-  public score: MonoTuple<number, 2>;
+  public audioRecordings!: CollectionIds<AudioRecording>;
+  public tags!: CollectionIds<Tag>;
+  public daylightSavings!: boolean;
+  public recordingDate!: MonoTuple<DateTime, 2>;
+  public recordingTime!: MonoTuple<Duration, 2>;
+  public score!: MonoTuple<number, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
   // parameters will be used over these query string parameters.
-  public projects: CollectionIds<Project>;
-  public regions: CollectionIds<Region>;
-  public sites: CollectionIds<Site>;
+  public projects!: CollectionIds<Project>;
+  public regions!: CollectionIds<Region>;
+  public sites!: CollectionIds<Site>;
 
   public routeProjectId: Id<Project>;
   public routeRegionId: Id<Region>;
@@ -207,11 +208,11 @@ export class AnnotationSearchParameters
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  public eventDate: MonoTuple<DateTime, 2>;
-  public eventTime: MonoTuple<Duration, 2>;
+  public eventDate!: MonoTuple<DateTime, 2>;
+  public eventTime!: MonoTuple<Duration, 2>;
 
-  public verificationStatus: VerificationStatusKey;
-  public sort: SortingKey;
+  public verificationStatus!: VerificationStatusKey;
+  public sort!: SortingKey;
 
   /**
    * @description
@@ -221,7 +222,7 @@ export class AnnotationSearchParameters
    *
    * @private
    */
-  public imports: EventImports;
+  public imports!: EventImports;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -267,12 +268,12 @@ export class AnnotationSearchParameters
   // @hasOne(SHALLOW_SITE, "routeSiteId")
   public routeSiteModel?: Site;
 
-  public get recordingDateStartedAfter(): DateTime | null {
-    return this.recordingDate ? this.recordingDate[0] : null;
+  public get recordingDateStartedAfter(): DateTime | undefined {
+    return this.recordingDate ? this.recordingDate[0] : undefined;
   }
 
-  public get recordingDateFinishedBefore(): DateTime | null {
-    return this.recordingDate ? this.recordingDate[1] : null;
+  public get recordingDateFinishedBefore(): DateTime | undefined {
+    return this.recordingDate ? this.recordingDate[1] : undefined;
   }
 
   public get recordingTimeStartedAfter(): Duration | null {
@@ -518,7 +519,7 @@ export class AnnotationSearchParameters
         // conditions joined by "or", we can use the "in" filter here to
         // simplify the filter query.
         updatedFilters = filterOr(updatedFilters, {
-          audioEventImportFileId: { in: Array.from(eventImportFileIds) },
+          audioEventImportFileId: { in: Array.from(eventImportFileIds) as number[] },
         });
       }
     }
@@ -572,7 +573,7 @@ export class AnnotationSearchParameters
 
     const filters = verificationStatusOptions(this.user).get(statusKey);
 
-    return filterAnd(initialFilter, filters);
+    return filterAnd(initialFilter, filters ?? {});
   }
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {

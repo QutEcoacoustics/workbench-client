@@ -34,6 +34,7 @@ describe("BawClientComponent", () => {
   }
 
   function getIframe(): HTMLIFrameElement {
+    // @ts-expect-error: strict mode fix
     return spec.query("iframe");
   }
 
@@ -85,6 +86,7 @@ describe("BawClientComponent", () => {
   }
 
   function setup(data?: Partial<IPageInfo>, isSsr = false) {
+    // @ts-expect-error: strict mode fix
     events = undefined;
     spec = createComponent({
       detectChanges: false,
@@ -96,6 +98,7 @@ describe("BawClientComponent", () => {
   }
 
   afterEach(() => {
+    // @ts-expect-error: strict mode fix
     if (loadClientTimer) {
       clearInterval(loadClientTimer);
     }
@@ -207,7 +210,8 @@ describe("BawClientComponent", () => {
       await waitForLoad();
       spec.detectChanges();
 
-      expect(getIframe().contentWindow.document.body).toContainText(
+      // @ts-expect-error: strict mode fix
+      expect(getIframe()!.contentWindow.document.body).toContainText(
         "Client application home page"
       );
     });

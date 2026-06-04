@@ -61,6 +61,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     const tagsApi = inject(TagsService);
 
     super(tagsApi, (tags) =>
+      // @ts-expect-error: strict mode fix
       tags.map((tag) => ({
         text: tag.text,
         taxonomic: tag.isTaxonomic ? "Taxonomic" : "Folksonomic",
@@ -82,7 +83,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
       this.tagsApi.destroy(tagModel)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe({
-          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.text)),
+          complete: () => this.notifications.success(defaultSuccessMsg("destroyed", tagModel?.text!)),
         });
     }
   }

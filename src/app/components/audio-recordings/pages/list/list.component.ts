@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, inject } from "@angular/core";
+﻿import { AfterViewInit, Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -88,7 +88,7 @@ class AudioRecordingsListComponent
   };
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
     new BehaviorSubject({});
-  protected api: AudioRecordingsService;
+  protected api!: AudioRecordingsService;
 
   public constructor() {
     const api = inject(AudioRecordingsService);
@@ -104,6 +104,7 @@ class AudioRecordingsListComponent
             site: recording,
             // yyyy-mm-dd hh:mm
             recorded: recording,
+            // @ts-expect-error: strict mode fix
             duration: recording.duration,
             model: recording,
           })

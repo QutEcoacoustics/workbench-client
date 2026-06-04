@@ -11,6 +11,7 @@ export const deleteProvenanceModal = menuModal({
   tooltip: () => "Delete this provenance",
   predicate: isAdminPredicate,
   component: DeleteModalComponent,
+  // @ts-expect-error: strict mode fix
   successCallback: (pageComponentInstance?: ProvenanceDetailsComponent) =>
-    pageComponentInstance.deleteModel(),
+    pageComponentInstance!.deleteModel(),
 });

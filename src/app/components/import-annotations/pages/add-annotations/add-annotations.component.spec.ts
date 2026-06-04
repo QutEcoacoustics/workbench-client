@@ -73,6 +73,7 @@ describe("AddAnnotationsComponent", () => {
     mocks: [ToastService],
     data: {
       resolvers: {
+        // @ts-expect-error: strict mode fix
         model: audioEventImport,
       },
     },
@@ -81,7 +82,7 @@ describe("AddAnnotationsComponent", () => {
   const fileInput = () => spec.query<HTMLInputElement>("input[type=file]");
   const eventsTable = () => spec.query<HTMLTableElement>("ngx-datatable");
   const eventTableRows = () =>
-    eventsTable().querySelectorAll<HTMLDivElement>("datatable-body-row");
+    eventsTable()!.querySelectorAll<HTMLDivElement>("datatable-body-row");
   const importFilesButton = () => spec.query<HTMLButtonElement>("#import-btn");
 
   const fileListItems = () => spec.queryAll<HTMLLIElement>(".file-list-item");
@@ -92,13 +93,16 @@ describe("AddAnnotationsComponent", () => {
   const additionalFileTagInputs = (): (TypeaheadInputComponent &
     HTMLElement)[] => spec.queryAll(".additional-file-tags");
   const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
+    // @ts-expect-error: strict mode fix
     spec.query("#extra-tags-input");
 
   const provenanceFileInputs = () => spec.queryAll(".file-provenance");
   const extraProvenanceTypeahead = (): TypeaheadInputComponent & HTMLElement =>
+    // @ts-expect-error: strict mode fix
     spec.query("#extra-provenance-input");
 
   function addFiles(files: File[]): void {
+    // @ts-expect-error: strict mode fix
     inputFile(spec, fileInput(), files);
 
     // We have to flush the async queue so that the associations inside of the
@@ -129,6 +133,7 @@ describe("AddAnnotationsComponent", () => {
   }
 
   function commitImport(): void {
+    // @ts-expect-error: strict mode fix
     clickButton(spec, importFilesButton());
   }
 
@@ -151,7 +156,7 @@ describe("AddAnnotationsComponent", () => {
   function fileProvenance(index: number): string {
     const provenanceInput = provenanceFileInputs()[index];
     const inputElement = provenanceInput.querySelector("input");
-    return inputElement.value;
+    return inputElement!.value;
   }
 
   function setup(): void {
@@ -258,6 +263,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        // @ts-expect-error: strict mode fix
         null,
       );
     }));
@@ -282,6 +288,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
+        // @ts-expect-error: strict mode fix
         null,
       );
     }));
@@ -299,6 +306,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
         audioEventImport,
+        // @ts-expect-error: strict mode fix
         null,
       );
     }));
@@ -311,7 +319,7 @@ describe("AddAnnotationsComponent", () => {
       removeFile(0);
 
       const expectedFileCount = 1;
-      expect(fileInput().files).toHaveLength(expectedFileCount);
+      expect(fileInput()!.files).toHaveLength(expectedFileCount);
       expect(fileListItems()).toHaveLength(expectedFileCount);
     }));
 
@@ -337,7 +345,7 @@ describe("AddAnnotationsComponent", () => {
       // removed from the page
       expect(eventTableRows()).toHaveLength(0);
       expect(fileListItems()).toHaveLength(0);
-      expect(fileInput().files).toHaveLength(0);
+      expect(fileInput()!.files).toHaveLength(0);
     }));
 
     // Because all files are uploaded together, removing a file causes all of
@@ -422,6 +430,7 @@ describe("AddAnnotationsComponent", () => {
       expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport,
+        // @ts-expect-error: strict mode fix
         null,
       );
     }));
@@ -437,6 +446,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          // @ts-expect-error: strict mode fix
           null,
         );
       });
@@ -449,33 +459,33 @@ describe("AddAnnotationsComponent", () => {
       const tableRows = eventTableRows();
 
       const expectedRowCount = Math.min(
-        mockResponse.importedEvents.length,
+        mockResponse.importedEvents!.length,
         defaultApiPageSize,
       );
       expect(tableRows).toHaveLength(expectedRowCount);
 
-      mockResponse.importedEvents.forEach((event, i) => {
+      mockResponse.importedEvents!.forEach((event, i) => {
         const row = tableRows[i];
 
         const expectedTagValue =
-          event.tags.length > 0
-            ? event.tags.map((tag) => tag.text).join(", ")
+          event.tags!.length > 0
+            ? event.tags!.map((tag) => tag.text).join(", ")
             : "(missing)";
 
         const expectedErrorValue =
-          event.errors.length > 0 ? event.errors.join("") : "No errors";
+          event.errors!.length > 0 ? event.errors!.join("") : "No errors";
 
         const expectedRowValues = [
           `1:${i + 1}`,
           // event.audioRecordingId.toLocaleString(),
-          mockRecordingsResponse.id.toString(),
-          event.startTimeSeconds.toLocaleString(),
-          event.endTimeSeconds.toLocaleString(),
-          event.lowFrequencyHertz.toLocaleString(),
-          event.highFrequencyHertz.toLocaleString(),
-          event.channel.toLocaleString(),
+          mockRecordingsResponse.id!.toString(),
+          event.startTimeSeconds!.toLocaleString(),
+          event.endTimeSeconds!.toLocaleString(),
+          event.lowFrequencyHertz!.toLocaleString(),
+          event.highFrequencyHertz!.toLocaleString(),
+          event.channel!.toLocaleString(),
           event.isReference ? "Yes" : "No",
-          event.score.toLocaleString(),
+          event.score!.toLocaleString(),
           expectedTagValue,
           mockProvenanceResponse[0].toString(),
           expectedErrorValue,
@@ -544,6 +554,7 @@ describe("AddAnnotationsComponent", () => {
         fileImportSpy.dryCreate.calls.reset();
 
         const testedTag = mockTagsResponse[0];
+        // @ts-expect-error: strict mode fix
         addTagToFile(0, testedTag.text);
 
         expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
@@ -551,6 +562,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          // @ts-expect-error: strict mode fix
           null,
         );
       }));
@@ -559,6 +571,7 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
+        // @ts-expect-error: strict mode fix
         addTagToFile(0, testedTag.text);
 
         commitImport();
@@ -568,6 +581,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
+          // @ts-expect-error: strict mode fix
           null,
         );
       }));
@@ -584,6 +598,7 @@ describe("AddAnnotationsComponent", () => {
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedTag = mockTagsResponse[0];
+        // @ts-expect-error: strict mode fix
         addTagToFile(0, testedTag.text);
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
@@ -600,8 +615,10 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
+        // @ts-expect-error: strict mode fix
         addExtraTag(testedTag.text);
 
+        // @ts-expect-error: strict mode fix
         expect(fileAdditionalTags(0)).toContain(testedTag.text);
       }));
 
@@ -609,6 +626,7 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
+        // @ts-expect-error: strict mode fix
         addExtraTag(testedTag.text);
 
         expect(extraTagsTypeahead().value).toHaveLength(0);
@@ -725,6 +743,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.create).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
+          // @ts-expect-error: strict mode fix
           null,
         );
       });
@@ -868,15 +887,15 @@ describe("AddAnnotationsComponent", () => {
       const row = eventTableRows()[0];
       assertDatatableRow(row, [
         "1:1",
-        mockRecordingsResponse.id.toString(),
-        testEvent.startTimeSeconds.toLocaleString(),
-        testEvent.endTimeSeconds.toLocaleString(),
-        testEvent.lowFrequencyHertz.toLocaleString(),
-        testEvent.highFrequencyHertz.toLocaleString(),
+        mockRecordingsResponse.id!.toString(),
+        testEvent.startTimeSeconds!.toLocaleString(),
+        testEvent.endTimeSeconds!.toLocaleString(),
+        testEvent.lowFrequencyHertz!.toLocaleString(),
+        testEvent.highFrequencyHertz!.toLocaleString(),
         "Type Error",
         testEvent.isReference ? "Yes" : "No",
-        testEvent.score.toLocaleString(),
-        testEvent.tags.map((tag) => tag.text).join(", "),
+        testEvent.score!.toLocaleString(),
+        testEvent.tags!.map((tag) => tag.text).join(", "),
         mockProvenanceResponse[0].toString(),
         "channel: Channel must be a number",
       ]);
@@ -911,6 +930,7 @@ describe("AddAnnotationsComponent", () => {
 
   describe("identified events table", () => {
     assertDatatable(() => ({
+      // @ts-expect-error: strict mode fix
       root: () => eventsTable(),
       columns: () => [
         "ID",

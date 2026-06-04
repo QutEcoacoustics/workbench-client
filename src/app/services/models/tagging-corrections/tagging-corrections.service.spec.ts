@@ -53,6 +53,7 @@ describe("TaggingCorrectionsService", () => {
     );
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
+    // @ts-expect-error: strict mode fix
     verificationApiSpy.destroyUserVerification.andReturn(of(undefined));
     verificationApiSpy.createOrUpdate.andCallFake(() =>
       of(mockVerifications[0]),

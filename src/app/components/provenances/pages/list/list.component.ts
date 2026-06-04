@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ProvenanceService } from "@baw-api/provenance/provenance.service";
 import {
   newProvenanceMenuItem,
@@ -37,7 +37,7 @@ class ProvenanceListComponent extends PageComponent implements OnInit {
   private readonly notifications = inject(ToastService);
   private readonly modals = inject(NgbModal);
 
-  protected filters$: BehaviorSubject<Filters<Provenance>>;
+  protected filters$!: BehaviorSubject<Filters<Provenance>>;
   private defaultFilters: Filters<Provenance> = {
     sorting: {
       direction: "desc",

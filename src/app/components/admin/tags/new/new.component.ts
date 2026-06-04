@@ -42,7 +42,7 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
     const router = inject(Router);
 
     super(notifications, route, router, {
-      successMsg: (model) => defaultSuccessMsg("created", model.text),
+      successMsg: (model) => defaultSuccessMsg("created", model.text!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -55,6 +55,7 @@ class AdminTagsNewComponent extends FormTemplate<Tag> implements OnInit {
       return;
     }
 
+    // @ts-expect-error: strict mode fix
     this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,

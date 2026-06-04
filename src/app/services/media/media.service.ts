@@ -36,11 +36,11 @@ export class MediaService {
     }
 
     // check the start and end times fit inside the audio recording
-    if (start > audioRecording.durationSeconds) {
+    if (start > audioRecording.durationSeconds!) {
       throw new Error(
         "Start time is greater than the duration of the audio recording"
       );
-    } else if (end > audioRecording.durationSeconds) {
+    } else if (end > audioRecording.durationSeconds!) {
       throw new Error(
         "End time is greater than the duration of the audio recording"
       );
@@ -87,7 +87,7 @@ export class MediaService {
     fitStart = Math.floor(fitStart);
 
     const roundedEnd = Math.ceil(fitEnd);
-    if (fitEnd + roundedEnd > audioRecording.durationSeconds) {
+    if (fitEnd + roundedEnd > audioRecording.durationSeconds!) {
       const newEnd = Math.floor(fitEnd);
       const subtractedDifference = fitEnd - newEnd;
 
@@ -153,7 +153,7 @@ export class MediaService {
     }
 
     const recordingDuration = audioRecording.durationSeconds;
-    if (end > recordingDuration) {
+    if (end > recordingDuration!) {
       // similar to the start time, we need to round up the difference to the
       // nearest whole number to avoid fractional start/end times
       // we round up to guarantee that the end time is at most the recording
@@ -162,7 +162,7 @@ export class MediaService {
       //
       // TODO: remove this ceil once the following api issue is fixed
       // https://github.com/QutEcoacoustics/baw-server/issues/681
-      const difference = Math.ceil(end - recordingDuration);
+      const difference = Math.ceil(end - recordingDuration!);
       start -= difference;
       end -= difference;
     }

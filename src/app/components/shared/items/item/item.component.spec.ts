@@ -35,7 +35,8 @@ describe("ItemComponent", () => {
   it("should display icon", () => {
     setup(["fas", "user"], "Test", 0);
     spec.detectChanges();
-    expect(spec.query(FaIconComponent).icon()).toEqual(["fas", "user"]);
+    // @ts-expect-error: strict mode fix
+    expect(spec!.query(FaIconComponent).icon()).toEqual(["fas", "user"]);
   });
 
   it("should display name", () => {

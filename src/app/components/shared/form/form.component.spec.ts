@@ -22,6 +22,7 @@ describe("FormComponent", () => {
   });
 
   function getSubmitButton(): HTMLButtonElement {
+    // @ts-expect-error: strict mode fix
     return spec.query<HTMLButtonElement>("button");
   }
 

@@ -11,19 +11,23 @@ export function patchLuxonDuration(): void {
 }
 
 function patchToFormat(): void {
+  // @ts-expect-error: strict mode fix
   Duration.prototype["_toFormat"] = Duration.prototype.toFormat;
 
   Duration.prototype.toFormat = function(fmt: string, opts?: { floor?: boolean }): string {
     if (this.valueOf() < 0) {
       const negativeDuration = this.negate();
+      // @ts-expect-error: strict mode fix
       return `-${negativeDuration["_toFormat"](fmt, opts)}`;
     }
 
+    // @ts-expect-error: strict mode fix
     return Duration.prototype["_toFormat"].call(this, fmt, opts);
   }
 }
 
 function patchToISO(): void {
+  // @ts-expect-error: strict mode fix
   Duration.prototype["_toISO"] = Duration.prototype.toISO;
 
   Duration.prototype.toISO = function(): string {
@@ -37,22 +41,27 @@ function patchToISO(): void {
 
     if (scaledDuration.valueOf() < 0) {
       const negativeDuration = scaledDuration.negate();
+      // @ts-expect-error: strict mode fix
       return `-${negativeDuration["_toISO"]()}`;
     }
 
+    // @ts-expect-error: strict mode fix
     return Duration.prototype["_toISO"].call(scaledDuration);
   }
 }
 
 function patchFromISO(): void {
+  // @ts-expect-error: strict mode fix
   Duration["_fromISO"] = Duration.fromISO;
 
   Duration.fromISO = function(text: string, opts?: { conversionAccuracy?: string }): Duration {
     if (text.startsWith("-")) {
+      // @ts-expect-error: strict mode fix
       const negativeDuration = Duration["_fromISO"](text.slice(1), opts);
       return negativeDuration.negate();
     }
 
+    // @ts-expect-error: strict mode fix
     return Duration["_fromISO"](text, opts);
   }
 }

@@ -101,7 +101,8 @@ export class Site extends AbstractModel<ISite> implements ISite {
   public creator?: User;
   @updater<Site>()
   public updater?: User;
-  @hasMany<Site, Project>(PROJECT, "projectIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany<Site, Project>(PROJECT, "projectIds"!)
   public projects?: Project[];
 
   public constructor(site: ISite, injector?: AssociationInjector) {
@@ -117,17 +118,20 @@ export class Site extends AbstractModel<ISite> implements ISite {
   }
 
   public get viewUrl(): string {
+    // @ts-expect-error: strict mode fix
     if (this.projectIds.size === 0) {
       // TODO Figure out how to better handle this issue? It should only happen
       // for admin users in the orphan sites page
       throw new Error("Site model has no project id, cannot find url.");
     }
 
-    return this.getViewUrl(this.projectIds.values().next().value);
+    // @ts-expect-error: strict mode fix
+    return this.getViewUrl(this.projectIds.values()!.next()!.value);
   }
 
   public get adminViewUrl(): string {
-    return adminOrphanMenuItem.route.format({ siteId: this.id });
+    // @ts-expect-error: strict mode fix
+    return adminOrphanMenuItem.route.format({ siteId: this.id })!;
   }
 
   public getAudioRecordingsUrl(projectId: IdOr<Project>): string {
@@ -135,11 +139,13 @@ export class Site extends AbstractModel<ISite> implements ISite {
       return audioRecordingsRoutes.siteAndRegion.format({
         projectId: id(projectId),
         regionId: this.regionId,
+        // @ts-expect-error: strict mode fix
         siteId: this.id,
       });
     } else {
       return audioRecordingsRoutes.site.format({
         projectId: id(projectId),
+        // @ts-expect-error: strict mode fix
         siteId: this.id,
       });
     }
@@ -150,11 +156,13 @@ export class Site extends AbstractModel<ISite> implements ISite {
       return pointRoute.format({
         projectId: id(project),
         regionId: this.regionId,
+        // @ts-expect-error: strict mode fix
         siteId: this.id,
       });
     } else {
       return siteRoute.format({
         projectId: id(project),
+        // @ts-expect-error: strict mode fix
         siteId: this.id,
       });
     }
@@ -165,12 +173,14 @@ export class Site extends AbstractModel<ISite> implements ISite {
       return PermissionLevel.unresolved;
     }
 
+    // @ts-expect-error: strict mode fix
     if (this.projects.length === 0) {
       return PermissionLevel.unknown;
     }
 
     let isWriter = false;
 
+    // @ts-expect-error: strict mode fix
     for (const project of this.projects) {
       if (project.accessLevel === PermissionLevel.owner) {
         return project.accessLevel;
@@ -201,14 +211,14 @@ export class Site extends AbstractModel<ISite> implements ISite {
    * Get site latitude
    */
   public getLatitude(): number {
-    return this.latitude ?? this.customLatitude;
+    return this.latitude ?? this.customLatitude!;
   }
 
   /**
    * Get site longitude
    */
   public getLongitude(): number {
-    return this.longitude ?? this.customLongitude;
+    return this.longitude ?? this.customLongitude!;
   }
 
   /**
@@ -224,6 +234,7 @@ export class Site extends AbstractModel<ISite> implements ISite {
           position: { lat: this.getLatitude(), lng: this.getLongitude() },
           title: this.name,
         }
+      // @ts-expect-error: strict mode fix
       : null;
   }
 }

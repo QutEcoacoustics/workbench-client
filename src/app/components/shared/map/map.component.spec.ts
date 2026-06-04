@@ -45,6 +45,7 @@ describe("MapComponent", () => {
   }
 
   function getLoadingComponent(): LoadingComponent {
+    // @ts-expect-error: strict mode fix
     return spec.query(LoadingComponent);
   }
 
@@ -185,6 +186,7 @@ describe("MapComponent", () => {
       setup(markers, contentTemplate);
       triggerLoadSuccess();
 
+      // @ts-expect-error: strict mode fix
       expect(spec.query("#marker-title")).toHaveText(markers[0].title);
       expect(spec.query("#marker-image")).toExist();
     });
@@ -210,7 +212,7 @@ describe("MapComponent", () => {
 
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
-      expect(infoWindow.options.headerContent).toEqual(marker.title);
+      expect(infoWindow!.options.headerContent).toEqual(marker.title);
     });
 
     // We should see that the info window headerContent is set to an empty
@@ -228,7 +230,7 @@ describe("MapComponent", () => {
 
       const infoWindow = getInfoWindow();
       expect(infoWindow).toExist();
-      expect(infoWindow.options.headerContent).toEqual("");
+      expect(infoWindow!.options.headerContent).toEqual("");
     });
 
     it("should use the custom markerHoverTemplate", () => {
@@ -247,6 +249,7 @@ describe("MapComponent", () => {
       hoverMarker(0);
 
       expect(spec.query("#marker-image")).toExist();
+      // @ts-expect-error: strict mode fix
       expect(spec.query("#custom-marker-title")).toHaveText(marker.title);
     });
   });
