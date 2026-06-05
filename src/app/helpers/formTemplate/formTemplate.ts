@@ -1,4 +1,4 @@
-import { Directive, OnInit } from "@angular/core";
+﻿import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -10,10 +10,10 @@ import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AbstractModel } from "@models/AbstractModel";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ToastService } from "@services/toasts/toasts.service";
 import { RecaptchaState } from "@shared/form/form.component";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ToastService } from "@services/toasts/toasts.service";
 import { PageComponent } from "../page/pageComponent";
 import { IPageInfo } from "../page/pageInfo";
 
@@ -64,19 +64,19 @@ export abstract class FormTemplate<Model extends AbstractModel>
   implements OnInit
 {
   /** Form submission processing */
-  public loading: boolean;
+  public loading!: boolean;
   /** Initial setup failed */
-  public failure: boolean;
+  public failure!: boolean;
   /** Model to edit using form */
-  public model: Partial<Model>;
+  public model!: Partial<Model>;
   /** Extra models stored in data */
   public models: ResolvedModelList = {};
   /** Formly fields */
   public fields: FormlyFieldConfig[] = [];
   /** Recaptcha state tracker, undefined if not used */
-  public recaptchaSeed: RecaptchaState;
+  public recaptchaSeed!: RecaptchaState;
   /** Success message */
-  private successMessage: string;
+  private successMessage!: string;
   /** Form template options */
   private opts: FormProps<Model>;
 
@@ -102,7 +102,9 @@ export abstract class FormTemplate<Model extends AbstractModel>
     // Override form checking
     if (!this.opts.hasFormCheck) {
       this.isFormTouched = () => false;
-      this.resetForms = () => {};
+      this.resetForms = () => {
+        /* noop */
+      };
     }
 
     // Retrieve models from router
@@ -144,6 +146,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     this.apiAction(event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
+        // @ts-expect-error: strict mode fix
         next: (model: Model) => {
           /*
            * First pass attempt a generating success message. This is required
@@ -173,7 +176,9 @@ export abstract class FormTemplate<Model extends AbstractModel>
    * @param model API response
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected onSuccess(model: Model | void): void {}
+  protected onSuccess(model: Model | void): void {
+    /* noop */
+  }
 
   /**
    * API Action to perform

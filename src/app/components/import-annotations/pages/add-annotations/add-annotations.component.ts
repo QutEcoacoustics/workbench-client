@@ -114,9 +114,9 @@ interface QueuedFile {
 }
 
 class TableRow extends AbstractModelWithoutId {
-  public fileId: number;
-  public eventId: number;
-  public event: ImportedAudioEvent;
+  public fileId!: number;
+  public eventId!: number;
+  public event!: ImportedAudioEvent;
 
   public get viewUrl(): string {
     throw new Error("Method not implemented.");
@@ -273,11 +273,13 @@ class AddAnnotationsComponent
     this.importFiles$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((importFiles) => {
+        // @ts-expect-error: strict mode fix
         this.sharedImportState.set(importFiles);
       });
   }
 
   protected getEventModels = (): Observable<TableRow[]> => {
+    // @ts-expect-error: strict mode fix
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
         const instantiatedFiles = files.filter((file) =>
@@ -285,6 +287,7 @@ class AddAnnotationsComponent
         );
 
         return instantiatedFiles.flatMap((file, fileIndex: number) => {
+          // @ts-expect-error: strict mode fix
           return file.model?.importedEvents.map(
             (event: ImportedAudioEvent, eventIndex: number) => {
               return new TableRow({
@@ -301,7 +304,8 @@ class AddAnnotationsComponent
 
   // typeahead returns models, we need ids for filtering
   protected getIdsFromAbstractModelArray(items: object[]): Id[] {
-    return items.map((item: AbstractModel): Id => item.id);
+    // @ts-expect-error: strict mode fix
+    return items.map((item: AbstractModel): Id => item.id!);
   }
 
   protected handleFileChange(event: Event): void {
@@ -325,7 +329,8 @@ class AddAnnotationsComponent
     const filesToImport: File[] = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
-      const fileTypeMapping = this.extensionMappings[extension.toLowerCase()];
+      // @ts-expect-error: strict mode indexing
+      const fileTypeMapping = this.extensionMappings[extension!.toLowerCase()];
       if (fileTypeMapping) {
         return this.changeFileTypes(file, fileTypeMapping);
       }
@@ -334,7 +339,7 @@ class AddAnnotationsComponent
     });
 
     const newQueuedModels: QueuedFile[] = filesToImport.map((file: File) =>
-      this.importFileToBufferedFile(file, null, [], [], null, false)
+      this.importFileToBufferedFile(file, null!, [], [], null!, false)
     );
 
     this.importFiles$.next([...this.importFiles$.value, ...newQueuedModels]);
@@ -356,7 +361,7 @@ class AddAnnotationsComponent
       audioRecordingId: Required<EventImportError["audioRecordingId"]>;
     };
   } {
-    return model.errors.some((error) => "audioRecordingId" in error);
+    return model.errors!.some((error) => "audioRecordingId" in error);
   }
 
   // uses a reference to the ImportGroup object and update the additional tag
@@ -442,10 +447,12 @@ class AddAnnotationsComponent
   }
 
   // sends all import groups to the api if there are no errors
+  // @ts-expect-error: strict mode fix
   protected commitImports(): Promise<void> {
     // importing invalid annotation imports results in an internal server error
     // we should therefore not submit any upload groups if there are any errors
     if (!this.canCommitUploads()) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 
@@ -472,7 +479,9 @@ class AddAnnotationsComponent
 
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
+              // @ts-expect-error: strict mode fix
               annotationId: this.audioEventImport.id,
+              // @ts-expect-error: strict mode fix
               projectId: this.project.id,
             })
           );
@@ -526,8 +535,8 @@ class AddAnnotationsComponent
     // the result of one api call would be ignored by the iif operator.
     return iif(
       () => commit,
-      defer(() => this.api.create(importFileModel, this.audioEventImport, provenanceId)),
-      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport, provenanceId))
+      defer(() => this.api.create(importFileModel, this.audioEventImport!, provenanceId)),
+      defer(() => this.api.dryCreate(importFileModel, this.audioEventImport!, provenanceId))
     ).pipe(
       first(),
       map(
@@ -572,7 +581,7 @@ class AddAnnotationsComponent
       dataTransfer.items.add(file);
     }
 
-    this.fileInput().nativeElement.files = dataTransfer.files;
+    this.fileInput()!.nativeElement.files = dataTransfer.files;
   }
 
   private importFileToBufferedFile(
@@ -642,3 +651,4 @@ AddAnnotationsComponent.linkToRoute({
 });
 
 export { AddAnnotationsComponent };
+

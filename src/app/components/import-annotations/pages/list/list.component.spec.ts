@@ -75,6 +75,7 @@ describe("AnnotationsListComponent", () => {
     mockApi.filter.and.callFake(() => of([fakeAnnotationImport]));
 
     mockApi.destroy = jasmine.createSpy("destroy") as any;
+    // @ts-expect-error: strict mode fix
     mockApi.destroy.and.callFake(() => of(null));
 
     // inject the NgbModal service so that we can
@@ -160,7 +161,7 @@ describe("AnnotationsListComponent", () => {
 
   it("should open a modal when the delete button is clicked", fakeAsync(() => {
     const deleteButton = deleteImportButton();
-    deleteButton.click();
+    deleteButton!.click();
 
     tick();
 
@@ -174,13 +175,13 @@ describe("AnnotationsListComponent", () => {
   it("should make the correct api call when the delete button in the delete modal is clicked", fakeAsync(() => {
     // open the modal
     const deleteButton = deleteImportButton();
-    deleteButton.click();
+    deleteButton!.click();
 
     tick();
 
     // click the confirmation button inside the modal
     const modalDeleteButton = modalConfirmButton();
-    modalDeleteButton.click();
+    modalDeleteButton!.click();
 
     tick();
     spec.detectChanges();

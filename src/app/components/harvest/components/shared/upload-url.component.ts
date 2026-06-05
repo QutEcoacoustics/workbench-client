@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { Harvest } from "@models/Harvest";
 import { SafePipe } from "../../../../pipes/safe/safe.pipe";
 
@@ -17,5 +17,5 @@ import { SafePipe } from "../../../../pipes/safe/safe.pipe";
   imports: [SafePipe]
 })
 export class UploadUrlComponent {
-  @Input() public harvest: Harvest;
+  @Input() public harvest!: Harvest;
 }

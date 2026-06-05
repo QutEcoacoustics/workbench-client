@@ -1,10 +1,25 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from "@angular/core";
+﻿import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { SitesService } from "@baw-api/site/sites.service";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { Id } from "@interfaces/apiInterfaces";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
-import { NgbTypeahead, NgbTypeaheadSelectItemEvent, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbTooltip,
+  NgbTypeahead,
+  NgbTypeaheadSelectItemEvent,
+} from "@ng-bootstrap/ng-bootstrap";
 import { ConfigService } from "@services/config/config.service";
 import {
   debounceTime,
@@ -17,9 +32,6 @@ import {
   switchMap,
 } from "rxjs";
 import { defaultDebounceTime } from "src/app/app.helper";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { FormsModule } from "@angular/forms";
-import { UrlDirective } from "@directives/url/url.directive";
 
 @Component({
   selector: "baw-harvest-site-selector",
@@ -34,7 +46,7 @@ import { UrlDirective } from "@directives/url/url.directive";
             class="btn btn-sm p-0 me-1"
             [ngbTooltip]="editTooltip"
             (click)="resetSite()"
-            >
+          >
             <fa-icon [icon]="['fas', 'pen-to-square']"></fa-icon>
           </button>
         </div>
@@ -58,43 +70,51 @@ import { UrlDirective } from "@directives/url/url.directive";
       />
     </div>
   `,
-  styles: [`
-    .site-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  styles: [
+    `
+      .site-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .site-label,
-    .input-group {
-      width: 100%;
-    }
-  `],
-  imports: [UrlDirective, NgbTooltip, FaIconComponent, NgbTypeahead, FormsModule]
+      .site-label,
+      .input-group {
+        width: 100%;
+      }
+    `,
+  ],
+  imports: [
+    UrlDirective,
+    NgbTooltip,
+    FaIconComponent,
+    NgbTypeahead,
+    FormsModule,
+  ],
 })
 export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   private readonly config = inject(ConfigService);
   private readonly sitesApi = inject(SitesService);
 
-  @ViewChild("selector", { static: true }) public selector: NgbTypeahead;
-  @Input() public project: Project;
-  @Input() public site: Site | null;
+  @ViewChild("selector", { static: true }) public selector!: NgbTypeahead;
+  @Input() public project!: Project;
+  @Input() public site!: Site | null;
   @Output() public siteIdChange = new EventEmitter<Id | null>();
 
   public focus$ = new Subject<Site>();
   public click$ = new Subject<Site>();
-  public search$: OperatorFunction<string, readonly Site[]>;
+  public search$!: OperatorFunction<string, readonly Site[]>;
 
-  public prevValue: Site;
+  public prevValue!: Site;
 
   public ngOnInit(): void {
     this.search$ = (text$: Observable<string>): Observable<Site[]> => {
       const debouncedText$ = text$.pipe(
         debounceTime(defaultDebounceTime),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       );
       const clicksWithClosedPopup$ = this.click$.pipe(
-        filter(() => !this.selector.isPopupOpen())
+        filter(() => !this.selector.isPopupOpen()),
       );
       const inputFocus$ = this.focus$;
 
@@ -109,16 +129,16 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
                 },
               },
             },
-            this.project
-          )
-        )
+            this.project,
+          ),
+        ),
       );
     };
   }
 
   public get inputPlaceholder(): string {
     if (this.prevValue) {
-      return this.prevValue.name;
+      return this.prevValue.name!;
     }
     return this.config.settings.hideProjects ? "Point" : "Site";
   }
@@ -129,7 +149,7 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public formatter(site: Site): string {
-    return site.name;
+    return site.name!;
   }
 
   public emitSite(site: Site): void {
@@ -142,8 +162,8 @@ export class SiteSelectorComponent extends withUnsubscribe() implements OnInit {
   }
 
   public resetSite(): void {
-    this.prevValue = this.site;
+    this.prevValue = this.site!;
     this.site = null;
-    this.emitSite(this.site);
+    this.emitSite(this.site!);
   }
 }

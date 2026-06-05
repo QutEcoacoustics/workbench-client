@@ -47,6 +47,7 @@ describe("TimeSince", () => {
     function setup(defaultValue: DateTime | Duration | Date): void {
       // because the tickValue is a singleton, if we don't set it to undefined
       // the tickValue from the previous test will leak into the next test
+      // @ts-expect-error: strict mode fix
       TimeSinceComponent["tickValue"] = undefined;
 
       jasmine.clock().install();
@@ -95,6 +96,7 @@ describe("TimeSince", () => {
 
       // because the tickValue is a singleton, if we don't set it to undefined
       // the tickValue from the previous test will leak into the next test
+      // @ts-expect-error: strict mode fix
       TimeSinceComponent["tickValue"] = undefined;
     });
 
@@ -167,11 +169,12 @@ describe("TimeSince", () => {
         });
 
         it("should have the correct tooltip", () => {
+          // @ts-expect-error: strict mode fix
           assertTooltip(timeElement(), testCase.expectedTooltip);
         });
 
         it("should have the correct dateTime attribute", () => {
-          expect(timeElement().dateTime).toBe(
+          expect(timeElement()!.dateTime).toBe(
             testCase.expectedDateTimeAttribute
           );
         });

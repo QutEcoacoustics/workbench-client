@@ -16,7 +16,7 @@ import { PageComponent } from "../page/pageComponent";
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class TableTemplate<T> extends PageComponent {
-  @ViewChild(DatatableComponent) public table: DatatableComponent;
+  @ViewChild(DatatableComponent) public table!: DatatableComponent;
 
   // Table variables
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -26,8 +26,8 @@ export abstract class TableTemplate<T> extends PageComponent {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: T[];
-  public filterTempRows: T[];
+  public rows!: T[];
+  public filterTempRows!: T[];
   public selected: T[] = [];
 
   public constructor(private filterMatch: (val: string, row: T) => boolean) {

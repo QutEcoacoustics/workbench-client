@@ -17,9 +17,7 @@ import {
   TagPromptComponent,
   VerificationGridTileComponent,
 } from "@ecoacoustics/web-components";
-import {
-  VerificationGridComponent,
-} from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -318,6 +316,7 @@ describe("VerificationComponent", () => {
     spyOn(verificationApi, "show").and.returnValue(of());
 
     spyOn(verificationApi, "destroyUserVerification").and.returnValue(
+      // @ts-expect-error: strict mode fix
       of(undefined),
     );
     spyOn(verificationApi, "showUserVerification").and.returnValue(
@@ -379,10 +378,10 @@ describe("VerificationComponent", () => {
 
   const verificationGrid = () =>
     spec.query<VerificationGridComponent>("oe-verification-grid");
-  const verificationGridRoot = () => verificationGrid().shadowRoot;
+  const verificationGridRoot = () => verificationGrid()!.shadowRoot;
 
   const gridTiles = () =>
-    verificationGridRoot().querySelectorAll<VerificationGridTileComponent>(
+    verificationGridRoot()!.querySelectorAll<VerificationGridTileComponent>(
       "oe-verification-grid-tile",
     );
 
@@ -395,10 +394,12 @@ describe("VerificationComponent", () => {
   const tagPromptComponent = () =>
     spec.query<TagPromptComponent>("oe-tag-prompt", { root: true });
   const tagPromptTypeaheadComponent = () =>
-    tagPromptComponent().shadowRoot.querySelector("oe-typeahead");
+    // @ts-expect-error: strict mode fix
+    tagPromptComponent()!.shadowRoot.querySelector("oe-typeahead");
 
   const tagPromptTypeaheadItems = () =>
-    tagPromptTypeaheadComponent().shadowRoot.querySelectorAll(
+    // @ts-expect-error: strict mode fix
+    tagPromptTypeaheadComponent()!.shadowRoot.querySelectorAll(
       ".typeahead-result-action",
     );
 
@@ -416,17 +417,20 @@ describe("VerificationComponent", () => {
       throw new Error("Could not find decision button");
     }
 
-    return decisionComponents()[index].shadowRoot.querySelector(
+    // @ts-expect-error: strict mode fix
+    return decisionComponents()![index].shadowRoot.querySelector(
       "#decision-button",
     );
   }
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
+    // @ts-expect-error: strict mode fix
     clickButton(spec, target);
   }
 
   function showParameters(): void {
+    // @ts-expect-error: strict mode fix
     spec.click(dialogShowButton());
     tick(1_000);
     discardPeriodicTasks();
@@ -441,7 +445,7 @@ describe("VerificationComponent", () => {
   }
 
   function isGridLoaded() {
-    return verificationGrid().loadState === "loaded";
+    return verificationGrid()!.loadState === "loaded";
   }
 
   async function clickDecisionButton(decision: DecisionOptions) {
@@ -450,11 +454,11 @@ describe("VerificationComponent", () => {
     const grid = verificationGrid();
     const decisionMadeEvent = new Promise<void>((resolve) => {
       const handler = () => {
-        grid.removeEventListener("decision-made", handler);
+        grid!.removeEventListener("decision-made", handler);
         resolve();
       };
 
-      grid.addEventListener("decision-made", handler, { once: true });
+      grid!.addEventListener("decision-made", handler, { once: true });
     });
 
     spec.click(decisionButtonTarget);
@@ -495,16 +499,16 @@ describe("VerificationComponent", () => {
     const targetGridTiles = gridTiles();
 
     const startTile = targetGridTiles[start];
-    const startTileClickTarget = startTile.shadowRoot.querySelector(
+    const startTileClickTarget = startTile.shadowRoot!.querySelector(
       "[part='tile-container']",
     );
 
     const endTile = targetGridTiles[end];
-    const endTileClickTarget = endTile.shadowRoot.querySelector(
+    const endTileClickTarget = endTile.shadowRoot!.querySelector(
       "[part='tile-container']",
     );
 
-    startTileClickTarget.dispatchEvent(new MouseEvent("pointerdown"));
+    startTileClickTarget!.dispatchEvent(new MouseEvent("pointerdown"));
 
     // If the start is the same as the end, we do not want to dispatch a shift
     // click event on the tile because that would result in the tile being
@@ -513,7 +517,7 @@ describe("VerificationComponent", () => {
     // to be able to select a single tile.
     // e.g. makeSelection(0, 0) should select the first tile
     if (startTile !== endTile) {
-      endTileClickTarget.dispatchEvent(
+      endTileClickTarget!.dispatchEvent(
         new MouseEvent("pointerdown", { shiftKey: true }),
       );
     }
@@ -544,7 +548,7 @@ describe("VerificationComponent", () => {
     await setup();
     const expectedTimeout =
       spec.inject(ConfigService).environment.browserTimeout;
-    expect(verificationGrid().loadingTimeout).toEqual(expectedTimeout);
+    expect(verificationGrid()!.loadingTimeout).toEqual(expectedTimeout);
   });
 
   describe("no initial search parameters", () => {
@@ -561,12 +565,15 @@ describe("VerificationComponent", () => {
 
       fakeAsync(() => {
         showParameters();
+        // @ts-expect-error: strict mode fix
         selectFromTypeahead(spec, tagsTypeahead(), tagText);
       })();
 
+      // @ts-expect-error: strict mode fix
       clickButton(spec, updateFiltersButton());
 
-      expect(spec.component.searchParameters().tags).toContain(expectedTagId);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.component.searchParameters().tags).toContain(expectedTagId);
     });
 
     it("should show and hide the search parameters dialog correctly", fakeAsync(() => {
@@ -582,9 +589,11 @@ describe("VerificationComponent", () => {
         clickVerificationStatusFilter("unverified");
       })();
 
+      // @ts-expect-error: strict mode fix
       clickButton(spec, updateFiltersButton());
 
-      expect(spec.component.searchParameters().verificationStatus).toEqual(
+      // @ts-expect-error: strict mode fix
+      expect(spec!.component.searchParameters().verificationStatus).toEqual(
         "unverified",
       );
     });
@@ -1066,7 +1075,7 @@ describe("VerificationComponent", () => {
 
         it("should have the correct grid size target", () => {
           const expectedTarget = 12;
-          const realizedTarget = verificationGrid().targetGridSize;
+          const realizedTarget = verificationGrid()!.targetGridSize;
           expect(realizedTarget).toEqual(expectedTarget);
         });
       });
@@ -1074,40 +1083,43 @@ describe("VerificationComponent", () => {
       xit("should reset the verification grids getPage function when the search parameters are changed", async () => {
         await detectChanges(spec);
 
-        const initialPagingCallback = verificationGrid().getPage;
+        const initialPagingCallback = verificationGrid()!.getPage;
         const targetTag = defaultFakeTags[0];
         const tagText = targetTag.text;
 
         fakeAsync(() => {
           showParameters();
+          // @ts-expect-error: strict mode fix
           selectFromTypeahead(spec, tagsTypeahead(), tagText);
         })();
 
+        // @ts-expect-error: strict mode fix
         spec.click(updateFiltersButton());
         await detectChanges(spec);
 
         // we use the "toBe" matcher so that we compare the "getPage" callback
         // by reference
-        const newPagingCallback = verificationGrid().getPage;
+        const newPagingCallback = verificationGrid()!.getPage;
         expect(newPagingCallback).not.toBe(initialPagingCallback);
       });
 
       xit("should reset the verification grids getPage function when the selection criteria is changed", async () => {
         await detectChanges(spec);
-        const initialPagingCallback = verificationGrid().getPage;
+        const initialPagingCallback = verificationGrid()!.getPage;
 
         fakeAsync(() => showParameters())();
         clickVerificationStatusFilter("any");
 
+        // @ts-expect-error: strict mode fix
         spec.click(updateFiltersButton());
         await detectChanges(spec);
 
-        const newPagingCallback = verificationGrid().getPage;
+        const newPagingCallback = verificationGrid()!.getPage;
         expect(newPagingCallback).not.toBe(initialPagingCallback);
       });
 
       it("should populate the verification grid correctly for the first page", () => {
-        const realizedTileCount = verificationGrid().pageSize;
+        const realizedTileCount = verificationGrid()!.pageSize;
         expect(realizedTileCount).toBeGreaterThan(0);
       });
     });
@@ -1136,7 +1148,11 @@ describe("VerificationComponent", () => {
     it("should show an alert if the user tries to navigate away while requests are still processing", async () => {
       // Mock the verification api to return an observable that never completes
       // so that the component thinks that there are still requests processing.
-      verificationApi.createOrUpdate.and.returnValue(new Observable(() => {}));
+      verificationApi.createOrUpdate.and.returnValue(
+        new Observable(() => {
+          /* intentionally empty */
+        }),
+      );
 
       await makeSelection(0, 0);
       await clickDecisionButton(DecisionOptions.TRUE);

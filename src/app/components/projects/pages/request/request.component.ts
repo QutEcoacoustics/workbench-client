@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ProjectsService } from "@baw-api/project/projects.service";
 import {
   projectsCategory,
@@ -41,11 +41,11 @@ import schema from "./request.schema.json";
 class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
   private readonly api = inject(ProjectsService);
 
-  public error: BawApiError;
+  public error!: BawApiError;
   public fields = schema.fields;
-  public loading: boolean;
+  public loading!: boolean;
   public model = {};
-  public projects: Project[];
+  public projects!: Project[];
 
   public ngOnInit() {
     this.loading = false;
@@ -57,6 +57,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
       .subscribe({
         next: (projects) => {
           this.projects = projects;
+          // @ts-expect-error: strict mode fix
           this.fields[0].props.options = projects.map((project) => ({
             value: project.id,
             label: project.name,

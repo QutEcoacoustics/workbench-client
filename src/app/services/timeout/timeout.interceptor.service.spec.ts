@@ -59,6 +59,7 @@ describe("TimeoutInterceptor", () => {
     let timeoutInterval: number;
 
     function callService(): Observable<any> {
+      // @ts-expect-error: strict mode fix
       return spec.service[test.method]();
     }
 

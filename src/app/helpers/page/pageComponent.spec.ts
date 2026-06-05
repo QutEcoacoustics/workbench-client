@@ -91,6 +91,7 @@ describe("PageComponents", () => {
 
       const pageInfo = DummyComponent.pageInfos[0];
       expect(pageInfo.pageRoute).toEqual(defaultMenuItem);
+      // @ts-expect-error: strict mode fix
       expect(pageInfo.route).toEqual(defaultMenuItem.route);
     });
 

@@ -1,4 +1,4 @@
-import {
+﻿import {
   AfterViewChecked,
   Component,
   ElementRef,
@@ -52,20 +52,20 @@ export interface Step {
 export class StepperComponent
   implements OnChanges, AfterViewChecked, OnDestroy
 {
-  @ViewChild("stepper") public stepper: ElementRef<HTMLElement>;
-  @ViewChild("leftDots") public leftDots: ElementRef<HTMLElement>;
-  @ViewChild("rightDots") public rightDots: ElementRef<HTMLElement>;
-  @ViewChild("steps") public steps: ElementRef<HTMLElement>;
-  @ViewChildren("step") public stepItems: QueryList<ElementRef<HTMLElement>>;
+  @ViewChild("stepper") public stepper!: ElementRef<HTMLElement>;
+  @ViewChild("leftDots") public leftDots!: ElementRef<HTMLElement>;
+  @ViewChild("rightDots") public rightDots!: ElementRef<HTMLElement>;
+  @ViewChild("steps") public steps!: ElementRef<HTMLElement>;
+  @ViewChildren("step") public stepItems!: QueryList<ElementRef<HTMLElement>>;
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input("steps") public stepList: Step[];
+  @Input("steps") public stepList!: Step[];
   /** Step to show as active, starting from 0 */
-  @Input() public activeStep: number;
+  @Input() public activeStep!: number;
 
-  private updateObservers: boolean;
-  private resizeObserver: ResizeObserver;
-  private intersectionObserver: IntersectionObserver;
+  private updateObservers!: boolean;
+  private resizeObserver!: ResizeObserver;
+  private intersectionObserver!: IntersectionObserver;
 
   // CSS classes
   private notVisibleClass = "not-visible";
@@ -133,9 +133,10 @@ export class StepperComponent
       this.getClassList(step).contains(this.notVisibleClass);
 
     /** Do steps on the left side of the stepper have the not visible class */
-    const leftStepsNotVisible = isNotVisibleStep(this.stepItems.get(0));
+    const leftStepsNotVisible = isNotVisibleStep(this.stepItems.get(0)!);
     /** Do steps on the right side of the stepper have the not visible class */
     const rightStepsNotVisible = isNotVisibleStep(
+      // @ts-expect-error: strict mode fix
       this.stepItems.get(this.stepItems.length - 1)
     );
     /** Show left dots if steps are hidden, and the first step is not active */

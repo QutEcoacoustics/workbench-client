@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -93,21 +93,21 @@ interface ValidationMessage {
   ]
 })
 export class FileRowComponent implements OnInit {
-  @Input() public row: MetaReviewFile;
+  @Input() public row!: MetaReviewFile;
 
-  public validationMessages: ValidationMessage[];
+  public validationMessages!: ValidationMessage[];
   public icons = metaReviewIcons;
 
   public get mapping(): HarvestMapping {
-    return this.row.mapping;
+    return this.row.mapping!;
   }
 
   public get harvestItem(): HarvestItem {
-    return this.row.harvestItem;
+    return this.row.harvestItem!;
   }
 
   public get report(): HarvestItemReport {
-    return this.harvestItem.report;
+    return this.harvestItem.report!;
   }
 
   public ngOnInit(): void {
@@ -118,12 +118,14 @@ export class FileRowComponent implements OnInit {
         // Prepend non fixable messages to the start
         this.validationMessages.unshift({
           type: "danger",
+          // @ts-expect-error: strict mode fix
           message: validation.message,
         });
       } else {
         // Append fixable messages to the end
         this.validationMessages.push({
           type: "warning",
+          // @ts-expect-error: strict mode fix
           message: validation.message,
         });
       }

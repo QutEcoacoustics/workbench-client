@@ -24,12 +24,12 @@ export class AudioEventGroup
 
   public readonly siteId: Id<Site>;
   public readonly regionId: Id<Region> | null;
-  public readonly projectIds: Ids<Project>;
+  public readonly projectIds!: Ids<Project>;
 
-  public readonly audioEventCount: number;
-  public readonly latitude: Latitude;
-  public readonly longitude: Longitude;
-  public readonly locationObfuscated: boolean;
+  public readonly audioEventCount!: number;
+  public readonly latitude!: Latitude;
+  public readonly longitude!: Longitude;
+  public readonly locationObfuscated!: boolean;
 
   @hasOne(SITE, "siteId")
   public readonly site?: Site;

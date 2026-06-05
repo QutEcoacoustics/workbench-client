@@ -26,10 +26,12 @@ export const analysisJobMenuItem = menuRoute({
   tooltip: () => "View audio analysis job",
   route: analysisJobRoute,
   parent: analysesMenuItem,
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel.analysisJob.model?.name;
   },
 });

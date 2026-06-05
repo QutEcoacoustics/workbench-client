@@ -61,7 +61,8 @@ describe("WebsiteStatusService", () => {
     expect(realizedOptions).toEqual(expectedOptions);
 
     // We use "toBe" here so that we compare the callback references.
-    return expect(realizedOptions.cacheOptions.isCacheable).toBe(disableCache);
+    // @ts-expect-error: strict mode fix
+    return expect(realizedOptions!.cacheOptions.isCacheable).toBe(disableCache);
   });
 
   it("should not cache the request", () => {

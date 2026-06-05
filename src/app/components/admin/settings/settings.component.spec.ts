@@ -35,17 +35,21 @@ describe("AdminSettingsComponent", () => {
   });
 
   it("should toggle the cache enabled state correctly", () => {
+    // @ts-expect-error: strict mode fix
     spectator.click(cacheEnabledInput());
     expect(cacheSettings().enabled).toBeFalse();
 
+    // @ts-expect-error: strict mode fix
     spectator.click(cacheEnabledInput());
     expect(cacheSettings().enabled).toBeTrue();
   });
 
   it("should toggle the cache logging correctly", () => {
+    // @ts-expect-error: strict mode fix
     spectator.click(cacheLoggingInput());
     expect(cacheSettings().showLogging).toBeTrue();
 
+    // @ts-expect-error: strict mode fix
     spectator.click(cacheLoggingInput());
     expect(cacheSettings().showLogging).toBeFalse();
   });

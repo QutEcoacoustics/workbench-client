@@ -1,4 +1,4 @@
-import { Param, Description } from "@interfaces/apiInterfaces";
+﻿import { Param, Description } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 
@@ -12,13 +12,13 @@ export interface IContactUs {
 export class ContactUs extends AbstractForm<IContactUs> implements IContactUs {
   public readonly kind = "Contact Us";
   @bawPersistAttr()
-  public readonly name: Param;
+  public readonly name!: Param;
   @bawPersistAttr()
-  public readonly email: Param;
+  public readonly email!: Param;
   @bawPersistAttr()
-  public readonly content: Description;
+  public readonly content!: Description;
   @bawPersistAttr()
-  public readonly recaptchaToken: string;
+  public readonly recaptchaToken!: string;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

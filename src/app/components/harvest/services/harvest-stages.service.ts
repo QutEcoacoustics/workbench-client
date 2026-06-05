@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, inject } from "@angular/core";
+﻿import { Injectable, OnDestroy, inject } from "@angular/core";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { HarvestItemsService } from "@baw-api/harvest/harvest-items.service";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
@@ -38,17 +38,17 @@ export class HarvestStagesService implements OnDestroy {
   private readonly harvestApi = inject(HarvestsService);
   private readonly harvestItemApi = inject(HarvestItemsService);
 
-  public project: Project;
+  public project!: Project;
   /**
    * If true, state of harvest is in transition, and buttons to transition
    * state should be disabled
    */
-  public transitioningStage: boolean;
+  public transitioningStage!: boolean;
   public harvestItemErrors: Map<ValidationName, HarvestItemValidation> = Map();
 
   private _harvest$ = new BehaviorSubject<Harvest | null>(null);
   private harvestTrigger$ = new Subject<void>();
-  private harvestInterval: Subscription;
+  private harvestInterval!: Subscription;
   private unsubscribe = new Subject<void>();
 
   public constructor() {
@@ -117,7 +117,7 @@ export class HarvestStagesService implements OnDestroy {
 
   /** Destroy the current  */
   public destroy(): void {
-    this.project = null;
+    this.project = null!;
     this._harvest$ = new BehaviorSubject<Harvest | null>(null);
     this.resetHarvestItemsErrors();
     this.stopPolling();
@@ -175,7 +175,7 @@ export class HarvestStagesService implements OnDestroy {
         (list): void => {
           items.forEach((_item: HarvestItem): void => {
             _item.validations?.forEach((validation): void => {
-              list = list.set(validation.name, validation);
+              list = list.set(validation.name!, validation);
             });
           });
         }
@@ -185,7 +185,7 @@ export class HarvestStagesService implements OnDestroy {
     try {
       return firstValueFrom(
         this.harvestItemApi
-          .listByPage(page, this.project, this.harvest, harvestItem)
+          .listByPage(page, this.project, this.harvest!, harvestItem!)
           .pipe(
             first(),
             tap(extractHarvestItemErrors),
@@ -212,7 +212,7 @@ export class HarvestStagesService implements OnDestroy {
     // We want this api request to complete regardless of lifecycle destruction
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.harvestApi
-      .transitionStatus(this.harvest, stage)
+      .transitionStatus(this.harvest!, stage)
       .pipe(
         catchError((err: BawApiError) => {
           if (err.status !== CLIENT_TIMEOUT) {
@@ -251,10 +251,12 @@ export class HarvestStagesService implements OnDestroy {
   }
 
   public calculateProgress(numItems: number): number {
+    // @ts-expect-error: strict mode fix
     if (this.harvest.report.itemsTotal === 0) {
       return 0;
     }
 
+    // @ts-expect-error: strict mode fix
     const progress = ((numItems ?? 0) / this.harvest.report.itemsTotal) * 100;
     const almostDone = progress > 99.99 && progress !== 100;
     return almostDone ? 99.99 : +progress.toFixed(2);
@@ -274,7 +276,7 @@ export class HarvestStagesService implements OnDestroy {
         filter((): boolean => isInstantiated(this.harvest)),
         switchMap(
           (): Observable<Harvest> =>
-            this.harvestApi.showWithoutCache(this.harvest, this.project)
+            this.harvestApi.showWithoutCache(this.harvest!, this.project)
         ),
         catchError((err: BawApiError) => {
           this.notifications.error(

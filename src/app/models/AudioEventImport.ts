@@ -57,14 +57,18 @@ export class AudioEventImport
 
   public createViewUrl(projectId: Id<Project>): string {
     return annotationImportRoute.format({
+      // @ts-expect-error: strict mode fix
       annotationId: this.id,
+      // @ts-expect-error: strict mode fix
       projectId,
     });
   }
 
   public createAddAnnotationsUrl(projectId: Id<Project>): string {
     return addAnnotationImportRoute.format({
+      // @ts-expect-error: strict mode fix
       annotationId: this.id,
+      // @ts-expect-error: strict mode fix
       projectId,
     });
   }

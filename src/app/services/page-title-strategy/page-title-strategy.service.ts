@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+﻿import { Injectable, inject } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { RouterStateSnapshot, TitleStrategy } from "@angular/router";
 import { titleCase } from "@helpers/case-converter/case-converter";
@@ -11,7 +11,7 @@ export class PageTitleStrategy extends TitleStrategy {
   private readonly title = inject(Title);
   private readonly config = inject(ConfigService);
 
-  private routerState: RouterStateSnapshot;
+  private routerState!: RouterStateSnapshot;
 
   /**
    * Recursively builds the title from the page route and its parent routes
@@ -62,7 +62,7 @@ export class PageTitleStrategy extends TitleStrategy {
     const brandName = this.config.settings.brand.short;
 
     const rootPageRoute = this.routerState.root.firstChild;
-    const newTitle = this.buildHierarchicalTitle(rootPageRoute.data.pageRoute);
+    const newTitle = this.buildHierarchicalTitle(rootPageRoute!.data.pageRoute);
 
     this.title.setTitle(brandName + newTitle);
   }

@@ -25,8 +25,10 @@ export function ParameterModel<const T extends AbstractModelWithoutId>(
       );
 
       const objectData = {};
+      // @ts-expect-error: strict mode fix
       const objectKeys = Object.keys(deserializedObject);
       for (const key of objectKeys) {
+        // @ts-expect-error: strict mode indexing
         objectData[key] = deserializedObject[key];
       }
 

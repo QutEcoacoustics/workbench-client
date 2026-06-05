@@ -37,6 +37,7 @@ describe("DatatableSortKeyDirective", () => {
         <ngx-datatable-column prop="${sortKey}"></ngx-datatable-column>
       </ngx-datatable>`,
     );
+    // @ts-expect-error: strict mode fix
     assertSortKey(undefined);
   });
 

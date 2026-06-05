@@ -27,7 +27,7 @@ export class DurationComponent extends AbstractTemplateComponent<InputType, Dura
   public update(): void {
     const value = this.value();
 
-    this.isoDateTime = value.toISO();
+    this.isoDateTime = value.toISO()!;
     this.documentText = this.formattedValue(value);
     this.tooltipText = this.tooltipValue(value);
   }
@@ -42,7 +42,7 @@ export class DurationComponent extends AbstractTemplateComponent<InputType, Dura
       const relativePrefix = value.valueOf() < 0 ? "-" : "";
       return relativePrefix + toRelative(value, { largest: 2, round: true });
     } else if (iso8601Format) {
-      return value.toISO();
+      return value.toISO()!;
     } else if (sexagesimalFormat) {
       return value.toFormat(DurationComponent.DURATION_SEXAGESIMAL);
     }

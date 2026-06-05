@@ -40,6 +40,7 @@ export function assertChart(
 
     function axisLabels(axisElement: Element): string[] {
       const labelGroup = axisElement.querySelector(".role-axis-label");
+      // @ts-expect-error: strict mode fix
       const labels = Array.from(labelGroup?.querySelectorAll("text"));
 
       const labelText = labels.map((label) => label.textContent?.trim() ?? "");

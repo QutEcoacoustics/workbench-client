@@ -68,10 +68,11 @@ describe("formTemplate", () => {
 
   function setup(
     componentOptions?: SpectatorRoutingOverrides<MockComponent>,
-    templateProps?: Partial<FormProps<MockModel>>
+    templateProps?: Partial<FormProps<MockModel>>,
   ) {
     // Set new formTemplateOptions without losing reference
     for (const key of Object.keys(formProps)) {
+      // @ts-expect-error: strict mode fix
       delete formProps[key];
     }
     Object.assign(formProps, templateProps);
@@ -82,7 +83,7 @@ describe("formTemplate", () => {
 
   function makeResolvedModel(
     model?: AbstractModel | AbstractModel[],
-    error?: BawApiError
+    error?: BawApiError,
   ): ResolvedModel {
     return model ? { model } : { error };
   }
@@ -90,7 +91,9 @@ describe("formTemplate", () => {
   function createResolvers(resolvers: string[], models: ResolvedModel[]) {
     const routeData = { data: { resolvers: {} } };
     resolvers.forEach((resolver, index) => {
+      // @ts-expect-error: strict mode fix
       routeData.data.resolvers[resolver] = `${resolver}Resolver`;
+      // @ts-expect-error: strict mode fix
       routeData.data[resolver] = models[index];
     });
     return routeData;
@@ -143,8 +146,8 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModel", "mockModels"],
-          [makeResolvedModel(defaultModel), makeResolvedModel([defaultModel])]
-        )
+          [makeResolvedModel(defaultModel), makeResolvedModel([defaultModel])],
+        ),
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
@@ -154,8 +157,8 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModel"],
-          [makeResolvedModel(undefined, defaultError)]
-        )
+          [makeResolvedModel(undefined, defaultError)],
+        ),
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
@@ -168,8 +171,8 @@ describe("formTemplate", () => {
           [
             makeResolvedModel(defaultModel),
             makeResolvedModel(undefined, defaultError),
-          ]
-        )
+          ],
+        ),
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
@@ -197,9 +200,9 @@ describe("formTemplate", () => {
       setup(
         createResolvers(
           ["mockModels", "mockModel"],
-          [makeResolvedModel([defaultModel]), makeResolvedModel(defaultModel)]
+          [makeResolvedModel([defaultModel]), makeResolvedModel(defaultModel)],
         ),
-        { getModel: (models) => models["mockModel"] as MockModel }
+        { getModel: (models) => models["mockModel"] as MockModel },
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeFalsy();
@@ -209,7 +212,7 @@ describe("formTemplate", () => {
     it("should set failure flag if failure to find model", () => {
       setup(
         createResolvers(["mockModels"], [makeResolvedModel(defaultModel)]),
-        { getModel: (models) => models["unknownModel"] as MockModel }
+        { getModel: (models) => models["unknownModel"] as MockModel },
       );
       spec.detectChanges();
       expect(spec.component.failure).toBeTruthy();
@@ -376,6 +379,7 @@ describe("formTemplate", () => {
       const modelData = { id: 1 };
       const successMsg = (model: MockModel) =>
         "custom success message with id: " + model.id;
+      // @ts-expect-error: strict mode fix
       setup(undefined, { successMsg: successMsg });
       stubFormResets();
       spec.detectChanges();
@@ -399,7 +403,7 @@ describe("formTemplate", () => {
   describe("loading", () => {
     beforeEach(() => setup());
 
-    function assertLoading(loading: boolean = true) {
+    function assertLoading(loading = true) {
       if (loading) {
         expect(spec.component.loading).toBeTruthy();
       } else {
@@ -438,25 +442,25 @@ describe("formTemplate", () => {
 describe("defaultSuccessMsg", () => {
   it("should handle model name", () => {
     expect(defaultSuccessMsg("created", "custom name")).toBe(
-      "Successfully created custom name"
+      "Successfully created custom name",
     );
   });
 
   it("should handle created action", () => {
     expect(defaultSuccessMsg("created", "name")).toBe(
-      "Successfully created name"
+      "Successfully created name",
     );
   });
 
   it("should handle updated action", () => {
     expect(defaultSuccessMsg("updated", "name")).toBe(
-      "Successfully updated name"
+      "Successfully updated name",
     );
   });
 
   it("should handle destroyed action", () => {
     expect(defaultSuccessMsg("destroyed", "name")).toBe(
-      "Successfully destroyed name"
+      "Successfully destroyed name",
     );
   });
 });

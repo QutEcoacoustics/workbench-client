@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
@@ -64,9 +64,9 @@ const projectKey = "project";
 class WizardComponent extends PageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
-  public error: boolean;
+  public error!: boolean;
   public isCreating = { site: false, region: false };
-  public project: Project;
+  public project!: Project;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);

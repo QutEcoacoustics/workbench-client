@@ -1,30 +1,30 @@
 import { Location } from "@angular/common";
+import { Component } from "@angular/core";
 import { Router } from "@angular/router";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import { LoginDetails } from "@models/data/LoginDetails";
+import { User } from "@models/User";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
+import { IconsModule } from "@shared/icons/icons.module";
+import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
+import { ToastComponent } from "@shared/toast/toast.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
+import { generateUser } from "@test/fakes/User";
+import { modelData } from "@test/helpers/faker";
 import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
+import { clickButton, getElementByTextContent } from "@test/helpers/html";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { UNAUTHORIZED } from "http-status";
-import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
-import { UserConcent } from "@interfaces/apiInterfaces";
-import { ToastComponent } from "@shared/toast/toast.component";
-import { clickButton, getElementByTextContent } from "@test/helpers/html";
-import { AccountsService } from "@baw-api/account/accounts.service";
-import { ACCOUNT } from "@baw-api/ServiceTokens";
-import { Component } from "@angular/core";
-import { ToastProviderComponent } from "@shared/toast-provider/toast-provider.component";
-import { modelData } from "@test/helpers/faker";
-import { User } from "@models/User";
-import { generateUser } from "@test/fakes/User";
-import { IconsModule } from "@shared/icons/icons.module";
 import { LoginComponent } from "./login.component";
 import schema from "./login.schema.json";
 
@@ -54,13 +54,7 @@ describe("LoginComponent", () => {
 
   const createComponent = createRoutingFactory({
     component: TestHostComponent,
-    imports: [
-      ...testFormImports,
-      IconsModule,
-
-      ToastComponent,
-      FormComponent,
-    ],
+    imports: [...testFormImports, IconsModule, ToastComponent, FormComponent],
     providers: testFormProviders,
   });
 
@@ -82,19 +76,22 @@ describe("LoginComponent", () => {
 
   function typeInForm(
     username = modelData.internet.userName(),
-    password = modelData.internet.password()
+    password = modelData.internet.password(),
   ): void {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(username, usernameField());
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(password, passwordField());
     spec.detectChanges();
   }
 
   function submitForm(): void {
+    // @ts-expect-error: strict mode fix
     clickButton(spec, submitButton());
     spec.detectChanges();
   }
 
-  function isSignedIn(signedIn: boolean = true) {
+  function isSignedIn(signedIn = true) {
     spyOnProperty(session, "isLoggedIn").and.callFake(() => signedIn);
   }
 
@@ -121,7 +118,7 @@ describe("LoginComponent", () => {
 
     session = spec.inject(BawSessionService);
     spyOnProperty(session, "currentUser").and.returnValue(
-      new User(generateUser())
+      new User(generateUser()),
     );
 
     notifications = spec.inject(ToastService);
@@ -150,9 +147,9 @@ describe("LoginComponent", () => {
       () =>
         generateBawApiError(
           UNAUTHORIZED,
-          "Incorrect user name, email, or password."
+          "Incorrect user name, email, or password.",
         ),
-      true
+      true,
     );
     spyOn(api, "signIn").and.callFake(() => subject);
     return promise;
@@ -197,15 +194,16 @@ describe("LoginComponent", () => {
       spyOn(api, "signIn").and.callThrough();
       spec.detectChanges();
 
-      component().submit({ login: "username", password: "password" });
+      component()!.submit({ login: "username", password: "password" });
       expect(api.signIn).toHaveBeenCalledWith(
-        new LoginDetails({ login: "username", password: "password" })
+        new LoginDetails({ login: "username", password: "password" }),
       );
     });
   });
 
   describe("redirection", () => {
     function redirectUser() {
+      // @ts-expect-error: strict mode fix
       component()["opts"].redirectUser(undefined);
     }
 
@@ -289,7 +287,7 @@ describe("LoginComponent", () => {
 
       expect(router.navigateByUrl).not.toHaveBeenCalled();
       expect(notifications.error).toHaveBeenCalledWith(
-        "Unable to redirect back to previous page"
+        "Unable to redirect back to previous page",
       );
     });
 
@@ -312,7 +310,7 @@ describe("LoginComponent", () => {
       isSignedIn(true);
       spec.detectChanges();
       expect(notifications.error).toHaveBeenCalledWith(
-        "You are already logged in."
+        "You are already logged in.",
       );
     });
   });
@@ -390,22 +388,25 @@ describe("LoginComponent", () => {
       });
 
       it("should not make any api calls if the toast is dismissed without a response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsDismissButton());
         expect(accountSpy.optInContactable).not.toHaveBeenCalled();
         expect(accountSpy.optOutContactable).not.toHaveBeenCalled();
       });
 
       it("should make the correct api calls for a 'yes' response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsYesButton());
         expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
+          session.currentUser.id,
         );
       });
 
       it("should make the correct api calls for a 'no' response", () => {
+        // @ts-expect-error: strict mode fix
         clickButton(spec, communicationsNoButton());
         expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
-          session.currentUser.id
+          session.currentUser.id,
         );
       });
     });

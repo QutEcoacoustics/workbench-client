@@ -96,6 +96,7 @@ describe("AudioRecordingsService", () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const snakeCaseFilter = { filter: { duration_seconds: { eq: 10 } } };
 
+      // @ts-expect-error: strict mode fix
       setAuthToken(undefined);
       const expectation =
         downloadUrl + filterQsp + toBase64Url(JSON.stringify(snakeCaseFilter));
@@ -116,6 +117,7 @@ describe("AudioRecordingsService", () => {
     });
 
     it("should not set auth token if not logged in", () => {
+      // @ts-expect-error: strict mode fix
       setAuthToken(undefined);
       const expectation =
         downloadUrl + filterQsp + toBase64Url(JSON.stringify({}));

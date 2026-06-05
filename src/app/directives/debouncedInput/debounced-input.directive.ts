@@ -28,7 +28,7 @@ export class DebouncedInputDirective
   @HostListener("input", ["$event"])
   protected onKeydown(event: KeyboardEvent) {
     const target = event.target;
-    if (typeof event !== "object" || !("value" in target)) {
+    if (typeof event !== "object" || !("value" in target!)) {
       console.warn("bawDebouncedInput must attach to an element with 'value'");
       return;
     }

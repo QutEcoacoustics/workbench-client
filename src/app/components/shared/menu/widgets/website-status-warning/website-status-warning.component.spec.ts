@@ -1,13 +1,13 @@
-import { Spectator, createComponentFactory } from "@ngneat/spectator";
+import { ActivatedRoute } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { WebsiteStatusService } from "@baw-api/website-status/website-status.service";
-import { MockProvider } from "ng-mocks";
-import { of } from "rxjs";
+import { KeysOfType } from "@helpers/advancedTypes";
 import { WebsiteStatus } from "@models/WebsiteStatus";
+import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { generateWebsiteStatus } from "@test/fakes/WebsiteStatus";
 import { mockActivatedRoute } from "@test/helpers/testbed";
-import { ActivatedRoute } from "@angular/router";
-import { KeysOfType } from "@helpers/advancedTypes";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { MockProvider } from "ng-mocks";
+import { of } from "rxjs";
 import { WebsiteStatusWarningComponent } from "./website-status-warning.component";
 
 describe("WebsiteCapabilityWarningComponent", () => {
@@ -28,7 +28,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
   function setup(
     mockWebsiteStatus = new WebsiteStatus(generateWebsiteStatus()),
     feature?: KeysOfType<WebsiteStatus, boolean>,
-    message: string = ""
+    message = "",
   ): void {
     spectator = createComponent({ detectChanges: false });
 
@@ -37,6 +37,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
 
     jasmine.clock().install();
 
+    // @ts-expect-error: strict mode fix
     spectator.component.feature = feature;
     spectator.component.message = message;
 
@@ -56,15 +57,16 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const goodWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      })
+      }),
     );
 
     const badWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Dead",
-      })
+      }),
     );
 
+    // @ts-expect-error: strict mode fix
     setup(goodWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).not.toExist();
@@ -79,15 +81,16 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const goodWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      })
+      }),
     );
 
     const badWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Dead",
-      })
+      }),
     );
 
+    // @ts-expect-error: strict mode fix
     setup(badWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).toExist();
@@ -102,9 +105,10 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const mockWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         upload: "Alive",
-      })
+      }),
     );
 
+    // @ts-expect-error: strict mode fix
     setup(mockWebsiteStatus, "isUploadingHealthy", "upload audio");
 
     expect(warningMessage()).not.toExist();
@@ -114,9 +118,10 @@ describe("WebsiteCapabilityWarningComponent", () => {
     const mockWebsiteStatus = new WebsiteStatus(
       generateWebsiteStatus({
         storage: "No audio recording storage directories are available.",
-      })
+      }),
     );
 
+    // @ts-expect-error: strict mode fix
     setup(mockWebsiteStatus, "isStorageHealthy", "download audio");
 
     expect(warningMessage()).toExist();

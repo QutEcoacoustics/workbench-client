@@ -47,9 +47,11 @@ describe("titleComponent", () => {
   }
 
   const getHarvestTitle = (): HTMLElement =>
+    // @ts-expect-error: strict mode fix
     spectator.query("form");
 
   const getNameEditButton = (): HTMLElement =>
+    // @ts-expect-error: strict mode fix
     spectator.query("sub");
 
   const getNameEditInput = (): HTMLInputElement =>
@@ -73,6 +75,7 @@ describe("titleComponent", () => {
   });
 
   it("should not attempt to load the harvest name when a Harvest model is not initialized", () => {
+    // @ts-expect-error: strict mode fix
     mockHarvest = undefined;
     setup();
 
@@ -93,6 +96,7 @@ describe("titleComponent", () => {
     tick();
     spectator.detectChanges();
 
+    // @ts-expect-error: strict mode fix
     expect(nameEditInput.value).toEqual(mockHarvest.name);
   }));
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   projectResolvers,
@@ -45,7 +45,7 @@ class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
   protected readonly router: Router;
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -54,7 +54,7 @@ class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[projectKey] as Project,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   
@@ -72,6 +72,7 @@ class ProjectEditComponent extends FormTemplate<Project> implements OnInit {
 
     this.title = `Edit ${this.model.name}`;
 
+    // @ts-expect-error: strict mode fix
     if (!this.model.can("updateAllowAudioUpload").can) {
       this.fields = this.fields.filter(
         (field) => field.key !== "allowAudioUpload"

@@ -28,6 +28,7 @@ export class InlineListComponent {
 
   protected itemText(item: AbstractModel): string {
     if (isInstantiated(this.itemKey())) {
+      // @ts-expect-error: strict mode fix
       return item[this.itemKey()];
     }
 

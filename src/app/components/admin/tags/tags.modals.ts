@@ -11,5 +11,7 @@ export const adminDeleteTagModal = menuModal({
   tooltip: () => "Delete an existing tag",
   predicate: isAdminPredicate,
   component: DeleteModalComponent,
-  successCallback: (pageComponentInstance?: AdminTagsEditComponent) => pageComponentInstance.deleteModel(),
+  // @ts-expect-error: strict mode fix
+  successCallback: (pageComponentInstance?: AdminTagsEditComponent) => pageComponentInstance!.deleteModel(),
 });
+

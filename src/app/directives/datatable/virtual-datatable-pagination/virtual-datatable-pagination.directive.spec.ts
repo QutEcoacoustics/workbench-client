@@ -57,13 +57,13 @@ describe("bawVirtualDatatablePagination", () => {
     // it works because parseInt will ignore any non-numeric characters
     // because the page-count element will display text like "50 total", the
     // parseInt will only return the number (50 in the example)
-    return parseInt(totalCountOutput.textContent);
+    return parseInt(totalCountOutput!.textContent);
   }
 
   function getTotalPagesCount(): number {
     const pageNumbers = spec.queryAll(".pages");
     const lastPage = pageNumbers.at(-1);
-    return parseInt(lastPage.textContent);
+    return parseInt(lastPage!.textContent);
   }
 
   function getRowValues(row: number): HTMLElement[] {

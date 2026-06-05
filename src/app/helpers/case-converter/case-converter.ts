@@ -22,7 +22,7 @@ const convertCase = (
 
   // Prevent conversion of periods (.)
   function converterFn(valToConvert?: string): string {
-    return valToConvert
+    return valToConvert!
       .split(".")
       .map((split) => callback(split))
       .join(".");
@@ -111,6 +111,7 @@ type ToSnakeCase<T> = T extends `${infer A}${infer B}${infer C}`
  * @param obj Object to convert
  */
 export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
+  // @ts-expect-error: strict mode fix
   convertCase(obj, camelCase);
 
 /**
@@ -119,6 +120,7 @@ export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
  * @param obj Object to convert
  */
 export const toSnakeCase = <T>(obj: T): ToSnakeCase<T> =>
+  // @ts-expect-error: strict mode fix
   convertCase(obj, snakeCase);
 
 // TODO Type this function similar to camel and snake case

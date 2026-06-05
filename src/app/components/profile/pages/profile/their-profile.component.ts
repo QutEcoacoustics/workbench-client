@@ -58,7 +58,7 @@ class TheirProfileComponent extends MyProfileComponent implements OnInit {
       return;
     }
 
-    this.user = accountModel.model;
+    this.user = accountModel.model!;
     this.updateUserProfile(this.user);
 
     if (this.user.isGhost) {

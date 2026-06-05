@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Purpose of this file is to create a disconnect between the services
  * and being able to call them from the models. If the disconnect does not
  * exist, when you attempt to add association loading to the model it
@@ -114,8 +114,8 @@ export class ServiceToken<
   Params extends any[] = []
 > {
   public kind: Readonly<string>;
-  public model: Child;
-  public params: Params;
+  public model!: Child;
+  public params!: Params;
   public token: InjectionToken<Service>;
 
   public constructor(_desc: string) {

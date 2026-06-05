@@ -2,8 +2,14 @@ import { fakeAsync } from "@angular/core/testing";
 import { Direction, Filters } from "@baw-api/baw-api.service";
 import { MockModel } from "@models/AbstractModel.spec";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
-import { DatatableComponent, NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { selectDatatablePage, sortDatatableByColumn } from "@test/helpers/datatable";
+import {
+  DatatableComponent,
+  NgxDatatableModule,
+} from "@swimlane/ngx-datatable";
+import {
+  selectDatatablePage,
+  sortDatatableByColumn,
+} from "@test/helpers/datatable";
 import { modelData } from "@test/helpers/faker";
 import { BehaviorSubject, delay, Observable, of } from "rxjs";
 import { DatatableDefaultsDirective } from "../defaults/defaults.directive";
@@ -27,7 +33,7 @@ describe("DatatablePaginationDirective", () => {
     modelOpts: {
       numModels: number;
       totalModels?: number;
-    } = { numModels: 1 }
+    } = { numModels: 1 },
   ): void {
     const models: MockModel[] = [];
     for (let i = 0; i < modelOpts.numModels; i++) {
@@ -48,7 +54,7 @@ describe("DatatablePaginationDirective", () => {
   function setup(
     props: Partial<DatatablePaginationDirective<MockModel>>,
     columns: { prop: string; sortKey?: string }[] = [{ prop: "id" }],
-    detectChanges: boolean = true
+    detectChanges = true,
   ): void {
     const columnsHtml = columns
       .map(
@@ -56,7 +62,7 @@ describe("DatatablePaginationDirective", () => {
           `<ngx-datatable-column
             prop="${column.prop}"
             ${column.sortKey ? `sortKey="${column.sortKey}"` : ""}
-          ></ngx-datatable-column>`
+          ></ngx-datatable-column>`,
       )
       .join("");
 
@@ -67,7 +73,7 @@ describe("DatatablePaginationDirective", () => {
         [bawDatatablePagination]="{ filters: filters, getModels: getModels }"
       >${columnsHtml}</ngx-datatable>
     `,
-      { hostProps: props, detectChanges }
+      { hostProps: props, detectChanges },
     );
   }
 
@@ -82,7 +88,7 @@ describe("DatatablePaginationDirective", () => {
 
   function getRowValues(row: number): HTMLElement[] {
     return spec.queryAll(
-      `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`
+      `datatable-row-wrapper:nth-child(${row + 1}) datatable-body-cell`,
     );
   }
 
@@ -97,7 +103,7 @@ describe("DatatablePaginationDirective", () => {
       defaultModels.forEach((model, index) => {
         const row = getRowValues(index);
         expect(row).toHaveLength(1);
-        expect(row[0]).toHaveText(model.id.toString());
+        expect(row[0]).toHaveText(model.id!.toString());
       });
     });
 
@@ -113,7 +119,8 @@ describe("DatatablePaginationDirective", () => {
       defaultModels.forEach((model, index) => {
         const row = getRowValues(index);
         expect(row).toHaveLength(2);
-        expect(row[0]).toHaveText(model.id.toString());
+        expect(row[0]).toHaveText(model.id!.toString());
+        // @ts-expect-error: strict mode fix
         expect(row[1]).toHaveText(model["name"].toString());
       });
     });
@@ -123,7 +130,8 @@ describe("DatatablePaginationDirective", () => {
     const delayMs = 10000;
 
     function assertLoading(isLoading: boolean) {
-      expect(spec.query(DatatableComponent).loadingIndicator).toBe(isLoading);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).loadingIndicator).toBe(isLoading);
     }
 
     function flushGetModels() {
@@ -133,7 +141,11 @@ describe("DatatablePaginationDirective", () => {
     it("should return false by default", () => {
       generateModels();
       // Turn off change detection so that we get the initial value
-      setup({ filters: {} as any, getModels: getModels(delayMs) } as any, undefined, false);
+      setup(
+        { filters: {} as any, getModels: getModels(delayMs) } as any,
+        undefined,
+        false,
+      );
       assertLoading(false);
     });
 
@@ -182,14 +194,16 @@ describe("DatatablePaginationDirective", () => {
     it("should return false when models returned", fakeAsync(() => {
       generateModels();
       // Delay getting models so that loading will still be set
-      setup({ filters: {} , getModels: getModels(delayMs) } as any);
+      setup({ filters: {}, getModels: getModels(delayMs) } as any);
       assertLoading(true);
       flushGetModels();
       assertLoading(false);
     }));
 
     it("should only emit one api request when loaded", fakeAsync(() => {
-      const mockGetModels = jasmine.createSpy("getModels").and.callFake(() => of(defaultModels));
+      const mockGetModels = jasmine
+        .createSpy("getModels")
+        .and.callFake(() => of(defaultModels));
 
       generateModels();
       setup({ filters: {}, getModels: mockGetModels } as any);
@@ -202,7 +216,8 @@ describe("DatatablePaginationDirective", () => {
 
   describe("total", () => {
     function assertTotal(total: number) {
-      expect(spec.query(DatatableComponent).count).toBe(total);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).count).toBe(total);
     }
 
     it("should initially be 0", () => {
@@ -228,7 +243,8 @@ describe("DatatablePaginationDirective", () => {
   describe("page", () => {
     function assertPage(page: number) {
       // Offset is the current page number, minus one
-      expect(spec.query(DatatableComponent).offset).toBe(page - 1);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(DatatableComponent).offset).toBe(page - 1);
     }
 
     it("should update on page event", () => {
@@ -281,7 +297,7 @@ describe("DatatablePaginationDirective", () => {
           ></ngx-datatable-column>
         </ngx-datatable>
       `,
-        { hostProps: { filters: {}, getModels: getModels() } }
+        { hostProps: { filters: {}, getModels: getModels() } },
       );
       sortDatatableByColumn(spec, 0);
       assertSort("sortKey");
@@ -298,7 +314,7 @@ describe("DatatablePaginationDirective", () => {
           <ngx-datatable-column prop="id"></ngx-datatable-column>
         </ngx-datatable>
       `,
-        { hostProps: { filters: {}, getModels: getModels() } }
+        { hostProps: { filters: {}, getModels: getModels() } },
       );
       sortDatatableByColumn(spec, 0);
       assertSort("id");
@@ -320,7 +336,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ prop: "id" }],
           },
-        }
+        },
       );
       sortDatatableByColumn(spec, 0);
       assertSort("id");
@@ -342,7 +358,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ name: "Id" }],
           },
-        }
+        },
       );
       sortDatatableByColumn(spec, 0);
       assertSort("id");
@@ -364,7 +380,7 @@ describe("DatatablePaginationDirective", () => {
             getModels: getModels(),
             columns: [{ name: "Id", sortKey: "sortKey" }],
           },
-        }
+        },
       );
       sortDatatableByColumn(spec, 0);
       assertSort("sortKey");

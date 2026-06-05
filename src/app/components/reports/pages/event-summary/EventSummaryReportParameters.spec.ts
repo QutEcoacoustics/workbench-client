@@ -131,6 +131,7 @@ describe("EventSummaryReportParameters", () => {
 
     // we have to use manual access because these fields are not and should not be a part of the class structure
     expect(dataModel["time"]).toBeUndefined();
+    // @ts-expect-error: strict mode fix
     expect(dataModel["error"]).toBeUndefined();
   });
 });

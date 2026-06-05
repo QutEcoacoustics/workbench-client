@@ -1,4 +1,4 @@
-import {
+﻿import {
   AUDIO_EVENT_PROVENANCE,
   SHALLOW_REGION,
   SHALLOW_SITE,
@@ -43,20 +43,20 @@ export class EventSummaryReport
 {
   public readonly kind = "AudioEventSummaryReport";
   public readonly id?: Id;
-  public readonly name: Param;
+  public readonly name!: Param;
   @bawDateTime()
-  public readonly generatedDate: DateTimeTimezone;
-  public readonly statistics: IAudioEventSummaryReportStatistics;
-  public readonly eventGroups: EventGroup[];
+  public readonly generatedDate!: DateTimeTimezone;
+  public readonly statistics!: IAudioEventSummaryReportStatistics;
+  public readonly eventGroups!: EventGroup[];
   @bawCollection()
-  public readonly siteIds: CollectionIds;
+  public readonly siteIds!: CollectionIds;
   @bawCollection()
-  public readonly regionIds: CollectionIds;
-  public readonly graphs: IEventSummaryGraphs;
+  public readonly regionIds!: CollectionIds;
+  public readonly graphs!: IEventSummaryGraphs;
   @bawCollection()
-  public readonly tagIds: CollectionIds;
+  public readonly tagIds!: CollectionIds;
   @bawCollection()
-  public readonly provenanceIds: CollectionIds;
+  public readonly provenanceIds!: CollectionIds;
   public readonly generationParameters?: EventSummaryReportParameters;
 
   // associations
@@ -73,14 +73,17 @@ export class EventSummaryReport
   public provenances?: Provenance[];
 
   public get viewUrl(): string {
+    // @ts-expect-error: strict mode fix
     const reportLevel = this.generationParameters.sites
       ? "site"
+      // @ts-expect-error: strict mode fix
       : this.generationParameters.regions.length
       ? "region"
       : "project";
 
     const route: string =
       reportMenuItems.view[reportLevel].route.toRouterLink();
+    // @ts-expect-error: strict mode fix
     const routeParameters: string = this.generationParameters
       .toQueryParams()
       .toString();

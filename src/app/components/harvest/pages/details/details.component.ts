@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+﻿import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { harvestResolvers } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -57,8 +57,8 @@ class HarvestDetailsComponent
   protected readonly stages = inject(HarvestStagesService);
   private readonly route = inject(ActivatedRoute);
 
-  public project: Project;
-  public harvest: Harvest;
+  public project!: Project;
+  public harvest!: Harvest;
 
   public ngOnInit(): void {
     const routeData = this.route.snapshot.data;

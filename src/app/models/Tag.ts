@@ -1,4 +1,4 @@
-import { libraryMenuItem } from "@components/library/library.menus";
+﻿import { libraryMenuItem } from "@components/library/library.menus";
 import {
   DateTimeTimezone,
   HasCreatorAndUpdater,
@@ -60,13 +60,13 @@ export class Tag extends AbstractModel<ITag> implements ITag {
   }
 
   public toString(): string {
-    return this.text;
+    return this.text!;
   }
 }
 
 export class TagType extends AbstractData {
   public readonly kind = "TagType";
-  public readonly name: string;
+  public readonly name!: string;
 
   public constructor(data: { name: string }) {
     super(data);

@@ -1,8 +1,10 @@
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SHALLOW_SITE } from "@baw-api/ServiceTokens";
 import { ConfirmationComponent } from "@components/harvest/components/modal/confirmation.component";
 import { UploadUrlComponent } from "@components/harvest/components/shared/upload-url.component";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestStatus } from "@models/Harvest";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
 import { Site } from "@models/Site";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -11,17 +13,15 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { generateHarvest } from "@test/fakes/Harvest";
 import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { nStepObservable } from "@test/helpers/general";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { ToastService } from "@services/toasts/toasts.service";
 import { Subject } from "rxjs";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BatchUploadingComponent } from "./batch-uploading.component";
 
 describe("BatchUploadingComponent", () => {
@@ -41,7 +41,9 @@ describe("BatchUploadingComponent", () => {
         harvest: undefined,
         startPolling: jasmine.createSpy("start polling") as any,
         stopPolling: jasmine.createSpy("stop polling") as any,
-        transition: (_stage: HarvestStatus) => {},
+        transition: (_stage: HarvestStatus) => {
+          /* noop */
+        },
       }),
     ],
     imports: [
@@ -58,7 +60,7 @@ describe("BatchUploadingComponent", () => {
     project["injector"] = injector;
     harvest["injector"] = injector;
     stages = spec.inject<SpyObject<HarvestStagesService>>(
-      HarvestStagesService as any
+      HarvestStagesService as any,
     );
     // spy needs to be created after createComponent is called and cannot be
     // created inside a mockProvider definition
@@ -75,14 +77,14 @@ describe("BatchUploadingComponent", () => {
   function getModalNextBtn() {
     return spec.query<HTMLButtonElement>(
       "baw-harvest-confirmation-modal #next-btn",
-      { root: true }
+      { root: true },
     );
   }
 
   function getModalCancelBtn() {
     return spec.query<HTMLButtonElement>(
       "baw-harvest-confirmation-modal #cancel-btn",
-      { root: true }
+      { root: true },
     );
   }
 
@@ -90,8 +92,9 @@ describe("BatchUploadingComponent", () => {
     return spec.query("baw-harvest-confirmation-modal", { root: true });
   }
 
-  function launchModal(btnSelector, modalText) {
+  function launchModal(btnSelector: any, modalText: any) {
     const btn = spec.query(btnSelector);
+    // @ts-expect-error: strict mode fix
     spec.click(btn);
     spec.detectChanges();
     const modal = getModal();
@@ -100,13 +103,14 @@ describe("BatchUploadingComponent", () => {
     spec.detectChanges();
   }
 
-  function clickModal(button, callback) {
+  function clickModal(button: any, callback: any) {
     let btn;
     if (button === "cancel") {
       btn = getModalCancelBtn();
     } else {
       btn = getModalNextBtn();
     }
+    // @ts-expect-error: strict mode fix
     spec.click(btn);
     spec.detectChanges();
     const interval = setInterval(() => {
@@ -119,14 +123,14 @@ describe("BatchUploadingComponent", () => {
     }, 50);
   }
 
-  function cancelModal(done) {
+  function cancelModal(done: any) {
     clickModal("cancel", () => {
       expect(stages.transition).not.toHaveBeenCalled();
       done();
     });
   }
 
-  function clickModalNext(callback) {
+  function clickModalNext(callback: any) {
     clickModal("next", callback);
   }
 
@@ -193,7 +197,7 @@ describe("BatchUploadingComponent", () => {
         spec.detectChanges();
         const interval = setInterval(() => {
           spec.detectChanges();
-          if (getCurrentTabBody().textContent.includes(description)) {
+          if (getCurrentTabBody()!.textContent.includes(description)) {
             expect(getCurrentTabBody()).toContainText(description);
             clearInterval(interval);
             done();
@@ -218,7 +222,7 @@ describe("BatchUploadingComponent", () => {
     it("should abort upload when abort is clicked and the 'abort upload' modal button is clicked", (done) => {
       launchModal(
         "#cancel-btn",
-        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone.",
       );
       clickModalNext(() => {
         expect(stages.transition).toHaveBeenCalledWith("complete");
@@ -237,7 +241,7 @@ describe("BatchUploadingComponent", () => {
     it("should launch and cancel modal when 'cancel' button is clicked and then 'return' is clicked", (done) => {
       launchModal(
         "#cancel-btn",
-        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone."
+        "Are you sure you want to abort this upload? Aborting will not process any uploaded files, and cannot be undone.",
       );
       cancelModal(done);
     });

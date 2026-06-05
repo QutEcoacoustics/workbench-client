@@ -1,4 +1,4 @@
-import { Directive, Input, OnChanges, inject } from "@angular/core";
+﻿import { Directive, Input, OnChanges, inject } from "@angular/core";
 import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 
 @Directive({
@@ -8,13 +8,14 @@ import { DataTableColumnDirective } from "@swimlane/ngx-datatable";
 export class DatatableSortKeyDirective implements OnChanges {
   private readonly column = inject(DataTableColumnDirective, { host: true });
 
-  @Input() public sortKey: string;
+  @Input() public sortKey!: string;
 
   public ngOnChanges(): void {
     // We use the square bracket notation that bypasses type checking because
     // the sortKey is custom property that we add to ngx-datatable columns that
     // does not exist on the normal column type definition.
     // We use this sortKey property inside of our custom pagination.directive
+    // @ts-expect-error: strict mode indexing
     this.column["sortKey"] = this.sortKey;
   }
 }

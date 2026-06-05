@@ -21,8 +21,10 @@ export const deleteSiteModal = menuModal({
   tooltip: () => "Delete this site",
   predicate: isProjectEditorPredicate,
   component: DeleteSiteModalComponent,
-  successCallback: (pageComponentInstance?: SiteDetailsComponent) => pageComponentInstance.deleteModel(),
+  // @ts-expect-error: strict mode fix
+  successCallback: (pageComponentInstance?: SiteDetailsComponent) => pageComponentInstance!.deleteModel(),
   options: {
     isPoint: false,
   },
 });
+

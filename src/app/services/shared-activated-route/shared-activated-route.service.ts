@@ -1,4 +1,4 @@
-import { Injectable, Type, inject } from "@angular/core";
+﻿import { Injectable, Type, inject } from "@angular/core";
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -35,15 +35,15 @@ import {
  */
 @Injectable({ providedIn: "root" })
 export class SharedActivatedRouteService extends withUnsubscribe() {
-  private currentActivatedRoute: ActivatedRoute;
-  private _activatedRoute: BehaviorSubject<ActivatedRoute>;
+  private currentActivatedRoute!: ActivatedRoute;
+  private _activatedRoute!: BehaviorSubject<ActivatedRoute>;
   private _url: Observable<UrlSegment[]>;
   private _params: Observable<Params>;
   private _queryParams: Observable<Params>;
   private _fragment: Observable<string | null>;
   private _data: Observable<Data>;
   private _component: Observable<Type<any> | string | null>;
-  private _pageComponentInstance: PageComponent;
+  private _pageComponentInstance!: PageComponent;
   private _snapshot: Observable<ActivatedRouteSnapshot>;
 
   public constructor() {

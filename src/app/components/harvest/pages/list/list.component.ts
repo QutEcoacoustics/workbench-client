@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Filters } from "@baw-api/baw-api.service";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
@@ -57,8 +57,8 @@ class HarvestListComponent extends PageComponent implements OnInit {
   private readonly notifications = inject(ToastService);
 
   public contactUs = contactUsMenuItem;
-  public filters$: BehaviorSubject<Filters<Harvest>>;
-  public canCreateHarvestCapability: boolean;
+  public filters$!: BehaviorSubject<Filters<Harvest>>;
+  public canCreateHarvestCapability!: boolean;
 
   // this is in a getter so that we can override it in the AllUploadsComponent
   public get project(): Project {
@@ -76,6 +76,7 @@ class HarvestListComponent extends PageComponent implements OnInit {
 
     // A BehaviorSubject is need on filters$ to update the ngx-datatable harvest list & models
     // The this.filters$ is triggered in abortUpload()
+    // @ts-expect-error: strict mode fix
     this.filters$ = new BehaviorSubject({
       sorting: {
         direction: "desc",
@@ -106,6 +107,7 @@ class HarvestListComponent extends PageComponent implements OnInit {
       this.harvestsApi
         .transitionStatus(harvest, "complete")
         .pipe(
+          // @ts-expect-error: strict mode fix
           catchError((err: BawApiError) => {
             if (err.status !== CLIENT_TIMEOUT) {
               return throwError(() => err);

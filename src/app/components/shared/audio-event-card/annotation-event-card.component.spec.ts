@@ -158,6 +158,7 @@ describe("AnnotationEventCardComponent", () => {
         audioRecording: mockAudioRecording,
         tags: [mockTag],
         verificationSummary: mockVerificationSummary,
+        // @ts-expect-error: strict mode fix
         score: null,
       }),
       injector,
@@ -168,13 +169,16 @@ describe("AnnotationEventCardComponent", () => {
     expect(noScoreElement()).toHaveExactText("No score available");
   });
 
-  xit("should be able to play the spectrogram", () => {});
+  xit("should be able to play the spectrogram", () => {
+    pending();
+  });
 
   describe("tag info", () => {
     it("should have the tag text and link", () => {
       // We use toHaveExactText here instead of toHaveExactTrimmedText because
       // if there is any leading or trailing whitespace, the underline will
       // appear to extend beyond the text, which looks bad.
+      // @ts-expect-error: strict mode fix
       expect(tagInfoContainer()).toHaveExactText(mockTag.text);
 
       const expectedLinks = mockAnnotation.tags.map((tag) => tag.viewUrl);

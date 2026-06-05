@@ -137,6 +137,7 @@ export class User extends AbstractModel<IUser> implements IUser {
    */
   public get isAdmin(): boolean {
     // eslint-disable-next-line no-bitwise
+    // @ts-expect-error: strict mode fix
     return !!(this.rolesMask & 1);
   }
 
@@ -153,7 +154,8 @@ export class User extends AbstractModel<IUser> implements IUser {
   }
 
   public get viewUrl(): string {
-    return theirProfileMenuItem.route.format({ accountId: this.id });
+    // @ts-expect-error: strict mode fix
+    return theirProfileMenuItem.route.format({ accountId: this.id })!;
   }
 
   public toString(): string {

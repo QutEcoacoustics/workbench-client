@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -53,18 +53,18 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   /** Time increments in seconds */
   @Input() public increment = 1800;
   /** Label next to input */
-  @Input() public label: string;
+  @Input() public label!: string;
   /** Is input required */
   @Input() public required = false;
   /** Is input disabled */
   @Input() public disabled = false;
 
   /** Current value */
-  public value: Duration;
+  public value!: Duration;
   /** Has value been set */
-  public dirty: boolean;
+  public dirty!: boolean;
   /** Has input been touched */
-  public touched: boolean;
+  public touched!: boolean;
 
   /** Potential error messages */
   public errorTypes: Map<string, () => string>;
@@ -72,9 +72,9 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   public inputLength = 5;
 
   /** The formatted value displayed in the input */
-  protected rawValue: string;
+  protected rawValue!: string;
   /** Errors for current input */
-  private _errors: ValidationErrors;
+  private _errors!: ValidationErrors;
 
   public constructor() {
     this.errorTypes = new Map([
@@ -145,10 +145,10 @@ export class TimeComponent implements ControlValueAccessor, Validator {
   public onInput(event: Event): void {
     const rawInputValue = (event.target as HTMLInputElement).value;
     this.rawValue = this.normalizeUserInput(rawInputValue);
-    this._errors = this.validateInput(rawInputValue);
+    this._errors = this.validateInput(rawInputValue)!;
 
     if (!isInstantiated(this.rawValue)) {
-      this.value = null;
+      this.value = null!;
       this.updateChanges();
     }
 
@@ -169,7 +169,7 @@ export class TimeComponent implements ControlValueAccessor, Validator {
 
   public normalizeUserInput(input: string): string {
     if (!input) {
-      return undefined;
+      return undefined!;
     }
 
     let output: string;

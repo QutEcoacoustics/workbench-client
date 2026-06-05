@@ -9,7 +9,7 @@
   "scripts": {
     "ci": "npm ci --force",
     "build": "ng build --configuration production",
-    "lint": "ng lint",
+    "lint": "node --max_old_space_size=16384 ./node_modules/@angular/cli/bin/ng lint",
     "ng": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
     "start": "ng serve --ssl --host development.ecosounds.org",
     "stats": "ng build --configuration development --stats-json && webpack-bundle-analyzer dist/workbench-client/browser/stats.json",
@@ -101,6 +101,7 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
+    "baseline-browser-mapping": "^2.10.33",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.0.2",

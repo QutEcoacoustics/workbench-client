@@ -65,6 +65,7 @@ export class AudioEventImportService implements StandardApi<AudioEventImport> {
   public destroy(
     model: IdOr<AudioEventImport>
   ): Observable<AudioEventImport | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 

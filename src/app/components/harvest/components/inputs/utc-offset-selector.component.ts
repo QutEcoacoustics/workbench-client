@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+﻿import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
@@ -50,7 +50,7 @@ import { FormsModule } from "@angular/forms";
   imports: [NgbTooltip, FaIconComponent, FormsModule]
 })
 export class UTCOffsetSelectorComponent {
-  @Input() public offset: string;
+  @Input() public offset!: string;
   @Output() public offsetChange = new EventEmitter<string>();
 
   public get editTooltip(): string {
@@ -58,7 +58,7 @@ export class UTCOffsetSelectorComponent {
   }
 
   public resetSite(): void {
-    this.offset = null;
+    this.offset = null!;
     this.offsetChange.emit(this.offset);
   }
 

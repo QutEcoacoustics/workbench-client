@@ -38,6 +38,6 @@ export class StrongRouteActiveDirective extends RouterLinkActive {
     const _cdr = inject(ChangeDetectorRef);
     const _link = inject(StrongRouteDirective, { optional: true });
 
-    super(_router, _element, _renderer, _cdr, _link);
+    super(_router, _element, _renderer, _cdr, _link!);
   }
 }

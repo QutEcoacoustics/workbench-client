@@ -19,8 +19,8 @@ import { filterAnd } from "./filters";
  */
 export function filterEventDate(
   filters: InnerFilter<AudioEvent>,
-  minimumDate?: DateTime,
-  maximumDate?: DateTime,
+  minimumDate?: DateTime | null,
+  maximumDate?: DateTime | null,
 ): InnerFilter<AudioEvent> {
   if (minimumDate) {
     const startDateFilter = {
@@ -53,8 +53,8 @@ export function filterEventDate(
 export function filterEventTime(
   filters: InnerFilter<AudioEvent>,
   ignoreDayLightSavings: boolean,
-  minimumTime?: Duration,
-  maximumTime?: Duration,
+  minimumTime?: Duration | null,
+  maximumTime?: Duration | null,
 ): InnerFilter<AudioEvent> {
   // the api expects time filters to be in the format of "hh:mm" (e.g. 08:12)
   // since Luxon's Duration toJSON() method outputs the times in the ISO 8601 period format (e.g. P23DT23H)

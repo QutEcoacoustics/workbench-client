@@ -10,7 +10,11 @@ describe("isInstantiated", () => {
     expect(isInstantiated(false)).toBeTrue();
     expect(isInstantiated({})).toBeTrue();
     expect(isInstantiated([])).toBeTrue();
-    expect(isInstantiated(() => {})).toBeTrue();
+    expect(
+      isInstantiated(() => {
+        /* noop */
+      }),
+    ).toBeTrue();
     expect(isInstantiated(new Date())).toBeTrue();
     expect(isInstantiated(NaN)).toBeTrue();
   });

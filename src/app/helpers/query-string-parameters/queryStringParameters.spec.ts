@@ -31,6 +31,7 @@ describe("queryStringParameters", () => {
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
+      // @ts-expect-error: strict mode fix
       const result = serializeObjectToParams(testInput, testSpec);
 
       expect(result).toEqual(expectedOutput);
@@ -41,6 +42,7 @@ describe("queryStringParameters", () => {
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
+      // @ts-expect-error: strict mode fix
       const result = serializeObjectToParams(testInput, testSpec);
 
       expect(result).toEqual(expectedOutput);
@@ -182,6 +184,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty object when deserializing a null value", () => {
+      // @ts-expect-error: strict mode fix
       const testInput: Params = null;
       const expectedOutput = {};
       const testSpec: IQueryStringParameterSpec = {};
@@ -192,6 +195,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty object when deserializing an undefined value", () => {
+      // @ts-expect-error: strict mode fix
       const testInput: Params = undefined;
       const expectedOutput = {};
       const testSpec: IQueryStringParameterSpec = {};
@@ -280,7 +284,9 @@ describe("queryStringParameters", () => {
 
       const result = deserializeParamsToObject(testInput, testSpec);
 
+      // @ts-expect-error: strict mode fix
       expect(result["time"][0]).toBeNull();
+      // @ts-expect-error: strict mode fix
       expect(result["time"][1].toFormat("hh:mm")).toEqual("12:12");
     });
 
@@ -294,6 +300,7 @@ describe("queryStringParameters", () => {
       };
 
       const result = deserializeParamsToObject(testInput, testSpec);
+      // @ts-expect-error: strict mode fix
       expect(result["badId"]).toBeNull();
     });
   });

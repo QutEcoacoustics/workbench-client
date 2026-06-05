@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { HarvestsService } from "@baw-api/harvest/harvest.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
@@ -29,8 +29,8 @@ class HarvestNewComponent extends PageComponent implements OnInit {
   private readonly notifications = inject(ToastService);
   private readonly harvestApi = inject(HarvestsService);
 
-  public loading: boolean;
-  public project: Project;
+  public loading!: boolean;
+  public project!: Project;
 
   public ngOnInit(): void {
     this.project = this.route.snapshot.data[projectKey].model;
@@ -54,7 +54,9 @@ class HarvestNewComponent extends PageComponent implements OnInit {
         this.loading = false;
         this.router.navigateByUrl(
           harvestRoute.toRouterLink({
+            // @ts-expect-error: strict mode fix
             projectId: this.project.id,
+            // @ts-expect-error: strict mode fix
             harvestId: harvest.id,
           })
         );

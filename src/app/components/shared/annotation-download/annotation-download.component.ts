@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
   hasResolvedSuccessfully,
@@ -96,7 +96,7 @@ export class AnnotationDownloadComponent
   public fields: FormlyFieldConfig[] = schema.fields;
   public form = new FormGroup({});
   public model: TimezoneModel = { timezone: "UTC" };
-  public project: Project;
+  public project!: Project;
   public region?: Region;
   public site?: Site;
 
@@ -112,7 +112,7 @@ export class AnnotationDownloadComponent
           return;
         }
 
-        this.project = retrieveResolvedModel(pageInfo, Project);
+        this.project = retrieveResolvedModel(pageInfo, Project)!;
         this.region = retrieveResolvedModel(pageInfo, Region);
         this.site = retrieveResolvedModel(pageInfo, Site);
         this.model.timezone = this.site?.tzinfoTz ?? this.model.timezone;
@@ -133,16 +133,18 @@ export class AnnotationDownloadComponent
       return this.siteApi.downloadAnnotations(
         this.site,
         this.region?.projectId ?? this.project,
+        // @ts-expect-error: strict mode fix
         timezone
       );
     } else if (this.region) {
       return this.regionApi.downloadAnnotations(
         this.region,
         this.region?.projectId ?? this.project,
+        // @ts-expect-error: strict mode fix
         timezone
       );
     }
 
-    return this.projectApi.downloadAnnotations(this.project, timezone);
+    return this.projectApi.downloadAnnotations(this.project, timezone!);
   }
 }

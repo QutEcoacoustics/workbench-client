@@ -55,9 +55,9 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
   private readonly router = inject(Router);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
 
-  public fullscreen: boolean;
-  public delayedProgress$: Observable<number>;
-  public resolvedSuccessfully: boolean;
+  public fullscreen!: boolean;
+  public delayedProgress$!: Observable<number>;
+  public resolvedSuccessfully!: boolean;
 
   public constructor() {
     const globals = inject(GlobalsService);
@@ -94,7 +94,7 @@ export class AppComponent extends withUnsubscribe() implements OnInit {
     this.sharedRoute.pageInfo
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((pageInfo): void => {
-        this.fullscreen = pageInfo.fullscreen;
+        this.fullscreen = pageInfo.fullscreen ?? false;
         this.resolvedSuccessfully = hasResolvedSuccessfully(
           retrieveResolvers(pageInfo)
         );

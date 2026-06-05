@@ -1,4 +1,4 @@
-import { MEDIA } from "@baw-api/ServiceTokens";
+﻿import { MEDIA } from "@baw-api/ServiceTokens";
 import { annotationMenuItem } from "@components/library/library.menus";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
 import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
@@ -30,47 +30,49 @@ export class Annotation
   implements IAnnotation
 {
   public readonly kind = "Audio Event";
-  public readonly id: number;
-  public readonly audioRecordingId: number;
-  public readonly startTimeSeconds: number;
-  public readonly endTimeSeconds: number;
-  public readonly lowFrequencyHertz: number;
-  public readonly highFrequencyHertz: number;
-  public readonly isReference: boolean;
-  public readonly provenanceId: number;
-  public readonly score: number;
-  public readonly durationSeconds: number;
-  public readonly channel: number;
-  public readonly audioEventImportFileId: number;
+  public readonly id!: number;
+  public readonly audioRecordingId!: number;
+  public readonly startTimeSeconds!: number;
+  public readonly endTimeSeconds!: number;
+  public readonly lowFrequencyHertz!: number;
+  public readonly highFrequencyHertz!: number;
+  public readonly isReference!: boolean;
+  public readonly provenanceId!: number;
+  public readonly score!: number;
+  public readonly durationSeconds!: number;
+  public readonly channel!: number;
+  public readonly audioEventImportFileId!: number;
 
   @bawSubModelCollection(Tag)
-  public readonly tags: Tag[];
-  public readonly taggings: Tagging[];
-  public readonly audioRecording: AudioRecording;
+  public readonly tags!: Tag[];
+  public readonly taggings!: Tagging[];
+  public readonly audioRecording!: AudioRecording;
 
-  public readonly creatorId: number;
-  public readonly updaterId: number;
-  public readonly deleterId: number;
+  public readonly creatorId!: number;
+  public readonly updaterId!: number;
+  public readonly deleterId!: number;
 
   @bawDateTime()
-  public readonly createdAt: DateTimeTimezone;
+  public readonly createdAt!: DateTimeTimezone;
   @bawDateTime()
-  public readonly deletedAt: DateTimeTimezone;
+  public readonly deletedAt!: DateTimeTimezone;
   @bawDateTime()
-  public readonly updatedAt: DateTimeTimezone;
+  public readonly updatedAt!: DateTimeTimezone;
 
-  public readonly corrections: Map<Id<Tag>, Tagging>;
+  public readonly corrections!: Map<Id<Tag>, Tagging>;
 
-  public readonly verificationIds: Ids;
+  public readonly verificationIds!: Ids;
 
+  // @ts-expect-error: strict mode fix
   @bawSubModelCollection(VerificationSummary)
-  public readonly verificationSummary: VerificationSummary[];
+  public readonly verificationSummary!: VerificationSummary[];
 
   public get tagIds(): Ids {
     return new Set((this.taggings ?? []).map((tagging) => tagging.tagId));
   }
 
   public get mediaService(): MediaService {
+    // @ts-expect-error: strict mode fix
     return this.injector.get(MEDIA.token);
   }
 

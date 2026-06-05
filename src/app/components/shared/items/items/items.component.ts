@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -53,12 +53,10 @@ import { IItem, ItemComponent } from "../item/item.component";
   imports: [ItemComponent],
 })
 export class ItemsComponent implements OnInit, OnChanges {
-  @Input() public items: List<IItem>;
+  @Input() public items!: List<IItem>;
 
-  public groupOne: List<IItem>;
-  public groupTwo: List<IItem>;
-
-  public constructor() {}
+  public groupOne!: List<IItem>;
+  public groupTwo!: List<IItem>;
 
   public ngOnInit() {
     this.ngOnChanges();

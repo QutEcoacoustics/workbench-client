@@ -26,6 +26,7 @@ export function generateProject(data?: Partial<IProject>): Required<IProject> {
     id: modelData.id(),
     name: modelData.param(),
     imageUrls: modelData.imageUrls(),
+    // @ts-expect-error: strict mode fix
     image: undefined,
     accessLevel: modelData.permissionLevel(),
     ownerIds: modelData.ids(),

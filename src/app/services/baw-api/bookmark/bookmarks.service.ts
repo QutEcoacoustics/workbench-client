@@ -52,6 +52,7 @@ export class BookmarksService implements StandardApi<Bookmark> {
   }
 
   public destroy(model: IdOr<Bookmark>): Observable<Bookmark | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 
@@ -66,6 +67,7 @@ export class BookmarksService implements StandardApi<Bookmark> {
     user: IdOr<User>
   ): Observable<Bookmark[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }

@@ -31,6 +31,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   ],
 })
 class AllUploadsComponent extends HarvestListComponent {
+  // @ts-expect-error: strict mode override
   public override get project() {
     return null;
   }

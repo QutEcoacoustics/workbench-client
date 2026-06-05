@@ -57,6 +57,7 @@ export class Bookmark extends AbstractModel<IBookmark> implements IBookmark {
 
   public get viewUrl(): string {
     return listenRecordingMenuItem.route.format(
+      // @ts-expect-error: strict mode fix
       { audioRecordingId: this.audioRecordingId },
       { start: this.offsetSeconds }
     );

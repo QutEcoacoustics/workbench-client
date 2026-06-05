@@ -1,4 +1,8 @@
+import { IdOrName } from "@baw-api/api-common";
+import { Id, Param } from "@interfaces/apiInterfaces";
+import { SiteSetting } from "@models/SiteSetting";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
+import { generateSiteSetting } from "@test/fakes/SiteSetting";
 import {
   mockServiceProviders,
   validateApiCreate,
@@ -7,10 +11,6 @@ import {
   validateApiShow,
   validateApiUpdate,
 } from "@test/helpers/api-common";
-import { SiteSetting } from "@models/SiteSetting";
-import { IdOrName } from "@baw-api/api-common";
-import { generateSiteSetting } from "@test/fakes/SiteSetting";
-import { Id, Param } from "@interfaces/apiInterfaces";
 import { modelData } from "@test/helpers/faker";
 import { SiteSettingsService } from "./site-settings.service";
 
@@ -57,10 +57,12 @@ describe("SiteSettingsService", () => {
     beforeEach(() => {
       const name = hasName ? modelName : undefined;
 
-      model = new SiteSetting(generateSiteSetting({
-        id: modelId,
-        name,
-      }));
+      model = new SiteSetting(
+        generateSiteSetting({
+          id: modelId,
+          name,
+        }),
+      );
     });
 
     validateApiShow<SiteSetting, [IdOrName<SiteSetting>], SiteSettingsService>(
@@ -84,6 +86,7 @@ describe("SiteSettingsService", () => {
       SiteSettingsService
     >(createService, SiteSetting, updateUrl(), () => model, undefined);
 
+    // @ts-expect-error: strict mode fix
     validateApiDestroy<SiteSetting, [], SiteSettingsService>(
       createService,
       updateUrl(),

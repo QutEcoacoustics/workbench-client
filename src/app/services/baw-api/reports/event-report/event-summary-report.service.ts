@@ -231,6 +231,7 @@ export class EventSummaryReportService
 
     // using the api.handleSingleResponse method, we can create a model with the correct injected services
     return of(fakeResponse).pipe(
+      // @ts-expect-error: strict mode fix
       map(this.api.handleSingleResponse(EventSummaryReport))
     );
     // return this.api.filterShow(EventSummaryReport, endpoint(emptyParam, filterParam), filters);

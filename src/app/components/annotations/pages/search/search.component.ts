@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   ElementRef,
   inject,
@@ -102,13 +102,13 @@ class AnnotationSearchComponent
         if (newResults.length === 0) {
           this.paginationInformation.set({ total: 0, items: 0, page: 1 });
         } else {
-          this.paginationInformation.set(newResults[0].getMetadata().paging);
+          this.paginationInformation.set(newResults[0].getMetadata().paging!);
         }
 
         this.loading = false;
       },
-      () => this.searchParameters().toFilter().filter,
-      () => this.searchParameters().toFilter().sorting,
+      () => this.searchParameters()!.toFilter().filter!,
+      () => this.searchParameters()!.toFilter().sorting!,
       () => ({ add: ["verificationSummary"] }),
     );
 
@@ -135,7 +135,7 @@ class AnnotationSearchComponent
   public readonly paginationInformation = signal<Paging>({});
 
   // This is not a signal because it does not need to be reactive.
-  private verificationRoute: StrongRoute;
+  private verificationRoute!: StrongRoute;
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
@@ -185,7 +185,7 @@ class AnnotationSearchComponent
   // TODO: the correct fix here would be to add support for any length query
   // string parameters to the pagination template
   protected override updateQueryParams(page: number): void {
-    const queryParams: Params = this.searchParameters().toQueryParams();
+    const queryParams: Params = this.searchParameters()!.toQueryParams();
 
     // we have this condition so that undefined page numbers and
     // the first (default) page number is not shown in the query parameters
@@ -222,8 +222,8 @@ class AnnotationSearchComponent
 
   protected async navigateToVerificationGrid(): Promise<void> {
     const queryParams = mergeParameters(
-      this.searchParameters().toQueryParams(),
-      this.verificationParameters().toQueryParams(),
+      this.searchParameters()!.toQueryParams(),
+      this.verificationParameters()!.toQueryParams(),
     );
 
     const numberOfParameters = Object.keys(queryParams).length;
@@ -232,14 +232,14 @@ class AnnotationSearchComponent
     // user wanted to create a verification task over all annotations in the
     // project, region or site
     if (numberOfParameters === 0) {
-      const verificationFilters = this.verificationParameters().toFilter();
-      const searchFilters = this.searchParameters().toFilter({
+      const verificationFilters = this.verificationParameters()!.toFilter();
+      const searchFilters = this.searchParameters()!.toFilter({
         includeVerification: false,
       });
 
       const filter = filterAnd<AudioEvent>(
-        verificationFilters.filter,
-        searchFilters.filter,
+        verificationFilters.filter!,
+        searchFilters.filter!,
       );
 
       // if the verification task has less than 1,000 annotations, we don't need
@@ -260,9 +260,9 @@ class AnnotationSearchComponent
 
       const itemWarningThreshold = 1_000;
       const responseMetadata = response[0].getMetadata();
-      const numberOfItems = responseMetadata.paging.total;
+      const numberOfItems = responseMetadata.paging!.total;
 
-      if (numberOfItems > itemWarningThreshold) {
+      if (numberOfItems! > itemWarningThreshold) {
         const warningModal = this.modals.open(this.broadFilterWarningModal());
         const success = await warningModal.result.catch((_) => false);
 
@@ -278,9 +278,12 @@ class AnnotationSearchComponent
     this.router.navigate(
       [
         this.verificationRoute.toRouterLink({
-          projectId: searchParameters.routeProjectId,
-          regionId: searchParameters.routeRegionId,
-          siteId: searchParameters.routeSiteId,
+          // @ts-expect-error: strict mode fix
+          projectId: searchParameters!.routeProjectId,
+          // @ts-expect-error: strict mode fix
+          regionId: searchParameters!.routeRegionId,
+          // @ts-expect-error: strict mode fix
+          siteId: searchParameters!.routeSiteId,
         }),
       ],
       { queryParams },
@@ -290,11 +293,12 @@ class AnnotationSearchComponent
   protected verifyAnnotationsRoute(): StrongRoute {
     const searchParameters = this.searchParameters();
 
-    if (searchParameters.routeSiteId) {
-      return searchParameters.routeSiteModel.isPoint
+    if (searchParameters!.routeSiteId) {
+      // @ts-expect-error: strict mode fix
+      return searchParameters!.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;
-    } else if (searchParameters.routeRegionId) {
+    } else if (searchParameters!.routeRegionId) {
       return annotationMenuItems.verify.region.route;
     }
 

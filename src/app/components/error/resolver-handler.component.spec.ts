@@ -29,7 +29,7 @@ describe("ResolverHandlerComponent", () => {
     if (!error) {
       expect(handler).toBeFalsy();
     } else {
-      expect(handler.error).toEqual(error);
+      expect(handler!.error).toEqual(error);
     }
   }
 

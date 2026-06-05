@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+﻿import { Component, Input, OnChanges } from "@angular/core";
 import { AudioRecording } from "@models/AudioRecording";
 import { ColumnMode, TableColumn, NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -97,7 +97,7 @@ export class RecentAudioRecordingsComponent implements OnChanges {
   @Input() public audioRecordings!: AudioRecording[] | undefined;
 
   public columnMode = ColumnMode;
-  public columns: TableColumn[];
+  public columns!: TableColumn[];
   public rows = [];
 
   public ngOnChanges(): void {
@@ -110,6 +110,7 @@ export class RecentAudioRecordingsComponent implements OnChanges {
       ];
     }
 
+    // @ts-expect-error: strict mode fix
     this.rows = (this.audioRecordings ?? []).map((recording) => ({
       site: recording,
       duration: recording.duration,

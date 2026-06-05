@@ -1,9 +1,9 @@
 import { enableProdMode } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
-import { environment } from "./environments/environment";
-import { applyMonkeyPatches } from "./patches/patches";
 import { AppComponent } from "./app/app.component";
 import { appConfig } from "./app/app.config";
+import { environment } from "./environments/environment";
+import { applyMonkeyPatches } from "./patches/patches";
 
 applyMonkeyPatches();
 
@@ -18,9 +18,11 @@ if (environment.production) {
 // Await page load
 const domContentLoadedPromise = new Promise<void>((resolve) =>
   document.addEventListener("DOMContentLoaded", () => {
-    document.removeEventListener("DOMContentLoader", () => {});
+    document.removeEventListener("DOMContentLoader", () => {
+      /* no-op */
+    });
     resolve();
-  })
+  }),
 );
 
 // Bootstrap Angular

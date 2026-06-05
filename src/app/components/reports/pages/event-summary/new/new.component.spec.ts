@@ -76,8 +76,10 @@ describe("NewEventReportComponent", () => {
   });
 
   const pageTitle = (): string =>
-    spectator.query<HTMLHeadingElement>("h1.text-muted").innerText;
+    // @ts-expect-error: strict mode fix
+    spectator!.query<HTMLHeadingElement>("h1.text-muted").innerText;
   const regionsInput = (): HTMLElement =>
+    // @ts-expect-error: strict mode fix
     spectator.query<HTMLElement>("baw-typeahead-input[label='Site(s)']");
   const sitesInput = (): HTMLElement =>
     spectator.queryAll<HTMLElement>("baw-typeahead-input")[1];
@@ -146,7 +148,7 @@ describe("NewEventReportComponent", () => {
 
   it("should use the correct page header for points", () => {
     spectator.detectChanges();
-    const expectedTitle = `Point: ${spectator.component.site.name}`;
+    const expectedTitle = `Point: ${spectator.component.site!.name}`;
     expect(pageTitle()).toEqual(expectedTitle);
   });
 
@@ -155,6 +157,7 @@ describe("NewEventReportComponent", () => {
 
     // because we are fetching the typeahead input component, and the html input element is disabled
     // we need to fetch the raw HTML input DOM element so that we can check that it has been disabled by Angular
+    // @ts-expect-error: strict mode fix
     const inputElement: HTMLInputElement =
       sitesInput().querySelector("#typeahead-input");
 
@@ -167,10 +170,12 @@ describe("NewEventReportComponent", () => {
 
     spectator.detectChanges();
 
-    expect(regionsInput().querySelector("input")[0]).not.toHaveAttribute(
+    // @ts-expect-error: strict mode fix
+    expect(regionsInput()!.querySelector("input")[0]).not.toHaveAttribute(
       "disabled"
     );
-    expect(sitesInput().querySelector("input")[0]).not.toHaveAttribute(
+    // @ts-expect-error: strict mode fix
+    expect(sitesInput()!.querySelector("input")[0]).not.toHaveAttribute(
       "disabled"
     );
   });

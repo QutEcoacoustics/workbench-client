@@ -41,6 +41,7 @@ describe("AssignComponent", () => {
 
     mockApi.show = jasmine.createSpy("show") as any;
     mockApi.show.and.callFake((id) =>
+      // @ts-expect-error: strict mode fix
       of(mockSites.find((site) => site.id === id))
     );
 
@@ -59,11 +60,13 @@ describe("AssignComponent", () => {
     spectator.query<HTMLButtonElement>("button[type='submit']");
 
   function submitForm(): void {
+    // @ts-expect-error: strict mode fix
     clickButton(spectator, updateButton());
   }
 
   function getSiteRow(siteName: string): HTMLElement {
-    return getElementByTextContent(spectator, siteName).parentElement.parentElement;
+    // @ts-expect-error: strict mode fix
+    return getElementByTextContent(spectator, siteName)!.parentElement.parentElement;
   }
 
   function getSiteCheckbox(siteName: string): HTMLInputElement {
@@ -72,10 +75,12 @@ describe("AssignComponent", () => {
       "input[type='checkbox']"
     );
 
+    // @ts-expect-error: strict mode fix
     return siteCheckbox;
   }
 
   function selectSite(model: Site): void {
+    // @ts-expect-error: strict mode fix
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (!siteCheckbox.checked) {
@@ -84,6 +89,7 @@ describe("AssignComponent", () => {
   }
 
   function deselectSite(model: Site): void {
+    // @ts-expect-error: strict mode fix
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (siteCheckbox.checked) {
@@ -126,6 +132,7 @@ describe("AssignComponent", () => {
   it("should display project in title", () => {
     setup();
     const expectedText = mockProject.name;
+    // @ts-expect-error: strict mode fix
     expect(projectHeader()).toHaveExactTrimmedText(expectedText);
   });
 

@@ -1,4 +1,4 @@
-import { Injectable, INJECTOR, Injector, inject } from "@angular/core";
+﻿import { Injectable, INJECTOR, Injector, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { homeMenuItem } from "@components/home/home.menus";
 import {
@@ -64,14 +64,14 @@ export class MenuService extends withUnsubscribe() {
   private readonly config = inject(ConfigService);
 
   private _actionMenu: ActionMenuData;
-  private _breadcrumbs: BreadcrumbsData;
+  private _breadcrumbs!: BreadcrumbsData;
   private _hasActions: boolean;
   private _isFullscreen: boolean;
   private _isMenuOpen: boolean;
   private _menuUpdate: BehaviorSubject<MenuServiceData>;
-  private _pageInfo: IPageInfo;
+  private _pageInfo!: IPageInfo;
   private _secondaryMenu: SecondaryMenuData;
-  private _user: User;
+  private _user!: User;
 
   public constructor() {
     super();
@@ -108,7 +108,7 @@ export class MenuService extends withUnsubscribe() {
     this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
       .subscribe(({ user }): void => {
-        this._user = user;
+        this._user = user!;
         updateState();
       });
 
@@ -208,7 +208,7 @@ export class MenuService extends withUnsubscribe() {
       return OrderedSet();
     }
 
-    return this.rootToMenuRoute(this.pageInfo.pageRoute).map(
+    return this.rootToMenuRoute(this.pageInfo.pageRoute!).map(
       (breadcrumb): Breadcrumb => ({
         label:
           breadcrumb.breadcrumbResolve?.(this.pageInfo, this.injector) ??
@@ -239,7 +239,7 @@ export class MenuService extends withUnsubscribe() {
 
   private getSecondaryMenuData(): SecondaryMenuData {
     // Get current page and all parents
-    const parentMenuRoutes = this.rootToMenuRoute(this.pageInfo.pageRoute).map(
+    const parentMenuRoutes = this.rootToMenuRoute(this.pageInfo.pageRoute!).map(
       (menuRoute) => menuRoute
     );
 
@@ -317,7 +317,7 @@ export class MenuService extends withUnsubscribe() {
         return a.label.localeCompare(b.label);
       }
 
-      return a.indentation < b.indentation ? -1 : 1;
+      return a.indentation! < b.indentation! ? -1 : 1;
     }
 
     // Return the menu item with the lower order value

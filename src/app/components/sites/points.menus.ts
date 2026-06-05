@@ -23,6 +23,7 @@ export const pointMenuItem = menuRoute({
   parent: regionMenuItem,
   route: pointRoute,
   tooltip: () => "The current point",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
 });
 

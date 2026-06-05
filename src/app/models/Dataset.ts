@@ -1,4 +1,4 @@
-import {
+﻿import {
   DateTimeTimezone,
   Description,
   HasCreatorAndUpdater,
@@ -34,7 +34,7 @@ export class Dataset extends AbstractModel<IDataset> implements IDataset {
 
   // Associations
   @creator<Dataset>()
-  public creator: User;
+  public creator!: User;
   @updater<Dataset>()
   public updater?: User;
 

@@ -108,6 +108,7 @@ describe("AnalysisJobComponent", () => {
       spec.detectChanges();
       await promise;
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       this.fixture = spec.fixture;
     });
 

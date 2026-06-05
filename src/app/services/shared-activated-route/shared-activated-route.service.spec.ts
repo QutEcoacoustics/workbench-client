@@ -42,17 +42,17 @@ describe("SharedActivatedRouteService", () => {
 
   function setRootChildren(
     route: ActivatedRouteStub,
-    children: ActivatedRouteStub[]
+    children: ActivatedRouteStub[],
   ) {
     spyOnProperty(route, "root").and.callFake(() =>
-      createActivatedRoute({}, { children })
+      createActivatedRoute({}, { children }),
     );
   }
 
   function createPageActivatedRoute(overrides?: RouteOptions) {
     return createActivatedRoute(
       { component: createPageComponent() },
-      overrides
+      overrides,
     );
   }
 
@@ -61,7 +61,7 @@ describe("SharedActivatedRouteService", () => {
       outlet?: string;
       component?: Type<any>;
     } = {},
-    overrides: RouteOptions = {}
+    overrides: RouteOptions = {},
   ): ActivatedRouteStub {
     // Activated route stubs have infinite depth of children, so force them to 0 if none specified
     const route = new ActivatedRouteStub({
@@ -87,7 +87,7 @@ describe("SharedActivatedRouteService", () => {
         pageRoute: homeMenuItem,
         resolvers: {},
         ...info,
-      })
+      }),
     );
     return MockPageComponent;
   }
@@ -144,9 +144,13 @@ describe("SharedActivatedRouteService", () => {
     });
 
     // TODO Unsure how to test
-    xit("should filter by primary outlet", () => {});
+    xit("should filter by primary outlet", () => {
+      pending();
+    });
 
-    xit("should filter by page component", () => {});
+    xit("should filter by page component", () => {
+      pending();
+    });
   });
 
   describe("url", () => {
@@ -197,7 +201,7 @@ describe("SharedActivatedRouteService", () => {
       const routeStub = createActivatedRoute({ component: initialComponent });
       const pageRouteStub = createActivatedRoute(
         { component: pageComponent },
-        { data: pageData }
+        { data: pageData },
       );
       setup(routeStub);
       setRootChildren(routeStub, [pageRouteStub]);
@@ -226,7 +230,7 @@ describe("SharedActivatedRouteService", () => {
         done,
         spec.service.component,
         initialComponent,
-        pageComponent
+        pageComponent,
       );
       triggerRouterEvent();
     });
@@ -248,7 +252,7 @@ describe("SharedActivatedRouteService", () => {
         done,
         spec.service.snapshot,
         routeStub.snapshot,
-        pageRouteStub.snapshot
+        pageRouteStub.snapshot,
       );
       triggerRouterEvent();
     });
@@ -276,7 +280,7 @@ describe("SharedActivatedRouteService", () => {
   function validateObservableProperty<T>(
     routeOption: keyof RouteOptions,
     property: () => Observable<T>,
-    values: [T, T]
+    values: [T, T],
   ) {
     it("should have initial value", (done) => {
       const routeStub = createActivatedRoute({}, { [routeOption]: values[0] });

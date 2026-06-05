@@ -43,7 +43,7 @@ class SiteNewComponent extends FormTemplate<Site> implements OnInit {
     const router = inject(Router);
 
     super(notifications, route, router, {
-      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      successMsg: (model) => defaultSuccessMsg("created", model.name!),
       redirectUser: (model) =>
         this.router.navigateByUrl(model.getViewUrl(this.project)),
       getModel: () => {

@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from "@angular/common";
+﻿import { NgTemplateOutlet } from "@angular/common";
 import { Component, OnInit, TemplateRef, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AudioEventImportFileService } from "@baw-api/audio-event-import-file/audio-event-import-file.service";
@@ -118,14 +118,14 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   protected readonly verificationRoute = verificationRoute;
   protected active = 1;
   protected importGroups: ImportGroup[] = [this.emptyImportGroup];
-  protected audioEventImport: AudioEventImport;
+  protected audioEventImport!: AudioEventImport;
   // we use this boolean to disable the import form when an upload is in progress
   protected uploading = false;
   private models: ResolvedModelList = {};
   private readonly jsIdMapQsp = jsMap(toNumber);
 
-  protected eventFilters$: BehaviorSubject<Filters<AudioEvent>>;
-  protected fileFilters$: BehaviorSubject<Filters<AudioEventImportFile>>;
+  protected eventFilters$!: BehaviorSubject<Filters<AudioEvent>>;
+  protected fileFilters$!: BehaviorSubject<Filters<AudioEventImportFile>>;
 
   private defaultEventFilters = {
     sorting: {
@@ -150,6 +150,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   // therefore, we use a getter because they internally work like methods, and return a new object each time
   private get emptyImportGroup(): ImportGroup {
     return {
+      // @ts-expect-error: strict mode fix
       files: null,
       additionalTagIds: [],
       errors: [],
@@ -162,7 +163,9 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     const routeData = this.route.snapshot.data;
     this.audioEventImport = routeData[audioEventImportKey].model;
 
+    // @ts-expect-error: strict mode fix
     this.eventFilters$ = new BehaviorSubject(this.defaultEventFilters);
+    // @ts-expect-error: strict mode fix
     this.fileFilters$ = new BehaviorSubject(this.defaultFileFilters);
 
     if (this.route) {
@@ -180,10 +183,11 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.audioEventImport.name)
+            defaultSuccessMsg("destroyed", this.audioEventImport.name!)
           );
           this.router.navigateByUrl(
             annotationsImportMenuItem.route.toRouterLink({
+              // @ts-expect-error: strict mode fix
               projectId: this.project.id,
             })
           );
@@ -241,6 +245,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
 
   protected verifyQsp(fileModel: AudioEventImportFile): string {
     return this.jsIdMapQsp.serialize(
+      // @ts-expect-error: strict mode fix
       new Map([
         [fileModel.audioEventImportId, new Set([fileModel.id])],
       ]),

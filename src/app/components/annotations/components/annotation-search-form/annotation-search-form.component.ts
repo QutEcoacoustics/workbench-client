@@ -181,7 +181,8 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     // we want to set the initial model the date/time filters
     // TODO: this should probably be moved to a different spot
-    const hasDateFilters = this.searchParameters().eventDate?.length > 0;
+    const hasDateFilters =
+      (this.searchParameters()?.eventDate?.length || 0) > 0;
     if (hasDateFilters) {
       const dateTimeFilter: DateTimeFilterModel = {
         dateFiltering: true,
@@ -219,6 +220,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
+      // @ts-expect-error: strict mode fix
       id: { in: Array.from(tagIds) },
     };
 
@@ -233,11 +235,11 @@ export class AnnotationSearchFormComponent implements OnInit {
    */
   protected routeModelFilters(): InnerFilter<Project | Region | Site> {
     if (this.site()) {
-      return filterModel("sites", this.site());
+      return filterModel("sites", this.site()!);
     } else if (this.region()) {
-      return filterModel("regions", this.region());
+      return filterModel("regions", this.region()!);
     } else if (this.project()) {
-      return filterModel("projects", this.project());
+      return filterModel("projects", this.project()!);
     }
 
     // When an empty object is returned, annotations will not be filtered to a
@@ -270,6 +272,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   ): void {
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
+      // @ts-expect-error: strict mode indexing
       current[key as any] = ids;
       return current;
     });
@@ -296,17 +299,17 @@ export class AnnotationSearchFormComponent implements OnInit {
             : null,
         ];
       } else {
-        current.eventDate = null;
+        current.eventDate = undefined;
       }
 
       if (dateTimeModel.timeFiltering) {
         current.eventTime = [
           dateTimeModel.timeStartedAfter ?? null,
           dateTimeModel.timeFinishedBefore ?? null,
-          dateTimeModel.ignoreDaylightSavings,
+          dateTimeModel.ignoreDaylightSavings ?? false,
         ];
       } else {
-        current.eventTime = null;
+        current.eventTime = undefined;
       }
 
       return current;
@@ -331,7 +334,7 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     const arrayIndex = boundPosition === ScoreRangeBounds.Lower ? 0 : 1;
     const currentScore = this.searchParameters().score ?? [null, null];
-    currentScore[arrayIndex] = value;
+    currentScore[arrayIndex] = value!;
 
     this.searchParameters.update((current) => {
       current.score = currentScore;

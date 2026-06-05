@@ -1,4 +1,4 @@
-import { Component, Input, input, model } from "@angular/core";
+﻿import { Component, Input, input, model } from "@angular/core";
 import { ModalComponent } from "@menu/widget.component";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AnnotationSearchFormComponent } from "../../annotation-search-form/annotation-search-form.component";
@@ -16,10 +16,11 @@ export class SearchFiltersModalComponent implements ModalComponent {
   // TODO: Migrate this to a signal once we add support for signals to the
   // ModalComponent interface.
   @Input()
-  public successCallback: (newModel: AnnotationSearchParameters) => void;
+  // @ts-expect-error: strict mode override
+  public successCallback!: (newModel: AnnotationSearchParameters) => void;
 
   public closeModal(): void {
-    this.modal().close();
+    this.modal()!.close();
   }
 
   public success(): void {

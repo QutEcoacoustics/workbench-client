@@ -42,9 +42,11 @@ describe("MenuToggleComponent", () => {
 
   function validateIcon(state: MenuState) {
     if (state === MenuState.opened) {
-      expect(spec.query(FaIconComponent).icon()).toEqual(["fas", "times"]);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(FaIconComponent).icon()).toEqual(["fas", "times"]);
     } else {
-      expect(spec.query(FaIconComponent).icon()).toEqual(["fas", "bars"]);
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(FaIconComponent).icon()).toEqual(["fas", "bars"]);
     }
   }
 
@@ -112,6 +114,7 @@ describe("MenuToggleComponent", () => {
   describe("toggle menu", () => {
     function clickButton() {
       const buttonElement = spec.query<HTMLButtonElement>("button");
+      // @ts-expect-error: strict mode fix
       spec.click(buttonElement);
     }
 

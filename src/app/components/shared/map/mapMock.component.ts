@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { List } from "immutable";
 import { MapMarkerOptions } from "@services/maps/maps.service";
+import { List } from "immutable";
 import { sanitizeMapMarkers } from "./map.component";
 
 @Component({
@@ -19,10 +19,8 @@ import { sanitizeMapMarkers } from "./map.component";
   styleUrl: "./map.component.scss",
 })
 export class MockMapComponent implements OnInit {
-  @Input() public markers: List<MapMarkerOptions>;
+  @Input() public markers: List<MapMarkerOptions> = List();
   public hasMarkers = false;
-
-  public constructor() {}
 
   public ngOnInit() {
     this.hasMarkers = sanitizeMapMarkers(this.markers.toArray())?.size > 0;

@@ -23,8 +23,8 @@ export class MediaService {
     audioRecording: AudioRecording,
     start: number,
     end: number,
-    padding: number = 0,
-    params: Params = {}
+    padding = 0,
+    params: Params = {},
   ): string {
     // check the start and end times are valid
     if (start < 0) {
@@ -36,13 +36,13 @@ export class MediaService {
     }
 
     // check the start and end times fit inside the audio recording
-    if (start > audioRecording.durationSeconds) {
+    if (start > audioRecording.durationSeconds!) {
       throw new Error(
-        "Start time is greater than the duration of the audio recording"
+        "Start time is greater than the duration of the audio recording",
       );
-    } else if (end > audioRecording.durationSeconds) {
+    } else if (end > audioRecording.durationSeconds!) {
       throw new Error(
-        "End time is greater than the duration of the audio recording"
+        "End time is greater than the duration of the audio recording",
       );
     }
 
@@ -66,13 +66,13 @@ export class MediaService {
     const [paddedStart, paddedEnd] = this.padAudioUrl(
       safeStartTime,
       safeEndTime,
-      requiredPaddingAmount
+      requiredPaddingAmount,
     );
 
     let [fitStart, fitEnd] = this.fitAudioUrl(
       paddedStart,
       paddedEnd,
-      audioRecording
+      audioRecording,
     );
 
     // we round here again so that we get a nice round number
@@ -87,7 +87,7 @@ export class MediaService {
     fitStart = Math.floor(fitStart);
 
     const roundedEnd = Math.ceil(fitEnd);
-    if (fitEnd + roundedEnd > audioRecording.durationSeconds) {
+    if (fitEnd + roundedEnd > audioRecording.durationSeconds!) {
       const newEnd = Math.floor(fitEnd);
       const subtractedDifference = fitEnd - newEnd;
 
@@ -124,7 +124,7 @@ export class MediaService {
   private padAudioUrl(
     start: number,
     end: number,
-    padAmount: number = 0
+    padAmount = 0,
   ): [start: number, end: number] {
     const sidePadding = padAmount / 2;
 
@@ -137,7 +137,7 @@ export class MediaService {
   private fitAudioUrl(
     start: number,
     end: number,
-    audioRecording: AudioRecording
+    audioRecording: AudioRecording,
   ): [start: number, end: number] {
     if (start < 0) {
       // because we don't want to create fractional start/end times, we need to
@@ -153,7 +153,7 @@ export class MediaService {
     }
 
     const recordingDuration = audioRecording.durationSeconds;
-    if (end > recordingDuration) {
+    if (end > recordingDuration!) {
       // similar to the start time, we need to round up the difference to the
       // nearest whole number to avoid fractional start/end times
       // we round up to guarantee that the end time is at most the recording
@@ -162,7 +162,7 @@ export class MediaService {
       //
       // TODO: remove this ceil once the following api issue is fixed
       // https://github.com/QutEcoacoustics/baw-server/issues/681
-      const difference = Math.ceil(end - recordingDuration);
+      const difference = Math.ceil(end - recordingDuration!);
       start -= difference;
       end -= difference;
     }

@@ -27,9 +27,9 @@ export const adminOrphanMenuItem = menuRoute({
   tooltip: () => "Manage orphaned site",
   parent: adminOrphansMenuItem,
   predicate: isAdminPredicate,
-  title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
-    const orphanSiteName = componentModel.site.model?.name;
-    return orphanSiteName;
+  title: (routeData?: RouterStateSnapshot): string | null => {
+    const componentModel = routeData?.root.firstChild?.data;
+    const orphanSiteName = componentModel?.site.model?.name;
+    return orphanSiteName ?? null;
   }
 });

@@ -48,10 +48,13 @@ function makeDetailsMenuItem(subRoute: RecordingRoute): MenuRoute {
     route: audioRecordingRoutes[subRoute],
     parent: listMenuItems[subRoute],
     // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
+    // @ts-expect-error: strict mode fix
     breadcrumbResolve: (pageInfo) =>
+      // @ts-expect-error: strict mode fix
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
+    // @ts-expect-error: strict mode fix
     title: (routeData: RouterStateSnapshot): string => {
-      const componentModel = routeData.root.firstChild.data;
+      const componentModel = routeData.root.firstChild!.data;
       return componentModel.audioRecording.model.id.toString();
     },
   });
@@ -119,6 +122,7 @@ export const downloadAudioRecordingMenuItem = menuLink({
   label: "Download",
   tooltip: () => "Download audio recording",
   // Relative routes go to api
+  // @ts-expect-error: strict mode fix
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
 });

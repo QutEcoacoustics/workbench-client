@@ -49,6 +49,7 @@ describe("DebouncedInputDirective", () => {
       keys.forEach((_, index) => {
         spec.typeInElement(
           keys.join("").substring(0, index + 1),
+          // @ts-expect-error: strict mode fix
           inputElement()
         );
       });

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   provenanceResolvers,
@@ -21,14 +16,14 @@ import {
 } from "@components/provenances/provenances.menus";
 import { deleteProvenanceModal } from "@components/provenances/provenances.modals";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
-import { IPageInfo } from "@helpers/page/pageInfo";
 import { PageComponent } from "@helpers/page/pageComponent";
-import { Provenance } from "@models/Provenance";
-import { List } from "immutable";
-import { ToastService } from "@services/toasts/toasts.service";
-import { takeUntil } from "rxjs";
+import { IPageInfo } from "@helpers/page/pageInfo";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
+import { Provenance } from "@models/Provenance";
+import { ToastService } from "@services/toasts/toasts.service";
 import { DetailViewComponent } from "@shared/detail-view/detail-view.component";
+import { List } from "immutable";
+import { takeUntil } from "rxjs";
 import baseSchema from "../../provenance.base.schema.json";
 import extendedSchema from "../../provenance.extended.schema.json";
 
@@ -63,12 +58,12 @@ class ProvenanceDetailsComponent extends PageComponent implements OnInit {
 
   public deleteModel(): void {
     this.provenancesApi
-      .destroy(this.provenance())
+      .destroy(this.provenance()!)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.provenance()?.name),
+            defaultSuccessMsg("destroyed", this.provenance()!.name),
           );
           this.router.navigateByUrl(provenancesMenuItem.route.toRouterLink());
         },

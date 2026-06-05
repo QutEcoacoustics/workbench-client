@@ -42,6 +42,7 @@ describe("AllowsOriginalDownloadComponent", () => {
   }
 
   beforeEach(() => {
+    // @ts-expect-error: strict mode fix
     pageInfo$ = new Subject<PageInfo>();
     spec = createComponent({
       providers: [
@@ -88,7 +89,8 @@ describe("AllowsOriginalDownloadComponent", () => {
         const hasAccess = hasRequiredAccessLevelOrHigher(required, current);
 
         function getTooltip() {
-          return spec.query(NgbTooltip).ngbTooltip;
+          // @ts-expect-error: strict mode fix
+          return spec!.query(NgbTooltip).ngbTooltip;
         }
 
         let project: Project;

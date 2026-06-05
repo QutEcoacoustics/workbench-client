@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 
@@ -36,10 +36,10 @@ import { NgClass } from "@angular/common";
   imports: [NgClass]
 })
 export class ConfirmationComponent {
-  @Input() public nextLabel: string;
+  @Input() public nextLabel!: string;
   @Input() public cancelLabel = "Cancel";
-  @Input() public isDanger: boolean;
-  @Input() public modal: NgbActiveModal;
+  @Input() public isDanger!: boolean;
+  @Input() public modal!: NgbActiveModal;
 
   public close(): void {
     this.modal.close(false);

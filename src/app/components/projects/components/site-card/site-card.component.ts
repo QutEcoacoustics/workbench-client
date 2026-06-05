@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from "@angular/core";
+﻿import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from "@angular/core";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
@@ -81,7 +81,7 @@ export class SiteCardComponent implements OnInit {
   public site = input<Site>();
   protected model = computed(() => this.region() || this.site());
 
-  protected hasNoAudio$: Observable<boolean>;
+  protected hasNoAudio$!: Observable<boolean>;
 
   private associationInjector = inject(ASSOCIATION_INJECTOR);
   private recordingApi = this.associationInjector.get(AudioRecordingsService);

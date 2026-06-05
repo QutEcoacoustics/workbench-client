@@ -81,8 +81,10 @@ describe("ToastComponent", () => {
     openToast();
 
     expect(toastServiceSpy.showToastInfo).toHaveBeenCalledOnceWith({
+      // @ts-expect-error: strict mode fix
       title: undefined,
       variant: testedToast.variant,
+      // @ts-expect-error: strict mode fix
       message: undefined,
       options: {},
     });
@@ -94,6 +96,7 @@ describe("ToastComponent", () => {
     expect(toastServiceSpy.showToastInfo).toHaveBeenCalledOnceWith({
       title: testedToast.title,
       variant: testedToast.variant,
+      // @ts-expect-error: strict mode fix
       message: undefined,
       options: {},
     });

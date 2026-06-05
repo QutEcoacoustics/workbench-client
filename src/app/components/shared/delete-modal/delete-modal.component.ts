@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ModalComponent } from "@menu/widget.component";
 
@@ -35,8 +35,8 @@ export class DeleteModalComponent
 
   // closeModal is used for when the modal is closed via an action by the user
   // while dismissModal should be called when the modal is dismissed via the escape key or the X button
-  @Input() public closeModal: (result: any) => void;
-  @Input() public dismissModal: (reason: any) => void;
+  @Input() public closeModal!: (result: any) => void;
+  @Input() public dismissModal!: (reason: any) => void;
 
   protected deleteModel(): void {
     // not all delete modals will have a success callback

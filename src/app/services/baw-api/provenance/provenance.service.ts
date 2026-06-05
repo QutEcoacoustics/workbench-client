@@ -53,6 +53,7 @@ export class ProvenanceService implements StandardApi<Provenance> {
   }
 
   public destroy(model: IdOr<Provenance>): Observable<void | Provenance> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 

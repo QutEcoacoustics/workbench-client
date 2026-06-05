@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef, inject } from "@angular/core";
+﻿import { AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { MenuType } from "@helpers/generalTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
@@ -48,7 +48,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private readonly session = inject(BawSessionService);
   private readonly modalService = inject(NgbModal);
 
-  @Input() public isSideNav: boolean;
+  @Input() public isSideNav!: boolean;
   @Input() public title?: LabelAndIcon;
   @Input() public links!: Set<AnyMenuItem | MenuModalWithoutAction>;
   @Input() public menuType!: MenuType;
@@ -57,7 +57,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
   private menuWidget!: ViewContainerRef;
 
   public formattedLinks: Set<AnyMenuItem | MenuModal> = Set();
-  public user: User;
+  public user!: User;
 
   public isInternalLink = isInternalRoute;
   public isExternalLink = isExternalLink;
@@ -69,7 +69,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     this.widgets ??= Set();
 
     // Get user details
-    this.user = this.session.loggedInUser;
+    this.user = this.session.loggedInUser!;
     // Filter links
     this.formattedLinks = this.setModalActions();
 
@@ -135,6 +135,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     // modal success callbacks should be called with the current page instance
     // the page instance is set from the menu service because the menu item should not have any knowledge of the current route
     if (modal.successCallback) {
+      // @ts-expect-error: strict mode fix
       modal.successCallback = this.menuService.constructSuccessCallback(modal.successCallback);
     }
 
@@ -163,7 +164,8 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     const temp = this.menuWidget.createComponent(widget.component);
 
     Object.keys(widget.options ?? {}).forEach((key) => {
-      temp.instance[key] = widget.options[key];
+      // @ts-expect-error: strict mode indexing
+      temp.instance[key] = widget.options![key];
     });
 
     // This is needed, otherwise widgets sometimes throw

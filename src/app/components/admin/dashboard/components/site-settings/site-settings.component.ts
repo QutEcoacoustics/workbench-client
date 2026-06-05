@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";

@@ -67,10 +67,10 @@ describe("AnnotationSearchFormComponent", () => {
 
   const tagsTypeahead = () => spec.query("#tags-input");
   const tagPills = () =>
-    tagsTypeahead().querySelectorAll<HTMLSpanElement>(".item-pill");
+    tagsTypeahead()!.querySelectorAll<HTMLSpanElement>(".item-pill");
 
   const projectsTypeahead = () => spec.query("#projects-input");
-  const projectsInput = () => projectsTypeahead().querySelector("input");
+  const projectsInput = () => projectsTypeahead()!.querySelector("input");
 
   const dateToggleInput = () => spec.query<HTMLInputElement>("#date-filtering");
   const startDateInput = () =>
@@ -91,7 +91,7 @@ describe("AnnotationSearchFormComponent", () => {
 
   const eventImportTypeahead = () => spec.query("#event-imports-input");
   const eventImportTypeaheadInput = () =>
-    eventImportTypeahead().querySelector("input");
+    eventImportTypeahead()!.querySelector("input");
   const eventImportFilesTypeahead = () =>
     spec.query("#event-imports-files-input");
 
@@ -132,6 +132,7 @@ describe("AnnotationSearchFormComponent", () => {
     modelChangeSpy = spyOn(spec.component.searchParametersChange, "emit");
 
     sitesApi.filter.andCallFake(() => of(mockSitesResponse));
+    // @ts-expect-error: strict mode fix
     sitesApi.show.andCallFake((id: Id) =>
       of(mockSitesResponse.find((site) => site.id === id)),
     );
@@ -190,12 +191,14 @@ describe("AnnotationSearchFormComponent", () => {
   }
 
   function setLowerBoundScore(value: string) {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(value, lowerScoreInput());
     tick(defaultDebounceTime);
     spec.detectChanges();
   }
 
   function setUpperBoundScore(value: string) {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(value, upperScoreInput());
     tick(defaultDebounceTime);
     spec.detectChanges();
@@ -240,6 +243,7 @@ describe("AnnotationSearchFormComponent", () => {
   it("should have a collapsable advanced filters section", fakeAsync(() => {
     setup();
     expect(recordingsTypeahead()).toBeHidden();
+    // @ts-expect-error: strict mode fix
     toggleDropdown(spec, advancedFiltersToggle());
     expect(recordingsTypeahead()).toBeVisible();
   }));
@@ -255,13 +259,14 @@ describe("AnnotationSearchFormComponent", () => {
     it("should pre-populate the tags typeahead input if provided in the search parameters model", fakeAsync(async () => {
       const testedTag = mockTagsResponse[0];
 
-      const response = setup({ tags: testedTag.id.toString() });
+      const response = setup({ tags: testedTag.id!.toString() });
       spec.detectChanges();
       await response;
       spec.detectChanges();
 
       const realizedTagPills = tagPills();
       expect(realizedTagPills).toHaveLength(1);
+      // @ts-expect-error: strict mode fix
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
     }));
 
@@ -308,6 +313,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // close the date/time filters and assert that the filter conditions are
       // no longer applied
+      // @ts-expect-error: strict mode fix
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
@@ -362,6 +368,7 @@ describe("AnnotationSearchFormComponent", () => {
       setup({ audioRecordings: "1" });
       expect(spec.component.searchParameters().audioRecordings).toHaveLength(1);
 
+      // @ts-expect-error: strict mode fix
       toggleDropdown(spec, advancedFiltersToggle());
 
       expect(spec.component.searchParameters().audioRecordings).toHaveLength(0);
@@ -372,6 +379,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // Because there are no advanced filters, we expect that the dropdown is
       // initially closed and we need to open it to see the import files input.
+      // @ts-expect-error: strict mode fix
       toggleDropdown(spec, advancedFiltersToggle());
       waitForDropdown(spec);
 
@@ -411,6 +419,7 @@ describe("AnnotationSearchFormComponent", () => {
       // Because we want to assert that updating the site causes one update with
       // the correct parameters, we reset the call spy.
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
       expect(spec.component.searchParameters().sites).toEqual([testedSite.id]);
@@ -424,6 +433,7 @@ describe("AnnotationSearchFormComponent", () => {
       const testedTag = mockTagsResponse[0];
 
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
       expect(spec.component.searchParameters().tags).toEqual([testedTag.id]);
@@ -447,9 +457,11 @@ describe("AnnotationSearchFormComponent", () => {
       });
 
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
+      // @ts-expect-error: strict mode fix
       spec.typeInElement(testedDate, endDateInput());
       tick(defaultDebounceTime);
 
@@ -460,9 +472,11 @@ describe("AnnotationSearchFormComponent", () => {
       const testedDate = "2021109-12";
 
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
+      // @ts-expect-error: strict mode fix
       spec.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).not.toHaveBeenCalled();
@@ -499,6 +513,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
 
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
@@ -511,6 +526,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
 
       modelChangeSpy.calls.reset();
+      // @ts-expect-error: strict mode fix
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
@@ -560,7 +576,7 @@ describe("AnnotationSearchFormComponent", () => {
       // However, Firefox will allow users to input free form text into the
       // number input. Therefore we only assert for the error if the value of
       // the input box has changed to the invalid value.
-      if (lowerScoreInput().value) {
+      if (lowerScoreInput()!.value) {
         expect(scoreErrors()).toHaveExactTrimmedText("Score must be a number.");
       }
     }));
@@ -615,6 +631,7 @@ describe("AnnotationSearchFormComponent", () => {
       // Additionally, we should see that the audio event import files are not
       // cleared.
       spec.dispatchKeyboardEvent(
+        // @ts-expect-error: strict mode fix
         eventImportTypeaheadInput(),
         "keydown",
         "Backspace",
@@ -649,6 +666,7 @@ describe("AnnotationSearchFormComponent", () => {
       // By pressing backspace in the audio event import typeahead, the last
       // audio event import should be removed.
       spec.dispatchKeyboardEvent(
+        // @ts-expect-error: strict mode fix
         eventImportTypeaheadInput(),
         "keydown",
         "Backspace",

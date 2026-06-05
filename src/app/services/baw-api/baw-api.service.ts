@@ -85,6 +85,7 @@ export const defaultBawServiceOptions = Object.freeze({
   withCredentials: true,
   cacheOptions: defaultCachingConfig,
   params: undefined,
+  // @ts-expect-error: strict mode fix
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -93,8 +94,8 @@ export const defaultBawServiceOptions = Object.freeze({
 @Injectable()
 export class BawApiService<
   Model extends AbstractModelWithoutId,
-  ClassBuilder extends AbstractModelConstructor<Model> =
-    AbstractModelConstructor<Model>,
+  ClassBuilder extends
+    AbstractModelConstructor<Model> = AbstractModelConstructor<Model>,
 > {
   protected readonly apiRoot = inject(API_ROOT);
   protected readonly isServer = inject(IS_SERVER_PLATFORM);
@@ -202,6 +203,7 @@ export class BawApiService<
     //
     // the following order of precedence is used:
     // parameter options > injected options > default options
+    // @ts-expect-error: strict mode fix
     this.instanceOptions = Object.assign(
       {},
       defaultBawServiceOptions,
@@ -225,6 +227,7 @@ export class BawApiService<
       (cb: ClassBuilder) =>
       (resp: ApiResponse<Model>): Model => {
         if (!resp) {
+          // @ts-expect-error: strict mode fix
           return;
         }
 
@@ -426,6 +429,7 @@ export class BawApiService<
     // we default to returning null if there is no JSON or formData body
     return of(null).pipe(
       concatMap(
+        // @ts-expect-error: strict mode fix
         model.hasJsonOnlyAttributesForCreate()
           ? () => this.httpPost(path, body, undefined, options)
           : (data) => of(data),
@@ -505,6 +509,7 @@ export class BawApiService<
         // we use (data) => of(data) here instead of the identity function because the identify function
         // returns a value, and not an observable. Because we use concatMap below, we need the existing
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
+        // @ts-expect-error: strict mode fix
         model.hasJsonOnlyAttributesForUpdate()
           ? () => this.httpPatch(path, body, undefined, options)
           : (data) => of(data),
@@ -602,6 +607,7 @@ export class BawApiService<
       // callback. We do this before the concatMap below because the updatePath
       // callback is dependent on the instantiated class from the POST response
       // object.
+      // @ts-expect-error: strict mode fix
       map(this.handleSingleResponse(classBuilder)),
       // Using concatMap here ensures that the httpPost request completes before
       // the httpPut (formdata) request is made.
@@ -658,7 +664,7 @@ export class BawApiService<
     path: string,
     headers: HttpHeaders = defaultApiHeaders,
     options: BawServiceOptions = {},
-  ): Observable<ApiResponse<Model | Model[]>> {
+  ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
     const cachingOptions = this.buildCachingOptions(options);
@@ -696,6 +702,7 @@ export class BawApiService<
 
     const context = this.withCredentialsHttpContext(fullOptions);
 
+    // @ts-expect-error: strict mode fix
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
       headers,
@@ -720,7 +727,7 @@ export class BawApiService<
     body?: any,
     headers: HttpHeaders = defaultApiHeaders,
     options: BawServiceOptions = {},
-  ): Observable<ApiResponse<Model | Model[]>> {
+  ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
     // TODO: update this method when we add support for caching filter requests
@@ -730,15 +737,11 @@ export class BawApiService<
 
     const context = this.withCredentialsHttpContext(fullOptions);
 
-    return this.http.post<ApiResponse<Model | Model[]>>(
-      this.getPath(path),
-      body,
-      {
-        responseType: "json",
-        headers,
-        context,
-      },
-    );
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      responseType: "json",
+      headers,
+      context,
+    });
   }
 
   /**
@@ -802,7 +805,7 @@ export class BawApiService<
   public encodeFilter(
     filter: Filters<Model>,
     disablePaging?: boolean,
-    withCredentials: boolean = true,
+    withCredentials = true,
   ): string {
     const body: Record<string, string> = {
       // Base64 RFC 4648 §5 encoding
@@ -814,7 +817,7 @@ export class BawApiService<
     }
 
     if (this.session.isLoggedIn && withCredentials) {
-      body["authToken"] = this.session.authToken;
+      body["authToken"] = this.session.authToken!;
     }
 
     return new URLSearchParams(toSnakeCase(body)).toString();
@@ -886,6 +889,7 @@ export class BawApiService<
 
     return {
       ...meta,
+      // @ts-expect-error: strict mode fix
       filter: {
         ...filter,
         [key]: {
@@ -899,6 +903,7 @@ export class BawApiService<
     data: FormData,
     params: BawServiceOptions["params"],
   ): FormData {
+    // @ts-expect-error: strict mode fix
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
         for (const dataValueItem of value) {

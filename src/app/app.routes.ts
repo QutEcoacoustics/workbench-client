@@ -43,19 +43,19 @@ import {
 import { StrongRoute } from "@interfaces/strongRoute";
 
 const researchRoutes = StrongRoute.newRoot().add("research");
-researchRoutes.add("about", null, {
+researchRoutes.add("about", undefined, {
   redirectTo: "https://research.ecosounds.org/",
 });
-researchRoutes.add("about", null, {
+researchRoutes.add("about", undefined, {
   redirectTo: "https://research.ecosounds.org/articles.html",
 });
-researchRoutes.add("resources", null, {
+researchRoutes.add("resources", undefined, {
   redirectTo: "https://research.ecosounds.org/resources.html",
 });
-researchRoutes.add("people", null, {
+researchRoutes.add("people", undefined, {
   redirectTo: "https://research.ecosounds.org/people/people.html",
 });
-researchRoutes.add("publications", null, {
+researchRoutes.add("publications", undefined, {
   redirectTo: "https://research.ecosounds.org/publications/publications.html",
 });
 

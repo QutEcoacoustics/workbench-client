@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
@@ -47,6 +47,6 @@ import { WhitespaceComponent } from "./whitespace.component";
   imports: [WhitespaceComponent, LoadingComponent]
 })
 export class LoadMoreComponent {
-  @Input() public row: MetaReviewLoadMore;
+  @Input() public row!: MetaReviewLoadMore;
   @Output() public loadMore = new EventEmitter<void>();
 }

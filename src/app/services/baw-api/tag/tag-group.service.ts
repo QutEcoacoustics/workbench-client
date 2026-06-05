@@ -56,6 +56,7 @@ export class TagGroupsService implements StandardApi<TagGroup> {
   }
 
   public destroy(model: IdOr<TagGroup>): Observable<TagGroup | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }

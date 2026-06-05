@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+﻿import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
 import { MenuRoute } from "@interfaces/menusInterfaces";
 import { ConfigService } from "@services/config/config.service";
 import { websiteStatusMenuItem } from "@components/website-status/website-status.menu";
@@ -52,7 +52,7 @@ import { statisticsMenuItem } from "../../statistics/statistics.menus";
 export class FooterComponent implements OnInit {
   private readonly configService = inject(ConfigService);
 
-  public version: string;
+  public version!: string;
   public year = new Date().getFullYear();
   public links: MenuRoute[] = [
     statisticsMenuItem,

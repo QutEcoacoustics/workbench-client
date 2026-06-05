@@ -30,11 +30,16 @@ export class ImportsService {
     // website to fail.
     if (customElements.get("oe-verification-grid") === undefined) {
       await import(
-        "../../../../node_modules/@ecoacoustics/web-components/dist/components.js",
+        // @ts-expect-error: no type declarations
+        "../../../../node_modules/@ecoacoustics/web-components/dist/components.js"
       );
     } else {
-      console.warn("Attempted to import web components, but they are already defined");
-      console.warn("Skipping re-declaration of web components to prevent a hard failure");
+      console.warn(
+        "Attempted to import web components, but they are already defined",
+      );
+      console.warn(
+        "Skipping re-declaration of web components to prevent a hard failure",
+      );
     }
   }
 }

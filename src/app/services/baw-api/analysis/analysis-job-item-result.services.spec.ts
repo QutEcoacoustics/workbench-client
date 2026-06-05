@@ -37,6 +37,7 @@ describe("AnalysisJobItemsResultsService", (): void => {
     baseUrl + "filter", // filter
     baseUrl + mockResultsPath, // show
     createModel,
+    // @ts-expect-error: strict mode fix
     undefined, // analysis job item results
     10, // analysis job
     15, // audio recording

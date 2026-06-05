@@ -1,4 +1,4 @@
-import {
+﻿import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
@@ -88,7 +88,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // every change detection cycle.
   private readonly specObject = computed(() => this.spec().toObject());
 
-  private vegaView: Result;
+  private vegaView!: Result;
 
   public async ngAfterViewInit() {
     // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
@@ -113,7 +113,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
     // but vega lite's autosize will only update when the window is resized
     // therefore, we also need to trigger a resize event when the component is resized
-    ChartComponent.resizeObserver.observe(this.chartContainer().nativeElement);
+    ChartComponent.resizeObserver.observe(this.chartContainer()!.nativeElement);
 
     // under certain conditions using v/h concat will cause the chart to only fit to the first chart
     // to fix this, we fire a resize event once the component has been loaded
@@ -136,7 +136,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // If this occurs, it is a smell that something is wrong with how the
     // component is being used, but we should still defensively check for it.
     if (ChartComponent.resizeObserver) {
-      ChartComponent.resizeObserver.unobserve(this.chartContainer().nativeElement);
+      ChartComponent.resizeObserver.unobserve(this.chartContainer()!.nativeElement);
     } else {
       console.warn(
         "ChartComponent resize observer was not initialized before " +
@@ -156,7 +156,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    * Destroy and recreate the chart
    * This will not be optimal if you need to update the chart frequently
    */
-  private async generateChart(fullSpec): Promise<Result> {
+  private async generateChart(fullSpec: any): Promise<Result> {
     // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
@@ -184,7 +184,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     }
 
     const vegaChart: Result = await embed(
-      this.chartContainer().nativeElement,
+      this.chartContainer()!.nativeElement,
       fullSpec,
       {
         ...defaultOptions,
@@ -202,7 +202,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // we have to retroactively add the data to the spec as part of this component
   // we keep the data and the spec separate so that we can create multiple graphs with different data from the same spec
   private addDataToSpec(
-    spec,
+    spec: any,
     datasets?: Datasets | object,
     data?: ChartData,
   ): VisualizationSpec {

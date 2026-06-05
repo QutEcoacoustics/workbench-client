@@ -88,6 +88,7 @@ describe("ShallowVerificationService", () => {
     spec = createService();
   });
 
+  // @ts-expect-error: strict mode fix
   validateStandardApi<Model, ShallowParams, ShallowService>(
     () => spec,
     Verification,
@@ -184,6 +185,7 @@ describe("ShallowVerificationService", () => {
           spec.service.showUserVerification(mockAudioEvent, mockTag),
         );
 
+        // @ts-expect-error: strict mode fix
         expect(response).toEqual(mockFilterResponse[0]);
       });
 

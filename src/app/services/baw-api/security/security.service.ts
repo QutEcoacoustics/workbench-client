@@ -14,6 +14,7 @@ import { LoginDetails } from "@models/data/LoginDetails";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { Session, User } from "@models/User";
 import { UNAUTHORIZED } from "http-status";
+import { NgHttpCachingService } from "ng-http-caching";
 import { CookieService } from "ngx-cookie-service";
 import { BehaviorSubject, Observable } from "rxjs";
 import {
@@ -24,7 +25,6 @@ import {
   switchMap,
   tap,
 } from "rxjs/operators";
-import { NgHttpCachingService } from "ng-http-caching";
 import { UserService } from "../user/user.service";
 
 const signUpParam = "sign_up";
@@ -41,7 +41,8 @@ const sessionUserEndpoint = stringTemplate`/security/user?antiCache=${param}`;
 @Injectable()
 export class SecurityService {
   private readonly api = inject<BawApiService<Session>>(BawApiService);
-  private readonly formApi = inject<BawFormApiService<Session>>(BawFormApiService);
+  private readonly formApi =
+    inject<BawFormApiService<Session>>(BawFormApiService);
   private readonly userService = inject(UserService);
   private readonly cookies = inject(CookieService);
   private readonly session = inject(BawSessionService);
@@ -52,11 +53,11 @@ export class SecurityService {
   }
 
   /**
-    * A behavior subject that will complete once the security service has
-    * performed an initial check to see if the user is logged in.
-    * The value of this behavior subject is a boolean indicating if this
-    * initial fetch has been previously completed.
-    */
+   * A behavior subject that will complete once the security service has
+   * performed an initial check to see if the user is logged in.
+   * The value of this behavior subject is a boolean indicating if this
+   * initial fetch has been previously completed.
+   */
   public firstAuthAwait = new BehaviorSubject(false);
 
   /**
@@ -76,7 +77,7 @@ export class SecurityService {
     const getPageError = (page: string): [string, string] => {
       const pageError = / id="(.+)" \/><span class="help-block">(.+)<\/span>/;
       const match = page.match(pageError);
-      return match?.length === 3 ? [match[1], match[2]] : undefined;
+      return match?.length === 3 ? [match[1], match[2]] : undefined!;
     };
 
     /** Read page response for unique username error */
@@ -89,11 +90,11 @@ export class SecurityService {
     /** Read page response for username constraints */
     const validateUsernameConstraints = ([type, msg]: [
       string,
-      string
+      string,
     ]): void => {
       if (type === "user_user_name" && msg.includes("Only letters, numbers")) {
         throw Error(
-          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)",
         );
       }
     };
@@ -117,7 +118,7 @@ export class SecurityService {
         validateUniqueUsername(pageError);
         validateUniqueEmail(pageError);
         validateUsernameConstraints(pageError);
-      }
+      },
     );
   }
 
@@ -140,14 +141,14 @@ export class SecurityService {
       (token: string) => details.getBody(token),
       (page) => {
         validateLoggedIn(page);
-      }
+      },
     );
 
     // Logout first to ensure token and cookie are synchronized
     return this.signOut().pipe(
       mergeMap(() => handleAuth),
       // Ignore any sign out errors, and continue with authentication
-      catchError(() => handleAuth)
+      catchError(() => handleAuth),
     );
   }
 
@@ -155,6 +156,7 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
+    // @ts-expect-error: strict mode fix
     return (
       this.api
         // Sign out without notification so that signUp and signIn endpoints
@@ -165,7 +167,7 @@ export class SecurityService {
           catchError((err: BawApiError) => {
             this.clearData();
             return this.api.handleError(err, true);
-          })
+          }),
         )
     );
   }
@@ -190,7 +192,9 @@ export class SecurityService {
     formEndpoint: string,
     authEndpoint: string,
     getFormData: (authToken: string) => URLSearchParams,
-    pageValidation: (page: string) => void = () => {}
+    pageValidation: (page: string) => void = () => {
+      /* noop */
+    },
   ): Observable<void> {
     let authToken: AuthToken;
 
@@ -209,6 +213,7 @@ export class SecurityService {
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Save to local storage
+        // @ts-expect-error: strict mode fix
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
         switchMap(() => this.userService.showWithoutNotification()),
@@ -217,7 +222,9 @@ export class SecurityService {
         // Update session user with user details and save to local storage
         tap((user: User) => this.session.setLoggedInUser(user, authToken)),
         // Void output
-        map(() => {}),
+        map(() => {
+          /* noop */
+        }),
         catchError((err) => {
           this.clearData();
 
@@ -227,7 +234,7 @@ export class SecurityService {
           } else {
             return this.formApi.handleError(err);
           }
-        })
+        }),
       );
   }
 
@@ -236,9 +243,10 @@ export class SecurityService {
     let authToken: AuthToken;
     this.sessionDetails()
       .pipe(
+        // @ts-expect-error: strict mode fix
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
-        first()
+        first(),
       )
       .subscribe({
         next: (user) => {

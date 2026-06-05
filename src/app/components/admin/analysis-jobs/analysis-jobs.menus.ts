@@ -29,8 +29,8 @@ export const adminAnalysisJobMenuItem = menuRoute({
   tooltip: () => "Manage analysis job",
   parent: adminAnalysisJobsMenuItem,
   predicate: isAdminPredicate,
-  title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
-    return componentModel.analysisJob.model?.name;
+  title: (routeData?: RouterStateSnapshot): string | null => {
+    const componentModel = routeData?.root.firstChild?.data;
+    return componentModel?.analysisJob.model?.name ?? null;
   }
 });

@@ -9,7 +9,9 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
   formInputs.forEach(
     ({
       testGroup,
-      setup = () => {},
+      setup = () => {
+        /* noop */
+      },
       field,
       key,
       type,
@@ -43,23 +45,23 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
 
         if (label) {
           it("should have label", () => {
-            expect(field.props.label).toBe(label);
+            expect(field.props!.label).toBe(label);
           });
         }
 
         if (inputType) {
           it(`should be input of type "${inputType}"`, () => {
-            expect(field.props.type).toBe(inputType);
+            expect(field.props!.type).toBe(inputType);
           });
         }
 
         if (description) {
           it("should contain description", () => {
-            expect(field.props.description).toBe(description);
+            expect(field.props!.description).toBe(description);
           });
         }
       });
-    }
+    },
   );
 }
 

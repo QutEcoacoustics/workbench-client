@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from "@angular/core";
+﻿import { Component, Input, OnInit, inject } from "@angular/core";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AnyMenuItem, LabelAndIcon } from "@interfaces/menusInterfaces";
 import { MenuModalWithoutAction, WidgetMenuItem } from "@menu/widgetItem";
@@ -28,11 +28,11 @@ import { MenuComponent } from "../menu/menu.component";
 export class ActionMenuComponent extends withUnsubscribe() implements OnInit {
   private readonly menu = inject(MenuService);
 
-  @Input() public isSideNav: boolean;
+  @Input() public isSideNav!: boolean;
 
-  public title: LabelAndIcon;
-  public links: Set<AnyMenuItem | MenuModalWithoutAction>;
-  public widgets: Set<WidgetMenuItem>;
+  public title!: LabelAndIcon;
+  public links!: Set<AnyMenuItem | MenuModalWithoutAction>;
+  public widgets!: Set<WidgetMenuItem>;
 
   public ngOnInit(): void {
     this.menu.menuUpdate

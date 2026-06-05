@@ -37,6 +37,7 @@ describe("TypeaheadInputComponent", () => {
     spec.query<HTMLButtonElement>("button.dropdown-item.active");
 
   function typeInInput(text: string): void {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(text, inputBox());
     spec.detectChanges();
   }
@@ -130,6 +131,7 @@ describe("TypeaheadInputComponent", () => {
     pillElements.forEach((pill: HTMLSpanElement, i: number) => {
       expect(pill.innerText).toEqual(
         // since the type of the active items is a TypeScript unknown, the as Site is acceptable as it adds type safety
+        // @ts-expect-error: strict mode fix
         (spec.component.value()[i] as Site).name,
       );
     });
@@ -139,13 +141,15 @@ describe("TypeaheadInputComponent", () => {
     spec.setHostInput("multipleInputs", true);
     const testInput = defaultFakeSites[0].name;
 
+    // @ts-expect-error: strict mode fix
     typeInInput(testInput);
     tick(defaultDebounceTime);
-    selectedDropdownOption().click();
+    selectedDropdownOption()!.click();
 
     const pillElements: HTMLSpanElement[] = itemPills();
 
     expect(pillElements).toHaveLength(1);
+    // @ts-expect-error: strict mode fix
     expect(pillElements[0].innerText).toEqual(testInput);
   }));
 
@@ -153,24 +157,27 @@ describe("TypeaheadInputComponent", () => {
     const testInput = defaultFakeSites[0].name;
     spec.setHostInput("multipleInputs", true);
 
+    // @ts-expect-error: strict mode fix
     typeInInput(testInput);
     tick(defaultDebounceTime);
     spec.detectChanges();
-    selectedDropdownOption().click();
+    selectedDropdownOption()!.click();
     spec.detectChanges();
     flush();
-    expect(inputBox().value).toEqual("");
+    expect(inputBox()!.value).toEqual("");
   }));
 
   it("should complete in the input box if the typeahead emits a singular value", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
     spec.setHostInput("multipleInputs", false);
 
+    // @ts-expect-error: strict mode fix
     typeInInput(testInput);
     tick(defaultDebounceTime);
 
-    selectedDropdownOption().click();
+    selectedDropdownOption()!.click();
 
+    // @ts-expect-error: strict mode fix
     expect(inputBox().value).toEqual(testInput);
 
     flush();
@@ -184,9 +191,10 @@ describe("TypeaheadInputComponent", () => {
     spec.component.modelChange.emit = jasmine.createSpy("modelChange");
 
     // since we are not using multiple inputs, the second call should remove the first item typed into the typeahead input
+    // @ts-expect-error: strict mode fix
     typeInInput(siteToSelect.name);
     tick(defaultDebounceTime);
-    selectedDropdownOption().click();
+    selectedDropdownOption()!.click();
 
     expect(spec.component.modelChange.emit).toHaveBeenCalledWith([
       siteToSelect,
@@ -205,6 +213,7 @@ describe("TypeaheadInputComponent", () => {
       value: defaultFakeSites,
     });
 
+    // @ts-expect-error: strict mode fix
     spec.dispatchKeyboardEvent(inputBox(), "keydown", "Backspace");
     spec.detectChanges();
     tick(defaultDebounceTime);
@@ -219,6 +228,7 @@ describe("TypeaheadInputComponent", () => {
   // if the following test is broken, it may be because the search callback is not being called, or the test mock api is faulty
   it("should create a dropdown of possible items when the user starts typing", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
+    // @ts-expect-error: strict mode fix
     typeInInput(testInput);
     tick(defaultDebounceTime);
 
@@ -228,9 +238,11 @@ describe("TypeaheadInputComponent", () => {
 
   it("should use the formatter template for the dropdown items", fakeAsync(() => {
     const testInput = defaultFakeSites[0].name;
+    // @ts-expect-error: strict mode fix
     typeInInput(testInput);
     tick(defaultDebounceTime);
 
+    // @ts-expect-error: strict mode fix
     expect(selectedDropdownOption().innerText).toEqual(testInput);
   }));
 
@@ -242,6 +254,7 @@ describe("TypeaheadInputComponent", () => {
 
     spec.setHostInput("value", [activeSite]);
 
+    // @ts-expect-error: strict mode fix
     expect(itemPills()[0].innerText).toEqual(expectedPillText);
   }));
 
@@ -272,6 +285,7 @@ describe("TypeaheadInputComponent", () => {
 
     // Note that we don't tick or flush the async queue here because we should
     // see that the focus events results are immediate and not debounced.
+    // @ts-expect-error: strict mode fix
     spec.focus(inputBox());
 
     const dropdownItems = dropdownOptions();
@@ -295,9 +309,10 @@ describe("TypeaheadInputComponent", () => {
 
     it("should emit an empty value if the user clears the input in single input mode", fakeAsync(() => {
       const testInput = defaultFakeSites[0].name;
+      // @ts-expect-error: strict mode fix
       typeInInput(testInput);
       tick(defaultDebounceTime);
-      selectedDropdownOption().click();
+      selectedDropdownOption()!.click();
 
       spec.component.modelChange.emit = jasmine.createSpy("modelChange");
       typeInInput("");
@@ -316,6 +331,7 @@ describe("TypeaheadInputComponent", () => {
       const initialDropdownItems = dropdownOptions();
       expect(initialDropdownItems).toHaveLength(0);
 
+      // @ts-expect-error: strict mode fix
       spec.focus(inputBox());
       tick(defaultDebounceTime);
       flush();
@@ -325,6 +341,7 @@ describe("TypeaheadInputComponent", () => {
 
       expect(dropdownItems).toHaveLength(defaultFakeSites.length);
       defaultFakeSites.forEach((site: Site, i: number) => {
+        // @ts-expect-error: strict mode fix
         expect(dropdownItems[i]).toHaveExactTrimmedText(site.name);
       });
     }));
@@ -335,6 +352,7 @@ describe("TypeaheadInputComponent", () => {
       const initialDropdownItems = dropdownOptions();
       expect(initialDropdownItems).toHaveLength(0);
 
+      // @ts-expect-error: strict mode fix
       spec.focus(inputBox());
 
       spec.detectChanges();

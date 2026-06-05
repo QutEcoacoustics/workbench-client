@@ -1,4 +1,4 @@
-import { Directive, OnInit, ViewChild } from "@angular/core";
+﻿import { Directive, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApiFilter } from "@baw-api/api-common";
 import { Direction, Filters } from "@baw-api/baw-api.service";
@@ -33,7 +33,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   extends PageComponent
   implements OnInit
 {
-  @ViewChild(DatatableComponent) public table: DatatableComponent;
+  @ViewChild(DatatableComponent) public table!: DatatableComponent;
 
   // Table variables
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -43,24 +43,24 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public SelectionType = SelectionType;
   public columns: TableColumn[] = [];
-  public rows: TableRow[];
+  public rows!: TableRow[];
   public selected: TableRow[] = [];
-  public sortKeys: { [key: string]: string };
-  public filterKey: keyof M;
+  public sortKeys!: { [key: string]: string };
+  public filterKey!: keyof M;
   public totalModels = 0;
   public pageSize = 0;
 
   /**
    * API Error Response for Table Data
    */
-  public error: BawApiError;
+  public error!: BawApiError;
   /**
    * API Error Response from Resolvers
    */
-  public failure: boolean;
-  public loadingData: boolean;
+  public failure!: boolean;
+  public loadingData!: boolean;
   public models: ResolvedModelList = {};
-  public pageNumber: number = 0;
+  public pageNumber = 0;
   public filterEvent$ = new Subject<string>();
   protected filters: Filters<M> = {};
 
@@ -69,7 +69,9 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
     private rowsCallback: (models: M[]) => TableRow[],
     protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
-    private preselectRows: (rows: TableRow[]) => void = () => {}
+    private preselectRows: (rows: TableRow[]) => void = () => {
+      /* noop */
+    },
   ) {
     super();
 
@@ -77,7 +79,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       .pipe(
         debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: () => this.getPageData(),
@@ -132,6 +134,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       this.filters.sorting = undefined;
     } else {
       this.filters.sorting = {
+        // @ts-expect-error: strict mode fix
         orderBy: this.sortKeys[event.column.prop] as keyof M,
         direction: event.newValue,
       };
@@ -155,7 +158,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
           this.pageSize = models.length;
           if (models.length > 0) {
             const meta = models[0].getMetadata();
-            this.totalModels = meta.paging.total;
+            this.totalModels = meta.paging!.total!;
           } else {
             this.totalModels = 0;
           }

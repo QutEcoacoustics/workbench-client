@@ -60,6 +60,7 @@ export function createItemSearchCallback<T>(
   const maxResults = TypeaheadInputComponent.maximumResults;
   return (searchTerm: string) => {
     const filteredItems = items.filter((item) => {
+      // @ts-expect-error: strict mode fix
       const itemText = item.toString().toLowerCase();
       return itemText.includes(searchTerm.toLowerCase());
     });

@@ -85,11 +85,13 @@ export class BawApiInterceptor implements HttpInterceptor {
 
       // Need to it this way so that whitelisted key values are respected in conversion
       let converted = {};
+      // @ts-expect-error: strict mode indexing
       converted[key] = value;
       converted = toSnakeCase(converted);
 
       newParams = newParams.set(
         Object.keys(converted)[0],
+        // @ts-expect-error: strict mode indexing
         converted[Object.keys(converted)[0]]
       );
     }
@@ -127,7 +129,7 @@ export class BawApiInterceptor implements HttpInterceptor {
     if (isErrorResponse(response)) {
       const error = new BawApiError(
         response.status,
-        response.error.meta.error.details,
+        response.error.meta.error!.details,
         toCamelCase(responseData),
         toCamelCase(response.error.meta.error?.info)
       );

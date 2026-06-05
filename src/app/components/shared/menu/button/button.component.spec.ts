@@ -71,7 +71,7 @@ describe("MenuButtonComponent", () => {
     // Expects label to be above disabled user tooltip
     const label = spec.query<HTMLElement>("#label");
     expect(label).toBeTruthy("Label element should contain id='label'");
-    expect(label.innerText).toBe(defaultLink.label);
+    expect(label!.innerText).toBe(defaultLink.label);
   });
 
   describe("tooltip", () => {
@@ -101,7 +101,7 @@ describe("MenuButtonComponent", () => {
       const spy = jasmine.createSpy("button action");
       setup({ link: menuAction({ ...defaultLink, action: spy }) });
       spec.detectChanges();
-      retrieveButton().click();
+      retrieveButton()!.click();
       expect(spy).toHaveBeenCalled();
     });
 
@@ -149,11 +149,13 @@ describe("MenuButtonComponent", () => {
       });
       spec.detectChanges();
       const tooltip = getTooltip();
-      tooltip.open();
+      tooltip!.open();
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       const tooltipEl = (tooltip.ngbTooltip as TemplateRef<any>).elementRef
         .nativeElement;
       expect(tooltipEl).toContainText("custom disabled message");
     });
   });
 });
+

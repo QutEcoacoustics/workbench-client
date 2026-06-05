@@ -47,7 +47,7 @@ class AdminScriptsNewComponent extends FormTemplate<Script> {
     const router = inject(Router);
 
     super(notifications, route, router, {
-      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      successMsg: (model) => defaultSuccessMsg("created", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

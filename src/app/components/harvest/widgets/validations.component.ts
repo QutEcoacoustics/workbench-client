@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { WidgetComponent } from "@menu/widget.component";
 import { WidgetMenuItem } from "@menu/widgetItem";
@@ -34,7 +34,7 @@ export class ValidationsWidgetComponent implements WidgetComponent, OnInit {
 
   public contactUs = contactUsMenuItem;
   public icons = metaReviewIcons;
-  public isMetaReviewStage$: Observable<boolean>;
+  public isMetaReviewStage$!: Observable<boolean>;
 
   public ngOnInit(): void {
     this.isMetaReviewStage$ = this.stages.harvest$.pipe(

@@ -72,6 +72,7 @@ export class AccountsService implements StandardApi<User> {
   }
 
   public destroy(model: IdOr<User>): Observable<User | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 

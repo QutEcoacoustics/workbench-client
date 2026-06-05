@@ -83,6 +83,7 @@ describe("AllUploadsComponent", () => {
   });
 
   it("should have the harvest list table", () => {
+    // @ts-expect-error: strict mode fix
     const datatableElement: HTMLElement =
       spectator.query<HTMLElement>("ngx-datatable");
     expect(datatableElement).toExist();

@@ -1,4 +1,4 @@
-import { AfterContentInit, Directive, Input, inject } from "@angular/core";
+﻿import { AfterContentInit, Directive, Input, inject } from "@angular/core";
 import { Direction, Filters, Sorting } from "@baw-api/baw-api.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { AbstractModel } from "@models/AbstractModel";
@@ -110,15 +110,15 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
    * for the current page of the table, and should output the matching models
    */
   // eslint-disable-next-line @typescript-eslint/quotes
-  @Input("bawDatatablePagination") public pagination: DatatablePaginationInput<Model>;
+  @Input("bawDatatablePagination") public pagination!: DatatablePaginationInput<Model>;
 
   /** Base API filters, this is extracted from the pagination input */
-  private filters$: Observable<Filters<Model>>;
+  private filters$!: Observable<Filters<Model>>;
   /**
    * Observable which outputs each table row. Each row value will be the model
    * retrieved from the api request
    */
-  private rows$: Observable<any[]>;
+  private rows$!: Observable<any[]>;
   /** Observable tracking when the table is loading new data */
   private loading$ = new BehaviorSubject<boolean>(false);
   /**
@@ -127,7 +127,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   private pageAndSort$ = new BehaviorSubject<PageAndSort<Model>>({ page: 0 });
 
   protected get rowLimit(): number {
-    return this.datatable.limit;
+    return this.datatable.limit!;
   }
 
   public ngAfterContentInit(): void {
@@ -199,6 +199,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   public onSort = (event: DatatableSortEvent): void => {
     if (!event.newValue) {
       // Trigger with unset sort, and reset page to 0
+      // @ts-expect-error: strict mode fix
       this.pageAndSort$.next({ sort: null, page: 0 });
     } else {
       const sortKey = event.column.sortKey ?? event.column.prop?.toString();
@@ -215,6 +216,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   private subscribeToTableOutputs(): void {
     // Set page number whenever changed
     this.datatable.page.subscribe((page): void => {
+      // @ts-expect-error: strict mode fix
       this.setPage(page);
     });
 

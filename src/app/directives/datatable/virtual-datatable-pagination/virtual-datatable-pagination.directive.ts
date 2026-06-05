@@ -1,4 +1,4 @@
-import { Directive, Input, OnChanges } from "@angular/core";
+﻿import { Directive, Input, OnChanges } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
 import { AbstractModel } from "@models/AbstractModel";
@@ -29,7 +29,7 @@ export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
   implements OnChanges
 {
   // TODO: This component should accept models that are not an AbstractModel
-  @Input("bawVirtualDatatablePagination") public models: VirtualDatabaseModelInput<Model>;
+  @Input("bawVirtualDatatablePagination") public models!: VirtualDatabaseModelInput<Model>;
 
   public ngOnChanges(): void {
     this.pagination = { getModels: this.getModels.bind(this) };
@@ -44,7 +44,7 @@ export class VirtualDatatablePaginationDirective<Model extends AbstractModel>
       return of([]);
     }
 
-    const pageNumber = filters.paging.page ?? 1;
+    const pageNumber = filters.paging!.page ?? 1;
     const pageSize = this.rowLimit;
 
     return this.models().pipe(

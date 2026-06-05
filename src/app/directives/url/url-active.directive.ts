@@ -28,6 +28,6 @@ export class UrlActiveDirective extends RouterLinkActive {
     const _cdr = inject(ChangeDetectorRef);
     const _link = inject(UrlDirective, { optional: true });
 
-    super(_router, _element, _renderer, _cdr, _link);
+    super(_router, _element, _renderer, _cdr, _link!);
   }
 }

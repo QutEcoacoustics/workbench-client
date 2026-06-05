@@ -1,4 +1,4 @@
-import { Params } from "@angular/router";
+﻿import { Params } from "@angular/router";
 import { Filters, InnerFilter, Sorting } from "@baw-api/baw-api.service";
 import {
   AUDIO_EVENT_IMPORT,
@@ -23,6 +23,7 @@ import {
   jsNumberArray,
   jsString,
   luxonDateArray,
+  SerializationTechnique,
   serializeObjectToParams,
   timeOfDay,
   TimeOfDayIntervalTuple,
@@ -103,7 +104,7 @@ export function verificationStatusOptions(user?: User) {
       },
     ],
     ["any", null],
-  ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent>>;
+  ]) satisfies Map<VerificationStatusKey, InnerFilter<AudioEvent> | null>;
 }
 
 export interface IAnnotationSearchParameters {
@@ -114,7 +115,7 @@ export interface IAnnotationSearchParameters {
   // daylightSavings: boolean;
   // recordingDate: UniformTuple<DateTime, 2>;
   // recordingTime: UniformTuple<Duration, 2>;
-  score: UniformTuple<number, 2>;
+  score?: UniformTuple<number | null, 2>;
 
   imports: EventImports;
 
@@ -135,8 +136,8 @@ export interface IAnnotationSearchParameters {
   routeRegionId: Id<Region>;
   routeSiteId: Id<Site>;
 
-  eventDate: UniformTuple<DateTime, 2>;
-  eventTime: TimeOfDayIntervalTuple;
+  eventDate?: UniformTuple<DateTime | null, 2>;
+  eventTime?: TimeOfDayIntervalTuple | null;
 
   sort: SortingKey;
 
@@ -169,7 +170,7 @@ const serializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters>
 
     // Unlike the verification parameters, we want to show all audio events when
     // only using the annotation search parameters by default.
-    verificationStatus: withDefault(jsString, "any"),
+    verificationStatus: withDefault(jsString as SerializationTechnique, "any"),
   };
 
 const deserializationTable: IQueryStringParameterSpec<IAnnotationSearchParameters> =
@@ -188,22 +189,22 @@ export class AnnotationSearchParameters
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
-  public audioRecordings: CollectionIds<AudioRecording>;
-  public tags: CollectionIds<Tag>;
+  public audioRecordings!: CollectionIds<AudioRecording>;
+  public tags!: CollectionIds<Tag>;
 
   // note: now that we can filter by annotation date and time, we don't need to filter
   // by recording date and time. I'm going to disable them until we have a clear purpose for them.
   // public daylightSavings: boolean;
   // public recordingDate: UniformTuple<DateTime, 2>;
   // public recordingTime: UniformTuple<Duration, 2>;
-  public score: UniformTuple<number, 2>;
+  public score?: UniformTuple<number | null, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
   // parameters will be used over these query string parameters.
-  public projects: CollectionIds<Project>;
-  public regions: CollectionIds<Region>;
-  public sites: CollectionIds<Site>;
+  public projects!: CollectionIds<Project>;
+  public regions!: CollectionIds<Region>;
+  public sites!: CollectionIds<Site>;
 
   public routeProjectId: Id<Project>;
   public routeRegionId: Id<Region>;
@@ -212,11 +213,11 @@ export class AnnotationSearchParameters
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  public eventDate: UniformTuple<DateTime, 2>;
-  public eventTime: TimeOfDayIntervalTuple;
+  public eventDate?: UniformTuple<DateTime | null, 2>;
+  public eventTime?: TimeOfDayIntervalTuple | null;
 
-  public verificationStatus: VerificationStatusKey;
-  public sort: SortingKey;
+  public verificationStatus!: VerificationStatusKey;
+  public sort!: SortingKey;
 
   /**
    * @description
@@ -226,7 +227,7 @@ export class AnnotationSearchParameters
    *
    * @private
    */
-  public imports: EventImports;
+  public imports!: EventImports;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -505,7 +506,9 @@ export class AnnotationSearchParameters
         // conditions joined by "or", we can use the "in" filter here to
         // simplify the filter query.
         updatedFilters = filterOr(updatedFilters, {
-          audioEventImportFileId: { in: Array.from(eventImportFileIds) },
+          audioEventImportFileId: {
+            in: Array.from(eventImportFileIds) as number[],
+          },
         });
       }
     }
@@ -576,7 +579,7 @@ export class AnnotationSearchParameters
 
     const filters = verificationStatusOptions(this.user).get(statusKey);
 
-    return filterAnd(initialFilter, filters);
+    return filterAnd(initialFilter, filters ?? {});
   }
 
   private isVerificationStatusKey(key: string): key is VerificationStatusKey {

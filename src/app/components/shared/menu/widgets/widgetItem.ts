@@ -39,7 +39,7 @@ export function menuModal<
 >(item: T): MenuModal | MenuModalWithoutAction {
   return Object.assign(item, {
     kind: "MenuModal" as const,
-    indentation: item.parent ? item.parent.indentation + 1 : 0,
+    indentation: item.parent ? item.parent.indentation! + 1 : 0,
     order: item.parent?.order ?? item.order,
     modalOpts: {
       size: "lg",
@@ -51,6 +51,7 @@ export function menuModal<
       const defaultOpts: ModalComponent = {
         dismissModal: (reason: any) => modalRef.dismiss(reason),
         closeModal: (result: any) => modalRef.close(result),
+        // @ts-expect-error: strict mode fix
         successCallback: item?.successCallback,
         ...item.options,
       };

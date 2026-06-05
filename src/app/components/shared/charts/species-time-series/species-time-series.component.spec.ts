@@ -55,6 +55,7 @@ describe("SpeciesTimeSeriesComponent", () => {
     spec = createComponent({
       props: {
         data: mockData,
+        // @ts-expect-error: strict mode fix
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });
@@ -94,18 +95,7 @@ describe("SpeciesTimeSeriesComponent", () => {
     },
     yAxis: {
       title: "Count of Events",
-      labels: [
-        "0",
-        "10",
-        "20",
-        "30",
-        "40",
-        "50",
-        "60",
-        "70",
-        "80",
-        "90",
-      ],
+      labels: ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90"],
     },
     legend: {
       legendTitle: "Tags",

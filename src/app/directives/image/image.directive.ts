@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from "@angular/core";
+﻿import { Directive, ElementRef, Input, OnChanges, SimpleChanges, inject } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { assetRoot } from "@services/config/config.service";
@@ -22,13 +22,13 @@ export class AuthenticatedImageDirective implements OnChanges {
   private readonly imageRef = inject<ElementRef<HTMLImageElement>>(ElementRef);
 
   /** Image src, only accessible if using [src] */
-  @Input() public src: ImageUrl[] | string;
+  @Input() public src!: ImageUrl[] | string;
   /** Do not append auth token to image url */
-  @Input() public ignoreAuthToken: boolean;
+  @Input() public ignoreAuthToken!: boolean;
   /** Disable authenticated image directive on image */
-  @Input() public disableAuth: boolean;
+  @Input() public disableAuth!: boolean;
 
-  private _src: ImageUrl[];
+  private _src!: ImageUrl[];
   /**
    * Tracks potential url options to be used for src
    */
@@ -36,11 +36,11 @@ export class AuthenticatedImageDirective implements OnChanges {
   /**
    * Tracks the current image
    */
-  private currentImage: ImageUrl;
+  private currentImage!: ImageUrl;
   /**
    * Contains url for default image
    */
-  private defaultImage: ImageUrl;
+  private defaultImage!: ImageUrl;
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.disableAuth || typeof this.src === "string") {
@@ -139,7 +139,7 @@ export class AuthenticatedImageDirective implements OnChanges {
 
     if (this.session.isLoggedIn) {
       const tokenUrl = new URL(url);
-      tokenUrl.searchParams.set("authToken", this.session.authToken);
+      tokenUrl.searchParams.set("authToken", this.session.authToken!);
       return tokenUrl.toString();
     }
     return url;

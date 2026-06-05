@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, inject } from "@angular/core";
+﻿import { Component, Input, OnChanges, OnInit, inject } from "@angular/core";
 import { IsActiveMatchOptions, Params } from "@angular/router";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -84,12 +84,12 @@ export class MenuLinkComponent
   private readonly apiRoot = inject(API_ROOT);
   private readonly sharedRoute = inject(SharedActivatedRouteService);
 
-  @Input() public link: MenuRoute | MenuLink;
-  @Input() public tooltip: string;
+  @Input() public link!: MenuRoute | MenuLink;
+  @Input() public tooltip!: string;
 
-  public queryParams: Observable<Params>;
-  public routeParams: Observable<Params>;
-  public disabledReason: string;
+  public queryParams!: Observable<Params>;
+  public routeParams!: Observable<Params>;
+  public disabledReason!: string;
   public activeOptions: { exact: true } & IsActiveMatchOptions = {
     exact: true,
     matrixParams: "ignored",

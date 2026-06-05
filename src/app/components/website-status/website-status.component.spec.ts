@@ -56,7 +56,8 @@ describe("WebsiteStatusComponent", () => {
 
   function assertGridItemText(itemName: string, expectedValue: string) {
     const gridElement = getElementByTextContent(spectator, itemName);
-    const gridElementValue = gridElement.parentElement.querySelector("#value");
+    // @ts-expect-error: strict mode fix
+    const gridElementValue = gridElement.parentElement!.querySelector("#value");
 
     expect(gridElementValue).toHaveExactTrimmedText(expectedValue);
   }
@@ -202,3 +203,4 @@ describe("WebsiteStatusComponent", () => {
     );
   });
 });
+

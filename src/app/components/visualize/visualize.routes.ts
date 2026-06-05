@@ -5,6 +5,7 @@ import { Region } from "@models/Region";
 export const visualizeRoute = StrongRoute.newRoot().add(
   // TODO Change to timeline once old client page is migrated
   "visualize",
+  // @ts-expect-error: strict mode fix
   ({ siteIds, siteId, projectId, extent0, extent1, lane }, { region }) => {
     const qsp = { extent0, extent1, lane };
     const priority = [

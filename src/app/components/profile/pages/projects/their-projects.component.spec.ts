@@ -75,10 +75,12 @@ describe("TheirProjectsComponent", () => {
     setup(defaultUser);
     interceptRequest([]);
     spec.detectChanges();
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
@@ -96,6 +98,7 @@ describe("TheirProjectsComponent", () => {
         interceptRequest([defaultProject]);
         spec.detectChanges();
 
+        // @ts-expect-error: strict mode fix
         expect(getCells()[0]).toHaveText(defaultProject.name);
       });
 
@@ -114,7 +117,7 @@ describe("TheirProjectsComponent", () => {
       interceptRequest([defaultProject]);
       spec.detectChanges();
 
-      expect(getCells()[1]).toHaveText(defaultProject.siteIds.size.toString());
+      expect(getCells()[1]).toHaveText(defaultProject.siteIds!.size.toString());
     });
 
     describe("access level", () => {

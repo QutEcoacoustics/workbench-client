@@ -19,9 +19,9 @@ import { StrongRouteDirective } from "./strong-route.directive";
   imports: [StrongRouteDirective, StrongRouteActiveDirective],
 })
 class MockComponent {
-  @Input() public route: StrongRoute;
-  @Input() public klass: string;
-  @Input() public activeOptions: { exact: boolean };
+  @Input() public route!: StrongRoute;
+  @Input() public klass!: string;
+  @Input() public activeOptions!: { exact: boolean };
 }
 
 describe("StrongRouteActiveDirective", () => {
@@ -84,6 +84,6 @@ describe("StrongRouteActiveDirective", () => {
 
   it("should accept active options", () => {
     setup(baseRoute, "active", { exact: true });
-    expect(getDirective().routerLinkActiveOptions).toEqual({ exact: true });
+    expect(getDirective()!.routerLinkActiveOptions).toEqual({ exact: true });
   });
 });

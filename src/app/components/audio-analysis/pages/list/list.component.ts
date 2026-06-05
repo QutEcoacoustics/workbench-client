@@ -54,6 +54,7 @@ class AnalysesComponent extends PagedTableTemplate<TableRow, AnalysisJob> {
     const api = inject(AnalysisJobsService);
 
     super(api, (analysisJobs) =>
+      // @ts-expect-error: strict mode fix
       analysisJobs.map((analysisJob) => ({
         name: analysisJob.name,
         scripts: analysisJob,

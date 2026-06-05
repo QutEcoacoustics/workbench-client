@@ -19,6 +19,7 @@ describe("Predicates", () => {
   beforeEach(() => {
     defaultUser = new User(generateUser({}, false));
     adminUser = new User(generateUser({}, true));
+    // @ts-expect-error: strict mode fix
     guestUser = undefined;
   });
 
@@ -74,6 +75,7 @@ describe("Predicates", () => {
     });
 
     it("should handle missing data", () => {
+      // @ts-expect-error: strict mode fix
       expect(isProjectEditorPredicate(defaultUser, undefined)).toBeFalse();
     });
 

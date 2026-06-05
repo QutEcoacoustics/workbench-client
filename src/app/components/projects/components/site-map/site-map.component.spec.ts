@@ -29,8 +29,11 @@ describe("SiteMapComponent", () => {
   let spec: Spectator<SiteMapComponent>;
   let injector: AssociationInjector;
 
+  // @ts-expect-error: strict mode fix
   const defaultProjects: Project[] = [new Project(generateProject(), injector)];
+  // @ts-expect-error: strict mode fix
   const defaultRegions: Region[] = [new Region(generateRegion(), injector)];
+  // @ts-expect-error: strict mode fix
   const defaultSites: Site[] = [new Site(generateSite(), injector)];
 
   const mapComponent = () => spec.query(MapComponent);
@@ -89,7 +92,7 @@ describe("SiteMapComponent", () => {
   }
 
   function mapMarkers() {
-    return mapComponent().markers().toArray();
+    return mapComponent()!.markers().toArray();
   }
 
   it("should handle error", fakeAsync(() => {
@@ -105,7 +108,7 @@ describe("SiteMapComponent", () => {
       spec.detectChanges();
 
       assertMapMarkers([]);
-      expect(mapComponent().hasMarkers).toBeFalse();
+      expect(mapComponent()!.hasMarkers).toBeFalse();
     }));
 
     it("should display map marker for a single site", fakeAsync(() => {
@@ -174,6 +177,7 @@ describe("SiteMapComponent", () => {
         projects: defaultProjects,
         expectedFilter: {
           "projects.id": {
+            // @ts-expect-error: strict mode fix
             in: defaultProjects.map((project) => project.id),
           },
         },
@@ -183,6 +187,7 @@ describe("SiteMapComponent", () => {
         regions: defaultRegions,
         expectedFilter: {
           "regions.id": {
+            // @ts-expect-error: strict mode fix
             in: defaultRegions.map((region) => region.id),
           },
         },
@@ -290,6 +295,7 @@ describe("SiteMapComponent", () => {
         const expectedFilters: Filters<Site> = {
           filter: {
             id: {
+              // @ts-expect-error: strict mode fix
               in: siteIds,
             },
           },

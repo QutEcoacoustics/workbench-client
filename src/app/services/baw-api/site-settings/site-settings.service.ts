@@ -5,9 +5,9 @@ import {
   ApiList,
   ApiShow,
   ApiUpdate,
+  IdOrName,
   emptyParam,
   nameOrId,
-  IdOrName,
 } from "@baw-api/api-common";
 import { BawApiService } from "@baw-api/baw-api.service";
 import { stringTemplate } from "@helpers/stringTemplate/stringTemplate";
@@ -48,13 +48,10 @@ export class SiteSettingsService
   }
 
   public update(model: SiteSetting) {
-    return this.api.update(
-      SiteSetting,
-      endpoint(model),
-      model,
-    );
+    return this.api.update(SiteSetting, endpoint(model), model);
   }
 
+  // @ts-expect-error: strict mode override
   public destroy(model: IdOrName<SiteSetting>) {
     return this.api.destroy(endpoint(model));
   }

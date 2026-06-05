@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   tagGroupResolvers,
@@ -10,10 +10,10 @@ import {
 } from "@helpers/formTemplate/formTemplate";
 import { permissionsWidgetMenuItem } from "@menu/widget.menus";
 import { TagGroup } from "@models/TagGroup";
-import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
-import { takeUntil } from "rxjs";
 import { FormComponent } from "@shared/form/form.component";
+import { List } from "immutable";
+import { takeUntil } from "rxjs";
 import { adminTagGroupMenuItemActions } from "../list/list.component";
 import {
   adminEditTagGroupMenuItem,
@@ -28,14 +28,14 @@ const tagGroupKey = "tagGroup";
   selector: "baw-admin-tag-groups-edit",
   template: `
     @if (!failure) {
-    <baw-form
-      [title]="title"
-      [model]="model"
-      [fields]="fields"
-      [submitLoading]="loading"
-      submitLabel="Submit"
-      (onSubmit)="submit($event)"
-    ></baw-form>
+      <baw-form
+        [title]="title"
+        [model]="model"
+        [fields]="fields"
+        [submitLoading]="loading"
+        submitLabel="Submit"
+        (onSubmit)="submit($event)"
+      ></baw-form>
     }
   `,
   imports: [FormComponent],
@@ -47,7 +47,7 @@ class AdminTagGroupsEditComponent
   private readonly api = inject(TagGroupsService);
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -57,7 +57,7 @@ class AdminTagGroupsEditComponent
     super(notifications, route, router, {
       getModel: (models) => models[tagGroupKey] as TagGroup,
       successMsg: (model) =>
-        defaultSuccessMsg("updated", model.groupIdentifier),
+        defaultSuccessMsg("updated", model.groupIdentifier!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   }
@@ -71,11 +71,17 @@ class AdminTagGroupsEditComponent
   }
 
   public deleteModel(): void {
-    this.api.destroy(new TagGroup(this.model))
+    this.api
+      .destroy(new TagGroup(this.model))
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.model?.groupIdentifier));
+          this.notifications.success(
+            defaultSuccessMsg(
+              "destroyed",
+              this.model.groupIdentifier || "Unknown",
+            ),
+          );
           this.router.navigateByUrl(adminTagGroupsRoute.toRouterLink());
         },
       });

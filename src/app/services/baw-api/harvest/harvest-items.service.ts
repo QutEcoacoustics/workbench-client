@@ -75,7 +75,7 @@ export class HarvestItemsService
   ): Observable<HarvestItem> {
     return this.api.show(
       HarvestItem,
-      endpoint(project, harvest, model.path, emptyParam)
+      endpoint(project, harvest, model.path!, emptyParam)
     );
   }
 }
@@ -111,7 +111,7 @@ export class ShallowHarvestItemsService
   ): Observable<HarvestItem> {
     return this.api.show(
       HarvestItem,
-      shallowEndpoint(harvest, model.path, emptyParam)
+      shallowEndpoint(harvest, model.path!, emptyParam)
     );
   }
 
@@ -130,6 +130,7 @@ export class ShallowHarvestItemsService
         },
       },
       "harvests.id" as any,
+      // @ts-expect-error: strict mode fix
       harvest
     );
     return (

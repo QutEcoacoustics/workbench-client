@@ -69,6 +69,7 @@ describe("AdminTagsNewComponent", () => {
     });
 
     it("should handle tag types error", () => {
+      // @ts-expect-error: strict mode fix
       configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });

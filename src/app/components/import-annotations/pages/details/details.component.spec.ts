@@ -94,6 +94,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   function switchToFileTab(): void {
     const target = fileTabButton();
+    // @ts-expect-error: strict mode fix
     spec.click(target);
 
     flush();
@@ -102,6 +103,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   function deleteFirstFile() {
     const deleteButton = getElementByTextContent(spec, "Delete");
+    // @ts-expect-error: strict mode fix
     clickButton(spec, deleteButton);
     tick();
 
@@ -109,6 +111,7 @@ describe("AnnotationsDetailsComponent", () => {
       "baw-harvest-confirmation-modal #next-btn",
       { root: true },
     );
+    // @ts-expect-error: strict mode fix
     clickButton(spec, confirmationButton);
 
     flush();
@@ -289,6 +292,7 @@ describe("AnnotationsDetailsComponent", () => {
         "Actions",
       ],
       rows: () => expectedAudioEventTable,
+      // @ts-expect-error: strict mode fix
       root: () => activeTabContent(),
     }));
 
@@ -323,6 +327,7 @@ describe("AnnotationsDetailsComponent", () => {
         "Actions",
       ],
       rows: () => expectedFilesTable,
+      // @ts-expect-error: strict mode fix
       root: () => activeTabContent(),
     }));
 
@@ -335,7 +340,8 @@ describe("AnnotationsDetailsComponent", () => {
       // We first sort the files table by "File Name" column, to ensure that
       // the re-fetch request maintains the same sorting conditions.
       const fileNameColumn = spec.query(".datatable-header-cell-template-wrap");
-      const sortingHandle = fileNameColumn.querySelector(".sort-btn");
+      const sortingHandle = fileNameColumn!.querySelector(".sort-btn");
+      // @ts-expect-error: strict mode fix
       spec.click(sortingHandle);
 
       const expectedSortingFilters: Sorting<keyof AudioEventImportFile> = {
@@ -377,6 +383,7 @@ describe("AnnotationsDetailsComponent", () => {
 
         expect(link).toHaveStrongRoute(verificationRoute.project);
 
+        // @ts-expect-error: strict mode fix
         expect(link.routeParams).toEqual(expectedResult.routeParams);
         expect(link.queryParams).toEqual(expectedResult.queryParams);
       });
@@ -392,7 +399,8 @@ describe("AnnotationsDetailsComponent", () => {
       const firstFile = mockAudioEventImportFiles[0];
 
       expect(downloadLink).toBeDefined();
-      expect(downloadLink.getAttribute("href")).toEqual(firstFile.path);
+      // @ts-expect-error: strict mode fix
+      expect(downloadLink!.getAttribute("href")).toEqual(firstFile.path);
     });
   });
 });

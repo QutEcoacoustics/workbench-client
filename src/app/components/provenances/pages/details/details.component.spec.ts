@@ -49,6 +49,7 @@ fdescribe("ProvenanceDetailsComponent", () => {
     // This is a hack that I do because we cannot access the injector when we
     // initialize the route data above.
     const injector = spec.inject(ASSOCIATION_INJECTOR);
+    // @ts-expect-error: strict mode fix
     testModel["injector"] = injector;
 
     spec.detectChanges();
