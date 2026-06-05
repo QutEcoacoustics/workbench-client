@@ -27,6 +27,10 @@ import {
 import { myDeleteAccountModal } from "@components/profile/profile.modals";
 import { projectsMenuItem } from "@components/projects/projects.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
+import { AuthenticatedImageDirective } from "@directives/image/image.directive";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { defaultSuccessMsg } from "@helpers/formTemplate/formTemplate";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -34,20 +38,16 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { ConfigService } from "@services/config/config.service";
-import { IItem } from "@shared/items/item/item.component";
-import { List } from "immutable";
-import { ToastService } from "@services/toasts/toasts.service";
-import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { AuthenticatedImageDirective } from "@directives/image/image.directive";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
+import { ConfigService } from "@services/config/config.service";
+import { ToastService } from "@services/toasts/toasts.service";
 import { HiddenCopyComponent } from "@shared/hidden-copy/hidden-copy.component";
+import { IItem } from "@shared/items/item/item.component";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { UrlDirective } from "@directives/url/url.directive";
+import { List } from "immutable";
+import { Observable } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 export const myAccountActions = [
   myEditMenuItem,
@@ -171,7 +171,7 @@ class MyProfileComponent
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.user?.userName!)
+            defaultSuccessMsg("destroyed", this.user!.userName || "Unknown"),
           );
           // @ts-expect-error: strict mode fix
           this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
@@ -205,7 +205,7 @@ class MyProfileComponent
         paging: { items: 10 },
         sorting: { orderBy: "updatedAt", direction: "desc" },
       },
-      (models) => (this.tags = models)
+      (models) => (this.tags = models),
     );
     this.updateStatistic(this.bookmarksApi, bookmarks, user);
     this.updateStatistic(this.sitesApi, sites, user);
@@ -214,7 +214,7 @@ class MyProfileComponent
       points,
       user,
       // @ts-expect-error: strict mode fix
-      { filter: { regionId: { notEqual: null } } }
+      { filter: { regionId: { notEqual: null } } },
     );
     this.updateStatistic(this.audioEventsApi, annotations, user);
   }
@@ -225,7 +225,7 @@ class MyProfileComponent
     index: number,
     user: User,
     additionalFilters: Filters<Model> = {},
-    callback?: (models: Model[]) => void
+    callback?: (models: Model[]) => void,
   ): void {
     function getPageTotal(model: Model) {
       // @ts-expect-error: strict mode fix
@@ -241,7 +241,7 @@ class MyProfileComponent
           this.userStatistics = this.userStatistics.update(
             index,
             // @ts-expect-error: strict mode fix
-            (statistic) => ({ ...statistic, value: total })
+            (statistic) => ({ ...statistic, value: total }),
           );
           callback?.(models);
         },

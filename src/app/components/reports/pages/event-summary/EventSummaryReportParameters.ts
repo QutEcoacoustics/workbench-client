@@ -101,8 +101,8 @@ export class EventSummaryReportParameters
   public score!: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings!: boolean;
-  public time: IsomorphicTuple<Duration | null, 2> | null= null;
-  public date: IsomorphicTuple<DateTime | null, 2> | null= null;
+  public time: IsomorphicTuple<Duration | null, 2> | null = null;
+  public date: IsomorphicTuple<DateTime | null, 2> | null = null;
   public charts!: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
@@ -190,7 +190,7 @@ export class EventSummaryReportParameters
         filter!,
         this.dateStartedAfter!,
         // @ts-expect-error: strict mode fix
-        this.dateFinishedBefore
+        this.dateFinishedBefore,
       );
     }
 
@@ -200,12 +200,11 @@ export class EventSummaryReportParameters
         this.daylightSavings,
         this.timeStartedAfter!,
         // @ts-expect-error: strict mode fix
-        this.timeFinishedBefore
+        this.timeFinishedBefore,
       );
     }
 
-    // @ts-expect-error: strict mode fix
-    return { filter! };
+    return { filter: filter! };
   }
 
   public toQueryParams(): Params {

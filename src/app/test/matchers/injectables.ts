@@ -29,7 +29,7 @@ declare const ng: Ng;
  * @param el HTML Element
  * @param directive Directive to extract
  */
-function getDirective<D extends {}>(
+function getDirective<D extends object>(
   el: Element,
   directive: Constructor<unknown>,
 ): D | undefined {
@@ -81,7 +81,7 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Icon should not exist"),
   compare: (
     target: HTMLElement,
-    expectedIcon: IconProp
+    expectedIcon: IconProp,
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -104,8 +104,8 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     if (!util.equals(realizedIcon, expectedIcon)) {
       return matcherFailure(
         `Expected icon to be ${util.pp(expectedIcon)}, got ${util.pp(
-          realizedIcon
-        )} instead`
+          realizedIcon,
+        )} instead`,
       );
     }
 

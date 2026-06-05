@@ -31,7 +31,7 @@ export function embedGoogleAnalytics(key?: string): void {
     // otherwise
     // eslint-disable-next-line prefer-rest-params
     // @ts-expect-error: strict mode fix
-    window["dataLayer"].push(arguments);
+    window["dataLayer"]!.push(arguments);
   };
 
   gtag("js", new Date());

@@ -71,7 +71,8 @@ export function assertPageInfo<T>(
       if (pageRoute.title) {
         testedTitleOptions.forEach(
           (testingTitleOption: TitleOptionsHash, j: number) => {
-            it(`should use the correct page title for the route "/${pageRoutePath}" with projects ${testingTitleOption.hideProjects}`, () => {
+            const testName = `should use the correct page title for the route "/${pageRoutePath}" with projects ${testingTitleOption.hideProjects}`;
+            it(testName, () => {
               const expectedTitle = expectedPageTitles[i + j];
               const observedTitle = pageRoute.title!(
                 mockRouteState,

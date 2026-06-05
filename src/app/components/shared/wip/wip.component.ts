@@ -15,7 +15,10 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   selector: "baw-wip",
   template: `
     @if (showWipContent) {
-      <div class="wip-wrapper" [ngbTooltip]="'This feature is a work in progress'">
+      <div
+        class="wip-wrapper"
+        [ngbTooltip]="'This feature is a work in progress'"
+      >
         <div class="wip-icon">
           <fa-icon size="lg" [icon]="['fas', 'person-digging']"></fa-icon>
         </div>
@@ -30,13 +33,13 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgbTooltip, FaIconComponent]
+  imports: [NgbTooltip, FaIconComponent],
 })
 export class WIPComponent {
   public production!: boolean;
   private session = inject(BawSessionService);
 
   public get showWipContent(): boolean {
-    return this.session.loggedInUser?.isAdmin!;
+    return this.session.loggedInUser!.isAdmin;
   }
 }
