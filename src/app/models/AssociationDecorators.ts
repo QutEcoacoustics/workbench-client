@@ -155,7 +155,7 @@ export function hasOne<
   Params extends any[] = []
 >(
   serviceToken: ServiceToken<ApiShow<Child, Params>>,
-  identifierKey: KeysOfType<Parent, Id>,
+  identifierKey: KeysOfType<Parent, Id | null>,
   routeParams: ReadonlyArray<keyof Parent> = [],
   failureValue: any = null
 ) {

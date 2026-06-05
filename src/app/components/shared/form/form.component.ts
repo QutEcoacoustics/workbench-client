@@ -1,4 +1,5 @@
-﻿import {
+﻿import { NgClass } from "@angular/common";
+import {
   Component,
   EventEmitter,
   inject,
@@ -10,9 +11,8 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
-import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastService } from "@services/toasts/toasts.service";
-import { NgClass } from "@angular/common";
+import { ReCaptchaV3Service } from "ngx-captcha";
 
 /**
  * Formly Form Wrapper

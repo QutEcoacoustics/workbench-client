@@ -1,5 +1,5 @@
 ﻿import { TitleCasePipe } from "@angular/common";
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { StandardApi } from "@baw-api/api-common";
@@ -36,8 +36,14 @@ import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
 import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
-import { DateTimeFilterComponent, DateTimeFilterModel } from "@shared/date-time-filter/date-time-filter.component";
-import { TypeaheadInputComponent, TypeaheadSearchCallback } from "@shared/typeahead-input/typeahead-input.component";
+import {
+  DateTimeFilterComponent,
+  DateTimeFilterModel,
+} from "@shared/date-time-filter/date-time-filter.component";
+import {
+  TypeaheadInputComponent,
+  TypeaheadSearchCallback,
+} from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
 import {
@@ -52,7 +58,14 @@ const siteKey = "site";
 @Component({
   selector: "baw-new-summary-report",
   templateUrl: "./new.component.html",
-  imports: [FormsModule, DateTimeFilterComponent, TypeaheadInputComponent, StrongRouteDirective, NgbHighlight, TitleCasePipe]
+  imports: [
+    FormsModule,
+    DateTimeFilterComponent,
+    TypeaheadInputComponent,
+    StrongRouteDirective,
+    NgbHighlight,
+    TitleCasePipe,
+  ],
 })
 class NewEventReportComponent extends PageComponent implements OnInit {
   protected readonly sitesApi = inject(ShallowSitesService);
@@ -107,7 +120,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public createSearchCallback<T extends AbstractModel>(
     api: StandardApi<T>,
     key: string = "name",
-    includeDefaultFilters: boolean = true
+    includeDefaultFilters: boolean = true,
   ): TypeaheadSearchCallback<T> {
     return (text: string, activeItems: T[]): Observable<T[]> =>
       api.filter({
@@ -116,9 +129,9 @@ class NewEventReportComponent extends PageComponent implements OnInit {
             key as keyof T,
             text as any,
             // @ts-expect-error: strict mode fix
-            includeDefaultFilters && this.defaultFilter()
+            includeDefaultFilters && this.defaultFilter(),
           ),
-          notIn<T>(key as keyof AbstractModel, activeItems)
+          notIn<T>(key as keyof AbstractModel, activeItems),
         ),
       });
   }
@@ -151,11 +164,10 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
   protected updateViewModelFromDateTimeModel(
-    dateTimeModel: DateTimeFilterModel
+    dateTimeModel: DateTimeFilterModel,
   ): void {
     if (dateTimeModel.dateStartedAfter || dateTimeModel.dateFinishedBefore) {
       this.model.date = [
-        // @ts-expect-error: strict mode fix
         dateTimeModel.dateStartedAfter
           ? DateTime.fromObject(dateTimeModel.dateStartedAfter)
           : null,
@@ -167,9 +179,8 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
     if (dateTimeModel.timeStartedAfter || dateTimeModel.timeFinishedBefore) {
       this.model.time = [
-        // @ts-expect-error: strict mode fix
-        dateTimeModel.timeStartedAfter,
-        dateTimeModel.timeFinishedBefore,
+        dateTimeModel.timeStartedAfter || null,
+        dateTimeModel.timeFinishedBefore || null,
       ];
 
       // because the daylight savings filter is a modifier on the time filter we do not need to update it unless the time filter has a value

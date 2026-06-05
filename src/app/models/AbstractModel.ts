@@ -1,4 +1,4 @@
-﻿import { Writeable, XOR } from "@helpers/advancedTypes";
+import { Writeable, XOR } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import camelCase from "just-camel-case";
 import snakeCase from "just-snake-case";
@@ -13,7 +13,7 @@ import { AssociationInjector } from "./ImplementsInjector";
 
 export type AbstractModelConstructor<Model> = new (
   _: Record<string, any>,
-  _injector?: AssociationInjector
+  _injector?: AssociationInjector,
 ) => Model;
 
 interface SerializationConversionOptions {
@@ -21,7 +21,9 @@ interface SerializationConversionOptions {
   formData?: boolean;
 }
 
-type SerializationTargets = XOR<{ create: boolean }, { update: boolean }> | { create: boolean; update: boolean };
+type SerializationTargets =
+  | XOR<{ create: boolean }, { update: boolean }>
+  | { create: boolean; update: boolean };
 type ModelSerializationOptions = SerializationTargets &
   SerializationConversionOptions;
 
@@ -30,8 +32,8 @@ type ModelSerializationOptions = SerializationTargets &
  */
 export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   public constructor(
-    raw: Readonly<Model>,
-    protected injector?: AssociationInjector
+    raw: Readonly<Model> | Record<string, any>,
+    protected injector?: AssociationInjector,
   ) {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
@@ -192,7 +194,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   public hasJsonOnlyAttributesForUpsert(): boolean {
-    return this.hasJsonOnlyAttributesForCreate() || this.hasJsonOnlyAttributesForUpdate();
+    return (
+      this.hasJsonOnlyAttributesForCreate() ||
+      this.hasJsonOnlyAttributesForUpdate()
+    );
   }
 
   public getJsonAttributesForUpsert(): Partial<this> {
@@ -274,7 +279,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     // @ts-expect-error: strict mode fix
     return this.getModelAttributes({ ...opts, formData: false }!).some((attr) =>
       // @ts-expect-error: strict mode indexing
-      isInstantiated(this[attr])
+      isInstantiated(this[attr]),
     );
   }
 
@@ -294,7 +299,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     // @ts-expect-error: strict mode fix
     return this.getModelAttributes({ ...opts, formData: true }!).some((attr) =>
       // @ts-expect-error: strict mode indexing
-      isInstantiated(this[attr])
+      isInstantiated(this[attr]),
     );
   }
 
@@ -303,9 +308,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * multipart form API request. Call `hasFormDataOnlyAttributes` before using
    * this value.
    */
-  private formDataOnlyAttributes(
-    opts?: ModelSerializationOptions
-  ): FormData {
+  private formDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
     // @ts-expect-error: strict mode fix
     const keys = this.getModelAttributes({ ...opts, formData: true }!);
@@ -367,7 +370,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   private toObject(
     keys: string[],
-    opts?: ModelSerializationOptions
+    opts?: ModelSerializationOptions,
   ): Partial<this> {
     const output: Partial<Writeable<this>> = {};
     // @ts-expect-error: strict mode fix
@@ -389,10 +392,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
       } else {
         // @ts-expect-error: strict mode indexing
         output[attribute] = opts?.convertCase
-          // @ts-expect-error: strict mode indexing
-          ? snakeCase(this[attribute])
-          // @ts-expect-error: strict mode indexing
-          : this[attribute];
+          ? // @ts-expect-error: strict mode indexing
+            snakeCase(this[attribute])
+          : // @ts-expect-error: strict mode indexing
+            this[attribute];
       }
     });
     return output;
@@ -417,10 +420,10 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           // The null/json scenario is used to support deleting images.
           .filter((meta) =>
             // @ts-expect-error: strict mode indexing
-            this[meta.key] instanceof File ? opts.formData : true
+            this[meta.key] instanceof File ? opts.formData : true,
           )
           .filter((meta) =>
-            meta.supportedFormats.includes(opts.formData ? "formData" : "json")
+            meta.supportedFormats.includes(opts.formData ? "formData" : "json"),
           )
           .map((meta) => meta.key)
       );
@@ -431,7 +434,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 }
 
 export abstract class AbstractModel<
-  Model = Record<string, any>
+  Model = Record<string, any>,
 > extends AbstractModelWithoutId<Model> {
   /** Model ID */
   public readonly id?: number;
@@ -480,7 +483,7 @@ export class UnresolvedModel extends AbstractModel {
 }
 
 export function isUnresolvedModel<T extends AbstractModel>(
-  model: Readonly<T | T[] | UnresolvedModel>
+  model: Readonly<T | T[] | UnresolvedModel>,
 ): model is UnresolvedModel {
   return model === UnresolvedModel.one || model === UnresolvedModel.many;
 }

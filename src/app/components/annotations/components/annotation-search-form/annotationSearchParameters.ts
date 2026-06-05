@@ -115,7 +115,7 @@ export interface IAnnotationSearchParameters {
   // daylightSavings: boolean;
   // recordingDate: UniformTuple<DateTime, 2>;
   // recordingTime: UniformTuple<Duration, 2>;
-  score: UniformTuple<number, 2>;
+  score?: UniformTuple<number | null, 2>;
 
   imports: EventImports;
 
@@ -136,8 +136,8 @@ export interface IAnnotationSearchParameters {
   routeRegionId: Id<Region>;
   routeSiteId: Id<Site>;
 
-  eventDate: UniformTuple<DateTime, 2>;
-  eventTime: TimeOfDayIntervalTuple;
+  eventDate?: UniformTuple<DateTime | null, 2>;
+  eventTime?: TimeOfDayIntervalTuple | null;
 
   sort: SortingKey;
 
@@ -197,7 +197,7 @@ export class AnnotationSearchParameters
   // public daylightSavings: boolean;
   // public recordingDate: UniformTuple<DateTime, 2>;
   // public recordingTime: UniformTuple<Duration, 2>;
-  public score: UniformTuple<number, 2>;
+  public score?: UniformTuple<number | null, 2>;
 
   // These model ids are specified in the query string parameters.
   // If the query string parameters and route parameters conflict, the route
@@ -213,8 +213,8 @@ export class AnnotationSearchParameters
   // TODO: this is a placeholder for future implementation once the api
   // supports filtering by event date time
   // https://github.com/QutEcoacoustics/baw-server/issues/687
-  public eventDate: UniformTuple<DateTime, 2>;
-  public eventTime!: TimeOfDayIntervalTuple;
+  public eventDate?: UniformTuple<DateTime | null, 2>;
+  public eventTime?: TimeOfDayIntervalTuple | null;
 
   public verificationStatus!: VerificationStatusKey;
   public sort!: SortingKey;
@@ -506,7 +506,9 @@ export class AnnotationSearchParameters
         // conditions joined by "or", we can use the "in" filter here to
         // simplify the filter query.
         updatedFilters = filterOr(updatedFilters, {
-          audioEventImportFileId: { in: Array.from(eventImportFileIds) as number[] },
+          audioEventImportFileId: {
+            in: Array.from(eventImportFileIds) as number[],
+          },
         });
       }
     }

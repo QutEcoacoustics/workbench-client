@@ -1,4 +1,5 @@
 import { Params } from "@angular/router";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { StrongRoute } from "@interfaces/strongRoute";
 import {
   createComponentFactory,
@@ -16,9 +17,8 @@ import { IconsModule } from "@shared/icons/icons.module";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { OrderedSet } from "immutable";
-import { Subject } from "rxjs";
-import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { MockDirective } from "ng-mocks";
+import { Subject } from "rxjs";
 import { BreadcrumbComponent } from "./breadcrumb.component";
 
 describe("BreadcrumbComponent", () => {
@@ -31,10 +31,7 @@ describe("BreadcrumbComponent", () => {
 
   const createComponent = createComponentFactory({
     component: BreadcrumbComponent,
-    imports: [
-      IconsModule,
-      MockDirective(StrongRouteDirective),
-    ],
+    imports: [IconsModule, MockDirective(StrongRouteDirective)],
   });
 
   function triggerQueryParams(params: Params) {
@@ -51,8 +48,8 @@ describe("BreadcrumbComponent", () => {
       () =>
         ({
           breadcrumbs,
-        } as Partial<MenuServiceData> as MenuServiceData),
-      false
+        }) as Partial<MenuServiceData> as MenuServiceData,
+      false,
     );
   }
 
@@ -146,7 +143,7 @@ describe("BreadcrumbComponent", () => {
         route: StrongRoute.newRoot().addFeatureModule(
           modelData.random.word(),
           // @ts-expect-error: strict mode fix
-          (params) => ({ projectId: params.projectId })
+          (params) => ({ projectId: params.projectId }),
         ),
       };
       await Promise.all([
@@ -188,7 +185,7 @@ describe("BreadcrumbComponent", () => {
           generateBreadcrumb(),
           generateBreadcrumb(),
           generateBreadcrumb(),
-        ])
+        ]),
       ),
       triggerQueryParams({}),
       triggerRouteParams({}),
@@ -210,7 +207,7 @@ describe("BreadcrumbComponent", () => {
         generateBreadcrumb(),
         generateBreadcrumb(),
         generateBreadcrumb(),
-      ])
+      ]),
     );
     spec.detectChanges();
     expect(getBreadcrumbs()).toHaveLength(3);

@@ -1,6 +1,7 @@
 import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuType } from "@helpers/generalTypes";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -40,7 +41,6 @@ import {
 import { generateUser } from "@test/fakes/User";
 import { OrderedSet } from "immutable";
 import { MockProvider } from "ng-mocks";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 import { MenuComponent } from "./menu.component";
@@ -119,7 +119,7 @@ describe("MenuComponent", () => {
     props?: Partial<MenuComponent>,
     data: Data = {},
     params: Params = {},
-    opts?: { isFullscreen?: boolean; localUser?: User }
+    opts?: { isFullscreen?: boolean; localUser?: User },
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -270,7 +270,7 @@ describe("MenuComponent", () => {
           widgets: new SimpleChange(
             OrderedSet([defaultWidget]),
             undefined,
-            false
+            false,
           ),
         });
         spec.detectChanges();
@@ -304,14 +304,14 @@ describe("MenuComponent", () => {
               componentInstance: mockComponentInstance,
               dismiss: dismissSpy,
               close: closeSpy,
-            } as any)
+            }) as any,
         );
       }
 
       function assertModalOpen(menuItem: MenuModal) {
         expect(modal.open).toHaveBeenCalledWith(
           menuItem.component,
-          menuItem.modalOpts
+          menuItem.modalOpts,
         );
       }
 
@@ -426,12 +426,12 @@ describe("MenuComponent", () => {
           { menuType: "action", links: OrderedSet([link]) },
           undefined,
           undefined,
-          { localUser: defaultUser }
+          { localUser: defaultUser },
         );
         spec.detectChanges();
 
         expect(test.getLink()[0].tooltip).toBe(
-          `Custom tooltip for ${defaultUser.userName}`
+          `Custom tooltip for ${defaultUser.userName}`,
         );
       });
 

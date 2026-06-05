@@ -7,7 +7,7 @@ import { Spectator, SpectatorHost } from "@ngneat/spectator";
  */
 export function clickButton<T>(
   spectator: Spectator<T> | SpectatorHost<T>,
-  selector: string | Element
+  selector: string | Element,
 ): void {
   const element =
     typeof selector === "string" ? spectator.query(selector) : selector;
@@ -32,7 +32,7 @@ export function clickButton<T>(
 export function inputFile<T>(
   spectator: Spectator<T> | SpectatorHost<T>,
   selector: string | HTMLInputElement,
-  files: File[]
+  files: File[],
 ): void {
   const element =
     typeof selector === "string"
@@ -78,7 +78,7 @@ export function selectFromTypeahead<T>(
   spec: Spectator<T> | SpectatorHost<T>,
   target: Element | HTMLElement,
   text: string,
-  detectChanges = true
+  detectChanges = true,
 ): void {
   const inputElement = target.querySelector<HTMLInputElement>("input");
   spec.typeInElement(text, inputElement!);
@@ -91,7 +91,7 @@ export function selectFromTypeahead<T>(
   // in the spectator hosts template, we can still select it.
   const selectedTypeaheadOption = spec.query<HTMLButtonElement>(
     ".dropdown-item.active",
-    { root: true }
+    { root: true },
   );
 
   // We do not use the spectator.click() helper here because ng-neat spectator
@@ -110,7 +110,7 @@ export function selectFromTypeahead<T>(
 /** Toggles a component decorated with ngb-dropdown and waits for it to open */
 export function toggleDropdown<T>(
   spectator: Spectator<T>,
-  target: Element | HTMLElement
+  target: Element | HTMLElement,
 ): void {
   // bootstrap dropdowns take a full second to open
   spectator.click(target);
@@ -128,7 +128,7 @@ export function getElementByTextContent<T extends HTMLElement>(
   // We use textContent here instead of innerText because innerText causes a
   // reflow.
   return spectator.debugElement.query(
-    (element) => element.nativeElement.textContent.trim() === text
+    (element) => element.nativeElement.textContent.trim() === text,
   )?.nativeElement;
 }
 
@@ -141,11 +141,11 @@ export function getElementByTextContent<T extends HTMLElement>(
  */
 export function assertErrorHandler(
   fixture: ComponentFixture<any>,
-  internal?: boolean
+  internal?: boolean,
 ) {
   if (internal) {
     expect(
-      fixture.nativeElement.querySelector("baw-error-handler h1")
+      fixture.nativeElement.querySelector("baw-error-handler h1"),
     ).toBeTruthy();
   } else {
     expect(fixture.nativeElement.childElementCount).toBe(0);
@@ -161,7 +161,7 @@ export function assertErrorHandler(
  */
 export function assertSpinner(
   fixture: ComponentFixture<any> | Element,
-  visible: boolean
+  visible: boolean,
 ) {
   const spinner = (
     fixture instanceof ComponentFixture ? fixture.nativeElement : fixture
@@ -198,7 +198,7 @@ export function assertTooltip(element: HTMLElement, content: string) {
 export async function waitUntil(
   condition: () => boolean,
   timeout = 5_000,
-  interval = 100
+  interval = 100,
 ): Promise<void> {
   const endTime = Date.now() + timeout;
 

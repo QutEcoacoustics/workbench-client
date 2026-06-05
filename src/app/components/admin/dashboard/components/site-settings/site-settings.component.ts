@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SiteSettingsService } from "@baw-api/site-settings/site-settings.service";
 import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
@@ -39,7 +45,6 @@ export class SiteSettingsComponent extends withUnsubscribe() implements OnInit {
     iif(
       () => isUnsetRequest,
       this.api.destroy(model),
-      // @ts-expect-error: strict mode fix
       this.api.update(new SiteSetting({ ...model, value })),
     )
       .pipe(takeUntil(this.unsubscribe))

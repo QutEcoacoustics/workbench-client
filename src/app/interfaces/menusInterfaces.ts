@@ -167,14 +167,17 @@ export interface MenuRoute extends MenuItem {
   route: StrongRoute;
 
   /** A computed tab title callback that should be used to identify the route */
-  title?: (routerState?: RouterStateSnapshot, titleOptions?: TitleOptionsHash) => string | null;
+  title?: (
+    routerState?: RouterStateSnapshot,
+    titleOptions?: TitleOptionsHash,
+  ) => string | null;
 
   /** Custom label when shown in the breadcrumb */
   breadcrumbResolve?: (pageInfo: IPageInfo, injector: Injector) => string;
 }
 
 export function menuRoute<T extends Omit<MenuRoute, "kind">>(
-  item: T
+  item: T,
 ): MenuRoute {
   return Object.assign(item, {
     kind: "MenuRoute" as const,
@@ -196,7 +199,7 @@ export interface MenuAction extends MenuItem {
 }
 
 export function menuAction<T extends Omit<MenuAction, "kind">>(
-  item: T
+  item: T,
 ): MenuAction {
   return Object.assign(item, {
     kind: "MenuAction" as const,

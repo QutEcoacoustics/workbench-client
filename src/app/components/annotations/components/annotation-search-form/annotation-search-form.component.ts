@@ -181,7 +181,8 @@ export class AnnotationSearchFormComponent implements OnInit {
 
     // we want to set the initial model the date/time filters
     // TODO: this should probably be moved to a different spot
-    const hasDateFilters = this.searchParameters().eventDate?.length > 0;
+    const hasDateFilters =
+      (this.searchParameters()?.eventDate?.length || 0) > 0;
     if (hasDateFilters) {
       const dateTimeFilter: DateTimeFilterModel = {
         dateFiltering: true,
@@ -298,17 +299,17 @@ export class AnnotationSearchFormComponent implements OnInit {
             : null,
         ];
       } else {
-        current.eventDate = null;
+        current.eventDate = undefined;
       }
 
       if (dateTimeModel.timeFiltering) {
         current.eventTime = [
           dateTimeModel.timeStartedAfter ?? null,
           dateTimeModel.timeFinishedBefore ?? null,
-          dateTimeModel.ignoreDaylightSavings,
+          dateTimeModel.ignoreDaylightSavings ?? false,
         ];
       } else {
-        current.eventTime = null;
+        current.eventTime = undefined;
       }
 
       return current;

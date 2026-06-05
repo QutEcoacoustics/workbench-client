@@ -100,7 +100,7 @@
       "titleBar.activeBackground": "#256476",
       "titleBar.activeForeground": "#e7e7e7",
       "titleBar.inactiveBackground": "#25647699",
-      "titleBar.inactiveForeground": "#e7e7e799",
+      "titleBar.inactiveForeground": "#e7e7e799"
     },
     "files.eol": "\n",
     "files.insertFinalNewline": true,

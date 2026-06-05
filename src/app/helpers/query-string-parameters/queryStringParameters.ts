@@ -49,7 +49,10 @@ export const luxonDurationArray = {
 export const timeOfDay = {
   serialize: timeOfDayToQueryString,
   deserialize: queryStringToTimeOfDay,
-} as const satisfies SerializationTechnique;
+} as const satisfies SerializationTechnique<
+  TimeOfDayIntervalTuple | null,
+  string
+>;
 
 export const jsNumber = {
   serialize: (value: number) => value.toString(),
@@ -210,13 +213,13 @@ export function deserializeParamsToObject<T>(
   return returnedObject as T;
 }
 
-export function withDefault(
-  serializationTechnique: SerializationTechnique,
-  defaultValue: any,
-): SerializationTechnique {
+export function withDefault<Value, QSP>(
+  serializationTechnique: SerializationTechnique<Value, QSP>,
+  defaultValue: Value,
+): SerializationTechnique<Value, QSP> {
   return {
     // @ts-expect-error: strict mode fix
-    serialize: (value: any) => {
+    serialize: (value: Value) => {
       // If the current value is the default value, we omit it from the query
       // string to reduce clutter in the URL.
       if (value === defaultValue) {
@@ -229,7 +232,7 @@ export function withDefault(
 
       return serializationTechnique.serialize(value);
     },
-    deserialize: (value: string) => {
+    deserialize: (value: QSP) => {
       if (!isInstantiated(value) || value === "") {
         return defaultValue;
       }
@@ -305,11 +308,11 @@ function queryStringDurationTime(value: string): Duration {
 }
 
 // to QSP (serialization) functions
-function dateToQueryString(value: DateTime): string {
+function dateToQueryString(value: DateTime | null): string {
   return value ? value.toFormat("yyyy-MM-dd") : "";
 }
 
-function durationToQueryString(value: Duration): string {
+function durationToQueryString(value: Duration | null): string {
   return value ? value.toFormat("hh:mm") : "";
 }
 
@@ -318,7 +321,9 @@ function dateArrayToQueryString(value: DateIntervalTuple): string | null {
     return null;
   }
 
-  return value.map((date: DateTime) => dateToQueryString(date)).join(",");
+  return value
+    .map((date: DateTime | null) => dateToQueryString(date))
+    .join(",");
 }
 
 function durationArrayToQueryString(
@@ -328,13 +333,16 @@ function durationArrayToQueryString(
     return null;
   }
   return value
-    .map((duration: Duration) => durationToQueryString(duration))
+    .map((duration: Duration | null) => durationToQueryString(duration))
     .join(",");
 }
 
-function timeOfDayToQueryString(value: TimeOfDayIntervalTuple): string | null {
-  if (!isInstantiated(value[0]) && !isInstantiated(value[1])) {
-    return null;
+function timeOfDayToQueryString(value: TimeOfDayIntervalTuple | null): string {
+  if (
+    !isInstantiated(value) ||
+    (!isInstantiated(value[0]) && !isInstantiated(value[1]))
+  ) {
+    return "";
   }
 
   return [
@@ -344,10 +352,10 @@ function timeOfDayToQueryString(value: TimeOfDayIntervalTuple): string | null {
   ].join(",");
 }
 
-function arrayToQueryString(value: unknown[]): string | null {
+function arrayToQueryString(value: unknown[]): string {
   const valueArray = Array.from(value);
   if (valueArray.every((arrayItem) => !isInstantiated(arrayItem))) {
-    return null;
+    return "";
   }
 
   return valueArray.join(",");

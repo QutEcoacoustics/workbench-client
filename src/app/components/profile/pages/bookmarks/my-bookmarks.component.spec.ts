@@ -1,6 +1,6 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
@@ -126,7 +126,7 @@ describe("MyBookmarksComponent", () => {
 
       expect(getCells()![2]!.querySelector("span")!.innerHTML).toContain(
         // @ts-expect-error: strict mode fix
-        defaultBookmark.descriptionHtmlTagline
+        defaultBookmark.descriptionHtmlTagline,
       );
     });
   });

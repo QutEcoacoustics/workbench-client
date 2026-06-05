@@ -60,8 +60,8 @@ export interface IEventSummaryReportParameters {
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
-  time: IsomorphicTuple<Duration, 2>;
-  date: IsomorphicTuple<DateTime, 2>;
+  time: IsomorphicTuple<Duration | null, 2> | null;
+  date: IsomorphicTuple<DateTime | null, 2> | null;
   charts: Chart[];
 }
 
@@ -101,8 +101,8 @@ export class EventSummaryReportParameters
   public score!: number;
   public bucketSize: BucketSize = BucketSize.month;
   public daylightSavings!: boolean;
-  public time: IsomorphicTuple<Duration, 2>;
-  public date: IsomorphicTuple<DateTime, 2>;
+  public time: IsomorphicTuple<Duration | null, 2> | null= null;
+  public date: IsomorphicTuple<DateTime | null, 2> | null= null;
   public charts!: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")

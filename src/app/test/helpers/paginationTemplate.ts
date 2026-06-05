@@ -13,7 +13,7 @@ import { Spectator } from "@ngneat/spectator";
  */
 export function assertPaginationTemplate<
   M extends AbstractModel,
-  T extends PaginationTemplate<M>
+  T extends PaginationTemplate<M>,
 >(setup: () => Spectator<T>) {
   describe("pagination template", () => {
     let spectator: Spectator<T>;
