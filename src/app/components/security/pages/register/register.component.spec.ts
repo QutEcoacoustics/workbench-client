@@ -1,8 +1,12 @@
+import { ACCOUNT } from "@baw-api/ServiceTokens";
+import { AccountsService } from "@baw-api/account/accounts.service";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
+import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateRegisterDetails } from "@test/fakes/RegisterDetails";
@@ -11,11 +15,7 @@ import { testFormlyFields } from "@test/helpers/formly";
 import { nStepObservable } from "@test/helpers/general";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
-import { ToastService } from "@services/toasts/toasts.service";
 import { of, Subject } from "rxjs";
-import { ACCOUNT } from "@baw-api/ServiceTokens";
-import { AccountsService } from "@baw-api/account/accounts.service";
-import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterComponent } from "./register.component";
 import schema from "./register.schema.json";
 
@@ -34,7 +34,7 @@ describe("RegisterComponent", () => {
     providers: testFormProviders,
   });
 
-  function isSignedIn(signedIn: boolean = true) {
+  function isSignedIn(signedIn = true) {
     spyOnProperty(session, "isLoggedIn").and.returnValue(signedIn);
   }
 
@@ -116,7 +116,7 @@ describe("RegisterComponent", () => {
       spec.component.submit(registerDetails);
 
       expect(api.signUp).toHaveBeenCalledOnceWith(
-        new RegisterDetails(registerDetails)
+        new RegisterDetails(registerDetails),
       );
     });
 
@@ -151,7 +151,7 @@ describe("RegisterComponent", () => {
         const promise = nStepObservable(
           subject,
           () => generateBawApiError(),
-          true
+          true,
         );
 
         spyOn(api, "signUpSeed").and.callFake(() => subject);
@@ -159,7 +159,7 @@ describe("RegisterComponent", () => {
         await promise;
 
         expect(notifications.error).toHaveBeenCalledOnceWith(
-          "Failed to load form"
+          "Failed to load form",
         );
       });
     });
@@ -169,7 +169,7 @@ describe("RegisterComponent", () => {
         isSignedIn(true);
         spec.detectChanges();
         expect(notifications.error).toHaveBeenCalledOnceWith(
-          "You are already logged in."
+          "You are already logged in.",
         );
       });
 
@@ -196,12 +196,12 @@ describe("RegisterComponent", () => {
         expect(api.signUp).toHaveBeenCalledWith(
           jasmine.objectContaining<RegisterDetails>({
             contactable: true,
-          })
+          }),
         );
 
         expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
           jasmine.any(Number),
-          UserConcent.yes
+          UserConcent.yes,
         );
       });
 
@@ -215,12 +215,12 @@ describe("RegisterComponent", () => {
         expect(api.signUp).toHaveBeenCalledOnceWith(
           jasmine.objectContaining<RegisterDetails>({
             contactable: false,
-          })
+          }),
         );
 
         expect(accounts.updateContactableConcent).toHaveBeenCalledOnceWith(
           jasmine.any(Number),
-          UserConcent.no
+          UserConcent.no,
         );
       });
 

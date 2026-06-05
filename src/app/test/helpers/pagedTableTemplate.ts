@@ -16,7 +16,7 @@ import { BehaviorSubject, of, Subject } from "rxjs";
  * Get all rows from datatable component
  */
 export function getDatatableRows(
-  fixture: ComponentFixture<any>
+  fixture: ComponentFixture<any>,
 ): HTMLElement[] {
   return fixture.nativeElement.querySelectorAll("datatable-body-row");
 }
@@ -51,7 +51,7 @@ export function datatableApiResponse<M extends AbstractModel>(
   api: ApiFilter<M, any[]>,
   models: M[],
   paging?: Paging,
-  apiAction: string = "filter"
+  apiAction = "filter",
 ) {
   paging = {
     page: 1,
@@ -73,7 +73,7 @@ export function datatableApiResponse<M extends AbstractModel>(
  */
 export function assertPagination<
   MockModel extends AbstractModel,
-  TestedService extends ApiFilter<MockModel, any[]>
+  TestedService extends ApiFilter<MockModel, any[]>,
 >(apiAction = "filter") {
   describe("pagination", function () {
     let api: TestedService;
@@ -127,7 +127,7 @@ export function assertPagination<
 
     function buildExpectedFilters(
       paging?: Paging,
-      filter: InnerFilter<MockModel> = defaultInnerFilters
+      filter: InnerFilter<MockModel> = defaultInnerFilters,
     ): Filters {
       const result: Filters = {};
 
@@ -161,9 +161,7 @@ export function assertPagination<
       // We expect that there are no paging filters for the first page because
       // we should be able to omit the page field when requesting the first page
       // because it is the default value.
-      expect(testedApi()).toHaveBeenCalledWith(
-        buildExpectedFilters(),
-      );
+      expect(testedApi()).toHaveBeenCalledWith(buildExpectedFilters());
     });
 
     it("should request the second page from api", () => {
@@ -171,7 +169,9 @@ export function assertPagination<
       fixture.detectChanges();
 
       const pager = fixture.nativeElement.querySelector("datatable-pager");
-      const pageBtn = pager.querySelector("[aria-label='page 2'] [role='button']");
+      const pageBtn = pager.querySelector(
+        "[aria-label='page 2'] [role='button']",
+      );
       click(pageBtn);
 
       expect(testedApi()).toHaveBeenCalledWith(
@@ -210,7 +210,7 @@ export function assertPagination<
       fixture.detectChanges();
 
       const errorHandler: ErrorHandlerComponent = fixture.debugElement.query(
-        By.css("baw-error-handler")
+        By.css("baw-error-handler"),
       ).componentInstance;
       expect(errorHandler).toBeTruthy();
 
@@ -243,7 +243,7 @@ export function assertPagination<
         api,
         defaultModels,
         { total: defaultApiPageSize },
-        apiAction
+        apiAction,
       );
       fixture.detectChanges();
 
@@ -257,11 +257,12 @@ export function assertPagination<
         api,
         [defaultModels[0]],
         { total: 100, maxPage: 4 },
-        apiAction
+        apiAction,
       );
       fixture.detectChanges();
 
-      const pager = fixture.nativeElement.querySelectorAll("datatable-pager li");
+      const pager =
+        fixture.nativeElement.querySelectorAll("datatable-pager li");
       expect(hasPager()).toBeTrue();
       expect(pager.length).toBe(8);
     });

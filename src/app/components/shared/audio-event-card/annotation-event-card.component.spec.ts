@@ -169,7 +169,9 @@ describe("AnnotationEventCardComponent", () => {
     expect(noScoreElement()).toHaveExactText("No score available");
   });
 
-  xit("should be able to play the spectrogram", () => {});
+  xit("should be able to play the spectrogram", () => {
+    pending();
+  });
 
   describe("tag info", () => {
     it("should have the tag text and link", () => {

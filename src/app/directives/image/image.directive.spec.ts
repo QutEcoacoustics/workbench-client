@@ -1,6 +1,6 @@
 import { SimpleChange } from "@angular/core";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { AuthToken, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
 import { createDirectiveFactory, SpectatorDirective } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
@@ -26,7 +26,9 @@ describe("ImageDirective", () => {
   function getDirective(image: HTMLImageElement): AuthenticatedImageDirective {
     return ng
       .getDirectives(image)
-      .find((directive: any) => directive instanceof AuthenticatedImageDirective);
+      .find(
+        (directive: any) => directive instanceof AuthenticatedImageDirective,
+      );
   }
 
   function createDefaultDirective(src: ImageUrl[]) {
@@ -37,7 +39,7 @@ describe("ImageDirective", () => {
 
   function createDisabledDirective(src: string) {
     return createDirective(
-      `<img alt="alt" src="${src}" [disableAuth]="true" />`
+      `<img alt="alt" src="${src}" [disableAuth]="true" />`,
     );
   }
 
@@ -124,7 +126,7 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(imageUrls);
       const spy = spyOn<any>(
         spectator.directive,
-        "setImageSrc"
+        "setImageSrc",
       ).and.callThrough();
 
       const image = getImage();
@@ -148,16 +150,13 @@ describe("ImageDirective", () => {
   describe("api links", () => {
     let session: BawSessionService;
 
-    function createApiDirective(
-      src: ImageUrl[],
-      ignoreAuthToken: boolean = false
-    ) {
+    function createApiDirective(src: ImageUrl[], ignoreAuthToken = false) {
       const spec = createDirective(
         '<img alt="alt" [src]="src" [ignoreAuthToken]="ignoreAuthToken" />',
         {
           hostProps: { src, ignoreAuthToken },
           detectChanges: false,
-        }
+        },
       );
       session = spec.inject(BawSessionService);
       return spec;
@@ -183,7 +182,7 @@ describe("ImageDirective", () => {
       spectator.detectChanges();
 
       expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?authToken=${authToken}`
+        `${getApiRoot()}/image.png?authToken=${authToken}`,
       );
     });
 
@@ -196,7 +195,7 @@ describe("ImageDirective", () => {
       spectator.detectChanges();
 
       expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?authToken=${authToken}`
+        `${getApiRoot()}/image.png?authToken=${authToken}`,
       );
     });
 
@@ -230,7 +229,7 @@ describe("ImageDirective", () => {
       spectator.detectChanges();
 
       expect(getImage()).toHaveImage(
-        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`
+        `${getApiRoot()}/image.png?testing=value&authToken=${authToken}`,
       );
     });
   });

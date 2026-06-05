@@ -21,7 +21,9 @@ describe("FormTouchedGuard", () => {
       isFormTouched() {
         return touched;
       },
-      resetForms() {},
+      resetForms() {
+        /* noop */
+      },
     };
   }
 

@@ -23,8 +23,8 @@ export class MediaService {
     audioRecording: AudioRecording,
     start: number,
     end: number,
-    padding: number = 0,
-    params: Params = {}
+    padding = 0,
+    params: Params = {},
   ): string {
     // check the start and end times are valid
     if (start < 0) {
@@ -38,11 +38,11 @@ export class MediaService {
     // check the start and end times fit inside the audio recording
     if (start > audioRecording.durationSeconds!) {
       throw new Error(
-        "Start time is greater than the duration of the audio recording"
+        "Start time is greater than the duration of the audio recording",
       );
     } else if (end > audioRecording.durationSeconds!) {
       throw new Error(
-        "End time is greater than the duration of the audio recording"
+        "End time is greater than the duration of the audio recording",
       );
     }
 
@@ -66,13 +66,13 @@ export class MediaService {
     const [paddedStart, paddedEnd] = this.padAudioUrl(
       safeStartTime,
       safeEndTime,
-      requiredPaddingAmount
+      requiredPaddingAmount,
     );
 
     let [fitStart, fitEnd] = this.fitAudioUrl(
       paddedStart,
       paddedEnd,
-      audioRecording
+      audioRecording,
     );
 
     // we round here again so that we get a nice round number
@@ -124,7 +124,7 @@ export class MediaService {
   private padAudioUrl(
     start: number,
     end: number,
-    padAmount: number = 0
+    padAmount = 0,
   ): [start: number, end: number] {
     const sidePadding = padAmount / 2;
 
@@ -137,7 +137,7 @@ export class MediaService {
   private fitAudioUrl(
     start: number,
     end: number,
-    audioRecording: AudioRecording
+    audioRecording: AudioRecording,
   ): [start: number, end: number] {
     if (start < 0) {
       // because we don't want to create fractional start/end times, we need to

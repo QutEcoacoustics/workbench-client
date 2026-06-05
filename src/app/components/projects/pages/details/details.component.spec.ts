@@ -1,10 +1,10 @@
 import { Router } from "@angular/router";
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   projectResolvers,
   ProjectsService,
 } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { RegionsService } from "@baw-api/region/regions.service";
 import { SitesService } from "@baw-api/site/sites.service";
 import { SiteCardComponent } from "@components/projects/components/site-card/site-card.component";
@@ -20,6 +20,7 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
+import { ToastService } from "@services/toasts/toasts.service";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateSite } from "@test/fakes/Site";
@@ -30,7 +31,6 @@ import {
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { assertPaginationTemplate } from "@test/helpers/paginationTemplate";
 import { MockComponent } from "ng-mocks";
-import { ToastService } from "@services/toasts/toasts.service";
 import { of } from "rxjs";
 import { ProjectDetailsComponent } from "./details.component";
 
@@ -64,7 +64,7 @@ describe("ProjectDetailsComponent", () => {
 
   function createModelWithMeta<M extends AbstractModel>(
     construct: (id: number) => M,
-    numModels: number
+    numModels: number,
   ) {
     const models: M[][] = [];
     const maxPages = Math.ceil(numModels / defaultApiPageSize);
@@ -91,14 +91,14 @@ describe("ProjectDetailsComponent", () => {
   function createSitesWithMeta(numSites: number) {
     return createModelWithMeta<Site>(
       (id) => new Site(generateSite({ id })),
-      numSites
+      numSites,
     );
   }
 
   function createRegionsWithMeta(numRegions: number) {
     return createModelWithMeta<Region>(
       (id) => new Region(generateRegion({ id })),
-      numRegions
+      numRegions,
     );
   }
 
@@ -122,17 +122,17 @@ describe("ProjectDetailsComponent", () => {
     siteResponses: Errorable<Site[]>[],
     regionResponses: Errorable<Region[]>[],
     siteExpectations?: FilterExpectations<ISite>[],
-    regionExpectations?: FilterExpectations<IRegion>[]
+    regionExpectations?: FilterExpectations<IRegion>[],
   ) {
     const sitePromises = interceptRepeatApiRequests<ISite, Site[]>(
       siteApi.filterByRegion,
       siteResponses,
-      siteExpectations
+      siteExpectations,
     );
     const regionPromises = interceptRepeatApiRequests<IRegion, Region[]>(
       regionApi.filter,
       regionResponses,
-      regionExpectations
+      regionExpectations,
     );
 
     return { sites: sitePromises, regions: regionPromises };
@@ -176,10 +176,10 @@ describe("ProjectDetailsComponent", () => {
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
     const description = spectator.query<HTMLParagraphElement>(
-      "#project_description"
+      "#project_description",
     );
     expect(description!.innerHTML.trim()).toContain(
-      "<i>No description found</i>"
+      "<i>No description found</i>",
     );
   });
 
@@ -188,11 +188,11 @@ describe("ProjectDetailsComponent", () => {
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
     const description = spectator.query<HTMLParagraphElement>(
-      "#project_description"
+      "#project_description",
     );
     expect(description!.innerHTML.trim()).toContain(
       // @ts-expect-error: strict mode fix
-      defaultProject.descriptionHtml
+      defaultProject.descriptionHtml,
     );
   });
 
@@ -246,7 +246,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         createSitesWithMeta(1),
-        emptyResponse
+        emptyResponse,
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -257,7 +257,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         emptyResponse,
-        createRegionsWithMeta(1)
+        createRegionsWithMeta(1),
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -268,7 +268,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         createSitesWithMeta(1),
-        createRegionsWithMeta(1)
+        createRegionsWithMeta(1),
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -279,7 +279,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         emptyResponse,
-        createRegionsWithMeta(1)
+        createRegionsWithMeta(1),
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -299,7 +299,7 @@ describe("ProjectDetailsComponent", () => {
     function assertSiteCard(
       card: SiteCardComponent,
       project: Project,
-      site: Site
+      site: Site,
     ) {
       expect(card).toBeTruthy();
       expect(card.project).toEqual(project);
@@ -309,7 +309,7 @@ describe("ProjectDetailsComponent", () => {
     function assertRegionCard(
       card: SiteCardComponent,
       project: Project,
-      region: Region
+      region: Region,
     ) {
       expect(card).toBeTruthy();
       expect(card.project).toEqual(project);
@@ -329,7 +329,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         createSitesWithMeta(1),
-        emptyResponse
+        emptyResponse,
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -340,7 +340,7 @@ describe("ProjectDetailsComponent", () => {
       setup(defaultProject);
       const promise = interceptApiRequest(
         emptyResponse,
-        createRegionsWithMeta(1)
+        createRegionsWithMeta(1),
       );
       spectator.detectChanges();
       await awaitChanges(promise);
@@ -396,7 +396,7 @@ describe("ProjectDetailsComponent", () => {
       isSite: boolean,
       expectations: FilterExpectations<ISite | IRegion>[],
       pageNo?: number,
-      filterText?: string
+      filterText?: string,
     ) {
       const promise = interceptApiRequest(
         // @ts-expect-error: strict mode fix
@@ -404,7 +404,7 @@ describe("ProjectDetailsComponent", () => {
         // @ts-expect-error: strict mode fix
         [initialResponse, []],
         isSite ? expectations : undefined,
-        !isSite ? expectations : undefined
+        !isSite ? expectations : undefined,
       );
       await awaitChanges(promise);
       if (pageNo) {
@@ -414,7 +414,9 @@ describe("ProjectDetailsComponent", () => {
 
     // @ts-expect-error: strict mode fix
     const initialResponse = [];
-    const initialExpectation = () => {};
+    const initialExpectation = () => {
+      /* noop */
+    };
 
     describe("filters", () => {
       [
@@ -485,7 +487,7 @@ describe("ProjectDetailsComponent", () => {
                 isSite,
                 [initialExpectation, expectation],
                 5,
-                "custom filter"
+                "custom filter",
               );
             });
           }

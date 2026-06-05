@@ -45,7 +45,7 @@ class MockComponent extends PagedTableTemplate<
       api,
       // @ts-expect-error: strict mode fix
       (models) => models.map((model) => ({ id: model.id, name: model.name })),
-      route
+      route,
     );
   }
 }
@@ -74,7 +74,7 @@ describe("PagedTableTemplate", () => {
               obj[resolver] = "resolver";
               return obj;
             }, {}),
-            data
+            data,
           ),
         },
       ],
@@ -101,7 +101,7 @@ describe("PagedTableTemplate", () => {
     component.setPage(pageInfo);
   }
 
-  function generateMetaData(page: number = 1, total: number = 1) {
+  function generateMetaData(page = 1, total = 1) {
     return {
       status: 200,
       message: "OK",
@@ -131,7 +131,7 @@ describe("PagedTableTemplate", () => {
     }
 
     function assertModels(
-      models: { modelName: string; expectation: MockModel }[]
+      models: { modelName: string; expectation: MockModel }[],
     ) {
       models.forEach(({ modelName, expectation }) => {
         expect(component.models[modelName]).toEqual(expectation);
@@ -203,7 +203,7 @@ describe("PagedTableTemplate", () => {
         new Project(generateProject()),
       ];
       projects.forEach((project) =>
-        project.addMetadata(generateMetaData(1, 25))
+        project.addMetadata(generateMetaData(1, 25)),
       );
 
       await setProjects(projects);
@@ -237,7 +237,7 @@ describe("PagedTableTemplate", () => {
 
       // If we make an initial call to offset 0, no paging parameter should be
       // sent because it is the default value, and we can therefore omit it.
-      expect(api.filter).toHaveBeenCalledWith({ });
+      expect(api.filter).toHaveBeenCalledWith({});
     });
 
     it("should handle 1 offset", async () => {
@@ -313,7 +313,7 @@ describe("PagedTableTemplate", () => {
     function createFilterEvent(
       filterKey: string,
       value: string,
-      mockInput: HTMLInputElement
+      mockInput: HTMLInputElement,
     ) {
       component.filterKey = filterKey as any;
       mockInput.value = value;
@@ -397,7 +397,7 @@ describe("PagedTableTemplate", () => {
     function createSortEvent(
       sortKeys: { [key: string]: string },
       value: "asc" | "desc",
-      prop: string
+      prop: string,
     ) {
       component.sortKeys = sortKeys;
       component.onSort({
@@ -455,7 +455,7 @@ describe("PagedTableTemplate", () => {
       createSortEvent(
         { testing: "name", testing2: "extraCustomKey" },
         "asc",
-        "testing"
+        "testing",
       );
       spec.detectChanges();
 

@@ -27,10 +27,10 @@ export function embedGoogleAnalytics(key?: string): void {
   window["dataLayer"] = window["dataLayer"] || [];
   window["gtag"] = function () {
     // Arguments creates an array like object, which is not the same as ...args.
-    // Google analytics is depdenant on this behaviour, and will not work
+    // Google analytics is dependant on this behaviour, and will not work
     // otherwise
-    // eslint-disable-next-line prefer-rest-params
     // @ts-expect-error: strict mode fix
+    // eslint-disable-next-line prefer-rest-params
     window["dataLayer"]!.push(arguments);
   };
 
@@ -47,7 +47,7 @@ export function embedGoogleAnalytics(key?: string): void {
 }
 
 /**
- * Remove the google maps script from the document. This should
+ * Remove the google analytics script from the document. This should
  * only be accessed by unit tests.
  */
 export function destroyGoogleAnalytics(): void {

@@ -279,7 +279,7 @@ const toHaveStrongRouteActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    klass: string = "active",
+    klass = "active",
     options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {
@@ -329,7 +329,7 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    klass: string = "active",
+    klass = "active",
     options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {

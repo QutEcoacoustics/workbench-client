@@ -6,12 +6,12 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { GoogleMapsModule } from "@angular/google-maps";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { MapComponent } from "@shared/map/map.component";
 import { modelData } from "@test/helpers/faker";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { formlyConfig } from "../custom-inputs.module";
 import { LocationInputComponent } from "./location-input.component";
 
@@ -22,9 +22,7 @@ describe("FormlyLocationInput", () => {
 
   const createHost = createHostFactory({
     component: LocationInputComponent,
-    providers: [
-      provideMockBawApi(),
-    ],
+    providers: [provideMockBawApi()],
     imports: [
       GoogleMapsModule,
       FormsModule,
@@ -35,7 +33,7 @@ describe("FormlyLocationInput", () => {
     ],
   });
 
-  function setup(key: string = "input", options: FormlyFieldProps = {}) {
+  function setup(key = "input", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ input: new FormControl("") });
     model = {};
 
@@ -55,7 +53,7 @@ describe("FormlyLocationInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
 
     spec.detectChanges();
@@ -66,8 +64,7 @@ describe("FormlyLocationInput", () => {
   });
 
   const getLatitudeInput = () => spec.query<HTMLInputElement>("#latitude");
-  const getLongitudeInput = () =>
-    spec.query<HTMLInputElement>("#longitude");
+  const getLongitudeInput = () => spec.query<HTMLInputElement>("#longitude");
   const getErrorElements = () =>
     spec.queryAll<HTMLDivElement>(".invalid-feedback");
 
@@ -121,7 +118,9 @@ describe("FormlyLocationInput", () => {
     explicitlySetMarker(defaultLatitudeValue, defaultLongitudeValue);
 
     expect(getLatitudeInput()!.value).toEqual(defaultLatitudeValue.toString());
-    expect(getLongitudeInput()!.value).toEqual(defaultLongitudeValue.toString());
+    expect(getLongitudeInput()!.value).toEqual(
+      defaultLongitudeValue.toString(),
+    );
   }));
 
   it("should update the marker model if the location is updated through the input field/form", fakeAsync(() => {
@@ -171,7 +170,9 @@ describe("FormlyLocationInput", () => {
     map!.newLocation.emit({
       domEvent: new Event("mapDragend"),
       latLng: newPosition,
-      stop: () => {},
+      stop: () => {
+        /* noop */
+      },
     });
 
     spec.detectChanges();
@@ -203,7 +204,7 @@ describe("FormlyLocationInput", () => {
     expect(getErrorElements()).toEqual(
       jasmine.arrayContaining([
         jasmine.objectContaining({ innerText: expectedError }),
-      ])
+      ]),
     );
   }));
 
@@ -217,7 +218,7 @@ describe("FormlyLocationInput", () => {
     expect(getErrorElements()).toEqual(
       jasmine.arrayContaining([
         jasmine.objectContaining({ innerText: expectedError }),
-      ])
+      ]),
     );
   }));
 });

@@ -9,7 +9,9 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
   formInputs.forEach(
     ({
       testGroup,
-      setup = () => {},
+      setup = () => {
+        /* noop */
+      },
       field,
       key,
       type,
@@ -59,7 +61,7 @@ export function testFormlyFields(formInputs: FormlyFieldTestSuite[]) {
           });
         }
       });
-    }
+    },
   );
 }
 

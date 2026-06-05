@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { testFormlyFields } from "@test/helpers/formly";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
-import { ToastService } from "@services/toasts/toasts.service";
 import { UnlockAccountComponent } from "./unlock-account.component";
 import schema from "./unlock-account.schema.json";
 
@@ -50,6 +50,8 @@ describe("UnlockAccountComponent", () => {
     });
 
     // TODO should call api
-    xit("should call api", () => {});
+    xit("should call api", () => {
+      pending();
+    });
   });
 });

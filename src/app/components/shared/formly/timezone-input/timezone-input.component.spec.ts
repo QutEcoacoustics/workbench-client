@@ -7,7 +7,7 @@ import {
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { createHostFactory, SpectatorHost } from "@ngneat/spectator";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule, FormlyFieldProps } from "@ngx-formly/core";
+import { FormlyFieldProps, FormlyModule } from "@ngx-formly/core";
 import { formlyConfig } from "../custom-inputs.module";
 import { TimezoneInputComponent } from "./timezone-input.component";
 
@@ -48,7 +48,7 @@ describe("FormlyTimezoneInput", () => {
             props,
           },
         },
-      }
+      },
     );
     spec.detectChanges();
   }
@@ -70,24 +70,40 @@ describe("FormlyTimezoneInput", () => {
   });
 
   xdescribe("input", () => {
-    it("should ignore input until valid timezone selected", () => {});
+    it("should ignore input until valid timezone selected", () => {
+      pending();
+    });
 
-    it("should display options on focus", () => {});
+    it("should display options on focus", () => {
+      pending();
+    });
 
-    it("should refine options based on input", () => {});
+    it("should refine options based on input", () => {
+      pending();
+    });
 
-    it("should allow user to select option", () => {});
+    it("should allow user to select option", () => {
+      pending();
+    });
   });
 
   xdescribe("error handling", () => {
-    it("should display error when required if input empty", () => {});
+    it("should display error when required if input empty", () => {
+      pending();
+    });
 
-    it("should display error when invalid timezone input", () => {});
+    it("should display error when invalid timezone input", () => {
+      pending();
+    });
   });
 
   xdescribe("submission", () => {
-    it("form should validate", () => {});
+    it("form should validate", () => {
+      pending();
+    });
 
-    it("should write timezone to model", () => {});
+    it("should write timezone to model", () => {
+      pending();
+    });
   });
 });

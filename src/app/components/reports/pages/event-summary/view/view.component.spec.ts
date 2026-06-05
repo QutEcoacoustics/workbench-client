@@ -1,19 +1,17 @@
-import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
-import { MockComponent } from "ng-mocks";
 import { EventSummaryReport } from "@models/EventSummaryReport";
-import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
 import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
 import { Region } from "@models/Region";
+import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
+import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
+import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
+import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateEventSummaryReportUrlParams } from "@test/fakes/data/EventSummaryReportParameters";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import {
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
+import { MockComponent } from "ng-mocks";
+import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
@@ -54,11 +52,9 @@ describe("ViewEventReportComponent", () => {
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultReport = new EventSummaryReport(
-      generateEventSummaryReport()
-    );
+    defaultReport = new EventSummaryReport(generateEventSummaryReport());
     defaultParameterDataModel = new EventSummaryReportParameters(
-      generateEventSummaryReportUrlParams()
+      generateEventSummaryReportUrlParams(),
     );
 
     setup();
@@ -123,7 +119,7 @@ describe("ViewEventReportComponent", () => {
       new KeyboardEvent("keydown", {
         ctrlKey: true,
         key: "p",
-      })
+      }),
     );
 
     expect(printSpy).not.toHaveBeenCalled();
@@ -139,7 +135,7 @@ describe("ViewEventReportComponent", () => {
       new KeyboardEvent("keydown", {
         ctrlKey: true,
         key: "p",
-      })
+      }),
     );
 
     expect(printSpy).toHaveBeenCalled();
@@ -153,5 +149,7 @@ describe("ViewEventReportComponent", () => {
   });
 
   // TODO: since false colour spectrograms will be handled by another un-built server route, we need to create tests once functional
-  xit("should make the correct api calls for the false colour spectrograms", () => {});
+  xit("should make the correct api calls for the false colour spectrograms", () => {
+    pending();
+  });
 });

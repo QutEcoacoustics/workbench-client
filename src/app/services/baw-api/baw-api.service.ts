@@ -312,7 +312,6 @@ export class BawApiService<
     options: BawServiceOptions = {},
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      // @ts-expect-error: strict mode fix
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleCollectionResponse(classBuilder)),
       catchError((err) =>
@@ -335,7 +334,6 @@ export class BawApiService<
     options: BawServiceOptions = {},
   ): Observable<Model[]> {
     return this.session.authTrigger.pipe(
-      // @ts-expect-error: strict mode fix
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleCollectionResponse(classBuilder)),
       catchError((err) =>
@@ -358,7 +356,6 @@ export class BawApiService<
     options: BawServiceOptions = {},
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
-      // @ts-expect-error: strict mode fix
       switchMap(() => this.httpPost(path, filters, undefined, options)),
       map(this.handleSingleResponse(classBuilder)),
       catchError((err) =>
@@ -379,7 +376,6 @@ export class BawApiService<
     options: BawServiceOptions = {},
   ): Observable<Model> {
     return this.session.authTrigger.pipe(
-      // @ts-expect-error: strict mode fix
       switchMap(() => this.httpGet(path, defaultApiHeaders, options)),
       map(this.handleSingleResponse(classBuilder)),
       catchError((err) =>
@@ -453,7 +449,6 @@ export class BawApiService<
             formData,
             multiPartApiHeaders,
             options,
-            // @ts-expect-error: strict mode fix
           ).pipe(map(this.handleSingleResponse(classBuilder))),
           of(data),
         ),
@@ -669,7 +664,7 @@ export class BawApiService<
     path: string,
     headers: HttpHeaders = defaultApiHeaders,
     options: BawServiceOptions = {},
-  ): Observable<ApiResponse<Model | Model[]>> {
+  ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
     const cachingOptions = this.buildCachingOptions(options);
@@ -732,7 +727,7 @@ export class BawApiService<
     body?: any,
     headers: HttpHeaders = defaultApiHeaders,
     options: BawServiceOptions = {},
-  ): Observable<ApiResponse<Model | Model[]>> {
+  ): Observable<ApiResponse<Model>> {
     const fullOptions = this.buildServiceOptions(options);
 
     // TODO: update this method when we add support for caching filter requests
@@ -742,15 +737,11 @@ export class BawApiService<
 
     const context = this.withCredentialsHttpContext(fullOptions);
 
-    return this.http.post<ApiResponse<Model | Model[]>>(
-      this.getPath(path),
-      body,
-      {
-        responseType: "json",
-        headers,
-        context,
-      },
-    );
+    return this.http.post<ApiResponse<Model>>(this.getPath(path), body, {
+      responseType: "json",
+      headers,
+      context,
+    });
   }
 
   /**
@@ -814,7 +805,7 @@ export class BawApiService<
   public encodeFilter(
     filter: Filters<Model>,
     disablePaging?: boolean,
-    withCredentials: boolean = true,
+    withCredentials = true,
   ): string {
     const body: Record<string, string> = {
       // Base64 RFC 4648 §5 encoding

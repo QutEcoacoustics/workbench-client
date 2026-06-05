@@ -58,8 +58,6 @@ export class ItemsComponent implements OnInit, OnChanges {
   public groupOne!: List<IItem>;
   public groupTwo!: List<IItem>;
 
-  public constructor() {}
-
   public ngOnInit() {
     this.ngOnChanges();
   }

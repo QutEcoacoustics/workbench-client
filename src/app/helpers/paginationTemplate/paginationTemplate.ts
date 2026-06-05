@@ -71,9 +71,9 @@ export abstract class PaginationTemplate<M extends AbstractModel>
    */
   public filter!: string;
   /**
-    * A configuraiton property that can be used to overwrite how many
-    * items are fetched in a page of results
-    */
+   * A configuraiton property that can be used to overwrite how many
+   * items are fetched in a page of results
+   */
   public pageSize?: number;
   /**
    * Tracks the current filter page
@@ -101,7 +101,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
      * Default inner filter values
      */
     protected defaultInnerFilter: () => InnerFilter<M> = () =>
-      ({} as InnerFilter<M>),
+      ({}) as InnerFilter<M>,
     protected defaultSortingFilter?: () => Sorting<keyof M>,
     protected defaultProjectionFilter?: () => Projection<M>,
   ) {
@@ -128,7 +128,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
           this.updateQueryParams(this.page, this.filter);
         }),
         switchMap(() => this.getModels()),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: (models: M[]) => {
@@ -175,7 +175,7 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   /**
    * Handle filter events
    */
-  public onFilter(filterText: string, page: number = 1) {
+  public onFilter(filterText: string, page = 1) {
     this.apiRequest$.next({ page, filterText });
   }
 

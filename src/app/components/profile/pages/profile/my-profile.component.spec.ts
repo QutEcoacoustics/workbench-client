@@ -2,6 +2,7 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
@@ -21,6 +22,8 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -32,11 +35,8 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
-import { ToastService } from "@services/toasts/toasts.service";
-import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { of, Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -80,7 +80,7 @@ describe("MyProfileComponent", () => {
   function interceptApiRequest<Model extends AbstractModel, Service>(
     api: SpyObject<Service>,
     filter: keyof Service,
-    response: Intercept<Model> = []
+    response: Intercept<Model> = [],
   ) {
     (response as Model[])?.forEach?.((model) => {
       if (!model.getMetadata()) {
@@ -94,7 +94,7 @@ describe("MyProfileComponent", () => {
       subject,
       () => response,
       // @ts-expect-error: strict mode fix
-      isInstantiated(response["status"])
+      isInstantiated(response["status"]),
     );
   }
 
@@ -109,7 +109,7 @@ describe("MyProfileComponent", () => {
       interceptApiRequest(
         audioEventsApi,
         "filterByCreator",
-        models.annotations
+        models.annotations,
       ),
       interceptApiRequest(bookmarksApi, "filterByCreator", models.bookmarks),
       interceptApiRequest(projectsApi, "filterByCreator", models.projects),
@@ -125,7 +125,7 @@ describe("MyProfileComponent", () => {
   assertPageInfo<User>(MyProfileComponent, "test user's Profile", {
     account: {
       model: new User(generateUser({ userName: "test user" })),
-    }
+    },
   });
 
   it("should create", () => {
@@ -211,7 +211,7 @@ describe("MyProfileComponent", () => {
       spec.detectChanges();
       // @ts-expect-error: strict mode fix
       expect(spec!.query(StrongRouteDirective).strongRoute).toEqual(
-        dataRequestMenuItem.route
+        dataRequestMenuItem.route,
       );
     });
 
@@ -273,12 +273,24 @@ describe("MyProfileComponent", () => {
 
   xdescribe("authentication token", () => {
     // TODO
-    it("should request auth token on load", () => {});
-    it("should show loading animation while auth token loads", () => {});
-    it("should disable copy button while auth token loads", () => {});
-    it("should disable view token button while auth token loads", () => {});
-    it("should show … instead of auth token by default", () => {});
-    it("should show auth token when requested", () => {});
+    it("should request auth token on load", () => {
+      pending();
+    });
+    it("should show loading animation while auth token loads", () => {
+      pending();
+    });
+    it("should disable copy button while auth token loads", () => {
+      pending();
+    });
+    it("should disable view token button while auth token loads", () => {
+      pending();
+    });
+    it("should show … instead of auth token by default", () => {
+      pending();
+    });
+    it("should show auth token when requested", () => {
+      pending();
+    });
   });
 
   describe("statistics", () => {

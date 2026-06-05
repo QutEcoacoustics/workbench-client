@@ -1,19 +1,19 @@
+import { fakeAsync } from "@angular/core/testing";
+import { Filters } from "@baw-api/baw-api.service";
+import { AudioRecording } from "@models/AudioRecording";
+import { Project } from "@models/Project";
 import {
   Spectator,
   createRoutingFactory,
   mockProvider,
 } from "@ngneat/spectator";
+import { provideCaching } from "@services/cache/provide-caching";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { ToastService } from "@services/toasts/toasts.service";
-import { fakeAsync } from "@angular/core/testing";
-import { Project } from "@models/Project";
-import { generateProject } from "@test/fakes/Project";
-import { TimeComponent } from "@shared/input/time/time.component";
-import { BehaviorSubject } from "rxjs";
-import { Filters } from "@baw-api/baw-api.service";
-import { AudioRecording } from "@models/AudioRecording";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideCaching } from "@services/cache/provide-caching";
+import { TimeComponent } from "@shared/input/time/time.component";
+import { generateProject } from "@test/fakes/Project";
+import { BehaviorSubject } from "rxjs";
 import { DateTimeFilterComponent } from "./date-time-filter.component";
 
 describe("AudioRecordingsFilter", () => {
@@ -126,8 +126,8 @@ describe("AudioRecordingsFilter", () => {
 
   /** predicates if the element is both collapsable and collapsed */
   function isDivCollapsed(element: HTMLDivElement): boolean {
-    const isCollapsable: boolean = element.classList.contains("collapse");
-    const isCollapsed: boolean = !element.classList.contains("show");
+    const isCollapsable = element.classList.contains("collapse");
+    const isCollapsed = !element.classList.contains("show");
 
     return isCollapsable && isCollapsed;
   }

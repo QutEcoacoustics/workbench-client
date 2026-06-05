@@ -1,3 +1,7 @@
+import { fakeAsync, tick } from "@angular/core/testing";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
 import {
   createComponentFactory,
   Spectator,
@@ -8,13 +12,9 @@ import {
   ToastService,
   ToastVariant,
 } from "@services/toasts/toasts.service";
-import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { modelData } from "@test/helpers/faker";
-import { fakeAsync, tick } from "@angular/core/testing";
-import { clickButton } from "@test/helpers/html";
 import { IconsModule } from "@shared/icons/icons.module";
+import { modelData } from "@test/helpers/faker";
+import { clickButton } from "@test/helpers/html";
 import { ToastProviderComponent } from "./toast-provider.component";
 
 interface ToastVariantTest {
@@ -62,7 +62,7 @@ describe("ToastProviderComponent", () => {
     toastServiceSpy.show(
       modelData.lorem.sentence(),
       modelData.lorem.sentence(),
-      testedOptions
+      testedOptions,
     );
     spec.detectChanges();
 
@@ -119,7 +119,9 @@ describe("ToastProviderComponent", () => {
     expect(toasts()[0]).toHaveExactTrimmedText(testedText);
   });
 
-  it("should display a toast with a template correctly", () => {});
+  it("should display a toast with a template correctly", () => {
+    pending();
+  });
 
   it("should stack multiple toasts correctly", () => {
     // In this test, we purposely assert stacking two of the same type of
@@ -143,14 +145,32 @@ describe("ToastProviderComponent", () => {
     expect(toasts()[2]).toHaveExactTrimmedText(thirdToastText);
   });
 
-  it("should stack multiple toasts with fixed template and text content correctly", () => {});
+  it("should stack multiple toasts with fixed template and text content correctly", () => {
+    pending();
+  });
 
   describe("toast variants", () => {
     const testCases = [
-      { method: "success", expectedVariant: "success", expectedIcon: ["fas", "check"] },
-      { method: "warning", expectedVariant: "warning", expectedIcon: ["fas", "exclamation-triangle"] },
-      { method: "error", expectedVariant: "danger", expectedIcon: ["fas", "hand"] },
-      { method: "info", expectedVariant: "info", expectedIcon: ["fas", "info-circle"] },
+      {
+        method: "success",
+        expectedVariant: "success",
+        expectedIcon: ["fas", "check"],
+      },
+      {
+        method: "warning",
+        expectedVariant: "warning",
+        expectedIcon: ["fas", "exclamation-triangle"],
+      },
+      {
+        method: "error",
+        expectedVariant: "danger",
+        expectedIcon: ["fas", "hand"],
+      },
+      {
+        method: "info",
+        expectedVariant: "info",
+        expectedIcon: ["fas", "info-circle"],
+      },
       // @ts-expect-error: strict mode fix
       { method: "show", expectedVariant: "default", expectedIcon: null },
     ] as const satisfies ToastVariantTest[];

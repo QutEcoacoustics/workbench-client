@@ -25,6 +25,8 @@ import {
   mockProvider,
   SpectatorHttp,
 } from "@ngneat/spectator";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { ToastService } from "@services/toasts/toasts.service";
 import { generateApiErrorDetails } from "@test/fakes/ApiErrorDetails";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { generateLoginDetails } from "@test/fakes/LoginDetails";
@@ -33,11 +35,9 @@ import { generateSession, generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { assertOk, getCallArgs, nStepObservable } from "@test/helpers/general";
 import { FORBIDDEN, UNAUTHORIZED } from "http-status";
-import { CookieService } from "ngx-cookie-service";
-import { ToastService } from "@services/toasts/toasts.service";
-import { noop, Subject, throwError } from "rxjs";
 import { NgHttpCachingService } from "ng-http-caching";
-import { provideMockConfig } from "@services/config/provide-configMock";
+import { CookieService } from "ngx-cookie-service";
+import { noop, Subject, throwError } from "rxjs";
 import { shouldNotFail, shouldNotSucceed } from "../baw-api.service.spec";
 import { UserService } from "../user/user.service";
 import { SecurityService } from "./security.service";
@@ -89,7 +89,7 @@ describe("SecurityService", () => {
     return nStepObservable(
       subjects.apiDestroy,
       () => error ?? null,
-      isInstantiated(error)
+      isInstantiated(error),
     );
   }
 
@@ -97,7 +97,7 @@ describe("SecurityService", () => {
     return nStepObservable(
       subjects.makeFormRequest,
       () => page,
-      isBawApiError(page)
+      isBawApiError(page),
     );
   }
 
@@ -105,7 +105,7 @@ describe("SecurityService", () => {
     return nStepObservable(
       subjects.userShowWithoutNotification,
       () => model,
-      isBawApiError(model)
+      isBawApiError(model),
     );
   }
 
@@ -184,7 +184,7 @@ describe("SecurityService", () => {
       await handleAuthTokenRetrievalDuringInitialization();
       spec.service.signUpSeed().subscribe({ next: noop, error: noop });
       expect(formApi.getRecaptchaSeed).toHaveBeenCalledWith(
-        "/my_account/sign_up"
+        "/my_account/sign_up",
       );
     });
   });
@@ -209,7 +209,7 @@ describe("SecurityService", () => {
         return nStepObservable(
           subject,
           () => (success ? null : generateApiErrorDetails()),
-          !success
+          !success,
         );
       }
 
@@ -326,7 +326,7 @@ describe("SecurityService", () => {
         expect(function () {
           getCallArgs(handleAuthSpy)[3](response);
         }).toThrowError(
-          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)"
+          "Username can only include letters, numbers, spaces ( ), underscores (_) and dashes (-)",
         );
       });
 
@@ -344,7 +344,7 @@ describe("SecurityService", () => {
       it("should throw error if no recaptcha token", () => {
         const registerDetails = new RegisterDetails(
           // @ts-expect-error: strict mode fix
-          generateRegisterDetails({ recaptchaToken: null })
+          generateRegisterDetails({ recaptchaToken: null }),
         );
         const page = `<input name="authenticity_token" value="${defaults.authToken}"></input>`;
 
@@ -367,7 +367,10 @@ describe("SecurityService", () => {
         inputs?.formEndpoint ?? "/broken_link",
         inputs?.authEndpoint ?? "/broken_link",
         inputs?.getFormData ?? (() => new URLSearchParams()),
-        inputs?.pageValidation ?? (() => {})
+        inputs?.pageValidation ??
+          (() => {
+            /* noop */
+          }),
       );
     }
 
@@ -380,7 +383,7 @@ describe("SecurityService", () => {
     }
 
     function interceptMakeFormRequest(
-      page: Errorable<string> = "<html></html>"
+      page: Errorable<string> = "<html></html>",
     ) {
       return triggerMakeFormRequest(page);
     }
@@ -438,7 +441,7 @@ describe("SecurityService", () => {
           next: shouldNotSucceed,
           error: (err) => {
             expect(err).toEqual(
-              new BawApiError(unknownErrorCode, "custom error", null)
+              new BawApiError(unknownErrorCode, "custom error", null),
             );
             done();
           },
@@ -592,8 +595,8 @@ describe("SecurityService", () => {
               new BawApiError(
                 unknownErrorCode,
                 "An unknown error has occurred, if this persists please use the Report Problem page",
-                null
-              )
+                null,
+              ),
             );
             done();
           },

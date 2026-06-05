@@ -146,8 +146,8 @@ describe("TaggingCorrectionsService", () => {
       ]);
 
       const annotation = new Annotation(
-        generateAnnotation({ corrections: correctionsMap, }),
-        injector
+        generateAnnotation({ corrections: correctionsMap }),
+        injector,
       );
 
       // Because we mock the verifications response to return an empty array,
@@ -203,6 +203,8 @@ describe("TaggingCorrectionsService", () => {
     // was created as part of a correction.
     // This will require support for database backed tag corrections.
     // see: https://github.com/QutEcoacoustics/baw-server/issues/807
-    xit("should not delete a tagging if it was created outside of a correction", async () => {});
+    xit("should not delete a tagging if it was created outside of a correction", async () => {
+      pending();
+    });
   });
 });

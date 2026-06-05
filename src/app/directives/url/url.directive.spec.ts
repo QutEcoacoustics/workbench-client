@@ -53,7 +53,7 @@ describe("UrlDirective", () => {
   it("should not interfere with routerLink if no [bawUrl]", () => {
     const spectator = createRouterLink(
       '<a [routerLink]="link" [queryParams]="params"></a>',
-      { hostProps: { link: "/home", params: { test: "value" } } }
+      { hostProps: { link: "/home", params: { test: "value" } } },
     );
     spectator.detectChanges();
 
@@ -63,7 +63,9 @@ describe("UrlDirective", () => {
   });
 
   // TODO Current implementation does not work with routerLinkActive
-  xit("should not interfere with routerLinkActive", () => {});
+  xit("should not interfere with routerLinkActive", () => {
+    pending();
+  });
 
   describe("url", () => {
     let root: StrongRoute;
@@ -152,8 +154,8 @@ describe("UrlDirective", () => {
       setup(
         childRoute.format(
           { siteId: 5, siteName: "example" },
-          { id: 10, name: "example encoding" }
-        )
+          { id: 10, name: "example encoding" },
+        ),
       );
       spec.detectChanges();
       assertRoute("/5/example?id=10&name=example%20encoding");
@@ -185,7 +187,7 @@ describe("UrlDirective", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
         // @ts-expect-error: strict mode fix
-        ({ test, name }) => ({ test, name })
+        ({ test, name }) => ({ test, name }),
       );
       setup(childRoute.format(undefined, { name: "example" }));
       spec.detectChanges();

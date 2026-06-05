@@ -119,8 +119,8 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
   public createSearchCallback<T extends AbstractModel>(
     api: StandardApi<T>,
-    key: string = "name",
-    includeDefaultFilters: boolean = true,
+    key = "name",
+    includeDefaultFilters = true,
   ): TypeaheadSearchCallback<T> {
     return (text: string, activeItems: T[]): Observable<T[]> =>
       api.filter({

@@ -29,7 +29,7 @@ describe("FormlyCheckboxInput", () => {
     return spectator.query<HTMLInputElement>("input[type='checkbox']");
   }
 
-  function setup(key: string = "checkbox", options: FormlyFieldProps = {}) {
+  function setup(key = "checkbox", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ checkbox: new FormControl("") });
     model = {};
 
@@ -49,7 +49,7 @@ describe("FormlyCheckboxInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
     spectator.detectChanges();
   }

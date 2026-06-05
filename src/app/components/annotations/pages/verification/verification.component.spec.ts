@@ -17,9 +17,7 @@ import {
   TagPromptComponent,
   VerificationGridTileComponent,
 } from "@ecoacoustics/web-components";
-import {
-  VerificationGridComponent,
-} from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
+import { VerificationGridComponent } from "@ecoacoustics/web-components/components/verification-grid/verification-grid";
 import { Annotation } from "@models/data/Annotation";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
@@ -1150,7 +1148,11 @@ describe("VerificationComponent", () => {
     it("should show an alert if the user tries to navigate away while requests are still processing", async () => {
       // Mock the verification api to return an observable that never completes
       // so that the component thinks that there are still requests processing.
-      verificationApi.createOrUpdate.and.returnValue(new Observable(() => {}));
+      verificationApi.createOrUpdate.and.returnValue(
+        new Observable(() => {
+          /* intentionally empty */
+        }),
+      );
 
       await makeSelection(0, 0);
       await clickDecisionButton(DecisionOptions.TRUE);

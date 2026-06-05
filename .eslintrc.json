@@ -24,7 +24,8 @@
       ],
       "rules": {
         "@typescript-eslint/no-empty-function": 2,
-        "@typescript-eslint/no-explicit-any": 2,
+        // We allow the use of `any` in some cases, but we want to be aware of when it is used so that we can eventually remove it.
+        "@typescript-eslint/no-explicit-any": 1,
         "@typescript-eslint/no-inferrable-types": 2,
         // beginning of explicitly enabled rules
         "max-len": [

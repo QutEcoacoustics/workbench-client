@@ -60,7 +60,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
   public failure!: boolean;
   public loadingData!: boolean;
   public models: ResolvedModelList = {};
-  public pageNumber: number = 0;
+  public pageNumber = 0;
   public filterEvent$ = new Subject<string>();
   protected filters: Filters<M> = {};
 
@@ -69,7 +69,9 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
     private rowsCallback: (models: M[]) => TableRow[],
     protected route?: ActivatedRoute,
     private getUrlParameters: (component: any) => AbstractModel[] = () => [],
-    private preselectRows: (rows: TableRow[]) => void = () => {}
+    private preselectRows: (rows: TableRow[]) => void = () => {
+      /* noop */
+    },
   ) {
     super();
 
@@ -77,7 +79,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       .pipe(
         debounceTime(defaultDebounceTime),
         distinctUntilChanged(),
-        takeUntil(this.unsubscribe)
+        takeUntil(this.unsubscribe),
       )
       .subscribe({
         next: () => this.getPageData(),

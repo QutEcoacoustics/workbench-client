@@ -1,16 +1,12 @@
 import { CMS, CmsService } from "@baw-api/cms/cms.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
-import {
-  createRoutingFactory,
-  Spectator,
-  SpyObject,
-} from "@ngneat/spectator";
+import { createRoutingFactory, Spectator, SpyObject } from "@ngneat/spectator";
 import { ErrorHandlerComponent } from "@shared/error-handler/error-handler.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
 import { nStepObservable } from "@test/helpers/general";
 import { assertSpinner } from "@test/helpers/html";
 import { Subject } from "rxjs";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { CmsComponent } from "./cms.component";
 
 describe("CmsComponent", () => {
@@ -25,7 +21,9 @@ describe("CmsComponent", () => {
   async function interceptApiRequest(
     response: string,
     error?: BawApiError,
-    expectation: (page: string) => void = () => {}
+    expectation: (page: string) => void = () => {
+      /* noop */
+    },
   ) {
     const subject = new Subject<string>();
     cmsService.get.andCallFake((page: string) => {

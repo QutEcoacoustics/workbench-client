@@ -1,19 +1,19 @@
-import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
+import { fakeAsync, tick } from "@angular/core/testing";
 import { FormControl, FormGroup } from "@angular/forms";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
+import { createHostFactory, SpectatorHost, SpyObject } from "@ngneat/spectator";
 import { FormlyFieldProps } from "@ngx-formly/core";
+import {
+  LicensesService,
+  SpdxLicense,
+} from "@services/licenses/licenses.service";
+import { modelData } from "@test/helpers/faker";
 import {
   clickButton,
   getElementByTextContent,
   selectFromTypeahead,
 } from "@test/helpers/html";
-import { modelData } from "@test/helpers/faker";
-import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
-import {
-  LicensesService,
-  SpdxLicense,
-} from "@services/licenses/licenses.service";
-import { fakeAsync, tick } from "@angular/core/testing";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { LicenseInputComponent } from "./license-input.component";
 
@@ -144,13 +144,15 @@ describe("LicenseInputComponent", () => {
 
       const finalLicense = spec.component.formControl.value;
       expect(firstLicense).not.toEqual(finalLicense);
-      expect(finalLicense).toEqual("mock-license")
+      expect(finalLicense).toEqual("mock-license");
     }));
 
     // When the user clicks on the typeahead, it shows search results that
     // are not filtered by any search term. Because there is no search term, we
     // should see that the recommended CC licenses are at the top of the list.
-    it("should show recommended licenses at the top of the typeahead", fakeAsync(() => {}));
+    it("should show recommended licenses at the top of the typeahead", fakeAsync(() => {
+      pending();
+    }));
   });
 
   describe("removing licenses", () => {
