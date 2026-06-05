@@ -1,7 +1,5 @@
 {
-  "ignorePatterns": [
-    "**/*.base64.ts"
-  ],
+  "ignorePatterns": ["**/*.base64.ts"],
   "overrides": [
     {
       "extends": [
@@ -13,15 +11,10 @@
         "plugin:import/warnings",
         "plugin:import/typescript"
       ],
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "parserOptions": {
         "createDefaultProgram": true,
-        "project": [
-          "tsconfig.json",
-          "tsconfig.spec.json"
-        ]
+        "project": ["tsconfig.json", "tsconfig.spec.json"]
       },
       "plugins": [
         "eslint-plugin-rxjs",
@@ -40,16 +33,15 @@
         "max-len": [
           "error",
           {
-            "code": 140
+            "code": 140,
+            // prettier does not ever wrap long import lines (with only one imported item) so we need to ignore them here
+            "ignorePattern": "^import\\s+.*\\s+from\\s+|^export\\s+.*\\s+from\\s+"
           }
         ],
         "no-console": [
           "error",
           {
-            "allow": [
-              "warn",
-              "error"
-            ]
+            "allow": ["warn", "error"]
           }
         ],
         "import/no-unresolved": "off",
@@ -57,9 +49,7 @@
         "@angular-eslint/component-selector": [
           "error",
           {
-            "prefix": [
-              "baw"
-            ],
+            "prefix": ["baw"],
             "style": "kebab-case",
             "type": "element"
           }
@@ -67,9 +57,7 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "prefix": [
-              "baw"
-            ],
+            "prefix": ["baw"],
             "style": "camelCase",
             "type": "attribute"
           }
@@ -118,21 +106,10 @@
             "avoidEscape": true
           }
         ],
-        "@typescript-eslint/semi": [
-          "off",
-          null
-        ],
-        "arrow-parens": [
-          "off",
-          "always"
-        ],
-        "brace-style": [
-          "off"
-        ],
-        "eqeqeq": [
-          "error",
-          "always"
-        ],
+        "@typescript-eslint/semi": ["off", null],
+        "arrow-parens": ["off", "always"],
+        "brace-style": ["off"],
+        "eqeqeq": ["error", "always"],
         "guard-for-in": "off",
         "import/order": "error",
         "no-implicit-globals": "error",
@@ -160,12 +137,8 @@
       }
     },
     {
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
-      "files": [
-        "*.html"
-      ],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "files": ["*.html"],
       "rules": {}
     }
   ],

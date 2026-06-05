@@ -1,4 +1,9 @@
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { EnvironmentProviders, Provider } from "@angular/core";
 import { BawFormApiService } from "@baw-api/baw-form-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { CmsService } from "@baw-api/cms/cms.service";
@@ -7,14 +12,12 @@ import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id } from "@interfaces/apiInterfaces";
 import { AbstractModel, AbstractModelConstructor } from "@models/AbstractModel";
 import { mockProvider, Spectator, SpectatorService } from "@ngneat/spectator";
-import { CmsComponent } from "@shared/cms/cms.component";
-import { ToastService } from "@services/toasts/toasts.service";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { EnvironmentProviders, Provider } from "@angular/core";
 import { mockAssociationInjector } from "@services/association-injector/association-injectorMock.factory";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { provideMockConfig } from "@services/config/provide-configMock";
 import { provideCaching } from "@services/cache/provide-caching";
+import { provideMockConfig } from "@services/config/provide-configMock";
+import { ToastService } from "@services/toasts/toasts.service";
+import { CmsComponent } from "@shared/cms/cms.component";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import {
   ApiCreate,
   ApiCreateOrUpdate,
@@ -65,7 +68,7 @@ export const defaultFilters: Filters<AbstractModel> = {
 export function validateApiList<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params>
+  Service extends ApiList<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -79,14 +82,14 @@ export function validateApiList<
     modelBuilder,
     endpoint,
     key,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateApiFilter<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiFilter<Model, Params>
+  Service extends ApiFilter<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -104,7 +107,7 @@ export function validateApiFilter<
     key,
     filter,
     models,
-    ...parameters
+    ...parameters,
   );
 }
 
@@ -130,14 +133,14 @@ export function validateApiFilterGroupBy<
     key,
     filter,
     models,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateApiShow<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiShow<Model, Params>
+  Service extends ApiShow<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -157,7 +160,7 @@ export function validateApiShow<
       service = spec.service;
       api = spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "show").and.callFake(
-        () => new BehaviorSubject<Model>(testModel)
+        () => new BehaviorSubject<Model>(testModel),
       );
     });
 
@@ -179,7 +182,7 @@ export function validateApiShow<
 export function validateApiCreate<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiCreate<Model, Params>
+  Service extends ApiCreate<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -201,7 +204,7 @@ export function validateApiCreate<
       const api: BawApiService<Model> =
         spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "create").and.callFake(
-        () => new BehaviorSubject<Model>(testModel)
+        () => new BehaviorSubject<Model>(testModel),
       );
       service.create(testModel, ...parameters).subscribe();
 
@@ -217,7 +220,7 @@ export function validateApiCreate<
 export function validateApiUpdate<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiUpdate<Model, Params>
+  Service extends ApiUpdate<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -233,14 +236,14 @@ export function validateApiUpdate<
       const api: BawApiService<Model> =
         spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "update").and.callFake(
-        () => new BehaviorSubject<Model>(testModel)
+        () => new BehaviorSubject<Model>(testModel),
       );
       service.update(testModel, ...parameters).subscribe();
 
       expect(api.update).toHaveBeenCalledWith(
         modelBuilder,
         endpoint,
-        testModel
+        testModel,
       );
     });
   });
@@ -249,7 +252,7 @@ export function validateApiUpdate<
 export function validateApiCreateOrUpdate<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiCreateOrUpdate<Model, Params>
+  Service extends ApiCreateOrUpdate<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -267,7 +270,7 @@ export function validateApiCreateOrUpdate<
       const api: BawApiService<Model> =
         spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "createOrUpdate").and.callFake(
-        () => new BehaviorSubject<Model>(testModel)
+        () => new BehaviorSubject<Model>(testModel),
       );
       service.createOrUpdate(testModel, ...parameters).subscribe();
 
@@ -283,7 +286,7 @@ export function validateApiCreateOrUpdate<
 export function validateApiDestroy<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiDestroy<Model, Params>
+  Service extends ApiDestroy<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   endpoint: string,
@@ -318,7 +321,7 @@ export function validateApiDestroy<
 
 export function assertCms<Component>(
   setup: () => MayBeAsync<Spectator<Component>>,
-  endpoint: string
+  endpoint: string,
 ): void {
   let spectator: Spectator<Component>;
 
@@ -348,7 +351,7 @@ export function assertCms<Component>(
 export function validateCustomApiList<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ApiList<Model, Params>
+  Service extends ApiList<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -364,9 +367,7 @@ export function validateCustomApiList<
         spec.inject<BawApiService<Model>>(BawApiService);
       spyOn(api, "list").and.callFake(() => new BehaviorSubject<Model[]>([]));
 
-      (service[key] as CustomList<Model, Params>)(
-        ...parameters
-      ).subscribe();
+      (service[key] as CustomList<Model, Params>)(...parameters).subscribe();
       expect(api.list).toHaveBeenCalledWith(modelBuilder, endpoint);
     });
   });
@@ -375,7 +376,7 @@ export function validateCustomApiList<
 export function validateCustomApiFilter<
   Model extends AbstractModel,
   Params extends any[],
-  Service
+  Service,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -394,17 +395,17 @@ export function validateCustomApiFilter<
         spec.inject<BawApiService<Model>>(BawApiService);
       const expectedFilters: Filters<Model> = { ...defaultFilters, ...filters };
       spyOn(api, "filter").and.callFake(
-        () => new BehaviorSubject<Model[]>(testModels)
+        () => new BehaviorSubject<Model[]>(testModels),
       );
       (service[key] as CustomFilter<Model, Params>)(
         defaultFilters,
-        ...parameters
+        ...parameters,
       ).subscribe();
 
       expect(api.filter).toHaveBeenCalledWith(
         modelBuilder,
         endpoint,
-        expectedFilters
+        expectedFilters as Filters,
       );
     });
   });
@@ -413,7 +414,7 @@ export function validateCustomApiFilter<
 export function validateStandardApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends StandardApi<Model, Params>
+  Service extends StandardApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -428,13 +429,13 @@ export function validateStandardApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -442,7 +443,7 @@ export function validateStandardApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiCreate<Model, Params, Service>(
     createService,
@@ -450,28 +451,28 @@ export function validateStandardApi<
     baseEndpoint,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiUpdate<Model, Params, Service>(
     createService,
     modelBuilder,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiDestroy<Model, Params, Service>(
     createService,
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateImmutableApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ImmutableApi<Model, Params>
+  Service extends ImmutableApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -486,13 +487,13 @@ export function validateImmutableApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -500,7 +501,7 @@ export function validateImmutableApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiCreate<Model, Params, Service>(
     createService,
@@ -508,21 +509,21 @@ export function validateImmutableApi<
     baseEndpoint,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiDestroy<Model, Params, Service>(
     createService,
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateReadonlyApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ReadonlyApi<Model, Params>
+  Service extends ReadonlyApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -537,13 +538,13 @@ export function validateReadonlyApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -551,14 +552,14 @@ export function validateReadonlyApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateReadAndCreateApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ReadAndCreateApi<Model, Params>
+  Service extends ReadAndCreateApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -573,13 +574,13 @@ export function validateReadAndCreateApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -587,7 +588,7 @@ export function validateReadAndCreateApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiCreate<Model, Params, Service>(
     createService,
@@ -595,14 +596,14 @@ export function validateReadAndCreateApi<
     baseEndpoint,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateReadAndUpdateApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends ReadAndUpdateApi<Model, Params>
+  Service extends ReadAndUpdateApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -617,13 +618,13 @@ export function validateReadAndUpdateApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -631,21 +632,21 @@ export function validateReadAndUpdateApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiUpdate<Model, Params, Service>(
     createService,
     modelBuilder,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
 }
 
 export function validateNonDestructableApi<
   Model extends AbstractModel,
   Params extends any[],
-  Service extends NonDestructibleApi<Model, Params>
+  Service extends NonDestructibleApi<Model, Params>,
 >(
   createService: () => SpectatorService<Service>,
   modelBuilder: AbstractModelConstructor<Model>,
@@ -660,13 +661,13 @@ export function validateNonDestructableApi<
     createService,
     modelBuilder,
     baseEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiFilter<Model, Params, Service>(
     createService,
     modelBuilder,
     filterEndpoint,
-    ...parameters
+    ...parameters,
   );
   validateApiShow<Model, Params, Service>(
     createService,
@@ -674,7 +675,7 @@ export function validateNonDestructableApi<
     modelEndpoint,
     modelId,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiCreate<Model, Params, Service>(
     createService,
@@ -682,13 +683,13 @@ export function validateNonDestructableApi<
     baseEndpoint,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
   validateApiUpdate<Model, Params, Service>(
     createService,
     modelBuilder,
     modelEndpoint,
     model,
-    ...parameters
+    ...parameters,
   );
 }

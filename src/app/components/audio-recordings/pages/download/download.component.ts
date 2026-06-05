@@ -2,7 +2,7 @@
 import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Filters } from "@baw-api/baw-api.service";
+import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { regionResolvers } from "@baw-api/region/regions.service";
@@ -15,7 +15,7 @@ import {
 } from "@components/audio-recordings/audio-recording.menus";
 import { myAccountMenuItem } from "@components/profile/profile.menus";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
-import { filterModel } from "@helpers/filters/filters";
+import { filterAnd, filterModel } from "@helpers/filters/filters";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { IPageInfo } from "@helpers/page/pageInfo";
 import { StrongRoute } from "@interfaces/strongRoute";
@@ -61,6 +61,13 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
     new BehaviorSubject({});
 
+  /** Separate subject for date/time filters only, passed to DateTimeFilterComponent */
+  public dateTimeFilters$: BehaviorSubject<Filters<AudioRecording>> =
+    new BehaviorSubject({});
+
+  /** The scope filter derived from resolved route models (project/region/site) */
+  private scopeFilter: InnerFilter<AudioRecording> = {};
+
   public contactUs = contactUsMenuItem;
   public href = "";
   public models!: ResolvedModelList;
@@ -74,16 +81,30 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   public ngOnInit(): void {
     this.models = retrieveResolvers(this.route.snapshot.data);
 
-    const initialFilters: Filters<AudioRecording> = {};
     if (this.site) {
-      initialFilters.filter = filterModel<Site, AudioRecording>("sites", this.site, initialFilters.filter);
+      this.scopeFilter = filterModel<Site, AudioRecording>("sites", this.site);
     } else if (this.region) {
-      initialFilters.filter = filterModel<Region, AudioRecording>("regions", this.region, initialFilters.filter);
+      this.scopeFilter = filterModel<Region, AudioRecording>("regions", this.region);
     } else if (this.project) {
-      initialFilters.filter = filterModel<Project, AudioRecording>("projects", this.project, initialFilters.filter);
+      this.scopeFilter = filterModel<Project, AudioRecording>("projects", this.project);
     }
 
-    this.filters$.next(initialFilters);
+    // Merge the scope filter with any date/time filters whenever date/time filters change
+    this.dateTimeFilters$
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((dateFilters: Filters<AudioRecording>) => {
+        const combinedInner = filterAnd<AudioRecording>(
+          this.scopeFilter,
+          dateFilters.filter ?? {},
+        );
+
+        const combinedFilters: Filters<AudioRecording> =
+          Object.keys(combinedInner).length === 0
+            ? {}
+            : { filter: combinedInner };
+
+        this.filters$.next(combinedFilters);
+      });
 
     this.filters$
       .pipe(takeUntil(this.unsubscribe))

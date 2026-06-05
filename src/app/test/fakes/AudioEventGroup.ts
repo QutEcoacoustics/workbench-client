@@ -6,9 +6,12 @@ export function generateAudioEventGroup(
 ): Required<IAudioEventGroup> {
   return {
     siteId: modelData.id(),
-    eventCount: modelData.datatype.number({ min: 1, max: 100 }),
+    projectIds: new Set([modelData.id()]),
+    regionId: modelData.id(),
+    audioEventCount: modelData.datatype.number({ min: 1, max: 100 }),
     latitude: modelData.latitude(),
     longitude: modelData.longitude(),
+    locationObfuscated: true,
     ...data,
   };
 }

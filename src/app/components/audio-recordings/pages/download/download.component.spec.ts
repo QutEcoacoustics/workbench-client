@@ -300,6 +300,100 @@ describe("DownloadAudioRecordingsComponent", () => {
     });
   });
 
+  describe("date filters", () => {
+    it("should preserve the project scope filter when date filters are applied", fakeAsync(() => {
+      const dateFilter: Filters<AudioRecording> = {
+        filter: { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+      };
+      const expectedFilter: Filters<AudioRecording> = {
+        filter: {
+          and: [
+            { "projects.id": { eq: defaultProject.id } },
+            { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+          ],
+        } as any,
+      };
+
+      setup(defaultProject);
+      spec.detectChanges();
+      loadForm();
+
+      spec.component.dateTimeFilters$.next(dateFilter);
+      spec.detectChanges();
+
+      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
+    }));
+
+    it("should preserve the region scope filter when date filters are applied", fakeAsync(() => {
+      const dateFilter: Filters<AudioRecording> = {
+        filter: { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+      };
+      const expectedFilter: Filters<AudioRecording> = {
+        filter: {
+          and: [
+            { "regions.id": { eq: defaultRegion.id } },
+            { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+          ],
+        } as any,
+      };
+
+      setup(defaultProject, defaultRegion);
+      spec.detectChanges();
+      loadForm();
+
+      spec.component.dateTimeFilters$.next(dateFilter);
+      spec.detectChanges();
+
+      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
+    }));
+
+    it("should preserve the site scope filter when date filters are applied", fakeAsync(() => {
+      const dateFilter: Filters<AudioRecording> = {
+        filter: { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+      };
+      const expectedFilter: Filters<AudioRecording> = {
+        filter: {
+          and: [
+            { "sites.id": { eq: defaultSite.id } },
+            { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+          ],
+        } as any,
+      };
+
+      setup(defaultProject, undefined, defaultSite);
+      spec.detectChanges();
+      loadForm();
+
+      spec.component.dateTimeFilters$.next(dateFilter);
+      spec.detectChanges();
+
+      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedFilter);
+    }));
+
+    it("should use only the scope filter when date filters are cleared", fakeAsync(() => {
+      const dateFilter: Filters<AudioRecording> = {
+        filter: { recordedEndDate: { greaterThan: new Date("2024-06-01") } } as any,
+      };
+      const expectedScopeOnlyFilter: Filters<AudioRecording> = {
+        filter: { "regions.id": { eq: defaultRegion.id } },
+      } as Filters<AudioRecording, keyof AudioRecording>;
+
+      setup(defaultProject, defaultRegion);
+      spec.detectChanges();
+      loadForm();
+
+      // Apply date filter
+      spec.component.dateTimeFilters$.next(dateFilter);
+      spec.detectChanges();
+
+      // Clear date filter
+      spec.component.dateTimeFilters$.next({});
+      spec.detectChanges();
+
+      expect(api.batchDownloadUrl).toHaveBeenCalledWith(expectedScopeOnlyFilter);
+    }));
+  });
+
   describe("instructions", () => {
     it("should have instructions", () => {
       setup(defaultProject);

@@ -114,12 +114,44 @@ describe("annotationSearchParameters", () => {
       }),
     },
     {
+      name: "should be able to filter by start and end date",
+      inputParams: {
+        eventDate: "2020-01-01,2020-03-01",
+      },
+      expectedFilters: () => ({
+        filter: {
+          and: [
+            {
+              "projects.id": {
+                in: [routeProject.id],
+              },
+            },
+            {
+              endDate: {
+                gteq: DateTime.fromISO("2020-01-01T00:00:00.000Z", {
+                  zone: "utc",
+                }),
+              },
+            },
+            {
+              startDate: {
+                lt: DateTime.fromISO("2020-03-01T00:00:00.000Z", {
+                  zone: "utc",
+                }),
+              },
+            },
+          ],
+        },
+        sorting: defaultSorting,
+      }),
+    },
+    {
       name: "should create correct filter when filters are set",
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
         imports: "42:1,42:2,42:3,67:",
-        recordingDate: ",2020-03-01",
+        eventDate: ",2020-03-01",
         score: "0.5,0.9",
 
         regions: "2,3,4,5",
@@ -132,13 +164,6 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             { "tags.id": { in: [4, 5, 6] } },
-            {
-              "audioRecordings.recordedDate": {
-                lessThan: DateTime.fromISO("2020-03-01T00:00:00.000Z", {
-                  zone: "utc",
-                }),
-              },
-            },
             { "audioRecordings.id": { in: [11, 12, 13] } },
             {
               or: [
@@ -149,6 +174,13 @@ describe("annotationSearchParameters", () => {
             {
               "sites.id": {
                 in: [6, 7, 8, 9],
+              },
+            },
+            {
+              startDate: {
+                lt: DateTime.fromISO("2020-03-01T00:00:00.000Z", {
+                  zone: "utc",
+                }),
               },
             },
             { score: { gteq: 0.5 } },
@@ -164,7 +196,7 @@ describe("annotationSearchParameters", () => {
       inputParams: {
         audioRecordings: "11,12,13",
         tags: "4,5,6",
-        recordingDate: ",2020-03-01",
+        eventDate: ",2020-03-01",
         score: "0.5,0.9",
 
         regions: "2,3,4,5",
@@ -179,13 +211,13 @@ describe("annotationSearchParameters", () => {
         filter: {
           and: [
             { "tags.id": { in: [4, 5, 6] } },
-            {
-              "audioRecordings.recordedDate": {
-                lessThan: jasmine.any(DateTime),
-              },
-            },
             { "audioRecordings.id": { in: [11, 12, 13] } },
             { "sites.id": { in: [6, 7, 8, 9] } },
+            {
+              startDate: {
+                lt: jasmine.any(DateTime),
+              },
+            },
             { score: { gteq: 0.5 } },
             { score: { lteq: 0.9 } },
             {

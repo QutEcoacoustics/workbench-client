@@ -81,6 +81,9 @@
       "**/tsconfig*.json",
       "**/vscode-extension/**",
     ],
+    "htmlhint.options": {
+      "attr-lowercase": false,
+    },
     "workbench.colorCustomizations": {
       "activityBar.activeBorder": "#922e7b",
       "activityBar.activeBackground": "#31859d",
@@ -98,8 +101,6 @@
       "titleBar.activeForeground": "#e7e7e7",
       "titleBar.inactiveBackground": "#25647699",
       "titleBar.inactiveForeground": "#e7e7e799",
-      "statusBar.background": "#256476",
-      "statusBar.foreground": "#e7e7e7",
     },
     "files.eol": "\n",
     "files.insertFinalNewline": true,
@@ -111,6 +112,7 @@
       "npx tsc": true,
       "Out-File": true,
     },
+    "peacock.color": "#256476",
   },
   "extensions": {
     "recommendations": [
