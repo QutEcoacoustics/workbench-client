@@ -14,7 +14,13 @@ import { StatisticsComponent } from "@components/harvest/components/shared/stati
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { menuRoute } from "@interfaces/menusInterfaces";
-import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
+import {
+  Harvest,
+  HarvestMapping,
+  HarvestStatus,
+  IdOr,
+  IHarvestMapping,
+} from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
@@ -252,9 +258,11 @@ describe("MetadataReviewComponent", () => {
 
     // assert that the mappings for the model are updated correctly by using a mocked updateMappings() method
     // which asserts if it was called with the correct parameters
-    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake(
-      (model: Harvest, mappings: HarvestMapping[]) => {
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
         const expectedMappings = [
           new HarvestMapping({
             path: "A/aa",
@@ -275,7 +283,7 @@ describe("MetadataReviewComponent", () => {
           JSON.stringify(expectedMappings),
         );
 
-        return of(null);
+        return of(defaultHarvest);
       },
     );
 
@@ -299,9 +307,11 @@ describe("MetadataReviewComponent", () => {
     clickFolder("B");
 
     // assert mappings for path "A/aa" have been retained once it is no longer visible in the DOM and mappings have been applied to "B/bb"
-    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake(
-      (model: Harvest, mappings: HarvestMapping[]) => {
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
         const expectedMappings = [
           new HarvestMapping({
             path: "A/aa",
@@ -326,7 +336,7 @@ describe("MetadataReviewComponent", () => {
           JSON.stringify(expectedMappings),
         );
 
-        return of(null);
+        return of(defaultHarvest);
       },
     );
 
@@ -444,14 +454,16 @@ describe("MetadataReviewComponent", () => {
       ),
     ];
 
-    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.callFake(
-      (model: Harvest, mappings: HarvestMapping[]) => {
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
         expect(model).toEqual(spec.component.harvest);
         expect(JSON.stringify(mappings)).toEqual(
           JSON.stringify(expectedMappings),
         );
-        return of(null);
+        return of(defaultHarvest);
       },
     );
 
