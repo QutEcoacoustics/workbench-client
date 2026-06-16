@@ -3,7 +3,7 @@
     id="task-tag-input"
     label="Tag to Verify"
     [inputPlaceholder]="
-      searchParameters().tagModels.length > 0
+      (searchParameters().tagModels?.length ?? 0) > 0
         ? $any(searchParameters().tagModels)
         : 'First Tag'
     "

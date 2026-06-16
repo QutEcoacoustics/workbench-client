@@ -428,7 +428,7 @@
       </span>
     </div>
 
-    @if (parameterDataModel.tagModels.length) {
+    @if ((parameterDataModel.tagModels?.length ?? 0) > 0) {
       <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
         <baw-species-composition-graph
           #compositionChart
@@ -484,7 +484,7 @@
       </span>
     </div>
 
-    @if (parameterDataModel.tagModels.length) {
+    @if ((parameterDataModel.tagModels?.length ?? 0) > 0) {
       <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesTimeSeries)">
         <baw-species-time-series
           #timeSeriesChart

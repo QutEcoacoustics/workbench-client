@@ -4,7 +4,7 @@ import { AudioRecording } from "@models/AudioRecording";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { first, map } from "rxjs/operators";
 import { NgTemplateOutlet, AsyncPipe } from "@angular/common";
 import { UrlDirective } from "@directives/url/url.directive";
@@ -19,15 +19,17 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
     <li class="list-group-item p-2">
       <div class="body">
         <div class="heading m-0 mb-1">
-          <a id="nameLink" [bawUrl]="model().getViewUrl(project())">
-            <img
-              id="image"
-              class="me-2"
-              [src]="model().imageUrls"
-              [alt]="model().name + ' alt'"
-            />
-            <h5 id="name">{{ model().name }}</h5>
-          </a>
+          @if (model(); as model) {
+            <a id="nameLink" [bawUrl]="model.getViewUrl(project())">
+              <img
+                id="image"
+                class="me-2"
+                [src]="model.imageUrls"
+                [alt]="model.name + ' alt'"
+              />
+              <h5 id="name">{{ model.name }}</h5>
+            </a>
+          }
         </div>
 
         <ul class="nav mb-0">
@@ -76,7 +78,7 @@ import { WithLoadingPipe } from "../../../../pipes/with-loading/with-loading.pip
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteCardComponent implements OnInit {
-  public project = input<Project>();
+  public project = input.required<Project>();
   public region = input<Region>();
   public site = input<Site>();
   protected model = computed(() => this.region() || this.site());
@@ -102,7 +104,8 @@ export class SiteCardComponent implements OnInit {
     if (this.region()) {
       return this.recordingApi.filterByRegion(filter, this.region());
     } else {
-      return this.recordingApi.filterBySite(filter, this.site());
+      const site = this.site();
+      return site ? this.recordingApi.filterBySite(filter, site) : of([]);
     }
   }
 }

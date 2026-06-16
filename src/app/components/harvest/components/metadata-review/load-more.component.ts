@@ -14,22 +14,24 @@ import { WhitespaceComponent } from "./whitespace.component";
   template: `
     <div class="grid-table-item load-more">
       <!-- Whitespace -->
-      <baw-meta-review-whitespace
-        [indentation]="row.parentFolder.indentation"
-      ></baw-meta-review-whitespace>
+      @if (row.parentFolder; as parentFolder) {
+        <baw-meta-review-whitespace
+          [indentation]="parentFolder.indentation"
+        ></baw-meta-review-whitespace>
 
-      @if (row.isLoading) {
-        <baw-loading class="m-auto"></baw-loading>
-      }
+        @if (row.isLoading) {
+          <baw-loading class="m-auto"></baw-loading>
+        }
 
-      @if (!row.isLoading) {
-        <button
-          class="btn btn-sm btn-outline-primary m-auto load-more"
-          (click)="loadMore.emit()"
-        >
-          {{ row.parentFolder.isRoot ? "Load More" : "Load more from " }}
-          <span class="font-monospace">{{ row.parentFolder.path }}</span>
-        </button>
+        @if (!row.isLoading) {
+          <button
+            class="btn btn-sm btn-outline-primary m-auto load-more"
+            (click)="loadMore.emit()"
+          >
+            {{ parentFolder.isRoot ? "Load More" : "Load more from " }}
+            <span class="font-monospace">{{ parentFolder.path }}</span>
+          </button>
+        }
       }
     </div>
   `,

@@ -47,7 +47,7 @@ export class CardComponent {
   private readonly licenseService = inject(LicensesService);
   private readonly projectService = inject(ProjectsService);
 
-  public readonly model = input<Project | Region>();
+  public readonly model = input.required<Project | Region>();
 
   protected readonly licenseTextResource = resource({
     params: () => ({ cardModel: this.model() }),
@@ -79,7 +79,7 @@ export class CardComponent {
   });
 
   protected readonly isOwner = computed(
-    () => this.model()!.creatorId === this.session.loggedInUser?.id,
+    () => this.model().creatorId === this.session.loggedInUser?.id,
   );
 
   protected readonly hasNoAudio$: Observable<boolean> =

@@ -1,6 +1,7 @@
 import { DecimalPipe, NgStyle } from "@angular/common";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
+import { IdOr } from "@baw-api/api-common";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteSelectorComponent } from "@components/harvest/components/inputs/site-selector.component";
@@ -18,7 +19,6 @@ import {
   Harvest,
   HarvestMapping,
   HarvestStatus,
-  IdOr,
   IHarvestMapping,
 } from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
