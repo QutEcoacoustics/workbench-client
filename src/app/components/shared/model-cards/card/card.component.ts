@@ -21,7 +21,7 @@ import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { WithLoadingPipe } from "@pipes/with-loading/with-loading.pipe";
 import { LicensesService } from "@services/licenses/licenses.service";
 import { LoadingComponent } from "@shared/loading/loading.component";
-import { firstValueFrom, map, Observable } from "rxjs";
+import { defer, firstValueFrom, map, Observable } from "rxjs";
 
 /**
  * Card Image Component
@@ -82,8 +82,9 @@ export class CardComponent {
     () => this.model().creatorId === this.session.loggedInUser?.id,
   );
 
-  protected readonly hasNoAudio$: Observable<boolean> =
-    this.getRecordings().pipe(map((recordings) => recordings.length === 0));
+  protected readonly hasNoAudio$: Observable<boolean> = defer(() =>
+    this.getRecordings().pipe(map((recordings) => recordings.length === 0)),
+  );
 
   private getRecordings(): Observable<AudioRecording[]> {
     const filters: Filters<AudioRecording> = { paging: { items: 1 } };
