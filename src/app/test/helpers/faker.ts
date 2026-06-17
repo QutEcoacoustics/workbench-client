@@ -1,16 +1,16 @@
+import { Meta } from "@baw-api/baw-api.service";
+import { faker } from "@faker-js/faker";
 import { IconName, IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
-  PermissionLevel,
   Id,
   ImageSizes,
   ImageUrl,
+  PermissionLevel,
   TimezoneInformation,
   UserConcent,
 } from "@interfaces/apiInterfaces";
-import { faker } from "@faker-js/faker";
-import { DateTime, Duration } from "luxon";
 import { PbsResources } from "@interfaces/pbsInterfaces";
-import { Meta } from "@baw-api/baw-api.service";
+import { DateTime, Duration } from "luxon";
 
 // This is a 5MB import that should ONLY be present in the test environment
 // If this file is imported to the production environment, it will cause the
@@ -252,6 +252,7 @@ function imageUrls(url?: string): ImageUrl[] {
 function timezone(): TimezoneInformation {
   return faker.helpers.arrayElement<TimezoneInformation>([
     {
+      // @ts-expect-error: strict mode fix
       identifierAlt: null,
       identifier: "America/Costa_Rica",
       friendlyIdentifier: "America - Costa Rica",
@@ -266,6 +267,7 @@ function timezone(): TimezoneInformation {
       utcTotalOffset: 36000,
     },
     {
+      // @ts-expect-error: strict mode fix
       identifierAlt: null,
       identifier: "Asia/Makassar",
       friendlyIdentifier: "Asia - Makassar",
@@ -280,7 +282,7 @@ function timezone(): TimezoneInformation {
  *
  * @param count Size of hash
  */
-function hexaDecimal(count: number = 1): string {
+function hexaDecimal(count = 1): string {
   let wholeString = "";
   for (let i = 0; i < count; i++) {
     wholeString += faker.helpers.arrayElement([
@@ -339,6 +341,7 @@ function randomObject(min: number, max: number): Record<string, string> {
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
+    // @ts-expect-error: strict mode fix
     obj[faker.random.word().replace(specialCharRegex, "")] = faker.random
       .words()
       .replace(specialCharRegex, "");

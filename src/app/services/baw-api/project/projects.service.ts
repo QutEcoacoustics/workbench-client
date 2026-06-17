@@ -59,6 +59,7 @@ export class ProjectsService implements StandardApi<Project> {
   }
 
   public destroy(model: IdOr<Project>): Observable<Project | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 
@@ -73,6 +74,7 @@ export class ProjectsService implements StandardApi<Project> {
     user: IdOr<User>
   ): Observable<Project[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
@@ -111,7 +113,7 @@ export class ProjectsService implements StandardApi<Project> {
     };
 
     return iif(
-      () => siteIds.length > 0,
+      () => siteIds!.length > 0,
       this.filter(filter),
       []
     );
@@ -122,7 +124,7 @@ const defaultProjectResolver = new ShowDefaultResolver<
   Project,
   [],
   ProjectsService
->([ProjectsService], null).create("Project");
+>([ProjectsService], null!).create("Project");
 
 export const projectResolvers = new Resolvers<Project, []>(
   [ProjectsService],

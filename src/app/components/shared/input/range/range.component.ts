@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   input,
@@ -29,8 +29,8 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
   protected readonly _value = signal<number>(0);
   protected readonly disabled = signal(false);
 
-  private onChange: (value: number | null) => void;
-  private onTouched: () => void;
+  private onChange!: (value: number | null) => void;
+  private onTouched!: () => void;
 
   // We want to output the "input" event so that this component can be used as
   // a direct replacement for the input:range element.
@@ -48,7 +48,7 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
 
   public writeValue(value: any): void {
     this._value.set(value);
-    this.onChange?.(this.value());
+    this.onChange?.(this.value()!);
   }
 
   public registerOnChange(fn: any): void {
@@ -71,6 +71,6 @@ export class RangeComponent implements ControlValueAccessor, OnInit {
     const value = toNumber(stringValue);
 
     this.writeValue(value);
-    this.input.emit(value);
+    this.input.emit(value!);
   }
 }

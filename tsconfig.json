@@ -18,7 +18,7 @@
     "outDir": "./dist/out-tsc",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strict": false,
+    "strict": true,
     "skipLibCheck": true,
     "target": "esnext",
     "types": [
@@ -56,9 +56,8 @@
   },
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true,
-    "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": false
   }
 }

@@ -33,10 +33,12 @@ export const myAccountMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
   tooltip: () => "View profile",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
 
     // when viewing another persons profile, the route model will be under the
     // "account" key. However, when viewing "my profile", the key will be "user"
@@ -125,10 +127,12 @@ export const theirProfileMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
   tooltip: () => "View their profile",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return `${componentModel.account.model.userName}'s Profile`;
   }
 });

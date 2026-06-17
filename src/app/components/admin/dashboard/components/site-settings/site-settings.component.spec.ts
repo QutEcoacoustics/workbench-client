@@ -35,6 +35,7 @@ describe("SiteSettingsComponent", () => {
   });
 
   function updateValue(value: string) {
+    // @ts-expect-error: strict mode fix
     spec.typeInElement(value, enqueueLimitNumberInput());
 
     // Because the input element is debounced, we need to fakeAsync await for
@@ -81,6 +82,7 @@ describe("SiteSettingsComponent", () => {
     // immediately and should not be debounced, meaning that this test will fail
     // if the inputs initial value is incorrectly being debounced.
     it("should show the initial enqueue limit", () => {
+      // @ts-expect-error: strict mode fix
       expect(enqueueLimitInput().value()).toEqual(mockEnqueueLimit.value);
     });
 
@@ -91,7 +93,7 @@ describe("SiteSettingsComponent", () => {
       // If we instead picked a truly random value as the new "updated" value,
       // there would be a slim chance that the values would be the same, and no
       // update would be triggered.
-      const testUpdatedValue = mockEnqueueLimit.value + 1;
+      const testUpdatedValue = mockEnqueueLimit.value! + 1;
       const expectedUpdatedModel = new SiteSetting({
         ...mockEnqueueLimit,
         value: testUpdatedValue,
@@ -105,7 +107,7 @@ describe("SiteSettingsComponent", () => {
     }));
 
     it("should show a success notification if the value was updated", fakeAsync(() => {
-      const testUpdatedValue = mockEnqueueLimit.value + 1;
+      const testUpdatedValue = mockEnqueueLimit.value! + 1;
       updateValue(testUpdatedValue.toString());
 
       const expectedMessage = `Successfully updated batch_analysis_remote_enqueue_limit to ${testUpdatedValue}`;
@@ -116,7 +118,7 @@ describe("SiteSettingsComponent", () => {
       const error = generateBawApiError();
       siteSettingsApi.update.and.returnValue(throwError(() => error));
 
-      const testUpdatedValue = mockEnqueueLimit.value + 1;
+      const testUpdatedValue = mockEnqueueLimit.value! + 1;
       updateValue(testUpdatedValue.toString());
 
       const expectedMessage =

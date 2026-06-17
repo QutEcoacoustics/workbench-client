@@ -123,6 +123,7 @@ describe("CardComponent", () => {
       setup(model);
       spec.detectChanges();
       const title = spec.query<HTMLHeadingElement>("h4");
+      // @ts-expect-error: strict mode fix
       expect(title).toContainText(model.name);
     });
 
@@ -164,7 +165,8 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const description = spec.query(".card-text");
-      expect(description.innerHTML).toContain(model.descriptionHtmlTagline);
+      // @ts-expect-error: strict mode fix
+      expect(description!.innerHTML).toContain(model.descriptionHtmlTagline);
     });
 
     // TODO: Assert truncation styling applies
@@ -212,7 +214,7 @@ describe("CardComponent", () => {
           creatorId: modelData.datatype.number(),
         });
         const userModel = generateUser({
-          id: model.creatorId + 1,
+          id: model.creatorId! + 1,
         });
 
         setup(model, [], userModel);
@@ -243,6 +245,7 @@ describe("CardComponent", () => {
         const model = createModel();
         setup(model);
         spec.detectChanges();
+        // @ts-expect-error: strict mode fix
         assertSpinner(getNoAudioBadge(), true);
       });
 
@@ -254,6 +257,7 @@ describe("CardComponent", () => {
         spec.detectChanges();
 
         const badge = getNoAudioBadge();
+        // @ts-expect-error: strict mode fix
         assertSpinner(badge, false);
         expect(badge).toContainText("No audio");
       });

@@ -88,7 +88,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
     model: AudioEventImport,
   ): Promise<void> {
     const modelId: Id = model.id;
-    const modelName: string = model.name;
+    const modelName: string = model.name!;
 
     const ref: NgbModalRef = this.modals.open(template);
     const success = await ref.result.catch((_) => false);
@@ -107,6 +107,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   }
 
   protected verifyQsp(model: AudioEventImport): string {
+    // @ts-expect-error: strict mode fix
     return this.jsIdMapQsp.serialize(new Map([[model.id, new Set()]]));
   }
 }

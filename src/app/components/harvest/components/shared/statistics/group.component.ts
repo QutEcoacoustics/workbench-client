@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { Statistic } from "./statistics.component";
 import { StatisticItemComponent } from "./item.component";
 
@@ -26,5 +26,5 @@ import { StatisticItemComponent } from "./item.component";
   imports: [StatisticItemComponent]
 })
 export class StatisticGroupComponent {
-  @Input() public statisticGroup: Statistic[];
+  @Input() public statisticGroup!: Statistic[];
 }

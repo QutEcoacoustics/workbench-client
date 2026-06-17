@@ -39,6 +39,6 @@ describe("EventModalComponent", () => {
     const eventCard = spec.query(AnnotationEventCardComponent);
     expect(eventCard).toBeVisible();
 
-    expect(eventCard.annotation).toEqual(annotation);
+    expect(eventCard!.annotation).toEqual(annotation);
   });
 });

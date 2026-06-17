@@ -9,6 +9,7 @@ export function generateProvenance(
     name: modelData.name.jobTitle(),
     version: modelData.version(),
     url: modelData.internet.url(),
+    // @ts-expect-error: strict mode fix
     description: modelData.description(),
     scoreMinimum: modelData.datatype.number(),
     scoreMaximum: modelData.datatype.number(),

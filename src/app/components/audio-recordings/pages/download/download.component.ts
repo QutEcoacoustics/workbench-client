@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from "@angular/core";
+﻿import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
@@ -56,7 +56,7 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly recordingsApi = inject(AudioRecordingsService);
 
-  @ViewChild(NgForm) public form: NgForm;
+  @ViewChild(NgForm) public form!: NgForm;
 
   public filters$: BehaviorSubject<Filters<AudioRecording>> =
     new BehaviorSubject({});
@@ -70,9 +70,9 @@ class DownloadAudioRecordingsComponent extends PageComponent implements OnInit {
 
   public contactUs = contactUsMenuItem;
   public href = "";
-  public models: ResolvedModelList;
+  public models!: ResolvedModelList;
   public profile = myAccountMenuItem;
-  public hoveredDate: NgbDate;
+  public hoveredDate!: NgbDate;
 
   public errors: {
     todBoundaryError?: boolean;

@@ -1,4 +1,4 @@
-import { AsyncPipe } from "@angular/common";
+﻿import { AsyncPipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -23,8 +23,8 @@ export class EventModalComponent implements ModalComponent {
 
   // TODO: Migrate these to input signals once the ModalComponent interface
   // supports signals.
-  @Input() public modal: NgbActiveModal;
-  @Input() public event: AudioEvent;
+  @Input() public modal!: NgbActiveModal;
+  @Input() public event!: AudioEvent;
 
   protected readonly annotation = computed(() => {
     return this.annotationService.show(this.event, []);

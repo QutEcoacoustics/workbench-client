@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -45,10 +45,10 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
   imports: [UrlDirective, NgTemplateOutlet, IsUnresolvedPipe]
 })
 export class ModelLinkComponent implements OnChanges {
-  @Input() public model: AbstractModel;
+  @Input() public model!: AbstractModel;
 
-  public isGhostUser: boolean;
-  public hasViewUrl: boolean;
+  public isGhostUser!: boolean;
+  public hasViewUrl!: boolean;
 
   public ngOnChanges(): void {
     this.isGhostUser = (this.model as User).isGhost;

@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { StatisticGroupComponent } from "./group.component";
@@ -38,5 +38,5 @@ export interface Statistic {
     imports: [StatisticGroupComponent]
 })
 export class StatisticsComponent {
-  @Input() public statistics: Statistic[][];
+  @Input() public statistics!: Statistic[][];
 }

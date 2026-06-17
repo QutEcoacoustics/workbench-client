@@ -18,10 +18,10 @@ export function generateAnnotation(
     audioRecordingId: audioRecording.id,
     startTimeSeconds: modelData.datatype.number({
       min: 0,
-      max: audioRecording.durationSeconds - 10,
+      max: audioRecording.durationSeconds! - 10,
     }),
     endTimeSeconds: modelData.datatype.number({
-      min: audioRecording.durationSeconds - 10,
+      min: audioRecording.durationSeconds! - 10,
       max: audioRecording.durationSeconds,
     }),
   });

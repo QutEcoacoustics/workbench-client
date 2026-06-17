@@ -55,18 +55,19 @@ export class ScanningComponent implements OnInit {
   }
 
   public get newFileProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsNew);
+    return this.stages.calculateProgress(this.report.itemsNew!);
   }
 
   public get metadataProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+    return this.stages.calculateProgress(this.report.itemsMetadataGathered!);
   }
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   private get report(): HarvestReport {
-    return this.stages.harvest.report;
+    // @ts-expect-error: strict mode fix
+    return this.stages.harvest.report!;
   }
 }

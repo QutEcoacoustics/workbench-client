@@ -1,4 +1,4 @@
-import { Param, Description } from "@interfaces/apiInterfaces";
+﻿import { Param, Description } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 
@@ -28,17 +28,17 @@ export class DataRequest
 {
   public readonly kind = "Data Request";
   @bawPersistAttr()
-  public readonly name: string;
+  public readonly name!: string;
   @bawPersistAttr()
-  public readonly email: string;
+  public readonly email!: string;
   @bawPersistAttr()
-  public readonly group: string;
+  public readonly group!: string;
   @bawPersistAttr()
-  public readonly groupType: DataRequestGroupType;
+  public readonly groupType!: DataRequestGroupType;
   @bawPersistAttr()
-  public readonly content: string;
+  public readonly content!: string;
   @bawPersistAttr()
-  public readonly recaptchaToken: string;
+  public readonly recaptchaToken!: string;
 
   public getBody(token: string): URLSearchParams {
     const body = new URLSearchParams();

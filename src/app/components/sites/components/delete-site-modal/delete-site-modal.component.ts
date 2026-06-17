@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+﻿import { Component } from "@angular/core";
 import { contactUsMenuItem } from "@components/about/about.menus";
 import { StrongRoute } from "@interfaces/strongRoute";
 import { DeleteModalComponent } from "@shared/delete-modal/delete-modal.component";
@@ -46,6 +46,6 @@ export class DeleteSiteModalComponent extends DeleteModalComponent {
     super();
   }
 
-  public isPoint: boolean;
+  public isPoint!: boolean;
   protected contactUsRoute: StrongRoute = contactUsMenuItem.route;
 }

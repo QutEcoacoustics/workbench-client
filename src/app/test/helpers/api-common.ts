@@ -343,7 +343,7 @@ export function assertCms<Component>(
 
     it("should load plaintext cms", async () => {
       spectator.detectChanges();
-      expect(getCms().page).toBe(endpoint);
+      expect(getCms()!.page).toBe(endpoint);
     });
   });
 }

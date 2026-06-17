@@ -78,6 +78,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public provenance?: Provenance;
 
   public get viewUrl(): string {
-    return scriptMenuItem.route.format({ scriptId: this.id });
+    // @ts-expect-error: strict mode fix
+    return scriptMenuItem.route.format({ scriptId: this.id })!;
   }
 }

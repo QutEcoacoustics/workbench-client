@@ -40,6 +40,7 @@ describe("hasResolvedSuccessfully", () => {
   });
 
   it("should return true if undefined model (assumes model is optional)", () => {
+    // @ts-expect-error: strict mode fix
     expect(hasResolvedSuccessfully({ model0: undefined })).toBeTrue();
   });
 });

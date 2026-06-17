@@ -231,10 +231,10 @@
   ></baw-harvest-upload-url>
 
   <div class="col-md">
-    <p><b>Uploaded Files:</b> {{ harvest.report.itemsTotal | number }}</p>
+    <p><b>Uploaded Files:</b> {{ harvest.report?.itemsTotal | number }}</p>
     <p>
-      <b>Uploaded Bytes:</b> {{ harvest.report.itemsSizeBytes | number }} ({{
-        harvest.report.itemsSize
+      <b>Uploaded Bytes:</b> {{ harvest.report?.itemsSizeBytes | number }} ({{
+        harvest.report?.itemsSize
       }})
     </p>
   </div>

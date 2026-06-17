@@ -72,6 +72,7 @@ describe("AdminTagGroupsEditComponent", () => {
     });
 
     it("should handle tag group error", () => {
+      // @ts-expect-error: strict mode fix
       configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
@@ -87,6 +88,7 @@ describe("AdminTagGroupsEditComponent", () => {
       it("should make the correct api calls when the deleteModel() method is called", () => {
         configureTestingModule(defaultTagGroup);
         component.model = defaultTagGroup;
+        // @ts-expect-error: strict mode fix
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();
@@ -97,6 +99,7 @@ describe("AdminTagGroupsEditComponent", () => {
         const expectedRoute = "/admin/tag_groups";
         configureTestingModule(defaultTagGroup);
         component.model = defaultTagGroup;
+        // @ts-expect-error: strict mode fix
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();

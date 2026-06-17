@@ -51,6 +51,7 @@ export class SitesWithoutTimezonesComponent {
     site?: Site,
     regionSites?: Site[],
     projectSites?: Site[]
+  // @ts-expect-error: strict mode fix
   ): Site[] {
     if (site) {
       return site.timezoneInformation ? [] : [site];

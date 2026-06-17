@@ -48,6 +48,7 @@ describe("ConfirmationModalComponent", () => {
   });
 
   it("should invoke the success callback when the delete button is clicked", () => {
+    // @ts-expect-error: strict mode fix
     spyOn(spectator.component, "successCallback").and.stub();
     spectator.click(getDeleteButton());
     expect(spectator.component.successCallback).toHaveBeenCalledTimes(1);

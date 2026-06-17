@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from "@angular/core";
+﻿import { Component, Input, ViewEncapsulation } from "@angular/core";
 
 @Component({
   selector: "baw-progress",
@@ -26,5 +26,5 @@ import { Component, Input, ViewEncapsulation } from "@angular/core";
   encapsulation: ViewEncapsulation.None
 })
 export class ProgressComponent {
-  @Input() public showZero: boolean;
+  @Input() public showZero!: boolean;
 }

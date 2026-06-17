@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { audioRecordingMenuItems } from "@components/audio-recordings/audio-recording.menus";
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { Harvest, HarvestMapping, IHarvestMapping } from "@models/Harvest";
@@ -39,10 +39,10 @@ export class StreamUploadingComponent implements OnInit {
 
   public active = 1;
   public audioRecordings = audioRecordingMenuItems.list.project;
-  public mappings: HarvestMapping[];
+  public mappings!: HarvestMapping[];
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   public get project(): Project {
@@ -58,11 +58,13 @@ export class StreamUploadingComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.mappings = this.stages.harvest.mappings;
+    // @ts-expect-error: strict mode fix
+    this.mappings = this.stages.harvest.mappings!;
     this.stages.startPolling(5000);
   }
 
   public getMappingUploadUrl(mapping: IHarvestMapping) {
+    // @ts-expect-error: strict mode fix
     return this.stages.harvest.uploadUrlWithAuth + "/" + mapping.path;
   }
 

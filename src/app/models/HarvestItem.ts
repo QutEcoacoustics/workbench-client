@@ -1,4 +1,4 @@
-import {
+﻿import {
   ACCOUNT,
   AUDIO_RECORDING,
   SHALLOW_HARVEST,
@@ -122,16 +122,16 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
 
   // Associations
   @hasOne(SHALLOW_HARVEST, "harvestId")
-  public harvest: Harvest;
+  public harvest!: Harvest;
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
-  public audioRecording: AudioRecording;
+  public audioRecording!: AudioRecording;
   @hasOne(ACCOUNT, "uploaderId")
   public uploader?: User;
 
   public constructor(data: IHarvestItem, injector?: AssociationInjector) {
     super(data, injector);
 
-    this.report = new HarvestItemReport(data.report, injector);
+    this.report = new HarvestItemReport(data.report!, injector);
     if (data.validations) {
       this.validations = (data.validations as IHarvestItemValidation[])?.map(
         (validation) => new HarvestItemValidation(validation, injector)
@@ -144,14 +144,17 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   }
 
   public get hasItemsInvalidFixable(): boolean {
+    // @ts-expect-error: strict mode fix
     return this.report.itemsInvalidFixable > 0;
   }
 
   public get hasItemsInvalidNotFixable(): boolean {
+    // @ts-expect-error: strict mode fix
     return this.report.itemsInvalidNotFixable > 0;
   }
 
   public get hasItemsErrored(): boolean {
+    // @ts-expect-error: strict mode fix
     return this.report.itemsErrored > 0;
   }
 

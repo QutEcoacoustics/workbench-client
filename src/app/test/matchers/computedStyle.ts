@@ -34,7 +34,7 @@ function validateStyles(
    */
   const failures = [];
   for (const [key, value] of Object.entries(expected)) {
-    const computedValue = computedStyle[key];
+    const computedValue = computedStyle[key as any];
     const result = callback(key, computedValue, value as StyleValue);
     if (!result.pass) {
       failures.push(result.message);

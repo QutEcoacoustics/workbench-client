@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   accountResolvers,
@@ -53,8 +53,8 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
   protected readonly router: Router;
 
   public fields = schema.fields;
-  public title: string;
-  public originalModel: User;
+  public title!: string;
+  public originalModel!: User;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -63,7 +63,7 @@ class TheirEditComponent extends FormTemplate<User> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[accountKey] as User,
-      successMsg: (model) => defaultSuccessMsg("updated", model.userName),
+      successMsg: (model) => defaultSuccessMsg("updated", model.userName!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

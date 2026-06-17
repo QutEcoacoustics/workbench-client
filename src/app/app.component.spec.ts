@@ -57,6 +57,7 @@ describe("AppComponent", () => {
 
   function setPageInfo(pageInfo: IPageInfo) {
     const menuService = spec.inject(MenuService);
+    // @ts-expect-error: strict mode fix
     (menuService as Writeable<MenuService>).isFullscreen = pageInfo.fullscreen;
     eventSubject.next(pageInfo);
     spec.detectChanges();

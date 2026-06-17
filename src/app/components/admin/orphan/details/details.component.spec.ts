@@ -61,6 +61,7 @@ describe("AdminOrphanComponent", () => {
       [2, new Project({ id: 2, siteIds: [1], name: "custom project" })],
       [3, new Project({ id: 3, siteIds: [1], name: "custom project" })],
     ]);
+    // @ts-expect-error: strict mode fix
     projectsApi.show.and.callFake((id: Id) =>
       of(mockProjectApiResponses.get(id))
     );
@@ -98,6 +99,7 @@ describe("AdminOrphanComponent", () => {
   });
 
   it("should handle error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -113,6 +115,7 @@ describe("AdminOrphanComponent", () => {
       fixture.detectChanges();
       await promise;
       fixture.detectChanges();
+      // @ts-expect-error: strict mode fix
       this.fixture = fixture;
     });
 

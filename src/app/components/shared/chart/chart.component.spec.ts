@@ -67,14 +67,16 @@ describe("ChartComponent", () => {
   ];
 
   const chartElement = (): HTMLDivElement =>
+    // @ts-expect-error: strict mode fix
     spec.query<HTMLDivElement>(".chartContainer");
   const chartSvg = (): SVGElement =>
+    // @ts-expect-error: strict mode fix
     chartElement().querySelector<SVGElement>("svg");
 
   beforeEach(fakeAsync(() => setup(validSpec, validData)));
 
   afterEach(() => {
-    ChartComponent.resizeObserver.disconnect();
+    ChartComponent.resizeObserver!.disconnect();
 
     // if we don't explicitly destroy the test bed after tests, the resize observer will continue to observe the component
     // this will cause all tests to fail if one test fails that depends on the resize observer

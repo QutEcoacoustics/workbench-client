@@ -1,6 +1,6 @@
 import { defaultApiPageSize } from "@baw-api/baw-api.service";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
 import { Bookmark } from "@models/Bookmark";
 import { User } from "@models/User";
@@ -73,10 +73,12 @@ describe("MyBookmarksComponent", () => {
     setup(defaultUser);
     interceptRequest([]);
     spec.detectChanges();
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
@@ -94,6 +96,7 @@ describe("MyBookmarksComponent", () => {
         interceptRequest([defaultBookmark]);
         spec.detectChanges();
 
+        // @ts-expect-error: strict mode fix
         expect(getCells()[0]).toHaveText(defaultBookmark.name);
       });
 
@@ -112,6 +115,7 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
+      // @ts-expect-error: strict mode fix
       expect(getCells()[1]).toHaveText(defaultBookmark.category);
     });
 
@@ -120,8 +124,9 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
-      expect(getCells()[2].querySelector("span").innerHTML).toContain(
-        defaultBookmark.descriptionHtmlTagline
+      expect(getCells()![2]!.querySelector("span")!.innerHTML).toContain(
+        // @ts-expect-error: strict mode fix
+        defaultBookmark.descriptionHtmlTagline,
       );
     });
   });

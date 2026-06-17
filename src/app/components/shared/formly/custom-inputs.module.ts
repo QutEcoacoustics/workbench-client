@@ -34,22 +34,22 @@ export const formlyConfig = {
     {
       name: "minLength",
       message: (_, field) =>
-        `Input should have at least ${field.props.minLength} characters`,
+        `Input should have at least ${field.props!.minLength} characters`,
     },
     {
       name: "maxLength",
       message: (_, field) =>
-        `This value should be less than ${field.props.maxLength} characters`,
+        `This value should be less than ${field.props!.maxLength} characters`,
     },
     {
       name: "min",
       message: (_, field) =>
-        `This value should be more than ${field.props.min}`,
+        `This value should be more than ${field.props!.min}`,
     },
     {
       name: "max",
       message: (_, field) =>
-        `This value should be less than ${field.props.max}`,
+        `This value should be less than ${field.props!.max}`,
     },
   ],
 } as const satisfies ConfigOption;

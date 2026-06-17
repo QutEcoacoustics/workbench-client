@@ -2,6 +2,7 @@ import { AccountsService } from "@baw-api/account/accounts.service";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { ShallowSitesService } from "@baw-api/site/sites.service";
 import { TagsService } from "@baw-api/tag/tags.service";
 import { dataRequestMenuItem } from "@components/data-request/data-request.menus";
@@ -21,6 +22,8 @@ import {
   SpectatorRouting,
   SpyObject,
 } from "@ngneat/spectator";
+import { ToastService } from "@services/toasts/toasts.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { ItemsComponent } from "@shared/items/items/items.component";
 import { generateAudioEvent } from "@test/fakes/AudioEvent";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -32,11 +35,8 @@ import { generateUser } from "@test/fakes/User";
 import { modelData } from "@test/helpers/faker";
 import { nStepObservable } from "@test/helpers/general";
 import { assertErrorHandler } from "@test/helpers/html";
-import { ToastService } from "@services/toasts/toasts.service";
-import { of, Subject } from "rxjs";
 import { assertPageInfo } from "@test/helpers/pageRoute";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { of, Subject } from "rxjs";
 import { MyProfileComponent } from "./my-profile.component";
 
 describe("MyProfileComponent", () => {
@@ -80,7 +80,7 @@ describe("MyProfileComponent", () => {
   function interceptApiRequest<Model extends AbstractModel, Service>(
     api: SpyObject<Service>,
     filter: keyof Service,
-    response: Intercept<Model> = []
+    response: Intercept<Model> = [],
   ) {
     (response as Model[])?.forEach?.((model) => {
       if (!model.getMetadata()) {
@@ -93,7 +93,8 @@ describe("MyProfileComponent", () => {
     return nStepObservable(
       subject,
       () => response,
-      isInstantiated(response["status"])
+      // @ts-expect-error: strict mode fix
+      isInstantiated(response["status"]),
     );
   }
 
@@ -108,7 +109,7 @@ describe("MyProfileComponent", () => {
       interceptApiRequest(
         audioEventsApi,
         "filterByCreator",
-        models.annotations
+        models.annotations,
       ),
       interceptApiRequest(bookmarksApi, "filterByCreator", models.bookmarks),
       interceptApiRequest(projectsApi, "filterByCreator", models.projects),
@@ -124,7 +125,7 @@ describe("MyProfileComponent", () => {
   assertPageInfo<User>(MyProfileComponent, "test user's Profile", {
     account: {
       model: new User(generateUser({ userName: "test user" })),
-    }
+    },
   });
 
   it("should create", () => {
@@ -135,6 +136,7 @@ describe("MyProfileComponent", () => {
   });
 
   it("should handle user error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     interceptApiRequests({});
     spec.detectChanges();
@@ -146,6 +148,7 @@ describe("MyProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -154,9 +157,10 @@ describe("MyProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
-    expect(spec.query("img")).toHaveImage(defaultUser.imageUrls[0].url, {
+    expect(spec.query("img")).toHaveImage(defaultUser.imageUrls![0].url, {
       alt: `${defaultUser.userName} profile image`,
     });
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -165,6 +169,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       accountsApi.destroy.and.callFake(() => of(null));
 
       spec.component.cancelAccount();
@@ -176,11 +181,14 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       const navigateSpy = spyOn(spec.component.router, "navigateByUrl");
+      // @ts-expect-error: strict mode fix
       accountsApi.destroy.and.callFake(() => of(null));
 
       spec.component.cancelAccount();
 
+      // @ts-expect-error: strict mode fix
       expect(navigateSpy).toHaveBeenCalledWith("/");
     });
   });
@@ -201,8 +209,9 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).strongRoute).toEqual(
-        dataRequestMenuItem.route
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(StrongRouteDirective).strongRoute).toEqual(
+        dataRequestMenuItem.route,
       );
     });
 
@@ -210,7 +219,8 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(spec.query(StrongRouteDirective).queryParams).toEqual({
+      // @ts-expect-error: strict mode fix
+      expect(spec!.query(StrongRouteDirective).queryParams).toEqual({
         userId: defaultUser.id,
       });
     });
@@ -225,10 +235,12 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(getLabel()).toHaveText(defaultUser.lastSeenAt.toRelative());
+      // @ts-expect-error: strict mode fix
+      expect(getLabel()).toHaveText(defaultUser.lastSeenAt!.toRelative());
     });
 
     it("should handle if user has no last seen at date", () => {
+      // @ts-expect-error: strict mode fix
       const user = new User(generateUser({ lastSeenAt: null }));
       setup(user);
       interceptApiRequests({});
@@ -246,7 +258,8 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      expect(getLabel()).toHaveText(defaultUser.createdAt.toRelative());
+      // @ts-expect-error: strict mode fix
+      expect(getLabel()).toHaveText(defaultUser.createdAt!.toRelative());
     });
 
     it("should handle if user has no membership length", () => {
@@ -260,12 +273,24 @@ describe("MyProfileComponent", () => {
 
   xdescribe("authentication token", () => {
     // TODO
-    it("should request auth token on load", () => {});
-    it("should show loading animation while auth token loads", () => {});
-    it("should disable copy button while auth token loads", () => {});
-    it("should disable view token button while auth token loads", () => {});
-    it("should show … instead of auth token by default", () => {});
-    it("should show auth token when requested", () => {});
+    it("should request auth token on load", () => {
+      pending();
+    });
+    it("should show loading animation while auth token loads", () => {
+      pending();
+    });
+    it("should disable copy button while auth token loads", () => {
+      pending();
+    });
+    it("should disable view token button while auth token loads", () => {
+      pending();
+    });
+    it("should show … instead of auth token by default", () => {
+      pending();
+    });
+    it("should show auth token when requested", () => {
+      pending();
+    });
   });
 
   describe("statistics", () => {
@@ -319,7 +344,8 @@ describe("MyProfileComponent", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("…");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("…");
         });
 
         it(`should update with number of ${test.suite}`, async () => {
@@ -328,7 +354,8 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe(numModels);
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe(numModels);
         });
 
         it("should update with Unknown on error", async () => {
@@ -339,7 +366,8 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          expect(getStatistics().items.get(position).value).toBe("Unknown");
+          // @ts-expect-error: strict mode fix
+          expect(getStatistics()!.items.get(position).value).toBe("Unknown");
         });
       });
     });
@@ -385,6 +413,7 @@ describe("MyProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(1);
+      // @ts-expect-error: strict mode fix
       expect(tags[0]).toHaveText(defaultTag.text);
     });
 
@@ -410,8 +439,11 @@ describe("MyProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(3);
+      // @ts-expect-error: strict mode fix
       expect(tags[0]).toHaveText(tagModels[0].text);
+      // @ts-expect-error: strict mode fix
       expect(tags[1]).toHaveText(tagModels[1].text);
+      // @ts-expect-error: strict mode fix
       expect(tags[2]).toHaveText(tagModels[2].text);
     });
   });

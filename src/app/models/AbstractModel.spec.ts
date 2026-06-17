@@ -111,9 +111,9 @@ describe("AbstractModel", () => {
     it("should handle multiple on toJSON({create: true}) request", () => {
       class Model extends MockModel {
         @bawPersistAttr({ create: true, supportedFormats: ["json"] })
-        public name: string;
+        public name!: string;
         @bawPersistAttr({ create: true, supportedFormats: ["json"] })
-        public set: Set<number>;
+        public set!: Set<number>;
       }
       const model = new Model(defaultData);
       assertToJsonWithCreate(model, { name: "name", set: [1, 2, 3] });
@@ -122,9 +122,9 @@ describe("AbstractModel", () => {
     it("should handle multiple on toJSON({update: true}) request", () => {
       class Model extends MockModel {
         @bawPersistAttr({ update: true, supportedFormats: ["json"] })
-        public name: string;
+        public name!: string;
         @bawPersistAttr({ update: true, supportedFormats: ["json"] })
-        public set: Set<number>;
+        public set!: Set<number>;
       }
       const model = new Model(defaultData);
       assertToJsonWithUpdate(model, { name: "name", set: [1, 2, 3] });
@@ -450,9 +450,9 @@ describe("AbstractModel", () => {
     it("should handle multiple on toFormData({create: true}) request", () => {
       class Model extends MockModel {
         @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
-        public name: string;
+        public name!: string;
         @bawPersistAttr({ create: true, supportedFormats: ["formData"] })
-        public set: Set<number>;
+        public set!: Set<number>;
       }
       const model = new Model(defaultData);
       assertToFormDataWithCreate(model, { name: "name", set: [1, 2, 3] });
@@ -461,9 +461,9 @@ describe("AbstractModel", () => {
     it("should handle multiple on toFormData({update: true}) request", () => {
       class Model extends MockModel {
         @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
-        public name: string;
+        public name!: string;
         @bawPersistAttr({ update: true, supportedFormats: ["formData"] })
-        public set: Set<number>;
+        public set!: Set<number>;
       }
       const model = new Model(defaultData);
       assertToFormDataWithUpdate(model, { name: "name", set: [1, 2, 3] });
@@ -486,6 +486,7 @@ describe("AbstractModel", () => {
     });
 
     it("should retrieve empty metadata", () => {
+      // @ts-expect-error: strict mode fix
       expect(model.getMetadata()).toBe(undefined);
     });
   });
@@ -496,15 +497,15 @@ describe("AbstractModel", () => {
     beforeEach(() => {
       class Model extends MockModel {
         @bawPersistAttr()
-        public name: string;
+        public name!: string;
         @bawPersistAttr()
-        public age: number;
+        public age!: number;
         @bawPersistAttr({ convertCase: true })
-        public occupation: string;
+        public occupation!: string;
         @bawReadonlyConvertCase()
-        public birthCountry: string;
+        public birthCountry!: string;
 
-        public userDescription: string;
+        public userDescription!: string;
       }
 
       model = new Model({

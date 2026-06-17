@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -44,9 +44,9 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   imports: [NgbTooltip, FaIconComponent],
 })
 export class MenuButtonComponent implements OnInit {
-  @Input() public link: MenuAction | MenuModal;
-  @Input() public tooltip: string;
-  public disabledReason: string;
+  @Input() public link!: MenuAction | MenuModal;
+  @Input() public tooltip!: string;
+  public disabledReason!: string;
 
   public ngOnInit() {
     if (typeof this.link.disabled === "string") {

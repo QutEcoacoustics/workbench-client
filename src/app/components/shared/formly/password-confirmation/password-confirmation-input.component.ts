@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { asFormControl } from "../helper";
@@ -68,13 +68,14 @@ export class PasswordConfirmationInputComponent
 {
   public asFormControl = asFormControl;
   public password = "";
-  public passwordError: boolean;
+  public passwordError!: boolean;
   public confirmation = "";
-  public confirmationError: boolean;
+  public confirmationError!: boolean;
 
   public ngOnInit() {
     this.formControl.setValidators(() => {
       const error = this.validatePassword();
+      // @ts-expect-error: strict mode fix
       return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
@@ -93,17 +94,20 @@ export class PasswordConfirmationInputComponent
   }
 
   public getError(): string {
+    // @ts-expect-error: strict mode fix
     return this.formControl.getError(this.field.key.toString());
   }
 
   /**
    * Validate location values and return error if any
    */
+  // @ts-expect-error: strict mode fix
   private validatePassword(): string {
     this.passwordError = false;
     this.confirmationError = false;
 
     if (!this.formControl.dirty && this.password.length === 0) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 

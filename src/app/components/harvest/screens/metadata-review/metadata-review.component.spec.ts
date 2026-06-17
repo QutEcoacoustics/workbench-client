@@ -1,6 +1,7 @@
 import { DecimalPipe, NgStyle } from "@angular/common";
 import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { SHALLOW_HARVEST } from "@baw-api/ServiceTokens";
+import { IdOr } from "@baw-api/api-common";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { SiteSelectorComponent } from "@components/harvest/components/inputs/site-selector.component";
@@ -14,12 +15,25 @@ import { StatisticsComponent } from "@components/harvest/components/shared/stati
 import { HarvestStagesService } from "@components/harvest/services/harvest-stages.service";
 import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { menuRoute } from "@interfaces/menusInterfaces";
-import { Harvest, HarvestMapping, HarvestStatus } from "@models/Harvest";
+import {
+  Harvest,
+  HarvestMapping,
+  HarvestStatus,
+  IHarvestMapping,
+} from "@models/Harvest";
 import { HarvestItem } from "@models/HarvestItem";
 import { AssociationInjector } from "@models/ImplementsInjector";
 import { Project } from "@models/Project";
-import { NgbModal, NgbModalConfig, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { createRoutingFactory, SpectatorRouting, SpyObject, } from "@ngneat/spectator";
+import {
+  NgbModal,
+  NgbModalConfig,
+  NgbTooltip,
+} from "@ng-bootstrap/ng-bootstrap";
+import {
+  createRoutingFactory,
+  SpectatorRouting,
+  SpyObject,
+} from "@ngneat/spectator";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -48,9 +62,13 @@ describe("MetadataReviewComponent", () => {
     providers: [
       provideMockBawApi(),
       MockProvider(HarvestStagesService, {
+        // @ts-expect-error: strict mode fix
         project: defaultProject,
+        // @ts-expect-error: strict mode fix
         harvest: defaultHarvest,
-        transition: (_stage: HarvestStatus) => {}
+        transition: (_stage: HarvestStatus) => {
+          /* noop */
+        },
       }),
     ],
     imports: [
@@ -81,10 +99,15 @@ describe("MetadataReviewComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
+    // @ts-expect-error: strict mode fix
     harvestService.updateMappings.and.returnValue(of(null));
 
-    spyOnProperty(spec.component, "project", "get").and.callFake(() => defaultProject);
-    spyOnProperty(spec.component, "harvest", "get").and.callFake(() => defaultHarvest);
+    spyOnProperty(spec.component, "project", "get").and.callFake(
+      () => defaultProject,
+    );
+    spyOnProperty(spec.component, "harvest", "get").and.callFake(
+      () => defaultHarvest,
+    );
 
     // inject the NgbModal service so that we can
     // dismiss all modals at the end of every test
@@ -95,7 +118,9 @@ describe("MetadataReviewComponent", () => {
     modalConfigService = spec.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
-    stages = spec.inject<SpyObject<HarvestStagesService>>(HarvestStagesService as any);
+    stages = spec.inject<SpyObject<HarvestStagesService>>(
+      HarvestStagesService as any,
+    );
     stages.transition = jasmine.createSpy("transition") as any;
 
     return stages;
@@ -105,13 +130,18 @@ describe("MetadataReviewComponent", () => {
   // we need to use the { root: true } option so that the query is not scoped
   // to the component's template, but to the entire document
   const getModalNextButton = () =>
-    spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", { root: true });
+    spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #next-btn", {
+      root: true,
+    });
   const getModalCancelButton = () =>
-    spec.query<HTMLButtonElement>("baw-harvest-confirmation-modal #cancel-btn", { root: true });
+    spec.query<HTMLButtonElement>(
+      "baw-harvest-confirmation-modal #cancel-btn",
+      { root: true },
+    );
 
   function getAbortButton(): HTMLButtonElement {
     return spec.debugElement.query(
-      (el) => el.nativeElement.innerText === "Abort"
+      (el) => el.nativeElement.innerText === "Abort",
     ).nativeElement as HTMLButtonElement;
   }
 
@@ -122,13 +152,15 @@ describe("MetadataReviewComponent", () => {
   }
 
   const folderStructureFactory = (folders: string[] = []): HarvestItem[] =>
-    folders.map((folder) =>
-      new HarvestItem(generateHarvestItem({ id: null, path: folder }))
+    folders.map(
+      (folder) =>
+        // @ts-expect-error: strict mode fix
+        new HarvestItem(generateHarvestItem({ id: null, path: folder })),
     );
 
   function clickFolder(folderName: string): void {
     const folderItem = spec.debugElement.query(
-      (el) => el.nativeElement.innerText === folderName
+      (el) => el.nativeElement.innerText === folderName,
     ).nativeElement as HTMLButtonElement;
 
     folderItem.click();
@@ -136,13 +168,19 @@ describe("MetadataReviewComponent", () => {
   }
 
   function clickEditMappingButton(index: number): void {
-    const mappingEditButton = spec.queryAll<HTMLButtonElement>(".btn-outline-primary", { root: true })[index];
+    const mappingEditButton = spec.queryAll<HTMLButtonElement>(
+      ".btn-outline-primary",
+      { root: true },
+    )[index];
     mappingEditButton.click();
     updateComponent();
   }
 
   function toggleHarvestMappingRecursive(index: number): void {
-    const mappingRecursiveCheckbox = spec.queryAll<HTMLInputElement>("#undefined-checkbox", { root: true })[index];
+    const mappingRecursiveCheckbox = spec.queryAll<HTMLInputElement>(
+      "#undefined-checkbox",
+      { root: true },
+    )[index];
     mappingRecursiveCheckbox.click();
     updateComponent();
   }
@@ -170,7 +208,7 @@ describe("MetadataReviewComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalCancelButton().click();
+    getModalCancelButton()!.click();
     tick();
 
     expect(stages.transition).not.toHaveBeenCalled();
@@ -182,7 +220,7 @@ describe("MetadataReviewComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalNextButton().click();
+    getModalNextButton()!.click();
     tick();
 
     expect(stages.transition).toHaveBeenCalledWith("complete");
@@ -193,44 +231,61 @@ describe("MetadataReviewComponent", () => {
 
     defaultHarvest = new Harvest({
       ...defaultHarvest,
-      mappings: []
+      mappings: [],
     });
 
     // when a folder item is clicked, the getHarvestItems() method returns the sub folders & items included in the folder
     // therefore, by mocking getHarvestItems() and resolving to custom files, we can control the sub-folders & items
     // that will be displayed when a folder in the directory tree is clicked
-    const rootFolderStructure: HarvestItem[] = folderStructureFactory(["A", "B"]);
-    const getHarvestItemsSpy = spyOn(stages, "getHarvestItems").and.resolveTo(rootFolderStructure);
+    const rootFolderStructure: HarvestItem[] = folderStructureFactory([
+      "A",
+      "B",
+    ]);
+    const getHarvestItemsSpy = spyOn(stages, "getHarvestItems").and.resolveTo(
+      rootFolderStructure,
+    );
 
     updateComponent();
 
     // click on folder A in the directory tree
-    const folderAStructure: HarvestItem[] = folderStructureFactory(["A/aa", "A/ab"]);
+    const folderAStructure: HarvestItem[] = folderStructureFactory([
+      "A/aa",
+      "A/ab",
+    ]);
     getHarvestItemsSpy.and.callThrough();
     getHarvestItemsSpy.and.resolveTo(folderAStructure);
     clickFolder("A");
 
     // assert that the mappings for the model are updated correctly by using a mocked updateMappings() method
     // which asserts if it was called with the correct parameters
-    harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
-      const expectedMappings = [
-        new HarvestMapping({
-          path: "A/aa",
-          recursive: false,
-          siteId: null,
-          utcOffset: null
-        })
-      ];
+    harvestService.updateMappings.and.callFake(
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
+        const expectedMappings = [
+          new HarvestMapping({
+            path: "A/aa",
+            recursive: false,
+            // @ts-expect-error: strict mode fix
+            siteId: null,
+            // @ts-expect-error: strict mode fix
+            utcOffset: null,
+          }),
+        ];
 
-      expect(model).toEqual(spec.component.harvest);
+        expect(model).toEqual(spec.component.harvest);
 
-      // By default mappings will have an injector service, therefore, we cannot directly compare mappings to expectedMappings
-      // through expect(mappings).toEqual(expectedMappings). Therefore, by converting the objects to strings,
-      // we can compare these two objects values without the injector class, but still retain verbose failed exceptions & output
-      expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+        // By default mappings will have an injector service, therefore, we cannot directly compare mappings to expectedMappings
+        // through expect(mappings).toEqual(expectedMappings). Therefore, by converting the objects to strings,
+        // we can compare these two objects values without the injector class, but still retain verbose failed exceptions & output
+        expect(JSON.stringify(mappings)).toEqual(
+          JSON.stringify(expectedMappings),
+        );
 
-      return of(null);
-    });
+        return of(defaultHarvest);
+      },
+    );
 
     // modifying the mappings for path "A/aa" will trigger the mocked method above to asset if the correct parameters are called
     clickEditMappingButton(2);
@@ -243,33 +298,47 @@ describe("MetadataReviewComponent", () => {
     clickFolder("A");
 
     // open folder B in the directory tree
-    const folderBStructure: HarvestItem[] = folderStructureFactory(["B/ba", "B/bb"]);
+    const folderBStructure: HarvestItem[] = folderStructureFactory([
+      "B/ba",
+      "B/bb",
+    ]);
     getHarvestItemsSpy.and.callThrough();
     getHarvestItemsSpy.and.resolveTo(folderBStructure);
     clickFolder("B");
 
     // assert mappings for path "A/aa" have been retained once it is no longer visible in the DOM and mappings have been applied to "B/bb"
-    harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
-      const expectedMappings = [
-        new HarvestMapping({
-          path: "A/aa",
-          recursive: false,
-          siteId: null,
-          utcOffset: null
-        }),
-        new HarvestMapping({
-          path: "B/bb",
-          recursive: false,
-          siteId: null,
-          utcOffset: null
-        })
-      ];
+    harvestService.updateMappings.and.callFake(
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
+        const expectedMappings = [
+          new HarvestMapping({
+            path: "A/aa",
+            recursive: false,
+            // @ts-expect-error: strict mode fix
+            siteId: null,
+            // @ts-expect-error: strict mode fix
+            utcOffset: null,
+          }),
+          new HarvestMapping({
+            path: "B/bb",
+            recursive: false,
+            // @ts-expect-error: strict mode fix
+            siteId: null,
+            // @ts-expect-error: strict mode fix
+            utcOffset: null,
+          }),
+        ];
 
-      expect(model).toEqual(spec.component.harvest);
-      expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
+        expect(model).toEqual(spec.component.harvest);
+        expect(JSON.stringify(mappings)).toEqual(
+          JSON.stringify(expectedMappings),
+        );
 
-      return of(null);
-    });
+        return of(defaultHarvest);
+      },
+    );
 
     clickEditMappingButton(4);
     toggleHarvestMappingRecursive(0);
@@ -280,36 +349,54 @@ describe("MetadataReviewComponent", () => {
     setup();
 
     const mapping: HarvestMapping[] = [
-      new HarvestMapping({
-        path: "A",
-        recursive: true,
-        siteId: 543,
-        utcOffset: "+11:00"
-      }, injector),
-      new HarvestMapping({
-        path: "B",
-        recursive: true,
-        siteId: null,
-        utcOffset: null
-      }, injector),
-      new HarvestMapping({
-        path: "C",
-        recursive: true,
-        siteId: 1234,
-        utcOffset: "+10:00"
-      }, injector),
-      new HarvestMapping({
-        path: "C/ca",
-        recursive: false,
-        siteId: null,
-        utcOffset: "-08:00"
-      }, injector)
+      new HarvestMapping(
+        {
+          path: "A",
+          recursive: true,
+          siteId: 543,
+          utcOffset: "+11:00",
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "B",
+          recursive: true,
+          // @ts-expect-error: strict mode fix
+          siteId: null,
+          // @ts-expect-error: strict mode fix
+          utcOffset: null,
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "C",
+          recursive: true,
+          siteId: 1234,
+          utcOffset: "+10:00",
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "C/ca",
+          recursive: false,
+          // @ts-expect-error: strict mode fix
+          siteId: null,
+          utcOffset: "-08:00",
+        },
+        injector,
+      ),
     ];
 
-    defaultHarvest = new Harvest({
-      ...defaultHarvest,
-      mappings: mapping
-    }, injector);
+    defaultHarvest = new Harvest(
+      {
+        ...defaultHarvest,
+        mappings: mapping,
+      },
+      injector,
+    );
 
     const rootFolderStructure: HarvestItem[] = folderStructureFactory(["B"]);
     spyOn(stages, "getHarvestItems").and.resolveTo(rootFolderStructure);
@@ -317,45 +404,72 @@ describe("MetadataReviewComponent", () => {
     updateComponent();
 
     clickEditMappingButton(1);
-    const utcInputDropdown: HTMLSelectElement = spec.query<HTMLSelectElement>("select", { root: true });
+    // @ts-expect-error: strict mode fix
+    const utcInputDropdown: HTMLSelectElement = spec.query<HTMLSelectElement>(
+      "select",
+      { root: true },
+    );
     utcInputDropdown.value = utcInputDropdown.options[2].value;
     utcInputDropdown.dispatchEvent(new Event("change"));
     updateComponent();
 
-    const expectedMappings: HarvestMapping[]  = [
-      new HarvestMapping({
-        path: "A",
-        recursive: true,
-        siteId: 543,
-        utcOffset: "+11:00"
-      }, injector),
-      new HarvestMapping({
-        path: "B",
-        recursive: true,
-        siteId: null,
-        utcOffset: "-11:00"
-      }, injector),
-      new HarvestMapping({
-        path: "C",
-        recursive: true,
-        siteId: 1234,
-        utcOffset: "+10:00"
-      }, injector),
-      new HarvestMapping({
-        path: "C/ca",
-        recursive: false,
-        siteId: null,
-        utcOffset: "-08:00"
-      }, injector),
+    const expectedMappings: HarvestMapping[] = [
+      new HarvestMapping(
+        {
+          path: "A",
+          recursive: true,
+          siteId: 543,
+          utcOffset: "+11:00",
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "B",
+          recursive: true,
+          // @ts-expect-error: strict mode fix
+          siteId: null,
+          utcOffset: "-11:00",
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "C",
+          recursive: true,
+          siteId: 1234,
+          utcOffset: "+10:00",
+        },
+        injector,
+      ),
+      new HarvestMapping(
+        {
+          path: "C/ca",
+          recursive: false,
+          // @ts-expect-error: strict mode fix
+          siteId: null,
+          utcOffset: "-08:00",
+        },
+        injector,
+      ),
     ];
 
-    harvestService.updateMappings.and.callFake((model: Harvest, mappings: HarvestMapping[]) => {
-      expect(model).toEqual(spec.component.harvest);
-      expect(JSON.stringify(mappings)).toEqual(JSON.stringify(expectedMappings));
-      return of(null);
-    });
+    harvestService.updateMappings.and.callFake(
+      (
+        model: IdOr<Harvest>,
+        mappings: (HarvestMapping | IHarvestMapping)[],
+      ) => {
+        expect(model).toEqual(spec.component.harvest);
+        expect(JSON.stringify(mappings)).toEqual(
+          JSON.stringify(expectedMappings),
+        );
+        return of(defaultHarvest);
+      },
+    );
 
     expect(harvestService.updateMappings).toHaveBeenCalledTimes(1);
-    expect(JSON.stringify(spec.component.harvest.mappings)).toEqual(JSON.stringify(expectedMappings));
+    expect(JSON.stringify(spec.component.harvest.mappings)).toEqual(
+      JSON.stringify(expectedMappings),
+    );
   }));
 });

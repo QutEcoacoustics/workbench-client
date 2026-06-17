@@ -26,6 +26,7 @@ export function generateApiErrorDetails(
 
   return {
     status: custom?.status ?? status,
+    // @ts-expect-error: strict mode fix
     message: custom?.message ?? message ?? (httpCodes[status] as string),
     info: custom?.info ?? undefined,
   };

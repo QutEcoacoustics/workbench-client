@@ -1,3 +1,7 @@
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { IConfiguration } from "@helpers/app-initializer/app-initializer";
 import {
@@ -8,7 +12,6 @@ import {
 } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
 import { environment } from "src/environments/environment";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ConfigService } from "./config.service";
 import { API_CONFIG, API_ROOT } from "./config.tokens";
 import { testApiConfig } from "./configMock.service";
@@ -28,7 +31,7 @@ describe("ConfigService", () => {
 
   async function setup(
     apiRoot: string = testApiConfig.endpoints.apiRoot,
-    apiConfig: Partial<IConfiguration> = testApiConfig
+    apiConfig: Partial<IConfiguration> = testApiConfig,
   ): Promise<void> {
     spec = createService({
       providers: [{ provide: API_ROOT, useValue: apiRoot }],
@@ -45,7 +48,7 @@ describe("ConfigService", () => {
 
   async function setupWithDefaultConfig(
     apiRoot: string = testApiConfig.endpoints.apiRoot,
-    apiConfig: Partial<IConfiguration> = testApiConfig
+    apiConfig: Partial<IConfiguration> = testApiConfig,
   ): Promise<void> {
     spec = createService({
       providers: [
@@ -71,17 +74,21 @@ describe("ConfigService", () => {
       description: "with default config",
       before: async (
         apiRoot?: string,
-        apiConfig?: Partial<IConfiguration>
+        apiConfig?: Partial<IConfiguration>,
       ): Promise<void> => await setupWithDefaultConfig(apiRoot, apiConfig),
-      after: (): void => {},
+      after: (): void => {
+        /* noop */
+      },
     },
     {
       description: "without default config",
       before: async (
         apiRoot?: string,
-        apiConfig?: Partial<IConfiguration>
+        apiConfig?: Partial<IConfiguration>,
       ): Promise<void> => await setup(apiRoot, apiConfig),
-      after: (): void => {},
+      after: (): void => {
+        /* noop */
+      },
     },
   ].forEach(({ description, before, after }) => {
     describe(description, () => {
@@ -123,7 +130,7 @@ describe("ConfigService", () => {
         expect(toastr.error).toHaveBeenCalledWith(
           "The website is not configured correctly. Try coming back at another time.",
           "Unrecoverable Error",
-          { autoHide: false }
+          { autoHide: false },
         );
       });
     });

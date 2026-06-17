@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   scriptResolvers,
@@ -50,7 +50,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[scriptKey] as Script,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   
@@ -60,7 +60,7 @@ class AdminScriptsEditComponent extends FormTemplate<Script> implements OnInit {
   }
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public ngOnInit() {
     super.ngOnInit();

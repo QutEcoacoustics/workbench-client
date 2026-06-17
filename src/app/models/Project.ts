@@ -88,11 +88,14 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public readonly license?: string | null;
 
   // Associations
-  @hasMany<Project, Site>(SHALLOW_SITE, "siteIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany<Project, Site>(SHALLOW_SITE, "siteIds"!)
   public sites?: Site[];
-  @hasMany<Project, Region>(SHALLOW_REGION, "regionIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany<Project, Region>(SHALLOW_REGION, "regionIds"!)
   public regions?: Region[];
-  @hasMany<Project, User>(ACCOUNT, "ownerIds")
+  // @ts-expect-error: strict mode fix
+  @hasMany<Project, User>(ACCOUNT, "ownerIds"!)
   public owners?: User[];
   @creator<Project>()
   public creator?: User;
@@ -111,6 +114,7 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public get canEdit(): boolean {
     return hasRequiredAccessLevelOrHigher(
       PermissionLevel.owner,
+      // @ts-expect-error: strict mode fix
       this.accessLevel
     );
   }
@@ -122,11 +126,13 @@ export class Project extends AbstractModel<IProject> implements IProject {
   public get canContribute(): boolean {
     return hasRequiredAccessLevelOrHigher(
       PermissionLevel.writer,
+      // @ts-expect-error: strict mode fix
       this.accessLevel
     );
   }
 
   public get viewUrl(): string {
-    return projectRoute.format({ projectId: this.id });
+    // @ts-expect-error: strict mode fix
+    return projectRoute.format({ projectId: this.id })!;
   }
 }

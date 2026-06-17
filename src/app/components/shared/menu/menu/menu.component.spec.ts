@@ -1,6 +1,7 @@
 import { Component, SimpleChange } from "@angular/core";
 import { Data, Params } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { MenuType } from "@helpers/generalTypes";
 import { PageInfo } from "@helpers/page/pageInfo";
@@ -40,7 +41,6 @@ import {
 import { generateUser } from "@test/fakes/User";
 import { OrderedSet } from "immutable";
 import { MockProvider } from "ng-mocks";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { MenuButtonComponent } from "../button/button.component";
 import { MenuLinkComponent } from "../link/link.component";
 import { MenuComponent } from "./menu.component";
@@ -119,7 +119,7 @@ describe("MenuComponent", () => {
     props?: Partial<MenuComponent>,
     data: Data = {},
     params: Params = {},
-    opts?: { isFullscreen?: boolean; localUser?: User }
+    opts?: { isFullscreen?: boolean; localUser?: User },
   ) {
     spec = createComponent({
       detectChanges: false,
@@ -131,6 +131,7 @@ describe("MenuComponent", () => {
           pageInfo: data,
           isFullscreen: opts?.isFullscreen ?? false,
         }),
+        // @ts-expect-error: strict mode fix
         MockProvider(BawSessionService, {
           loggedInUser: opts?.localUser ?? null,
         }),
@@ -150,6 +151,7 @@ describe("MenuComponent", () => {
 
   describe("menu", () => {
     function getTitle(): HTMLHeadingElement {
+      // @ts-expect-error: strict mode fix
       return spec.query("h6");
     }
 
@@ -216,7 +218,7 @@ describe("MenuComponent", () => {
 
     describe("widgets", () => {
       function validateNumWidgets(numWidgets: number) {
-        expect(getWidget().childElementCount).toBe(numWidgets);
+        expect(getWidget()!.childElementCount).toBe(numWidgets);
       }
 
       it("should not create widget when none provided", () => {
@@ -268,7 +270,7 @@ describe("MenuComponent", () => {
           widgets: new SimpleChange(
             OrderedSet([defaultWidget]),
             undefined,
-            false
+            false,
           ),
         });
         spec.detectChanges();
@@ -286,7 +288,7 @@ describe("MenuComponent", () => {
         spec.detectChanges();
 
         const widget = spec.query(MockWidgetComponent);
-        expect(widget.testProperty).toBe("test");
+        expect(widget!.testProperty).toBe("test");
       });
     });
 
@@ -302,14 +304,14 @@ describe("MenuComponent", () => {
               componentInstance: mockComponentInstance,
               dismiss: dismissSpy,
               close: closeSpy,
-            } as any)
+            }) as any,
         );
       }
 
       function assertModalOpen(menuItem: MenuModal) {
         expect(modal.open).toHaveBeenCalledWith(
           menuItem.component,
-          menuItem.modalOpts
+          menuItem.modalOpts,
         );
       }
 
@@ -334,6 +336,7 @@ describe("MenuComponent", () => {
         const link = getMenuModals()[0].link as MenuModal;
         link.action();
 
+        // @ts-expect-error: strict mode fix
         mockComponentInstance.dismissModal("test dismissal");
         expect(dismissSpy).toHaveBeenCalledWith("test dismissal");
       });
@@ -355,28 +358,28 @@ describe("MenuComponent", () => {
     {
       title: "Menu Action",
       baseLink: () => defaultMenuAction,
-      create: (data) => menuAction(data),
+      create: (data: any) => menuAction(data),
       getLink: () => getMenuActions(),
       action: true,
     },
     {
       title: "Menu External Link",
       baseLink: () => defaultMenuLink,
-      create: (data) => menuLink(data),
+      create: (data: any) => menuLink(data),
       getLink: () => getMenuLinks(),
       link: true,
     },
     {
       title: "Menu Internal Link",
       baseLink: () => defaultMenuRoute,
-      create: (data) => menuRoute(data),
+      create: (data: any) => menuRoute(data),
       getLink: () => getMenuRoutes(),
       route: true,
     },
     {
       title: "Menu Modal",
       baseLink: () => defaultMenuModal,
-      create: (data) => menuModal(data),
+      create: (data: any) => menuModal(data),
       getLink: () => getMenuModals(),
       modal: true,
     },
@@ -411,6 +414,7 @@ describe("MenuComponent", () => {
         const link = createLink();
         setup({ menuType: "action", links: OrderedSet([link]) });
         spec.detectChanges();
+        // @ts-expect-error: strict mode fix
         expect(test.getLink()[0].tooltip).toBe(link.tooltip());
       });
 
@@ -422,12 +426,12 @@ describe("MenuComponent", () => {
           { menuType: "action", links: OrderedSet([link]) },
           undefined,
           undefined,
-          { localUser: defaultUser }
+          { localUser: defaultUser },
         );
         spec.detectChanges();
 
         expect(test.getLink()[0].tooltip).toBe(
-          `Custom tooltip for ${defaultUser.userName}`
+          `Custom tooltip for ${defaultUser.userName}`,
         );
       });
 

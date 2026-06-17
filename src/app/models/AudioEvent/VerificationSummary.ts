@@ -1,4 +1,4 @@
-import { Id } from "@interfaces/apiInterfaces";
+﻿import { Id } from "@interfaces/apiInterfaces";
 import { AbstractData } from "@models/AbstractData";
 import { Tag } from "@models/Tag";
 
@@ -22,15 +22,15 @@ export class VerificationSummary
    * This should be equal to the sum of
    * {@linkcode correct} + {@linkcode incorrect} + {@linkcode unsure} + {@linkcode skip}
    */
-  public readonly count: number;
+  public readonly count!: number;
   /** Count of "correct" verifications applied to the tag + audio event */
-  public readonly correct: number;
+  public readonly correct!: number;
   /** Count of "incorrect" verifications applied to the tag + audio event */
-  public readonly incorrect: number;
+  public readonly incorrect!: number;
   /** Count of "unsure" verifications applied to the tag + audio event */
-  public readonly unsure: number;
+  public readonly unsure!: number;
   /** Count of "skip" verifications applied to the tag + audio event */
-  public readonly skip: number;
+  public readonly skip!: number;
 
   /**
    * @description

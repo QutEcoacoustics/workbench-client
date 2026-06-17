@@ -15,7 +15,7 @@ export function provideConfig(): (EnvironmentProviders | Provider)[] {
   return [
     provideAppInitializer(() => {
       const initializerCallback = AppInitializer.initializerFactory(
-        inject(API_CONFIG, { optional: true }),
+        inject(API_CONFIG, { optional: true })!,
         inject(ConfigService),
         inject(HttpBackend),
         inject(IS_SERVER_PLATFORM),

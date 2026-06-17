@@ -1,4 +1,4 @@
-import { Type } from "@angular/core";
+﻿import { Type } from "@angular/core";
 import { Data } from "@angular/router";
 import {
   Category,
@@ -45,11 +45,11 @@ export interface IPageInfo extends Data {
  * Page info class
  */
 export class PageInfo implements IPageInfo {
-  public pageRoute: MenuRoute;
-  public component: Type<PageComponent>;
-  public category: Category;
-  public menus: Menus;
-  public fullscreen: boolean;
+  public pageRoute!: MenuRoute;
+  public component!: Type<PageComponent>;
+  public category!: Category;
+  public menus!: Menus;
+  public fullscreen!: boolean;
   public resolvers: ResolverList;
   public renderMode: RenderMode;
 
@@ -70,6 +70,7 @@ export class PageInfo implements IPageInfo {
   }
 
   public get route(): StrongRoute & { pageComponent: Type<PageComponent> } {
+    // @ts-expect-error: strict mode fix
     return this.pageRoute.route;
   }
 }

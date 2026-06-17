@@ -41,6 +41,7 @@ describe("RangeComponent", () => {
 
       spec.component.input.emit = jasmine.createSpy("input") as any;
 
+      // @ts-expect-error: strict mode fix
       spec.typeInElement(testedValue.toString(), numberInput());
       expect(spec.component.input.emit).toHaveBeenCalledOnceWith(testedValue);
     });

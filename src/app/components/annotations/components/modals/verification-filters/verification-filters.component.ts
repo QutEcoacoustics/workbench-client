@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   Input,
@@ -25,10 +25,11 @@ export class VerificationFiltersModalComponent implements ModalComponent {
   // TODO: Migrate this to a signal once we add support for signals to the
   // ModalComponent interface.
   @Input()
-  public successCallback: (newModel: VerificationParameters) => void;
+  // @ts-expect-error: strict mode override
+  public successCallback!: (newModel: VerificationParameters) => void;
 
   public closeModal(): void {
-    this.modal().close();
+    this.modal()!.close();
   }
 
   public success(): void {

@@ -25,11 +25,13 @@ describe("IsUnresolvedPipe", () => {
   }
 
   it("should return false for undefined value", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined);
     assertPipeIsFalse();
   });
 
   it("should return false for null value", () => {
+    // @ts-expect-error: strict mode fix
     setup(null);
     assertPipeIsFalse();
   });

@@ -24,11 +24,13 @@ describe("DatePipe", () => {
   });
 
   it("should handle undefined value", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined);
     expect(spectator.element).toHaveExactText("");
   });
 
   it("should handle null value", () => {
+    // @ts-expect-error: strict mode fix
     setup(null);
     expect(spectator.element).toHaveExactText("");
   });

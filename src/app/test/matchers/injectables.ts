@@ -29,7 +29,7 @@ declare const ng: Ng;
  * @param el HTML Element
  * @param directive Directive to extract
  */
-function getDirective<D>(
+function getDirective<D extends object>(
   el: Element,
   directive: Constructor<unknown>,
 ): D | undefined {
@@ -47,7 +47,7 @@ function validateAttributes(
   util: MatchersUtil,
   injectable: any,
   props: Record<string, any>,
-): CustomMatcherResult {
+): CustomMatcherResult | undefined {
   for (const key of Object.keys(props)) {
     const expected = props[key];
     const actual = injectable[key];
@@ -81,7 +81,7 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Icon should not exist"),
   compare: (
     target: HTMLElement,
-    expectedIcon: IconProp
+    expectedIcon: IconProp,
   ): CustomMatcherResult => {
     if (!target) {
       return matcherFailure("Target element should exist");
@@ -104,8 +104,8 @@ const toHaveIcon = (util: MatchersUtil): CustomMatcher => ({
     if (!util.equals(realizedIcon, expectedIcon)) {
       return matcherFailure(
         `Expected icon to be ${util.pp(expectedIcon)}, got ${util.pp(
-          realizedIcon
-        )} instead`
+          realizedIcon,
+        )} instead`,
       );
     }
 
@@ -279,7 +279,7 @@ const toHaveStrongRouteActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    klass: string = "active",
+    klass = "active",
     options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {
@@ -329,7 +329,7 @@ const toHaveUrlActive = (util: MatchersUtil): CustomMatcher => ({
     !target ? matcherSuccess() : matcherFailure("Link should not exist"),
   compare: (
     target: HTMLAnchorElement,
-    klass: string = "active",
+    klass = "active",
     options: RouterLinkActiveOptions = { exact: false },
   ): CustomMatcherResult => {
     if (!target) {
@@ -370,7 +370,7 @@ const toBeProvidedBy = (): CustomMatcher => ({
       return matcherFailure("Injectable was not defined");
     }
 
-    const actualInjector = target["injector"];
+    const actualInjector = (target as any)["injector"];
     if (!actualInjector) {
       return matcherFailure("Injectable does not have a provider");
     }

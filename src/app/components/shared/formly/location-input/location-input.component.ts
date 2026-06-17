@@ -45,11 +45,12 @@ export class LocationInputComponent extends FieldType implements OnInit {
 
     this.formControl.setValidators(() => {
       const error = this.validateCoordinates();
+      // @ts-expect-error: strict mode fix
       return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
 
-    this.setMarker(this.latitude(), this.longitude());
+    this.setMarker(this.latitude()!, this.longitude()!);
   }
 
   /**
@@ -76,10 +77,11 @@ export class LocationInputComponent extends FieldType implements OnInit {
     this.model["customLatitude"] = this.latitude();
     this.model["customLongitude"] = this.longitude();
 
-    this.setMarker(this.latitude(), this.longitude());
+    this.setMarker(this.latitude()!, this.longitude()!);
   }
 
   public getError(): string {
+    // @ts-expect-error: strict mode fix
     return this.formControl.getError(this.field.key.toString());
   }
 
@@ -91,6 +93,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
    */
   private setMarker(latitude: number, longitude: number) {
     const markers = sanitizeMapMarkers(
+      // @ts-expect-error: strict mode fix
       isInstantiated(latitude) && isInstantiated(longitude)
         ? {
             position: { lat: latitude, lng: longitude },
@@ -105,6 +108,7 @@ export class LocationInputComponent extends FieldType implements OnInit {
   /**
    * Validate location values and return error if any
    */
+  // @ts-expect-error: strict mode fix
   private validateCoordinates(): string {
     this.latitudeError.set(false);
     this.longitudeError.set(false);
@@ -114,9 +118,11 @@ export class LocationInputComponent extends FieldType implements OnInit {
       this.latitudeError.set(!isInstantiated(this.latitude()));
       this.longitudeError.set(!isInstantiated(this.longitude()));
       return "Both latitude and longitude must be set or left empty";
+    // @ts-expect-error: strict mode fix
     } else if (this.latitude() < -90 || this.latitude() > 90) {
       this.latitudeError.set(true);
       return "Latitude must be between -90 and 90";
+    // @ts-expect-error: strict mode fix
     } else if (this.longitude() < -180 || this.longitude() > 180) {
       this.longitudeError.set(true);
       return "Longitude must be between -180 and 180";

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+﻿import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -42,7 +42,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
 
   public columns = [{ name: "Site" }, { name: "Updated" }, { name: "Tags" }];
   public sortKeys = { updated: "updatedAt" };
-  protected api: ShallowAudioEventsService;
+  protected api!: ShallowAudioEventsService;
 
   public constructor() {
     const api = inject(ShallowAudioEventsService);
@@ -51,6 +51,7 @@ class MyAnnotationsComponent extends PagedTableTemplate<TableRow, AudioEvent> {
     super(
       api,
       (audioEvents) =>
+        // @ts-expect-error: strict mode fix
         audioEvents.map((audioEvent) => ({
           site: audioEvent,
           updated: audioEvent.updatedAt,

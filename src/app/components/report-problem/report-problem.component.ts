@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ReportProblemService } from "@baw-api/report/report-problem.service";
 import { FormTemplate } from "@helpers/formTemplate/formTemplate";
@@ -45,7 +45,7 @@ class ReportProblemComponent
 
   public fields = schema.fields;
   public recaptchaSeed: RecaptchaState = { state: "loading" };
-  public sourceRepoLink: string;
+  public sourceRepoLink!: string;
 
   public constructor() {
     const notifications = inject(ToastService);

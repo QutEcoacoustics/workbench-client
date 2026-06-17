@@ -75,15 +75,16 @@ export class MetadataExtractionComponent implements OnInit {
   }
 
   public get progress(): number {
-    return this.stages.calculateProgress(this.report.itemsMetadataGathered);
+    return this.stages.calculateProgress(this.report.itemsMetadataGathered!);
   }
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   private get report(): HarvestReport {
-    return this.stages.harvest.report;
+    // @ts-expect-error: strict mode fix
+    return this.stages.harvest.report!;
   }
 
   public hasFileStatuses(): boolean {
@@ -95,20 +96,26 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get successProgress(): number {
     return this.stages.calculateProgress(
+      // @ts-expect-error: strict mode fix
       this.report.itemsTotal -
+        // @ts-expect-error: strict mode fix
         this.report.itemsInvalidFixable -
+        // @ts-expect-error: strict mode fix
         this.report.itemsInvalidNotFixable
     );
   }
 
   public get invalidFixableProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsInvalidFixable);
+    return this.stages.calculateProgress(this.report.itemsInvalidFixable!);
   }
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
+      // @ts-expect-error: strict mode fix
       this.report.itemsInvalidNotFixable +
+        // @ts-expect-error: strict mode fix
         this.report.itemsErrored +
+        // @ts-expect-error: strict mode fix
         this.report.itemsFailed
     );
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { retrieveResolvedModel } from "@baw-api/resolver-common";
 import { titleCase } from "@helpers/case-converter/case-converter";
 import { hasRequiredAccessLevelOrHigher } from "@interfaces/apiInterfaces";
@@ -35,9 +35,10 @@ export class AllowsOriginalDownloadComponent
 {
   private readonly sharedRoute = inject(SharedActivatedRouteService);
 
-  public project$: Observable<Project>;
+  public project$!: Observable<Project>;
 
   public ngOnInit(): void {
+    // @ts-expect-error: strict mode fix
     this.project$ = this.sharedRoute.pageInfo.pipe(
       map((page): Project | undefined => retrieveResolvedModel(page, Project))
     );
@@ -57,7 +58,7 @@ export class AllowsOriginalDownloadComponent
     const { allowOriginalDownload, accessLevel } = project;
 
     return allowOriginalDownload &&
-      hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel)
+      hasRequiredAccessLevelOrHigher(allowOriginalDownload, accessLevel!)
       ? "Allowed"
       : "Not Allowed";
   }

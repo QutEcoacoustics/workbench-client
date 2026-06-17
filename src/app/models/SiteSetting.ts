@@ -1,4 +1,4 @@
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+﻿import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
 import { adminRoute } from "@components/admin/admin.menus";
 import { bawPersistAttr } from "./AttributeDecorators";
 import { AbstractModel } from "./AbstractModel";
@@ -20,11 +20,12 @@ export class SiteSetting
   public readonly kind = "site_setting";
   public readonly id?: Id;
   @bawPersistAttr({ update: true })
-  public readonly name: string;
+  public readonly name!: string;
   @bawPersistAttr({ update: true })
-  public readonly value: number | null;
-  public readonly description: string;
-  public readonly typeSpecification: string;
+  // @ts-expect-error: strict mode override
+  public readonly value!: number | null;
+  public readonly description!: string;
+  public readonly typeSpecification!: string;
 
   public readonly createdAt?: DateTimeTimezone | string;
   public readonly updatedAt?: DateTimeTimezone | string;

@@ -80,7 +80,7 @@ export class AnalysisJobItemResultsService
       endpoint(
         analysisJob,
         audioRecording,
-        analysisJobItemResult.resultsPath,
+        analysisJobItemResult.resultsPath!,
         emptyParam
       )
     );

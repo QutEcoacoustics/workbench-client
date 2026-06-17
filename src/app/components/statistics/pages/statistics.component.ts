@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { StatisticsService } from "@baw-api/statistics/statistics.service";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
@@ -115,7 +115,7 @@ class StatisticsComponent
     }),
   };
 
-  public recent: StatisticsRecent;
+  public recent!: StatisticsRecent;
 
   public ngOnInit() {
     this.stats
@@ -172,12 +172,14 @@ class StatisticsComponent
 
   public getGroupOne(): List<IItem> {
     return List<IItem>(
+      // @ts-expect-error: strict mode indexing
       Object.keys(this.groupOne).map((key) => this.groupOne[key].toObject())
     );
   }
 
   public getGroupTwo(): List<IItem> {
     return List<IItem>(
+      // @ts-expect-error: strict mode indexing
       Object.keys(this.groupTwo).map((key) => this.groupTwo[key].toObject())
     );
   }

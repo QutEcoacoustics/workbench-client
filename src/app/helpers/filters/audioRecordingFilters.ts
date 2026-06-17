@@ -29,6 +29,7 @@ export function filterDate(
 
   if (endDate) {
     const endDateFilters: InnerFilter<AudioRecording> = {
+      // @ts-expect-error: strict mode fix
       recordedDate: { lessThan: endDate },
     };
 
@@ -114,6 +115,7 @@ export function filterTime(
         },
       };
 
+      // @ts-expect-error: strict mode fix
       filters = filterAnd(filters, endTimeFilter);
     }
   }

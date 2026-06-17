@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+﻿import { Component, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BookmarksService } from "@baw-api/bookmark/bookmarks.service";
 import { userResolvers } from "@baw-api/user/user.service";
@@ -29,7 +29,7 @@ const userKey = "user";
   ],
 })
 class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
-  public api: BookmarksService;
+  public api!: BookmarksService;
   public columns = [
     { name: "Bookmark" },
     { name: "Category" },
@@ -43,6 +43,7 @@ class MyBookmarksComponent extends PagedTableTemplate<TableRow, Bookmark> {
     super(
       api,
       (bookmarks) =>
+        // @ts-expect-error: strict mode fix
         bookmarks.map((bookmark) => ({
           bookmark,
           category: bookmark.category,

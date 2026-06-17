@@ -1,7 +1,6 @@
 {
   "folders": [{ "path": "." }],
   "settings": {
-    "typescript.tsdk": "node_modules\\typescript\\lib",
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
       "source.organizeImports": "always",
@@ -101,10 +100,18 @@
       "titleBar.activeBackground": "#256476",
       "titleBar.activeForeground": "#e7e7e7",
       "titleBar.inactiveBackground": "#25647699",
-      "titleBar.inactiveForeground": "#e7e7e799",
+      "titleBar.inactiveForeground": "#e7e7e799"
     },
     "files.eol": "\n",
     "files.insertFinalNewline": true,
+    "chat.mcp.gallery.enabled": true,
+    "github.copilot.chat.githubMcpServer.enabled": true,
+    "chat.tools.terminal.autoApprove": {
+      "npx ng build": true,
+      "npx ng test": true,
+      "npx tsc": true,
+      "Out-File": true,
+    },
     "peacock.color": "#256476",
   },
   "extensions": {
@@ -119,5 +126,14 @@
       "editorconfig.editorconfig",
       "redhat.vscode-yaml",
     ],
+  },
+  "mcp": {
+    "inputs": [],
+    "servers": {
+      "angular-cli": {
+        "command": "npx",
+        "args": ["-y", "@angular/cli", "mcp"],
+      },
+    },
   },
 }

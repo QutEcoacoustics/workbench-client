@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { Filters } from "@baw-api/baw-api.service";
 import { ProjectsService, projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -166,11 +166,11 @@ class ProjectDetailsComponent
   public collectionSize = 0;
   public collectionSizes = { sites: 0, regions: 0 };
   public defaultDescription = "<i>No description found</i>";
-  public hasRegions: boolean;
-  public hasSites: boolean;
-  public project: Project;
-  public regions: List<Region>;
-  public sites: List<Site>;
+  public hasRegions!: boolean;
+  public hasSites!: boolean;
+  public project!: Project;
+  public regions!: List<Region>;
+  public sites!: List<Site>;
   /**
    * Api requests are independent, use this to track when both complete
    */
@@ -178,9 +178,10 @@ class ProjectDetailsComponent
 
   public constructor() {
     super(
-      undefined,
+      undefined!,
       "name",
       () => [this.project.id],
+      // @ts-expect-error: strict mode fix
       (models: Region[] | Site[]) => {
         this.apiReturnCount++;
         this.loading = this.apiReturnCount !== 2;
@@ -189,7 +190,8 @@ class ProjectDetailsComponent
           return;
         }
 
-        const collectionSize = models[0].getMetadata().paging.total || 0;
+        // @ts-expect-error: strict mode fix
+        const collectionSize = models[0]!.getMetadata()!.paging.total || 0;
 
         if (models[0] instanceof Site) {
           this.sites = List(models as Site[]);
@@ -223,7 +225,7 @@ class ProjectDetailsComponent
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
         complete: () => {
-          this.notifications.success(defaultSuccessMsg("destroyed", this.project.name));
+          this.notifications.success(defaultSuccessMsg("destroyed", this.project.name!));
           this.router.navigateByUrl(projectsMenuItem.route.toRouterLink());
         },
       });
@@ -242,6 +244,7 @@ class ProjectDetailsComponent
       this.sitesApi.filterByRegion(
         this.generateFilter() as Filters,
         this.project.id,
+        // @ts-expect-error: strict mode fix
         null
       )
     );

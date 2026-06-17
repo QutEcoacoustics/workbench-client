@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from "@angular/core";
+﻿import { Component, Input, OnInit, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
@@ -67,10 +67,10 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   private readonly config = inject(ConfigService);
   private readonly router = inject(Router);
 
-  @Input() public isSideNav: boolean;
+  @Input() public isSideNav!: boolean;
 
-  public links: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
-  public user: User;
+  public links!: List<HeaderItem | HeaderDropdown | NavigableMenuItem>;
+  public user!: User;
   public routes = {
     admin: adminDashboardMenuItem,
     home: homeMenuItem,
@@ -128,7 +128,8 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   private trackLoggedInState() {
     this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe(({ user }) => (this.user = user));
+      // @ts-expect-error: strict mode fix
+      .subscribe(({ user }) => (this.user = user))!;
   }
 
   /**
@@ -154,7 +155,8 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
    * @param item Item to convert
    */
   private generateLink(item: CustomMenuItem): HeaderItem {
-    return { label: item.title, uri: () => item.url };
+    // @ts-expect-error: strict mode fix
+    return { label: item.title, uri: () => item.url }!;
   }
 
   /**

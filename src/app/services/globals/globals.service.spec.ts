@@ -19,10 +19,12 @@ describe("GlobalsService", () => {
   }
 
   function callGlobalGetterFunction(func: string): any {
+    // @ts-expect-error: strict mode fix
     return window["__bawWorkbenchClient"][func];
   }
 
   function callGlobalSetterFunction(func: string, value: any) {
+    // @ts-expect-error: strict mode fix
     window["__bawWorkbenchClient"][func] = value;
   }
 

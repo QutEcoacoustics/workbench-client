@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { Filters } from "@baw-api/baw-api.service";
@@ -10,18 +10,35 @@ import {
   editProjectPermissionsMenuItem,
   projectCategory,
 } from "@components/projects/projects.menus";
+import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
+import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
+import { UrlDirective } from "@directives/url/url.directive";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { PageComponent } from "@helpers/page/pageComponent";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { PermissionLevel } from "@interfaces/apiInterfaces";
-import { licenseWidgetMenuItem, permissionsWidgetMenuItem } from "@menu/widget.menus";
+import {
+  licenseWidgetMenuItem,
+  permissionsWidgetMenuItem,
+} from "@menu/widget.menus";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Permission } from "@models/Permission";
 import { Project } from "@models/Project";
 import { User } from "@models/User";
-import { ISelectableItem , SelectableItemsComponent } from "@shared/items/selectable-items/selectable-items.component";
-import { List } from "immutable";
+import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
+import {
+  ISelectableItem,
+  SelectableItemsComponent,
+} from "@shared/items/selectable-items/selectable-items.component";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { ModelSelectorComponent } from "@shared/model-selector/model-selector.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { List } from "immutable";
 import {
   BehaviorSubject,
   filter,
@@ -32,19 +49,8 @@ import {
   switchMap,
   takeUntil,
 } from "rxjs";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { NgbHighlight, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { ModelSelectorComponent } from "@shared/model-selector/model-selector.component";
-import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
-import { DatatablePaginationDirective } from "@directives/datatable/pagination/pagination.directive";
-import { LoadingComponent } from "@shared/loading/loading.component";
-import { UrlDirective } from "@directives/url/url.directive";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
-import { projectMenuItemActions } from "../details/details.component";
 import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.pipe";
+import { projectMenuItemActions } from "../details/details.component";
 
 const projectKey = "project";
 
@@ -79,15 +85,15 @@ class PermissionsComponent
   private readonly route = inject(ActivatedRoute);
   private readonly injector = inject<AssociationInjector>(ASSOCIATION_INJECTOR);
 
-  public project: Project;
+  public project!: Project;
   /** Permissions for anonymous guests */
-  public anonymousPermission: Permission;
+  public anonymousPermission!: Permission;
   /** Base permission for all users */
-  public usersPermission: Permission;
+  public usersPermission!: Permission;
   /** Current selected user by typeahead */
-  public selectedUser: User;
+  public selectedUser!: User;
   /** Permissions for users in typeahead */
-  public permissionsMatchingUsername: Permission[];
+  public permissionsMatchingUsername!: Permission[];
 
   public userIcon: IconProp = theirProfileMenuItem.icon;
   public helpIcon: IconProp = ["fas", "info-circle"];
@@ -95,6 +101,7 @@ class PermissionsComponent
   /** Filters for permissions table */
   public filters$ = new BehaviorSubject<Filters<Permission>>({
     // Filter out anonymous and logged in user permissions
+    // @ts-expect-error: strict mode fix
     filter: { userId: { notEq: null } },
   });
 
@@ -119,17 +126,17 @@ class PermissionsComponent
   public ngOnInit(): void {
     const projectModel: ResolvedModel<Project> =
       this.route.snapshot.data[projectKey];
-    this.project = projectModel.model;
+    this.project = projectModel.model!;
 
     const getLevel = (
       filters: Filters<Permission>,
-      next: (permission: Permission) => void
+      next: (permission: Permission) => void,
     ) =>
       this.permissionsApi
         .filter(filters, this.project)
         .pipe(
           map((permissions) => permissions[0]),
-          takeUntil(this.unsubscribe)
+          takeUntil(this.unsubscribe),
         )
         .subscribe(next);
 
@@ -145,13 +152,13 @@ class PermissionsComponent
   /** Determine if user in typeahead already has permissions */
   public doesUserAlreadyHavePermissions(user: User): boolean {
     return this.permissionsMatchingUsername.some(
-      (permission) => permission.userId === user.id
+      (permission) => permission.userId === user.id,
     );
   }
 
   /** Get permissions for current table page */
   public getPermissions = (
-    filters: Filters<Permission>
+    filters: Filters<Permission>,
   ): Observable<Permission[]> =>
     this.permissionsApi.filter(filters, this.project);
 
@@ -173,14 +180,15 @@ class PermissionsComponent
         switchMap((_users) => {
           users = _users;
           return this.permissionsApi.filter(
+            // @ts-expect-error: strict mode fix
             { filter: { userId: { in: users.map((_user) => _user.id) } } },
-            this.project
+            this.project,
           );
         }),
         map((permissionsForUsers: Permission[]) => {
           this.permissionsMatchingUsername = permissionsForUsers;
           return users;
-        })
+        }),
       );
   };
 
@@ -213,8 +221,9 @@ class PermissionsComponent
 
   /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
+    // @ts-expect-error: strict mode fix
     return this.permissionsMatchingUsername?.find(
-      (permission) => permission.userId === ((userId as User)?.id ?? userId)
+      (permission) => permission.userId === ((userId as User)?.id ?? userId),
     );
   }
 
@@ -231,14 +240,14 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.updatePermission(permission, selection).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     }
@@ -256,7 +265,7 @@ class PermissionsComponent
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.selectedUser = undefined;
+        this.selectedUser = undefined!;
         this.updateTable();
       });
     } else {
@@ -278,14 +287,14 @@ class PermissionsComponent
         allowAnonymous: true,
         allowLoggedIn: false,
       },
-      this.injector
+      this.injector,
     );
 
     if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.anonymousPermission = undefined;
+        this.anonymousPermission = undefined!;
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -293,7 +302,7 @@ class PermissionsComponent
         (result: Permission) => {
           this.notifications.success(successMsg);
           this.anonymousPermission = result;
-        }
+        },
       );
     }
   }
@@ -309,14 +318,14 @@ class PermissionsComponent
         allowAnonymous: false,
         allowLoggedIn: true,
       },
-      this.injector
+      this.injector,
     );
 
     if (selection === "none") {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
       this.destroyPermission(permission).subscribe(() => {
         this.notifications.success(successMsg);
-        this.usersPermission = undefined;
+        this.usersPermission = undefined!;
       });
     } else {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -324,7 +333,7 @@ class PermissionsComponent
         (result: Permission) => {
           this.notifications.success(successMsg);
           this.usersPermission = result;
-        }
+        },
       );
     }
   }
@@ -332,7 +341,7 @@ class PermissionsComponent
   /** Create or update a permission based on if the id property exists */
   private updatePermission(
     permission: Permission,
-    level: PermissionLevel
+    level: PermissionLevel,
   ): Observable<Permission> {
     return this.isUserOnlyOwnerOfProject(permission).pipe(
       filter((isOnlyOwner) => !isOnlyOwner),
@@ -340,29 +349,29 @@ class PermissionsComponent
         permission.level = level;
         // If we know the id for this permission, use it
         permission.id =
-          permission.id ?? this.getPermissionForUser(permission.userId)?.id;
+          permission.id ?? this.getPermissionForUser(permission.userId!)?.id;
 
         // Choose between create or update based on if an id exists
         return isInstantiated(permission.id)
           ? this.permissionsApi.update(permission, this.project)
           : this.permissionsApi.create(permission, this.project);
-      })
+      }),
     );
   }
 
   /** Destroy a permission */
   private destroyPermission(
-    permission: Permission
+    permission: Permission,
   ): Observable<void | Permission> {
     return this.isUserOnlyOwnerOfProject(permission).pipe(
       filter((isOnlyOwner) => !isOnlyOwner),
-      mergeMap(() => this.permissionsApi.destroy(permission, this.project))
+      mergeMap(() => this.permissionsApi.destroy(permission, this.project)),
     );
   }
 
   /** Determine if the permissions are for the only remaining owner */
   private isUserOnlyOwnerOfProject(
-    permission: Permission
+    permission: Permission,
   ): Observable<boolean> {
     if (permission.level !== PermissionLevel.owner) {
       return of(false);
@@ -377,18 +386,18 @@ class PermissionsComponent
             userId: { notEq: permission.userId },
           },
         },
-        this.project
+        this.project,
       )
       .pipe(
         map((permissions) => {
           if (permissions.length === 0) {
             this.notifications.error(
-              "This is the only owner of the project, their permissions cannot be changed unless another owner is appointed."
+              "This is the only owner of the project, their permissions cannot be changed unless another owner is appointed.",
             );
             return true;
           }
           return false;
-        })
+        }),
       );
   }
 
@@ -403,10 +412,7 @@ PermissionsComponent.linkToRoute({
   pageRoute: editProjectPermissionsMenuItem,
   menus: {
     actions: List(projectMenuItemActions),
-    actionWidgets: List([
-      permissionsWidgetMenuItem,
-      licenseWidgetMenuItem,
-    ]),
+    actionWidgets: List([permissionsWidgetMenuItem, licenseWidgetMenuItem]),
   },
   resolvers: { [projectKey]: projectResolvers.show },
 });

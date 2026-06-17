@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+﻿import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { User } from "@models/User";
 import { Placement, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -42,7 +42,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
 })
 export class UserLinkComponent {
   // TODO Potentially add the ability for different styles, ie. link/badge/card
-  @Input() public user: User;
+  @Input() public user!: User;
   @Input() public tooltipPlacement: Placement = "left";
   public icon: IconProp = ["fas", "info-circle"];
 

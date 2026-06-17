@@ -34,10 +34,12 @@ export const annotationImportMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: annotationImportRoute,
   tooltip: () => "(BETA) View annotation imports for this project",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AudioEventImport)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel?.audioEventImport.model?.name;
   },
 });

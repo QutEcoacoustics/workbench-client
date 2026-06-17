@@ -102,6 +102,7 @@ describe("TheirSitesComponent", () => {
       mockResponses.set(project.id, project);
     }
 
+    // @ts-expect-error: strict mode fix
     return interceptMappedApiRequests(projectsApi.show, mockResponses);
   }
 
@@ -125,6 +126,7 @@ describe("TheirSitesComponent", () => {
 
   it("should display username in title", async () => {
     await setup();
+    // @ts-expect-error: strict mode fix
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
@@ -145,6 +147,7 @@ describe("TheirSitesComponent", () => {
     describe("site name", () => {
       it("should display site name", async () => {
         await setup();
+        // @ts-expect-error: strict mode fix
         expect(getCells()[0]).toHaveText(defaultSite.name);
       });
 
@@ -165,6 +168,7 @@ describe("TheirSitesComponent", () => {
 
     it("should display last modified time", async () => {
       await setup();
+      // @ts-expect-error: strict mode fix
       const expectedText = humanizedDuration(defaultSite.updatedAt);
       expect(getCells()[1]).toHaveExactTrimmedText(`${expectedText} ago`);
     });
@@ -242,12 +246,12 @@ describe("TheirSitesComponent", () => {
 
       it("should create annotation link", async () => {
         await setup();
-        expect(getLink().strongRoute).toEqual(dataRequestMenuItem.route);
+        expect(getLink()!.strongRoute).toEqual(dataRequestMenuItem.route);
       });
 
       it("should create annotation link query params", async () => {
         await setup();
-        expect(getLink().queryParams).toEqual({ siteId: defaultSite.id });
+        expect(getLink()!.queryParams).toEqual({ siteId: defaultSite.id });
       });
     });
   });

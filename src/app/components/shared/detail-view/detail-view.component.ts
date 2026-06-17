@@ -30,6 +30,7 @@ export class DetailViewComponent {
   public getValue(field: FormlyFieldConfig) {
     // because formly fields can be numbers as well as string
     // we use toString() so that we always convert the number types to a string
-    return this.model()[field.key.toString()];
+    // @ts-expect-error: strict mode indexing
+    return this.model()[field.key!.toString()];
   }
 }

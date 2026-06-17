@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from "@angular/core";
+﻿import { Component, Input, OnInit, inject } from "@angular/core";
 import { CLIENT_TIMEOUT } from "@baw-api/api.interceptor.service";
 import { reportProblemMenuItem } from "@components/report-problem/report-problem.menus";
 import {
@@ -36,9 +36,9 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
 export class ErrorHandlerComponent implements OnInit {
   private readonly isSsr = inject(IS_SERVER_PLATFORM);
 
-  @Input() public error: ApiErrorDetails | BawApiError;
+  @Input() public error!: ApiErrorDetails | BawApiError;
   public reportProblem = reportProblemMenuItem.route;
-  public hideErrorDetails: boolean;
+  public hideErrorDetails!: boolean;
   public titles = {
     [UNAUTHORIZED]: "Unauthorized Access",
     [FORBIDDEN]: "Access Forbidden",
@@ -64,6 +64,7 @@ export class ErrorHandlerComponent implements OnInit {
   }
 
   public getTitle(): string {
+    // @ts-expect-error: strict mode indexing
     return this.titles[this.error.status] ?? "Unknown Error";
   }
 }

@@ -17,6 +17,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
   let mockStatus: BehaviorSubject<WebsiteStatus>;
 
   const indicatorElement = (): HTMLAnchorElement =>
+    // @ts-expect-error: strict mode fix
     spectator.query<HTMLAnchorElement>("a");
 
   const createComponent = createComponentFactory({

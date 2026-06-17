@@ -31,6 +31,7 @@ describe("SelectableItemsComponent", () => {
     ]);
 
     const buttons = spec.queryAll<HTMLButtonElement>("button");
+    // @ts-expect-error: strict mode fix
     const buttonToClick = buttons[indexMap.get(value)];
 
     clickButton(spec, buttonToClick);

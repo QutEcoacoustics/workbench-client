@@ -113,6 +113,7 @@ describe("ScriptComponent", () => {
   });
 
   it("should handle error", () => {
+    // @ts-expect-error: strict mode fix
     configureTestingModule(undefined, generateBawApiError());
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -126,6 +127,7 @@ describe("ScriptComponent", () => {
       fixture.detectChanges();
       await promise;
       fixture.detectChanges();
+      // @ts-expect-error: strict mode fix
       this.fixture = fixture;
     });
 

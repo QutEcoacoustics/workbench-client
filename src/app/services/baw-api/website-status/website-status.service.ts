@@ -1,4 +1,4 @@
-import { HttpHeaders } from "@angular/common/http";
+﻿import { HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { BawApiService, unknownErrorCode } from "@baw-api/baw-api.service";
 import {
@@ -40,6 +40,7 @@ export class WebsiteStatusService {
       this.tick$ = defer(() => interval(30_000).pipe(startWith(-1)));
 
       this.status$ = this.tick$.pipe(
+        // @ts-expect-error: strict mode fix
         switchMap(() =>
           this.show().pipe(catchError(() => of(ServerTimeout.instance)))
         ),
@@ -49,7 +50,7 @@ export class WebsiteStatusService {
   }
 
   public status$: Observable<WebsiteStatus>;
-  private tick$: Observable<number>;
+  private tick$!: Observable<number>;
 
   // by making this a service level field, we don't have to recreate the headers every time we make a request
   private readonly requestHeaders = new HttpHeaders({

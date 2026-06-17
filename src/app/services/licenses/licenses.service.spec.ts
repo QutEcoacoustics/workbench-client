@@ -17,13 +17,21 @@ describe("LicensesService", () => {
   });
 
   describe("licenseText", () => {
-    it("should return the correct license text for a spdx license", async () => {});
+    it("should return the correct license text for a spdx license", async () => {
+      pending();
+    });
 
-    it("should return 'Custom License' for a non-spdx license", async () => {});
+    it("should return 'Custom License' for a non-spdx license", async () => {
+      pending();
+    });
 
-    it("should return 'No License' for a null license", async () => {});
+    it("should return 'No License' for a null license", async () => {
+      pending();
+    });
 
-    it("should return 'No License' for an empty string license", async () => {});
+    it("should return 'No License' for an empty string license", async () => {
+      pending();
+    });
   });
 
   it("should have a method to return available licenses", async () => {
@@ -35,11 +43,19 @@ describe("LicensesService", () => {
     expect(mitLicense).toBeTruthy();
   });
 
-  it("should have the correct suggested licenses", () => {});
+  it("should have the correct suggested licenses", () => {
+    pending();
+  });
 
-  it("should return the correct typeahead callback", () => {});
+  it("should return the correct typeahead callback", () => {
+    pending();
+  });
 
-  it("should correctly recognize a spdx license", () => {});
+  it("should correctly recognize a spdx license", () => {
+    pending();
+  });
 
-  it("should correctly recognize a non-spdx license", () => {});
+  it("should correctly recognize a non-spdx license", () => {
+    pending();
+  });
 });

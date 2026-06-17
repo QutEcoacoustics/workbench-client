@@ -98,13 +98,16 @@ describe("UserBadgeComponent", () => {
 
   describe("ghost users", () => {
     it("should display username", () => {
+      // @ts-expect-error: strict mode fix
       const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       expect(getGhostUsername()[0]).toHaveText(user.userName);
     });
 
     it("should display image", () => {
+      // @ts-expect-error: strict mode fix
       const user = User.getDeletedUser(undefined);
       setup({ users: [user] });
       spec.detectChanges();
@@ -119,6 +122,7 @@ describe("UserBadgeComponent", () => {
     it("should display username", () => {
       setup({ users: [defaultUser] });
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       expect(getUsername()[0]).toHaveText(defaultUser.userName);
     });
 
@@ -144,7 +148,7 @@ describe("UserBadgeComponent", () => {
       const user = new User(generateUser({ userName: "custom username" }));
       setup({ users: [user] });
       spec.detectChanges();
-      expect(getImage()[0]).toHaveImage(user.imageUrls[0].url, {
+      expect(getImage()[0]).toHaveImage(user.imageUrls![0].url, {
         alt: "custom username profile picture",
       });
     });
@@ -178,7 +182,9 @@ describe("UserBadgeComponent", () => {
       const userB = new User(generateUser());
       setup({ users: [userA, userB] });
       spec.detectChanges();
+      // @ts-expect-error: strict mode fix
       expect(getUsername()[0]).toHaveText(userA.userName);
+      // @ts-expect-error: strict mode fix
       expect(getUsername()[1]).toHaveText(userB.userName);
     });
   });
@@ -191,6 +197,7 @@ describe("UserBadgeComponent", () => {
     spec.detectChanges();
 
     const username = getUsername(spec)[0];
+    // @ts-expect-error: strict mode fix
     expect(username).toHaveText(user.userName);
   });
 });

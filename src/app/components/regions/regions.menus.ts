@@ -50,10 +50,12 @@ export const regionMenuItem = menuRoute({
   parent: projectMenuItem,
   route: regionRoute,
   tooltip: () => "The current site",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Region)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel?.region?.model?.name ?? "Unknown";
   },
 });

@@ -19,7 +19,7 @@
       />
 
       <section class="file-list mt-2">
-        @if (hasFiles) {
+        @if (hasFiles() | async) {
           <ol>
             @for (fileModel of importFiles$ | async; track fileModel.file) {
               <li class="file-list-item">

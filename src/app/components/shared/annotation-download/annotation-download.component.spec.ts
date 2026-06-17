@@ -41,14 +41,17 @@ describe("AnnotationDownloadComponent", () => {
   });
 
   function getHeader(): HTMLDivElement {
+    // @ts-expect-error: strict mode fix
     return spec.query(".modal-header");
   }
 
   function getBody(): HTMLDivElement {
+    // @ts-expect-error: strict mode fix
     return spec.query(".modal-body");
   }
 
   function getFooter(): HTMLDivElement {
+    // @ts-expect-error: strict mode fix
     return spec.query(".modal-footer");
   }
 
@@ -56,7 +59,9 @@ describe("AnnotationDownloadComponent", () => {
     const resolvers = {};
     const resolvedModels = {};
     modelList.forEach((resolver, index) => {
+      // @ts-expect-error: strict mode fix
       resolvers[resolver] = "resolver";
+      // @ts-expect-error: strict mode fix
       resolvedModels[resolver] =
         models[index] instanceof AbstractModel
           ? ({ model: models[index] } as ResolvedModel)
@@ -114,7 +119,7 @@ describe("AnnotationDownloadComponent", () => {
     it("should dismiss component", () => {
       setup([projectKey, siteKey], [defaultProject, defaultSite]);
       spec.detectChanges();
-      getCloseButton().click();
+      getCloseButton()!.click();
       spec.detectChanges();
       expect(spec.component.dismissModal).toHaveBeenCalled();
     });
@@ -192,7 +197,7 @@ describe("AnnotationDownloadComponent", () => {
         () => "http://www.broken.com/broken_link"
       );
       spec.detectChanges();
-      expect(getSubmitButton().href).toBe("http://www.broken.com/broken_link");
+      expect(getSubmitButton()!.href).toBe("http://www.broken.com/broken_link");
     });
 
     it("should call the site downloadAnnotations api with site and project", () => {
@@ -202,6 +207,7 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultProject,
+        // @ts-expect-error: strict mode fix
         spec.component.model.timezone
       );
     });
@@ -216,6 +222,7 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultRegion.projectId,
+        // @ts-expect-error: strict mode fix
         spec.component.model.timezone
       );
     });

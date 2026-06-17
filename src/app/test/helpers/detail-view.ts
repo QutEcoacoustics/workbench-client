@@ -29,12 +29,14 @@ function findDetailIndex(nativeElement: HTMLElement, label: string): number {
 export function assertDetail(detail: Detail, spec?: () => Spectator<any>) {
   describe(`${detail.label} (${detail.key})`, function () {
     it("should display " + detail.key, function () {
+      // @ts-expect-error: strict mode fix
       const fixture = spec ? spec().fixture : this.fixture;
       const index = findDetailIndex(fixture.nativeElement, detail.label);
       expect(index).toBeGreaterThanOrEqual(0);
     });
 
     it("should display " + detail.key + " value", function () {
+      // @ts-expect-error: strict mode fix
       const fixture = spec ? spec().fixture : this.fixture;
       const element: HTMLElement = fixture.nativeElement;
       const index = findDetailIndex(element, detail.label);
@@ -75,11 +77,13 @@ function assertValue(
 }
 
 function assertCheckbox(view: HTMLDListElement, value: boolean) {
+  // @ts-expect-error: strict mode fix
   const checkbox: HTMLInputElement = view.querySelector("input");
   expect(!!checkbox.checked).toBe(value);
 }
 
 function assertCode(view: HTMLDListElement, value: Record<string, any>) {
+  // @ts-expect-error: strict mode fix
   const code: HTMLElement = view.querySelector("#code");
   expect(code.innerText).toContain(JSON.stringify(value, null, 4));
 }
@@ -88,20 +92,25 @@ function assertPlainText(
   view: HTMLDListElement,
   value: string | number | DateTime | Duration
 ) {
+  // @ts-expect-error: strict mode fix
   const plainText: HTMLElement = view.querySelector("#plain");
   const result = value.toString();
 
+  // @ts-expect-error: strict mode fix
   expect(plainText.innerText).toContain(result);
 }
 
 function assertDuration(view: HTMLDListElement, value: Duration) {
+  // @ts-expect-error: strict mode fix
   const element: HTMLElement = view.querySelector("baw-duration");
   const expectedText = value.toISO();
 
+  // @ts-expect-error: strict mode fix
   expect(element.textContent.trim()).toBe(expectedText);
 }
 
 function assertDateTime(view: HTMLDListElement, value: DateTime) {
+  // @ts-expect-error: strict mode fix
   const element: HTMLElement = view.querySelector("baw-datetime");
   const expectedText = value.toLocal().toFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -109,11 +118,13 @@ function assertDateTime(view: HTMLDListElement, value: DateTime) {
 }
 
 function assertModel(view: HTMLDListElement, value: string) {
+  // @ts-expect-error: strict mode fix
   const model: HTMLElement = view.querySelector("#model");
   expect(model.innerText).toContain(value);
 }
 
 function assertImages(view: HTMLDListElement, value: string | ImageUrl[]) {
+  // @ts-expect-error: strict mode fix
   const image: HTMLImageElement = view.querySelector("#image");
   expect(image).toHaveImage(value instanceof Array ? value[0].url : value, {
     alt: "model image alt",

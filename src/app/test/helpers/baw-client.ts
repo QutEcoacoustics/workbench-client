@@ -36,7 +36,7 @@ export function validateBawClientPage<Component extends Type<any>>(
 
   function waitForLoad() {
     return new Promise<void>((resolve) =>
-      getBawClient()["iframeRef"].nativeElement.addEventListener("load", () =>
+      getBawClient()!["iframeRef"].nativeElement.addEventListener("load", () =>
         resolve()
       )
     );
@@ -57,7 +57,7 @@ export function validateBawClientPage<Component extends Type<any>>(
 
     const bawClient = getBawClient();
     expect(bawClient).toBeTruthy();
-    expect(bawClient["iframeRef"].nativeElement.src).toEqual(bawClientSource());
+    expect(bawClient!["iframeRef"].nativeElement.src).toEqual(bawClientSource());
   });
 
   it("should load page", async () => {
@@ -67,7 +67,8 @@ export function validateBawClientPage<Component extends Type<any>>(
 
     const bawClient = getBawClient();
     expect(
-      bawClient["iframeRef"].nativeElement.contentWindow.document.body
+      // @ts-expect-error: strict mode fix
+      bawClient!["iframeRef"]!.nativeElement.contentWindow.document.body
     ).toContainText(validatePageLoaded);
   });
 }

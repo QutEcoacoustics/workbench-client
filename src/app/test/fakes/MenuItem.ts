@@ -50,14 +50,16 @@ export function generateMenuAction(data?: Partial<MenuAction>): MenuAction {
   return menuAction({
     icon: modelData.icon(),
     label: modelData.random.word(),
-    action: () => {},
+    action: () => {
+      /* noop */
+    },
     tooltip: () => tooltip,
     ...data,
   });
 }
 
 export function generateMenuModalWithoutAction(
-  data?: Partial<MenuModalWithoutAction>
+  data?: Partial<MenuModalWithoutAction>,
 ): MenuModalWithoutAction {
   const tooltip = modelData.random.words();
   return menuModal({

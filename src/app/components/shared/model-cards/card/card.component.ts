@@ -47,7 +47,7 @@ export class CardComponent {
   private readonly licenseService = inject(LicensesService);
   private readonly projectService = inject(ProjectsService);
 
-  public readonly model = input<Project | Region>();
+  public readonly model = input.required<Project | Region>();
 
   protected readonly licenseTextResource = resource({
     params: () => ({ cardModel: this.model() }),
@@ -57,7 +57,7 @@ export class CardComponent {
         return Promise.resolve(cardModel.license);
       }
 
-      const projectLicense = this.projectService.getProjectFor(cardModel).pipe(
+      const projectLicense = this.projectService.getProjectFor(cardModel!).pipe(
         map((projects) => {
           return projects
             .map((project) => project.license)

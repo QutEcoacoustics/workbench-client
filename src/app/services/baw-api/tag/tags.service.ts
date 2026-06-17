@@ -58,6 +58,7 @@ export class TagsService implements StandardApi<Tag> {
   }
 
   public destroy(model: IdOr<Tag>): Observable<Tag | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 
@@ -72,6 +73,7 @@ export class TagsService implements StandardApi<Tag> {
     user: IdOr<User>
   ): Observable<Tag[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }

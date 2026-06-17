@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
@@ -51,7 +51,7 @@ class RegionEditComponent extends FormTemplate<Region> implements OnInit {
   protected readonly router: Router;
 
   public fields = schema.fields;
-  public title: string;
+  public title!: string;
 
   public constructor() {
     const notifications = inject(ToastService);
@@ -60,7 +60,7 @@ class RegionEditComponent extends FormTemplate<Region> implements OnInit {
 
     super(notifications, route, router, {
       getModel: (models) => models[regionKey] as Region,
-      successMsg: (model) => defaultSuccessMsg("updated", model.name),
+      successMsg: (model) => defaultSuccessMsg("updated", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

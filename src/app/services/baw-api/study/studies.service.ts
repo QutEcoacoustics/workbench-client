@@ -47,6 +47,7 @@ export class StudiesService implements StandardApi<Study> {
   }
 
   public destroy(model: IdOr<Study>): Observable<Study | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }

@@ -16,11 +16,11 @@ import { AssociationInjector } from "./ImplementsInjector";
 
 class MockModel extends AbstractModel {
   public id: Id;
-  public ids: Ids;
+  public ids!: Ids;
   @hasOne<MockModel, AbstractModel>(MOCK, "id")
-  public readonly childModel: AssociatedModel;
+  public readonly childModel!: AssociatedModel;
   @hasMany<MockModel, AbstractModel>(MOCK, "ids")
-  public readonly childModels: AssociatedModel[];
+  public readonly childModels!: AssociatedModel[];
 
   public constructor(opts: any, injector?: AssociationInjector) {
     super(opts, injector);
@@ -60,8 +60,8 @@ export { MockModel as MockModelWithDecorators };
   `,
 })
 class MockComponent {
-  @Input() public model: MockModel;
-  @Input() public hasMany: boolean;
+  @Input() public model!: MockModel;
+  @Input() public hasMany!: boolean;
 }
 
 describe("Association Decorators Loading In Components", () => {
@@ -92,6 +92,7 @@ describe("Association Decorators Loading In Components", () => {
   ): Promise<void> {
     const subject = new Subject<AssociatedModel>();
     const promise = nStepObservable(
+      // @ts-expect-error: strict mode fix
       subject,
       () => (model ? model : error),
       !model
@@ -123,7 +124,7 @@ describe("Association Decorators Loading In Components", () => {
       if (model.length === 0) {
         expect(listItems.length).toBe(0);
       } else {
-        listItems.forEach((item, index) => {
+        listItems.forEach((item: any, index: any) => {
           expect(item.innerText.trim()).toBe(model[index].toString());
         });
       }
@@ -157,6 +158,7 @@ describe("Association Decorators Loading In Components", () => {
 
   it("should display hasOne error", async () => {
     const promise = interceptSingleModel(
+      // @ts-expect-error: strict mode fix
       undefined,
       generateBawApiError(NOT_FOUND)
     );
@@ -176,18 +178,22 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display empty hasMany resolved model", async () => {
+    // @ts-expect-error: strict mode fix
     const associatedModels = [];
+    // @ts-expect-error: strict mode fix
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;
     fixture.detectChanges(); // Displays childModel
+    // @ts-expect-error: strict mode fix
     assertOutput(associatedModels);
   });
 
   it("should display single hasMany resolved model", async () => {
     const associatedModels = [new AssociatedModel({ id: 1 })];
+    // @ts-expect-error: strict mode fix
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
@@ -203,6 +209,7 @@ describe("Association Decorators Loading In Components", () => {
       new AssociatedModel({ id: 2 }),
       new AssociatedModel({ id: 3 }),
     ];
+    // @ts-expect-error: strict mode fix
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;

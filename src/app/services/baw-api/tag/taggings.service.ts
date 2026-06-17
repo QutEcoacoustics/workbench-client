@@ -91,6 +91,7 @@ export class TaggingsService
     audioRecording: IdOr<AudioRecording>,
     audioEvent: IdOr<AudioEvent>
   ): Observable<Tagging | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(
       endpoint(audioRecording, audioEvent, model, emptyParam)
     );

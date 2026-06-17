@@ -21,5 +21,6 @@ describe("StatisticsService", (): void => {
     spec = createService();
   });
 
+  // @ts-expect-error: strict mode fix
   validateApiShow(() => spec, Statistics, baseUrl, 5, createModel);
 });

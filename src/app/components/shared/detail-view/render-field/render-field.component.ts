@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, inject } from "@angular/core";
+﻿import { ChangeDetectorRef, Component, Input, OnChanges, inject } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { ImageSizes, ImageUrl, isImageUrl } from "@interfaces/apiInterfaces";
@@ -123,10 +123,10 @@ export class RenderFieldComponent
   private readonly ref = inject(ChangeDetectorRef);
 
   @Input() public value: ModelView;
-  public children: ModelView[];
-  public display: Display;
+  public children!: ModelView[];
+  public display!: Display;
   public fieldStyling = FieldStyling;
-  public model: AbstractModel;
+  public model!: AbstractModel;
   public styling: FieldStyling = FieldStyling.plain;
 
   public ngOnChanges(): void {
@@ -144,11 +144,11 @@ export class RenderFieldComponent
   // I don't like using "as" for type casting because it just disables TS compiler checks
   // by using a type guard here we can ensure that the type is correct and correctly implicitly type cast Durations
   // in the template
-  public isDuration(value): value is Duration {
+  public isDuration(value: any): value is Duration {
     return value instanceof Duration;
   }
 
-  public isDateTime(value): value is DateTime {
+  public isDateTime(value: any): value is DateTime {
     return value instanceof DateTime;
   }
 

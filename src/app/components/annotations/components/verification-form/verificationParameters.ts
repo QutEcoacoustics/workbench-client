@@ -1,4 +1,5 @@
-import { Params } from "@angular/router";
+﻿import { Params } from "@angular/router";
+import { Filters } from "@baw-api/baw-api.service";
 import { TAG } from "@baw-api/ServiceTokens";
 import {
   IQueryStringParameterSpec,
@@ -11,10 +12,9 @@ import { Id } from "@interfaces/apiInterfaces";
 import { hasOne } from "@models/AssociationDecorators";
 import { AudioEvent } from "@models/AudioEvent";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { Tag } from "@models/Tag";
 import { User } from "@models/User";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { Filters } from "@baw-api/baw-api.service";
 import { verificationStatusOptions } from "../annotation-search-form/annotationSearchParameters";
 
 // The verification status options map can be found in the
@@ -42,8 +42,8 @@ export class VerificationParameters
   implements IVerificationParameters, IParameterModel<AudioEvent>
 {
   public taskTag: Id<Tag>;
-  public taskBehavior: TaskBehaviorKey;
-  public verificationStatus: VerificationStatusKey;
+  public taskBehavior!: TaskBehaviorKey;
+  public verificationStatus!: VerificationStatusKey;
 
   public constructor(
     protected queryStringParameters: Params = {},
@@ -68,6 +68,7 @@ export class VerificationParameters
       this.verificationStatus,
     );
 
-    return { filter };
+    // @ts-expect-error: strict mode fix
+    return { filter }!;
   }
 }

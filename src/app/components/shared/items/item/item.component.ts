@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+﻿import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
@@ -32,11 +32,11 @@ import { NgClass } from "@angular/common";
   imports: [FaIconComponent, NgbTooltip, NgClass],
 })
 export class ItemComponent {
-  @Input() public icon: IconProp;
-  @Input() public name: string;
-  @Input() public tooltip: () => string;
-  @Input() public value: string | number;
-  @Input() public color: string;
+  @Input() public icon!: IconProp;
+  @Input() public name!: string;
+  @Input() public tooltip!: () => string;
+  @Input() public value!: string | number;
+  @Input() public color!: string;
 
   public get tooltipText(): string {
     return this.tooltip?.() ?? undefined;

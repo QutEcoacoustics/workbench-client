@@ -15,6 +15,7 @@ describe("DatatableDefaultsDirective", () => {
   });
 
   function datatable(): DatatableComponent {
+    // @ts-expect-error: strict mode fix
     return spectator.query(DatatableComponent);
   }
 

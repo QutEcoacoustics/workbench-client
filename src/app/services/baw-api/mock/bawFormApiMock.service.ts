@@ -9,8 +9,6 @@ export class MockForm extends AbstractForm {
 
 @Injectable({ providedIn: "root" })
 export class MockBawFormApiService {
-  public constructor() {}
-
   public isLoggedIn() {
     return false;
   }

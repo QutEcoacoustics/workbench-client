@@ -1,4 +1,4 @@
-import { HttpBackend, HttpClient } from "@angular/common/http";
+﻿import { HttpBackend, HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import {
   Configuration,
@@ -27,8 +27,8 @@ export class ConfigService {
   private readonly theme = inject(ThemeService);
   private readonly isServer = inject(IS_SERVER_PLATFORM);
 
-  private _validConfig: boolean;
-  private _config: Configuration;
+  private _validConfig!: boolean;
+  private _config!: Configuration;
   private http: HttpClient;
 
   public constructor() {
@@ -64,7 +64,7 @@ export class ConfigService {
         // API Interceptor is not transforming this error
         catchError((err: any) => {
           console.error("API_CONFIG Failed to load configuration file: ", err);
-          this.setConfig(new Configuration(undefined));
+          this.setConfig(new Configuration(undefined!));
           return of(undefined);
         })
       )

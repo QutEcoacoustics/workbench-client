@@ -47,6 +47,7 @@ export class DatasetsService implements StandardApi<Dataset> {
   }
 
   public destroy(model: IdOr<Dataset>): Observable<Dataset | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }

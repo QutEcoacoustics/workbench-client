@@ -19,11 +19,14 @@ export function compileAndSplitRoutes(
   strongRoutes: StrongRoute[],
 ): [Routes, ServerRoute[]] {
   const clientRoutes = strongRoutes
+    // @ts-expect-error: strict mode fix
     .flatMap((route) => route.compileRoutes(createClientRoute))
 
   const serverRoutes = strongRoutes
+    // @ts-expect-error: strict mode fix
     .flatMap((route) => route.compileRoutes(createServerRoute));
 
+  // @ts-expect-error: strict mode fix
   return [clientRoutes, serverRoutes];
 }
 

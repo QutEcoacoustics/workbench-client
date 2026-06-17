@@ -1,4 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren, inject } from "@angular/core";
+﻿import { NgClass, TitleCasePipe } from "@angular/common";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  inject,
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { PageComponent } from "@helpers/page/pageComponent";
 import {
   ThemeColor,
@@ -8,8 +19,6 @@ import {
 import { rgb } from "d3-color";
 import { List } from "immutable";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
-import { FormsModule } from "@angular/forms";
-import { NgClass, TitleCasePipe } from "@angular/common";
 import { adminCategory, adminThemeMenuItem } from "../admin.menus";
 import { adminMenuItemActions } from "../dashboard/dashboard.component";
 
@@ -31,16 +40,16 @@ class AdminThemeTemplateComponent
     ElementRef<HTMLElement>
   >;
 
-  public selectedColorIndex: number;
-  public themeColors: readonly ThemeColor[];
-  public themeVariants: readonly ThemeVariant[];
+  public selectedColorIndex!: number;
+  public themeColors!: readonly ThemeColor[];
+  public themeVariants!: readonly ThemeVariant[];
   protected darkBackground = false;
   protected disableButtons = false;
 
   public ngOnInit(): void {
     this.themeColors = this.theme.themeColors;
     this.themeVariants = this.theme.themeVariants.map(
-      (variant) => `-${variant}`
+      (variant) => `-${variant}`,
     );
 
     this.resetSelection();
@@ -63,14 +72,14 @@ class AdminThemeTemplateComponent
     this.theme.setColor(color, value);
   }
 
-  public getBoxColor(colorIndex: number, variantIndex: number = 0) {
+  public getBoxColor(colorIndex: number, variantIndex = 0) {
     if (!this.colorBoxes || this.isServer) {
       return "#000";
     }
 
     const boxIndex = colorIndex * this.themeVariants.length + variantIndex;
     const styles = getComputedStyle(
-      this.colorBoxes.get(boxIndex).nativeElement
+      this.colorBoxes.get(boxIndex)!.nativeElement,
     );
     return rgb(styles.backgroundColor).formatHex();
   }

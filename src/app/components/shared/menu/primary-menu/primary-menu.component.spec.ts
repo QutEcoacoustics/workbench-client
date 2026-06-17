@@ -212,10 +212,10 @@ describe("PrimaryMenuComponent", () => {
 
           const dropdown = spec.query("baw-header-dropdown");
           expect(dropdown).toBeTruthy();
-          expect(dropdown.querySelector("button")).toContainText(
+          expect(dropdown!.querySelector("button")).toContainText(
             "<< content2 >>"
           );
-          expect(dropdown.querySelectorAll("a").length).toBe(2);
+          expect(dropdown!.querySelectorAll("a").length).toBe(2);
         });
 
         it(`should ${
@@ -255,7 +255,8 @@ describe("PrimaryMenuComponent", () => {
           const profile = spec.query<HTMLAnchorElement>(profileWidgetSelector);
           if (links.profile) {
             expect(profile).toHaveStrongRoute(myAccountMenuItem.route);
-            expect(profile).toContainText(defaultUser.userName);
+            // @ts-expect-error: strict mode fix
+            expect(profile).toContainText(defaultUser!.userName);
           } else {
             expect(profile).toBeFalsy();
           }
@@ -270,7 +271,7 @@ describe("PrimaryMenuComponent", () => {
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>(profileWidgetSelector);
-            const image = profile.querySelector("img");
+            const image = profile!.querySelector("img");
             expect(image).toHaveImage(
               `${websiteHttpUrl}${assetRoot}/images/user/user_span4.png`,
               { alt: "Profile Icon" }
@@ -284,7 +285,7 @@ describe("PrimaryMenuComponent", () => {
             spec.detectChanges();
 
             const profile = spec.query<HTMLElement>(profileWidgetSelector);
-            const image = profile.querySelector("img");
+            const image = profile!.querySelector("img");
             expect(image).toHaveImage(imageUrls[0].url, {
               alt: "Profile Icon",
             });
@@ -343,10 +344,11 @@ describe("PrimaryMenuComponent", () => {
 
     it("should call signOut when logout button pressed", () => {
       setup({ user: defaultUser });
+      // @ts-expect-error: strict mode fix
       spyOn(api, "signOut").and.callFake(() => new BehaviorSubject<void>(null));
       spec.detectChanges();
 
-      getLogoutButton().click();
+      getLogoutButton()!.click();
       expect(api.signOut).toHaveBeenCalled();
     });
 
@@ -359,7 +361,7 @@ describe("PrimaryMenuComponent", () => {
         .and.callFake(() => false);
       spec.detectChanges();
 
-      getLogoutButton().click();
+      getLogoutButton()!.click();
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         homeMenuItem.route.toRouterLink()
       );
@@ -381,7 +383,7 @@ describe("PrimaryMenuComponent", () => {
       spec.detectChanges();
 
       // Wait for sign out, and trigger logged in status update
-      getLogoutButton().click();
+      getLogoutButton()!.click();
       loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
@@ -397,7 +399,7 @@ describe("PrimaryMenuComponent", () => {
       spec.detectChanges();
 
       // Wait for sign out, and trigger logged in status update
-      getLogoutButton().click();
+      getLogoutButton()!.click();
       loggedInTrigger.next({ user: guestUser });
       spec.detectChanges();
 
@@ -408,12 +410,14 @@ describe("PrimaryMenuComponent", () => {
 
   describe("status indicator", () => {
     const statusIndicatorElement = (): HTMLElement =>
+      // @ts-expect-error: strict mode fix
       spec.query("baw-website-status-indicator");
 
     // the functionality of the status indicator is tested within the website-status-indicator component
     // therefore, we only need to assert that the indicator is shown under the correct conditions
     it("should show the status indicator when not in the sidebar and on desktop", () => {
       setup({
+        // @ts-expect-error: strict mode fix
         user: null,
         isFullscreen: false,
         isSideNav: false,
@@ -427,6 +431,7 @@ describe("PrimaryMenuComponent", () => {
 
     it("should hide the status indicator when in the sidebar", () => {
       setup({
+        // @ts-expect-error: strict mode fix
         user: null,
         isFullscreen: false,
         isSideNav: true,
@@ -523,6 +528,7 @@ describe("PrimaryMenuComponent", () => {
             it(`should ${location}`, () => {
               viewport.set(width);
               setup({
+                // @ts-expect-error: strict mode fix
                 user: null,
                 isFullscreen: fullscreen,
                 isSideNav: sideNav,

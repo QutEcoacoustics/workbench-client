@@ -43,8 +43,8 @@ export function filterMock<M extends AbstractModel>(
     },
   };
 
-  const startIndex = (meta.paging.page - 1) * defaultApiPageSize;
-  const endIndex = meta.paging.page * defaultApiPageSize;
+  const startIndex = (meta.paging!.page - 1) * defaultApiPageSize;
+  const endIndex = meta.paging!.page * defaultApiPageSize;
 
   for (let i = startIndex; i < endIndex; i++) {
     const model = classBuilder(i);

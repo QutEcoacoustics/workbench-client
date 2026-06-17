@@ -23,16 +23,19 @@ export function embedGoogleAnalytics(key?: string): void {
 
   // Create Create dataLayer for google analytics:
   // developers.google.com/tag-platform/tag-manager/web/datalayer
+  // @ts-expect-error: strict mode fix
   window["dataLayer"] = window["dataLayer"] || [];
   window["gtag"] = function () {
     // Arguments creates an array like object, which is not the same as ...args.
-    // Google analytics is depdenant on this behaviour, and will not work
+    // Google analytics is dependant on this behaviour, and will not work
     // otherwise
+    // @ts-expect-error: strict mode fix
     // eslint-disable-next-line prefer-rest-params
-    window["dataLayer"].push(arguments);
+    window["dataLayer"]!.push(arguments);
   };
 
   gtag("js", new Date());
+  // @ts-expect-error: strict mode fix
   gtag("config", key);
 
   const node: HTMLScriptElement = document.createElement("script");
@@ -44,9 +47,9 @@ export function embedGoogleAnalytics(key?: string): void {
 }
 
 /**
- * Remove the google maps script from the document. This should
+ * Remove the google analytics script from the document. This should
  * only be accessed by unit tests.
  */
 export function destroyGoogleAnalytics(): void {
-  document.getElementById("google-analytics").remove();
+  document.getElementById("google-analytics")!.remove();
 }

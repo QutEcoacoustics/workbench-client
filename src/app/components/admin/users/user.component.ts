@@ -46,6 +46,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     const api = inject(AccountsService);
 
     super(api, (accounts) =>
+      // @ts-expect-error: strict mode fix
       accounts.map((account) => ({
         account,
         user: account.userName,

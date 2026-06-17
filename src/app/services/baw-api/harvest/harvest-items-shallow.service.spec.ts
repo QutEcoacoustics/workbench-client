@@ -32,6 +32,7 @@ describe("ShallowHarvestItemsService", () => {
     baseUrl + "filter",
     baseUrl + harvestItemPath,
     createModel,
+    // @ts-expect-error: strict mode fix
     undefined,
     5 // harvest
   );

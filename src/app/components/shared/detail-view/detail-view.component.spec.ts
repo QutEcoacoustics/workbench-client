@@ -210,6 +210,7 @@ describe("DetailViewComponent", () => {
         const response = interceptShowApiRequest(
           api as any,
           injector,
+          // @ts-expect-error: strict mode fix
           mockApiResponses[0],
           AssociatedModel
         );
@@ -238,8 +239,8 @@ describe("DetailViewComponent", () => {
 
     it("should inline field and value on small screen", () => {
       const parentEl = getWrapper();
-      const leftCol = parentEl.firstElementChild;
-      const rightCol = parentEl.lastElementChild;
+      const leftCol = parentEl!.firstElementChild;
+      const rightCol = parentEl!.lastElementChild;
 
       expect(parentEl).toHaveClass("row");
       expect(leftCol).toHaveClass("col-sm-3");

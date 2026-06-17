@@ -56,6 +56,7 @@ describe("ListComponent", () => {
 
     mockHarvest["injector"] = injector;
 
+    // @ts-expect-error: strict mode fix
     spyOnProperty(spec.component, "project").and.callFake(() => project);
 
     const mockHarvestApi = spec.inject(SHALLOW_HARVEST.token);
@@ -114,6 +115,7 @@ describe("ListComponent", () => {
   }
 
   function getCreatorColumnElement(): HTMLElement {
+    // @ts-expect-error: strict mode fix
     return spec.query("baw-user-link");
   }
 
@@ -155,7 +157,7 @@ describe("ListComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalCancelButton().click();
+    getModalCancelButton()!.click();
     tick();
 
     expect(harvestApi.transitionStatus).not.toHaveBeenCalled();
@@ -167,7 +169,7 @@ describe("ListComponent", () => {
     getAbortButton().click();
     tick();
 
-    getModalNextButton().click();
+    getModalNextButton()!.click();
     tick();
 
     expect(harvestApi.transitionStatus).toHaveBeenCalledWith(
@@ -197,6 +199,7 @@ describe("ListComponent", () => {
   // if you are using the association directive directly in the template, this test will fail
   // this is because change detection will not trigger when the model is changed from an UnresolvedModel to a resolved model
   it("should display a the harvest creator in the creators column", () => {
+    // @ts-expect-error: strict mode fix
     const expectedUserName: string = defaultUser.userName;
     setup(defaultProject, defaultHarvest);
 
@@ -265,7 +268,9 @@ describe("ListComponent", () => {
   it("should display the harvest project name in the project column if the harvest list is not scoped to a project", () => {
     setup(null, defaultHarvest);
 
+    // @ts-expect-error: strict mode fix
     const expectedProject: Project = defaultHarvest.project;
+    // @ts-expect-error: strict mode fix
     const expectedProjectName: string = expectedProject.name;
 
     const projectNameColumnValue =

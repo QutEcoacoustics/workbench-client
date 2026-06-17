@@ -6,7 +6,7 @@ import { StrongRoute } from "@interfaces/strongRoute";
 
 const eventSummaryReportRouteName = "event_summary";
 
-const summaryReportRouteQueryParamResolver = (params) =>
+const summaryReportRouteQueryParamResolver = (params: any) =>
   params
     ? {
         sites: params.sites,

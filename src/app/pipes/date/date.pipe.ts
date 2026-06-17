@@ -14,8 +14,6 @@ export interface DateTimePipeOptions {
 // using this pipe also allows us to standardise the date format throughout the client
 @Pipe({ name: "dateTime" })
 export class DateTimePipe implements PipeTransform {
-  public constructor() {}
-
   public transform(value?: DateTime, options?: DateTimePipeOptions): string {
     if (!isInstantiated(value)) {
       return "";
@@ -27,7 +25,7 @@ export class DateTimePipe implements PipeTransform {
     const localizedDate = options?.localTime === true ? value.toLocal() : value;
 
     return localizedDate.toFormat(
-      options?.includeTime === true ? dateTimeFormat : dateFormat
+      options?.includeTime === true ? dateTimeFormat : dateFormat,
     );
   }
 }

@@ -9,7 +9,7 @@ import { harvestRoute, harvestsRoute, newHarvestRoute } from "./harvest.routes";
 
 export const createHarvestPredicate = (_: any, data: IPageInfo): boolean => {
   const project = retrieveResolvedModel(data, Project);
-  return project?.can("createHarvest").can;
+  return project!.can("createHarvest").can;
 };
 
 export const harvestsCategory: Category = {
@@ -41,8 +41,9 @@ export const harvestMenuItem = menuRoute({
   ...newHarvestMenuItem,
   icon: ["fas", "cloud-arrow-up"],
   route: harvestRoute,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot): string => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel.harvest.model?.name;
   },
 });

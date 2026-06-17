@@ -29,7 +29,7 @@ describe("FormlyCheckboxInput", () => {
     return spectator.query<HTMLInputElement>("input[type='checkbox']");
   }
 
-  function setup(key: string = "checkbox", options: FormlyFieldProps = {}) {
+  function setup(key = "checkbox", options: FormlyFieldProps = {}) {
     formGroup = new FormGroup({ checkbox: new FormControl("") });
     model = {};
 
@@ -49,7 +49,7 @@ describe("FormlyCheckboxInput", () => {
             props: options,
           },
         },
-      }
+      },
     );
     spectator.detectChanges();
   }
@@ -62,16 +62,16 @@ describe("FormlyCheckboxInput", () => {
   it("should activate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
-    checkbox.click();
-    expect(checkbox.checked).toBeTruthy();
+    checkbox!.click();
+    expect(checkbox!.checked).toBeTruthy();
   });
 
   it("should deactivate checkbox on click", () => {
     setup();
     const checkbox = getCheckbox();
-    checkbox.click();
-    checkbox.click();
-    expect(checkbox.checked).toBeFalsy();
+    checkbox!.click();
+    checkbox!.click();
+    expect(checkbox!.checked).toBeFalsy();
   });
 
   // TODO Implement

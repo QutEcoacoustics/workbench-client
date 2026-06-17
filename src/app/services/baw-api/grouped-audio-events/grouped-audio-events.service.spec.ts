@@ -1,9 +1,9 @@
+import { AudioEventGroup } from "@models/AudioEventGroup";
 import { createServiceFactory, SpectatorService } from "@ngneat/spectator";
 import {
   mockServiceProviders,
   validateApiFilterGroupBy,
 } from "@test/helpers/api-common";
-import { AudioEventGroup } from "@models/AudioEventGroup";
 import { GroupedAudioEventsService } from "./grouped-audio-events.service";
 
 // TODO: Enable these tests once the server endpoint is complete

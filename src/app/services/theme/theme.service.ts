@@ -1,4 +1,4 @@
-import { inject, Injectable, DOCUMENT } from "@angular/core";
+﻿import { inject, Injectable, DOCUMENT } from "@angular/core";
 import { hsl, rgb, HSLColor, RGBColor } from "d3-color";
 import { IS_SERVER_PLATFORM } from "src/app/app.helper";
 
@@ -47,7 +47,7 @@ export class ThemeService {
   public themeVariants = Object.keys(themeVariants);
 
   /** Tracks config changes to theme */
-  private theme: BawTheme;
+  private theme!: BawTheme;
   /** Stored styles of the website */
   private root: HTMLElement;
 
@@ -66,10 +66,11 @@ export class ThemeService {
 
     // Re-add instance changes to theme
     for (const themeColor of Object.keys(this.theme)) {
+      // @ts-expect-error: strict mode indexing
       this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
     }
 
-    this.overrideBootstrapColors(this.theme.highlight);
+    this.overrideBootstrapColors(this.theme.highlight!);
   }
 
   /**
@@ -78,7 +79,7 @@ export class ThemeService {
    * @param colorName Color to reset
    */
   public resetColor(colorName: ThemeColor): void {
-    this.setColor(colorName, null);
+    this.setColor(colorName, null!);
 
     // Re-add instance changes to color
     this.setColor(colorName, this.theme[colorName]);
@@ -88,7 +89,7 @@ export class ThemeService {
    * Reset any modifications to the global theme
    */
   public resetTheme(): void {
-    this.themeColors.forEach((color) => this.setColor(color, null));
+    this.themeColors.forEach((color) => this.setColor(color, null!));
     this.setTheme(this.theme);
   }
 

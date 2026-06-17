@@ -20,7 +20,7 @@
   <baw-typeahead-input
     id="projects-input"
     label="Project(s)"
-    [inputPlaceholder]="project() ? project().name : 'All'"
+    [inputPlaceholder]="project()?.name ?? 'All'"
     [searchCallback]="
       createSearchCallback(projectsApi, 'name', this.routeModelFilters())
     "
@@ -51,7 +51,7 @@
   <baw-typeahead-input
     id="sites-input"
     [label]="site() ? (site()?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
-    [inputPlaceholder]="site() ? site().name : 'All'"
+    [inputPlaceholder]="site()?.name ?? 'All'"
     [searchCallback]="
       createSearchCallback(sitesApi, 'name', this.routeModelFilters())
     "

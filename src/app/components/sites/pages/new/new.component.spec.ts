@@ -90,7 +90,9 @@ describe("SiteNewComponent", () => {
       const models = { project: { model: project } };
 
       if (region) {
+        // @ts-expect-error: strict mode fix
         resolvers["region"] = "resolver";
+        // @ts-expect-error: strict mode fix
         models["region"] = { model: region };
       }
 

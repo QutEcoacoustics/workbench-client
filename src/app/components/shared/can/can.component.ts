@@ -54,6 +54,7 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
   private predicates: CanPredicate[] = [];
 
   public ngOnInit(): void {
+    // @ts-expect-error: strict mode fix
     if (this.ifLoggedIn) {
       this.predicates.push(this.ifLoggedInPredicate());
     }
@@ -74,7 +75,7 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
 
   private disableInteractiveContent(state: boolean): void {
     // TODO: use a ContentChild decorator here
-    const content = this.contentWrapper().nativeElement.children;
+    const content = this.contentWrapper()!.nativeElement.children;
 
     for (const element of content) {
       if (state) {

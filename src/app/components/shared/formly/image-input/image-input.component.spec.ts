@@ -83,13 +83,14 @@ describe("FormlyImageInput", () => {
 
     it("should not display remove image button once the button has been clicked", () => {
       setup();
+      // @ts-expect-error: strict mode fix
       spec.click(removeButton());
       expect(removeButton()).not.toExist();
     });
 
     it("should set model value to null on click", () => {
       setup();
-      removeButton().click();
+      removeButton()!.click();
       expect(model.image).toBeNull();
     });
 
@@ -98,10 +99,12 @@ describe("FormlyImageInput", () => {
       const imageInput = getInput();
 
       const testingFile = new File([""], "testFile.png");
+      // @ts-expect-error: strict mode fix
       inputFile(spec, imageInput, [testingFile]);
 
+      // @ts-expect-error: strict mode fix
       spec.click(removeButton());
-      expect(imageInput.value).toBeFalsy();
+      expect(imageInput!.value).toBeFalsy();
     });
   });
 });

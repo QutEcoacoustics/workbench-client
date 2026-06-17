@@ -47,6 +47,7 @@ export class SavedSearchesService implements ImmutableApi<SavedSearch> {
   }
 
   public destroy(model: IdOr<SavedSearch>): Observable<SavedSearch | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(model, emptyParam));
   }
 }

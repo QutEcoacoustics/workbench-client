@@ -7,10 +7,10 @@
   and refresh this page.
 </p>
 
-@if (harvest.report.itemsErrored > 0) {
+@if ((harvest.report?.itemsErrored ?? 0) > 0) {
   <p class="alert alert-danger">
     An unexpected error occurred in
-    {{ harvest.report.itemsErrored | number }} file(s). Please contact us so we
+    {{ harvest.report?.itemsErrored | number }} file(s). Please contact us so we
     can investigate the issue. You can choose to continue the harvest, but any
     files that produced errors will be ignored.
   </p>

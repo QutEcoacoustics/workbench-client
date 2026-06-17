@@ -164,8 +164,8 @@ describe("RenderFieldComponent", () => {
       setup(true);
       spec.detectChanges();
       const value = getElement.checkbox()[0].querySelector("input");
-      expect(value.checked).toBeTruthy();
-      expect(value.disabled).toBeTruthy();
+      expect(value!.checked).toBeTruthy();
+      expect(value!.disabled).toBeTruthy();
     });
 
     it("should handle false input", () => {
@@ -179,8 +179,8 @@ describe("RenderFieldComponent", () => {
       setup(false);
       spec.detectChanges();
       const value = getElement.checkbox()[0].querySelector("input");
-      expect(value.checked).toBeFalsy();
-      expect(value.disabled).toBeTruthy();
+      expect(value!.checked).toBeFalsy();
+      expect(value!.disabled).toBeTruthy();
     });
   });
 
@@ -211,6 +211,7 @@ describe("RenderFieldComponent", () => {
     it("should display object error when JSON stringy fails", () => {
       // Create cyclic object should fail JSON.stringify
       const cyclicObject = { a: [] };
+      // @ts-expect-error: strict mode fix
       cyclicObject.a.push(cyclicObject);
 
       setup(cyclicObject);
@@ -247,6 +248,7 @@ describe("RenderFieldComponent", () => {
     });
   });
 
+  // @ts-expect-error: strict mode fix
   withDefaultZone(null, () => {
     describe("DateTime input without zone", () => {
       let dateTime: DateTime;
@@ -381,6 +383,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle error output", async () => {
+      // @ts-expect-error: strict mode fix
       await setBlob(undefined, "failure");
       spec.detectChanges();
       assertError();
@@ -391,7 +394,7 @@ describe("RenderFieldComponent", () => {
     function createModel(
       data: any,
       link: () => string = () => "",
-      toString?: (model) => string
+      toString?: (model: any) => string
     ) {
       class MockModel extends AbstractModel {
         public kind = "Mock Model";
@@ -416,6 +419,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display ghost user", () => {
+      // @ts-expect-error: strict mode fix
       setup(User.getUnknownUser(undefined));
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
@@ -561,6 +565,7 @@ describe("RenderFieldComponent", () => {
       setup(imageUrls);
       spec.detectChanges();
       const value = getElement.image()[0];
+      // @ts-expect-error: strict mode fix
       value.onerror("unit test");
       spec.detectChanges();
       expect(value).toHaveImage(imageUrls[1].url, { alt: "model image alt" });

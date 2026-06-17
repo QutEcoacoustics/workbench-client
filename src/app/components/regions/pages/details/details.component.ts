@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+﻿import { Component, OnInit, inject } from "@angular/core";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import {
   regionResolvers,
@@ -138,8 +138,8 @@ class RegionDetailsComponent extends PaginationTemplate<Site> implements OnInit 
   private readonly clientConfig = inject(ConfigService);
 
   public defaultDescription = "<i>No description found</i>";
-  public project: Project;
-  public region: Region;
+  public project!: Project;
+  public region!: Region;
   public sites: List<Site> = List([]);
 
   public constructor() {
@@ -177,7 +177,7 @@ class RegionDetailsComponent extends PaginationTemplate<Site> implements OnInit 
       .subscribe({
         complete: () => {
           this.notifications.success(
-            defaultSuccessMsg("destroyed", this.region.name)
+            defaultSuccessMsg("destroyed", this.region.name!)
           );
           const newRouteLocation = hideProjects
             ? shallowRegionsRoute.toRouterLink()

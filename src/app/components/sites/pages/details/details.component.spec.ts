@@ -60,7 +60,9 @@ describe("SiteDetailsComponent", () => {
     const resolvers = { project: "resolver", site: "resolver" };
 
     if (region) {
+      // @ts-expect-error: strict mode fix
       models["region"] = getResolvedModel(region);
+      // @ts-expect-error: strict mode fix
       resolvers["region"] = "resolver";
     }
 
@@ -88,6 +90,7 @@ describe("SiteDetailsComponent", () => {
   [true, false].forEach((withRegion) => {
     describe(withRegion ? "withRegion" : "withoutRegion", () => {
       beforeEach(() => {
+        // @ts-expect-error: strict mode fix
         defaultRegion = withRegion ? new Region(generateRegion({
           projectId: defaultProject.id,
         })) : undefined;
@@ -128,6 +131,7 @@ describe("SiteDetailsComponent", () => {
       it("should create site details component", () => {
         setup(defaultProject, defaultSite, defaultRegion);
         spec.detectChanges();
+        // @ts-expect-error: strict mode fix
         const { project, region, site } = spec.query(SiteComponent);
         expect(project).toEqual(defaultProject);
         expect(region).toEqual(defaultRegion);
@@ -138,6 +142,7 @@ describe("SiteDetailsComponent", () => {
         describe(`deleteModel ${projectsHidden ? "with" : "without"} projects hidden`, () => {
           beforeEach(() => {
             setup(defaultProject, defaultSite, defaultRegion);
+            // @ts-expect-error: strict mode fix
             sitesApi.destroy.and.callFake(() => of(null));
 
             configService ||= spec.inject(ConfigService);

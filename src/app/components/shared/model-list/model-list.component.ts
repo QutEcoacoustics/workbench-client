@@ -1,4 +1,4 @@
-import { Component, inject, model, signal, OnInit, input, contentChild, TemplateRef } from "@angular/core";
+﻿import { Component, inject, model, signal, OnInit, input, contentChild, TemplateRef } from "@angular/core";
 import { PaginationTemplate } from "@helpers/paginationTemplate/paginationTemplate";
 import { CardsComponent } from "@shared/model-cards/cards/cards.component";
 import {
@@ -69,7 +69,7 @@ export class ModelListComponent<Model extends ListModel>
 
   // This doesn't need to be a signal because it doesn't change after the first
   // render.
-  protected groupBy: keyof Site;
+  protected groupBy!: keyof Site;
 
   public constructor() {
     const service = inject<ApiFilter<Model>>(MODEL_LIST_SERVICE);
@@ -107,7 +107,7 @@ export class ModelListComponent<Model extends ListModel>
     if (textFilter) {
       const baseFilter = this.generateFilter();
       this.mapFilter.set(
-        associationModelFilter(this.modelKey(), baseFilter.filter),
+        associationModelFilter(this.modelKey(), baseFilter.filter!),
       );
     } else {
       this.mapFilter.set(null);

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from "@angular/core";
+﻿import { Component, Input, OnInit, inject } from "@angular/core";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import {
@@ -25,9 +25,9 @@ export class RecentAnnotationsComponent
 {
   private readonly audioEventsApi = inject(ShallowAudioEventsService);
 
-  @Input() public site: Site;
+  @Input() public site!: Site;
 
-  public recentAudioEvents: AudioEvent[];
+  public recentAudioEvents!: AudioEvent[];
 
   public ngOnInit(): void {
     this.getAnnotations();
@@ -55,7 +55,7 @@ export class RecentAnnotationsComponent
         for (const event of events) {
           this.recentAudioEvents.push(event);
           // An event with no taggings will still show a (not tagged) tag
-          numTags += Math.max(event.taggings.length, 1);
+          numTags += Math.max(event.taggings!.length, 1);
 
           if (numTags > maxTags) {
             return;

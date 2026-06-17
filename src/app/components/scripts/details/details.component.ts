@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+﻿import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
   hasResolvedSuccessfully,
@@ -41,8 +41,8 @@ class AdminScriptComponent
 {
   private readonly route = inject(ActivatedRoute);
 
-  public script: Script;
-  public failure: boolean;
+  public script!: Script;
+  public failure!: boolean;
   public fields = [...baseSchema.fields, ...extendedSchema.fields];
 
   public ngOnInit(): void {

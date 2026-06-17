@@ -22,6 +22,7 @@ export const listenMenuItem = menuRoute({
 export const listenRecordingMenuItem = menuRoute({
   icon: ["fas", "play"],
   label: "Play",
+  // @ts-expect-error: strict mode fix
   route: listenRoute.add(":audioRecordingId", ({ start, end, padding }) => ({
     start: isInstantiated(start)
       ? Math.max(0, Math.floor(start) - (padding ?? 0))
@@ -30,6 +31,8 @@ export const listenRecordingMenuItem = menuRoute({
   })),
   tooltip: () => "Listen to an audio recording",
   // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) =>
+    // @ts-expect-error: strict mode fix
     retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
 });

@@ -41,8 +41,11 @@ describe("AdminUserListComponent", () => {
       );
     }
 
+    // @ts-expect-error: strict mode fix
     this.defaultModels = defaultUsers;
+    // @ts-expect-error: strict mode fix
     this.fixture = spec.fixture;
+    // @ts-expect-error: strict mode fix
     this.api = api;
   });
 
@@ -89,10 +92,11 @@ describe("AdminUserListComponent", () => {
         generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
       );
       datatableApiResponse<User>(api, [user]);
+      // @ts-expect-error: strict mode fix
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
       spec.detectChanges();
 
-      expect(user.lastSeenAt.toRelative).toHaveBeenCalled();
+      expect(user.lastSeenAt!.toRelative).toHaveBeenCalled();
     });
 
     it("should display last login", () => {
@@ -100,6 +104,7 @@ describe("AdminUserListComponent", () => {
         generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
       );
       datatableApiResponse<User>(api, [user]);
+      // @ts-expect-error: strict mode fix
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
       spec.detectChanges();
 
@@ -115,6 +120,7 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
+      // @ts-expect-error: strict mode fix
       const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
         "input[type='checkbox']"
       );
@@ -130,6 +136,7 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
+      // @ts-expect-error: strict mode fix
       const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
         "input[type='checkbox']"
       );
@@ -167,8 +174,8 @@ describe("AdminUserListComponent", () => {
       spec.detectChanges();
 
       const editLink = spec.queryLast(StrongRouteDirective);
-      expect(editLink.strongRoute).toEqual(theirEditMenuItem.route);
-      expect(editLink.routeParams).toEqual({ accountId: 5 });
+      expect(editLink!.strongRoute).toEqual(theirEditMenuItem.route);
+      expect(editLink!.routeParams).toEqual({ accountId: 5 });
     });
   });
 });

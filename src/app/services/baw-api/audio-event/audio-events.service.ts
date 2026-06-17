@@ -85,6 +85,7 @@ export class AudioEventsService
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(audioRecording, model, emptyParam));
   }
 }
@@ -112,6 +113,7 @@ export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
     user: IdOr<User>
   ): Observable<AudioEvent[]> {
     return this.filter(
+      // @ts-expect-error: strict mode fix
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
@@ -130,6 +132,7 @@ export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
       this.api.filterThroughAssociation(
         filters,
         "audioRecordings.siteId" as any,
+        // @ts-expect-error: strict mode fix
         site
       )
     );

@@ -66,6 +66,7 @@ describe("HomeComponent", () => {
 
     const promise = interceptFilterApiRequest<IRegion, Region>(
       regionApi,
+      // @ts-expect-error: strict mode fix
       undefined,
       regions,
       Region
@@ -86,6 +87,7 @@ describe("HomeComponent", () => {
 
     const promise = interceptFilterApiRequest<IProject, Project>(
       projectApi,
+      // @ts-expect-error: strict mode fix
       undefined,
       projects,
       Project
@@ -105,6 +107,7 @@ describe("HomeComponent", () => {
   }
 
   function getModelCards(): CardsComponent {
+    // @ts-expect-error: strict mode fix
     return spec.query(CardsComponent);
   }
 
@@ -113,6 +116,7 @@ describe("HomeComponent", () => {
   }
 
   function getViewMoreButton(): HTMLAnchorElement {
+    // @ts-expect-error: strict mode fix
     return spec.query("#viewMore");
   }
 
@@ -223,7 +227,8 @@ describe("HomeComponent", () => {
         const model: any = test.generateModel();
         await test.awaitModel([model]);
         assertModelCardsCount(1);
-        expect(getModelCards().models()[0]).toEqual(model);
+        // @ts-expect-error: strict mode fix
+        expect(getModelCards()!.models()[0]).toEqual(model);
         expect(getViewMoreButton()).toBeTruthy();
       });
 
@@ -238,7 +243,7 @@ describe("HomeComponent", () => {
         const cards = getModelCards().models();
         assertModelCardsCount(3);
         models.forEach((model, index) =>
-          expect(cards[index]).toEqual(model)
+          expect(cards![index]).toEqual(model)
         );
         expect(getViewMoreButton()).toBeTruthy();
       });

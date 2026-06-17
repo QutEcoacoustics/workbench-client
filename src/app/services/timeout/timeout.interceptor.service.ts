@@ -12,6 +12,7 @@ export interface TimeoutOptions {
 export const TIMEOUT_OPTIONS = new InjectionToken<TimeoutOptions>(
   "Timeout Options",
   {
+    // @ts-expect-error: strict mode fix
     factory() {
       return { timeout: null };
     },

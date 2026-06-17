@@ -136,6 +136,7 @@ describe("GridTileContentComponent", () => {
       spectator.click(contextButton());
       expect(contextCard()).toBeVisible();
 
+      // @ts-expect-error: strict mode fix
       spectator.click(contextCloseButton());
       expect(contextCard()).not.toBeVisible();
     });
@@ -158,7 +159,7 @@ describe("GridTileContentComponent", () => {
       const expectedEndOffset = mockAnnotation.endTimeSeconds + expectedContextSize;
       const expectedOffsetParameters = `?start_offset=${expectedStartOffset}&end_offset=${expectedEndOffset}`;
 
-      const realizedSpectrogramSource = spectrogram().src;
+      const realizedSpectrogramSource = spectrogram()!.src;
 
       expect(realizedSpectrogramSource).toContain(expectedOffsetParameters);
     });

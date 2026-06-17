@@ -63,7 +63,7 @@ export class VerificationFormComponent {
   protected hasTaskTag(): boolean {
     const taskTag = this.verificationParameters().taskTagModel;
 
-    const isResolved = !isUnresolvedModel(taskTag);
+    const isResolved = !isUnresolvedModel(taskTag!);
     const instantiated = isInstantiated(taskTag);
 
     return isResolved && instantiated;
@@ -71,7 +71,7 @@ export class VerificationFormComponent {
 
   protected updateTaskTag(newTaskTags: Tag[]): void {
     this.verificationParameters.update((current) => {
-      current.taskTag = newTaskTags[0]?.id ?? null;
+      current.taskTag = newTaskTags[0]?.id ?? null!;
       return current;
     });
 

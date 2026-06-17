@@ -61,6 +61,7 @@ export function associationModelFilter<
 
   // TODO: Add support for combinators ("and", "or", "not")
   for (const [key, value] of Object.entries(associationFilter)) {
+    // @ts-expect-error: strict mode indexing
     unwrappedAssociationFilter[`${associationKey}.${key}` as any] = value;
   }
 

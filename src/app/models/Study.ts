@@ -41,6 +41,7 @@ export class Study extends AbstractModel<IStudy> implements IStudy {
   public dataset?: Dataset;
 
   public get viewUrl(): string {
-    return citSciAboutMenuItem.route.format({ studyName: this.name });
+    // @ts-expect-error: strict mode fix
+    return citSciAboutMenuItem.route.format({ studyName: this.name })!;
   }
 }

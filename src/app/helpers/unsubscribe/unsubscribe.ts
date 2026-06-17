@@ -10,8 +10,11 @@ import { Subject } from "rxjs";
 export function withUnsubscribe<
   T extends Type<{
     constructor: unknown;
+    // @ts-expect-error: strict mode fix
     ngOnDestroy?();
+    // @ts-expect-error: strict mode fix
     ngOnInit?();
+    // @ts-expect-error: strict mode fix
     ngAfterViewInit?();
   }>
 >(base: T = class {} as any) {

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+﻿import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Harvest, HarvestStatus } from "@models/Harvest";
 import { Duration } from "luxon";
@@ -23,7 +23,7 @@ import { DurationComponent } from "@shared/datetime-formats/duration/duration.co
       @if (hasProgress()) {
         <small class="float-end text-muted font-monospace">
           @if (expectedRemainingTime && hasProgress()) {
-            ≈<baw-duration
+            â‰ˆ<baw-duration
             [value]="expectedRemainingTime"
             humanized
             />
@@ -38,8 +38,8 @@ import { DurationComponent } from "@shared/datetime-formats/duration/duration.co
   imports: [TimeSinceComponent, DurationComponent]
 })
 export class EtaComponent implements OnChanges {
-  @Input() public harvest: Harvest;
-  @Input() public progress: number;
+  @Input() public harvest!: Harvest;
+  @Input() public progress!: number;
 
   public get humanizeStage(): string {
     const humanizedText: Partial<Record<HarvestStatus, string>> = {
@@ -47,10 +47,11 @@ export class EtaComponent implements OnChanges {
       scanning: "scanning files",
       processing: "processing files",
     };
+    // @ts-expect-error: strict mode fix
     return humanizedText[this.harvest.status];
   }
 
-  public expectedRemainingTime: Duration;
+  public expectedRemainingTime!: Duration;
 
   public ngOnChanges({ progress }: SimpleChanges): void {
     // Only update on changes to the progress
@@ -68,7 +69,8 @@ export class EtaComponent implements OnChanges {
      * harvest is queued and takes up all of the available computing
      * resources)
      */
-    const timeTakenSeconds = this.harvest.updatedAt.diffNow("seconds").seconds;
+    // @ts-expect-error: strict mode fix
+    const timeTakenSeconds = this.harvest.updatedAt.diffNow("seconds")!.seconds;
     const expectedRemainingTimeSeconds =
       timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;
     this.expectedRemainingTime = Duration.fromMillis(

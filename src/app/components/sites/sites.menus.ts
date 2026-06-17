@@ -25,9 +25,11 @@ export const siteMenuItem = menuRoute({
   parent: projectMenuItem,
   route: sitesCategory.route,
   tooltip: () => "The current site",
+  // @ts-expect-error: strict mode fix
   breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
+  // @ts-expect-error: strict mode fix
   title: (routeData: RouterStateSnapshot) => {
-    const componentModel = routeData.root.firstChild.data;
+    const componentModel = routeData.root.firstChild!.data;
     return componentModel.site.model?.name;
   }
 });

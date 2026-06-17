@@ -1,8 +1,18 @@
+import { fakeAsync, flush } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
+import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
 import { defaultApiPageSize, Filters } from "@baw-api/baw-api.service";
 import { ProjectsService } from "@baw-api/project/projects.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { ShallowSitesService } from "@baw-api/site/sites.service";
+import { ProjectListComponent } from "@components/projects/pages/list/list.component";
+import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
+import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
 import { Errorable } from "@helpers/advancedTypes";
 import { isBawApiError } from "@helpers/custom-errors/baw-api-error";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import { IProject, Project } from "@models/Project";
+import { Site } from "@models/Site";
 import { NgbPagination } from "@ng-bootstrap/ng-bootstrap";
 import {
   createHostFactory,
@@ -10,28 +20,18 @@ import {
   SpectatorHost,
   SpyObject,
 } from "@ngneat/spectator";
-import { CardsComponent } from "@shared/model-cards/cards/cards.component";
-import { generateProject } from "@test/fakes/Project";
-import { nStepObservable } from "@test/helpers/general";
-import { assertPageInfo } from "@test/helpers/pageRoute";
-import { of, Subject } from "rxjs";
-import { shallowRegionsMenuItem } from "@components/regions/regions.menus";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { DebouncedInputDirective } from "@directives/debouncedInput/debounced-input.directive";
-import { ProjectListComponent } from "@components/projects/pages/list/list.component";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { provideMockConfig } from "@services/config/provide-configMock";
 import { IconsModule } from "@shared/icons/icons.module";
-import { provideRouter } from "@angular/router";
-import { AssociationInjector } from "@models/ImplementsInjector";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { ShallowSitesService } from "@baw-api/site/sites.service";
-import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
-import { Site } from "@models/Site";
-import { getElementByTextContent } from "@test/helpers/html";
+import { MapComponent } from "@shared/map/map.component";
+import { CardsComponent } from "@shared/model-cards/cards/cards.component";
+import { generateProject } from "@test/fakes/Project";
 import { generateSite } from "@test/fakes/Site";
 import { modelData } from "@test/helpers/faker";
-import { MapComponent } from "@shared/map/map.component";
-import { fakeAsync, flush } from "@angular/core/testing";
+import { nStepObservable } from "@test/helpers/general";
+import { getElementByTextContent } from "@test/helpers/html";
+import { assertPageInfo } from "@test/helpers/pageRoute";
+import { of, Subject } from "rxjs";
 import { ModelListComponent } from "./model-list.component";
 import { MODEL_LIST_SERVICE } from "./model-list.tokens";
 
@@ -86,7 +86,9 @@ describe("ModelListComponent", () => {
 
   async function handleApiRequest(
     models: Errorable<Project[]>,
-    assertFilter: (filters: Filters<Project>) => void = () => {},
+    assertFilter: (filters: Filters<Project>) => void = () => {
+      /* noop */
+    },
   ) {
     const subject = new Subject<Project[]>();
     const promise = nStepObservable(
@@ -110,7 +112,7 @@ describe("ModelListComponent", () => {
   }
 
   function getCards() {
-    return getCardsComponent().models();
+    return getCardsComponent()!.models();
   }
 
   beforeEach(() => {
@@ -150,13 +152,13 @@ describe("ModelListComponent", () => {
 
   it("should initially request page 1", async () => {
     await handleApiRequest([], (filter) => {
-      expect(filter.paging.page).toBe(1);
+      expect(filter.paging!.page).toBe(1);
     });
   });
 
   describe("tile tab", () => {
     function assertCard(index: number, model: Project) {
-      expect(getCards()[index]).toBe(model);
+      expect(getCards()![index]).toBe(model);
     }
 
     it("should handle zero projects", async () => {
@@ -219,10 +221,11 @@ describe("ModelListComponent", () => {
   describe("map tab", () => {
     beforeEach(fakeAsync(() => {
       spec.detectChanges();
-      const mapTabLink = getElementByTextContent(spec, "Map").querySelector(
+      const mapTabLink = getElementByTextContent(spec, "Map")!.querySelector(
         "a",
       );
 
+      // @ts-expect-error: strict mode fix
       spec.click(mapTabLink);
 
       spec.detectChanges();
@@ -251,12 +254,13 @@ describe("ModelListComponent", () => {
         return marker;
       });
 
-      expect(siteMap.markers().toArray()).toEqual(expectedSites);
+      expect(siteMap!.markers().toArray()).toEqual(expectedSites);
     });
   });
 
   describe("filtering", () => {
     function getFilterInput(): HTMLInputElement {
+      // @ts-expect-error: strict mode fix
       return spec.query("input[type='text']");
     }
 
@@ -282,7 +286,7 @@ describe("ModelListComponent", () => {
       const projects = generateProjects(3);
       await handleApiRequest(projects);
       spyOn(spec.component, "onFilter").and.stub();
-      getInputDirective().valueChange.emit("custom value");
+      getInputDirective()!.valueChange.emit("custom value");
       expect(spec.component.onFilter).toHaveBeenCalled();
     });
   });

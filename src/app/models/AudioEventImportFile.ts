@@ -1,4 +1,4 @@
-import {
+﻿import {
   ANALYSIS_JOB_ITEM,
   AUDIO_EVENT_IMPORT,
   TAG,
@@ -65,9 +65,9 @@ export class AudioEventImportFile
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
   public readonly audioEventImportId?: Id<AudioEventImport>;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
-  public readonly file: File;
+  public readonly file!: File;
   @bawPersistAttr({ supportedFormats: ["formData"], create: true })
-  public readonly additionalTagIds: CollectionIds<Tag>;
+  public readonly additionalTagIds!: CollectionIds<Tag>;
 
   // Associations
   @hasMany(TAG, "additionalTagIds")

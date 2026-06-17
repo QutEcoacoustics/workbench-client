@@ -31,7 +31,7 @@ import { IsUnresolvedPipe } from "../../../../pipes/is-unresolved/is-unresolved.
 export class DownloadTableComponent {
   private readonly recordingsApi = inject(AudioRecordingsService);
 
-  @Input() public filters$: BehaviorSubject<Filters<AudioRecording>>;
+  @Input() public filters$!: BehaviorSubject<Filters<AudioRecording>>;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public ColumnMode = ColumnMode;

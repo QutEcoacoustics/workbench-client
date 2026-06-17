@@ -56,7 +56,8 @@ describe("LicenseWidgetComponent", () => {
     }
 
     for (const model of models) {
-      model.model["injector"] = injector;
+      // @ts-expect-error: strict mode fix
+      model.model!["injector"] = injector;
     }
 
     const resolvedData = generatePageInfoResolvers(...models);
@@ -137,6 +138,7 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
 
     for (const license of expectedLicenses) {
+      // @ts-expect-error: strict mode fix
       expect(licenseText()).toContainText(license);
     }
   }));
@@ -159,6 +161,7 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
 
     for (const license of expectedLicenses) {
+      // @ts-expect-error: strict mode fix
       expect(licenseText()).toContainText(license);
     }
   }));

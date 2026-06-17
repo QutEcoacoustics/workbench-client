@@ -2,11 +2,11 @@ import { fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { testFormImports, testFormProviders } from "@test/helpers/testbed";
 import { ToastService } from "@services/toasts/toasts.service";
-import { noop } from "rxjs";
-import { ReCaptchaV3Service } from "ngx-captcha";
 import { clickButton } from "@test/helpers/html";
+import { testFormImports, testFormProviders } from "@test/helpers/testbed";
+import { ReCaptchaV3Service } from "ngx-captcha";
+import { noop } from "rxjs";
 import { FormComponent } from "./form.component";
 
 describe("FormComponent", () => {
@@ -22,13 +22,11 @@ describe("FormComponent", () => {
   });
 
   function getSubmitButton(): HTMLButtonElement {
+    // @ts-expect-error: strict mode fix
     return spec.query<HTMLButtonElement>("button");
   }
 
-  function findInput(
-    selector: string = "input",
-    position: number = 0,
-  ): HTMLElement {
+  function findInput(selector = "input", position = 0): HTMLElement {
     return spec.queryAll<HTMLElement>("form " + selector)[position];
   }
 

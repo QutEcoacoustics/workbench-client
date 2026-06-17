@@ -1,5 +1,7 @@
+import { fakeAsync, flush } from "@angular/core/testing";
 import { ShallowAudioEventsService } from "@baw-api/audio-event/audio-events.service";
 import { AudioRecordingsService } from "@baw-api/audio-recording/audio-recordings.service";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Errorable } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { AudioEvent } from "@models/AudioEvent";
@@ -13,6 +15,7 @@ import {
   SpyObject,
 } from "@ngneat/spectator";
 import { assetRoot } from "@services/config/config.service";
+import { IconsModule } from "@shared/icons/icons.module";
 import { MapComponent } from "@shared/map/map.component";
 import { generateAudioRecording } from "@test/fakes/AudioRecording";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -22,9 +25,6 @@ import { modelData } from "@test/helpers/faker";
 import { FilterExpectations, nStepObservable } from "@test/helpers/general";
 import { websiteHttpUrl } from "@test/helpers/url";
 import { Subject } from "rxjs";
-import { IconsModule } from "@shared/icons/icons.module";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { fakeAsync, flush } from "@angular/core/testing";
 import { SiteComponent } from "./site.component";
 
 // TODO This component is doing too many things. Split it into
@@ -56,7 +56,9 @@ describe("SiteComponent", () => {
 
   function interceptEventsRequest(
     audioEvents: Errorable<AudioEvent[]> = [],
-    expectation: FilterExpectations<AudioEvent> = () => {}
+    expectation: FilterExpectations<AudioEvent> = () => {
+      /* noop */
+    },
   ) {
     const subject = new Subject<AudioEvent[]>();
     eventsApi.filterBySite.andCallFake((filters) => {
@@ -66,19 +68,24 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => audioEvents,
-      isInstantiated(audioEvents["status"])
+      // @ts-expect-error: strict mode fix
+      isInstantiated(audioEvents["status"]),
     );
   }
 
   function interceptRecordingsRequest(
     recordings: Errorable<AudioRecording[]> = [],
-    newExpectation: FilterExpectations<AudioRecording> = () => {},
-    oldExpectation: FilterExpectations<AudioRecording> = () => {}
+    newExpectation: FilterExpectations<AudioRecording> = () => {
+      /* noop */
+    },
+    oldExpectation: FilterExpectations<AudioRecording> = () => {
+      /* noop */
+    },
   ) {
     const subject = new Subject<AudioRecording[]>();
 
     recordingsApi.filterBySite.andCallFake((filters, site) => {
-      if (filters.sorting.direction === "asc") {
+      if (filters.sorting!.direction === "asc") {
         oldExpectation(filters, site);
       } else {
         newExpectation(filters, site);
@@ -90,14 +97,15 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => recordings,
-      isInstantiated(recordings["status"])
+      // @ts-expect-error: strict mode fix
+      isInstantiated(recordings["status"]),
     );
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultSite = new Site(
-      generateSite({ imageUrls: [modelData.imageUrls()[0]] })
+      generateSite({ imageUrls: [modelData.imageUrls()[0]] }),
     );
     defaultRecording = new AudioRecording(generateAudioRecording());
   });
@@ -119,7 +127,8 @@ describe("SiteComponent", () => {
 
       const title = spec.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
-      expect(title.innerText).toContain(defaultSite.name);
+      // @ts-expect-error: strict mode fix
+      expect(title!.innerText).toContain(defaultSite.name);
     });
 
     it("should display default site image", () => {
@@ -132,7 +141,7 @@ describe("SiteComponent", () => {
       const image = spec.query<HTMLImageElement>("img");
       expect(image).toHaveImage(
         `${websiteHttpUrl}${assetRoot}/images/site/site_span4.webp`,
-        { alt: `${site.name} image` }
+        { alt: `${site.name} image` },
       );
     });
 
@@ -143,7 +152,8 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      expect(image).toHaveImage(defaultSite.imageUrls.at(0).url, {
+      // @ts-expect-error: strict mode fix
+      expect(image).toHaveImage(defaultSite!.imageUrls.at(0).url, {
         alt: `${defaultSite.name} image`,
       });
     });
@@ -157,7 +167,7 @@ describe("SiteComponent", () => {
 
       const description = spec.query("#site_description");
       expect(description).toBeTruthy();
-      expect(description.innerHTML).toContain("<i>No description found</i>");
+      expect(description!.innerHTML).toContain("<i>No description found</i>");
     });
 
     it("should display site description with html markup", () => {
@@ -168,7 +178,8 @@ describe("SiteComponent", () => {
 
       const description = spec.query("#site_description");
       expect(description).toBeTruthy();
-      expect(description.innerHTML).toContain(defaultSite.descriptionHtml);
+      // @ts-expect-error: strict mode fix
+      expect(description!.innerHTML).toContain(defaultSite.descriptionHtml);
     });
   });
 
@@ -189,7 +200,7 @@ describe("SiteComponent", () => {
 
     it("should create site marker", () => {
       const maps = spec.query(MapComponent);
-      expect(maps.markers().toArray()).toEqual([defaultSite.getMapMarker()]);
+      expect(maps!.markers().toArray()).toEqual([defaultSite.getMapMarker()]);
     });
   });
 
@@ -280,7 +291,7 @@ describe("SiteComponent", () => {
           if (test.placeholder) {
             expect(placeholder).toBeTruthy();
             expect(placeholder).toHaveText(
-              "This site does not contain any audio recordings."
+              "This site does not contain any audio recordings.",
             );
           } else {
             expect(placeholder).toBeFalsy();
@@ -315,24 +326,42 @@ describe("SiteComponent", () => {
     });
 
     xdescribe("dates", () => {
-      it("should display start and end date of audio recordings", async () => {});
+      it("should display start and end date of audio recordings", async () => {
+        pending();
+      });
     });
 
     xdescribe("play", () => {
-      it("should initially display loading animation", () => {});
-      it("should clear loading animation on load", () => {});
-      it("should create play link", () => {});
-      it("should route to correct location", () => {});
+      it("should initially display loading animation", () => {
+        pending();
+      });
+      it("should clear loading animation on load", () => {
+        pending();
+      });
+      it("should create play link", () => {
+        pending();
+      });
+      it("should route to correct location", () => {
+        pending();
+      });
     });
 
     xdescribe("visualize", () => {
-      it("should create visualize link", () => {});
-      it("should route to correct location", () => {});
+      it("should create visualize link", () => {
+        pending();
+      });
+      it("should route to correct location", () => {
+        pending();
+      });
     });
 
     xdescribe("audio recordings", () => {
-      it("should create audio recordings link", () => {});
-      it("should route to correct location", () => {});
+      it("should create audio recordings link", () => {
+        pending();
+      });
+      it("should route to correct location", () => {
+        pending();
+      });
     });
 
     describe("filterByDates", () => {
@@ -377,12 +406,26 @@ describe("SiteComponent", () => {
 
   // TODO
   xdescribe("annotations", () => {
-    it("should display spinner while tags are unresolved", () => {});
-    it("should display placeholder if no tags", () => {});
-    it("should display single tag", () => {});
-    it("should display tag text", () => {});
-    it("should display tag creator", () => {});
-    it("should route to tag", () => {});
-    it("should display multiple tags", () => {});
+    it("should display spinner while tags are unresolved", () => {
+      pending();
+    });
+    it("should display placeholder if no tags", () => {
+      pending();
+    });
+    it("should display single tag", () => {
+      pending();
+    });
+    it("should display tag text", () => {
+      pending();
+    });
+    it("should display tag creator", () => {
+      pending();
+    });
+    it("should route to tag", () => {
+      pending();
+    });
+    it("should display multiple tags", () => {
+      pending();
+    });
   });
 });

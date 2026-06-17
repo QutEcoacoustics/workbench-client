@@ -38,7 +38,8 @@ describe("UrlDirective", () => {
   }
 
   function assertRoute(link: string) {
-    const href = spec.query<HTMLAnchorElement>("a").href;
+    // @ts-expect-error: strict mode fix
+    const href = spec!.query<HTMLAnchorElement>("a").href;
     const url = new URL(href, window.location.origin);
     expect(url.pathname + url.search).toBe(link);
   }
@@ -52,17 +53,19 @@ describe("UrlDirective", () => {
   it("should not interfere with routerLink if no [bawUrl]", () => {
     const spectator = createRouterLink(
       '<a [routerLink]="link" [queryParams]="params"></a>',
-      { hostProps: { link: "/home", params: { test: "value" } } }
+      { hostProps: { link: "/home", params: { test: "value" } } },
     );
     spectator.detectChanges();
 
     const routerLink = spectator.query(RouterLink);
     expect(routerLink).toBeInstanceOf(RouterLink);
-    expect(routerLink.href).toContain("/home?test=value");
+    expect(routerLink!.href).toContain("/home?test=value");
   });
 
   // TODO Current implementation does not work with routerLinkActive
-  xit("should not interfere with routerLinkActive", () => {});
+  xit("should not interfere with routerLinkActive", () => {
+    pending();
+  });
 
   describe("url", () => {
     let root: StrongRoute;
@@ -70,12 +73,14 @@ describe("UrlDirective", () => {
     beforeEach(() => (root = StrongRoute.newRoot()));
 
     it("should handle undefined url", () => {
+      // @ts-expect-error: strict mode fix
       setup(undefined);
       spec.detectChanges();
       assertRoute("/");
     });
 
     it("should handle null url", () => {
+      // @ts-expect-error: strict mode fix
       setup(null);
       spec.detectChanges();
       assertRoute("/");
@@ -110,6 +115,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle single query parameter", () => {
+      // @ts-expect-error: strict mode fix
       const childRoute = root.add("home", ({ id }) => ({ id }));
       setup(childRoute.format(undefined, { id: 5 }));
       spec.detectChanges();
@@ -117,6 +123,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle query parameter with special characters", () => {
+      // @ts-expect-error: strict mode fix
       const childRoute = root.add("home", ({ name }) => ({ name }));
       setup(childRoute.format(undefined, { name: "example encoding" }));
       spec.detectChanges();
@@ -124,6 +131,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle multiple query parameters", () => {
+      // @ts-expect-error: strict mode fix
       const childRoute = root.add("home", ({ id, name }) => ({ id, name }));
       setup(childRoute.format(undefined, { id: 5, name: "example" }));
       spec.detectChanges();
@@ -131,6 +139,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle multiple query parameters with special characters", () => {
+      // @ts-expect-error: strict mode fix
       const childRoute = root.add("home", ({ id, name }) => ({ id, name }));
       setup(childRoute.format(undefined, { id: 5, name: "example encoding" }));
       spec.detectChanges();
@@ -140,12 +149,13 @@ describe("UrlDirective", () => {
     it("should handle path with route and query parameters", () => {
       const childRoute = root
         .add(":siteId")
+        // @ts-expect-error: strict mode fix
         .add(":siteName", ({ id, name }) => ({ id, name }));
       setup(
         childRoute.format(
           { siteId: 5, siteName: "example" },
-          { id: 10, name: "example encoding" }
-        )
+          { id: 10, name: "example encoding" },
+        ),
       );
       spec.detectChanges();
       assertRoute("/5/example?id=10&name=example%20encoding");
@@ -176,7 +186,8 @@ describe("UrlDirective", () => {
     it("should create url tree with query parameters", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        ({ test, name }) => ({ test, name })
+        // @ts-expect-error: strict mode fix
+        ({ test, name }) => ({ test, name }),
       );
       setup(childRoute.format(undefined, { name: "example" }));
       spec.detectChanges();
@@ -185,6 +196,7 @@ describe("UrlDirective", () => {
     });
 
     it("should create url tree with with route and query parameters", () => {
+      // @ts-expect-error: strict mode fix
       const childRoute = StrongRoute.newRoot().add(":id", ({ test, name }) => ({
         test,
         name,

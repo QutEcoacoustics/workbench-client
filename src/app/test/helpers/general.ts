@@ -52,8 +52,8 @@ export const testStepInterval = 0;
 export function nStepObservable<T>(
   subject: Subject<T>,
   callback: () => Errorable<T>,
-  isError: boolean = false,
-  stepsRemaining: number = 0
+  isError = false,
+  stepsRemaining = 0,
 ): Promise<void> {
   return new Promise((resolve) => {
     function waitOne() {
@@ -91,14 +91,14 @@ export function nStepObservable<T>(
  */
 export function interceptCustomApiRequest<
   Service,
-  Data,
-  Model extends AbstractModel
+  Data extends Record<string, any>,
+  Model extends AbstractModel,
 >(
   service: Service,
   method: keyof Service,
   injector: AssociationInjector,
   model: Errorable<Data> | Errorable<Data[]>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ) {
   const subject = new Subject();
   const isError = isBawApiError(model);
@@ -131,7 +131,7 @@ export function interceptShowApiRequest<
   service: SpyObject<ApiShow<Model>>,
   injector: AssociationInjector,
   model: Errorable<Data>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ): Promise<any> {
   return interceptCustomApiRequest(service, "show", injector, model, callback);
 }
@@ -148,14 +148,14 @@ export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
   service: SpyObject<ApiFilter<Model>>,
   injector: AssociationInjector,
   models: Errorable<Data[]>,
-  callback: AbstractModelConstructor<Model>
+  callback: AbstractModelConstructor<Model>,
 ): Promise<any> {
   return interceptCustomApiRequest(
     service,
     "filter",
     injector,
     models,
-    callback
+    callback,
   );
 }
 
@@ -168,11 +168,11 @@ export function interceptFilterApiRequest<Data, Model extends AbstractModel>(
  */
 export function interceptRepeatApiRequests<
   ModelData,
-  Models extends AbstractModel | AbstractModel[]
+  Models extends AbstractModel | AbstractModel[],
 >(
   apiRequestType: CompatibleSpy,
   responses: Errorable<Models>[],
-  expectations?: FilterExpectations<ModelData>[]
+  expectations?: FilterExpectations<ModelData>[],
 ): Promise<void>[] {
   const subjects: Subject<Models>[] = [];
   const promises: Promise<void>[] = [];
@@ -181,7 +181,7 @@ export function interceptRepeatApiRequests<
     const subject = new Subject<Models>();
     subjects.push(subject);
     promises.push(
-      nStepObservable(subject, () => response, !(response instanceof Array))
+      nStepObservable(subject, () => response, !(response instanceof Array)),
     );
   });
 
@@ -191,17 +191,17 @@ export function interceptRepeatApiRequests<
       count++;
       expectations?.[count]?.(filters, ...params);
       return subjects[count];
-    }
+    },
   );
 
   return promises;
 }
 
 export function interceptMappedApiRequests<
-  Models extends AbstractModel | AbstractModel[]
+  Models extends AbstractModel | AbstractModel[],
 >(
   apiRequestType: CompatibleSpy,
-  responses: Map<PropertyKey, Errorable<Models>>
+  responses: Map<PropertyKey, Errorable<Models>>,
 ): Promise<void>[] {
   const subjects = new Map<any, Subject<Models>>();
   const promises: Promise<void>[] = [];
@@ -239,7 +239,7 @@ export function generatePageInfoResolvers(
 
   models.forEach((model, index) => {
     const key = "model" + index;
-    data.resolvers[key] = "resolver";
+    data.resolvers![key] = "resolver";
     data[key] = model;
   });
 

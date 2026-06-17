@@ -55,6 +55,7 @@ describe("SiteCardComponent", () => {
 
     spec.component["recordingApi"] = recordingApi;
 
+    // @ts-expect-error: strict mode fix
     return nStepObservable(subject, () => recordings);
   }
 
@@ -89,6 +90,7 @@ describe("SiteCardComponent", () => {
           spec.detectChanges();
           const name = spec.query<HTMLHeadingElement>("h5#name");
           expect(name).toBeTruthy();
+          // @ts-expect-error: strict mode fix
           expect(name).toContainText(defaultModel.name);
         });
 
@@ -119,7 +121,8 @@ describe("SiteCardComponent", () => {
         it("should display custom model image", () => {
           setup(defaultModel);
           spec.detectChanges();
-          expect(getImage()).toHaveImage(defaultModel.imageUrls.at(0).url, {
+          // @ts-expect-error: strict mode fix
+          expect(getImage()).toHaveImage(defaultModel!.imageUrls.at(0).url, {
             alt: `${defaultModel.name} alt`,
           });
         });
@@ -131,6 +134,7 @@ describe("SiteCardComponent", () => {
         }
 
         function assertLoading(isLoading: boolean) {
+          // @ts-expect-error: strict mode fix
           assertSpinner(spec.query(".nav"), isLoading);
         }
 

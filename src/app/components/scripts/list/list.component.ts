@@ -44,6 +44,7 @@ class AdminScriptsComponent
     const api = inject(ScriptsService);
 
     super(api, (scripts) =>
+      // @ts-expect-error: strict mode fix
       scripts.map((script) => ({
         name: script.name,
         version: script.version,

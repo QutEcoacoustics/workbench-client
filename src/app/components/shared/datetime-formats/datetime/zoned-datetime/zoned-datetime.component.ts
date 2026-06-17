@@ -15,8 +15,9 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZonedDateTimeComponent extends AbstractDatetimeComponent {
+  // @ts-expect-error: strict mode fix
   public readonly timezone = input<Zone, BawTimezoneUnion>(null, {
-    transform: (newValue) => {
+    transform: (newValue: any) => {
       if (isInstantiated(newValue)) {
         const timezoneIdentifier = newValue?.["identifier"] ?? newValue;
         return this.normalizeTimezone(timezoneIdentifier);

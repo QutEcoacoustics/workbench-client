@@ -18,13 +18,14 @@ export type UnknownContext = Context<unknown, unknown>;
 /**
  * A helper type which can extract a Context value type from a Context type
  */
-export type ContextType<T extends UnknownContext> = T extends Context<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  infer _,
-  infer V
->
-  ? V
-  : never;
+export type ContextType<T extends UnknownContext> =
+  T extends Context<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    infer _,
+    infer V
+  >
+    ? V
+    : never;
 
 /**
  * A function which creates a Context value object
@@ -38,14 +39,14 @@ export const createContext = <ValueType>(key: unknown) =>
  */
 export type ContextCallback<ValueType> = (
   value: ValueType,
-  unsubscribe?: () => void
+  unsubscribe?: () => void,
 ) => void;
 
 export class ContextRequestEvent<T extends UnknownContext> extends Event {
   public constructor(
     public readonly context: T,
     public readonly callback: ContextCallback<ContextType<T>>,
-    public readonly subscribe: boolean = false
+    public readonly subscribe = false,
   ) {
     super("context-request", { bubbles: true, composed: true });
   }

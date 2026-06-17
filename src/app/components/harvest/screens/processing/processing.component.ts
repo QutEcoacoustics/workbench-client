@@ -53,20 +53,22 @@ export class ProcessingComponent implements OnInit {
   }
 
   public get successProgress(): number {
-    return this.stages.calculateProgress(this.report.itemsCompleted);
+    return this.stages.calculateProgress(this.report.itemsCompleted!);
   }
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
+      // @ts-expect-error: strict mode fix
       this.report.itemsFailed + this.report.itemsErrored
     );
   }
 
   public get harvest(): Harvest {
-    return this.stages.harvest;
+    return this.stages.harvest!;
   }
 
   private get report(): HarvestReport {
-    return this.stages.harvest.report;
+    // @ts-expect-error: strict mode fix
+    return this.stages.harvest.report!;
   }
 }

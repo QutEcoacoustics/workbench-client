@@ -1,4 +1,4 @@
-import { UserName, Param } from "@interfaces/apiInterfaces";
+﻿import { UserName, Param } from "@interfaces/apiInterfaces";
 import { AbstractForm } from "@models/AbstractForm";
 import { bawPersistAttr } from "@models/AttributeDecorators";
 
@@ -17,16 +17,16 @@ export class RegisterDetails
 {
   public readonly kind = "Register Details";
   @bawPersistAttr()
-  public readonly userName: UserName;
+  public readonly userName!: UserName;
   @bawPersistAttr()
-  public readonly email: Param;
+  public readonly email!: Param;
   @bawPersistAttr()
-  public readonly password: Param;
+  public readonly password!: Param;
   @bawPersistAttr()
-  public readonly passwordConfirmation: Param;
+  public readonly passwordConfirmation!: Param;
   @bawPersistAttr()
-  public readonly recaptchaToken: string;
-  public readonly contactable: boolean;
+  public readonly recaptchaToken!: string;
+  public readonly contactable!: boolean;
 
   public getBody(token: string): URLSearchParams {
     this.validateRecaptchaToken();

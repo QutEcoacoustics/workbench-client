@@ -158,7 +158,7 @@ describe("routing and resolvers", () => {
     return TestBed.configureTestingModule(module).compileComponents();
   });
 
-  function setup(path) {
+  function setup(path: any) {
     // boiler plate adapted from https://ng-mocks.sudo.eu/guides/route
     const fixture = MockRender(RouterOutlet, {});
     const router = fixture.point.injector.get(Router);

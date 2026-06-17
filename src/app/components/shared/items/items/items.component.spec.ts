@@ -34,6 +34,7 @@ describe("ItemsComponent", () => {
     expect(item.icon).toBe(data.icon);
     expect(item.name).toBe(data.name);
     expect(item.tooltip).toEqual(data.tooltip);
+    // @ts-expect-error: strict mode fix
     expect(item.value).toBe(data.value);
   }
 

@@ -62,6 +62,7 @@ describe("WizardComponent", () => {
   });
 
   it("should handle project error", () => {
+    // @ts-expect-error: strict mode fix
     setup(undefined, generateBawApiError());
     spectator.detectChanges();
     assertErrorHandler(spectator.fixture);
@@ -71,14 +72,14 @@ describe("WizardComponent", () => {
     setup(defaultProject);
     spectator.detectChanges();
     const title = spectator.query<HTMLHeadingElement>("h2");
-    expect(title.innerText.trim()).toBe("New Site");
+    expect(title!.innerText.trim()).toBe("New Site");
   });
 
   it("should show wizard question", () => {
     setup(defaultProject);
     spectator.detectChanges();
     const question = spectator.query<HTMLHeadingElement>("p.lead");
-    expect(question.innerText.trim()).toBeTruthy();
+    expect(question!.innerText.trim()).toBeTruthy();
   });
 
   it("should show wizard buttons", () => {

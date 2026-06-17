@@ -1,4 +1,4 @@
-import { Params } from "@angular/router";
+﻿import { Params } from "@angular/router";
 import {
   AUDIO_EVENT_PROVENANCE,
   SHALLOW_REGION,
@@ -60,8 +60,8 @@ export interface IEventSummaryReportParameters {
   score: number;
   bucketSize: BucketSize;
   daylightSavings: boolean;
-  time: IsomorphicTuple<Duration, 2>;
-  date: IsomorphicTuple<DateTime, 2>;
+  time: IsomorphicTuple<Duration | null, 2> | null;
+  date: IsomorphicTuple<DateTime | null, 2> | null;
   charts: Chart[];
 }
 
@@ -94,16 +94,16 @@ export class EventSummaryReportParameters
 
   // since these properties are exposed to the user in the form of query string parameters
   // we use the user friendly names
-  public sites: CollectionIds;
-  public points: CollectionIds;
-  public provenances: CollectionIds;
-  public tags: CollectionIds;
-  public score: number;
+  public sites!: CollectionIds;
+  public points!: CollectionIds;
+  public provenances!: CollectionIds;
+  public tags!: CollectionIds;
+  public score!: number;
   public bucketSize: BucketSize = BucketSize.month;
-  public daylightSavings: boolean;
-  public time: IsomorphicTuple<Duration, 2>;
-  public date: IsomorphicTuple<DateTime, 2>;
-  public charts: Chart[];
+  public daylightSavings!: boolean;
+  public time: IsomorphicTuple<Duration | null, 2> | null = null;
+  public date: IsomorphicTuple<DateTime | null, 2> | null = null;
+  public charts!: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
   public regions?: Region[];
@@ -140,7 +140,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "region",
         Array.from(this.sites),
-        filter,
+        filter!,
       );
     }
 
@@ -148,7 +148,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "site",
         Array.from(this.points),
-        filter,
+        filter!,
       );
     }
 
@@ -156,7 +156,7 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "provenance",
         Array.from(this.provenances),
-        filter,
+        filter!,
       );
     }
 
@@ -164,13 +164,13 @@ export class EventSummaryReportParameters
       filter = filterModelIds<EventSummaryReport>(
         "tag",
         Array.from(this.tags),
-        filter,
+        filter!,
       );
     }
 
     // we use isInstantiated() here because 0 is a valid value for score
     if (isInstantiated(this.score)) {
-      filter = filterAnd<EventSummaryReport>(filter, {
+      filter! = filterAnd<EventSummaryReport>(filter!, {
         score: {
           gteq: this.score,
         },
@@ -178,7 +178,7 @@ export class EventSummaryReportParameters
     }
 
     if (this.bucketSize) {
-      filter = filterAnd(filter, {
+      filter! = filterAnd(filter!, {
         bucketSize: {
           eq: this.bucketSize,
         },
@@ -187,22 +187,24 @@ export class EventSummaryReportParameters
 
     if (this.dateStartedAfter || this.dateFinishedBefore) {
       filter = filterDate(
-        filter,
-        this.dateStartedAfter,
+        filter!,
+        this.dateStartedAfter!,
+        // @ts-expect-error: strict mode fix
         this.dateFinishedBefore,
       );
     }
 
     if (this.timeStartedAfter || this.timeFinishedBefore) {
       filter = filterTime(
-        filter,
+        filter!,
         this.daylightSavings,
-        this.timeStartedAfter,
+        this.timeStartedAfter!,
+        // @ts-expect-error: strict mode fix
         this.timeFinishedBefore,
       );
     }
 
-    return { filter };
+    return { filter: filter! };
   }
 
   public toQueryParams(): Params {

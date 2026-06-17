@@ -1,4 +1,4 @@
-import { Component, Input, inject } from "@angular/core";
+﻿import { Component, Input, inject } from "@angular/core";
 import { NgForm, FormsModule } from "@angular/forms";
 import { ShallowHarvestsService } from "@baw-api/harvest/harvest.service";
 import { BawApiError } from "@helpers/custom-errors/baw-api-error";
@@ -19,8 +19,8 @@ export class TitleComponent extends withUnsubscribe()  {
   private readonly harvestService = inject(ShallowHarvestsService);
   private readonly notifications = inject(ToastService);
 
-  @Input() public project: Project;
-  @Input() public harvest: Harvest;
+  @Input() public project!: Project;
+  @Input() public harvest!: Harvest;
 
   public editingHarvestName = false;
 

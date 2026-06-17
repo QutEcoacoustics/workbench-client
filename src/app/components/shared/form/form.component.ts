@@ -1,3 +1,4 @@
+﻿import { NgClass } from "@angular/common";
 import {
   Component,
   EventEmitter,
@@ -10,9 +11,8 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BootstrapColorTypes } from "@helpers/bootstrapTypes";
 import { withUnsubscribe } from "@helpers/unsubscribe/unsubscribe";
 import { FormlyFieldConfig, FormlyModule } from "@ngx-formly/core";
-import { ReCaptchaV3Service } from "ngx-captcha";
 import { ToastService } from "@services/toasts/toasts.service";
-import { NgClass } from "@angular/common";
+import { ReCaptchaV3Service } from "ngx-captcha";
 
 /**
  * Formly Form Wrapper
@@ -34,7 +34,7 @@ export class FormComponent extends withUnsubscribe() {
   @Input() public model: Record<string, any> = {};
   @Input() public size: "small" | "default" = "default";
   @Input() public submitLabel = "Submit";
-  @Input() public submitLoading: boolean;
+  @Input() public submitLoading!: boolean;
   @Input() public subTitle?: string;
   @Input() public title?: string;
   /**
@@ -92,7 +92,7 @@ export class FormComponent extends withUnsubscribe() {
     }
   }
 
-  public onModelChange($event): void {
+  public onModelChange($event: any): void {
     this.modelChange.next($event);
   }
 }

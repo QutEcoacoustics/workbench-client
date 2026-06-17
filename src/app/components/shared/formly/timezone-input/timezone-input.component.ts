@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+﻿import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import { NgbTypeahead, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { NgbHighlight, NgbTypeahead } from "@ng-bootstrap/ng-bootstrap";
 import { FieldType, FormlyModule } from "@ngx-formly/core";
 import { getTimeZones, TimeZone } from "@vvo/tzdb";
 import { merge, Observable, Subject } from "rxjs";
@@ -12,8 +14,6 @@ import {
   filter,
   map,
 } from "rxjs/operators";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { asFormControl } from "../helper";
 
 /**
@@ -77,16 +77,23 @@ import { asFormControl } from "../helper";
       />
     </div>
   `,
-  imports: [NgbHighlight, NgbTypeahead, FormsModule, FormlyModule, FaIconComponent, ReactiveFormsModule]
+  imports: [
+    NgbHighlight,
+    NgbTypeahead,
+    FormsModule,
+    FormlyModule,
+    FaIconComponent,
+    ReactiveFormsModule,
+  ],
 })
 export class TimezoneInputComponent extends FieldType implements OnInit {
-  @ViewChild("instance", { static: true }) public instance: NgbTypeahead;
+  @ViewChild("instance", { static: true }) public instance!: NgbTypeahead;
 
   public asFormControl = asFormControl;
   public click$ = new Subject<string>();
   public focus$ = new Subject<string>();
   public invalidIcon: IconProp = faBan;
-  public timezone: TimeZone;
+  public timezone!: TimeZone;
   public timezones: TimeZone[] = [];
 
   public ngOnInit() {
@@ -94,9 +101,12 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
     this.setDefaultValue();
   }
 
+  // @ts-expect-error: strict mode fix
   public get error(): string {
+    // @ts-expect-error: strict mode fix
     const err = this.formControl.getError(this.field.key.toString());
     if (err) {
+      // @ts-expect-error: strict mode fix
       return;
     }
 
@@ -127,15 +137,15 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
   public search = (text$: Observable<string>): Observable<TimeZone[]> => {
     const debouncedText$ = text$.pipe(
       debounceTime(200),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
     const clicksWithClosedPopup$ = this.click$.pipe(
-      filter(() => !this.instance.isPopupOpen())
+      filter(() => !this.instance.isPopupOpen()),
     );
     const inputFocus$ = this.focus$;
 
     return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      map((term) => this.searchTimezones(term))
+      map((term) => this.searchTimezones(term)),
     );
   };
 
@@ -163,7 +173,7 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
    */
   private searchTimezones(
     term: string,
-    timezoneKey: keyof TimeZone = "currentTimeFormat"
+    timezoneKey: keyof TimeZone = "currentTimeFormat",
   ): TimeZone[] {
     let zones = this.timezones;
 
@@ -171,7 +181,7 @@ export class TimezoneInputComponent extends FieldType implements OnInit {
       zones = zones.filter((zone) =>
         (zone[timezoneKey] as string)
           .toLocaleLowerCase()
-          .includes(term.toLocaleLowerCase())
+          .includes(term.toLocaleLowerCase()),
       );
     }
 

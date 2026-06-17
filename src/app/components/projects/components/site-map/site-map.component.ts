@@ -96,7 +96,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     };
 
     if (this.groupBy()) {
-      filters.projection.include.push(this.groupBy());
+      // @ts-expect-error: strict mode fix
+      filters.projection!.include.push(this.groupBy()!);
     }
 
     const request$ = this.sitesApi
@@ -135,7 +136,8 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         return model;
       }
 
-      return model.id;
+      // @ts-expect-error: strict mode fix
+      return model!.id;
     });
   }
 
@@ -161,6 +163,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // If there are project or region inputs, we need to make an API call.
     // The only time that we can avoid an API call is when component consumer
     // provides only site models with full information.
+    // @ts-expect-error: strict mode fix
     return (
       !this.projects()?.length &&
       !this.regions()?.length &&
@@ -177,25 +180,26 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     let siteFilters: InnerFilter<Site> = {};
 
     if (this.projects()) {
-      const projectIds = this.modelIds(this.projects());
+      const projectIds = this.modelIds(this.projects()!);
       const projectFilters = filterModelIds<Site>("projects", projectIds);
 
       siteFilters = filterOr(siteFilters, projectFilters);
     }
 
     if (this.regions()) {
-      const regionIds = this.modelIds(this.regions());
+      const regionIds = this.modelIds(this.regions()!);
       const regionFilters = filterModelIds<Site>("regions", regionIds);
 
       siteFilters = filterOr(siteFilters, regionFilters);
     }
 
     if (this.sites()) {
-      const siteIds = this.modelIds(this.sites());
+      const siteIds = this.modelIds(this.sites()!);
+      // @ts-expect-error: strict mode fix
       siteFilters = filterOr(siteFilters, { id: { in: siteIds } });
     }
 
-    return filterAnd(siteFilters, this.filters());
+    return filterAnd(siteFilters, this.filters()!);
   }
 
   /**
@@ -207,6 +211,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     if (this.groupBy()) {
       const groups = new Set<unknown>();
       sites.forEach((site) => {
+        // @ts-expect-error: strict mode fix
         groups.add(site[this.groupBy()]);
       });
 
@@ -217,6 +222,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       sites.map((site) => {
         const marker = site.getMapMarker()
         if (this.groupBy() && marker) {
+          // @ts-expect-error: strict mode fix
           marker.groupId = site[this.groupBy()];
         }
 

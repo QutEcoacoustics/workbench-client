@@ -10,7 +10,9 @@ export const myDeleteAccountModal = menuModal({
   parent: myAccountMenuItem,
   predicate: isLoggedInPredicate,
   component: DeleteModalComponent,
-  successCallback: (pageComponentInstance?: MyProfileComponent) => pageComponentInstance.cancelAccount(),
+  // @ts-expect-error: strict mode fix
+  successCallback: (pageComponentInstance?: MyProfileComponent) => pageComponentInstance!.cancelAccount(),
   tooltip: () => "Remove your account from this website",
   disabled: "BETA: Will be available soon.",
 });
+

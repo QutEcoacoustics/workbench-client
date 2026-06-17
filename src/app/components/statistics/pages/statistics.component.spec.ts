@@ -64,6 +64,7 @@ describe("StatisticsComponent", () => {
   function interceptStatisticsRequest(
     data: Errorable<IStatistics>
   ): Promise<any> {
+    // @ts-expect-error: strict mode fix
     return interceptShowApiRequest(statsApi, injector, data, Statistics);
   }
 
@@ -86,6 +87,7 @@ describe("StatisticsComponent", () => {
 
     return interceptMappedApiRequests(
       audioRecordingsApi.show,
+      // @ts-expect-error: strict mode fix
       mockAudioRecordingResponses
     );
   }
@@ -134,7 +136,8 @@ describe("StatisticsComponent", () => {
 
   describe("group one", () => {
     function assertItem(index: number, value: string | number) {
-      expect(getFirstItemsGroup().items.get(index).value).toBe(value);
+      // @ts-expect-error: strict mode fix
+      expect(getFirstItemsGroup()!.items.get(index).value).toBe(value);
     }
 
     it("should initially display unknown for values", () => {
@@ -196,7 +199,8 @@ describe("StatisticsComponent", () => {
 
   describe("group two", () => {
     function assertItem(index: number, value: string | number) {
-      expect(getSecondItemsGroup().items.get(index).value).toBe(value);
+      // @ts-expect-error: strict mode fix
+      expect(getSecondItemsGroup()!.items.get(index).value).toBe(value);
     }
 
     it("should initially display unknown for values", () => {
@@ -291,7 +295,7 @@ describe("StatisticsComponent", () => {
       spec.detectChanges();
       await promise.final;
       spec.detectChanges();
-      expect(getRecentAnnotations().annotations).toEqual(audioEvents);
+      expect(getRecentAnnotations()!.annotations).toEqual(audioEvents);
     });
 
     it("should display recent audio recordings", async () => {
@@ -312,7 +316,7 @@ describe("StatisticsComponent", () => {
       await promise.final;
       spec.detectChanges();
 
-      expect(getRecentAudioRecordings().audioRecordings).toEqual(
+      expect(getRecentAudioRecordings()!.audioRecordings).toEqual(
         audioRecordings
       );
     });

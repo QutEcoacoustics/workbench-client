@@ -12,6 +12,7 @@ export class StatisticsService implements ApiShow<Statistics> {
   private readonly api = inject<BawApiService<Statistics>>(BawApiService);
 
   public show(): Observable<Statistics> {
+    // @ts-expect-error: strict mode fix
     return this.api.show(Statistics, endpoint());
   }
 }

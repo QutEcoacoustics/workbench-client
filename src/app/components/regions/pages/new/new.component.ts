@@ -1,4 +1,4 @@
-import { Component, Input, inject } from "@angular/core";
+﻿import { Component, Input, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { projectResolvers } from "@baw-api/project/projects.service";
 import { RegionsService } from "@baw-api/region/regions.service";
@@ -48,7 +48,7 @@ class RegionNewComponent extends FormTemplate<Region> {
   protected readonly route: ActivatedRoute;
   protected readonly router: Router;
 
-  @Input() public hideTitle: boolean;
+  @Input() public hideTitle!: boolean;
   public fields = schema.fields;
 
   public constructor() {
@@ -57,7 +57,7 @@ class RegionNewComponent extends FormTemplate<Region> {
     const router = inject(Router);
 
     super(notifications, route, router, {
-      successMsg: (model) => defaultSuccessMsg("created", model.name),
+      successMsg: (model) => defaultSuccessMsg("created", model.name!),
       redirectUser: (model) => this.router.navigateByUrl(model.viewUrl),
     });
   

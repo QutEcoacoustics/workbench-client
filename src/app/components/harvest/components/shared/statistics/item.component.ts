@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+﻿import { Component, Input } from "@angular/core";
 import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { NgClass } from "@angular/common";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -48,5 +48,5 @@ import { Statistic } from "./statistics.component";
   imports: [NgbTooltip, NgClass, FaIconComponent]
 })
 export class StatisticItemComponent {
-  @Input() public statistic: Statistic;
+  @Input() public statistic!: Statistic;
 }

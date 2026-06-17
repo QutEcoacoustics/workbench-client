@@ -1,4 +1,4 @@
-import { Inject, Injectable, Optional } from "@angular/core";
+﻿import { Inject, Injectable, Optional } from "@angular/core";
 import { ConfigService } from "@services/config/config.service";
 import { API_CONFIG } from "@services/config/config.tokens";
 import { ImportsService } from "@services/import/import.service";
@@ -90,9 +90,9 @@ export interface IConfiguration {
  */
 export class Configuration implements IConfiguration {
   public kind = "Configuration" as const;
-  public endpoints: Endpoints;
-  public settings: Settings;
-  public keys: Keys;
+  public endpoints!: Endpoints;
+  public settings!: Settings;
+  public keys!: Keys;
 
   public constructor(configuration: Partial<IConfiguration>) {
     Object.assign(this, configuration);

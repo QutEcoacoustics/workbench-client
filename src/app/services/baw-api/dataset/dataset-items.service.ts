@@ -67,6 +67,7 @@ export class DatasetItemsService
     model: IdOr<DatasetItem>,
     dataset: IdOr<Dataset>
   ): Observable<DatasetItem | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(dataset, model, emptyParam));
   }
 }

@@ -21,6 +21,6 @@ export function withDefaultZone(zone: string, test: () => void) {
       Settings.defaultZone = originalZone;
     });
 
-    test.call(this);
+    test.call(undefined);
   });
 }

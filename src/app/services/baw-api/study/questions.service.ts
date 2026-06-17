@@ -61,6 +61,7 @@ export class QuestionsService implements StandardApi<Question, [IdOr<Study>]> {
     model: IdOr<Question>,
     study: IdOr<Study>
   ): Observable<Question | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpoint(study, model, emptyParam));
   }
 }
@@ -99,6 +100,7 @@ export class ShallowQuestionsService implements StandardApi<Question> {
   }
 
   public destroy(model: IdOr<Question>): Observable<Question | void> {
+    // @ts-expect-error: strict mode fix
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 }
