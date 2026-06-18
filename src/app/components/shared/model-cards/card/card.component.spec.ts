@@ -109,6 +109,14 @@ describe("CardComponent", () => {
     mockProject = new Project(generateProject());
   });
 
+  it("should not access required model input in constructor", () => {
+    expect(() =>
+      createComponent({
+        detectChanges: false,
+      }),
+    ).not.toThrow();
+  });
+
   function validateCard<T extends Project | Region>(
     createModel: (data?: any) => T,
   ) {
