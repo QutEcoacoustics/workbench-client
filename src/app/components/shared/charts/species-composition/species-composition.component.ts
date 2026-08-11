@@ -5,78 +5,86 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import { Id, Param } from "@interfaces/apiInterfaces";
+import { Range } from "@baw-api/baw-api.service";
 import { TagFrequencyReportItem } from "@models/Reports";
-import { Tag } from "@models/Tag";
 import { ChartComponent } from "@shared/chart/chart.component";
-import { Map } from "immutable";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { Map as ImmutableMap } from "immutable";
+import { DateTime } from "luxon";
+import { createTagFormatter, resolveTags } from "../resolve-tags";
 import chartSchema from "./speciesCompositionCurve.schema.json";
 
-export interface SpeciesCompositionGraphData {
-  date: Param;
-  tagId: Id<Tag>;
-  ratio: number;
+interface SpeciesCompositionChartRow {
+  readonly range: Range<DateTime>;
+  readonly tagId: number;
+  readonly events: number;
+  readonly ratio: number;
+}
+
+export function flattenCompositionRows(
+  rows: readonly TagFrequencyReportItem[],
+): SpeciesCompositionChartRow[] {
+  // collect all tags ids so we can widen the sparse API data into a cartesian product of all ranges and all tags
+  const tagIds = Array.from(
+    rows
+      .flatMap(({ tags }) => tags)
+      .reduce((set, { tagId }) => set.add(tagId), new Set<number>()),
+  );
+
+  return rows.flatMap(({ range, tags }) => {
+    const eventsByTag = new Map<number, number>();
+    let totalEventsThisRange = 0;
+    for (const { tagId, events } of tags) {
+      totalEventsThisRange += events;
+
+      if (eventsByTag.has(tagId)) {
+        // shouldn't happen just checking while debugging
+        throw new Error(`Duplicate tagId ${tagId} found in range ${range}`);
+      }
+
+      eventsByTag.set(tagId, events);
+    }
+
+    // for every bucket emit every tag for a consistent tabular data shape
+    return tagIds.map((tagId) => {
+      const events = eventsByTag.get(tagId) ?? 0;
+      const ratio =
+        totalEventsThisRange === 0 ? 0 : events / totalEventsThisRange;
+      return { range, tagId, events, ratio };
+    });
+  });
 }
 
 @Component({
   selector: "baw-species-composition-graph",
   template: `
-    <baw-chart
-      #chart
-      [spec]="chartSchema"
-      [data]="data()"
-      [formatter]="formatter()"
-    />
- `,
+    @if (tags()) {
+      <baw-chart
+        #chart
+        [spec]="chartSchema"
+        [data]="chartRows()"
+        [formatter]="tagFormatter"
+        logContext="Species composition"
+      />
+    } @else {
+      <baw-loading />
+    }
+  `,
   styleUrl: "../charts.component.scss",
-  imports: [ChartComponent],
+  imports: [ChartComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpeciesCompositionGraphComponent {
   public readonly rows = input.required<TagFrequencyReportItem[]>();
-  public readonly formatter = input.required<(tagId: unknown) => string>();
+
+  protected readonly tags = resolveTags(this.rows);
+  protected readonly tagFormatter = createTagFormatter(this.tags);
 
   public readonly chart = viewChild.required<ChartComponent>("chart");
 
-  protected readonly data = computed(() =>
-    this.rows().flatMap((row) => {
-      const total = row.tags.reduce((sum, tag) => sum + tag.events, 0);
-      const date = getBucketStart(row);
-
-      return row.tags.map((tag) => ({
-        date,
-        tagId: tag.tagId,
-        ratio: total === 0 ? 0 : tag.events / total,
-      }));
-    }),
+  protected readonly chartRows = computed(() =>
+    flattenCompositionRows(this.rows()),
   );
 
-  protected readonly chartSchema = Map(chartSchema);
-}
-
-function getBucketStart(item: {
-  range?: [unknown, unknown];
-  bucket?: [unknown, unknown];
-}): Param {
-  const range = item.range ?? item.bucket;
-  return serializeBucketValue(range?.[0]);
-}
-
-function serializeBucketValue(value: unknown): Param {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
-
-  if (value && typeof value === "object" && "toISO" in value) {
-    const toIso = (value as { toISO?: () => string | null }).toISO;
-    if (typeof toIso === "function") {
-      return toIso.call(value) ?? "";
-    }
-  }
-
-  return String(value ?? "");
+  protected readonly chartSchema = ImmutableMap(chartSchema);
 }

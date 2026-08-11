@@ -1,9 +1,9 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  viewChild,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    input,
+    viewChild,
 } from "@angular/core";
 import { Histogram } from "@baw-api/baw-api.service";
 import { ChartComponent } from "@shared/chart/chart.component";
@@ -19,6 +19,7 @@ import chartSchema from "./confidencePlot.schema.json";
         [spec]="chartSchema"
         [datasets]="datasets()"
         [params]="params()"
+        logContext="Confidence plot"
       />
     }
   `,
@@ -41,6 +42,7 @@ export class ConfidencePlotComponent {
       minimum: histogram?.minimum ?? 0,
       midpoint: histogram ? (histogram.minimum + histogram.maximum) / 2 : 0,
       maximum: histogram?.maximum ?? 0,
+      maximumCount: histogram?.maximumCount ?? 0,
     };
   });
 

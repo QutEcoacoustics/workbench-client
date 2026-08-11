@@ -5,12 +5,6 @@
   "data": {
     "values": []
   },
-  "transform": [
-    {
-      "calculate": "datum.count - datum.error",
-      "as": "count_subtract_error"
-    }
-  ],
   "params": [
     {
       "name": "bawTitleSize",
@@ -18,7 +12,7 @@
     },
     {
       "name": "bawFontSize",
-      "value": 18
+      "value": 14
     }
   ],
   "config": {
@@ -38,71 +32,20 @@
   "layer": [
     {
       "mark": {
-        "type": "errorband",
+        "type": "area",
         "interpolate": "linear",
-        "color": "black",
-        "opacity": 0.1,
-        "tension": 1
+        "color": "var(--baw-primary)",
+        "opacity": 0.2
       },
       "encoding": {
         "x": {
-          "field": "date",
-          "type": "temporal",
-          "timeUnit": "yearmonthdate",
-          "axis": {
-            "labelAngle": 45,
-            "title": null,
-            "grid": true,
-            "format": "%Y-%m-%d",
-            "tickCount": "day",
-            "labelFontSize": {
-              "expr": "bawFontSize"
-            }
-          },
-          "scale": {
-            "padding": 0
-          }
+          "field": "range[0]",
+          "type": "temporal"
         },
         "y": {
-          "title": "Count of Tags",
-          "field": "count_subtract_error",
+          "field": "cumulativeUniqueTagCount",
           "type": "quantitative"
-        },
-        "y2": {
-          "field": "count"
-        },
-        "color": {
-          "field": "datum",
-          "legend": {
-            "values": ["Error"],
-            "symbolStrokeColor": "black",
-            "symbolOpacity": 0.1,
-            "symbolStrokeWidth": 10
-          }
-        },
-        "tooltip": [
-          {
-            "field": "date",
-            "type": "temporal",
-            "title": "Date",
-            "format": "%Y-%m-%d"
-          },
-          {
-            "field": "count",
-            "type": "quantitative",
-            "title": "Count of Tags"
-          },
-          {
-            "field": "error",
-            "type": "quantitative",
-            "title": "Error"
-          },
-          {
-            "title": "Count - Error",
-            "type": "quantitative",
-            "field": "count_subtract_error"
-          }
-        ]
+        }
       }
     },
     {
@@ -113,16 +56,38 @@
       },
       "encoding": {
         "x": {
-          "field": "date",
+          "field": "range[0]",
           "type": "temporal",
-          "timeUnit": "yearmonthdate",
           "axis": {
-            "title": null
+            "title": null,
+            "format": {
+              "year": "%Y",
+              "quarter": "%Y-%m",
+              "month": "%Y-%m",
+              "week": "%Y-%m-%d",
+              "date": "%Y-%m-%d",
+              "day": "%Y-%m-%d",
+              "hours": "%Y-%m-%d %H:%M:%S %Z",
+              "minutes": "%Y-%m-%d %H:%M:%S %Z",
+              "seconds": "%Y-%m-%d %H:%M:%S %Z",
+              "milliseconds": "%Y-%m-%d %H:%M:%S.%L %Z"
+            },
+            "labelAngle": -30,
+            "labelAlign": "right",
+            "labelFlush": true,
+            "labelFlushOffset": 4,
+            "tickSize": 4,
+            "tickWidth": 1,
+            "gridWidth": 0.5,
+            "labelPadding": 4,
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           }
         },
         "y": {
           "title": "Count of Tags",
-          "field": "count",
+          "field": "cumulativeUniqueTagCount",
           "type": "quantitative",
           "axis": {
             "titleFontSize": {
@@ -144,19 +109,20 @@
       "encoding": {
         "x": {
           "title": "Date",
-          "field": "date",
-          "type": "temporal",
-          "timeUnit": "yearmonthdate"
+          "field": "range[0]",
+          "type": "temporal"
         },
         "y": {
           "title": "Count of Tags",
-          "field": "count",
+          "field": "cumulativeUniqueTagCount",
           "type": "quantitative"
         },
         "color": {
           "field": "datum",
           "legend": {
-            "values": ["Count of Tags"],
+            "values": [
+              "Count of Tags"
+            ],
             "symbolType": "stroke",
             "symbolStrokeColor": "var(--baw-primary)",
             "symbolStrokeWidth": 4
@@ -164,25 +130,21 @@
         },
         "tooltip": [
           {
-            "field": "date",
+            "field": "range[0]",
             "type": "temporal",
-            "title": "Date",
-            "format": "%Y-%m-%d"
+            "title": "From",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
           },
           {
-            "field": "count",
+            "field": "range[1]",
+            "type": "temporal",
+            "title": "To",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+          },
+          {
+            "field": "cumulativeUniqueTagCount",
             "type": "quantitative",
             "title": "Count of Tags"
-          },
-          {
-            "field": "error",
-            "type": "quantitative",
-            "title": "Error"
-          },
-          {
-            "title": "Count - Error",
-            "type": "quantitative",
-            "field": "count_subtract_error"
           }
         ]
       }

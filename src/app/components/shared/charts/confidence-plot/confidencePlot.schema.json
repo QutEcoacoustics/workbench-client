@@ -16,11 +16,15 @@
     {
       "name": "maximum",
       "value": 1
+    },
+    {
+      "name": "maximumCount",
+      "value": 1
     }
   ],
   "hconcat": [
     {
-      "width": 10,
+      "width": 5,
       "height": 20,
       "transform": [
         {
@@ -44,7 +48,10 @@
             "domainWidth": 0.75
           },
           "scale": {
-            "domain": [0, 1],
+            "domain": [
+              0,
+              1
+            ],
             "padding": 0,
             "nice": false
           }
@@ -54,7 +61,12 @@
           "type": "quantitative",
           "axis": null,
           "scale": {
-            "domainMin": 0,
+            "domain": [
+              0,
+              {
+                "expr": "maximumCount"
+              }
+            ],
             "nice": false
           }
         },
@@ -118,7 +130,7 @@
             "labelColor": "#55616d",
             "labelPadding": 0,
             "tickColor": "#000000",
-            "tickSize": 4,
+            "tickSize": 3,
             "tickWidth": 0.75,
             "values": {
               "expr": "[minimum, midpoint, maximum]"
@@ -141,7 +153,12 @@
           "type": "quantitative",
           "axis": null,
           "scale": {
-            "domainMin": 0,
+            "domain": [
+              0,
+              {
+                "expr": "maximumCount"
+              }
+            ],
             "nice": false
           }
         },
@@ -178,7 +195,7 @@
       ]
     },
     {
-      "width": 10,
+      "width": 5,
       "height": 20,
       "transform": [
         {
@@ -202,7 +219,10 @@
             "domainWidth": 0.75
           },
           "scale": {
-            "domain": [0, 1],
+            "domain": [
+              0,
+              1
+            ],
             "padding": 0,
             "nice": false
           }
@@ -212,7 +232,12 @@
           "type": "quantitative",
           "axis": null,
           "scale": {
-            "domainMin": 0,
+            "domain": [
+              0,
+              {
+                "expr": "maximumCount"
+              }
+            ],
             "nice": false
           }
         },

@@ -46,7 +46,9 @@ interface ChartData {
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="chartContainer marks">Chart loading</div>
+    <div #chartContainer class="chartContainer marks">
+      <small>(chart loading)</small>
+    </div>
   `,
   styleUrl: "./chart.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,6 +76,8 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   public readonly datasets = input<Datasets | object>();
   /** Values for named Vega-Lite parameters declared in the spec. */
   public readonly params = input<Record<string, unknown>>();
+  /** Identifies the chart in Vega-Lite console messages. */
+  public readonly logContext = input<string>();
   public readonly options = input<EmbedOptions>({ actions: false });
   /**
    * Specifies a way to turn model values into user-facing values
@@ -189,6 +193,8 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
 
     // because of all the import shenanigans we just redefine the log level const here.
     const Warn = 2;
+    const logContext = this.logContext();
+    const logPrefix = logContext ? `[Vega-Lite: ${logContext}]` : "[Vega-Lite]";
 
     // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
@@ -196,7 +202,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       // svg is currently buggy on Windows Firefox and results in poorly rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
       renderer: "svg",
       logger: vega.logger(Warn, undefined, (method, level, messages) =>
-        console[method]("[Vega-lite]", level, ...messages),
+        console[method](logPrefix, level, ...messages),
       ),
       config: {
         // for optimization reasons, vega-lite has decided to disable reactive sizing by default

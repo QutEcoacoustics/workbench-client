@@ -5,6 +5,7 @@ import { EventSummariesReportService } from "@baw-api/reports/event-report/event
 import { RecordingCoverageReportService } from "@baw-api/reports/event-report/recording-coverage-report.service";
 import { TagAccumulationReportService } from "@baw-api/reports/event-report/tag-accumulation-report.service";
 import { TagFrequencyReportService } from "@baw-api/reports/event-report/tag-frequency-report.service";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import {
@@ -17,6 +18,7 @@ import {
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { EventSummaryItem } from "@models/Reports";
+import { Tag } from "@models/Tag";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import {
   SpectatorRouting,
@@ -25,6 +27,7 @@ import {
 } from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
+import { generateTag } from "@test/fakes/Tag";
 import { generateEventSummaryReportUrlParams } from "@test/fakes/data/EventSummaryReportParameters";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
@@ -45,6 +48,7 @@ describe("ViewEventReportComponent", () => {
   let defaultParameterDataModel: EventSummaryReportParameters;
   let eventSummariesFilterSpy: jasmine.Spy;
   let tagFrequencyFilterSpy: jasmine.Spy;
+  let tagShowSpy: jasmine.Spy;
   let tagAccumulationFilterSpy: jasmine.Spy;
   let recordingCoverageFilterSpy: jasmine.Spy;
   let analysisCoverageFilterSpy: jasmine.Spy;
@@ -102,6 +106,9 @@ describe("ViewEventReportComponent", () => {
       }),
       mockProvider(TagFrequencyReportService, {
         filter: (...args: unknown[]) => tagFrequencyFilterSpy(...args),
+      }),
+      mockProvider(TagsService, {
+        show: (...args: unknown[]) => tagShowSpy(...args),
       }),
       mockProvider(TagAccumulationReportService, {
         filter: (...args: unknown[]) => tagAccumulationFilterSpy(...args),
@@ -165,6 +172,9 @@ describe("ViewEventReportComponent", () => {
     tagFrequencyFilterSpy = jasmine
       .createSpy("tagFrequencyFilter")
       .and.returnValue(of(mockTagFrequency));
+    tagShowSpy = jasmine
+      .createSpy("tagShow")
+      .and.returnValue(of(new Tag(generateTag({ id: 1, text: "Koala" }))));
     tagAccumulationFilterSpy = jasmine
       .createSpy("tagAccumulationFilter")
       .and.returnValue(of(mockAccumulation));
@@ -230,10 +240,7 @@ describe("ViewEventReportComponent", () => {
   });
 
   it("should not refetch base report endpoints when toggling a chart", () => {
-    spectator.component["toggleChart"](
-      Chart.speciesAccumulationCurve,
-      true,
-    );
+    spectator.component["toggleChart"](Chart.speciesAccumulationCurve, true);
 
     expect(eventSummariesFilterSpy).toHaveBeenCalledTimes(1);
     expect(recordingCoverageFilterSpy).toHaveBeenCalledTimes(1);

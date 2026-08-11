@@ -6,8 +6,14 @@
     "values": []
   },
   "params": [
-    { "name": "bawTitleSize", "value": 20 },
-    { "name": "bawFontSize", "value": 18 }
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 14
+    }
   ],
   "config": {
     "customFormatTypes": true
@@ -20,44 +26,78 @@
       },
       "encoding": {
         "x": {
-          "field": "date",
+          "field": "range[0]",
           "title": "Date",
           "type": "temporal",
-          "timeUnit": "yearmonthdate",
           "axis": {
-            "labelAngle": 45,
-            "grid": false,
             "title": null,
-            "format": "%Y-%m-%d",
-            "zindex": 1,
-            "tickCount": "day",
-            "labelFontSize": { "expr": "bawFontSize" }
+            "format": {
+              "year": "%Y",
+              "quarter": "%Y-%m",
+              "month": "%Y-%m",
+              "week": "%Y-%m-%d",
+              "date": "%Y-%m-%d",
+              "day": "%Y-%m-%d",
+              "hours": "%Y-%m-%d %H:%M:%S %Z",
+              "minutes": "%Y-%m-%d %H:%M:%S %Z",
+              "seconds": "%Y-%m-%d %H:%M:%S %Z",
+              "milliseconds": "%Y-%m-%d %H:%M:%S.%L %Z"
+            },
+            "labelAngle": -30,
+            "labelAlign": "right",
+            "labelFlush": true,
+            "labelFlushOffset": 4,
+            "tickSize": 4,
+            "tickWidth": 1,
+            "gridWidth": 0.5,
+            "labelPadding": 4,
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           },
-          "scale": { "padding": 0 }
+          "scale": {
+            "padding": 0
+          }
         },
         "y": {
           "title": "Count of Events",
-          "field": "count",
+          "field": "events",
           "type": "quantitative",
           "axis": {
-            "titleFontSize": { "expr": "bawTitleSize" },
-            "labelFontSize": { "expr": "bawFontSize" }
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           }
         },
         "color": {
           "field": "tagId",
           "type": "nominal",
-          "scale": { "scheme": "category10" },
+          "scale": {
+            "scheme": "category10"
+          },
           "legend": {
             "orient": "top",
             "formatType": "customFormatter",
             "title": "Tags",
-            "columns": 6,
-            "titleFontSize": { "expr": "bawTitleSize" },
+            "columns": {
+              "expr": "max(1, floor(width / 220))"
+            },
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
             "titleFontWeight": "normal",
-            "labelLimit": 500,
-            "symbolSize": { "expr": "bawTitleSize * 16" },
-            "labelFontSize": { "expr": "bawTitleSize" }
+            "labelLimit": {
+              "expr": "max(100, min(180, width / max(1, floor(width / 220)) - 35))"
+            },
+            "symbolSize": {
+              "expr": "bawFontSize * bawFontSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
           }
         }
       }
@@ -76,13 +116,12 @@
       ],
       "encoding": {
         "x": {
-          "field": "date",
-          "type": "temporal",
-          "timeUnit": "yearmonthdate"
+          "field": "range[0]",
+          "type": "temporal"
         },
         "y": {
           "title": "Count of Events",
-          "field": "count",
+          "field": "events",
           "type": "quantitative"
         },
         "color": {
@@ -92,12 +131,24 @@
         "tooltip": [
           {
             "type": "temporal",
-            "field": "date",
-            "title": "Date",
-            "format": "%Y-%m-%d"
+            "field": "range[0]",
+            "title": "From",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
           },
-          { "field": "formatted_tagId", "title": "Event" },
-          { "field": "count", "title": "Count" }
+          {
+            "type": "temporal",
+            "field": "range[1]",
+            "title": "To",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+          },
+          {
+            "field": "formatted_tagId",
+            "title": "Event"
+          },
+          {
+            "field": "events",
+            "title": "Count"
+          }
         ]
       }
     }

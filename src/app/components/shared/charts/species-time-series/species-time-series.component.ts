@@ -5,77 +5,72 @@ import {
   input,
   viewChild,
 } from "@angular/core";
-import { Id, Param } from "@interfaces/apiInterfaces";
 import { TagFrequencyReportItem } from "@models/Reports";
-import { Tag } from "@models/Tag";
 import { ChartComponent } from "@shared/chart/chart.component";
-import { Map } from "immutable";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { Map as ImmutableMap } from "immutable";
+import { createTagFormatter, resolveTags } from "../resolve-tags";
 import chartSchema from "./speciesTimeSeries.schema.json";
 
-export interface SpeciesTimeSeriesGraphData {
-  date: Param;
-  tagId: Id<Tag>;
-  count: number;
+export interface SpeciesTimeSeriesChartRow {
+  readonly range: TagFrequencyReportItem["range"];
+  readonly tagId: number;
+  readonly events: number;
+}
+
+export function flattenFrequencyRows(
+  rows: readonly TagFrequencyReportItem[],
+): SpeciesTimeSeriesChartRow[] {
+  // collect all tags ids so we can widen the sparse API data into a cartesian product of all ranges and all tags
+  const tagIds = Array.from(
+    rows
+      .flatMap(({ tags }) => tags)
+      .reduce((set, { tagId }) => set.add(tagId), new Set<number>()),
+  );
+
+  return rows.flatMap(({ range, tags }) => {
+    const eventsByTag = new Map(
+      tags.map(({ tagId, events }) => [tagId, events] as const),
+    );
+
+    return tagIds.map((tagId) => ({
+      range,
+      tagId,
+      events: eventsByTag.get(tagId) ?? 0,
+    }));
+  });
 }
 
 @Component({
   selector: "baw-species-time-series",
   template: `
-    <baw-chart
-      #chart
-      [spec]="chartSchema"
-      [data]="data()"
-      [formatter]="formatter()"
-    />
+    @if (tags()) {
+      <baw-chart
+        #chart
+        [spec]="chartSchema"
+        [data]="chartRows()"
+        [formatter]="tagFormatter"
+        logContext="Species time series"
+      />
+    } @else {
+      <baw-loading />
+    }
   `,
   styleUrl: "../charts.component.scss",
-  imports: [ChartComponent],
+  imports: [ChartComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpeciesTimeSeriesComponent {
   public readonly rows = input.required<TagFrequencyReportItem[]>();
-  public readonly formatter = input.required<(tagId: unknown) => string>();
+
+  protected readonly tags = resolveTags(this.rows);
+  protected readonly tagFormatter = createTagFormatter(this.tags);
 
   public readonly chart = viewChild.required<ChartComponent>("chart");
 
-  protected readonly data = computed(() =>
-    this.rows().flatMap((row) => {
-      const date = getBucketStart(row);
-
-      return row.tags.map((tag) => ({
-        date,
-        tagId: tag.tagId,
-        count: tag.events,
-      }));
-    }),
+  protected readonly chartRows = computed(() =>
+    flattenFrequencyRows(this.rows()),
   );
 
-  protected readonly chartSchema = Map(chartSchema);
-}
-
-function getBucketStart(item: {
-  range?: [unknown, unknown];
-  bucket?: [unknown, unknown];
-}): Param {
-  const range = item.range ?? item.bucket;
-  return serializeBucketValue(range?.[0]);
-}
-
-function serializeBucketValue(value: unknown): Param {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
-
-  if (value && typeof value === "object" && "toISO" in value) {
-    const toIso = (value as { toISO?: () => string | null }).toISO;
-    if (typeof toIso === "function") {
-      return toIso.call(value) ?? "";
-    }
-  }
-
-  return String(value ?? "");
+  protected readonly chartSchema = ImmutableMap(chartSchema);
 }

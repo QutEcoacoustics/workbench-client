@@ -4,7 +4,7 @@
   "params": [
     {
       "name": "bawFontSize",
-      "value": 18
+      "value": 14
     }
   ],
   "resolve": {
@@ -114,18 +114,15 @@
         "x": {
           "field": "startDate",
           "type": "temporal",
-          "timeUnit": "yearmonthdate",
           "axis": {
             "title": null,
             "labels": false,
             "ticks": false,
             "domain": false,
-            "grid": true,
-            "tickCount": "day"
+            "grid": true
           }
         },
         "x2": {
-          "timeUnit": "yearmonthdate",
           "field": "endDate"
         },
         "color": {
@@ -136,13 +133,13 @@
             "type": "temporal",
             "field": "startDate",
             "title": "Recording Start Date",
-            "format": "%Y-%m-%d"
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
           },
           {
             "type": "temporal",
             "field": "endDate",
             "title": "Recording End Date",
-            "format": "%Y-%m-%d"
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
           }
         ]
       }
@@ -161,20 +158,27 @@
             "x": {
               "field": "startDate",
               "type": "temporal",
-              "timeUnit": "yearmonthdate",
               "axis": {
-                "labelAngle": 45,
                 "title": null,
                 "grid": true,
-                "format": "%Y-%m-%d",
-                "tickCount": "day",
+                "format": {
+                  "year": "%Y",
+                  "quarter": "%Y-%m",
+                  "month": "%Y-%m",
+                  "week": "%Y-%m-%d",
+                  "date": "%Y-%m-%d",
+                  "day": "%Y-%m-%d",
+                  "hours": "%Y-%m-%d %H:%M:%S %Z",
+                  "minutes": "%Y-%m-%d %H:%M:%S %Z",
+                  "seconds": "%Y-%m-%d %H:%M:%S %Z",
+                  "milliseconds": "%Y-%m-%d %H:%M:%S.%L %Z"
+                },
                 "labelFontSize": {
                   "expr": "bawFontSize"
                 }
               }
             },
             "x2": {
-              "timeUnit": "yearmonthdate",
               "field": "endDate"
             },
             "color": {
@@ -185,13 +189,13 @@
                 "type": "temporal",
                 "field": "startDate",
                 "title": "Missing Analysis Start Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               },
               {
                 "type": "temporal",
                 "field": "endDate",
                 "title": "Missing Analysis End Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               }
             ]
           }
@@ -205,20 +209,9 @@
             "x": {
               "field": "startDate",
               "type": "temporal",
-              "timeUnit": "yearmonthdate",
-              "axis": {
-                "labelAngle": 45,
-                "title": null,
-                "grid": false,
-                "format": "%Y-%m-%d",
-                "tickCount": "day",
-                "labelFontSize": {
-                  "expr": "bawFontSize"
-                }
-              }
+              "axis": null
             },
             "x2": {
-              "timeUnit": "yearmonthdate",
               "field": "endDate"
             },
             "color": {
@@ -229,13 +222,13 @@
                 "type": "temporal",
                 "field": "startDate",
                 "title": "Failed Analysis Start Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               },
               {
                 "type": "temporal",
                 "field": "endDate",
                 "title": "Failed Analysis End Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               }
             ]
           }
@@ -249,10 +242,9 @@
             "x": {
               "field": "startDate",
               "type": "temporal",
-              "timeUnit": "yearmonthdate"
+              "axis": null
             },
             "x2": {
-              "timeUnit": "yearmonthdate",
               "field": "endDate"
             },
             "color": {
@@ -263,13 +255,13 @@
                 "type": "temporal",
                 "field": "startDate",
                 "title": "Analysis Start Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               },
               {
                 "type": "temporal",
                 "field": "endDate",
                 "title": "Analysis End Date",
-                "format": "%Y-%m-%d"
+                "format": "%Y-%m-%d %H:%M:%S.%L %Z"
               }
             ]
           }

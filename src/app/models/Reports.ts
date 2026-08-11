@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { AbstractModelWithoutId } from "./AbstractModel";
 import type { AnalysisJobItemResultStatus } from "./AnalysisJobItem";
 import { hasOne } from "./AssociationDecorators";
-import { bawDateTimeBucket as bawDateTimeRange } from "./AttributeDecorators";
+import { bawDateTimeRange } from "./AttributeDecorators";
 import { AssociationInjector } from "./ImplementsInjector";
 import type { Provenance } from "./Provenance";
 import type { Site } from "./Site";

@@ -27,7 +27,12 @@ export interface CoverageGraphData {
 @Component({
   selector: "baw-coverage-plot",
   template: `
-    <baw-chart #chart [spec]="chartSchema" [datasets]="data()" />
+    <baw-chart
+      #chart
+      [spec]="chartSchema"
+      [datasets]="data()"
+      logContext="Coverage plot"
+    />
  `,
   styleUrl: "../charts.component.scss",
   imports: [ChartComponent],

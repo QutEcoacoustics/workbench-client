@@ -1239,8 +1239,12 @@ export class Histogram implements IHistogram {
     return this.bucketCount === 0 ? 0 : this.span / this.bucketCount;
   }
 
+  public get maximumCount(): number {
+    return Math.max(0, this.underflow, this.overflow, ...this.bins);
+  }
+
   public bucketRange(index: number): Range<number> | null {
-    if (index < 0 || index >= this.bucketCount || this.bucketWidth === 0) {
+    if (index < 0 || index >= this.bucketCount) {
       return null;
     }
 

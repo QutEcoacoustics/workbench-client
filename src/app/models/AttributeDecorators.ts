@@ -284,25 +284,32 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
   );
 }
 
-interface BucketOptions<T> {
+interface RangeOptions<T> {
   convert(value: unknown): T;
 }
 
-export function bawBucket<Model, T>(options: BucketOptions<T>) {
-  return createDecorator<Model>(
-    undefined,
-    (model, key, rawBucket: Range<unknown>) => {
-      model[key] = [
-        options.convert(rawBucket[0]),
-        options.convert(rawBucket[1]),
-      ] as Range<T>;
-    },
-  );
+export function bawRange<T>(options: RangeOptions<T>) {
+  return function (model: object, key: string): void {
+    Object.defineProperty(model, key, {
+      set(rawRange: Range<unknown>): void {
+        Object.defineProperty(this, key, {
+          value: rawRange.map(options.convert) as Range<T>,
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
+      },
+      configurable: true,
+    });
+  };
 }
 
-export function bawDateTimeBucket<Model>() {
-  return bawBucket<Model, DateTime>({
-    convert: convertApiDateString,
+export function bawDateTimeRange() {
+  return bawRange<DateTime>({
+    convert: (value) =>
+      DateTime.isDateTime(value)
+        ? value
+        : convertApiDateString(value as string),
   });
 }
 

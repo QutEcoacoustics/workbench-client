@@ -52,7 +52,6 @@ import {
   SupportedTagBucketSize,
 } from "@models/Reports";
 import { Site } from "@models/Site";
-import { Tag } from "@models/Tag";
 import { NgbCollapse, NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { DateTimePipe } from "@pipes/date/date.pipe";
 import { TimePipe } from "@pipes/time/time.pipe";
@@ -257,18 +256,6 @@ class ViewEventReportComponent extends PageComponent {
       this.openPrintModal();
     }
   }
-
-  protected readonly vegaTagTextFormatter = (tagId: unknown): string => {
-    if (typeof tagId !== "number") {
-      return "";
-    }
-
-    return (
-      this.parameterDataModel.tagModels?.find(
-        (tagModel: Tag) => tagModel.id === tagId,
-      )?.text ?? ""
-    );
-  };
 
   protected downloadEventsTableUrl(): string {
     const selectedTimezone =

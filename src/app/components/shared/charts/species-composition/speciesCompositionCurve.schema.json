@@ -12,36 +12,43 @@
     },
     {
       "name": "bawFontSize",
-      "value": 18
+      "value": 14
     }
   ],
   "config": {
     "customFormatTypes": true
   },
-  "mark": "area",
-  "transform": [
-    {
-      "calculate": "format(datum.ratio, '.2f')",
-      "as": "formatted_ratio"
-    },
-    {
-      "calculate": "customFormatter(datum.tagId)",
-      "as": "formatted_tagId"
-    }
-  ],
+  "mark": {
+    "type": "area",
+    "interpolate": "linear"
+  },
   "encoding": {
     "x": {
-      "field": "date",
+      "field": "range[0]",
       "title": "Date",
       "type": "temporal",
-      "timeUnit": "yearmonthdate",
       "axis": {
-        "labelAngle": 45,
-        "grid": false,
         "title": null,
-        "format": "%Y-%m-%d",
-        "zindex": 1,
-        "tickCount": "day",
+        "format": {
+          "year": "%Y",
+          "quarter": "%Y-%m",
+          "month": "%Y-%m",
+          "week": "%Y-%m-%d",
+          "date": "%Y-%m-%d",
+          "day": "%Y-%m-%d",
+          "hours": "%Y-%m-%d %H:%M:%S %Z",
+          "minutes": "%Y-%m-%d %H:%M:%S %Z",
+          "seconds": "%Y-%m-%d %H:%M:%S %Z",
+          "milliseconds": "%Y-%m-%d %H:%M:%S.%L %Z"
+        },
+        "labelAngle": -30,
+        "labelAlign": "right",
+        "labelFlush": true,
+        "labelFlushOffset": 4,
+        "tickSize": 4,
+        "tickWidth": 1,
+        "gridWidth": 0.5,
+        "labelPadding": 4,
         "labelFontSize": {
           "expr": "bawFontSize"
         }
@@ -52,17 +59,28 @@
     },
     "y": {
       "title": "Ratio of Tags",
-      "aggregate": "sum",
       "field": "ratio",
       "type": "quantitative",
+      "stack": "zero",
       "axis": {
+        "format": ".0%",
         "titleFontSize": {
           "expr": "bawTitleSize"
         },
         "labelFontSize": {
           "expr": "bawFontSize"
         }
+      },
+      "scale": {
+        "domain": [
+          0,
+          1
+        ]
       }
+    },
+    "order": {
+      "field": "tagId",
+      "type": "nominal"
     },
     "color": {
       "field": "tagId",
@@ -74,34 +92,54 @@
         "orient": "top",
         "formatType": "customFormatter",
         "title": "Tags",
-        "columns": 6,
+        "columns": {
+          "expr": "max(1, floor(width / 220))"
+        },
         "titleFontSize": {
           "expr": "bawTitleSize"
         },
         "titleFontWeight": "normal",
-        "labelLimit": 500,
+        "labelLimit": {
+          "expr": "max(100, min(180, width / max(1, floor(width / 220)) - 35))"
+        },
         "symbolSize": {
-          "expr": "bawTitleSize * 16"
+          "expr": "bawFontSize * bawFontSize"
         },
         "labelFontSize": {
-          "expr": "bawTitleSize"
+          "expr": "bawFontSize"
         }
       }
     },
     "tooltip": [
       {
         "type": "temporal",
-        "field": "date",
-        "title": "Date",
-        "format": "%Y-%m-%d"
+        "field": "range[0]",
+        "title": "From",
+        "format": "%Y-%m-%d %H:%M:%S.%L %Z"
       },
       {
-        "field": "formatted_tagId",
-        "title": "Event"
+        "type": "temporal",
+        "field": "range[1]",
+        "title": "To",
+        "format": "%Y-%m-%d %H:%M:%S.%L %Z"
       },
       {
-        "field": "formatted_ratio",
-        "title": "Ratio"
+        "field": "tagId",
+        "type": "nominal",
+        "title": "Tag",
+        "formatType": "customFormatter"
+      },
+      {
+        "field": "events",
+        "type": "quantitative",
+        "title": "Event count",
+        "format": ",d"
+      },
+      {
+        "field": "ratio",
+        "type": "quantitative",
+        "title": "Ratio",
+        "format": ".1%"
       }
     ]
   }

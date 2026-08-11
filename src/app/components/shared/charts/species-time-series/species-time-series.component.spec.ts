@@ -1,20 +1,75 @@
-import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { TagsService } from "@baw-api/tag/tags.service";
 import { TagFrequencyReportItem } from "@models/Reports";
+import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { assertChart } from "@test/helpers/charts";
-import { SpeciesTimeSeriesComponent } from "./species-time-series.component";
+import { DateTime } from "luxon";
+import { concat, NEVER, of } from "rxjs";
+import {
+  flattenFrequencyRows,
+  SpeciesTimeSeriesComponent,
+} from "./species-time-series.component";
+
+describe("flattenFrequencyRows", () => {
+  it("should emit zero events for tags absent from a range", () => {
+    const ranges: TagFrequencyReportItem["range"][] = [
+      [DateTime.fromISO("2024-01-01"), DateTime.fromISO("2024-01-02")],
+      [DateTime.fromISO("2024-01-02"), DateTime.fromISO("2024-01-03")],
+      [DateTime.fromISO("2024-01-03"), DateTime.fromISO("2024-01-04")],
+    ];
+    const rows = [
+      { range: ranges[0], tags: [{ tagId: 1, events: 4 }] },
+      { range: ranges[1], tags: [] },
+      { range: ranges[2], tags: [{ tagId: 2, events: 3 }] },
+    ] as TagFrequencyReportItem[];
+
+    expect(flattenFrequencyRows(rows)).toEqual([
+      { range: ranges[0], tagId: 1, events: 4 },
+      { range: ranges[0], tagId: 2, events: 0 },
+      { range: ranges[1], tagId: 1, events: 0 },
+      { range: ranges[1], tagId: 2, events: 0 },
+      { range: ranges[2], tagId: 1, events: 0 },
+      { range: ranges[2], tagId: 2, events: 3 },
+    ]);
+  });
+});
 
 describe("SpeciesTimeSeriesComponent", () => {
   let spec: Spectator<SpeciesTimeSeriesComponent>;
+  let tagShowSpy: jasmine.Spy;
 
   const createComponent = createComponentFactory({
     component: SpeciesTimeSeriesComponent,
+    providers: [
+      {
+        provide: TagsService,
+        useValue: {
+          show: (tagId: number) => tagShowSpy(tagId),
+        },
+      },
+    ],
   });
 
   beforeEach(async () => {
+    tagShowSpy = jasmine.createSpy("tagShow").and.callFake((tagId: number) =>
+      concat(
+        of({
+          id: tagId,
+          text: `Tag ${tagId}`,
+        }),
+        NEVER,
+      ),
+    );
+    const range = (
+      start: string,
+      end: string,
+    ): TagFrequencyReportItem["range"] => [
+      DateTime.fromISO(start),
+      DateTime.fromISO(end),
+    ];
     const mockRows: TagFrequencyReportItem[] = [
       new TagFrequencyReportItem({
-        bucket: ["2023-05-22", "2023-05-23"],
+        range: range("2023-05-22", "2023-05-23"),
         tags: [
           { tagId: 1, events: 55 },
           { tagId: 39, events: 30 },
@@ -22,7 +77,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-23", "2023-05-24"],
+        range: range("2023-05-23", "2023-05-24"),
         tags: [
           { tagId: 1, events: 45 },
           { tagId: 39, events: 20 },
@@ -30,7 +85,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-24", "2023-05-25"],
+        range: range("2023-05-24", "2023-05-25"),
         tags: [
           { tagId: 1, events: 5 },
           { tagId: 39, events: 25 },
@@ -38,7 +93,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-25", "2023-05-26"],
+        range: range("2023-05-25", "2023-05-26"),
         tags: [
           { tagId: 1, events: 50 },
           { tagId: 39, events: 20 },
@@ -46,7 +101,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-26", "2023-05-27"],
+        range: range("2023-05-26", "2023-05-27"),
         tags: [
           { tagId: 1, events: 25 },
           { tagId: 39, events: 40 },
@@ -54,7 +109,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-27", "2023-05-28"],
+        range: range("2023-05-27", "2023-05-28"),
         tags: [
           { tagId: 1, events: 15 },
           { tagId: 39, events: 30 },
@@ -62,7 +117,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-28", "2023-05-29"],
+        range: range("2023-05-28", "2023-05-29"),
         tags: [
           { tagId: 1, events: 10 },
           { tagId: 39, events: 20 },
@@ -70,7 +125,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-29", "2023-05-30"],
+        range: range("2023-05-29", "2023-05-30"),
         tags: [
           { tagId: 1, events: 5 },
           { tagId: 39, events: 15 },
@@ -78,7 +133,7 @@ describe("SpeciesTimeSeriesComponent", () => {
         ],
       }),
       new TagFrequencyReportItem({
-        bucket: ["2023-05-30", "2023-05-31"],
+        range: range("2023-05-30", "2023-05-31"),
         tags: [
           { tagId: 1, events: 5 },
           { tagId: 39, events: 10 },
@@ -101,8 +156,6 @@ describe("SpeciesTimeSeriesComponent", () => {
     spec = createComponent({
       props: {
         rows: mockRows,
-        // @ts-expect-error: strict mode fix
-        formatter: (tagId) => `Tag ${tagId.toString()}`,
       },
     });
 
@@ -122,6 +175,10 @@ describe("SpeciesTimeSeriesComponent", () => {
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(SpeciesTimeSeriesComponent);
+  });
+
+  it("should resolve each distinct tag", () => {
+    expect(tagShowSpy.calls.allArgs()).toEqual([[1], [39], [277]]);
   });
 
   assertChart(() => spec, {
