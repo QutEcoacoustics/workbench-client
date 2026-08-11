@@ -1,62 +1,179 @@
+import { BawApiService } from "@baw-api/baw-api.service";
 import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
+import { AnalysisCoverageReportService } from "@baw-api/reports/event-report/analysis-coverage-report.service";
+import { EventSummariesReportService } from "@baw-api/reports/event-report/event-summaries-report.service";
+import { RecordingCoverageReportService } from "@baw-api/reports/event-report/recording-coverage-report.service";
+import { TagAccumulationReportService } from "@baw-api/reports/event-report/tag-accumulation-report.service";
+import { TagFrequencyReportService } from "@baw-api/reports/event-report/tag-frequency-report.service";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
-import { EventSummaryReport } from "@models/EventSummaryReport";
+import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
+import {
+  faFileArrowDown,
+  faInfoCircle,
+  faMaximize,
+  faMinimize,
+  faPrint,
+} from "@fortawesome/free-solid-svg-icons";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
+import { EventSummaryItem } from "@models/Reports";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
-import { SpectatorRouting, createRoutingFactory } from "@ngneat/spectator";
-import { generateEventSummaryReport } from "@test/fakes/EventSummaryReport";
+import {
+  SpectatorRouting,
+  createRoutingFactory,
+  mockProvider,
+} from "@ngneat/spectator";
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateEventSummaryReportUrlParams } from "@test/fakes/data/EventSummaryReportParameters";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
-import { EventSummaryReportParameters } from "../EventSummaryReportParameters";
+import { NEVER, of } from "rxjs";
+import {
+  Chart,
+  EventSummaryReportParameters,
+} from "../EventSummaryReportParameters";
 import { ViewEventReportComponent } from "./view.component";
 
 describe("ViewEventReportComponent", () => {
   let spectator: SpectatorRouting<ViewEventReportComponent>;
   let modalService: NgbModal;
   let modalConfigService: NgbModalConfig;
+  let iconLibrary: FaIconLibrary;
   let defaultProject: Project;
   let defaultRegion: Region;
-  let defaultReport: EventSummaryReport;
   let defaultParameterDataModel: EventSummaryReportParameters;
+  let eventSummariesFilterSpy: jasmine.Spy;
+  let tagFrequencyFilterSpy: jasmine.Spy;
+  let tagAccumulationFilterSpy: jasmine.Spy;
+  let recordingCoverageFilterSpy: jasmine.Spy;
+  let analysisCoverageFilterSpy: jasmine.Spy;
   const mockSiteMap = MockComponent(SiteMapComponent);
+  const mockEventSummaries: EventSummaryItem[] = [];
+  const mockTagFrequency = [
+    {
+      bucket: ["2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z"] as [
+        string,
+        string,
+      ],
+      tags: [{ tagId: 1, events: 2 }],
+    },
+  ];
+  const mockAccumulation = [
+    {
+      bucket: ["2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z"] as [
+        string,
+        string,
+      ],
+      cumulativeUniqueTagCount: 1,
+    },
+  ];
+  const mockRecordingCoverage = [
+    {
+      siteId: 1,
+      coverage: ["2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z"] as [
+        string,
+        string,
+      ],
+      density: 1,
+      gapThreshold: 1,
+    },
+  ];
+  const mockAnalysisCoverage = [
+    {
+      siteId: 1,
+      coverage: ["2024-01-01T00:00:00.000Z", "2024-01-02T00:00:00.000Z"] as [
+        string,
+        string,
+      ],
+      density: 1,
+      gapThreshold: 1,
+      result: "success" as const,
+    },
+  ];
 
   const createComponent = createRoutingFactory({
     component: ViewEventReportComponent,
     declarations: [mockSiteMap],
-    providers: [provideMockBawApi()],
+    providers: [
+      provideMockBawApi(),
+      mockProvider(EventSummariesReportService, {
+        filter: (...args: unknown[]) => eventSummariesFilterSpy(...args),
+      }),
+      mockProvider(TagFrequencyReportService, {
+        filter: (...args: unknown[]) => tagFrequencyFilterSpy(...args),
+      }),
+      mockProvider(TagAccumulationReportService, {
+        filter: (...args: unknown[]) => tagAccumulationFilterSpy(...args),
+      }),
+      mockProvider(RecordingCoverageReportService, {
+        filter: (...args: unknown[]) => recordingCoverageFilterSpy(...args),
+      }),
+      mockProvider(AnalysisCoverageReportService, {
+        filter: (...args: unknown[]) => analysisCoverageFilterSpy(...args),
+      }),
+      mockProvider(BawApiService, {
+        encodeFilter: () => "filterEncoded=abc",
+      }),
+    ],
   });
 
-  function setup(): void {
-    spectator = createComponent({ detectChanges: false });
+  function setup(
+    queryParams = generateEventSummaryReportUrlParams({
+      charts: Chart.speciesCompositionCurve,
+      bucketSize: "month",
+    }),
+  ): void {
+    spectator = createComponent({
+      detectChanges: false,
+      data: {
+        resolvers: {
+          project: "resolver",
+          region: "resolver",
+        },
+        project: { model: defaultProject },
+        region: { model: defaultRegion },
+      },
+      queryParams,
+    });
 
-    // inject the NgbModal service so that we can
-    // dismiss all modals at the end of every test
     modalService = spectator.inject(NgbModal);
     modalService.open = jasmine.createSpy("open");
 
-    // inject the bootstrap modal config service so that we can disable animations
-    // this is needed so that buttons can be clicked without waiting for the async animation
     modalConfigService = spectator.inject(NgbModalConfig);
     modalConfigService.animation = false;
 
-    spectator.component.project = defaultProject;
-    spectator.component.region = defaultRegion;
-    spectator.component.report = defaultReport;
-    spectator.component.parameterDataModel = defaultParameterDataModel;
+    iconLibrary = spectator.inject(FaIconLibrary);
+    iconLibrary.addIcons(
+      faPrint,
+      faFileArrowDown,
+      faInfoCircle,
+      faMinimize,
+      faMaximize,
+    );
+
+    spectator.detectChanges();
+    defaultParameterDataModel = spectator.component.parameterDataModel;
   }
 
   beforeEach(() => {
     defaultProject = new Project(generateProject());
     defaultRegion = new Region(generateRegion());
-    defaultReport = new EventSummaryReport(generateEventSummaryReport());
-    defaultParameterDataModel = new EventSummaryReportParameters(
-      generateEventSummaryReportUrlParams(),
-    );
-
+    eventSummariesFilterSpy = jasmine
+      .createSpy("eventSummariesFilter")
+      .and.returnValue(of(mockEventSummaries));
+    tagFrequencyFilterSpy = jasmine
+      .createSpy("tagFrequencyFilter")
+      .and.returnValue(of(mockTagFrequency));
+    tagAccumulationFilterSpy = jasmine
+      .createSpy("tagAccumulationFilter")
+      .and.returnValue(of(mockAccumulation));
+    recordingCoverageFilterSpy = jasmine
+      .createSpy("recordingCoverageFilter")
+      .and.returnValue(of(mockRecordingCoverage));
+    analysisCoverageFilterSpy = jasmine
+      .createSpy("analysisCoverageFilter")
+      .and.returnValue(of(mockAnalysisCoverage));
     setup();
   });
 
@@ -66,12 +183,8 @@ describe("ViewEventReportComponent", () => {
   });
 
   const printButtonElement = (): HTMLAnchorElement =>
-    // @ts-expect-error: strict mode fix
-    spectator.query<HTMLAnchorElement>("a#print-button");
-  // there are two locations in the view where the raw events can be download from in the report
-  const pointMaps = (): SiteMapComponent =>
-    // @ts-expect-error: strict mode fix
-    spectator.query(SiteMapComponent);
+    spectator.query<HTMLAnchorElement>("a#print-button")!;
+  const pointMaps = (): SiteMapComponent => spectator.query(SiteMapComponent)!;
 
   function setPrintDialogPreference(showPrintDialog: boolean): void {
     const localStorageKey = "hidePrintModal";
@@ -87,6 +200,45 @@ describe("ViewEventReportComponent", () => {
 
   it("should create", () => {
     expect(spectator.component).toBeInstanceOf(ViewEventReportComponent);
+  });
+
+  it("should only call the selected chart endpoints", () => {
+    expect(eventSummariesFilterSpy).toHaveBeenCalled();
+    expect(recordingCoverageFilterSpy).toHaveBeenCalled();
+    expect(analysisCoverageFilterSpy).toHaveBeenCalled();
+    expect(tagFrequencyFilterSpy).toHaveBeenCalled();
+    expect(tagAccumulationFilterSpy).not.toHaveBeenCalled();
+  });
+
+  it("should show loading states while report endpoints are pending", () => {
+    spectator.fixture.destroy();
+    eventSummariesFilterSpy.and.returnValue(NEVER);
+    tagFrequencyFilterSpy.and.returnValue(NEVER);
+    recordingCoverageFilterSpy.and.returnValue(NEVER);
+    analysisCoverageFilterSpy.and.returnValue(NEVER);
+    setup();
+
+    const loadingStatuses = spectator
+      .queryAll<HTMLElement>("[role='status']")
+      .map((element) => element.textContent?.trim());
+
+    expect(loadingStatuses).toContain("Loading recording coverage...");
+    expect(loadingStatuses).toContain("Loading coverage statistics...");
+    expect(loadingStatuses).toContain("Loading event summaries...");
+    expect(loadingStatuses).toContain("Loading species composition...");
+    expect(loadingStatuses).toContain("Loading species time series...");
+  });
+
+  it("should not refetch base report endpoints when toggling a chart", () => {
+    spectator.component["toggleChart"](
+      Chart.speciesAccumulationCurve,
+      true,
+    );
+
+    expect(eventSummariesFilterSpy).toHaveBeenCalledTimes(1);
+    expect(recordingCoverageFilterSpy).toHaveBeenCalledTimes(1);
+    expect(analysisCoverageFilterSpy).toHaveBeenCalledTimes(1);
+    expect(tagFrequencyFilterSpy).toHaveBeenCalledTimes(1);
   });
 
   it("should call the system print api on print icon click and the user has set the preference not to show the print dialog", () => {

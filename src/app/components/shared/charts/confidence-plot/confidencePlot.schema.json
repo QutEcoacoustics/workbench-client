@@ -1,67 +1,277 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "width": "container",
-  "height": "container",
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "background": "transparent",
   "data": {
-    "values": []
+    "name": "histogram"
   },
-  "mark": {
-    "type": "area",
-    "interpolate": "monotone"
-  },
+  "params": [
+    {
+      "name": "minimum",
+      "value": 0
+    },
+    {
+      "name": "midpoint",
+      "value": 0.5
+    },
+    {
+      "name": "maximum",
+      "value": 1
+    }
+  ],
+  "hconcat": [
+    {
+      "width": 10,
+      "height": 20,
+      "transform": [
+        {
+          "filter": "datum.panel === 'underflow'"
+        },
+        {
+          "filter": "datum.outOfRangeCount > 0"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "edge",
+          "type": "quantitative",
+          "axis": {
+            "title": null,
+            "labels": false,
+            "ticks": false,
+            "grid": false,
+            "domain": true,
+            "domainColor": "#7f8a96",
+            "domainWidth": 0.75
+          },
+          "scale": {
+            "domain": [0, 1],
+            "padding": 0,
+            "nice": false
+          }
+        },
+        "y": {
+          "field": "count",
+          "type": "quantitative",
+          "axis": null,
+          "scale": {
+            "domainMin": 0,
+            "nice": false
+          }
+        },
+        "tooltip": [
+          {
+            "field": "bucketLabel",
+            "type": "nominal",
+            "title": "Bin"
+          },
+          {
+            "field": "outOfRangeCount",
+            "type": "quantitative",
+            "title": "Count"
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "interpolate": "monotone",
+            "color": "#e7a1a1",
+            "opacity": 0.45,
+            "clip": true
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "interpolate": "monotone",
+            "color": "#b85c5c",
+            "strokeWidth": 1.5,
+            "clip": true
+          }
+        }
+      ]
+    },
+    {
+      "width": 244,
+      "height": 20,
+      "transform": [
+        {
+          "filter": "datum.panel === 'histogram'"
+        },
+        {
+          "calculate": "(datum.range[0] + datum.range[1]) / 2",
+          "as": "center"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "center",
+          "type": "quantitative",
+          "axis": {
+            "title": null,
+            "grid": false,
+            "domain": true,
+            "domainColor": "#7f8a96",
+            "domainWidth": 0.75,
+            "labelFontSize": 8,
+            "labelColor": "#55616d",
+            "labelPadding": 0,
+            "tickColor": "#000000",
+            "tickSize": 4,
+            "tickWidth": 0.75,
+            "values": {
+              "expr": "[minimum, midpoint, maximum]"
+            }
+          },
+          "scale": {
+            "domainMin": {
+              "expr": "minimum"
+            },
+            "domainMax": {
+              "expr": "maximum"
+            },
+            "padding": 0,
+            "nice": false,
+            "type": "linear"
+          }
+        },
+        "y": {
+          "field": "count",
+          "type": "quantitative",
+          "axis": null,
+          "scale": {
+            "domainMin": 0,
+            "nice": false
+          }
+        },
+        "tooltip": [
+          {
+            "field": "bucketLabel",
+            "type": "nominal",
+            "title": "Bin"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "Count"
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "interpolate": "monotone",
+            "color": "#7ba7d9",
+            "opacity": 0.35
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "interpolate": "monotone",
+            "color": "#2f6fb0",
+            "strokeWidth": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "width": 10,
+      "height": 20,
+      "transform": [
+        {
+          "filter": "datum.panel === 'overflow'"
+        },
+        {
+          "filter": "datum.outOfRangeCount > 0"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "edge",
+          "type": "quantitative",
+          "axis": {
+            "title": null,
+            "labels": false,
+            "ticks": false,
+            "grid": false,
+            "domain": true,
+            "domainColor": "#7f8a96",
+            "domainWidth": 0.75
+          },
+          "scale": {
+            "domain": [0, 1],
+            "padding": 0,
+            "nice": false
+          }
+        },
+        "y": {
+          "field": "count",
+          "type": "quantitative",
+          "axis": null,
+          "scale": {
+            "domainMin": 0,
+            "nice": false
+          }
+        },
+        "tooltip": [
+          {
+            "field": "bucketLabel",
+            "type": "nominal",
+            "title": "Bin"
+          },
+          {
+            "field": "outOfRangeCount",
+            "type": "quantitative",
+            "title": "Count"
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "interpolate": "monotone",
+            "color": "#e7a1a1",
+            "opacity": 0.45,
+            "clip": true
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "interpolate": "monotone",
+            "color": "#b85c5c",
+            "strokeWidth": 1.5,
+            "clip": true
+          }
+        }
+      ]
+    }
+  ],
+  "bounds": "flush",
+  "spacing": 0,
+  "padding": 0,
   "autosize": {
+    "type": "pad",
+    "contains": "padding",
     "resize": true
   },
-  "encoding": {
-    "x": {
-      "field": "data",
-      "type": "quantitative",
-      "axis": {
-        "grid": true,
-        "domain": true,
-        "labels": false,
-        "ticks": false,
-        "title": null,
-        "format": ".1f"
-      },
-      "scale": {
-        "domain": [0, 1],
-        "padding": 0,
-        "nice": true,
-        "type": "linear",
-        "round": true
-      }
-    },
-    "y": {
-      "aggregate": "sum",
-      "field": "data",
-      "axis": null,
-      "stack": "zero"
-    },
-    "color": {
-      "field": "category",
-      "type": "nominal",
-      "scale": {
-        "scheme": "category20"
-      },
-      "legend": null
-    },
-    "tooltip": [
-      { "field": "data", "title": "Score", "format": ".1f" },
-      {
-        "aggregate": "count",
-        "field": "category",
-        "type": "quantitative",
-        "title": "Count"
-      }
-    ]
+  "resolve": {
+    "scale": {
+      "x": "independent",
+      "y": "shared"
+    }
   },
   "config": {
-    "view": {
-      "stroke": "transparent"
-    },
     "axis": {
-      "gridScale": 5
+      "labelColor": "#5b6875"
+    },
+    "view": {
+      "fill": "transparent",
+      "stroke": "transparent"
     }
   }
 }

@@ -7,6 +7,7 @@ import {
   isBawApiError,
 } from "@helpers/custom-errors/baw-api-error";
 import { toBase64Url } from "@helpers/encoding/encoding";
+import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
   AbstractModel,
   AbstractModelConstructor,
@@ -1061,16 +1062,20 @@ export class RangeInterval {
   }
 }
 
-type Range =
+/**
+ * An interval tuple with a minimum (inclusive) and maximum (exclusive) value.
+ */
+export type Range<T> = [minimum: T, maximum: T];
+type FilterRange =
   | string[]
   | number[]
   | XOR<RangeInterval, { from: number; to: number }>;
 
 export interface Subsets {
-  range?: Range;
-  inRange?: Range;
-  notRange?: Range;
-  notInRange?: Range;
+  range?: FilterRange;
+  inRange?: FilterRange;
+  notRange?: FilterRange;
+  notInRange?: FilterRange;
   in?: string[] | number[];
   notIn?: string[] | number[];
   contains?: string;
@@ -1156,10 +1161,24 @@ export type Projection<Model = unknown> = XOR<
 >;
 
 /**
+ * @description
+ * Options modify the response. They can change behavior or shape of the response.
+ * Options are not queryable and are not part of the filter.
+ * Examples include: `bucketSize`, and `bucketCount`.
+ */
+export interface FilterOptions extends Record<string, unknown> {
+  [key: string]: unknown;
+}
+
+/**
  * Filter metadata from api response
  * https://github.com/QutEcoacoustics/baw-server/wiki/API:-Filtering
  */
-export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
+export interface Filters<
+  Model = unknown,
+  K extends keyof Model = keyof Model,
+  Options extends FilterOptions = FilterOptions,
+> {
   /** Filter settings */
   filter?: InnerFilter<Writeable<Model>>;
   /** Include or exclude keys from response */
@@ -1168,6 +1187,89 @@ export interface Filters<Model = unknown, K extends keyof Model = keyof Model> {
   sorting?: Sorting<K>;
   /** Current page data */
   paging?: Paging;
+  /** Options modify the request. */
+  options?: Options;
+}
+
+export interface FilterAndOptionsOnly<
+  Model = unknown,
+  K extends keyof Model = keyof Model,
+> extends Omit<Filters<Model, K>, "projection" | "sorting" | "paging"> {}
+
+/**
+ * A standard histogram response from the API.
+ */
+export interface IHistogram {
+  bins: number[];
+  maximum: number;
+  minimum: number;
+  underflow: number;
+  overflow: number;
+}
+
+export interface HistogramBin {
+  range: Range<number>;
+  count: number;
+}
+
+export class Histogram implements IHistogram {
+  public constructor(histogram: IHistogram) {
+    this.bins = histogram.bins;
+    this.maximum = histogram.maximum;
+    this.minimum = histogram.minimum;
+    this.underflow = histogram.underflow;
+    this.overflow = histogram.overflow;
+  }
+
+  bins: number[];
+  maximum: number;
+  minimum: number;
+  underflow: number;
+  overflow: number;
+
+  public get bucketCount(): number {
+    return this.bins.length;
+  }
+
+  public get span(): number {
+    return this.maximum - this.minimum;
+  }
+
+  public get bucketWidth(): number {
+    return this.bucketCount === 0 ? 0 : this.span / this.bucketCount;
+  }
+
+  public bucketRange(index: number): Range<number> | null {
+    if (index < 0 || index >= this.bucketCount || this.bucketWidth === 0) {
+      return null;
+    }
+
+    const start = this.minimum + this.bucketWidth * index;
+    const end = start + this.bucketWidth;
+    return [start, end];
+  }
+
+  public toChartTickSequence() {
+    return [this.minimum, this.maximum];
+  }
+
+  /** Generate a series of values used to render the bounded histogram bins. */
+  public toChartSequence(): HistogramBin[] {
+    if (this.bucketCount === 0) {
+      return [];
+    }
+
+    const bins = this.bins.map((count, index) => {
+      const range = this.bucketRange(index);
+      if (!range) {
+        return null;
+      }
+
+      return { range, count };
+    });
+
+    return bins.filter(isInstantiated) as HistogramBin[];
+  }
 }
 
 export type CapabilityKey = string | number;

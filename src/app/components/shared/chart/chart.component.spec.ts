@@ -3,8 +3,8 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { Spectator, createComponentFactory } from "@ngneat/spectator";
 import { ToastService } from "@services/toasts/toasts.service";
 import { Map } from "immutable";
-import { Data } from "vega-lite/build/src/data";
-import { Datasets } from "vega-lite/build/src/spec/toplevel";
+import type { Data } from "vega-lite/types_unstable/data.js";
+import type { Datasets } from "vega-lite/types_unstable/spec/toplevel.js";
 import { ChartComponent } from "./chart.component";
 
 //! this component could not be tested with print styles. Manually test this
@@ -86,6 +86,24 @@ describe("ChartComponent", () => {
 
   it("should create", () => {
     expect(spec.component).toBeInstanceOf(ChartComponent);
+  });
+
+  it("should override named Vega-Lite parameter values", () => {
+    const chartSpec = {
+      params: [
+        { name: "minimum", value: 0 },
+        { name: "maximum", value: 1 },
+      ],
+    };
+
+    const result = spec.component["addParamsToSpec"](chartSpec, {
+      minimum: 0.25,
+    }) as typeof chartSpec;
+
+    expect(result.params).toEqual([
+      { name: "minimum", value: 0.25 },
+      { name: "maximum", value: 1 },
+    ]);
   });
 
   it("should use svg to render the chart", () => {

@@ -1,9 +1,9 @@
 ﻿import { Params } from "@angular/router";
 import {
-  AUDIO_EVENT_PROVENANCE,
-  SHALLOW_REGION,
-  SHALLOW_SITE,
-  TAG,
+    AUDIO_EVENT_PROVENANCE,
+    SHALLOW_REGION,
+    SHALLOW_SITE,
+    TAG,
 } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { IsomorphicTuple } from "@helpers/advancedTypes";
@@ -11,22 +11,25 @@ import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
-  IQueryStringParameterSpec,
-  jsBoolean,
-  jsNumber,
-  jsNumberArray,
-  jsString,
-  jsStringArray,
-  luxonDateArray,
-  luxonDurationArray,
-  serializeObjectToParams,
+    IQueryStringParameterSpec,
+    jsBoolean,
+    jsNumber,
+    jsNumberArray,
+    jsString,
+    jsStringArray,
+    luxonDateArray,
+    luxonDurationArray,
+    serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
+import { AbstractModel } from "@models/AbstractModel";
 import { hasMany } from "@models/AssociationDecorators";
-import { EventSummaryReport } from "@models/EventSummaryReport";
+import { AudioEvent } from "@models/AudioEvent";
+import { AudioRecording } from "@models/AudioRecording";
+
 import {
-  AssociationInjector,
-  HasAssociationInjector,
+    AssociationInjector,
+    HasAssociationInjector,
 } from "@models/ImplementsInjector";
 import { Provenance } from "@models/Provenance";
 import { Region } from "@models/Region";
@@ -46,15 +49,13 @@ export enum Chart {
 export enum BucketSize {
   day = "day",
   week = "week",
-  fortnight = "fortnight",
   month = "month",
-  season = "season",
   year = "year",
 }
 
 export interface IEventSummaryReportParameters {
+  regions: CollectionIds;
   sites: CollectionIds;
-  points: CollectionIds;
   provenances: CollectionIds;
   tags: CollectionIds;
   score: number;
@@ -66,8 +67,8 @@ export interface IEventSummaryReportParameters {
 }
 
 const serializationTable: IQueryStringParameterSpec = {
+  regions: jsNumberArray,
   sites: jsNumberArray,
-  points: jsNumberArray,
   provenances: jsNumberArray,
   tags: jsNumberArray,
   score: jsNumber,
@@ -79,11 +80,11 @@ const serializationTable: IQueryStringParameterSpec = {
 };
 
 export class EventSummaryReportParameters
-  extends ParameterModel<EventSummaryReport>(serializationTable)
+  extends ParameterModel<AudioEvent>(serializationTable)
   implements
     IEventSummaryReportParameters,
     HasAssociationInjector,
-    IParameterModel<EventSummaryReport>
+    IParameterModel<AudioEvent>
 {
   public constructor(
     queryStringParameters: Params = {},
@@ -92,10 +93,8 @@ export class EventSummaryReportParameters
     super(queryStringParameters);
   }
 
-  // since these properties are exposed to the user in the form of query string parameters
-  // we use the user friendly names
+  public regions!: CollectionIds;
   public sites!: CollectionIds;
-  public points!: CollectionIds;
   public provenances!: CollectionIds;
   public tags!: CollectionIds;
   public score!: number;
@@ -105,9 +104,9 @@ export class EventSummaryReportParameters
   public date: IsomorphicTuple<DateTime | null, 2> | null = null;
   public charts!: Chart[];
 
-  @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "sites")
-  public regions?: Region[];
-  @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "points")
+  @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "regions")
+  public regionModels?: Region[];
+  @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "sites")
   public siteModels?: Site[];
   @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
@@ -133,27 +132,15 @@ export class EventSummaryReportParameters
     return this.time ? this.time[1] : null;
   }
 
-  public toFilter(): Filters<EventSummaryReport> {
-    let filter: InnerFilter<EventSummaryReport>;
+  public toFilter(): Filters<AudioEvent> {
+    return this.toAudioEventFilter();
+  }
 
-    if (this.sites) {
-      filter = filterModelIds<EventSummaryReport>(
-        "region",
-        Array.from(this.sites),
-        filter!,
-      );
-    }
-
-    if (this.points) {
-      filter = filterModelIds<EventSummaryReport>(
-        "site",
-        Array.from(this.points),
-        filter!,
-      );
-    }
+  public toAudioEventFilter(): Filters<AudioEvent> {
+    let filter = this.buildScopedFilter<AudioEvent>();
 
     if (this.provenances) {
-      filter = filterModelIds<EventSummaryReport>(
+      filter = filterModelIds<AudioEvent>(
         "provenance",
         Array.from(this.provenances),
         filter!,
@@ -161,7 +148,7 @@ export class EventSummaryReportParameters
     }
 
     if (this.tags) {
-      filter = filterModelIds<EventSummaryReport>(
+      filter = filterModelIds<AudioEvent>(
         "tag",
         Array.from(this.tags),
         filter!,
@@ -170,41 +157,67 @@ export class EventSummaryReportParameters
 
     // we use isInstantiated() here because 0 is a valid value for score
     if (isInstantiated(this.score)) {
-      filter! = filterAnd<EventSummaryReport>(filter!, {
+      filter = filterAnd<AudioEvent>(filter!, {
         score: {
           gteq: this.score,
         },
-      } as InnerFilter);
+      } as InnerFilter<AudioEvent>);
     }
 
-    if (this.bucketSize) {
-      filter! = filterAnd(filter!, {
-        bucketSize: {
-          eq: this.bucketSize,
-        },
-      } as InnerFilter);
+    return { filter: this.applyDateAndTimeFilters(filter), options: { bucketSize: this.bucketSize } };
+  }
+
+  //! TODO: this is a terrible way to solve this problem.
+  // we need better association injection that don't depend on AbstractModelWithoutId
+  // and we need the server to support generic fully-qualified fields so the same
+  // filter expression can be used for both AudioEvent and AudioRecording.
+  // This is a temporary solution to get the report working.
+  public toAudioRecordingFilter(): Filters<AudioRecording> {
+    const filter = this.buildScopedFilter<AudioRecording>();
+    return { filter: this.applyDateAndTimeFilters(filter) };
+  }
+
+  private buildScopedFilter<Model extends AbstractModel>(): InnerFilter<Model> {
+    let filter: InnerFilter<Model>;
+
+    if (this.regions) {
+      filter = filterModelIds<Model>(
+        "region",
+        Array.from(this.regions),
+        filter!,
+      );
     }
 
+    if (this.sites) {
+      filter = filterModelIds<Model>("site", Array.from(this.sites), filter!);
+    }
+
+    return filter!;
+  }
+
+  private applyDateAndTimeFilters<Model>(
+    filter: InnerFilter<Model>,
+  ): InnerFilter<Model> {
     if (this.dateStartedAfter || this.dateFinishedBefore) {
       filter = filterDate(
-        filter!,
+        filter as InnerFilter<AudioRecording>,
         this.dateStartedAfter!,
         // @ts-expect-error: strict mode fix
         this.dateFinishedBefore,
-      );
+      ) as InnerFilter<Model>;
     }
 
     if (this.timeStartedAfter || this.timeFinishedBefore) {
       filter = filterTime(
-        filter!,
+        filter as InnerFilter<AudioRecording>,
         this.daylightSavings,
         this.timeStartedAfter!,
         // @ts-expect-error: strict mode fix
         this.timeFinishedBefore,
-      );
+      ) as InnerFilter<Model>;
     }
 
-    return { filter: filter! };
+    return filter;
   }
 
   public toQueryParams(): Params {

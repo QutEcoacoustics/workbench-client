@@ -113,7 +113,7 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
     if (models[siteKey]) {
       this.site = models[siteKey] as Site;
-      this.model.points = new Set<Id>([this.site.id]);
+      this.model.sites = new Set<Id>([this.site.id]);
     }
   }
 

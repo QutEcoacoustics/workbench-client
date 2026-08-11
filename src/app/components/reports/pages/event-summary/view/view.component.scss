@@ -50,6 +50,24 @@ h3 {
   }
 }
 
+#events-table {
+  & [data-column-name="detection-coverage"] {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  & td[data-column-name="score-plot"] {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+baw-confidence-plot {
+  aspect-ratio: 8 / 1;
+  height: auto;
+  max-height: 3rem;
+}
+
 .charts-section {
   page-break-inside: avoid;
 }
@@ -79,9 +97,28 @@ h3 {
 
 .embedded-figure {
   display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
   padding: 0;
-  height: 3rem;
-  width: 15rem;
+  width: 100%;
+}
+
+.score-plot-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.score-plot-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  small {
+    margin: 0;
+    line-height: 1;
+  }
 }
 
 .large-embedded-figure {

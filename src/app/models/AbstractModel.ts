@@ -478,7 +478,7 @@ export class UnresolvedModel extends AbstractModel {
   }
 
   public get viewUrl(): string {
-    throw new Error("Method not implemented.");
+    return "";
   }
 }
 

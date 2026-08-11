@@ -25,7 +25,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
           class="text-bg-light"
         >
           <ol class="breadcrumb p-1">
-            @for (breadcrumb of data.breadcrumbs; track breadcrumb) {
+            @for (breadcrumb of data.breadcrumbs; track breadcrumb.label) {
               <li class="breadcrumb-item">
                 <fa-icon class="pe-1" [icon]="breadcrumb.icon"></fa-icon>
                 <a

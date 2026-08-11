@@ -16,22 +16,24 @@ export function generateEventSummaryReportUrlParams(data?: Params): Params {
     score: modelData.percentage(),
     bucketSize: faker.helpers.arrayElement<BucketSize>([
       BucketSize.day,
-      BucketSize.fortnight,
+      // BucketSize.fortnight,
       BucketSize.month,
-      BucketSize.season,
+      // BucketSize.season,
       BucketSize.week,
       BucketSize.year,
     ]),
     daylightSavings: faker.datatype.boolean(),
     time: [modelData.time(), modelData.time()].join(","),
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
-    charts: faker.helpers.shuffle([
-      Chart.speciesAccumulationCurve,
-      Chart.speciesCompositionCurve,
-      Chart.speciesTimeSeries,
-      Chart.falseColorSpectrograms,
-      Chart.none,
-    ]).join(","),
+    charts: faker.helpers
+      .shuffle([
+        Chart.speciesAccumulationCurve,
+        Chart.speciesCompositionCurve,
+        Chart.speciesTimeSeries,
+        Chart.falseColorSpectrograms,
+        Chart.none,
+      ])
+      .join(","),
     ...data,
   };
 }

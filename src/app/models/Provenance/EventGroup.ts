@@ -7,7 +7,7 @@ import { Tag } from "@models/Tag";
 import { IEventScore } from "./EventScore";
 
 export interface IEventGroup {
-  provenanceId: Id;
+  provenanceId: Id | null;
   tagId: Id;
   detections: number;
   bucketsWithDetections: number;
@@ -18,7 +18,7 @@ export class EventGroup
   extends AbstractModel<IEventGroup>
   implements IEventGroup
 {
-  public provenanceId: Id;
+  public provenanceId: Id | null;
   public tagId: Id;
   public detections!: number;
   public bucketsWithDetections!: number;

@@ -1,10 +1,8 @@
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { TagFrequencyReportItem } from "@models/Reports";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { assertChart } from "@test/helpers/charts";
-import {
-  SpeciesCompositionGraphComponent,
-  SpeciesCompositionGraphData,
-} from "./species-composition.component";
+import { SpeciesCompositionGraphComponent } from "./species-composition.component";
 
 describe("SpeciesCompositionGraphComponent", () => {
   let spec: Spectator<SpeciesCompositionGraphComponent>;
@@ -14,35 +12,79 @@ describe("SpeciesCompositionGraphComponent", () => {
   });
 
   beforeEach(async () => {
-    // TODO: Make this work with pseudo-random data generation
-    const mockData: SpeciesCompositionGraphData[] = [
-      { date: "2023-05-22", tagId: 1, ratio: 0.55 },
-      { date: "2023-05-22", tagId: 39, ratio: 0.3 },
-      { date: "2023-05-22", tagId: 277, ratio: 0.15 },
-      { date: "2023-05-23", tagId: 1, ratio: 0.45 },
-      { date: "2023-05-23", tagId: 39, ratio: 0.2 },
-      { date: "2023-05-23", tagId: 277, ratio: 0.35 },
-      { date: "2023-05-24", tagId: 1, ratio: 0.05 },
-      { date: "2023-05-24", tagId: 39, ratio: 0.25 },
-      { date: "2023-05-24", tagId: 277, ratio: 0.7 },
-      { date: "2023-05-25", tagId: 1, ratio: 0.5 },
-      { date: "2023-05-25", tagId: 39, ratio: 0.2 },
-      { date: "2023-05-25", tagId: 277, ratio: 0.3 },
-      { date: "2023-05-26", tagId: 1, ratio: 0.25 },
-      { date: "2023-05-26", tagId: 39, ratio: 0.4 },
-      { date: "2023-05-26", tagId: 277, ratio: 0.35 },
-      { date: "2023-05-27", tagId: 1, ratio: 0.15 },
-      { date: "2023-05-27", tagId: 39, ratio: 0.3 },
-      { date: "2023-05-27", tagId: 277, ratio: 0.55 },
-      { date: "2023-05-28", tagId: 1, ratio: 0.1 },
-      { date: "2023-05-28", tagId: 39, ratio: 0.2 },
-      { date: "2023-05-28", tagId: 277, ratio: 0.7 },
-      { date: "2023-05-29", tagId: 1, ratio: 0.05 },
-      { date: "2023-05-29", tagId: 39, ratio: 0.15 },
-      { date: "2023-05-29", tagId: 277, ratio: 0.8 },
-      { date: "2023-05-30", tagId: 1, ratio: 0.05 },
-      { date: "2023-05-30", tagId: 39, ratio: 0.1 },
-      { date: "2023-05-30", tagId: 277, ratio: 0.85 },
+    const mockRows: TagFrequencyReportItem[] = [
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-22", "2023-05-23"],
+        tags: [
+          { tagId: 1, events: 55 },
+          { tagId: 39, events: 30 },
+          { tagId: 277, events: 15 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-23", "2023-05-24"],
+        tags: [
+          { tagId: 1, events: 45 },
+          { tagId: 39, events: 20 },
+          { tagId: 277, events: 35 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-24", "2023-05-25"],
+        tags: [
+          { tagId: 1, events: 5 },
+          { tagId: 39, events: 25 },
+          { tagId: 277, events: 70 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-25", "2023-05-26"],
+        tags: [
+          { tagId: 1, events: 50 },
+          { tagId: 39, events: 20 },
+          { tagId: 277, events: 30 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-26", "2023-05-27"],
+        tags: [
+          { tagId: 1, events: 25 },
+          { tagId: 39, events: 40 },
+          { tagId: 277, events: 35 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-27", "2023-05-28"],
+        tags: [
+          { tagId: 1, events: 15 },
+          { tagId: 39, events: 30 },
+          { tagId: 277, events: 55 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-28", "2023-05-29"],
+        tags: [
+          { tagId: 1, events: 10 },
+          { tagId: 39, events: 20 },
+          { tagId: 277, events: 70 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-29", "2023-05-30"],
+        tags: [
+          { tagId: 1, events: 5 },
+          { tagId: 39, events: 15 },
+          { tagId: 277, events: 80 },
+        ],
+      }),
+      new TagFrequencyReportItem({
+        bucket: ["2023-05-30", "2023-05-31"],
+        tags: [
+          { tagId: 1, events: 5 },
+          { tagId: 39, events: 10 },
+          { tagId: 277, events: 85 },
+        ],
+      }),
     ];
 
     // Mock the chart components resize observer because otherwise the tests
@@ -58,7 +100,7 @@ describe("SpeciesCompositionGraphComponent", () => {
 
     spec = createComponent({
       props: {
-        data: mockData,
+        rows: mockRows,
         // @ts-expect-error: strict mode fix
         formatter: (tagId) => `Tag ${tagId.toString()}`,
       },

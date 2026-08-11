@@ -3,16 +3,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [
-      "@types/gtag.js",
-      "node"
-    ]
+    "types": ["@types/gtag.js", "node"]
   },
   "files": [
     "src/main.ts",
     "src/polyfills.ts",
     "src/main.server.ts",
-    "src/server.ts"
+    "src/server.ts",
+    "src/app/components/shared/chart/vega-runtime.browser.ts",
+    "src/app/components/shared/chart/vega-runtime.server.ts",
+    "src/app/components/shared/chart/vega-runtime.types.ts"
   ],
   "include": ["src/**/*.d.ts"]
 }

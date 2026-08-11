@@ -1,13 +1,19 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "width": "container",
   "height": "container",
   "data": {
     "values": []
   },
   "params": [
-    { "name": "bawTitleSize", "value": 20 },
-    { "name": "bawFontSize", "value": 18 }
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 18
+    }
   ],
   "config": {
     "customFormatTypes": true
@@ -89,8 +95,14 @@
         "title": "Date",
         "format": "%Y-%m-%d"
       },
-      {"field": "formatted_tagId", "title": "Event"},
-      {"field": "formatted_ratio", "title": "Ratio"}
+      {
+        "field": "formatted_tagId",
+        "title": "Event"
+      },
+      {
+        "field": "formatted_ratio",
+        "title": "Ratio"
+      }
     ]
   }
 }
