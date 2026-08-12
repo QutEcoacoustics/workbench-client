@@ -52,7 +52,7 @@ import {
   SupportedTagBucketSize,
 } from "@models/Reports";
 import { Site } from "@models/Site";
-import { NgbCollapse, NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { DateTimePipe } from "@pipes/date/date.pipe";
 import { TimePipe } from "@pipes/time/time.pipe";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
@@ -68,6 +68,7 @@ import { LoadingComponent } from "@shared/loading/loading.component";
 import { DateTime, Duration } from "luxon";
 import { filter, switchMap, take } from "rxjs";
 import { SiteMapComponent } from "../../../../projects/components/site-map/site-map.component";
+import { CollapsibleSectionComponent } from "../../../components/collapsible-section/collapsible-section.component";
 import {
   BucketSize,
   Chart,
@@ -80,10 +81,11 @@ const siteKey = "site";
 const coverageBucketCount = 100;
 
 const allCharts = [
+  Chart.coverage,
+  Chart.eventSummary,
   Chart.speciesCompositionCurve,
   Chart.speciesAccumulationCurve,
   Chart.speciesTimeSeries,
-  Chart.falseColorSpectrograms,
 ];
 
 @Component({
@@ -97,7 +99,6 @@ const allCharts = [
     InlineListComponent,
     SiteMapComponent,
     DurationComponent,
-    NgbCollapse,
     DecimalPipe,
     PercentPipe,
     TitleCasePipe,
@@ -110,6 +111,7 @@ const allCharts = [
     SpeciesAccumulationCurveComponent,
     SpeciesCompositionGraphComponent,
     SpeciesTimeSeriesComponent,
+    CollapsibleSectionComponent,
   ],
 })
 class ViewEventReportComponent extends PageComponent {

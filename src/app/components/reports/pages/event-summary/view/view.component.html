@@ -109,11 +109,6 @@
   <div class="search-parameter">
     <b>Score Threshold: </b>
 
-    <!--
-      If the user doesn't explicitly define a provenance score, we should display 0 instead of (not specified)
-      This is because this a not specified provenance score allows through all tags, which is equivalent to a score cut-off of 0
-      To be verbose, we reflect this client side to the user by using 0.0 as the score cut-off instead of (not specified)
-    -->
     {{ parameterDataModel.score | number: "1.2-2" }}
   </div>
 
@@ -133,8 +128,16 @@
   <h3>Coverage Summary</h3>
 
   <div class="alert alert-warning my-3">
-    General warning about different recognisers, 'interpret with cation and
-    validate' etc; qualifiers about performance in different regions, etc
+    <p>
+      Where we have multiple co-occurring events in a timeline, we union the
+      events in each bucket and count the sum of results. This can happen if
+      your report covers multiple sites or multiple analyses.
+    </p>
+
+    <p>
+      Compare and contrast your reports with single site and single a single
+      analysis to get a better understanding of the data.
+    </p>
   </div>
 
   <h4>Geographic Coverage</h4>
@@ -145,118 +148,124 @@
     [groupBy]="'regionId'"
   />
 
-  <h4>Coverage</h4>
+  <baw-collapsible-section
+    title="Coverage"
+    contentId="coverage-container"
+    [expanded]="shouldShowChart(chartTypes.coverage)"
+    (expandedChange)="toggleChart(chartTypes.coverage, $event)"
+  >
+    @if (recordingCoverage(); as resolvedRecordingCoverage) {
+      @if (analysisCoverage(); as resolvedAnalysisCoverage) {
+        <baw-coverage-plot
+          [recordingCoverage]="resolvedRecordingCoverage"
+          [analysisCoverage]="resolvedAnalysisCoverage"
+        />
 
-  @if (recordingCoverage(); as resolvedRecordingCoverage) {
-    @if (analysisCoverage(); as resolvedAnalysisCoverage) {
-      <baw-coverage-plot
-        [recordingCoverage]="resolvedRecordingCoverage"
-        [analysisCoverage]="resolvedAnalysisCoverage"
-      />
+        @if (statistics(); as resolvedStatistics) {
+          <div id="coverage-table">
+            <table class="table table-striped">
+              <thead>
+                <th scope="col"></th>
+                <th scope="col">Duration</th>
+                <th scope="col">Percent Coverage</th>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td scope="row">Search Range</td>
+                  <td>
+                    <baw-duration
+                      [value]="
+                        unixEpochToDuration(resolvedStatistics.totalSearchSpan)
+                      "
+                      humanized
+                    />
+                  </td>
+                  <td>
+                    <span [ngbTooltip]="'The fraction of search range covered'">
+                      {{
+                        resolvedStatistics.totalSearchSpan /
+                          resolvedStatistics.totalSearchSpan | percent
+                      }}
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td scope="row">Recordings</td>
+                  <td>
+                    <baw-duration
+                      [value]="
+                        unixEpochToDuration(
+                          resolvedStatistics.audioCoverageOverSpan
+                        )
+                      "
+                      humanized
+                    />
+                  </td>
+                  <td>
+                    <span
+                      [ngbTooltip]="
+                        'The fraction of search range covered by recordings'
+                      "
+                    >
+                      {{
+                        resolvedStatistics.audioCoverageOverSpan /
+                          resolvedStatistics.totalSearchSpan | percent
+                      }}
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td scope="row">Analysis</td>
+                  <td>
+                    <baw-duration
+                      [value]="
+                        unixEpochToDuration(
+                          resolvedStatistics.analysisCoverageOverSpan
+                        )
+                      "
+                      humanized
+                    />
+                  </td>
+                  <td>
+                    <span
+                      [ngbTooltip]="
+                        'The fraction of the search range covered by analysis'
+                      "
+                    >
+                      {{
+                        resolvedStatistics.analysisCoverageOverSpan /
+                          resolvedStatistics.totalSearchSpan | percent
+                      }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+      } @else {
+        <baw-loading />
+      }
     } @else {
       <baw-loading />
     }
-  } @else {
-    <baw-loading />
-  }
-
-  @if (statistics(); as resolvedStatistics) {
-    <div id="coverage-table">
-      <table class="table table-striped">
-        <thead>
-          <th scope="col"></th>
-          <th scope="col">Duration</th>
-          <th scope="col">Percent Coverage</th>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td scope="row">Search Range</td>
-            <td>
-              <baw-duration
-                [value]="
-                  unixEpochToDuration(resolvedStatistics.totalSearchSpan)
-                "
-                humanized
-              />
-            </td>
-            <td>
-              <span [ngbTooltip]="'The fraction of search range covered'">
-                {{
-                  (resolvedStatistics.totalSearchSpan /
-                    resolvedStatistics.totalSearchSpan) *
-                    100
-                }}%
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td scope="row">Recordings</td>
-            <td>
-              <baw-duration
-                [value]="
-                  unixEpochToDuration(resolvedStatistics.audioCoverageOverSpan)
-                "
-                humanized
-              />
-            </td>
-            <td>
-              <span
-                [ngbTooltip]="
-                  'The fraction of search range covered by recordings'
-                "
-              >
-                {{
-                  (resolvedStatistics.audioCoverageOverSpan /
-                    resolvedStatistics.totalSearchSpan) *
-                    100
-                }}%
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td scope="row">Analysis</td>
-            <td>
-              <baw-duration
-                [value]="
-                  unixEpochToDuration(
-                    resolvedStatistics.analysisCoverageOverSpan
-                  )
-                "
-                humanized
-              />
-            </td>
-            <td>
-              <span
-                [ngbTooltip]="
-                  'The fraction of the search range covered by analysis'
-                "
-              >
-                {{
-                  (resolvedStatistics.analysisCoverageOverSpan /
-                    resolvedStatistics.totalSearchSpan) *
-                    100
-                }}%
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  } @else {
-    <baw-loading />
-  }
+  </baw-collapsible-section>
 </section>
 
 <section id="events-table-container">
-  <h3>
-    Summary of Events
-
+  <baw-collapsible-section
+    title="Summary of Events"
+    [headingLevel]="3"
+    [expanded]="shouldShowChart(chartTypes.eventSummary)"
+    (expandedChange)="toggleChart(chartTypes.eventSummary, $event)"
+  >
     <a
+      section-actions
       name="events-table-download-button"
-      class="download-button float-end"
+      class="download-button"
       [href]="downloadEventsTableUrl()"
     >
       <fa-icon
@@ -264,91 +273,91 @@
         [ngbTooltip]="'Download this table'"
       />
     </a>
-  </h3>
 
-  <table id="events-table" class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">Tag</th>
-        <th scope="col">Recogniser</th>
-        <th scope="col">Detections</th>
-        <th scope="col" data-column-name="detection-coverage">
-          %
-          <span
-            class="bucket-size-label"
-            [ngbTooltip]="'This is determined by your selected bucket size'"
-          >
-            {{ parameterDataModel.bucketSize | titlecase }}s
-          </span>
-          <wbr />
-          with Detections
-        </th>
-        <th scope="col" data-column-name="score-plot">Score Plot</th>
-      </tr>
-    </thead>
+    <table id="events-table" class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Tag</th>
+          <th scope="col">Recogniser</th>
+          <th scope="col">Detections</th>
+          <th scope="col" data-column-name="detection-coverage">
+            %
+            <span
+              class="bucket-size-label"
+              [ngbTooltip]="'This is determined by your selected bucket size'"
+            >
+              {{ parameterDataModel.bucketSize | titlecase }}s
+            </span>
+            <wbr />
+            with Detections
+          </th>
+          <th scope="col" data-column-name="score-plot">Score Plot</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      @if (eventSummaries(); as resolvedEventSummaries) {
-        @for (item of resolvedEventSummaries; track item) {
-          <tr>
-            <td scope="row">
-              <a [bawUrl]="item.tag?.viewUrl ?? ''">
-                {{ item.tag?.text ?? item.tagId }}
-              </a>
-            </td>
+      <tbody>
+        @if (eventSummaries(); as resolvedEventSummaries) {
+          @for (item of resolvedEventSummaries; track item) {
+            <tr>
+              <td scope="row">
+                <a [bawUrl]="item.tag?.viewUrl ?? ''">
+                  {{ item.tag?.text ?? item.tagId }}
+                </a>
+              </td>
 
-            <td>
-              <a [bawUrl]="item.provenance?.viewUrl ?? ''">
-                {{ item.provenance?.name ?? item.provenanceId ?? "(none)" }}
-              </a>
-            </td>
+              <td>
+                <a [bawUrl]="item.provenance?.viewUrl ?? ''">
+                  {{ item.provenance?.name ?? item.provenanceId ?? "(none)" }}
+                </a>
+              </td>
 
-            <td>{{ item.events | number }}</td>
+              <td>{{ item.events | number }}</td>
 
-            <td data-column-name="detection-coverage">
-              {{ bucketsWithDetections(item.tagId) | percent }}
-            </td>
+              <td data-column-name="detection-coverage">
+                {{ bucketsWithDetections(item.tagId) | percent }}
+              </td>
 
-            <td data-column-name="score-plot">
-              <div class="score-plot-content">
-                <baw-confidence-plot
-                  class="embedded-figure"
-                  [histogram]="item.scoreHistogram"
-                />
+              <td data-column-name="score-plot">
+                <div class="score-plot-content">
+                  <baw-confidence-plot
+                    class="embedded-figure"
+                    [histogram]="item.scoreHistogram"
+                  />
 
-                <div class="score-plot-stats">
-                  <small
-                    class="text-muted text-nowrap"
-                    title="The mean score for this tag and analysis"
-                  >
-                    x̄: {{ item.scoreMean ?? 0 | number: "1.2-2" }}
-                  </small>
-                  <small
-                    class="text-muted text-nowrap"
-                    title="The standard deviation of the score for this tag and analysis"
-                  >
-                    σ: {{ item.scoreStddev ?? 0 | number: "1.2-2" }}
-                  </small>
+                  <div class="score-plot-stats">
+                    <small
+                      class="text-muted text-nowrap"
+                      title="The mean score for this tag and analysis"
+                    >
+                      x̄: {{ item.scoreMean ?? 0 | number: "1.2-2" }}
+                    </small>
+                    <small
+                      class="text-muted text-nowrap"
+                      title="The standard deviation of the score for this tag and analysis"
+                    >
+                      σ: {{ item.scoreStddev ?? 0 | number: "1.2-2" }}
+                    </small>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="5"><baw-loading /></td>
           </tr>
         }
-      } @else {
-        <tr>
-          <td colspan="5"><baw-loading /></td>
-        </tr>
-      }
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </baw-collapsible-section>
 </section>
 
 <section id="charts-container">
   <h3>Charts</h3>
 
-  <div class="alert alert-info my-3">
+  <!-- <div class="alert alert-info my-3">
     Some kind of text to put these figures into context.
-  </div>
+  </div> -->
 
   <div
     class="chart-container"
@@ -356,10 +365,14 @@
       !shouldShowChart(chartTypes.speciesAccumulationCurve)
     "
   >
-    <div class="chart-heading">
-      <h4 class="chart-title">Species Accumulation Curve</h4>
-
-      <span class="chart-action-menu">
+    <baw-collapsible-section
+      title="Species Accumulation Curve"
+      [expanded]="shouldShowChart(chartTypes.speciesAccumulationCurve)"
+      (expandedChange)="
+        toggleChart(chartTypes.speciesAccumulationCurve, $event)
+      "
+    >
+      <span section-actions>
         <span class="info-icon text-info">
           <fa-icon
             [icon]="['fas', 'info-circle']"
@@ -375,52 +388,8 @@
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
-
-        <button
-          class="toggle-graph-button btn btn-secondary btn-sm"
-          [attr.aria-label]="
-            shouldShowChart(chartTypes.speciesAccumulationCurve)
-              ? 'Minimize species accumulation curve'
-              : 'Maximize species accumulation curve'
-          "
-          [attr.title]="
-            shouldShowChart(chartTypes.speciesAccumulationCurve)
-              ? 'Minimize species accumulation curve'
-              : 'Maximize species accumulation curve'
-          "
-          [ngbTooltip]="
-            shouldShowChart(chartTypes.speciesAccumulationCurve)
-              ? 'Minimize'
-              : 'Maximize'
-          "
-          (click)="
-            toggleChart(
-              chartTypes.speciesAccumulationCurve,
-              !shouldShowChart(chartTypes.speciesAccumulationCurve)
-            )
-          "
-        >
-          <span class="visually-hidden">
-            {{
-              shouldShowChart(chartTypes.speciesAccumulationCurve)
-                ? "Minimize species accumulation curve"
-                : "Maximize species accumulation curve"
-            }}
-          </span>
-          <fa-icon
-            [icon]="[
-              'fas',
-              shouldShowChart(chartTypes.speciesAccumulationCurve)
-                ? 'minimize'
-                : 'maximize',
-            ]"
-          />
-        </button>
       </span>
-    </div>
 
-    <ng-container></ng-container>
-    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesAccumulationCurve)">
       @if (accumulation(); as resolvedAccumulation) {
         <baw-species-accumulation-curve
           #accumulationChart
@@ -430,68 +399,27 @@
       } @else {
         <baw-loading />
       }
-    </div>
+    </baw-collapsible-section>
   </div>
 
   <div
     class="chart-container"
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)"
   >
-    <div class="chart-heading">
-      <h4 class="chart-title">Species Composition</h4>
-
-      <span class="chart-action-menu">
+    <baw-collapsible-section
+      title="Species Composition"
+      [expanded]="shouldShowChart(chartTypes.speciesCompositionCurve)"
+      (expandedChange)="toggleChart(chartTypes.speciesCompositionCurve, $event)"
+    >
+      <span section-actions>
         <a class="download-button" (click)="downloadCompositionChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
-
-        <button
-          class="toggle-graph-button btn btn-secondary btn-sm"
-          [attr.aria-label]="
-            shouldShowChart(chartTypes.speciesCompositionCurve)
-              ? 'Minimize species composition graph'
-              : 'Maximize species composition graph'
-          "
-          [attr.title]="
-            shouldShowChart(chartTypes.speciesCompositionCurve)
-              ? 'Minimize species composition graph'
-              : 'Maximize species composition graph'
-          "
-          [ngbTooltip]="
-            shouldShowChart(chartTypes.speciesCompositionCurve)
-              ? 'Minimize'
-              : 'Maximize'
-          "
-          (click)="
-            toggleChart(
-              chartTypes.speciesCompositionCurve,
-              !shouldShowChart(chartTypes.speciesCompositionCurve)
-            )
-          "
-        >
-          <span class="visually-hidden">
-            {{
-              shouldShowChart(chartTypes.speciesCompositionCurve)
-                ? "Minimize species composition graph"
-                : "Maximize species composition graph"
-            }}
-          </span>
-          <fa-icon
-            [icon]="[
-              'fas',
-              shouldShowChart(chartTypes.speciesCompositionCurve)
-                ? 'minimize'
-                : 'maximize',
-            ]"
-          />
-        </button>
       </span>
-    </div>
 
-    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesCompositionCurve)">
       @if (tagFrequency(); as resolvedTagFrequency) {
         <baw-species-composition-graph
           #compositionChart
@@ -501,68 +429,27 @@
       } @else {
         <baw-loading />
       }
-    </div>
+    </baw-collapsible-section>
   </div>
 
   <div
     class="chart-container"
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesTimeSeries)"
   >
-    <div class="chart-heading">
-      <h4 class="chart-title">Species Time Series</h4>
-
-      <span class="chart-action-menu">
+    <baw-collapsible-section
+      title="Species Time Series"
+      [expanded]="shouldShowChart(chartTypes.speciesTimeSeries)"
+      (expandedChange)="toggleChart(chartTypes.speciesTimeSeries, $event)"
+    >
+      <span section-actions>
         <a class="download-button" (click)="downloadTimeSeriesChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
-
-        <button
-          class="toggle-graph-button btn btn-secondary btn-sm"
-          [attr.aria-label]="
-            shouldShowChart(chartTypes.speciesTimeSeries)
-              ? 'Minimize species time series graph'
-              : 'Maximize species time series graph'
-          "
-          [attr.title]="
-            shouldShowChart(chartTypes.speciesTimeSeries)
-              ? 'Minimize species time series graph'
-              : 'Maximize species time series graph'
-          "
-          [ngbTooltip]="
-            shouldShowChart(chartTypes.speciesTimeSeries)
-              ? 'Minimize'
-              : 'Maximize'
-          "
-          (click)="
-            toggleChart(
-              chartTypes.speciesTimeSeries,
-              !shouldShowChart(chartTypes.speciesTimeSeries)
-            )
-          "
-        >
-          <span class="visually-hidden">
-            {{
-              shouldShowChart(chartTypes.speciesTimeSeries)
-                ? "Minimize species time series graph"
-                : "Maximize species time series graph"
-            }}
-          </span>
-          <fa-icon
-            [icon]="[
-              'fas',
-              shouldShowChart(chartTypes.speciesTimeSeries)
-                ? 'minimize'
-                : 'maximize',
-            ]"
-          />
-        </button>
       </span>
-    </div>
 
-    <div [ngbCollapse]="!shouldShowChart(chartTypes.speciesTimeSeries)">
       @if (tagFrequency(); as resolvedTagFrequency) {
         <baw-species-time-series
           #timeSeriesChart
@@ -572,75 +459,8 @@
       } @else {
         <baw-loading />
       }
-    </div>
+    </baw-collapsible-section>
   </div>
-
-  <!-- TODO: Enable this chart once false colour spectrograms are functional -->
-  @if (false) {
-    <div
-      class="chart-container"
-      [class.hide-in-print]="
-        !shouldShowChart(chartTypes.falseColorSpectrograms)
-      "
-    >
-      <div class="chart-heading">
-        <h4 class="chart-title">False colour spectrogram(s)</h4>
-        <span class="chart-action-menu">
-          <a class="download-button" (click)="downloadCompositionChart()">
-            <fa-icon
-              [icon]="['fas', 'file-arrow-down']"
-              [ngbTooltip]="'Download false colour spectrogram(s)'"
-            />
-          </a>
-
-          <button
-            class="toggle-graph-button btn btn-secondary btn-sm"
-            [attr.aria-label]="
-              shouldShowChart(chartTypes.falseColorSpectrograms)
-                ? 'Minimize false colour spectrograms'
-                : 'Maximize false colour spectrograms'
-            "
-            [attr.title]="
-              shouldShowChart(chartTypes.falseColorSpectrograms)
-                ? 'Minimize false colour spectrograms'
-                : 'Maximize false colour spectrograms'
-            "
-            [ngbTooltip]="
-              shouldShowChart(chartTypes.falseColorSpectrograms)
-                ? 'Minimize'
-                : 'Maximize'
-            "
-            (click)="
-              toggleChart(
-                chartTypes.falseColorSpectrograms,
-                !shouldShowChart(chartTypes.falseColorSpectrograms)
-              )
-            "
-          >
-            <span class="visually-hidden">
-              {{
-                shouldShowChart(chartTypes.falseColorSpectrograms)
-                  ? "Minimize false colour spectrograms"
-                  : "Maximize false colour spectrograms"
-              }}
-            </span>
-            <fa-icon
-              [icon]="[
-                'fas',
-                shouldShowChart(chartTypes.falseColorSpectrograms)
-                  ? 'minimize'
-                  : 'maximize',
-              ]"
-            />
-          </button>
-        </span>
-      </div>
-
-      <div [ngbCollapse]="!shouldShowChart(chartTypes.falseColorSpectrograms)">
-        <div class="large-embedded-figure p-1">False colour spectrogram(s)</div>
-      </div>
-    </div>
-  }
 </section>
 
 <ng-template #defaultConditionTemplate>(not specified)</ng-template>

@@ -9,10 +9,10 @@ import { TagsService } from "@baw-api/tag/tags.service";
 import { SiteMapComponent } from "@components/projects/components/site-map/site-map.component";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import {
+  faChevronDown,
+  faChevronUp,
   faFileArrowDown,
   faInfoCircle,
-  faMaximize,
-  faMinimize,
   faPrint,
 } from "@fortawesome/free-solid-svg-icons";
 import { Project } from "@models/Project";
@@ -155,8 +155,8 @@ describe("ViewEventReportComponent", () => {
       faPrint,
       faFileArrowDown,
       faInfoCircle,
-      faMinimize,
-      faMaximize,
+      faChevronUp,
+      faChevronDown,
     );
 
     spectator.detectChanges();
@@ -226,17 +226,44 @@ describe("ViewEventReportComponent", () => {
     tagFrequencyFilterSpy.and.returnValue(NEVER);
     recordingCoverageFilterSpy.and.returnValue(NEVER);
     analysisCoverageFilterSpy.and.returnValue(NEVER);
-    setup();
+    setup(
+      generateEventSummaryReportUrlParams({
+        charts: [
+          Chart.coverage,
+          Chart.eventSummary,
+          Chart.speciesCompositionCurve,
+          Chart.speciesTimeSeries,
+        ].join(","),
+      }),
+    );
 
     const loadingStatuses = spectator
       .queryAll<HTMLElement>("[role='status']")
       .map((element) => element.textContent?.trim());
 
-    expect(loadingStatuses).toContain("Loading recording coverage...");
-    expect(loadingStatuses).toContain("Loading coverage statistics...");
-    expect(loadingStatuses).toContain("Loading event summaries...");
-    expect(loadingStatuses).toContain("Loading species composition...");
-    expect(loadingStatuses).toContain("Loading species time series...");
+    expect(
+      spectator.queryAll<HTMLElement>("#coverage-container [role='status']"),
+    ).toHaveSize(1);
+    expect(loadingStatuses).toHaveSize(4);
+  });
+
+  it("should persist coverage and event summary visibility in chart parameters", () => {
+    const replaceStateSpy = spyOn(
+      spectator.component["location"],
+      "replaceState",
+    ).and.callThrough();
+
+    spectator.component["toggleChart"](Chart.coverage, true);
+    spectator.component["toggleChart"](Chart.eventSummary, true);
+
+    expect(defaultParameterDataModel.charts).toEqual([
+      Chart.speciesCompositionCurve,
+      Chart.coverage,
+      Chart.eventSummary,
+    ]);
+    const sharedUrl = replaceStateSpy.calls.mostRecent().args[0];
+    expect(sharedUrl).toContain("coverage");
+    expect(sharedUrl).toContain("event-summary");
   });
 
   it("should not refetch base report endpoints when toggling a chart", () => {

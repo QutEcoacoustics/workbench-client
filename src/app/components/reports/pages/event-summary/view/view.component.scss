@@ -131,32 +131,8 @@ baw-confidence-plot {
   aspect-ratio: 2.39 / 1;
 }
 
-.chart-heading {
-  margin-top: 1rem;
-
-  & > .chart-title {
-    display: inline;
-  }
-
-  & > .chart-action-menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    float: right;
-    height: 1rem;
-  }
-}
-
-.toggle-graph-button {
-  // since the maximize and minimize buttons are slightly different sizes, we have to set the size explicitly using css
-  width: 2.5em;
-  height: 2.5em;
-}
-
 @media print {
   #print-button,
-  .toggle-graph-button,
   .download-button,
   .info-icon,
   .hide-in-print {

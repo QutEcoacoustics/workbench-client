@@ -1,25 +1,29 @@
 ﻿import { Params } from "@angular/router";
 import {
-    AUDIO_EVENT_PROVENANCE,
-    SHALLOW_REGION,
-    SHALLOW_SITE,
-    TAG,
+  AUDIO_EVENT_PROVENANCE,
+  SHALLOW_REGION,
+  SHALLOW_SITE,
+  TAG,
 } from "@baw-api/ServiceTokens";
 import { Filters, InnerFilter } from "@baw-api/baw-api.service";
 import { IsomorphicTuple } from "@helpers/advancedTypes";
+import {
+  filterEventDate,
+  filterEventTime,
+} from "@helpers/filters/audioEventFilters";
 import { filterDate, filterTime } from "@helpers/filters/audioRecordingFilters";
 import { filterAnd, filterModelIds } from "@helpers/filters/filters";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import {
-    IQueryStringParameterSpec,
-    jsBoolean,
-    jsNumber,
-    jsNumberArray,
-    jsString,
-    jsStringArray,
-    luxonDateArray,
-    luxonDurationArray,
-    serializeObjectToParams,
+  IQueryStringParameterSpec,
+  jsBoolean,
+  jsNumber,
+  jsNumberArray,
+  jsString,
+  jsStringArray,
+  luxonDateArray,
+  luxonDurationArray,
+  serializeObjectToParams,
 } from "@helpers/query-string-parameters/queryStringParameters";
 import { CollectionIds } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "@models/AbstractModel";
@@ -28,8 +32,8 @@ import { AudioEvent } from "@models/AudioEvent";
 import { AudioRecording } from "@models/AudioRecording";
 
 import {
-    AssociationInjector,
-    HasAssociationInjector,
+  AssociationInjector,
+  HasAssociationInjector,
 } from "@models/ImplementsInjector";
 import { Provenance } from "@models/Provenance";
 import { Region } from "@models/Region";
@@ -39,10 +43,11 @@ import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
 import { DateTime, Duration } from "luxon";
 
 export enum Chart {
+  coverage = "coverage",
+  eventSummary = "event-summary",
   speciesAccumulationCurve = "accumulation",
   speciesCompositionCurve = "composition",
   speciesTimeSeries = "time-series",
-  falseColorSpectrograms = "false-colour",
   none = "none",
 }
 
@@ -91,6 +96,12 @@ export class EventSummaryReportParameters
     public injector?: AssociationInjector,
   ) {
     super(queryStringParameters);
+
+    // field initializers would overwrite values assigned by the base
+    // constructor (useDefineForClassFields is false), so default here instead
+    this.bucketSize ??= BucketSize.month;
+    this.time ??= null;
+    this.date ??= null;
   }
 
   public regions!: CollectionIds;
@@ -98,10 +109,10 @@ export class EventSummaryReportParameters
   public provenances!: CollectionIds;
   public tags!: CollectionIds;
   public score!: number;
-  public bucketSize: BucketSize = BucketSize.month;
+  public bucketSize!: BucketSize;
   public daylightSavings!: boolean;
-  public time: IsomorphicTuple<Duration | null, 2> | null = null;
-  public date: IsomorphicTuple<DateTime | null, 2> | null = null;
+  public time!: IsomorphicTuple<Duration | null, 2> | null;
+  public date!: IsomorphicTuple<DateTime | null, 2> | null;
   public charts!: Chart[];
 
   @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "regions")
@@ -164,7 +175,10 @@ export class EventSummaryReportParameters
       } as InnerFilter<AudioEvent>);
     }
 
-    return { filter: this.applyDateAndTimeFilters(filter), options: { bucketSize: this.bucketSize } };
+    return {
+      filter: this.applyDateAndTimeFilters(filter, AudioEvent),
+      options: { bucketSize: this.bucketSize },
+    };
   }
 
   //! TODO: this is a terrible way to solve this problem.
@@ -174,7 +188,7 @@ export class EventSummaryReportParameters
   // This is a temporary solution to get the report working.
   public toAudioRecordingFilter(): Filters<AudioRecording> {
     const filter = this.buildScopedFilter<AudioRecording>();
-    return { filter: this.applyDateAndTimeFilters(filter) };
+    return { filter: this.applyDateAndTimeFilters(filter, AudioRecording) };
   }
 
   private buildScopedFilter<Model extends AbstractModel>(): InnerFilter<Model> {
@@ -197,24 +211,48 @@ export class EventSummaryReportParameters
 
   private applyDateAndTimeFilters<Model>(
     filter: InnerFilter<Model>,
+    target: typeof AudioRecording | typeof AudioEvent,
   ): InnerFilter<Model> {
+    if (target != AudioRecording && target != AudioEvent) {
+      throw new Error(
+        "applyDateAndTimeFilters can only be used with AudioRecording or AudioEvent",
+      );
+    }
+
     if (this.dateStartedAfter || this.dateFinishedBefore) {
-      filter = filterDate(
-        filter as InnerFilter<AudioRecording>,
-        this.dateStartedAfter!,
-        // @ts-expect-error: strict mode fix
-        this.dateFinishedBefore,
-      ) as InnerFilter<Model>;
+      if (target === AudioEvent) {
+        filter = filterEventDate(
+          filter as InnerFilter<AudioEvent>,
+          this.dateStartedAfter,
+          this.dateFinishedBefore,
+        ) as InnerFilter<Model>;
+      } else {
+        filter = filterDate(
+          filter as InnerFilter<AudioRecording>,
+          this.dateStartedAfter!,
+          // @ts-expect-error: strict mode fix
+          this.dateFinishedBefore,
+        ) as InnerFilter<Model>;
+      }
     }
 
     if (this.timeStartedAfter || this.timeFinishedBefore) {
-      filter = filterTime(
-        filter as InnerFilter<AudioRecording>,
-        this.daylightSavings,
-        this.timeStartedAfter!,
-        // @ts-expect-error: strict mode fix
-        this.timeFinishedBefore,
-      ) as InnerFilter<Model>;
+      if (target === AudioEvent) {
+        filter = filterEventTime(
+          filter as InnerFilter<AudioEvent>,
+          this.daylightSavings,
+          this.timeStartedAfter,
+          this.timeFinishedBefore,
+        ) as InnerFilter<Model>;
+      } else {
+        filter = filterTime(
+          filter as InnerFilter<AudioRecording>,
+          this.daylightSavings,
+          this.timeStartedAfter!,
+          // @ts-expect-error: strict mode fix
+          this.timeFinishedBefore,
+        ) as InnerFilter<Model>;
+      }
     }
 
     return filter;

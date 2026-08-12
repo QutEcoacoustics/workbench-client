@@ -38,10 +38,10 @@
               "week": "%Y-%m-%d",
               "date": "%Y-%m-%d",
               "day": "%Y-%m-%d",
-              "hours": "%Y-%m-%d %H:%M:%S %Z",
-              "minutes": "%Y-%m-%d %H:%M:%S %Z",
-              "seconds": "%Y-%m-%d %H:%M:%S %Z",
-              "milliseconds": "%Y-%m-%d %H:%M:%S.%L %Z"
+              "hours": "%Y-%m-%d %H:%M",
+              "minutes": "%Y-%m-%d %H:%M:%S",
+              "seconds": "%Y-%m-%d %H:%M:%S",
+              "milliseconds": "%Y-%m-%d %H:%M:%S.%L"
             },
             "labelAngle": -30,
             "labelAlign": "right",

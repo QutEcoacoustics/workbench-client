@@ -127,7 +127,7 @@ export class AudioRecordingCoverageItem extends AbstractModelWithoutId {
   public readonly siteId!: number;
 
   @bawDateTimeRange()
-  public readonly range!: Range<Date>;
+  public readonly range!: Range<DateTime>;
   public readonly density!: number;
   public readonly gapThreshold!: number;
 
