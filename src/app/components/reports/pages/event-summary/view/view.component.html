@@ -373,14 +373,7 @@
       "
     >
       <span section-actions>
-        <span class="info-icon text-info">
-          <fa-icon
-            [icon]="['fas', 'info-circle']"
-            [ngbTooltip]="
-              'Points with error represent that the recogniser had a lack of confidence when classifying the event'
-            "
-          />
-        </span>
+
 
         <a class="download-button" (click)="downloadAccumulationChart()">
           <fa-icon
@@ -455,6 +448,36 @@
           #timeSeriesChart
           class="large-embedded-figure"
           [rows]="resolvedTagFrequency"
+        />
+      } @else {
+        <baw-loading />
+      }
+    </baw-collapsible-section>
+  </div>
+
+  <div
+    class="chart-container"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.dielPlot)"
+  >
+    <baw-collapsible-section
+      title="Diel Activity"
+      [expanded]="shouldShowChart(chartTypes.dielPlot)"
+      (expandedChange)="toggleChart(chartTypes.dielPlot, $event)"
+    >
+      <span section-actions>
+        <a class="download-button" (click)="downloadDielChart()">
+          <fa-icon
+            [icon]="['fas', 'file-arrow-down']"
+            [ngbTooltip]="'Download this graphs data'"
+          />
+        </a>
+      </span>
+
+      @if (dielActivity(); as resolvedDielActivity) {
+        <baw-diel-plot
+          #dielChart
+          class="large-embedded-figure"
+          [rows]="resolvedDielActivity"
         />
       } @else {
         <baw-loading />

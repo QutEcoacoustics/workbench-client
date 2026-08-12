@@ -1,12 +1,15 @@
 import { Signal, inject } from "@angular/core";
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { TagsService } from "@baw-api/tag/tags.service";
-import { TagFrequencyReportItem } from "@models/Reports";
 import { Tag } from "@models/Tag";
 import { combineLatest, map, of, switchMap } from "rxjs";
 
+interface HasTagIds {
+  readonly tags: readonly { readonly tagId: number }[];
+}
+
 export function resolveTags(
-  rows: Signal<readonly TagFrequencyReportItem[]>,
+  rows: Signal<readonly HasTagIds[]>,
 ): Signal<Map<number, Tag> | undefined> {
   const tagsApi = inject(TagsService);
 

@@ -49,6 +49,16 @@
     step="0.1"
   />
 
+  <baw-typeahead-input
+    label="Tags of Interest"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="tagsApi.typeaheadCallback()"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
+  />
+
+  <hr />
+
   <div>
     <label for="bucketSizeInput">Bucket Size</label>
     <select
@@ -66,13 +76,23 @@
     </select>
   </div>
 
-  <baw-typeahead-input
-    label="Tags of Interest"
-    [inputPlaceholder]="'All'"
-    [searchCallback]="tagsApi.typeaheadCallback()"
-    [resultTemplate]="tagsTypeaheadTemplate"
-    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
-  />
+  <fieldset class="mt-2">
+    <legend class="form-label fs-6">Charts</legend>
+    @for (chart of availableCharts; track chart.value) {
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [name]="'chartInput-' + chart.value"
+            [ngModel]="isChartSelected(chart.value)"
+            (ngModelChange)="toggleChartSelection(chart.value, $event)"
+          />
+          {{ chart.label }}
+        </label>
+      </div>
+    }
+  </fieldset>
 
   <a
     id="generateReportButton"

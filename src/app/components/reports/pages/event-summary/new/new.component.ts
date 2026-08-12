@@ -48,6 +48,7 @@ import { DateTime } from "luxon";
 import { Observable } from "rxjs";
 import {
   BucketSize,
+  Chart,
   EventSummaryReportParameters,
 } from "../EventSummaryReportParameters";
 
@@ -84,6 +85,14 @@ class NewEventReportComponent extends PageComponent implements OnInit {
   public site?: Site;
   public model = new EventSummaryReportParameters();
   protected availableBucketSizes = Object.keys(BucketSize);
+  protected readonly availableCharts = [
+    { value: Chart.coverage, label: "Coverage" },
+    { value: Chart.eventSummary, label: "Summary of Events" },
+    { value: Chart.speciesAccumulationCurve, label: "Species Accumulation Curve" },
+    { value: Chart.speciesCompositionCurve, label: "Species Composition" },
+    { value: Chart.speciesTimeSeries, label: "Species Time Series" },
+    { value: Chart.dielPlot, label: "Diel Plot" },
+  ];
 
   protected get componentTitle(): string {
     if (this.site) {
@@ -99,9 +108,26 @@ class NewEventReportComponent extends PageComponent implements OnInit {
     return `Project: ${this.project?.name}`;
   }
 
+  protected isChartSelected(chart: Chart): boolean {
+    return this.model.charts?.includes(chart) ?? true;
+  }
+
+  protected toggleChartSelection(chart: Chart, selected: boolean): void {
+    const currentCharts =
+      this.model.charts ?? this.availableCharts.map(({ value }) => value);
+    const updatedCharts = selected
+      ? Array.from(new Set([...currentCharts, chart]))
+      : currentCharts.filter((item) => item !== chart);
+
+    // all charts selected is the default, so it is not serialized
+    this.model.charts =
+      updatedCharts.length === this.availableCharts.length
+        ? null!
+        : updatedCharts;
+  }
+
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
-
     // each report is mounted/scoped from at least the project level
     this.project = models[projectKey] as Project;
 

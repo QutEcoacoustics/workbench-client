@@ -48,6 +48,7 @@ export enum Chart {
   speciesAccumulationCurve = "accumulation",
   speciesCompositionCurve = "composition",
   speciesTimeSeries = "time-series",
+  dielPlot = "diel",
   none = "none",
 }
 

@@ -30,6 +30,7 @@ import { AnalysisCoverageReportService } from "@baw-api/reports/event-report/ana
 import { EventSummariesReportService } from "@baw-api/reports/event-report/event-summaries-report.service";
 import { RecordingCoverageReportService } from "@baw-api/reports/event-report/recording-coverage-report.service";
 import { TagAccumulationReportService } from "@baw-api/reports/event-report/tag-accumulation-report.service";
+import { TagDielActivityReportService } from "@baw-api/reports/event-report/tag-diel-activity-report.service";
 import { TagFrequencyReportService } from "@baw-api/reports/event-report/tag-frequency-report.service";
 import { retrieveResolvers } from "@baw-api/resolver-common";
 import { SitesService, siteResolvers } from "@baw-api/site/sites.service";
@@ -49,6 +50,7 @@ import { Region } from "@models/Region";
 import {
   AnalysisCoverageItem,
   AudioRecordingCoverageItem,
+  SupportedDielBucketSize,
   SupportedTagBucketSize,
 } from "@models/Reports";
 import { Site } from "@models/Site";
@@ -58,6 +60,7 @@ import { TimePipe } from "@pipes/time/time.pipe";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ConfidencePlotComponent } from "@shared/charts/confidence-plot/confidence-plot.component";
 import { CoveragePlotComponent } from "@shared/charts/coverage-plot/coverage-plot.component";
+import { DielPlotComponent } from "@shared/charts/diel-plot/diel-plot.component";
 import { SpeciesAccumulationCurveComponent } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
 import { SpeciesCompositionGraphComponent } from "@shared/charts/species-composition/species-composition.component";
 import { SpeciesTimeSeriesComponent } from "@shared/charts/species-time-series/species-time-series.component";
@@ -79,6 +82,7 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const coverageBucketCount = 100;
+const dielBucketSize: SupportedDielBucketSize = "hour";
 
 const allCharts = [
   Chart.coverage,
@@ -86,6 +90,7 @@ const allCharts = [
   Chart.speciesCompositionCurve,
   Chart.speciesAccumulationCurve,
   Chart.speciesTimeSeries,
+  Chart.dielPlot,
 ];
 
 @Component({
@@ -108,6 +113,7 @@ const allCharts = [
     LoadingComponent,
     ConfidencePlotComponent,
     CoveragePlotComponent,
+    DielPlotComponent,
     SpeciesAccumulationCurveComponent,
     SpeciesCompositionGraphComponent,
     SpeciesTimeSeriesComponent,
@@ -117,6 +123,7 @@ const allCharts = [
 class ViewEventReportComponent extends PageComponent {
   protected readonly eventSummariesApi = inject(EventSummariesReportService);
   protected readonly tagAccumulationApi = inject(TagAccumulationReportService);
+  protected readonly tagDielActivityApi = inject(TagDielActivityReportService);
   protected readonly tagFrequencyApi = inject(TagFrequencyReportService);
   protected readonly analysisCoverageApi = inject(
     AnalysisCoverageReportService,
@@ -192,6 +199,9 @@ class ViewEventReportComponent extends PageComponent {
       this.selectedBucketSize,
     ),
   );
+  protected readonly dielActivity = toSignal(
+    this.tagDielActivityApi.filter(this.audioEventFilters, dielBucketSize),
+  );
   protected readonly accumulation = toSignal(
     toObservable(this.accumulationRequested).pipe(
       filter(Boolean),
@@ -249,6 +259,7 @@ class ViewEventReportComponent extends PageComponent {
     viewChild<SpeciesCompositionGraphComponent>("compositionChart");
   public readonly timeSeriesChart =
     viewChild<SpeciesTimeSeriesComponent>("timeSeriesChart");
+  public readonly dielChart = viewChild<DielPlotComponent>("dielChart");
 
   // we override ctrl + P (most browsers default for window.print shortcut) so we can show a help modal
   @HostListener("document:keydown", ["$event"])
@@ -323,6 +334,10 @@ class ViewEventReportComponent extends PageComponent {
 
   protected downloadTimeSeriesChart(): void {
     this.timeSeriesChart()?.chart().downloadChartAsCsv();
+  }
+
+  protected downloadDielChart(): void {
+    this.dielChart()?.chart().downloadChartAsCsv();
   }
 
   private resolveFilteredSites(): IdOr<Site>[] {

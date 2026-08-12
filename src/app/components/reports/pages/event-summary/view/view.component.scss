@@ -131,6 +131,11 @@ baw-confidence-plot {
   aspect-ratio: 2.39 / 1;
 }
 
+// we want the diel plot to look a little more impressive
+baw-diel-plot.large-embedded-figure {
+  aspect-ratio: 1.7 / 1;
+}
+
 @media print {
   #print-button,
   .download-button,
