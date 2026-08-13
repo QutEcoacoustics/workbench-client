@@ -49,7 +49,9 @@ export enum Chart {
   speciesAccumulationCurve = "tag-accumulation",
   speciesCompositionCurve = "tag-composition",
   speciesTimeSeries = "tag-frequency",
+  tagFrequencyStacked = "tag-frequency-stacked",
   dielPlot = "tag-diel",
+  tagBreakdown = "tag-breakdown",
   none = "none",
 }
 

@@ -1,8 +1,8 @@
 <div class="section-heading">
   @if (headingLevel() === 3) {
-    <h3 class="section-title">{{ title() }}</h3>
+    <h3 class="section-title">{{ sectionTitle() }}</h3>
   } @else {
-    <h4 class="section-title">{{ title() }}</h4>
+    <h4 class="section-title">{{ sectionTitle() }}</h4>
   }
 
   <span class="section-actions">
@@ -14,14 +14,18 @@
       [attr.aria-expanded]="expanded()"
       [attr.aria-controls]="contentId()"
       [attr.aria-label]="
-        expanded() ? 'Collapse ' + title() : 'Expand ' + title()
+        expanded() ? 'Collapse ' + sectionTitle() : 'Expand ' + sectionTitle()
       "
-      [title]="expanded() ? 'Collapse ' + title() : 'Expand ' + title()"
+      [title]="expanded() ? 'Collapse ' + sectionTitle() : 'Expand ' + sectionTitle()"
       [ngbTooltip]="expanded() ? 'Collapse' : 'Expand'"
       (click)="toggle()"
     >
       <span class="visually-hidden">
-        {{ expanded() ? "Collapse " + title() : "Expand " + title() }}
+        {{
+          expanded()
+            ? "Collapse " + sectionTitle()
+            : "Expand " + sectionTitle()
+        }}
       </span>
       <fa-icon [icon]="['fas', expanded() ? 'chevron-up' : 'chevron-down']" />
     </button>

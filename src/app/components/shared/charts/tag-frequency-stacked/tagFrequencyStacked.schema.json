@@ -1,0 +1,138 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "values": []
+  },
+  "params": [
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 14
+    }
+  ],
+  "config": {
+    "customFormatTypes": true,
+    "axis": {
+      "titleFontSize": {
+        "expr": "bawTitleSize"
+      },
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      }
+    },
+    "header": {
+      "title": null,
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      },
+      "labelFontWeight": "bold"
+    }
+  },
+  "spacing": 0,
+  "resolve": {
+    "axis": {
+      "y": "shared"
+    }
+  },
+  "facet": {
+    "row": {
+      "field": "tagId",
+      "type": "nominal",
+      "header": {
+        "labelExpr": "customFormatter(datum.value)",
+        "labelAngle": 0,
+        "labelAlign": "left",
+        "labelBaseline": "middle",
+        "labelLimit": 1000
+      }
+    }
+  },
+  "spec": {
+    "width": "container",
+    "height": 50,
+    "layer": [
+      {
+        "mark": {
+          "type": "area",
+          "interpolate": "linear",
+          "opacity": 0.2
+        }
+      },
+      {
+        "mark": {
+          "type": "line",
+          "interpolate": "linear",
+          "point": {
+            "filled": true,
+            "size": 24
+          },
+          "strokeWidth": 1.5
+        }
+      }
+    ],
+    "encoding": {
+      "x": {
+        "field": "range[0]",
+        "title": null,
+        "type": "temporal",
+        "axis": {
+          "orient": "bottom",
+          "format": {
+            "year": "%Y",
+            "quarter": "%Y-%m",
+            "month": "%Y-%m",
+            "week": "%Y-%m-%d",
+            "date": "%Y-%m-%d",
+            "day": "%Y-%m-%d",
+            "hours": "%Y-%m-%d %H:%M",
+            "minutes": "%Y-%m-%d %H:%M:%S",
+            "seconds": "%Y-%m-%d %H:%M:%S",
+            "milliseconds": "%Y-%m-%d %H:%M:%S.%L"
+          },
+          "labelAngle": -30,
+          "labelAlign": "right",
+          "labelFlush": true,
+          "labelFlushOffset": 4
+        },
+        "scale": {
+          "padding": 0
+        }
+      },
+      "y": {
+        "field": "events",
+        "title": null,
+        "type": "quantitative"
+      },
+      "color": {
+        "field": "tagId",
+        "type": "nominal",
+        "scale": {
+          "scheme": "category10"
+        },
+        "legend": null
+      },
+      "tooltip": [
+        {
+          "field": "range[0]",
+          "type": "temporal",
+          "title": "From",
+          "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+        },
+        {
+          "field": "range[1]",
+          "type": "temporal",
+          "title": "To",
+          "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+        },
+        {
+          "field": "events",
+          "type": "quantitative",
+          "title": "Count"
+        }
+      ]
+    }
+  }
+}

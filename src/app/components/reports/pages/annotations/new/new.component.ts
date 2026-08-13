@@ -59,6 +59,16 @@ const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 
+interface ChartOption {
+  readonly value: Chart;
+  readonly label: string;
+}
+
+interface ChartGroup {
+  readonly label: string;
+  readonly charts: readonly ChartOption[];
+}
+
 @Component({
   selector: "baw-new-summary-report",
   templateUrl: "./new.component.html",
@@ -95,14 +105,34 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
     "half-hour",
     "hour",
   ];
-  protected readonly availableCharts = [
-    { value: Chart.coverage, label: "Coverage" },
-    { value: Chart.eventSummary, label: "Tag Summary" },
-    { value: Chart.speciesAccumulationCurve, label: "Tag Accumulation" },
-    { value: Chart.speciesCompositionCurve, label: "Tag Composition" },
-    { value: Chart.speciesTimeSeries, label: "Tag Frequency" },
-    { value: Chart.dielPlot, label: "Tag Diel Activity" },
+  protected readonly chartGroups: readonly ChartGroup[] = [
+    {
+      label: "Coverage, Summary",
+      charts: [
+        { value: Chart.coverage, label: "Coverage" },
+        { value: Chart.eventSummary, label: "Tag Summary" },
+      ],
+    },
+    {
+      label: "Accumulation, Frequency, Composition, Diel",
+      charts: [
+        { value: Chart.speciesAccumulationCurve, label: "Tag Accumulation" },
+        { value: Chart.speciesTimeSeries, label: "Tag Frequency" },
+        { value: Chart.speciesCompositionCurve, label: "Tag Composition" },
+        { value: Chart.dielPlot, label: "Tag Diel Activity" },
+      ],
+    },
+    {
+      label: "Stacked, Breakdown",
+      charts: [
+        { value: Chart.tagFrequencyStacked, label: "Tag Frequency Stacked" },
+        { value: Chart.tagBreakdown, label: "Tag Breakdown" },
+      ],
+    },
   ];
+  protected readonly availableCharts = this.chartGroups.flatMap(
+    ({ charts }) => charts,
+  );
   protected readonly chartTypes = Chart;
 
   protected get componentTitle(): string {

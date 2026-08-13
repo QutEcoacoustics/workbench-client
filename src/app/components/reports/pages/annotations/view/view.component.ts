@@ -65,6 +65,8 @@ import { TagDielComponent } from "@shared/charts/tag-diel/tag-diel.component";
 import { TagAccumulationComponent } from "@shared/charts/tag-accumulation/tag-accumulation.component";
 import { TagCompositionComponent } from "@shared/charts/tag-composition/tag-composition.component";
 import { TagFrequencyComponent } from "@shared/charts/tag-frequency/tag-frequency.component";
+import { TagFrequencyStackedComponent } from "@shared/charts/tag-frequency-stacked/tag-frequency-stacked.component";
+import { TagBreakdownComponent } from "@shared/charts/tag-breakdown/tag-breakdown.component";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
@@ -90,7 +92,9 @@ const allCharts = [
   Chart.speciesCompositionCurve,
   Chart.speciesAccumulationCurve,
   Chart.speciesTimeSeries,
+  Chart.tagFrequencyStacked,
   Chart.dielPlot,
+  Chart.tagBreakdown,
 ];
 
 @Component({
@@ -118,6 +122,8 @@ const allCharts = [
     TagAccumulationComponent,
     TagCompositionComponent,
     TagFrequencyComponent,
+    TagFrequencyStackedComponent,
+    TagBreakdownComponent,
     CollapsibleSectionComponent,
   ],
 })

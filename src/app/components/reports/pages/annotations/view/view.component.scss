@@ -136,6 +136,13 @@ baw-tag-diel.large-embedded-figure {
   aspect-ratio: 1.7 / 1;
 }
 
+// stacked facets need vertical room; don't constrain with the shared aspect ratio
+baw-tag-frequency-stacked.large-embedded-figure {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+}
+
 @media print {
   #print-button,
   .download-button,

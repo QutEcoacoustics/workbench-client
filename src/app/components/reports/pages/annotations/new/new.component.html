@@ -79,30 +79,35 @@
 
   <fieldset class="mt-2">
     <legend class="form-label fs-6">Charts</legend>
-    @for (chart of availableCharts; track chart.value) {
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            [name]="'chartInput-' + chart.value"
-            [ngModel]="isChartSelected(chart.value)"
-            (ngModelChange)="toggleChartSelection(chart.value, $event)"
-          />
-          {{ chart.label }}
-        </label>
-        @if (chart.value === chartTypes.dielPlot) {
-          <select
-            name="dielBucketSizeInput"
-            title="Diel plot resolution"
-            class="form-select form-select-sm d-inline-block w-auto ms-2"
-            [disabled]="!isChartSelected(chart.value)"
-            [(ngModel)]="model.dielBucketSize"
-          >
-            @for (size of availableDielBucketSizes; track size) {
-              <option [value]="size">{{ size | titlecase }}</option>
+    @for (group of chartGroups; track group.label) {
+      <div class="mb-2">
+        <div class="text-muted small fw-semibold mb-1">{{ group.label }}</div>
+        @for (chart of group.charts; track chart.value) {
+          <div class="form-check form-check-inline mb-1">
+            <label class="form-check-label">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [name]="'chartInput-' + chart.value"
+                [ngModel]="isChartSelected(chart.value)"
+                (ngModelChange)="toggleChartSelection(chart.value, $event)"
+              />
+              {{ chart.label }}
+            </label>
+            @if (chart.value === chartTypes.dielPlot) {
+              <select
+                name="dielBucketSizeInput"
+                title="Diel plot resolution"
+                class="form-select form-select-sm d-inline-block w-auto ms-2"
+                [disabled]="!isChartSelected(chart.value)"
+                [(ngModel)]="model.dielBucketSize"
+              >
+                @for (size of availableDielBucketSizes; track size) {
+                  <option [value]="size">{{ size | titlecase }}</option>
+                }
+              </select>
             }
-          </select>
+          </div>
         }
       </div>
     }

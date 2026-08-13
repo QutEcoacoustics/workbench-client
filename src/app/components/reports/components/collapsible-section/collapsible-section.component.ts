@@ -15,7 +15,7 @@ import { NgbCollapse, NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollapsibleSectionComponent {
-  public readonly title = input.required<string>();
+  public readonly sectionTitle = input.required<string>();
   public readonly expanded = input.required<boolean>();
   public readonly headingLevel = input<3 | 4>(4);
   public readonly contentId = input<string>();

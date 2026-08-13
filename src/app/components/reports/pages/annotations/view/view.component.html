@@ -145,7 +145,7 @@
 
 <section>
   <baw-collapsible-section
-    title="Coverage"
+    [sectionTitle]="'Coverage'"
     contentId="coverage-container"
     [headingLevel]="3"
     [expanded]="shouldShowChart(chartTypes.coverage)"
@@ -282,7 +282,7 @@
 
 <section id="events-table-container">
   <baw-collapsible-section
-    title="Tag Summary"
+    [sectionTitle]="'Tag Summary'"
     [headingLevel]="3"
     [expanded]="shouldShowChart(chartTypes.eventSummary)"
     (expandedChange)="toggleChart(chartTypes.eventSummary, $event)"
@@ -393,7 +393,7 @@
     "
   >
     <baw-collapsible-section
-      title="Tag Accumulation"
+      [sectionTitle]="'Tag Accumulation'"
       [expanded]="shouldShowChart(chartTypes.speciesAccumulationCurve)"
       (expandedChange)="
         toggleChart(chartTypes.speciesAccumulationCurve, $event)
@@ -427,7 +427,7 @@
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)"
   >
     <baw-collapsible-section
-      title="Tag Composition"
+      [sectionTitle]="'Tag Composition'"
       [expanded]="shouldShowChart(chartTypes.speciesCompositionCurve)"
       (expandedChange)="toggleChart(chartTypes.speciesCompositionCurve, $event)"
     >
@@ -459,7 +459,7 @@
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesTimeSeries)"
   >
     <baw-collapsible-section
-      title="Tag Frequency"
+      [sectionTitle]="'Tag Frequency'"
       [expanded]="shouldShowChart(chartTypes.speciesTimeSeries)"
       (expandedChange)="toggleChart(chartTypes.speciesTimeSeries, $event)"
     >
@@ -488,10 +488,30 @@
 
   <div
     class="chart-container"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.tagFrequencyStacked)"
+  >
+    <baw-collapsible-section
+      [sectionTitle]="'Tag Frequency Stacked'"
+      [expanded]="shouldShowChart(chartTypes.tagFrequencyStacked)"
+      (expandedChange)="toggleChart(chartTypes.tagFrequencyStacked, $event)"
+    >
+      @if (tagFrequency(); as resolvedTagFrequency) {
+        <baw-tag-frequency-stacked
+          class="large-embedded-figure"
+          [rows]="resolvedTagFrequency"
+        />
+      } @else {
+        <baw-loading />
+      }
+    </baw-collapsible-section>
+  </div>
+
+  <div
+    class="chart-container"
     [class.hide-in-print]="!shouldShowChart(chartTypes.dielPlot)"
   >
     <baw-collapsible-section
-      title="Tag Diel Activity"
+      [sectionTitle]="'Tag Diel Activity'"
       [expanded]="shouldShowChart(chartTypes.dielPlot)"
       (expandedChange)="toggleChart(chartTypes.dielPlot, $event)"
     >
@@ -512,6 +532,30 @@
           class="large-embedded-figure"
           [rows]="resolvedDielActivity"
         />
+      } @else {
+        <baw-loading />
+      }
+    </baw-collapsible-section>
+  </div>
+
+  <div
+    class="chart-container"
+    [class.hide-in-print]="!shouldShowChart(chartTypes.tagBreakdown)"
+  >
+    <baw-collapsible-section
+      [sectionTitle]="'Tag Breakdown'"
+      [expanded]="shouldShowChart(chartTypes.tagBreakdown)"
+      (expandedChange)="toggleChart(chartTypes.tagBreakdown, $event)"
+    >
+      @if (tagFrequency(); as resolvedTagFrequency) {
+        @if (dielActivity(); as resolvedDielActivity) {
+          <baw-tag-breakdown
+            [frequencyRows]="resolvedTagFrequency"
+            [dielRows]="resolvedDielActivity"
+          />
+        } @else {
+          <baw-loading />
+        }
       } @else {
         <baw-loading />
       }

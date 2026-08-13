@@ -13,7 +13,7 @@ describe("CollapsibleSectionComponent", () => {
   function setup(expanded: boolean): void {
     spectator = createHost(
       `<baw-collapsible-section
-        title="Coverage"
+        [sectionTitle]="'Coverage'"
         contentId="coverage-content"
         [headingLevel]="3"
         [expanded]="expanded"
