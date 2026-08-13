@@ -1,5 +1,5 @@
 <h2>
-  Acoustic Event Summary Report
+  Annotation Report
 
   <a
     id="print-button"
@@ -17,7 +17,23 @@
 </p>
 
 <section id="search-parameters-container">
-  <h3>Search Conditions</h3>
+  <h3>
+    Settings
+    <a
+      class="ms-2 hide-in-print"
+      style="font-size: 0.65em; vertical-align: middle"
+      [strongRoute]="newReportRoute()"
+      [queryParams]="parameterDataModel.toQueryParams()"
+      [ngbTooltip]="'Edit report settings'"
+    >
+      <fa-icon [icon]="['fas', 'pen']" />
+    </a>
+  </h3>
+
+  <div class="search-parameter">
+    <b>Project: </b>
+    <span>{{ project.name }}</span>
+  </div>
 
   <div class="search-parameter">
     <b>Sites: </b>
@@ -109,7 +125,11 @@
   <div class="search-parameter">
     <b>Score Threshold: </b>
 
-    {{ parameterDataModel.score | number: "1.2-2" }}
+    @if (parameterDataModel.score != null) {
+      {{ parameterDataModel.score | number: "1.2-2" }}
+    } @else {
+      (not specified)
+    }
   </div>
 
   <div class="search-parameter">
@@ -125,35 +145,41 @@
 </section>
 
 <section>
-  <h3>Coverage Summary</h3>
-
-  <div class="alert alert-warning my-3">
-    <p>
-      Where we have multiple co-occurring events in a timeline, we union the
-      events in each bucket and count the sum of results. This can happen if
-      your report covers multiple sites or multiple analyses.
-    </p>
-
-    <p>
-      Compare and contrast your reports with single site and single a single
-      analysis to get a better understanding of the data.
-    </p>
-  </div>
-
-  <h4>Geographic Coverage</h4>
-
-  <baw-site-map
-    class="site-map"
-    [sites]="filteredSites"
-    [groupBy]="'regionId'"
-  />
-
   <baw-collapsible-section
     title="Coverage"
     contentId="coverage-container"
+    [headingLevel]="3"
     [expanded]="shouldShowChart(chartTypes.coverage)"
     (expandedChange)="toggleChart(chartTypes.coverage, $event)"
   >
+    <p>
+      <small
+        >This section shows where and when data that contributed to this report
+        came from.</small
+      >
+    </p>
+    <div class="alert alert-warning my-3">
+      <p>
+        Where we have multiple co-occurring events in a timeline, we union the
+        events in each bucket and count the sum of results. This can happen if
+        your report covers multiple sites or multiple analyses.
+      </p>
+
+      <p>
+        Compare and contrast your reports with single site and single a single
+        analysis to get a better understanding of the data.
+      </p>
+    </div>
+
+    <h4>Spatial Coverage</h4>
+
+    <baw-site-map
+      class="site-map"
+      [sites]="filteredSites"
+      [groupBy]="'regionId'"
+    />
+
+    <h4>Temporal Coverage</h4>
     @if (recordingCoverage(); as resolvedRecordingCoverage) {
       @if (analysisCoverage(); as resolvedAnalysisCoverage) {
         <baw-coverage-plot
@@ -257,11 +283,12 @@
 
 <section id="events-table-container">
   <baw-collapsible-section
-    title="Summary of Events"
+    title="Tag Summary"
     [headingLevel]="3"
     [expanded]="shouldShowChart(chartTypes.eventSummary)"
     (expandedChange)="toggleChart(chartTypes.eventSummary, $event)"
   >
+    <!-- TODO: CSV download not yet implemented
     <a
       section-actions
       name="events-table-download-button"
@@ -273,6 +300,7 @@
         [ngbTooltip]="'Download this table'"
       />
     </a>
+  -->
 
     <table id="events-table" class="table table-striped">
       <thead>
@@ -366,25 +394,25 @@
     "
   >
     <baw-collapsible-section
-      title="Species Accumulation Curve"
+      title="Tag Accumulation"
       [expanded]="shouldShowChart(chartTypes.speciesAccumulationCurve)"
       (expandedChange)="
         toggleChart(chartTypes.speciesAccumulationCurve, $event)
       "
     >
       <span section-actions>
-
-
+        <!-- TODO: CSV download not yet implemented
         <a class="download-button" (click)="downloadAccumulationChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
+        -->
       </span>
 
       @if (accumulation(); as resolvedAccumulation) {
-        <baw-species-accumulation-curve
+        <baw-tag-accumulation
           #accumulationChart
           class="large-embedded-figure"
           [rows]="resolvedAccumulation"
@@ -400,21 +428,23 @@
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesCompositionCurve)"
   >
     <baw-collapsible-section
-      title="Species Composition"
+      title="Tag Composition"
       [expanded]="shouldShowChart(chartTypes.speciesCompositionCurve)"
       (expandedChange)="toggleChart(chartTypes.speciesCompositionCurve, $event)"
     >
       <span section-actions>
+        <!-- TODO: CSV download not yet implemented
         <a class="download-button" (click)="downloadCompositionChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
+        -->
       </span>
 
       @if (tagFrequency(); as resolvedTagFrequency) {
-        <baw-species-composition-graph
+        <baw-tag-composition
           #compositionChart
           class="large-embedded-figure"
           [rows]="resolvedTagFrequency"
@@ -430,21 +460,23 @@
     [class.hide-in-print]="!shouldShowChart(chartTypes.speciesTimeSeries)"
   >
     <baw-collapsible-section
-      title="Species Time Series"
+      title="Tag Frequency"
       [expanded]="shouldShowChart(chartTypes.speciesTimeSeries)"
       (expandedChange)="toggleChart(chartTypes.speciesTimeSeries, $event)"
     >
       <span section-actions>
+        <!-- TODO: CSV download not yet implemented
         <a class="download-button" (click)="downloadTimeSeriesChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
+        -->
       </span>
 
       @if (tagFrequency(); as resolvedTagFrequency) {
-        <baw-species-time-series
+        <baw-tag-frequency
           #timeSeriesChart
           class="large-embedded-figure"
           [rows]="resolvedTagFrequency"
@@ -460,21 +492,23 @@
     [class.hide-in-print]="!shouldShowChart(chartTypes.dielPlot)"
   >
     <baw-collapsible-section
-      title="Diel Activity"
+      title="Tag Diel Activity"
       [expanded]="shouldShowChart(chartTypes.dielPlot)"
       (expandedChange)="toggleChart(chartTypes.dielPlot, $event)"
     >
       <span section-actions>
+        <!-- TODO: CSV download not yet implemented
         <a class="download-button" (click)="downloadDielChart()">
           <fa-icon
             [icon]="['fas', 'file-arrow-down']"
             [ngbTooltip]="'Download this graphs data'"
           />
         </a>
+        -->
       </span>
 
       @if (dielActivity(); as resolvedDielActivity) {
-        <baw-diel-plot
+        <baw-tag-diel
           #dielChart
           class="large-embedded-figure"
           [rows]="resolvedDielActivity"

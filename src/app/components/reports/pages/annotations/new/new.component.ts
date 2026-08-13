@@ -49,8 +49,9 @@ import { Observable } from "rxjs";
 import {
   BucketSize,
   Chart,
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
+  AnnotationReportParameters,
+} from "../AnnotationReportParameters";
+import { SupportedDielBucketSize } from "@models/Reports";
 
 const projectKey = "project";
 const regionKey = "region";
@@ -68,7 +69,7 @@ const siteKey = "site";
     TitleCasePipe,
   ],
 })
-class NewEventReportComponent extends PageComponent implements OnInit {
+class NewAnnotationReportComponent extends PageComponent implements OnInit {
   protected readonly sitesApi = inject(ShallowSitesService);
   protected readonly regionsApi = inject(ShallowRegionsService);
   protected readonly provenanceApi = inject(ProvenanceService);
@@ -77,22 +78,28 @@ class NewEventReportComponent extends PageComponent implements OnInit {
 
   public constructor() {
     super();
-    this.model = new EventSummaryReportParameters();
+    this.model = new AnnotationReportParameters();
   }
 
   public project!: Project;
   public region?: Region;
   public site?: Site;
-  public model = new EventSummaryReportParameters();
+  public model = new AnnotationReportParameters();
   protected availableBucketSizes = Object.keys(BucketSize);
+  protected readonly availableDielBucketSizes: SupportedDielBucketSize[] = [
+    "minute",
+    "half-hour",
+    "hour",
+  ];
   protected readonly availableCharts = [
     { value: Chart.coverage, label: "Coverage" },
-    { value: Chart.eventSummary, label: "Summary of Events" },
-    { value: Chart.speciesAccumulationCurve, label: "Species Accumulation Curve" },
-    { value: Chart.speciesCompositionCurve, label: "Species Composition" },
-    { value: Chart.speciesTimeSeries, label: "Species Time Series" },
-    { value: Chart.dielPlot, label: "Diel Plot" },
+    { value: Chart.eventSummary, label: "Tag Summary" },
+    { value: Chart.speciesAccumulationCurve, label: "Tag Accumulation" },
+    { value: Chart.speciesCompositionCurve, label: "Tag Composition" },
+    { value: Chart.speciesTimeSeries, label: "Tag Frequency" },
+    { value: Chart.dielPlot, label: "Tag Diel Activity" },
   ];
+  protected readonly chartTypes = Chart;
 
   protected get componentTitle(): string {
     if (this.site) {
@@ -241,9 +248,9 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.new): IPageInfo {
   };
 }
 
-NewEventReportComponent.linkToRoute(getPageInfo("project"))
+NewAnnotationReportComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { NewEventReportComponent };
+export { NewAnnotationReportComponent };

@@ -5,22 +5,25 @@ import {
   input,
   viewChild,
 } from "@angular/core";
+import { Range } from "@baw-api/baw-api.service";
 import { TagFrequencyReportItem } from "@models/Reports";
 import { ChartComponent } from "@shared/chart/chart.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { Map as ImmutableMap } from "immutable";
+import { DateTime } from "luxon";
 import { createTagFormatter, resolveTags } from "../resolve-tags";
-import chartSchema from "./speciesTimeSeries.schema.json";
+import chartSchema from "./tagComposition.schema.json";
 
-export interface SpeciesTimeSeriesChartRow {
-  readonly range: TagFrequencyReportItem["range"];
+interface TagCompositionChartRow {
+  readonly range: Range<DateTime>;
   readonly tagId: number;
   readonly events: number;
+  readonly ratio: number;
 }
 
-export function flattenFrequencyRows(
+export function flattenCompositionRows(
   rows: readonly TagFrequencyReportItem[],
-): SpeciesTimeSeriesChartRow[] {
+): TagCompositionChartRow[] {
   // collect all tags ids so we can widen the sparse API data into a cartesian product of all ranges and all tags
   const tagIds = Array.from(
     rows
@@ -29,20 +32,31 @@ export function flattenFrequencyRows(
   );
 
   return rows.flatMap(({ range, tags }) => {
-    const eventsByTag = new Map(
-      tags.map(({ tagId, events }) => [tagId, events] as const),
-    );
+    const eventsByTag = new Map<number, number>();
+    let totalEventsThisRange = 0;
+    for (const { tagId, events } of tags) {
+      totalEventsThisRange += events;
 
-    return tagIds.map((tagId) => ({
-      range,
-      tagId,
-      events: eventsByTag.get(tagId) ?? 0,
-    }));
+      if (eventsByTag.has(tagId)) {
+        // shouldn't happen just checking while debugging
+        throw new Error(`Duplicate tagId ${tagId} found in range ${range}`);
+      }
+
+      eventsByTag.set(tagId, events);
+    }
+
+    // for every bucket emit every tag for a consistent tabular data shape
+    return tagIds.map((tagId) => {
+      const events = eventsByTag.get(tagId) ?? 0;
+      const ratio =
+        totalEventsThisRange === 0 ? 0 : events / totalEventsThisRange;
+      return { range, tagId, events, ratio };
+    });
   });
 }
 
 @Component({
-  selector: "baw-species-time-series",
+  selector: "baw-tag-composition",
   template: `
     @if (tags()) {
       <baw-chart
@@ -50,7 +64,7 @@ export function flattenFrequencyRows(
         [spec]="chartSchema"
         [data]="chartRows()"
         [formatter]="tagFormatter"
-        logContext="Tag frequency"
+        logContext="Tag composition"
       />
     } @else {
       <baw-loading />
@@ -60,7 +74,7 @@ export function flattenFrequencyRows(
   imports: [ChartComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpeciesTimeSeriesComponent {
+export class TagCompositionComponent {
   public readonly rows = input.required<TagFrequencyReportItem[]>();
 
   protected readonly tags = resolveTags(this.rows);
@@ -69,7 +83,7 @@ export class SpeciesTimeSeriesComponent {
   public readonly chart = viewChild.required<ChartComponent>("chart");
 
   protected readonly chartRows = computed(() =>
-    flattenFrequencyRows(this.rows()),
+    flattenCompositionRows(this.rows()),
   );
 
   protected readonly chartSchema = ImmutableMap(chartSchema);

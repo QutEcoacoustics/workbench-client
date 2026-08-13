@@ -7,8 +7,8 @@ import { DateTime } from "luxon";
 import { concat, NEVER, of } from "rxjs";
 import {
   flattenFrequencyRows,
-  SpeciesTimeSeriesComponent,
-} from "./species-time-series.component";
+  TagFrequencyComponent,
+} from "./tag-frequency.component";
 
 describe("flattenFrequencyRows", () => {
   it("should emit zero events for tags absent from a range", () => {
@@ -174,7 +174,7 @@ describe("SpeciesTimeSeriesComponent", () => {
   });
 
   it("should create", () => {
-    expect(spec.component).toBeInstanceOf(SpeciesTimeSeriesComponent);
+    expect(spec.component).toBeInstanceOf(TagFrequencyComponent);
   });
 
   it("should resolve each distinct tag", () => {

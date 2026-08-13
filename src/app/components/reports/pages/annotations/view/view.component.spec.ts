@@ -28,25 +28,24 @@ import {
 import { generateProject } from "@test/fakes/Project";
 import { generateRegion } from "@test/fakes/Region";
 import { generateTag } from "@test/fakes/Tag";
-import { generateEventSummaryReportUrlParams } from "@test/fakes/data/EventSummaryReportParameters";
+import { generateAnnotationReportUrlParams } from "@test/fakes/data/AnnotationReportParameters";
 import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { NEVER, of } from "rxjs";
 import {
   Chart,
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
-import { ViewEventReportComponent } from "./view.component";
+  AnnotationReportParameters,
+} from "../AnnotationReportParameters";
+import { ViewAnnotationReportComponent } from "./view.component";
 
-describe("ViewEventReportComponent", () => {
-  let spectator: SpectatorRouting<ViewEventReportComponent>;
+describe("ViewAnnotationReportComponent", () => {
+  let spectator: SpectatorRouting<ViewAnnotationReportComponent>;
   let modalService: NgbModal;
   let modalConfigService: NgbModalConfig;
   let iconLibrary: FaIconLibrary;
   let defaultProject: Project;
   let defaultRegion: Region;
-  let defaultParameterDataModel: EventSummaryReportParameters;
-  let eventSummariesFilterSpy: jasmine.Spy;
+  let defaultParameterDataModel: AnnotationReportParameters;
   let tagFrequencyFilterSpy: jasmine.Spy;
   let tagShowSpy: jasmine.Spy;
   let tagAccumulationFilterSpy: jasmine.Spy;
@@ -97,7 +96,7 @@ describe("ViewEventReportComponent", () => {
   ];
 
   const createComponent = createRoutingFactory({
-    component: ViewEventReportComponent,
+    component: ViewAnnotationReportComponent,
     declarations: [mockSiteMap],
     providers: [
       provideMockBawApi(),
@@ -126,7 +125,7 @@ describe("ViewEventReportComponent", () => {
   });
 
   function setup(
-    queryParams = generateEventSummaryReportUrlParams({
+    queryParams = generateAnnotationReportUrlParams({
       charts: Chart.speciesCompositionCurve,
       bucketSize: "month",
     }),
@@ -206,10 +205,10 @@ describe("ViewEventReportComponent", () => {
     }
   }
 
-  assertPageInfo(ViewEventReportComponent, "Event Summary Report");
+  assertPageInfo(ViewAnnotationReportComponent, "Annotation Report");
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(ViewEventReportComponent);
+    expect(spectator.component).toBeInstanceOf(ViewAnnotationReportComponent);
   });
 
   it("should only call the selected chart endpoints", () => {
@@ -227,7 +226,7 @@ describe("ViewEventReportComponent", () => {
     recordingCoverageFilterSpy.and.returnValue(NEVER);
     analysisCoverageFilterSpy.and.returnValue(NEVER);
     setup(
-      generateEventSummaryReportUrlParams({
+      generateAnnotationReportUrlParams({
         charts: [
           Chart.coverage,
           Chart.eventSummary,

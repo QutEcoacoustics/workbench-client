@@ -17,18 +17,18 @@ import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import {
   BucketSize,
   Chart,
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
-import { NewEventReportComponent } from "./new.component";
+  AnnotationReportParameters,
+} from "../AnnotationReportParameters";
+import { NewAnnotationReportComponent } from "./new.component";
 
-describe("NewEventReportComponent", () => {
-  let spectator: SpectatorRouting<NewEventReportComponent>;
+describe("NewAnnotationReportComponent", () => {
+  let spectator: SpectatorRouting<NewAnnotationReportComponent>;
   let defaultProject: Project;
   let defaultRegion: Region;
   let defaultSite: Site;
 
   const createComponent = createRoutingFactory({
-    component: NewEventReportComponent,
+    component: NewAnnotationReportComponent,
     imports: [IconsModule, DateTimeFilterComponent, TypeaheadInputComponent],
     providers: [provideMockBawApi()],
   });
@@ -84,10 +84,10 @@ describe("NewEventReportComponent", () => {
   const sitesInput = (): HTMLElement =>
     spectator.queryAll<HTMLElement>("baw-typeahead-input")[1];
 
-  assertPageInfo(NewEventReportComponent, "New Event Summary Report");
+  assertPageInfo(NewAnnotationReportComponent, "New Annotation Report");
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(NewEventReportComponent);
+    expect(spectator.component).toBeInstanceOf(NewAnnotationReportComponent);
   });
 
   it("should use the correct query parameters when the form is has user input/default values", () => {
@@ -125,7 +125,7 @@ describe("NewEventReportComponent", () => {
     // since typeahead callbacks/model emission is tested within its own component
     // and testing inputs would require mocking option callbacks (negating all benefit from testing through inputs)
     // we can just set the callback models directly
-    spectator.component.model = new EventSummaryReportParameters();
+    spectator.component.model = new AnnotationReportParameters();
 
     spectator.component.model.date = [
       DateTime.fromFormat("2020-01-01", "yyyy-MM-dd"),

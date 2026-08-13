@@ -60,7 +60,7 @@
           }
         },
         "y": {
-          "title": "Count of Events",
+          "title": "Count of Tags",
           "field": "events",
           "type": "quantitative",
           "axis": {
@@ -81,7 +81,7 @@
           "legend": {
             "orient": "top",
             "formatType": "customFormatter",
-            "title": "Tags",
+            "title": null,
             "columns": {
               "expr": "max(1, floor(width / 220))"
             },

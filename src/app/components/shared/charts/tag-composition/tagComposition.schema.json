@@ -91,7 +91,7 @@
       "legend": {
         "orient": "top",
         "formatType": "customFormatter",
-        "title": "Tags",
+        "title": null,
         "columns": {
           "expr": "max(1, floor(width / 220))"
         },

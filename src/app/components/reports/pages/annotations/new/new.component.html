@@ -1,5 +1,5 @@
 <h1 class="text-muted">{{ componentTitle }}</h1>
-<h1 class="mb-5">New Event Summary Report</h1>
+<h1 class="mb-5">New Annotation Report</h1>
 
 <form #form="ngForm">
   <baw-date-time-filter
@@ -90,6 +90,19 @@
           />
           {{ chart.label }}
         </label>
+        @if (chart.value === chartTypes.dielPlot) {
+          <select
+            name="dielBucketSizeInput"
+            title="Diel plot resolution"
+            class="form-select form-select-sm d-inline-block w-auto ms-2"
+            [disabled]="!isChartSelected(chart.value)"
+            [(ngModel)]="model.dielBucketSize"
+          >
+            @for (size of availableDielBucketSizes; track size) {
+              <option [value]="size">{{ size | titlecase }}</option>
+            }
+          </select>
+        }
       </div>
     }
   </fieldset>

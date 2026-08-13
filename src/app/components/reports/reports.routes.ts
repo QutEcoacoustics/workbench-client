@@ -4,7 +4,7 @@ import { pointRoute } from "@components/sites/points.routes";
 import { siteRoute } from "@components/sites/sites.routes";
 import { StrongRoute } from "@interfaces/strongRoute";
 
-const eventSummaryReportRouteName = "event_summary";
+const eventSummaryReportRouteName = "annotations";
 
 const summaryReportRouteQueryParamResolver = (params: any) =>
   params
@@ -19,6 +19,7 @@ const summaryReportRouteQueryParamResolver = (params: any) =>
         date: params.date,
         time: params.time,
         charts: params.charts,
+        dielBucketSize: params.dielBucketSize,
     }
     : {};
 

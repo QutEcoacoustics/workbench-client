@@ -37,6 +37,7 @@ import {
 } from "@models/ImplementsInjector";
 import { Provenance } from "@models/Provenance";
 import { Region } from "@models/Region";
+import { SupportedDielBucketSize } from "@models/Reports";
 import { Site } from "@models/Site";
 import { Tag } from "@models/Tag";
 import { IParameterModel, ParameterModel } from "@models/data/parametersModel";
@@ -44,11 +45,11 @@ import { DateTime, Duration } from "luxon";
 
 export enum Chart {
   coverage = "coverage",
-  eventSummary = "event-summary",
-  speciesAccumulationCurve = "accumulation",
-  speciesCompositionCurve = "composition",
-  speciesTimeSeries = "time-series",
-  dielPlot = "diel",
+  eventSummary = "tag-summary",
+  speciesAccumulationCurve = "tag-accumulation",
+  speciesCompositionCurve = "tag-composition",
+  speciesTimeSeries = "tag-frequency",
+  dielPlot = "tag-diel",
   none = "none",
 }
 
@@ -59,7 +60,7 @@ export enum BucketSize {
   year = "year",
 }
 
-export interface IEventSummaryReportParameters {
+export interface IAnnotationReportParameters {
   regions: CollectionIds;
   sites: CollectionIds;
   provenances: CollectionIds;
@@ -70,6 +71,7 @@ export interface IEventSummaryReportParameters {
   time: IsomorphicTuple<Duration | null, 2> | null;
   date: IsomorphicTuple<DateTime | null, 2> | null;
   charts: Chart[];
+  dielBucketSize: SupportedDielBucketSize;
 }
 
 const serializationTable: IQueryStringParameterSpec = {
@@ -83,12 +85,13 @@ const serializationTable: IQueryStringParameterSpec = {
   date: luxonDateArray,
   time: luxonDurationArray,
   charts: jsStringArray,
+  dielBucketSize: jsString,
 };
 
-export class EventSummaryReportParameters
+export class AnnotationReportParameters
   extends ParameterModel<AudioEvent>(serializationTable)
   implements
-    IEventSummaryReportParameters,
+    IAnnotationReportParameters,
     HasAssociationInjector,
     IParameterModel<AudioEvent>
 {
@@ -103,6 +106,7 @@ export class EventSummaryReportParameters
     this.bucketSize ??= BucketSize.month;
     this.time ??= null;
     this.date ??= null;
+    this.dielBucketSize ??= "hour";
   }
 
   public regions!: CollectionIds;
@@ -115,14 +119,15 @@ export class EventSummaryReportParameters
   public time!: IsomorphicTuple<Duration | null, 2> | null;
   public date!: IsomorphicTuple<DateTime | null, 2> | null;
   public charts!: Chart[];
+  public dielBucketSize!: SupportedDielBucketSize;
 
-  @hasMany<EventSummaryReportParameters, Region>(SHALLOW_REGION, "regions")
+  @hasMany<AnnotationReportParameters, Region>(SHALLOW_REGION, "regions")
   public regionModels?: Region[];
-  @hasMany<EventSummaryReportParameters, Site>(SHALLOW_SITE, "sites")
+  @hasMany<AnnotationReportParameters, Site>(SHALLOW_SITE, "sites")
   public siteModels?: Site[];
-  @hasMany<EventSummaryReportParameters, Tag>(TAG, "tags")
+  @hasMany<AnnotationReportParameters, Tag>(TAG, "tags")
   public tagModels?: Tag[];
-  @hasMany<EventSummaryReportParameters, Provenance>(
+  @hasMany<AnnotationReportParameters, Provenance>(
     AUDIO_EVENT_PROVENANCE,
     "provenances",
   )
@@ -261,7 +266,7 @@ export class EventSummaryReportParameters
 
   public toQueryParams(): Params {
     const queryParameters =
-      serializeObjectToParams<IEventSummaryReportParameters>(
+      serializeObjectToParams<IAnnotationReportParameters>(
         this,
         serializationTable,
       );

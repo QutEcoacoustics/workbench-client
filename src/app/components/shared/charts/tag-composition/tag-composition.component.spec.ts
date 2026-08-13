@@ -7,8 +7,8 @@ import { DateTime } from "luxon";
 import { concat, NEVER, of } from "rxjs";
 import {
   flattenCompositionRows,
-  SpeciesCompositionGraphComponent,
-} from "./species-composition.component";
+  TagCompositionComponent,
+} from "./tag-composition.component";
 
 describe("flattenCompositionRows", () => {
   it("should emit every tag for every bucket with normalized ratios", () => {
@@ -244,7 +244,7 @@ describe("SpeciesCompositionGraphComponent", () => {
   });
 
   it("should create", () => {
-    expect(spec.component).toBeInstanceOf(SpeciesCompositionGraphComponent);
+    expect(spec.component).toBeInstanceOf(TagCompositionComponent);
   });
 
   it("should resolve each distinct tag", () => {

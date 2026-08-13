@@ -1,10 +1,10 @@
 import { Id, Param } from "@interfaces/apiInterfaces";
 import { Tag } from "@models/Tag";
 import { CoverageGraphData } from "@shared/charts/coverage-plot/coverage-plot.component";
-import { SpeciesAccumulationGraphData } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
+import { TagAccumulationComponent } from "@shared/charts/tag-accumulation/tag-accumulation.component";
 
 export interface IEventSummaryGraphs {
-  accumulationData: SpeciesAccumulationGraphData[];
+  accumulationData: TagAccumulationComponent[];
   speciesCompositionData: CompositionSeriesData[];
   analysisConfidenceData: AnalysisCoverageGraphData[];
   coverageData: CoverageGraphData;

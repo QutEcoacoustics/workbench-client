@@ -3,11 +3,11 @@ import { Params } from "@angular/router";
 import {
   BucketSize,
   Chart,
-} from "@components/reports/pages/event-summary/EventSummaryReportParameters";
+} from "@components/reports/pages/annotations/AnnotationReportParameters";
 import { faker } from "@faker-js/faker";
 import { modelData } from "@test/helpers/faker";
 
-export function generateEventSummaryReportUrlParams(data?: Params): Params {
+export function generateAnnotationReportUrlParams(data?: Params): Params {
   return {
     sites: modelData.ids().join(","),
     points: modelData.ids().join(","),

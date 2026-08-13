@@ -1,13 +1,13 @@
-import { Category, MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { projectMenuItem } from "@components/projects/projects.menus";
 import { regionMenuItem } from "@components/regions/regions.menus";
-import { siteMenuItem } from "@components/sites/sites.menus";
 import { pointMenuItem } from "@components/sites/points.menus";
+import { siteMenuItem } from "@components/sites/sites.menus";
+import { Category, MenuRoute, menuRoute } from "@interfaces/menusInterfaces";
 import { isWorkInProgressPredicate } from "src/app/app.menus";
 import {
   ReportRoute,
-  newEventReportRoute,
   eventReportRoute,
+  newEventReportRoute,
 } from "./reports.routes";
 
 export type ReportMenuRoutes = Record<ReportRoute, MenuRoute>;
@@ -15,7 +15,7 @@ export type ReportMenuRoutes = Record<ReportRoute, MenuRoute>;
 function makeEventReportCategory(subRoute: ReportRoute): Category {
   return {
     icon: ["fas", "file-lines"],
-    label: "Event Summary Report",
+    label: "Annotation Report",
     route: eventReportRoute[subRoute],
   };
 }
@@ -23,7 +23,7 @@ function makeEventReportCategory(subRoute: ReportRoute): Category {
 function makeNewReportCategory(subRoute: ReportRoute): Category {
   return {
     icon: ["fas", "file-circle-plus"],
-    label: "New Event Summary Report",
+    label: "New Annotation Report",
     route: newEventReportRoute[subRoute],
   };
 }
@@ -34,8 +34,8 @@ function makeViewEventReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-lines"],
-    label: "Event Summary Report",
-    tooltip: () => "Event summary report",
+    label: "Annotation Report",
+    tooltip: () => "Annotation report",
     route: eventReportRoute[subRoute],
     predicate: isWorkInProgressPredicate,
     parent,
@@ -48,8 +48,8 @@ function makeNewEventReportMenuItem(
 ): MenuRoute {
   return menuRoute({
     icon: ["fas", "file-circle-plus"],
-    label: "New Event Summary Report",
-    tooltip: () => "New event summary report",
+    label: "New Annotation Report",
+    tooltip: () => "New annotation report",
     route: newEventReportRoute[subRoute],
     predicate: isWorkInProgressPredicate,
     parent,
@@ -57,24 +57,24 @@ function makeNewEventReportMenuItem(
 }
 
 const viewReportMenuItem: ReportMenuRoutes = {
-  /** /project/:projectId/site/:siteId/reports/event-summary */
+  /** /project/:projectId/site/:siteId/reports/annotations */
   site: makeViewEventReportMenuItem("site", siteMenuItem),
-  /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary */
+  /** /project/:projectId/region/:regionId/site/:siteId/reports/annotations */
   siteAndRegion: makeViewEventReportMenuItem("siteAndRegion", pointMenuItem),
-  /** /project/:projectId/region/:regionId/reports/event-summary */
+  /** /project/:projectId/region/:regionId/reports/annotations */
   region: makeViewEventReportMenuItem("region", regionMenuItem),
-  /** /project/:projectId/reports/event-summary */
+  /** /project/:projectId/reports/annotations */
   project: makeViewEventReportMenuItem("project", projectMenuItem),
 };
 
 const newReportMenuItem: ReportMenuRoutes = {
-  /** /project/:projectId/site/:siteId/reports/event-summary/new */
+  /** /project/:projectId/site/:siteId/reports/annotations/new */
   site: makeNewEventReportMenuItem("site", siteMenuItem),
-  /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary/new */
+  /** /project/:projectId/region/:regionId/site/:siteId/reports/annotations/new */
   siteAndRegion: makeNewEventReportMenuItem("siteAndRegion", pointMenuItem),
-  /** /project/:projectId/region/:regionId/reports/event-summary/new */
+  /** /project/:projectId/region/:regionId/reports/annotations/new */
   region: makeNewEventReportMenuItem("region", regionMenuItem),
-  /** /project/:projectId/reports/event-summary/new */
+  /** /project/:projectId/reports/annotations/new */
   project: makeNewEventReportMenuItem("project", projectMenuItem),
 };
 

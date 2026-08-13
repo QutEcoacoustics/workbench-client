@@ -10,9 +10,9 @@ import { ChartComponent } from "@shared/chart/chart.component";
 import { LoadingComponent } from "@shared/loading/loading.component";
 import { Map as ImmutableMap } from "immutable";
 import { createTagFormatter, resolveTags } from "../resolve-tags";
-import chartSchema from "./speciesTimeSeries.schema.json";
+import chartSchema from "./tagFrequency.schema.json";
 
-export interface SpeciesTimeSeriesChartRow {
+export interface TagFrequencyChartRow {
   readonly range: TagFrequencyReportItem["range"];
   readonly tagId: number;
   readonly events: number;
@@ -20,7 +20,7 @@ export interface SpeciesTimeSeriesChartRow {
 
 export function flattenFrequencyRows(
   rows: readonly TagFrequencyReportItem[],
-): SpeciesTimeSeriesChartRow[] {
+): TagFrequencyChartRow[] {
   // collect all tags ids so we can widen the sparse API data into a cartesian product of all ranges and all tags
   const tagIds = Array.from(
     rows
@@ -42,7 +42,7 @@ export function flattenFrequencyRows(
 }
 
 @Component({
-  selector: "baw-species-time-series",
+  selector: "baw-tag-frequency",
   template: `
     @if (tags()) {
       <baw-chart
@@ -60,7 +60,7 @@ export function flattenFrequencyRows(
   imports: [ChartComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpeciesTimeSeriesComponent {
+export class TagFrequencyComponent {
   public readonly rows = input.required<TagFrequencyReportItem[]>();
 
   protected readonly tags = resolveTags(this.rows);

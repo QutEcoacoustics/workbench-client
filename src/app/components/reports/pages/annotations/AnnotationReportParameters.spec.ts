@@ -3,14 +3,14 @@ import { Filters } from "@baw-api/baw-api.service";
 import { Params } from "@angular/router";
 import {
   Chart,
-  EventSummaryReportParameters,
-} from "./EventSummaryReportParameters";
+  AnnotationReportParameters,
+} from "./AnnotationReportParameters";
 
-describe("EventSummaryReportParameters", () => {
+describe("AnnotationReportParameters", () => {
   // as this is a component specific data model, it's not generalized in the model fakes
   it("should create", () => {
-    const dataModel = new EventSummaryReportParameters();
-    expect(dataModel).toBeInstanceOf(EventSummaryReportParameters);
+    const dataModel = new AnnotationReportParameters();
+    expect(dataModel).toBeInstanceOf(AnnotationReportParameters);
   });
 
   // if this test is failing, it might be because dates are being emitted with a local timezone
@@ -28,7 +28,7 @@ describe("EventSummaryReportParameters", () => {
       bucketSize: "month",
     };
 
-    const dataModel = new EventSummaryReportParameters(mockQueryParameters);
+    const dataModel = new AnnotationReportParameters(mockQueryParameters);
 
     const expectedFilter: Filters<EventSummaryReport> = {
       filter: {
@@ -80,7 +80,7 @@ describe("EventSummaryReportParameters", () => {
       daylightSavings: "true",
     };
 
-    const dataModel = new EventSummaryReportParameters(mockQueryParameters);
+    const dataModel = new AnnotationReportParameters(mockQueryParameters);
 
     // because we are using the @bawCollection decorator, all the sites should be converted to sets
     expect(dataModel.sites).toEqual([41, 52, 46]);
@@ -101,7 +101,7 @@ describe("EventSummaryReportParameters", () => {
       daylightSavings: "true",
     };
 
-    const dataModel = new EventSummaryReportParameters(mockQueryParameters);
+    const dataModel = new AnnotationReportParameters(mockQueryParameters);
 
     expect(dataModel.sites).toEqual([4, 5, 6]);
     expect(dataModel.points).toEqual([7, 8, 9]);
@@ -124,7 +124,7 @@ describe("EventSummaryReportParameters", () => {
       error: "true", // this is not a part of the data model
     };
 
-    const dataModel = new EventSummaryReportParameters(mockQueryParameters);
+    const dataModel = new AnnotationReportParameters(mockQueryParameters);
 
     expect(dataModel.sites).toEqual([4, 5, 6]);
     expect(dataModel.daylightSavings).toEqual(true);

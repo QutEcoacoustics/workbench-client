@@ -130,10 +130,10 @@
           "legend": {
             "orient": "top",
             "formatType": "customFormatter",
-            "title": "Tags",
             "columns": {
               "expr": "max(1, floor(width / 220))"
             },
+            "title": null,
             "titleFontSize": {
               "expr": "bawTitleSize"
             },

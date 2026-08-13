@@ -64,7 +64,7 @@ export function flattenCompositionRows(
         [spec]="chartSchema"
         [data]="chartRows()"
         [formatter]="tagFormatter"
-        logContext="Species composition"
+        logContext="Tag composition"
       />
     } @else {
       <baw-loading />

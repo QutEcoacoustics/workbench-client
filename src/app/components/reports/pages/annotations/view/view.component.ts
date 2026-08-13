@@ -38,7 +38,9 @@ import {
   reportCategories,
   reportMenuItems,
 } from "@components/reports/reports.menu";
+import { StrongRouteDirective } from "@directives/strongRoute/strong-route.directive";
 import { UrlDirective } from "@directives/url/url.directive";
+import { StrongRoute } from "@interfaces/strongRoute";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { filterAnd } from "@helpers/filters/filters";
 import { PageComponent } from "@helpers/page/pageComponent";
@@ -50,7 +52,6 @@ import { Region } from "@models/Region";
 import {
   AnalysisCoverageItem,
   AudioRecordingCoverageItem,
-  SupportedDielBucketSize,
   SupportedTagBucketSize,
 } from "@models/Reports";
 import { Site } from "@models/Site";
@@ -60,10 +61,10 @@ import { TimePipe } from "@pipes/time/time.pipe";
 import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { ConfidencePlotComponent } from "@shared/charts/confidence-plot/confidence-plot.component";
 import { CoveragePlotComponent } from "@shared/charts/coverage-plot/coverage-plot.component";
-import { DielPlotComponent } from "@shared/charts/diel-plot/diel-plot.component";
-import { SpeciesAccumulationCurveComponent } from "@shared/charts/species-accumulation-curve/species-accumulation-curve.component";
-import { SpeciesCompositionGraphComponent } from "@shared/charts/species-composition/species-composition.component";
-import { SpeciesTimeSeriesComponent } from "@shared/charts/species-time-series/species-time-series.component";
+import { TagDielComponent } from "@shared/charts/tag-diel/tag-diel.component";
+import { TagAccumulationComponent } from "@shared/charts/tag-accumulation/tag-accumulation.component";
+import { TagCompositionComponent } from "@shared/charts/tag-composition/tag-composition.component";
+import { TagFrequencyComponent } from "@shared/charts/tag-frequency/tag-frequency.component";
 import { DatetimeComponent } from "@shared/datetime-formats/datetime/datetime/datetime.component";
 import { DurationComponent } from "@shared/datetime-formats/duration/duration.component";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
@@ -75,14 +76,13 @@ import { CollapsibleSectionComponent } from "../../../components/collapsible-sec
 import {
   BucketSize,
   Chart,
-  EventSummaryReportParameters,
-} from "../EventSummaryReportParameters";
+  AnnotationReportParameters,
+} from "../AnnotationReportParameters";
 
 const projectKey = "project";
 const regionKey = "region";
 const siteKey = "site";
 const coverageBucketCount = 100;
-const dielBucketSize: SupportedDielBucketSize = "hour";
 
 const allCharts = [
   Chart.coverage,
@@ -110,17 +110,18 @@ const allCharts = [
     TimePipe,
     DateTimePipe,
     UrlDirective,
+    StrongRouteDirective,
     LoadingComponent,
     ConfidencePlotComponent,
     CoveragePlotComponent,
-    DielPlotComponent,
-    SpeciesAccumulationCurveComponent,
-    SpeciesCompositionGraphComponent,
-    SpeciesTimeSeriesComponent,
+    TagDielComponent,
+    TagAccumulationComponent,
+    TagCompositionComponent,
+    TagFrequencyComponent,
     CollapsibleSectionComponent,
   ],
 })
-class ViewEventReportComponent extends PageComponent {
+class ViewAnnotationReportComponent extends PageComponent {
   protected readonly eventSummariesApi = inject(EventSummariesReportService);
   protected readonly tagAccumulationApi = inject(TagAccumulationReportService);
   protected readonly tagDielActivityApi = inject(TagDielActivityReportService);
@@ -200,7 +201,10 @@ class ViewEventReportComponent extends PageComponent {
     ),
   );
   protected readonly dielActivity = toSignal(
-    this.tagDielActivityApi.filter(this.audioEventFilters, dielBucketSize),
+    this.tagDielActivityApi.filter(
+      this.audioEventFilters,
+      this.parameterDataModel.dielBucketSize,
+    ),
   );
   protected readonly accumulation = toSignal(
     toObservable(this.accumulationRequested).pipe(
@@ -254,12 +258,12 @@ class ViewEventReportComponent extends PageComponent {
   public readonly printingModal =
     viewChild.required<TemplateRef<unknown>>("printingModal");
   public readonly accumulationChart =
-    viewChild<SpeciesAccumulationCurveComponent>("accumulationChart");
+    viewChild<TagAccumulationComponent>("accumulationChart");
   public readonly compositionChart =
-    viewChild<SpeciesCompositionGraphComponent>("compositionChart");
+    viewChild<TagCompositionComponent>("compositionChart");
   public readonly timeSeriesChart =
-    viewChild<SpeciesTimeSeriesComponent>("timeSeriesChart");
-  public readonly dielChart = viewChild<DielPlotComponent>("dielChart");
+    viewChild<TagFrequencyComponent>("timeSeriesChart");
+  public readonly dielChart = viewChild<TagDielComponent>("dielChart");
 
   // we override ctrl + P (most browsers default for window.print shortcut) so we can show a help modal
   @HostListener("document:keydown", ["$event"])
@@ -364,6 +368,18 @@ class ViewEventReportComponent extends PageComponent {
     return this.selectedCharts()?.includes(chart) ?? true;
   }
 
+  protected newReportRoute(): StrongRoute {
+    if (this.site) {
+      return this.site.isPoint
+        ? reportMenuItems.new.siteAndRegion.route
+        : reportMenuItems.new.site.route;
+    } else if (this.region) {
+      return reportMenuItems.new.region.route;
+    }
+
+    return reportMenuItems.new.project.route;
+  }
+
   protected toggleChart(chart: Chart, show: boolean): void {
     const currentCharts = this.selectedCharts() ?? allCharts;
     const updatedCharts = show
@@ -401,18 +417,18 @@ function getPageInfo(subRoute: keyof typeof reportMenuItems.view): IPageInfo {
   };
 }
 
-ViewEventReportComponent.linkToRoute(getPageInfo("project"))
+ViewAnnotationReportComponent.linkToRoute(getPageInfo("project"))
   .linkToRoute(getPageInfo("region"))
   .linkToRoute(getPageInfo("site"))
   .linkToRoute(getPageInfo("siteAndRegion"));
 
-export { ViewEventReportComponent };
+export { ViewAnnotationReportComponent };
 
 function createParameterDataModel(
   queryParams: Record<string, unknown>,
   associationInjector: AssociationInjector,
-): EventSummaryReportParameters {
-  const parameters = new EventSummaryReportParameters(
+): AnnotationReportParameters {
+  const parameters = new AnnotationReportParameters(
     queryParams,
     associationInjector,
   );
@@ -481,7 +497,7 @@ function applyRouteScope<T>(
 function buildStatistics(
   recordingCoverage: AudioRecordingCoverageItem[],
   analysisCoverage: AnalysisCoverageItem[],
-  parameters: EventSummaryReportParameters,
+  parameters: AnnotationReportParameters,
 ): IAudioEventSummaryReportStatistics {
   const firstRecording = extractCoverageRange(recordingCoverage[0])?.[0];
   const lastRecording = extractCoverageRange(
