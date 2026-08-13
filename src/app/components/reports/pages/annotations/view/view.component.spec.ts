@@ -33,8 +33,8 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { MockComponent } from "ng-mocks";
 import { NEVER, of } from "rxjs";
 import {
-  Chart,
   AnnotationReportParameters,
+  Chart,
 } from "../AnnotationReportParameters";
 import { ViewAnnotationReportComponent } from "./view.component";
 

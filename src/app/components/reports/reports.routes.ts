@@ -20,7 +20,7 @@ const summaryReportRouteQueryParamResolver = (params: any) =>
         time: params.time,
         charts: params.charts,
         dielBucketSize: params.dielBucketSize,
-    }
+      }
     : {};
 
 export type ReportRoute = "project" | "region" | "site" | "siteAndRegion";
@@ -39,22 +39,43 @@ export const reportsRoute: ReportStrongRoutes = {
 
 export const eventReportRoute: ReportStrongRoutes = {
   /** /project/:projectId/site/:siteId/reports/event-summary */
-  site: reportsRoute.site.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  site: reportsRoute.site.add(
+    eventSummaryReportRouteName,
+    summaryReportRouteQueryParamResolver,
+  ),
   /** /project/:projectId/region/:regionId/reports/event-summary */
-  region: reportsRoute.region.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  region: reportsRoute.region.add(
+    eventSummaryReportRouteName,
+    summaryReportRouteQueryParamResolver,
+  ),
   /** /project/:projectId/region/:regionId/site/:siteId/reports/event-summary */
-  siteAndRegion: reportsRoute.siteAndRegion.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  siteAndRegion: reportsRoute.siteAndRegion.add(
+    eventSummaryReportRouteName,
+    summaryReportRouteQueryParamResolver,
+  ),
   /** /project/:projectId/reports/event-summary */
-  project: reportsRoute.project.add(eventSummaryReportRouteName, summaryReportRouteQueryParamResolver),
+  project: reportsRoute.project.add(
+    eventSummaryReportRouteName,
+    summaryReportRouteQueryParamResolver,
+  ),
 };
 
 export const newEventReportRoute: ReportStrongRoutes = {
   /** /project/:projectId/site/:siteId/reports/event-summary/new */
-  site: eventReportRoute.site.add("new"),
+  site: eventReportRoute.site.add("new", summaryReportRouteQueryParamResolver),
   /** /projects/:projectId/region/:regionId/reports/event-summary-new */
-  region: eventReportRoute.region.add("new"),
+  region: eventReportRoute.region.add(
+    "new",
+    summaryReportRouteQueryParamResolver,
+  ),
   /** /projects/:projectId/region/:regionId/site/:siteId/reports/event-summary/new */
-  siteAndRegion: eventReportRoute.siteAndRegion.add("new"),
+  siteAndRegion: eventReportRoute.siteAndRegion.add(
+    "new",
+    summaryReportRouteQueryParamResolver,
+  ),
   /** /projects/:projectId/reports/event-summary/new */
-  project: eventReportRoute.project.add("new"),
+  project: eventReportRoute.project.add(
+    "new",
+    summaryReportRouteQueryParamResolver,
+  ),
 };

@@ -3,6 +3,7 @@
 
 <form #form="ngForm">
   <baw-date-time-filter
+    [model]="initialDateTimeModel"
     (modelChange)="updateViewModelFromDateTimeModel($event)"
   />
 

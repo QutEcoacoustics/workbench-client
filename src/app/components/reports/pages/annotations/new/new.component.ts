@@ -35,7 +35,7 @@ import { AbstractModel } from "@models/AbstractModel";
 import { Project } from "@models/Project";
 import { Region } from "@models/Region";
 import { Site } from "@models/Site";
-import { NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDate, NgbHighlight } from "@ng-bootstrap/ng-bootstrap";
 import {
   DateTimeFilterComponent,
   DateTimeFilterModel,
@@ -46,6 +46,8 @@ import {
 } from "@shared/typeahead-input/typeahead-input.component";
 import { DateTime } from "luxon";
 import { Observable } from "rxjs";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
+import { AssociationInjector } from "@models/ImplementsInjector";
 import {
   BucketSize,
   Chart,
@@ -75,16 +77,18 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
   protected readonly provenanceApi = inject(ProvenanceService);
   protected readonly tagsApi = inject(TagsService);
   private readonly route = inject(ActivatedRoute);
+  private readonly associationInjector =
+    inject<AssociationInjector>(ASSOCIATION_INJECTOR);
 
   public constructor() {
     super();
-    this.model = new AnnotationReportParameters();
   }
 
   public project!: Project;
   public region?: Region;
   public site?: Site;
-  public model = new AnnotationReportParameters();
+  public model!: AnnotationReportParameters;
+  public initialDateTimeModel: DateTimeFilterModel = { ignoreDaylightSavings: true };
   protected availableBucketSizes = Object.keys(BucketSize);
   protected readonly availableDielBucketSizes: SupportedDielBucketSize[] = [
     "minute",
@@ -135,6 +139,14 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
 
   public ngOnInit(): void {
     const models = retrieveResolvers(this.route.snapshot.data as IPageInfo);
+
+    // populate model from QSPs so the edit link from the view page pre-fills the form
+    this.model = new AnnotationReportParameters(
+      this.route.snapshot.queryParams,
+      this.associationInjector,
+    );
+    this.initialDateTimeModel = this.dateTimeFilterModel;
+
     // each report is mounted/scoped from at least the project level
     this.project = models[projectKey] as Project;
 
@@ -193,6 +205,25 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
     // @ts-expect-error: strict mode fix
     const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id!);
     return idsArray;
+  }
+
+  protected get dateTimeFilterModel(): DateTimeFilterModel {
+    const date = this.model?.date;
+    const time = this.model?.time;
+
+    return {
+      dateFiltering: !!(date?.[0] || date?.[1]),
+      dateStartedAfter: date?.[0]
+        ? NgbDate.from({ year: date[0].year, month: date[0].month, day: date[0].day }) ?? undefined
+        : undefined,
+      dateFinishedBefore: date?.[1]
+        ? NgbDate.from({ year: date[1].year, month: date[1].month, day: date[1].day }) ?? undefined
+        : undefined,
+      timeFiltering: !!(time?.[0] || time?.[1]),
+      timeStartedAfter: time?.[0] ?? undefined,
+      timeFinishedBefore: time?.[1] ?? undefined,
+      ignoreDaylightSavings: !this.model?.daylightSavings,
+    };
   }
 
   // because the DateTimeFilterModel is coming from a shared component, we need to serialize for use in the data model
