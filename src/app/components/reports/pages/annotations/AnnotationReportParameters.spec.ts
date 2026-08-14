@@ -41,6 +41,36 @@ describe("AnnotationReportParameters", () => {
     expect(model.daylightSavings).toBeTrue();
   });
 
+  describe("toAudioEventFilter", () => {
+    it("should use 'regions.id' as the filter key when regions are set", () => {
+      const model = new AnnotationReportParameters();
+      model.regions = [4, 5];
+
+      const filter = model.toAudioEventFilter();
+
+      expect(filter.filter).toEqual(
+        jasmine.objectContaining({ "regions.id": jasmine.anything() }),
+      );
+      expect(filter.filter).not.toEqual(
+        jasmine.objectContaining({ "region.id": jasmine.anything() }),
+      );
+    });
+
+    it("should use 'sites.id' as the filter key when sites are set", () => {
+      const model = new AnnotationReportParameters();
+      model.sites = [6, 7];
+
+      const filter = model.toAudioEventFilter();
+
+      expect(filter.filter).toEqual(
+        jasmine.objectContaining({ "sites.id": jasmine.anything() }),
+      );
+      expect(filter.filter).not.toEqual(
+        jasmine.objectContaining({ "site.id": jasmine.anything() }),
+      );
+    });
+  });
+
   it("should serialize the current chart query parameters", () => {
     const model = new AnnotationReportParameters();
 

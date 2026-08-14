@@ -183,7 +183,7 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
     // generating a report from the region, or site level will immutably scope the report to the model(s)
     if (models[regionKey]) {
       this.region = models[regionKey] as Region;
-      this.model.sites = new Set<Id>([this.region.id]);
+      this.model.regions = new Set<Id>([this.region.id]);
     }
 
     if (models[siteKey]) {
