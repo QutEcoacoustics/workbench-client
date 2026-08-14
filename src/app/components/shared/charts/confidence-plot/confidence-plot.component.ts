@@ -54,7 +54,7 @@ export class ConfidencePlotComponent {
       panel: "histogram",
       ...bin,
       bucketLabel: `${bin.range[0].toFixed(2)} to ${bin.range[1].toFixed(2)}`,
-      overflowLabel: null,
+      overflowLabel: null as null,
     }));
 
     const underflowCount = histogram?.underflow ?? 0;
