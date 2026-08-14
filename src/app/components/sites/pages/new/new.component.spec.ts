@@ -90,9 +90,9 @@ describe("SiteNewComponent", () => {
       const models = { project: { model: project } };
 
       if (region) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         resolvers["region"] = "resolver";
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         models["region"] = { model: region };
       }
 

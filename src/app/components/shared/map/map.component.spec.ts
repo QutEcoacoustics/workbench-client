@@ -45,7 +45,7 @@ describe("MapComponent", () => {
   }
 
   function getLoadingComponent(): LoadingComponent {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(LoadingComponent);
   }
 
@@ -186,7 +186,7 @@ describe("MapComponent", () => {
       setup(markers, contentTemplate);
       triggerLoadSuccess();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec.query("#marker-title")).toHaveText(markers[0].title);
       expect(spec.query("#marker-image")).toExist();
     });
@@ -249,7 +249,7 @@ describe("MapComponent", () => {
       hoverMarker(0);
 
       expect(spec.query("#marker-image")).toExist();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec.query("#custom-marker-title")).toHaveText(marker.title);
     });
   });

@@ -56,7 +56,7 @@ describe("ListComponent", () => {
 
     mockHarvest["injector"] = injector;
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spyOnProperty(spec.component, "project").and.callFake(() => project);
 
     const mockHarvestApi = spec.inject(SHALLOW_HARVEST.token);
@@ -115,7 +115,7 @@ describe("ListComponent", () => {
   }
 
   function getCreatorColumnElement(): HTMLElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query("baw-user-link");
   }
 
@@ -199,7 +199,7 @@ describe("ListComponent", () => {
   // if you are using the association directive directly in the template, this test will fail
   // this is because change detection will not trigger when the model is changed from an UnresolvedModel to a resolved model
   it("should display a the harvest creator in the creators column", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const expectedUserName: string = defaultUser.userName;
     setup(defaultProject, defaultHarvest);
 
@@ -268,9 +268,9 @@ describe("ListComponent", () => {
   it("should display the harvest project name in the project column if the harvest list is not scoped to a project", () => {
     setup(null, defaultHarvest);
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const expectedProject: Project = defaultHarvest.project;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const expectedProjectName: string = expectedProject.name;
 
     const projectNameColumnValue =

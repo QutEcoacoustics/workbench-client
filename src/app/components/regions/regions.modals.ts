@@ -12,7 +12,7 @@ export const deleteRegionModal = menuModal({
   tooltip: () => "Delete this site",
   predicate: isProjectEditorPredicate,
   component: DeleteModalComponent,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   successCallback: (pageComponentInstance?: RegionDetailsComponent) => pageComponentInstance!.deleteModel(),
 });
 

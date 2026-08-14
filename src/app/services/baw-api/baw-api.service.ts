@@ -86,7 +86,7 @@ export const defaultBawServiceOptions = Object.freeze({
   withCredentials: true,
   cacheOptions: defaultCachingConfig,
   params: undefined,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
 }) satisfies Required<BawServiceOptions>;
 
 /**
@@ -204,7 +204,7 @@ export class BawApiService<
     //
     // the following order of precedence is used:
     // parameter options > injected options > default options
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.instanceOptions = Object.assign(
       {},
       defaultBawServiceOptions,
@@ -228,7 +228,7 @@ export class BawApiService<
       (cb: ClassBuilder) =>
       (resp: ApiResponse<Model>): Model => {
         if (!resp) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           return;
         }
 
@@ -430,7 +430,7 @@ export class BawApiService<
     // we default to returning null if there is no JSON or formData body
     return of(null).pipe(
       concatMap(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         model.hasJsonOnlyAttributesForCreate()
           ? () => this.httpPost(path, body, undefined, options)
           : (data) => of(data),
@@ -510,7 +510,7 @@ export class BawApiService<
         // we use (data) => of(data) here instead of the identity function because the identify function
         // returns a value, and not an observable. Because we use concatMap below, we need the existing
         // value to be emitted as an observable instead. Therefore, we create a static observable using of()
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         model.hasJsonOnlyAttributesForUpdate()
           ? () => this.httpPatch(path, body, undefined, options)
           : (data) => of(data),
@@ -608,7 +608,7 @@ export class BawApiService<
       // callback. We do this before the concatMap below because the updatePath
       // callback is dependent on the instantiated class from the POST response
       // object.
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       map(this.handleSingleResponse(classBuilder)),
       // Using concatMap here ensures that the httpPost request completes before
       // the httpPut (formdata) request is made.
@@ -703,7 +703,7 @@ export class BawApiService<
 
     const context = this.withCredentialsHttpContext(fullOptions);
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.http.delete<ApiResponse<null>>(this.getPath(path), {
       responseType: "json",
       headers,
@@ -890,7 +890,7 @@ export class BawApiService<
 
     return {
       ...meta,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       filter: {
         ...filter,
         [key]: {
@@ -904,7 +904,7 @@ export class BawApiService<
     data: FormData,
     params: BawServiceOptions["params"],
   ): FormData {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
         for (const dataValueItem of value) {

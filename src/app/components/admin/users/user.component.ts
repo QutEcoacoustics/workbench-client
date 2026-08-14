@@ -46,7 +46,7 @@ class AdminUserListComponent extends PagedTableTemplate<TableRow, User> {
     const api = inject(AccountsService);
 
     super(api, (accounts) =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       accounts.map((account) => ({
         account,
         user: account.userName,

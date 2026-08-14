@@ -129,7 +129,7 @@ describe("LicenseInputComponent", () => {
       setup();
       expect(spec.component.formControl.value).toBeFalsy();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, licenseInput(), "mit license");
 
       expect(spec.component.formControl.value).toEqual("mit-license");
@@ -139,7 +139,7 @@ describe("LicenseInputComponent", () => {
       setup();
       const firstLicense = spec.component.formControl.value;
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, licenseInput(), "mock license");
 
       const finalLicense = spec.component.formControl.value;
@@ -163,7 +163,7 @@ describe("LicenseInputComponent", () => {
 
     it("should be able to remove an existing license", fakeAsync(() => {
       setup(modelData.licenseName());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, removeButton());
       expect(spec.component.formControl.value).toBeNull();
     }));
@@ -172,7 +172,7 @@ describe("LicenseInputComponent", () => {
       setup();
 
       // add a license through the input after creation
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, licenseInput(), "mock license");
 
       // Assert that the license was successfully added so that this test
@@ -182,7 +182,7 @@ describe("LicenseInputComponent", () => {
 
       // once the remove button is clicked, the license should be removed and
       // we should not see the remove button anymore
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, removeButton());
       expect(spec.component.formControl.value).toBeNull();
       expect(removeButton()).not.toExist();
@@ -197,7 +197,7 @@ describe("LicenseInputComponent", () => {
 
     it("should show the current license information if the 'show' button is clicked", fakeAsync(() => {
       setup(modelData.licenseName());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, showButton());
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);
     }));
@@ -205,10 +205,10 @@ describe("LicenseInputComponent", () => {
     it("should add the 'show' button if a license is added after creation", fakeAsync(() => {
       setup();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, licenseInput(), "mock license");
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, showButton());
       expect(modalsSpy.open).toHaveBeenCalledTimes(1);
     }));

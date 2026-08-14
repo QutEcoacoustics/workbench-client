@@ -266,7 +266,7 @@ describe("Association Decorators", () => {
     function interceptApiRequest(model?: ChildModel, error?: BawApiError) {
       const subject = new Subject<ChildModel>();
       const promise = nStepObservable(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         subject,
         () => (model ? model : error),
         !model
@@ -277,7 +277,7 @@ describe("Association Decorators", () => {
 
     it("should handle undefined modelIdentifier", () => {
       const model = createModel({ id: undefined }, injector);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.childModel).toEqual(null);
     });
 
@@ -330,7 +330,7 @@ describe("Association Decorators", () => {
         generateBawApiError(UNAUTHORIZED)
       );
       const model = createModel({ id: 1 }, injector);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       await assertModel(promise, model, "childModel", null);
     });
 

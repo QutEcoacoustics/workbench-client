@@ -67,7 +67,7 @@ export class RegionsService implements StandardApi<Region, [IdOr<Project>]> {
     model: IdOr<Region>,
     project: IdOr<Project>
   ): Observable<Region | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
@@ -122,7 +122,7 @@ export class ShallowRegionsService implements StandardApi<Region> {
   }
 
   public destroy(model: IdOr<Region>): Observable<Region | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 }

@@ -251,12 +251,12 @@ export class HarvestStagesService implements OnDestroy {
   }
 
   public calculateProgress(numItems: number): number {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     if (this.harvest.report.itemsTotal === 0) {
       return 0;
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const progress = ((numItems ?? 0) / this.harvest.report.itemsTotal) * 100;
     const almostDone = progress > 99.99 && progress !== 100;
     return almostDone ? 99.99 : +progress.toFixed(2);

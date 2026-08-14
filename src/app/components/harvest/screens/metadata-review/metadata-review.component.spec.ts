@@ -62,9 +62,9 @@ describe("MetadataReviewComponent", () => {
     providers: [
       provideMockBawApi(),
       MockProvider(HarvestStagesService, {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         project: defaultProject,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         harvest: defaultHarvest,
         transition: (_stage: HarvestStatus) => {
           /* noop */
@@ -99,7 +99,7 @@ describe("MetadataReviewComponent", () => {
     injector = spec.inject(ASSOCIATION_INJECTOR);
 
     harvestService = spec.inject(SHALLOW_HARVEST.token);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     harvestService.updateMappings.and.returnValue(of(null));
 
     spyOnProperty(spec.component, "project", "get").and.callFake(
@@ -154,7 +154,7 @@ describe("MetadataReviewComponent", () => {
   const folderStructureFactory = (folders: string[] = []): HarvestItem[] =>
     folders.map(
       (folder) =>
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         new HarvestItem(generateHarvestItem({ id: null, path: folder })),
     );
 
@@ -267,9 +267,9 @@ describe("MetadataReviewComponent", () => {
           new HarvestMapping({
             path: "A/aa",
             recursive: false,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             siteId: null,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             utcOffset: null,
           }),
         ];
@@ -316,17 +316,17 @@ describe("MetadataReviewComponent", () => {
           new HarvestMapping({
             path: "A/aa",
             recursive: false,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             siteId: null,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             utcOffset: null,
           }),
           new HarvestMapping({
             path: "B/bb",
             recursive: false,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             siteId: null,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             utcOffset: null,
           }),
         ];
@@ -362,9 +362,9 @@ describe("MetadataReviewComponent", () => {
         {
           path: "B",
           recursive: true,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: null,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           utcOffset: null,
         },
         injector,
@@ -382,7 +382,7 @@ describe("MetadataReviewComponent", () => {
         {
           path: "C/ca",
           recursive: false,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: null,
           utcOffset: "-08:00",
         },
@@ -404,7 +404,7 @@ describe("MetadataReviewComponent", () => {
     updateComponent();
 
     clickEditMappingButton(1);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const utcInputDropdown: HTMLSelectElement = spec.query<HTMLSelectElement>(
       "select",
       { root: true },
@@ -427,7 +427,7 @@ describe("MetadataReviewComponent", () => {
         {
           path: "B",
           recursive: true,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: null,
           utcOffset: "-11:00",
         },
@@ -446,7 +446,7 @@ describe("MetadataReviewComponent", () => {
         {
           path: "C/ca",
           recursive: false,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: null,
           utcOffset: "-08:00",
         },

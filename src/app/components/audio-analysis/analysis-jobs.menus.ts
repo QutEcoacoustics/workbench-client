@@ -26,10 +26,10 @@ export const analysisJobMenuItem = menuRoute({
   tooltip: () => "View audio analysis job",
   route: analysisJobRoute,
   parent: analysesMenuItem,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, AnalysisJob)?.name,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild!.data;
     return componentModel.analysisJob.model?.name;

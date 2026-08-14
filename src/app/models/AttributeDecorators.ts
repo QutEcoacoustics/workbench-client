@@ -202,7 +202,7 @@ export function bawSubModel<ParentModel, SubModel>(
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, value: SubModel) =>
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       (model[key] = new classConstructor(value, model["injector"])),
   );
 }
@@ -221,9 +221,9 @@ export function bawSubModelCollection<ParentModel, SubModel>(
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, values: SubModel[]) =>
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       (model[key] = values?.map(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         (value) => new classConstructor(value, model["injector"]),
       )),
   );
@@ -360,7 +360,7 @@ function createDecorator<Model>(
     } else {
       // Whenever someone tries to set attribute, update decorated value instead
       keySetter = function (args: any): void {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setValue(this, decoratedKey, args);
       };
     }

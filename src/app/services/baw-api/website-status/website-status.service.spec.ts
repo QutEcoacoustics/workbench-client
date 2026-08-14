@@ -61,7 +61,7 @@ describe("WebsiteStatusService", () => {
     expect(realizedOptions).toEqual(expectedOptions);
 
     // We use "toBe" here so that we compare the callback references.
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return expect(realizedOptions!.cacheOptions.isCacheable).toBe(disableCache);
   });
 

@@ -32,7 +32,7 @@ export function ContextSubscription(token: UnknownContext) {
 
       const handler = (...args: unknown[]) => {
         // call the original method with the correct context
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         target[propertyKey].apply(this, args);
 
         // request a zone.js change detection cycle

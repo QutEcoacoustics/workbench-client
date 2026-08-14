@@ -278,11 +278,11 @@ class AnnotationSearchComponent
     this.router.navigate(
       [
         this.verificationRoute.toRouterLink({
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           projectId: searchParameters!.routeProjectId,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           regionId: searchParameters!.routeRegionId,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: searchParameters!.routeSiteId,
         }),
       ],
@@ -294,7 +294,7 @@ class AnnotationSearchComponent
     const searchParameters = this.searchParameters();
 
     if (searchParameters!.routeSiteId) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return searchParameters!.routeSiteModel.isPoint
         ? annotationMenuItems.verify.siteAndRegion.route
         : annotationMenuItems.verify.site.route;

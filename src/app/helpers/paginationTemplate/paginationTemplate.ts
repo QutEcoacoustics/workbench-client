@@ -186,18 +186,18 @@ export abstract class PaginationTemplate<M extends AbstractModel>
   protected updateQueryParams(page: number, query?: string) {
     const params = {};
     if (page > 1) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       params[pageKey] = page;
     } else {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       params[pageKey] = null;
     }
 
     if (query) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       params[queryKey] = query;
     } else {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       params[queryKey] = null;
     }
 

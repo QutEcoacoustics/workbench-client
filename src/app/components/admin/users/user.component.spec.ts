@@ -41,11 +41,11 @@ describe("AdminUserListComponent", () => {
       );
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.defaultModels = defaultUsers;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.fixture = spec.fixture;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.api = api;
   });
 
@@ -92,7 +92,7 @@ describe("AdminUserListComponent", () => {
         generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
       );
       datatableApiResponse<User>(api, [user]);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spyOn(user.lastSeenAt, "toRelative").and.callThrough();
       spec.detectChanges();
 
@@ -104,7 +104,7 @@ describe("AdminUserListComponent", () => {
         generateUser({ lastSeenAt: "2020-03-09T22:00:50.072+10:00" })
       );
       datatableApiResponse<User>(api, [user]);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spyOn(user.lastSeenAt, "toRelative").and.callFake(() => "testing");
       spec.detectChanges();
 
@@ -120,7 +120,7 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
         "input[type='checkbox']"
       );
@@ -136,7 +136,7 @@ describe("AdminUserListComponent", () => {
 
       const row = getDatatableRows(spec.fixture)[0];
       const isConfirmedCell = getDatatableCells(row)[2];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const checkbox: HTMLInputElement = isConfirmedCell.querySelector(
         "input[type='checkbox']"
       );

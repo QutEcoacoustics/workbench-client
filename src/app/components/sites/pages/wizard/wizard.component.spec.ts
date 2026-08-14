@@ -62,7 +62,7 @@ describe("WizardComponent", () => {
   });
 
   it("should handle project error", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(undefined, generateBawApiError());
     spectator.detectChanges();
     assertErrorHandler(spectator.fixture);

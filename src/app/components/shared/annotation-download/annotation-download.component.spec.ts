@@ -41,17 +41,17 @@ describe("AnnotationDownloadComponent", () => {
   });
 
   function getHeader(): HTMLDivElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(".modal-header");
   }
 
   function getBody(): HTMLDivElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(".modal-body");
   }
 
   function getFooter(): HTMLDivElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(".modal-footer");
   }
 
@@ -59,9 +59,9 @@ describe("AnnotationDownloadComponent", () => {
     const resolvers = {};
     const resolvedModels = {};
     modelList.forEach((resolver, index) => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       resolvers[resolver] = "resolver";
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       resolvedModels[resolver] =
         models[index] instanceof AbstractModel
           ? ({ model: models[index] } as ResolvedModel)
@@ -207,7 +207,7 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultProject,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         spec.component.model.timezone
       );
     });
@@ -222,7 +222,7 @@ describe("AnnotationDownloadComponent", () => {
       expect(siteApi.downloadAnnotations).toHaveBeenCalledWith(
         defaultSite,
         defaultRegion.projectId,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         spec.component.model.timezone
       );
     });

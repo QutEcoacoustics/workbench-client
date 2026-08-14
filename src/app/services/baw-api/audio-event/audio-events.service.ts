@@ -85,7 +85,7 @@ export class AudioEventsService
     model: IdOr<AudioEvent>,
     audioRecording: IdOr<AudioRecording>
   ): Observable<AudioEvent | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(audioRecording, model, emptyParam));
   }
 }
@@ -113,7 +113,7 @@ export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
     user: IdOr<User>
   ): Observable<AudioEvent[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
@@ -132,7 +132,7 @@ export class ShallowAudioEventsService implements ApiFilter<AudioEvent> {
       this.api.filterThroughAssociation(
         filters,
         "audioRecordings.siteId" as any,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         site
       )
     );

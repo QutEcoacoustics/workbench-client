@@ -101,7 +101,7 @@ class PermissionsComponent
   /** Filters for permissions table */
   public filters$ = new BehaviorSubject<Filters<Permission>>({
     // Filter out anonymous and logged in user permissions
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     filter: { userId: { notEq: null } },
   });
 
@@ -180,7 +180,7 @@ class PermissionsComponent
         switchMap((_users) => {
           users = _users;
           return this.permissionsApi.filter(
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             { filter: { userId: { in: users.map((_user) => _user.id) } } },
             this.project,
           );
@@ -221,7 +221,7 @@ class PermissionsComponent
 
   /** Get permissions for a user which is in the typeahead options */
   public getPermissionForUser(userId: User | number): Permission {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.permissionsMatchingUsername?.find(
       (permission) => permission.userId === ((userId as User)?.id ?? userId),
     );

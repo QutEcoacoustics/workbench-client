@@ -54,7 +54,7 @@ export class IfLoggedInComponent implements OnInit, AfterViewInit {
   private predicates: CanPredicate[] = [];
 
   public ngOnInit(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     if (this.ifLoggedIn) {
       this.predicates.push(this.ifLoggedInPredicate());
     }

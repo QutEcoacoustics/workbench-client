@@ -137,7 +137,7 @@ export class User extends AbstractModel<IUser> implements IUser {
    */
   public get isAdmin(): boolean {
     // eslint-disable-next-line no-bitwise
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return !!(this.rolesMask & 1);
   }
 
@@ -154,7 +154,7 @@ export class User extends AbstractModel<IUser> implements IUser {
   }
 
   public get viewUrl(): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return theirProfileMenuItem.route.format({ accountId: this.id })!;
   }
 

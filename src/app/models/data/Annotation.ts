@@ -63,7 +63,7 @@ export class Annotation
 
   public readonly verificationIds!: Ids;
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   @bawSubModelCollection(VerificationSummary)
   public readonly verificationSummary!: VerificationSummary[];
 
@@ -72,7 +72,7 @@ export class Annotation
   }
 
   public get mediaService(): MediaService {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.injector.get(MEDIA.token);
   }
 

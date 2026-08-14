@@ -49,7 +49,7 @@ describe("ProvenanceDetailsComponent", () => {
     // This is a hack that I do because we cannot access the injector when we
     // initialize the route data above.
     const injector = spec.inject(ASSOCIATION_INJECTOR);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     testModel["injector"] = injector;
 
     spec.detectChanges();

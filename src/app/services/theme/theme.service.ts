@@ -66,7 +66,7 @@ export class ThemeService {
 
     // Re-add instance changes to theme
     for (const themeColor of Object.keys(this.theme)) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.setColor(themeColor as ThemeColor, this.theme[themeColor]);
     }
 

@@ -252,7 +252,7 @@ function imageUrls(url?: string): ImageUrl[] {
 function timezone(): TimezoneInformation {
   return faker.helpers.arrayElement<TimezoneInformation>([
     {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       identifierAlt: null,
       identifier: "America/Costa_Rica",
       friendlyIdentifier: "America - Costa Rica",
@@ -267,7 +267,7 @@ function timezone(): TimezoneInformation {
       utcTotalOffset: 36000,
     },
     {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       identifierAlt: null,
       identifier: "Asia/Makassar",
       friendlyIdentifier: "Asia - Makassar",
@@ -341,7 +341,7 @@ function randomObject(min: number, max: number): Record<string, string> {
   const obj = {};
 
   for (let i = 0; i < len; ++i) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     obj[faker.random.word().replace(specialCharRegex, "")] = faker.random
       .words()
       .replace(specialCharRegex, "");

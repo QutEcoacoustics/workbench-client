@@ -123,14 +123,14 @@ describe("RegionDetailsComponent", () => {
       "#region_description"
     );
     expect(description!.innerHTML.trim()).toContain(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       defaultRegion.descriptionHtml
     );
   });
 
   describe("error handling", () => {
     it("should handle failure to retrieve project", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(undefined, defaultRegion, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
@@ -138,7 +138,7 @@ describe("RegionDetailsComponent", () => {
     });
 
     it("should handle failure to retrieve region", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(defaultProject, undefined, undefined, generateBawApiError());
       interceptApiRequest([]);
       spectator.detectChanges();
@@ -165,7 +165,7 @@ describe("RegionDetailsComponent", () => {
 
       it("should invoke the correct api calls when the deleteModel() method is called", () => {
         interceptApiRequest([]);
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         regionsApi.destroy.and.callFake(() => of(null));
         spectator.detectChanges();
 
@@ -177,7 +177,7 @@ describe("RegionDetailsComponent", () => {
       it(`should navigate to the ${projectsHidden ? "regions list" : "parent project details"} page when deleteModel() succeeds`, () => {
         const expectedRoute = projectsHidden ? "/regions" : `/projects/${defaultProject.id}`;
         interceptApiRequest([]);
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         regionsApi.destroy.and.callFake(() => of(null));
         spectator.detectChanges();
 

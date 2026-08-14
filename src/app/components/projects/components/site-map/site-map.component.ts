@@ -96,7 +96,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     };
 
     if (this.groupBy()) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       filters.projection!.include.push(this.groupBy()!);
     }
 
@@ -136,7 +136,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
         return model;
       }
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return model!.id;
     });
   }
@@ -163,7 +163,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     // If there are project or region inputs, we need to make an API call.
     // The only time that we can avoid an API call is when component consumer
     // provides only site models with full information.
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (
       !this.projects()?.length &&
       !this.regions()?.length &&
@@ -195,7 +195,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
 
     if (this.sites()) {
       const siteIds = this.modelIds(this.sites()!);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       siteFilters = filterOr(siteFilters, { id: { in: siteIds } });
     }
 
@@ -211,7 +211,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
     if (this.groupBy()) {
       const groups = new Set<unknown>();
       sites.forEach((site) => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         groups.add(site[this.groupBy()]);
       });
 
@@ -222,7 +222,7 @@ export class SiteMapComponent extends withUnsubscribe() implements OnChanges {
       sites.map((site) => {
         const marker = site.getMapMarker()
         if (this.groupBy() && marker) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           marker.groupId = site[this.groupBy()];
         }
 

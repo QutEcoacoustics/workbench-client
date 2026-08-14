@@ -40,7 +40,7 @@ describe("hasResolvedSuccessfully", () => {
   });
 
   it("should return true if undefined model (assumes model is optional)", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(hasResolvedSuccessfully({ model0: undefined })).toBeTrue();
   });
 });

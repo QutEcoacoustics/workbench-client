@@ -96,7 +96,7 @@ describe("MySitesComponent", () => {
       mockedResponses.set(project.id, project);
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return interceptMappedApiRequests(projectsApi.show, mockedResponses);
   }
 
@@ -118,7 +118,7 @@ describe("MySitesComponent", () => {
 
   it("should display username in title", async () => {
     await setup();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
@@ -144,7 +144,7 @@ describe("MySitesComponent", () => {
     describe("site name", () => {
       it("should display site name", async () => {
         await setup();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getCells()[0]).toHaveText(defaultSite.name);
       });
 
@@ -165,7 +165,7 @@ describe("MySitesComponent", () => {
 
     it("should display last modified time", async () => {
       await setup();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const expectedText = humanizedDuration(defaultSite.updatedAt);
       expect(getCells()[1]).toHaveExactTrimmedText(`${expectedText} ago`);
     });

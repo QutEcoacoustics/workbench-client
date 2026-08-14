@@ -102,7 +102,7 @@ export class AudioEvent
   // explicitly added via the `projection.add` filter.
   public readonly verificationIds?: CollectionIds;
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   @bawSubModelCollection(VerificationSummary)
   public readonly verificationSummary: VerificationSummary[];
 
@@ -144,7 +144,7 @@ export class AudioEvent
     // array.
     //
     // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     if (!this.verificationSummary) {
       this.verificationSummary = [];
     }
@@ -186,16 +186,16 @@ export class AudioEvent
 
   public get annotationViewUrl(): string {
     return annotationMenuItem.route.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       audioRecordingId: this.audioRecordingId,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       audioEventId: this.id,
     });
   }
 
   public get listenViewUrl(): string {
     return listenRecordingMenuItem.route.format(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       { audioRecordingId: this.audioRecordingId },
       { start: this.startTimeSeconds, padding: 10 },
     );

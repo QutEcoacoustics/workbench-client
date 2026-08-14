@@ -117,7 +117,7 @@ describe("RecentAudioRecordingsComponent", () => {
         await setup({
           recordings: [defaultRecording],
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getSiteCellElement(), true);
       });
 
@@ -126,7 +126,7 @@ describe("RecentAudioRecordingsComponent", () => {
           recordings: [defaultRecording],
           awaitRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getSiteCellElement(), false);
       });
 
@@ -153,14 +153,14 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[1];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const expectedText = humanizedDuration(recording.duration);
         expect(cell).toHaveExactTrimmedText(expectedText);
       }
 
       it("should display time since updated", async () => {
         await setup({ recordings: [defaultRecording] });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });
@@ -169,14 +169,14 @@ describe("RecentAudioRecordingsComponent", () => {
       const getUpdatedCellElement = () => getCellElements()[2];
 
       function assertTimestamp(cell: Element, recording: AudioRecording) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const expectedText = humanizedDuration(recording.recordedDate);
         expect(cell).toHaveExactTrimmedText(`${expectedText} ago`);
       }
 
       it("should display time since updated", async () => {
         await setup({ recordings: [defaultRecording] });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertTimestamp(getUpdatedCellElement(), defaultRecording);
       });
     });

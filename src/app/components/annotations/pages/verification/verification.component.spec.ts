@@ -316,7 +316,7 @@ describe("VerificationComponent", () => {
     spyOn(verificationApi, "show").and.returnValue(of());
 
     spyOn(verificationApi, "destroyUserVerification").and.returnValue(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       of(undefined),
     );
     spyOn(verificationApi, "showUserVerification").and.returnValue(
@@ -394,11 +394,11 @@ describe("VerificationComponent", () => {
   const tagPromptComponent = () =>
     spec.query<TagPromptComponent>("oe-tag-prompt", { root: true });
   const tagPromptTypeaheadComponent = () =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     tagPromptComponent()!.shadowRoot.querySelector("oe-typeahead");
 
   const tagPromptTypeaheadItems = () =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     tagPromptTypeaheadComponent()!.shadowRoot.querySelectorAll(
       ".typeahead-result-action",
     );
@@ -417,7 +417,7 @@ describe("VerificationComponent", () => {
       throw new Error("Could not find decision button");
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return decisionComponents()![index].shadowRoot.querySelector(
       "#decision-button",
     );
@@ -425,12 +425,12 @@ describe("VerificationComponent", () => {
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = document.querySelector(`[aria-valuetext="${value}"]`);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, target);
   }
 
   function showParameters(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.click(dialogShowButton());
     tick(1_000);
     discardPeriodicTasks();
@@ -565,14 +565,14 @@ describe("VerificationComponent", () => {
 
       fakeAsync(() => {
         showParameters();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         selectFromTypeahead(spec, tagsTypeahead(), tagText);
       })();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, updateFiltersButton());
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.component.searchParameters().tags).toContain(expectedTagId);
     });
 
@@ -589,10 +589,10 @@ describe("VerificationComponent", () => {
         clickVerificationStatusFilter("unverified");
       })();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, updateFiltersButton());
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.component.searchParameters().verificationStatus).toEqual(
         "unverified",
       );
@@ -1089,11 +1089,11 @@ describe("VerificationComponent", () => {
 
         fakeAsync(() => {
           showParameters();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           selectFromTypeahead(spec, tagsTypeahead(), tagText);
         })();
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         spec.click(updateFiltersButton());
         await detectChanges(spec);
 
@@ -1110,7 +1110,7 @@ describe("VerificationComponent", () => {
         fakeAsync(() => showParameters())();
         clickVerificationStatusFilter("any");
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         spec.click(updateFiltersButton());
         await detectChanges(spec);
 

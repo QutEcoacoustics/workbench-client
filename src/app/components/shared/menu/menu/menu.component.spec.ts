@@ -131,7 +131,7 @@ describe("MenuComponent", () => {
           pageInfo: data,
           isFullscreen: opts?.isFullscreen ?? false,
         }),
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         MockProvider(BawSessionService, {
           loggedInUser: opts?.localUser ?? null,
         }),
@@ -151,7 +151,7 @@ describe("MenuComponent", () => {
 
   describe("menu", () => {
     function getTitle(): HTMLHeadingElement {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return spec.query("h6");
     }
 
@@ -336,7 +336,7 @@ describe("MenuComponent", () => {
         const link = getMenuModals()[0].link as MenuModal;
         link.action();
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         mockComponentInstance.dismissModal("test dismissal");
         expect(dismissSpy).toHaveBeenCalledWith("test dismissal");
       });
@@ -414,7 +414,7 @@ describe("MenuComponent", () => {
         const link = createLink();
         setup({ menuType: "action", links: OrderedSet([link]) });
         spec.detectChanges();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(test.getLink()[0].tooltip).toBe(link.tooltip());
       });
 

@@ -58,7 +58,7 @@ describe("StrongRouteDirective", () => {
   }
 
   function assertRoute(link: string) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const href = spec!.query<HTMLAnchorElement>("a").href;
     const url = new URL(href, document.baseURI);
     expect(url.pathname + url.search).toBe(link);
@@ -112,14 +112,14 @@ describe("StrongRouteDirective", () => {
 
   describe("strongRoute", () => {
     it("should handle undefined strongRoute", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(undefined);
       spec.detectChanges();
       expect(spec.directive instanceof StrongRouteDirective).toBeTrue();
     });
 
     it("should handle null strongRoute", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(null);
       spec.detectChanges();
       expect(spec.directive instanceof StrongRouteDirective).toBeTrue();
@@ -158,7 +158,7 @@ describe("StrongRouteDirective", () => {
 
   describe("queryParams input", () => {
     it("should handle strongRoute with query parameter", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
         test,
       }));
@@ -170,7 +170,7 @@ describe("StrongRouteDirective", () => {
     it("should handle strongRoute with multiple query parameter", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         ({ test, example }) => ({ test, example })
       );
       setup(childRoute, undefined, { example: 5, test: "value" });
@@ -200,7 +200,7 @@ describe("StrongRouteDirective", () => {
     });
 
     it("should pass single resolved model to queryParams", async () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = StrongRoute.newRoot().add("home", (_, { model0 }) => ({
         testing: (model0 as MockModel)?.id,
       }));
@@ -215,7 +215,7 @@ describe("StrongRouteDirective", () => {
     it("should pass multiple resolved models to queryParams", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         (_, { model0, model1 }) => ({
           testing: (model0 as MockModel)?.id,
           example: (model1 as MockModel)?.id,
@@ -236,7 +236,7 @@ describe("StrongRouteDirective", () => {
       const error = generateBawApiError();
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         (_, { model0, model1 }) => ({
           testing: (model0 as MockModel)?.id,
           example: (model1 as BawApiError)?.status,
@@ -271,7 +271,7 @@ describe("StrongRouteDirective", () => {
 
     describe("route parameters", () => {
       it("should create url tree with router query parameters", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
           testing: example,
         }));
@@ -282,7 +282,7 @@ describe("StrongRouteDirective", () => {
       });
 
       it("should create url tree with router route parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ example }) => ({
           testing: example,
         }));
@@ -292,7 +292,7 @@ describe("StrongRouteDirective", () => {
       });
 
       it("should create url tree with input route parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           testing: test,
         }));
@@ -304,7 +304,7 @@ describe("StrongRouteDirective", () => {
 
     describe("query parameters", () => {
       it("should create url tree with custom query parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           testing: test,
         }));
@@ -316,7 +316,7 @@ describe("StrongRouteDirective", () => {
 
     describe("strongRoute", () => {
       it("should handle strongRoute with router query parameter", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           testing: test,
         }));
@@ -329,7 +329,7 @@ describe("StrongRouteDirective", () => {
       it("should handle strongRoute with multiple router query parameter", async () => {
         const childRoute = StrongRoute.newRoot().add(
           "home",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           ({ test, example }) => ({ testing: test, testing2: example })
         );
         setup(childRoute);
@@ -342,7 +342,7 @@ describe("StrongRouteDirective", () => {
     it("should combine route query parameters and queryParams", async () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         ({ test, example }) => ({
           testing: test,
           testing2: example,
@@ -361,7 +361,7 @@ describe("StrongRouteDirective", () => {
       const routerRouteParam = { test: "routerRouteParam" };
 
       it("should prioritize input query parameters first", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           test,
         }));
@@ -375,7 +375,7 @@ describe("StrongRouteDirective", () => {
       });
 
       it("should prioritize input route parameters after input query parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           test,
         }));
@@ -389,7 +389,7 @@ describe("StrongRouteDirective", () => {
       });
 
       it("should prioritize router query parameters after input route parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           test,
         }));
@@ -403,7 +403,7 @@ describe("StrongRouteDirective", () => {
       });
 
       it("should prioritize router route parameters after router query parameters", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = StrongRoute.newRoot().add("home", ({ test }) => ({
           test,
         }));
@@ -415,7 +415,7 @@ describe("StrongRouteDirective", () => {
     });
 
     it("should create url tree with all possible qsp inputs", async () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = StrongRoute.newRoot().add("home", (params) => params);
       setup(
         childRoute,

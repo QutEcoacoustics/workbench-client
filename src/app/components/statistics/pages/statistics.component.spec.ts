@@ -64,7 +64,7 @@ describe("StatisticsComponent", () => {
   function interceptStatisticsRequest(
     data: Errorable<IStatistics>
   ): Promise<any> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return interceptShowApiRequest(statsApi, injector, data, Statistics);
   }
 
@@ -87,7 +87,7 @@ describe("StatisticsComponent", () => {
 
     return interceptMappedApiRequests(
       audioRecordingsApi.show,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       mockAudioRecordingResponses
     );
   }
@@ -136,7 +136,7 @@ describe("StatisticsComponent", () => {
 
   describe("group one", () => {
     function assertItem(index: number, value: string | number) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getFirstItemsGroup()!.items.get(index).value).toBe(value);
     }
 
@@ -199,7 +199,7 @@ describe("StatisticsComponent", () => {
 
   describe("group two", () => {
     function assertItem(index: number, value: string | number) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getSecondItemsGroup()!.items.get(index).value).toBe(value);
     }
 

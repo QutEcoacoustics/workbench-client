@@ -88,7 +88,7 @@ describe("MediaService", () => {
         const expectedStart = 0;
         const end = mockAudio.durationSeconds;
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const url = spec.service.createMediaUrl(mockAudio, start, end);
 
         expect(url).toContain(`start_offset=${expectedStart}`);
@@ -204,7 +204,7 @@ describe("MediaService", () => {
 
         const expectedStart = mockAudio.durationSeconds! - 1;
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const url = spec.service.createMediaUrl(mockAudio, start, end);
 
         expect(url).toContain(`start_offset=${expectedStart}`);

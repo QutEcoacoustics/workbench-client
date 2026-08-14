@@ -99,7 +99,7 @@ describe("ProvenanceListComponent", () => {
   it("should make the correct api calls when the delete button is clicked", () => {
     // This click button helper also handles checking that the element exists,
     // the element is a button, and that the button is enabled.
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, deleteButton());
 
     // Once the delete button is clicked, a modal is shown to confirm deletion.
@@ -108,17 +108,17 @@ describe("ProvenanceListComponent", () => {
     // Therefore, we use document.querySelector to find the modal elements.
     const confirmSelector = "[data-testid='delete-confirm-button']";
     const confirmButton = document.querySelector(confirmSelector);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, confirmButton);
   });
 
   it("should not make any api calls when the delete modal is dismissed", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, deleteButton());
 
     const cancelSelector = "[data-testid='delete-cancel-button']";
     const cancelButton = document.querySelector(cancelSelector);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, cancelButton);
 
     expect(apiSpy.destroy).not.toHaveBeenCalled();
@@ -126,10 +126,10 @@ describe("ProvenanceListComponent", () => {
 
   describe("datatable", () => {
     assertDatatable(() => ({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       root: () => tableElement(),
       columns: () => ["Name", "Version", "Description", "Created By", "Action"],
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       rows: () => mockResponse.map((item) => ({
         Name: item.name,
         Version: item.version,

@@ -67,10 +67,10 @@ describe("ChartComponent", () => {
   ];
 
   const chartElement = (): HTMLDivElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.query<HTMLDivElement>(".chartContainer");
   const chartSvg = (): SVGElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     chartElement().querySelector<SVGElement>("svg");
 
   beforeEach(fakeAsync(() => setup(validSpec, validData)));

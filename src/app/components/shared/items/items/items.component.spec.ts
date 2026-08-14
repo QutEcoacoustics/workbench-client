@@ -34,7 +34,7 @@ describe("ItemsComponent", () => {
     expect(item.icon).toBe(data.icon);
     expect(item.name).toBe(data.name);
     expect(item.tooltip).toEqual(data.tooltip);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(item.value).toBe(data.value);
   }
 

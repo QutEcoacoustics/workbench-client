@@ -68,7 +68,7 @@ export class CompleteComponent implements OnInit {
   }
 
   public get report(): HarvestReport {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.stages.harvest.report!;
   }
 
@@ -99,7 +99,7 @@ export class CompleteComponent implements OnInit {
           bgColor: "success",
           icon: ["fas", "hard-drive"],
           label: "Total Size",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           value: report.itemsSize,
           tooltip: report.itemsSizeBytes!.toLocaleString() + " bytes",
         },

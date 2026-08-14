@@ -72,7 +72,7 @@ export class PermissionsShieldComponent
         if (!this.model) {
           return;
         }
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.badges = this.createBadges(this.model);
         this.accessLevel = this.getAccessLevel();
       });
@@ -132,7 +132,7 @@ export class PermissionsShieldComponent
   }
 
   private createBadges(model: AbstractModel) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const badges = [];
 
     [
@@ -154,7 +154,7 @@ export class PermissionsShieldComponent
         userKey: "owners",
       },
     ].forEach((badge) => {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const id: Id | Ids = model[badge.id];
       const idExists = typeof id === "number" && isInstantiated(id);
       const idsExists = id instanceof Set && id.size > 0;
@@ -163,13 +163,13 @@ export class PermissionsShieldComponent
         badges.push({
           label: badge.label,
           userKey: badge.userKey,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           timestamp: model[badge.timestampKey],
         });
       }
     });
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return badges;
   }
 
@@ -178,7 +178,7 @@ export class PermissionsShieldComponent
       return this.project.accessLevel!;
     }
 
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.model["accessLevel"] ?? null;
   }
 }

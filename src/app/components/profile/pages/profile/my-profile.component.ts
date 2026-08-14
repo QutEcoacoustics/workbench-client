@@ -173,7 +173,7 @@ class MyProfileComponent
           this.notifications.success(
             defaultSuccessMsg("destroyed", this.user!.userName || "Unknown"),
           );
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
         },
       });
@@ -213,7 +213,7 @@ class MyProfileComponent
       this.sitesApi,
       points,
       user,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       { filter: { regionId: { notEqual: null } } },
     );
     this.updateStatistic(this.audioEventsApi, annotations, user);
@@ -228,7 +228,7 @@ class MyProfileComponent
     callback?: (models: Model[]) => void,
   ): void {
     function getPageTotal(model: Model) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return (model as unknown as AbstractModel)!.getMetadata()!.paging.total;
     }
 
@@ -240,7 +240,7 @@ class MyProfileComponent
           const total = models.length > 0 ? getPageTotal(models[0]) : 0;
           this.userStatistics = this.userStatistics.update(
             index,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             (statistic) => ({ ...statistic, value: total }),
           );
           callback?.(models);
@@ -251,7 +251,7 @@ class MyProfileComponent
 
   /** Set failed statistic value to unknown */
   protected handleError(index: number) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.userStatistics = this.userStatistics.update(index, (statistic) => ({
       ...statistic,
       value: "Unknown",

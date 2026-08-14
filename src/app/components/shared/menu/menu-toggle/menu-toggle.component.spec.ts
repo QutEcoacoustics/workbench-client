@@ -42,10 +42,10 @@ describe("MenuToggleComponent", () => {
 
   function validateIcon(state: MenuState) {
     if (state === MenuState.opened) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(FaIconComponent).icon()).toEqual(["fas", "times"]);
     } else {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(FaIconComponent).icon()).toEqual(["fas", "bars"]);
     }
   }
@@ -114,7 +114,7 @@ describe("MenuToggleComponent", () => {
   describe("toggle menu", () => {
     function clickButton() {
       const buttonElement = spec.query<HTMLButtonElement>("button");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(buttonElement);
     }
 

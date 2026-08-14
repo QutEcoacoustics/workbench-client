@@ -57,18 +57,18 @@ export class AudioEventImport
 
   public createViewUrl(projectId: Id<Project>): string {
     return annotationImportRoute.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       annotationId: this.id,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId,
     });
   }
 
   public createAddAnnotationsUrl(projectId: Id<Project>): string {
     return addAnnotationImportRoute.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       annotationId: this.id,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId,
     });
   }

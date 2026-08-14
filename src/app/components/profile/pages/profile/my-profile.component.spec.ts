@@ -93,7 +93,7 @@ describe("MyProfileComponent", () => {
     return nStepObservable(
       subject,
       () => response,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       isInstantiated(response["status"]),
     );
   }
@@ -136,7 +136,7 @@ describe("MyProfileComponent", () => {
   });
 
   it("should handle user error", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(undefined, generateBawApiError());
     interceptApiRequests({});
     spec.detectChanges();
@@ -148,7 +148,7 @@ describe("MyProfileComponent", () => {
     interceptApiRequests({});
     spec.detectChanges();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -160,7 +160,7 @@ describe("MyProfileComponent", () => {
     expect(spec.query("img")).toHaveImage(defaultUser.imageUrls![0].url, {
       alt: `${defaultUser.userName} profile image`,
     });
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(spec.query("h1")).toHaveText(defaultUser.userName);
   });
 
@@ -169,7 +169,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       accountsApi.destroy.and.callFake(() => of(null));
 
       spec.component.cancelAccount();
@@ -181,14 +181,14 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const navigateSpy = spyOn(spec.component.router, "navigateByUrl");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       accountsApi.destroy.and.callFake(() => of(null));
 
       spec.component.cancelAccount();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(navigateSpy).toHaveBeenCalledWith("/");
     });
   });
@@ -209,7 +209,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(StrongRouteDirective).strongRoute).toEqual(
         dataRequestMenuItem.route,
       );
@@ -219,7 +219,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(StrongRouteDirective).queryParams).toEqual({
         userId: defaultUser.id,
       });
@@ -235,12 +235,12 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getLabel()).toHaveText(defaultUser.lastSeenAt!.toRelative());
     });
 
     it("should handle if user has no last seen at date", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const user = new User(generateUser({ lastSeenAt: null }));
       setup(user);
       interceptApiRequests({});
@@ -258,7 +258,7 @@ describe("MyProfileComponent", () => {
       setup(defaultUser);
       interceptApiRequests({});
       spec.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getLabel()).toHaveText(defaultUser.createdAt!.toRelative());
     });
 
@@ -344,7 +344,7 @@ describe("MyProfileComponent", () => {
           setup(defaultUser);
           interceptApiRequests({ [test.model]: [apiResponse] });
           spec.detectChanges();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(getStatistics()!.items.get(position).value).toBe("…");
         });
 
@@ -354,7 +354,7 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(getStatistics()!.items.get(position).value).toBe(numModels);
         });
 
@@ -366,7 +366,7 @@ describe("MyProfileComponent", () => {
           spec.detectChanges();
           await promise;
           spec.detectChanges();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(getStatistics()!.items.get(position).value).toBe("Unknown");
         });
       });
@@ -413,7 +413,7 @@ describe("MyProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(1);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(tags[0]).toHaveText(defaultTag.text);
     });
 
@@ -439,11 +439,11 @@ describe("MyProfileComponent", () => {
 
       const tags = getTags();
       expect(tags.length).toBe(3);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(tags[0]).toHaveText(tagModels[0].text);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(tags[1]).toHaveText(tagModels[1].text);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(tags[2]).toHaveText(tagModels[2].text);
     });
   });

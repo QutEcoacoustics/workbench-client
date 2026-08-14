@@ -75,7 +75,7 @@ describe("AnnotationsListComponent", () => {
     mockApi.filter.and.callFake(() => of([fakeAnnotationImport]));
 
     mockApi.destroy = jasmine.createSpy("destroy") as any;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     mockApi.destroy.and.callFake(() => of(null));
 
     // inject the NgbModal service so that we can

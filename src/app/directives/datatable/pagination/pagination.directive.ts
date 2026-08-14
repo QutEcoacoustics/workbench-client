@@ -199,7 +199,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   public onSort = (event: DatatableSortEvent): void => {
     if (!event.newValue) {
       // Trigger with unset sort, and reset page to 0
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.pageAndSort$.next({ sort: null, page: 0 });
     } else {
       const sortKey = event.column.sortKey ?? event.column.prop?.toString();
@@ -216,7 +216,7 @@ export class DatatablePaginationDirective<Model extends AbstractModel>
   private subscribeToTableOutputs(): void {
     // Set page number whenever changed
     this.datatable.page.subscribe((page): void => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.setPage(page);
     });
 

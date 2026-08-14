@@ -51,9 +51,9 @@ describe("RecentAnnotationsComponent", () => {
 
   function setAudioEvents(
     audioEvents: Errorable<AudioEvent[]>,
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     creator: Errorable<User> = null,
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     tag: Errorable<Tag> = null
   ) {
     const subjects = {
@@ -64,7 +64,7 @@ describe("RecentAnnotationsComponent", () => {
 
     spec
       .inject(ShallowAudioEventsService)
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       .filterBySite.and.callFake((filter: Filters<AudioEvent>, site: Site) => {
         expect(filter).toEqual({
           sorting: { orderBy: "updatedAt", direction: "desc" },
@@ -202,7 +202,7 @@ describe("RecentAnnotationsComponent", () => {
           generateAudioEvent({ taggings: [defaultTagging] }),
           injector
         );
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const promises = setAudioEvents([audioEvent], null, defaultTag);
         spec.detectChanges();
         await promises.events;

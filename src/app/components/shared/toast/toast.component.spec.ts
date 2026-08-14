@@ -81,10 +81,10 @@ describe("ToastComponent", () => {
     openToast();
 
     expect(toastServiceSpy.showToastInfo).toHaveBeenCalledOnceWith({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       title: undefined,
       variant: testedToast.variant,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       message: undefined,
       options: {},
     });
@@ -96,7 +96,7 @@ describe("ToastComponent", () => {
     expect(toastServiceSpy.showToastInfo).toHaveBeenCalledOnceWith({
       title: testedToast.title,
       variant: testedToast.variant,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       message: undefined,
       options: {},
     });

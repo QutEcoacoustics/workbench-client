@@ -35,7 +35,7 @@ class AdminOrphansComponent
     const api = inject(ShallowSitesService);
 
     super(api, (sites) =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       sites.map((site) => ({
         id: site.id,
         site: site.name,

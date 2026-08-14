@@ -95,7 +95,7 @@ describe("AnnotationSearchComponent", () => {
         get isLoggedIn() {
           return true;
         },
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         authTrigger: of({ user: mockUser }),
       }),
     ],
@@ -179,7 +179,7 @@ describe("AnnotationSearchComponent", () => {
 
   function clickVerificationStatusFilter(value: VerificationStatusKey) {
     const target = spec.query(`[aria-valuetext="${value}"]`);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, target);
   }
 
@@ -336,7 +336,7 @@ describe("AnnotationSearchComponent", () => {
     it("should display the correct error message if there are no search results", () => {
       const expectedText = "No annotations found";
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec!.component.searchParameters().verificationStatus = "any";
 
       spec.component.searchResults.set([]);

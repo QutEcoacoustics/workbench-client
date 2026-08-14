@@ -107,7 +107,7 @@ class AnnotationsListComponent extends PageComponent implements OnInit {
   }
 
   protected verifyQsp(model: AudioEventImport): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.jsIdMapQsp.serialize(new Map([[model.id, new Set()]]));
   }
 }

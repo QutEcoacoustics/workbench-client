@@ -172,14 +172,14 @@ class StatisticsComponent
 
   public getGroupOne(): List<IItem> {
     return List<IItem>(
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       Object.keys(this.groupOne).map((key) => this.groupOne[key].toObject())
     );
   }
 
   public getGroupTwo(): List<IItem> {
     return List<IItem>(
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       Object.keys(this.groupTwo).map((key) => this.groupTwo[key].toObject())
     );
   }

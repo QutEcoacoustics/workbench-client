@@ -48,7 +48,7 @@ describe("ConfirmationModalComponent", () => {
   });
 
   it("should invoke the success callback when the delete button is clicked", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spyOn(spectator.component, "successCallback").and.stub();
     spectator.click(getDeleteButton());
     expect(spectator.component.successCallback).toHaveBeenCalledTimes(1);

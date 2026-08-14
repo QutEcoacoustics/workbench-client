@@ -104,7 +104,7 @@ export abstract class BawResolver<
         route: ActivatedRouteSnapshot,
       ): ServiceParams {
         if (!serviceArgs || serviceArgs.length === 0) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           return [] as ServiceParams;
         }
 
@@ -177,7 +177,7 @@ export class Resolvers<
    */
   public create<T extends object & { providers: BawProvider[] }>(
     name: string,
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     extra: T = null,
   ) {
     const { serviceDeps, uniqueId, params } = this;
@@ -324,7 +324,7 @@ export class ShowOptionalResolver<
     return super.create(name, required);
   }
 
-  // @ts-expect-error: strict mode override
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public resolverFn(_: any, api: Service, id: Id, ids: Params) {
     return id ? api.show(id, ...ids) : of(undefined);
   }

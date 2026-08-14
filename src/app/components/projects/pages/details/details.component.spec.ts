@@ -163,7 +163,7 @@ describe("ProjectDetailsComponent", () => {
     interceptApiRequest(emptyResponse, emptyResponse);
     spectator.detectChanges();
     const title = spectator.query<HTMLHeadingElement>("h1");
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(title!.innerText.trim()).toBe(defaultProject.name);
   });
 
@@ -191,7 +191,7 @@ describe("ProjectDetailsComponent", () => {
       "#project_description",
     );
     expect(description!.innerHTML.trim()).toContain(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       defaultProject.descriptionHtml,
     );
   });
@@ -199,7 +199,7 @@ describe("ProjectDetailsComponent", () => {
   it("should invoke the correct api calls when the deleteModel() method is called", () => {
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     projectApi.destroy.and.callFake(() => of(null));
     spectator.detectChanges();
 
@@ -213,7 +213,7 @@ describe("ProjectDetailsComponent", () => {
 
     setup(defaultProject);
     interceptApiRequest(emptyResponse, emptyResponse);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     projectApi.destroy.and.callFake(() => of(null));
     spectator.detectChanges();
 
@@ -399,9 +399,9 @@ describe("ProjectDetailsComponent", () => {
       filterText?: string,
     ) {
       const promise = interceptApiRequest(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         [initialResponse, []],
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         [initialResponse, []],
         isSite ? expectations : undefined,
         !isSite ? expectations : undefined,
@@ -412,7 +412,7 @@ describe("ProjectDetailsComponent", () => {
       }
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const initialResponse = [];
     const initialExpectation = () => {
       /* noop */
@@ -498,7 +498,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"]([]);
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             expect(component[list].toArray()).toEqual([]);
           });
 
@@ -509,7 +509,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"](models[0]);
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             expect(component[list].toArray()).toEqual(models[0]);
           });
 
@@ -519,7 +519,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"]([]);
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             expect(component[stateTracker]).toBeFalsy();
           });
 
@@ -530,7 +530,7 @@ describe("ProjectDetailsComponent", () => {
             spectator.detectChanges();
             component["getModels"]();
             component["apiUpdate"](models[0]);
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             expect(component[stateTracker]).toBeTruthy();
           });
         });

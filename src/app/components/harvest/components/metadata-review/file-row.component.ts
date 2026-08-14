@@ -118,14 +118,14 @@ export class FileRowComponent implements OnInit {
         // Prepend non fixable messages to the start
         this.validationMessages.unshift({
           type: "danger",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           message: validation.message,
         });
       } else {
         // Append fixable messages to the end
         this.validationMessages.push({
           type: "warning",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           message: validation.message,
         });
       }

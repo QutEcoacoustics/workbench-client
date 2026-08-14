@@ -144,17 +144,17 @@ export class HarvestItem extends AbstractModel implements IHarvestItem {
   }
 
   public get hasItemsInvalidFixable(): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.report.itemsInvalidFixable > 0;
   }
 
   public get hasItemsInvalidNotFixable(): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.report.itemsInvalidNotFixable > 0;
   }
 
   public get hasItemsErrored(): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.report.itemsErrored > 0;
   }
 

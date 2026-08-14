@@ -73,7 +73,7 @@ describe("CmsComponent", () => {
   });
 
   it("should hide loading animation after error response", async () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const promise = interceptApiRequest(undefined, generateBawApiError());
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();
@@ -140,7 +140,7 @@ describe("CmsComponent", () => {
 
   it("should display error message on failure", async () => {
     const error = generateBawApiError();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const promise = interceptApiRequest(undefined, error);
     spectator.setInput("page", CMS.home);
     spectator.detectChanges();

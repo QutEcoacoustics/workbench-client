@@ -15,7 +15,7 @@ describe("ModelFilters", () => {
         },
       } as InnerFilter;
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const observedResult = filterAnd(currentFilters, additionalFilters);
       expect(observedResult).toEqual(additionalFilters);
     });
@@ -93,7 +93,7 @@ describe("ModelFilters", () => {
       const baseFilters = undefined;
       const newFilters = { id: { eq: 1 } };
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const realizedResult = filterOr(baseFilters, newFilters);
       expect(realizedResult).toEqual(newFilters);
     });
@@ -175,7 +175,7 @@ describe("ModelFilters", () => {
   });
 
   it("should return an empty filter if no model is specified", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const mockModel: Project = undefined;
     const initialFilters: InnerFilter<Project> = {};
 
@@ -192,7 +192,7 @@ describe("ModelFilters", () => {
   });
 
   it("should return the exiting filter unmodified if no model is specified", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const mockModel: Project = undefined;
     const currentFilters = {
       ["regions.id"]: {

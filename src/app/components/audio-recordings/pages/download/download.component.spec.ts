@@ -92,21 +92,21 @@ describe("DownloadAudioRecordingsComponent", () => {
     const models = {};
 
     if (site) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       resolvers["site"] = "resolver";
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       models["site"] = { model: site };
     }
     if (region) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       resolvers["region"] = "resolver";
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       models["region"] = { model: region };
     }
     if (project) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       resolvers["project"] = "resolver";
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       models["project"] = { model: project };
     }
 
@@ -137,7 +137,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject);
         spec.detectChanges();
         loadForm();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getProjectInput()).toHaveValue(defaultProject.name);
       }));
 
@@ -167,7 +167,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, defaultRegion);
         spec.detectChanges();
         loadForm();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getRegionInput()).toHaveValue(defaultRegion.name);
       }));
 
@@ -206,7 +206,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, undefined, defaultSite);
         spec.detectChanges();
         loadForm();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 
@@ -238,7 +238,7 @@ describe("DownloadAudioRecordingsComponent", () => {
         setup(defaultProject, defaultRegion, defaultSite);
         spec.detectChanges();
         loadForm();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getSiteInput()).toHaveValue(defaultSite.name);
       }));
 

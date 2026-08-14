@@ -61,7 +61,7 @@ class AdminTagsComponent extends PagedTableTemplate<TableRow, Tag> {
     const tagsApi = inject(TagsService);
 
     super(tagsApi, (tags) =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       tags.map((tag) => ({
         text: tag.text,
         taxonomic: tag.isTaxonomic ? "Taxonomic" : "Folksonomic",

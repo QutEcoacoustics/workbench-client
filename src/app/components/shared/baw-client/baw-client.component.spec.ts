@@ -34,7 +34,7 @@ describe("BawClientComponent", () => {
   }
 
   function getIframe(): HTMLIFrameElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query("iframe");
   }
 
@@ -86,7 +86,7 @@ describe("BawClientComponent", () => {
   }
 
   function setup(data?: Partial<IPageInfo>, isSsr = false) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     events = undefined;
     spec = createComponent({
       detectChanges: false,
@@ -98,7 +98,7 @@ describe("BawClientComponent", () => {
   }
 
   afterEach(() => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     if (loadClientTimer) {
       clearInterval(loadClientTimer);
     }
@@ -210,7 +210,7 @@ describe("BawClientComponent", () => {
       await waitForLoad();
       spec.detectChanges();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getIframe()!.contentWindow.document.body).toContainText(
         "Client application home page"
       );

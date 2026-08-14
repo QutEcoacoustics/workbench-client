@@ -30,7 +30,7 @@ export class DetailViewComponent {
   public getValue(field: FormlyFieldConfig) {
     // because formly fields can be numbers as well as string
     // we use toString() so that we always convert the number types to a string
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.model()[field.key!.toString()];
   }
 }

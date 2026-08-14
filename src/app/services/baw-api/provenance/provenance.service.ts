@@ -53,7 +53,7 @@ export class ProvenanceService implements StandardApi<Provenance> {
   }
 
   public destroy(model: IdOr<Provenance>): Observable<void | Provenance> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(model, emptyParam));
   }
 

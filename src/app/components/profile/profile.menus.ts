@@ -33,10 +33,10 @@ export const myAccountMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: myAccountRoute,
   tooltip: () => "View profile",
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild!.data;
 
@@ -127,10 +127,10 @@ export const theirProfileMenuItem = menuRoute({
   predicate: isLoggedInPredicate,
   route: theirProfileRoute,
   tooltip: () => "View their profile",
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, User)?.userName,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild!.data;
     return `${componentModel.account.model.userName}'s Profile`;

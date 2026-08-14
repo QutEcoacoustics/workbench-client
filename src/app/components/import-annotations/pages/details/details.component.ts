@@ -150,7 +150,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
   // therefore, we use a getter because they internally work like methods, and return a new object each time
   private get emptyImportGroup(): ImportGroup {
     return {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       files: null,
       additionalTagIds: [],
       errors: [],
@@ -163,9 +163,9 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
     const routeData = this.route.snapshot.data;
     this.audioEventImport = routeData[audioEventImportKey].model;
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.eventFilters$ = new BehaviorSubject(this.defaultEventFilters);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.fileFilters$ = new BehaviorSubject(this.defaultFileFilters);
 
     if (this.route) {
@@ -187,7 +187,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
           );
           this.router.navigateByUrl(
             annotationsImportMenuItem.route.toRouterLink({
-              // @ts-expect-error: strict mode fix
+              // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
               projectId: this.project.id,
             })
           );
@@ -245,7 +245,7 @@ class AnnotationImportDetailsComponent extends PageComponent implements OnInit {
 
   protected verifyQsp(fileModel: AudioEventImportFile): string {
     return this.jsIdMapQsp.serialize(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       new Map([
         [fileModel.audioEventImportId, new Set([fileModel.id])],
       ]),

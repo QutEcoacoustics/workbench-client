@@ -67,9 +67,9 @@ describe("ToastProviderComponent", () => {
     spec.detectChanges();
 
     const targetToast = spec.query(NgbToast);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(targetToast!.autohide).toEqual(testedOptions.autoHide);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(targetToast!.delay).toEqual(testedOptions.delay);
   });
 
@@ -83,9 +83,9 @@ describe("ToastProviderComponent", () => {
     spec.detectChanges();
 
     const targetToast = spec.query(NgbToast);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(targetToast!.autohide).toEqual(expectedDefaultOptions.autoHide);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(targetToast!.delay).toEqual(expectedDefaultOptions.delay);
   });
 
@@ -171,7 +171,7 @@ describe("ToastProviderComponent", () => {
         expectedVariant: "info",
         expectedIcon: ["fas", "info-circle"],
       },
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       { method: "show", expectedVariant: "default", expectedIcon: null },
     ] as const satisfies ToastVariantTest[];
 

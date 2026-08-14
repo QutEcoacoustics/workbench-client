@@ -203,7 +203,7 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
           contains<T, keyof T>(
             key as keyof T,
             text as any,
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             includeDefaultFilters && this.defaultFilter(),
           ),
           notIn<T>(key as keyof AbstractModel, activeItems),
@@ -232,7 +232,7 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
       return null!;
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const idsArray: Id[] = items.map((item: AbstractModel): Id => item.id!);
     return idsArray;
   }

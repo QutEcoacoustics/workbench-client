@@ -83,7 +83,7 @@ describe("FormlyImageInput", () => {
 
     it("should not display remove image button once the button has been clicked", () => {
       setup();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(removeButton());
       expect(removeButton()).not.toExist();
     });
@@ -99,10 +99,10 @@ describe("FormlyImageInput", () => {
       const imageInput = getInput();
 
       const testingFile = new File([""], "testFile.png");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       inputFile(spec, imageInput, [testingFile]);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(removeButton());
       expect(imageInput!.value).toBeFalsy();
     });

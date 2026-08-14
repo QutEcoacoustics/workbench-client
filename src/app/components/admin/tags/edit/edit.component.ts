@@ -66,7 +66,7 @@ class AdminTagsEditComponent extends FormTemplate<Tag> implements OnInit {
     }
 
     this.title = `Edit ${this.model.text}`;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.fields[typeOfTagIndex].props.options = this.typeOfTags.map(
       ({ name }) => ({
         label: name,

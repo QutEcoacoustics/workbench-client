@@ -74,9 +74,9 @@ describe("FormlyLocationInput", () => {
   ) {
     // Using typeInElement dispatches the "input" event that Angular listens to
     // https://github.com/ngneat/spectator/blob/549c63c43e9/projects/spectator/src/lib/type-in-element.ts#L18
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(latitude.toString(), getLatitudeInput());
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(longitude.toString(), getLongitudeInput());
 
     spec.detectChanges();
@@ -101,9 +101,9 @@ describe("FormlyLocationInput", () => {
     latitude: number,
     longitude: number,
   ) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(map!.markers().toArray()[0]["position"]["lat"]).toEqual(latitude);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(map!.markers().toArray()[0]["position"]["lng"]).toEqual(longitude);
   }
 
@@ -138,7 +138,7 @@ describe("FormlyLocationInput", () => {
     updateMarkerThroughInput(updatedLatitudeValue, updatedLongitudeValue);
 
     // assert that the marker location has changed to the new location
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     assertMapModelCoordinates(map, updatedLatitudeValue, updatedLongitudeValue);
   }));
 
@@ -159,11 +159,11 @@ describe("FormlyLocationInput", () => {
     const newPosition: google.maps.LatLng = {
       lat: () => updatedLatitude,
       lng: () => updatedLongitude,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       equals: () => null,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       toJSON: () => null,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       toUrlValue: () => null,
     };
 
@@ -183,7 +183,7 @@ describe("FormlyLocationInput", () => {
       newPosition.lat(),
       newPosition.lng(),
     );
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     assertMapModelCoordinates(map, updatedLatitude, updatedLongitude);
   }));
 

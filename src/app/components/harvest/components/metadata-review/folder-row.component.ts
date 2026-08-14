@@ -165,15 +165,15 @@ export class FolderRowComponent {
         // a harvest item
         path: row.isRoot ? row.path : row.harvestItem!.path,
         recursive: true,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         siteId: null,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         utcOffset: null,
       },
       this.injector
     );
     row.mapping = mapping;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.harvest.mappings.push(mapping);
   }
 

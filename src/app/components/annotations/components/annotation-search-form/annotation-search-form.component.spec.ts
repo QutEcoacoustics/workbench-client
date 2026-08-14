@@ -132,7 +132,7 @@ describe("AnnotationSearchFormComponent", () => {
     modelChangeSpy = spyOn(spec.component.searchParametersChange, "emit");
 
     sitesApi.filter.andCallFake(() => of(mockSitesResponse));
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     sitesApi.show.andCallFake((id: Id) =>
       of(mockSitesResponse.find((site) => site.id === id)),
     );
@@ -191,14 +191,14 @@ describe("AnnotationSearchFormComponent", () => {
   }
 
   function setLowerBoundScore(value: string) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(value, lowerScoreInput());
     tick(defaultDebounceTime);
     spec.detectChanges();
   }
 
   function setUpperBoundScore(value: string) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(value, upperScoreInput());
     tick(defaultDebounceTime);
     spec.detectChanges();
@@ -243,7 +243,7 @@ describe("AnnotationSearchFormComponent", () => {
   it("should have a collapsable advanced filters section", fakeAsync(() => {
     setup();
     expect(recordingsTypeahead()).toBeHidden();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     toggleDropdown(spec, advancedFiltersToggle());
     expect(recordingsTypeahead()).toBeVisible();
   }));
@@ -266,7 +266,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       const realizedTagPills = tagPills();
       expect(realizedTagPills).toHaveLength(1);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(realizedTagPills[0]).toHaveExactTrimmedText(testedTag.text);
     }));
 
@@ -313,7 +313,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // close the date/time filters and assert that the filter conditions are
       // no longer applied
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
@@ -368,7 +368,7 @@ describe("AnnotationSearchFormComponent", () => {
       setup({ audioRecordings: "1" });
       expect(spec.component.searchParameters().audioRecordings).toHaveLength(1);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       toggleDropdown(spec, advancedFiltersToggle());
 
       expect(spec.component.searchParameters().audioRecordings).toHaveLength(0);
@@ -379,7 +379,7 @@ describe("AnnotationSearchFormComponent", () => {
 
       // Because there are no advanced filters, we expect that the dropdown is
       // initially closed and we need to open it to see the import files input.
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       toggleDropdown(spec, advancedFiltersToggle());
       waitForDropdown(spec);
 
@@ -419,7 +419,7 @@ describe("AnnotationSearchFormComponent", () => {
       // Because we want to assert that updating the site causes one update with
       // the correct parameters, we reset the call spy.
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, sitesTypeahead(), testedSite.name);
 
       expect(spec.component.searchParameters().sites).toEqual([testedSite.id]);
@@ -433,7 +433,7 @@ describe("AnnotationSearchFormComponent", () => {
       const testedTag = mockTagsResponse[0];
 
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, tagsTypeahead(), testedTag.text, false);
 
       expect(spec.component.searchParameters().tags).toEqual([testedTag.id]);
@@ -457,11 +457,11 @@ describe("AnnotationSearchFormComponent", () => {
       });
 
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.typeInElement(testedDate, endDateInput());
       tick(defaultDebounceTime);
 
@@ -472,11 +472,11 @@ describe("AnnotationSearchFormComponent", () => {
       const testedDate = "2021109-12";
 
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(dateToggleInput());
       waitForDropdown(spec);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.typeInElement(testedDate, endDateInput());
 
       expect(modelChangeSpy).not.toHaveBeenCalled();
@@ -513,7 +513,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
 
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
@@ -526,7 +526,7 @@ describe("AnnotationSearchFormComponent", () => {
       );
 
       modelChangeSpy.calls.reset();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.selectOption(sortingDropdown(), targetOption);
 
       expect(modelChangeSpy).toHaveBeenCalledTimes(1);
@@ -631,7 +631,7 @@ describe("AnnotationSearchFormComponent", () => {
       // Additionally, we should see that the audio event import files are not
       // cleared.
       spec.dispatchKeyboardEvent(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         eventImportTypeaheadInput(),
         "keydown",
         "Backspace",
@@ -666,7 +666,7 @@ describe("AnnotationSearchFormComponent", () => {
       // By pressing backspace in the audio event import typeahead, the last
       // audio event import should be removed.
       spec.dispatchKeyboardEvent(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         eventImportTypeaheadInput(),
         "keydown",
         "Backspace",

@@ -25,13 +25,13 @@ describe("IsUnresolvedPipe", () => {
   }
 
   it("should return false for undefined value", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(undefined);
     assertPipeIsFalse();
   });
 
   it("should return false for null value", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(null);
     assertPipeIsFalse();
   });

@@ -71,7 +71,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     site: IdOr<Site>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "siteId", site)
     );
   }
@@ -87,7 +87,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     region: IdOr<Region>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "regions.id" as any, region)
     );
   }
@@ -103,7 +103,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     project: IdOr<Project>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "projects.id" as any, project)
     );
   }
@@ -119,7 +119,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
     harvest: IdOr<Harvest>
   ): Observable<AudioRecording[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "harvests.id" as any, harvest)
     );
   }
@@ -143,7 +143,7 @@ export class AudioRecordingsService implements ReadonlyApi<AudioRecording> {
         },
       },
       "harvests.id" as any,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       harvest
     );
     return (

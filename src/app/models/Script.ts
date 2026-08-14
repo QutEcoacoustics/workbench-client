@@ -78,7 +78,7 @@ export class Script extends AbstractModel<IScript> implements IScript {
   public provenance?: Provenance;
 
   public get viewUrl(): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return scriptMenuItem.route.format({ scriptId: this.id })!;
   }
 }

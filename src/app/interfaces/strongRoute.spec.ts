@@ -161,7 +161,7 @@ describe("StrongRoute", () => {
         _queryParams: Params,
         expectation: string
       ) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(route[method](_routeParams, _queryParams)).toBe(expectation);
       }
 
@@ -177,31 +177,31 @@ describe("StrongRoute", () => {
       });
 
       it("should handle base StrongRoute", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(baseRoute, undefined, undefined, leadingChar);
       });
 
       it("should handle root route", () => {
         const route = baseRoute.add("");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, undefined, undefined, leadingChar);
       });
 
       it("should handle child route", () => {
         const route = baseRoute.add("home");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, undefined, undefined, leadingChar + "home");
       });
 
       it("should handle parameter route", () => {
         const route = baseRoute.add(":id");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, routeParams, undefined, leadingChar + output.id);
       });
 
       it("should handle grandchild route", () => {
         const route = baseRoute.add("home").add("house");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, undefined, undefined, leadingChar + "home/house");
       });
 
@@ -209,7 +209,7 @@ describe("StrongRoute", () => {
         const route = baseRoute.add("home").add(":id").add("house");
         assertMethod(
           route,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           routeParams,
           undefined,
           leadingChar + "home/" + output.id + "/house"
@@ -220,7 +220,7 @@ describe("StrongRoute", () => {
         const route = baseRoute.add("home", () => ({ test: output.test }));
         const expectation =
           leadingChar + (outputQsp ? "home?test=" + output.test : "home");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, undefined, queryParams, expectation);
       });
 
@@ -240,7 +240,7 @@ describe("StrongRoute", () => {
               "&property=" +
               output.property
             : "home");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertMethod(route, undefined, queryParams, expectation);
       });
     });
@@ -346,7 +346,7 @@ describe("StrongRoute", () => {
   ["add", "addFeatureModule"].forEach((test) => {
     describe(test + " RouterLink", () => {
       it("should navigate to location", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = baseRoute[test]("home");
         setup(childRoute.toRouterLink());
         expect(location.path()).toBe("");
@@ -358,9 +358,9 @@ describe("StrongRoute", () => {
 
       it("should handle navigating between different route chains", async () => {
         const id = modelData.id();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const initialRoute = baseRoute[test]("home").add(":id").add("house");
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const finalRoute = baseRoute[test](":id");
         setup(finalRoute.toRouterLink({ id }));
 
@@ -373,7 +373,7 @@ describe("StrongRoute", () => {
       });
 
       it("should navigate to location with query parameter", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = baseRoute[test]("home", ({ siteId }) => ({
           siteId,
         }));
@@ -386,7 +386,7 @@ describe("StrongRoute", () => {
       });
 
       it("should navigate to location with multiple query parameters", async () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const childRoute = baseRoute[test]("home", ({ siteId, projectId }) => ({
           siteId,
           projectId,

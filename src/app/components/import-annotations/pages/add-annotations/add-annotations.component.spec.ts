@@ -73,7 +73,7 @@ describe("AddAnnotationsComponent", () => {
     mocks: [ToastService],
     data: {
       resolvers: {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         model: audioEventImport,
       },
     },
@@ -93,16 +93,16 @@ describe("AddAnnotationsComponent", () => {
   const additionalFileTagInputs = (): (TypeaheadInputComponent &
     HTMLElement)[] => spec.queryAll(".additional-file-tags");
   const extraTagsTypeahead = (): TypeaheadInputComponent & HTMLElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.query("#extra-tags-input");
 
   const provenanceFileInputs = () => spec.queryAll(".file-provenance");
   const extraProvenanceTypeahead = (): TypeaheadInputComponent & HTMLElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.query("#extra-provenance-input");
 
   function addFiles(files: File[]): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     inputFile(spec, fileInput(), files);
 
     // We have to flush the async queue so that the associations inside of the
@@ -133,7 +133,7 @@ describe("AddAnnotationsComponent", () => {
   }
 
   function commitImport(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, importFilesButton());
   }
 
@@ -263,7 +263,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         null,
       );
     }));
@@ -288,7 +288,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "text/csv" }),
         }),
         audioEventImport,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         null,
       );
     }));
@@ -306,7 +306,7 @@ describe("AddAnnotationsComponent", () => {
           file: jasmine.objectContaining({ type: "application/vnd.ms-excel" }),
         }),
         audioEventImport,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         null,
       );
     }));
@@ -430,7 +430,7 @@ describe("AddAnnotationsComponent", () => {
       expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
         jasmine.any(AudioEventImportFile),
         audioEventImport,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         null,
       );
     }));
@@ -446,7 +446,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.dryCreate).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           null,
         );
       });
@@ -554,7 +554,7 @@ describe("AddAnnotationsComponent", () => {
         fileImportSpy.dryCreate.calls.reset();
 
         const testedTag = mockTagsResponse[0];
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         addTagToFile(0, testedTag.text);
 
         expect(fileImportSpy.dryCreate).toHaveBeenCalledOnceWith(
@@ -562,7 +562,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           null,
         );
       }));
@@ -571,7 +571,7 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         addTagToFile(0, testedTag.text);
 
         commitImport();
@@ -581,7 +581,7 @@ describe("AddAnnotationsComponent", () => {
             additionalTagIds: [testedTag.id],
           }),
           audioEventImport,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           null,
         );
       }));
@@ -598,7 +598,7 @@ describe("AddAnnotationsComponent", () => {
         fileImportSpy.dryCreate.and.returnValue(response);
 
         const testedTag = mockTagsResponse[0];
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         addTagToFile(0, testedTag.text);
 
         expect(fileListItems()[0]).toHaveDescendant("baw-loading");
@@ -615,10 +615,10 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         addExtraTag(testedTag.text);
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(fileAdditionalTags(0)).toContain(testedTag.text);
       }));
 
@@ -626,7 +626,7 @@ describe("AddAnnotationsComponent", () => {
         addFiles([modelData.file(), modelData.file()]);
 
         const testedTag = mockTagsResponse[0];
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         addExtraTag(testedTag.text);
 
         expect(extraTagsTypeahead().value).toHaveLength(0);
@@ -743,7 +743,7 @@ describe("AddAnnotationsComponent", () => {
         expect(fileImportSpy.create).toHaveBeenCalledWith(
           jasmine.objectContaining({ file }),
           audioEventImport,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           null,
         );
       });
@@ -930,7 +930,7 @@ describe("AddAnnotationsComponent", () => {
 
   describe("identified events table", () => {
     assertDatatable(() => ({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       root: () => eventsTable(),
       columns: () => [
         "ID",

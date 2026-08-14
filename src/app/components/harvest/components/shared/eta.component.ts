@@ -47,7 +47,7 @@ export class EtaComponent implements OnChanges {
       scanning: "scanning files",
       processing: "processing files",
     };
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return humanizedText[this.harvest.status];
   }
 
@@ -69,7 +69,7 @@ export class EtaComponent implements OnChanges {
      * harvest is queued and takes up all of the available computing
      * resources)
      */
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const timeTakenSeconds = this.harvest.updatedAt.diffNow("seconds")!.seconds;
     const expectedRemainingTimeSeconds =
       timeTakenSeconds * (1 / (this.progress / 100)) - timeTakenSeconds;

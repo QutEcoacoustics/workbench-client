@@ -75,7 +75,7 @@ export class PermissionsService
     model: IdOr<Permission>,
     project: IdOr<Project>
   ): Observable<Permission | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 }

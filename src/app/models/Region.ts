@@ -82,7 +82,7 @@ export class Region
   // Associations
   @hasOne(PROJECT, "projectId")
   public project?: Project;
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   @hasMany(SHALLOW_SITE, "siteIds"!)
   public sites?: Site[];
   @creator()
@@ -94,18 +94,18 @@ export class Region
 
   public get viewUrl(): string {
     return regionRoute.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId: this.projectId,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       regionId: this.id,
     });
   }
 
   public getAudioRecordingsUrl(): string {
     return audioRecordingsRoutes.region.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId: this.projectId,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       regionId: this.id,
     });
   }

@@ -60,11 +60,11 @@ describe("AdminTagGroupsComponent", () => {
       defaultModels.push(new TagGroup(generateTagGroup()));
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.defaultModels = defaultModels;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.fixture = fixture;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.api = api;
   });
 
@@ -81,11 +81,11 @@ describe("AdminTagGroupsComponent", () => {
 
     it("should display a modal when confirmTagGroupDeletion() is called", () => {
       const mockTagGroup = new TagGroup(generateTagGroup());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       tagGroupApiSpy.destroy.and.returnValue(of(null));
 
       fixture.componentInstance.confirmTagGroupDeletion(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         undefined,
         mockTagGroup
       );
@@ -95,7 +95,7 @@ describe("AdminTagGroupsComponent", () => {
 
     it("should make the correct api calls when confirmTagGroupDeletion() is successful", fakeAsync(() => {
       const mockTagGroup = new TagGroup(generateTagGroup());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       tagGroupApiSpy.destroy.and.returnValue(of(null));
 
       // Since there is a confirmation modal before the api call, we need to
@@ -106,7 +106,7 @@ describe("AdminTagGroupsComponent", () => {
         }),
       );
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       fixture.componentInstance.confirmTagGroupDeletion(null, mockTagGroup);
 
       tick();

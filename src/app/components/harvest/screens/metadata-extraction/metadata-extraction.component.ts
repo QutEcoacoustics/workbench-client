@@ -83,7 +83,7 @@ export class MetadataExtractionComponent implements OnInit {
   }
 
   private get report(): HarvestReport {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.stages.harvest.report!;
   }
 
@@ -96,11 +96,11 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get successProgress(): number {
     return this.stages.calculateProgress(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.report.itemsTotal -
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.report.itemsInvalidFixable -
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.report.itemsInvalidNotFixable
     );
   }
@@ -111,11 +111,11 @@ export class MetadataExtractionComponent implements OnInit {
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.report.itemsInvalidNotFixable +
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.report.itemsErrored +
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.report.itemsFailed
     );
   }

@@ -19,14 +19,14 @@ export function compileAndSplitRoutes(
   strongRoutes: StrongRoute[],
 ): [Routes, ServerRoute[]] {
   const clientRoutes = strongRoutes
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     .flatMap((route) => route.compileRoutes(createClientRoute))
 
   const serverRoutes = strongRoutes
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     .flatMap((route) => route.compileRoutes(createServerRoute));
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   return [clientRoutes, serverRoutes];
 }
 

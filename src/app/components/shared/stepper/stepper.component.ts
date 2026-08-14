@@ -136,7 +136,7 @@ export class StepperComponent
     const leftStepsNotVisible = isNotVisibleStep(this.stepItems.get(0)!);
     /** Do steps on the right side of the stepper have the not visible class */
     const rightStepsNotVisible = isNotVisibleStep(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.stepItems.get(this.stepItems.length - 1)
     );
     /** Show left dots if steps are hidden, and the first step is not active */

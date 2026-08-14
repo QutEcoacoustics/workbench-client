@@ -34,7 +34,7 @@ import { StrongRouteDirective } from "@directives/strongRoute/strong-route.direc
 export class WebsiteStatusWarningComponent {
   protected readonly api = inject(WebsiteStatusService);
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public feature: KeysOfType<WebsiteStatus, boolean> = "isStatusHealthy";
   public message?: string;
   protected websiteStatusRoute = websiteStatusMenuItem.route;

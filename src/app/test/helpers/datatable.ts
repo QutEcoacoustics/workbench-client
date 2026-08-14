@@ -65,7 +65,7 @@ export function sortDatatableByColumn(spec: SpectatorDirective<any>, column: num
 
   const sortButton = targetCell.querySelector(".sort-btn");
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   spec.click(sortButton);
 }
 
@@ -79,7 +79,7 @@ export async function selectDatatablePage(spec: SpectatorDirective<any>, page: n
 
   const pageButton = pageListItem!.querySelector("[role='button']");
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   spec.click(pageButton);
 }
 

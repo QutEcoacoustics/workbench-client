@@ -38,9 +38,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     const transformedRaw = this.getPersistentAttributes()
       .filter((attr) => attr.convertCase)
       .reduce((acc, attr) => {
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const value = raw[attr.key];
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         acc[attr.key] = isInstantiated(value) ? camelCase(value) : value;
         return acc;
       }, {});
@@ -108,13 +108,13 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * @param meta Metadata
    */
   public addMetadata(meta: Meta): void {
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this[AbstractModel.keys.meta] = meta;
   }
 
   /** Get hidden model metadata */
   public getMetadata(): Meta {
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this[AbstractModel.keys.meta];
   }
 
@@ -124,12 +124,12 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
 
   public getPersistentAttributes(): BawAttributeMeta[] {
     // TODO #1005 Store this statically in the model
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (this[AbstractModel.keys.attributes] ??= []);
   }
 
   public can(capability: CapabilityKey): Capability {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.getMetadata()!.capabilities[capability];
   }
 
@@ -276,9 +276,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
   }
 
   private hasJsonOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.getModelAttributes({ ...opts, formData: false }!).some((attr) =>
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       isInstantiated(this[attr]),
     );
   }
@@ -296,9 +296,9 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    * in a multipart form API request
    */
   private hasFormDataOnlyAttributes(opts?: ModelSerializationOptions): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.getModelAttributes({ ...opts, formData: true }!).some((attr) =>
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       isInstantiated(this[attr]),
     );
   }
@@ -310,7 +310,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
    */
   private formDataOnlyAttributes(opts?: ModelSerializationOptions): FormData {
     const output = new FormData();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const keys = this.getModelAttributes({ ...opts, formData: true }!);
     const data = this.toObject(keys, opts);
 
@@ -320,7 +320,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     }
 
     for (const attr of Object.keys(data)) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const dataValue = data[attr];
 
       if (!isInstantiated(dataValue)) {
@@ -373,28 +373,28 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
     opts?: ModelSerializationOptions,
   ): Partial<this> {
     const output: Partial<Writeable<this>> = {};
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     keys.forEach((attribute: keyof AbstractModel) => {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const value = this[attribute];
       if (value instanceof Set) {
         const valueAsArray = Array.from(value);
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         output[attribute] = opts?.convertCase
           ? valueAsArray.map(snakeCase)
           : valueAsArray;
       } else if (value instanceof DateTime) {
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         output[attribute] = value.toISO();
       } else if (value instanceof Duration) {
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         output[attribute] = value.as("seconds");
       } else {
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         output[attribute] = opts?.convertCase
-          ? // @ts-expect-error: strict mode indexing
+          ? // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             snakeCase(this[attribute])
-          : // @ts-expect-error: strict mode indexing
+          : // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             this[attribute];
       }
     });
@@ -419,7 +419,7 @@ export abstract class AbstractModelWithoutId<Model = Record<string, any>> {
           // when a File value is present, we send the value in the formData request
           // The null/json scenario is used to support deleting images.
           .filter((meta) =>
-            // @ts-expect-error: strict mode indexing
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             this[meta.key] instanceof File ? opts.formData : true,
           )
           .filter((meta) =>
@@ -445,12 +445,12 @@ export abstract class AbstractModel<
    * @param value Display custom value
    */
   public override toString(value?: string): string {
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     if (!value && this["name"]) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       value = this["name"];
     }
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const identifier = value ? `${value} (${this.id})` : this.id.toString();
     return super.toString(identifier);
   }

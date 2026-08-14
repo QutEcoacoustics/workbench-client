@@ -35,21 +35,21 @@ describe("AdminSettingsComponent", () => {
   });
 
   it("should toggle the cache enabled state correctly", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.click(cacheEnabledInput());
     expect(cacheSettings().enabled).toBeFalse();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.click(cacheEnabledInput());
     expect(cacheSettings().enabled).toBeTrue();
   });
 
   it("should toggle the cache logging correctly", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.click(cacheLoggingInput());
     expect(cacheSettings().showLogging).toBeTrue();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.click(cacheLoggingInput());
     expect(cacheSettings().showLogging).toBeFalse();
   });
