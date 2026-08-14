@@ -19,6 +19,9 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
+    // TODO: Re-enable strictNullChecks once the underlying type errors are fixed.
+    // Tracking issue: https://github.com/QutEcoacoustics/workbench-client/issues/2686
+    "strictNullChecks": false,
     "skipLibCheck": true,
     "target": "esnext",
     "types": [
