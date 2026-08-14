@@ -41,6 +41,21 @@ describe("AnnotationReportParameters", () => {
     expect(model.daylightSavings).toBeTrue();
   });
 
+  it("should filter by tags using the 'tags.id' key", () => {
+    const model = new AnnotationReportParameters();
+    model.tags = [14, 26693, 107];
+
+    const { filter } = model.toFilter();
+
+    expect(filter).toEqual(
+      jasmine.objectContaining({
+        and: jasmine.arrayContaining([
+          jasmine.objectContaining({ "tags.id": { in: [14, 26693, 107] } }),
+        ]),
+      }),
+    );
+  });
+
   it("should serialize the current chart query parameters", () => {
     const model = new AnnotationReportParameters();
 
