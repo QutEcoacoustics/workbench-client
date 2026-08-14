@@ -204,14 +204,14 @@ export class AnnotationReportParameters
 
     if (this.regions) {
       filter = filterModelIds<Model>(
-        "region",
+        "regions",
         Array.from(this.regions),
         filter!,
       );
     }
 
     if (this.sites) {
-      filter = filterModelIds<Model>("site", Array.from(this.sites), filter!);
+      filter = filterModelIds<Model>("sites", Array.from(this.sites), filter!);
     }
 
     return filter!;

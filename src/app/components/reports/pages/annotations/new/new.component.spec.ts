@@ -131,4 +131,61 @@ describe("NewAnnotationReportComponent", () => {
     const expectedTitle = `Point: ${spectator.component.site!.name}`;
     expect(pageTitle()).toEqual(expectedTitle);
   });
+
+  describe("ngOnInit region scoping", () => {
+    function setupWithResolverData(
+      project: Project,
+      region?: Region,
+      site?: Site,
+    ): SpectatorRouting<NewAnnotationReportComponent> {
+      const resolvers: Record<string, unknown> = { project: "projectKey" };
+      const data: Record<string, unknown> = {
+        resolvers,
+        project: { model: project },
+      };
+
+      if (region) {
+        resolvers["region"] = "regionKey";
+        data["region"] = { model: region };
+      }
+
+      if (site) {
+        resolvers["site"] = "siteKey";
+        data["site"] = { model: site };
+      }
+
+      return createComponent({
+        detectChanges: false,
+        data,
+        params: {
+          projectId: project.id,
+          regionId: region?.id,
+          siteId: site?.id,
+        },
+      });
+    }
+
+    it("should set model.regions (not model.sites) when scoped to a region", () => {
+      const project = new Project(generateProject());
+      const region = new Region(generateRegion({ projectId: project.id }));
+
+      const s = setupWithResolverData(project, region);
+      s.component.ngOnInit();
+
+      expect(s.component.model.regions).toContain(region.id);
+      expect(s.component.model.sites).toBeFalsy();
+    });
+
+    it("should set model.sites when scoped to a site", () => {
+      const project = new Project(generateProject());
+      const region = new Region(generateRegion({ projectId: project.id }));
+      const site = new Site(generateSite({ regionId: region.id }));
+
+      const s = setupWithResolverData(project, undefined, site);
+      s.component.ngOnInit();
+
+      expect(s.component.model.sites).toContain(site.id);
+      expect(s.component.model.regions).toBeFalsy();
+    });
+  });
 });

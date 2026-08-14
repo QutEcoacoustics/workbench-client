@@ -41,19 +41,49 @@ describe("AnnotationReportParameters", () => {
     expect(model.daylightSavings).toBeTrue();
   });
 
-  it("should filter by tags using the 'tags.id' key", () => {
-    const model = new AnnotationReportParameters();
-    model.tags = [14, 26693, 107];
+  describe("toAudioEventFilter", () => {
+    it("should use 'regions.id' as the filter key when regions are set", () => {
+      const model = new AnnotationReportParameters();
+      model.regions = [4, 5];
 
-    const { filter } = model.toFilter();
+      const filter = model.toAudioEventFilter();
 
-    expect(filter).toEqual(
-      jasmine.objectContaining({
-        and: jasmine.arrayContaining([
-          jasmine.objectContaining({ "tags.id": { in: [14, 26693, 107] } }),
-        ]),
-      }),
-    );
+      expect(filter.filter).toEqual(
+        jasmine.objectContaining({ "regions.id": jasmine.anything() }),
+      );
+      expect(filter.filter).not.toEqual(
+        jasmine.objectContaining({ "region.id": jasmine.anything() }),
+      );
+    });
+
+    it("should use 'sites.id' as the filter key when sites are set", () => {
+      const model = new AnnotationReportParameters();
+      model.sites = [6, 7];
+
+      const filter = model.toAudioEventFilter();
+
+      expect(filter.filter).toEqual(
+        jasmine.objectContaining({ "sites.id": jasmine.anything() }),
+      );
+      expect(filter.filter).not.toEqual(
+        jasmine.objectContaining({ "site.id": jasmine.anything() }),
+      );
+    });
+
+    it("should filter by tags using the 'tags.id' key", () => {
+      const model = new AnnotationReportParameters();
+      model.tags = [14, 26693, 107];
+
+      const { filter } = model.toFilter();
+
+      expect(filter).toEqual(
+        jasmine.objectContaining({
+          and: jasmine.arrayContaining([
+            jasmine.objectContaining({ "tags.id": { in: [14, 26693, 107] } }),
+          ]),
+        }),
+      );
+    });
   });
 
   it("should serialize the current chart query parameters", () => {
