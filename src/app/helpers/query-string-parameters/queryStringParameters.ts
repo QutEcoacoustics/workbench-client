@@ -20,7 +20,7 @@ export type IQueryStringParameterSpec<T = Record<string, unknown>> = Partial<{
 
 // TODO: We should probably have a function to create serializers so that we
 // don't have to repeat "as const satisfies SerializationTechnique" everywhere.
-export interface SerializationTechnique<Value = unknown, QSP = string> {
+export interface SerializationTechnique<Value = unknown, QSP = string | null> {
   serialize: (value: Value) => QSP;
   deserialize: (value: QSP) => Value;
   hasDefault?: boolean;
