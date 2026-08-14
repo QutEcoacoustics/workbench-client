@@ -168,7 +168,7 @@ export class AnnotationReportParameters
 
     if (this.tags) {
       filter = filterModelIds<AudioEvent>(
-        "tag",
+        "tags",
         Array.from(this.tags),
         filter!,
       );
