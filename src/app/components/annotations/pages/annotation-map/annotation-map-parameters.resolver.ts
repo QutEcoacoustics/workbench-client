@@ -21,7 +21,7 @@ export const annotationMapParameterResolvers = {
     {
       provide: "annotationMapParametersResolver",
       useClass: AnnotationMapParametersResolver,
-      deps: [],
+      deps: [] as [],
     },
   ],
 };

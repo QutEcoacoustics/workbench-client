@@ -150,7 +150,7 @@ export class BawApiService<
   /**
    * Handle API empty response
    */
-  private handleEmptyResponse = () => null;
+  private handleEmptyResponse = (): null => null;
 
   /** Clears the entire http cache */
   private clearCache = () => {

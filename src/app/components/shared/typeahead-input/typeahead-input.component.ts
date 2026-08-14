@@ -82,7 +82,7 @@ export class TypeaheadInputComponent<T = unknown> {
     return merge(this.focus$, debouncedText$).pipe(
       // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       distinctUntilChanged(),
-      switchMap((term: string) => {
+      switchMap((term: string): T[] | Observable<T[]> => {
         const callback = this.searchCallback();
         if (!callback) {
           return [];

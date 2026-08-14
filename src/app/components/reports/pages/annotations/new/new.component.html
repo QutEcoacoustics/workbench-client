@@ -25,7 +25,7 @@
     [searchCallback]="createSearchCallback(sitesApi)"
     [resultTemplate]="nameTypeaheadTemplate"
     [inputDisabled]="!!site"
-    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+    (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
   />
 
   <baw-typeahead-input

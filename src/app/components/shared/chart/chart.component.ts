@@ -65,7 +65,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // we therefore don't allow it to be updated with change detection or through an RxJS observable
   /** An immutable spec which describes the layout of the chart. For any reactive values, use vega-lite spec parameters */
   public readonly spec =
-    input.required<Immutable.Collection<string, string | object>>();
+    input.required<Immutable.Collection<string, string | number | object>>();
   /** A single data set */
   public readonly data = input<ChartData>();
   /**

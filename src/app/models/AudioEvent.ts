@@ -157,7 +157,7 @@ export class AudioEvent
     // verification summary with all zero counts.
     //
     // see: https://github.com/QutEcoacoustics/baw-server/issues/869
-    const tagIds = this.tagIds ?? [];
+    const tagIds: Ids = this.tagIds ?? new Set<Id>();
     for (const tagId of tagIds) {
       const hasSummary = this.verificationSummary.some(
         (summary) => summary.tagId === tagId,

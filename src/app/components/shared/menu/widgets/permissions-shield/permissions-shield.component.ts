@@ -1,4 +1,5 @@
 ﻿import { Component, OnInit, inject } from "@angular/core";
+import { DateTime } from "luxon";
 import {
   hasResolvedSuccessfully,
   ResolvedModelList,
@@ -33,7 +34,7 @@ import { UserBadgeComponent } from "../../user-badge/user-badge.component";
           <div>
             <h5 id="label">{{ badge.label }}</h5>
             <baw-user-badge
-              [users]="model[badge.userKey]"
+              [users]="$any(model)[badge.userKey]"
               [timestamp]="badge.timestamp"
             ></baw-user-badge>
           </div>
@@ -56,7 +57,7 @@ export class PermissionsShieldComponent
   private readonly sharedRoute = inject(SharedActivatedRouteService);
 
   public accessLevel!: string;
-  public badges = [];
+  public badges: { label: string; userKey: string; timestamp?: DateTime }[] = [];
   public model!: AbstractModel;
   public pageData!: IPageInfo;
   private project!: Project;

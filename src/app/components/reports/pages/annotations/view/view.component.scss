@@ -9,6 +9,11 @@ h3 {
   width: 100%;
 }
 
+.settings-edit-link {
+  font-size: 0.65em;
+  vertical-align: middle;
+}
+
 #coverage-table {
   width: 60%;
   margin: 0 auto;
@@ -165,12 +170,12 @@ baw-tag-frequency-stacked.large-embedded-figure {
   // this will cause an empty spot where the map should be
   // however, we should still allow the user to disable printing other background graphics, but the map should still be printed
   .site-map {
-    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   #events-table-container,
   #charts-container {
-    break-before: always;
+    break-before: page;
   }
 }

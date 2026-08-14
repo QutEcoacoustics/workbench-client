@@ -89,7 +89,7 @@ export class BawFormApiService<Model extends AbstractModelWithoutId> {
     body: (authToken: string) => URLSearchParams
   ): Observable<void> {
     return this.makeFormRequest(formEndpoint, submissionEndpoint, body).pipe(
-      map(() => undefined)
+      map((): undefined => undefined)
     );
   }
 

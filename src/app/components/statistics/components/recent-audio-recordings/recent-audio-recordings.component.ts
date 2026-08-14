@@ -98,7 +98,7 @@ export class RecentAudioRecordingsComponent implements OnChanges {
 
   public columnMode = ColumnMode;
   public columns!: TableColumn[];
-  public rows = [];
+  public rows: object[] = [];
 
   public ngOnChanges(): void {
     if (!this.columns) {

@@ -3,6 +3,7 @@ import { adminAnalysisJobsMenuItem } from "@components/admin/admin.menus";
 import { adminMenuItemActions } from "@components/admin/dashboard/dashboard.component";
 import { List } from "immutable";
 import { AnalysesComponent } from "@components/audio-analysis/pages/list/list.component";
+import { Project } from "@models/Project";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { DatatableDefaultsDirective } from "@directives/datatable/defaults/defaults.directive";
 import { InlineListComponent } from "@shared/inline-list/inline-list.component";
@@ -26,7 +27,7 @@ import { adminAnalysisJobsCategory } from "../analysis-jobs.menus";
   ],
 })
 class AdminAnalysisJobsComponent extends AnalysesComponent {
-  public override get project() {
+  public override get project(): Project | null {
     return null;
   }
 }

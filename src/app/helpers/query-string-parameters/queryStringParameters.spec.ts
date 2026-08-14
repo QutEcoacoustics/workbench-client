@@ -27,7 +27,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty params object when serializing an undefined value", () => {
-      const testInput = undefined;
+      const testInput: undefined = undefined;
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
@@ -38,7 +38,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty params object when serializing a null value", () => {
-      const testInput = null;
+      const testInput: null = null;
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
@@ -95,7 +95,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should not serialize keys which have a null value", () => {
-      const testInput = { test: "test", doNotSerialize: null };
+      const testInput: { test: string; doNotSerialize: null } = { test: "test", doNotSerialize: null };
       const expectedOutput: Params = { test: "test" };
 
       const testSpec: IQueryStringParameterSpec = {
@@ -111,7 +111,7 @@ describe("queryStringParameters", () => {
     it("should not serialize keys which have an undefined value", () => {
       const testInput = {
         testing: "test",
-        time: undefined,
+        time: undefined as unknown as undefined,
         fakeKey: 42,
         daylightSavings: true,
       };
@@ -136,7 +136,7 @@ describe("queryStringParameters", () => {
     it("should not serialize arrays that only have null values", () => {
       const testInput = {
         testing: "test,mangos",
-        score: [null, null],
+        score: [null, null] as Array<null>,
       };
       const expectedOutput: Params = {
         testing: "test,mangos",
@@ -155,7 +155,7 @@ describe("queryStringParameters", () => {
     it("should not emit keys that have empty array values", () => {
       const testInput = {
         testing: "test,mangos",
-        score: [],
+        score: [] as Array<null>,
       };
       const expectedOutput: Params = {
         testing: "test,mangos",
