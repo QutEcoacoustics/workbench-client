@@ -273,13 +273,13 @@ class AddAnnotationsComponent
     this.importFiles$
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((importFiles) => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.sharedImportState.set(importFiles);
       });
   }
 
   protected getEventModels = (): Observable<TableRow[]> => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.importFiles$.pipe(
       map((files: QueuedFile[]) => {
         const instantiatedFiles = files.filter((file) =>
@@ -287,7 +287,7 @@ class AddAnnotationsComponent
         );
 
         return instantiatedFiles.flatMap((file, fileIndex: number) => {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           return file.model?.importedEvents.map(
             (event: ImportedAudioEvent, eventIndex: number) => {
               return new TableRow({
@@ -304,7 +304,7 @@ class AddAnnotationsComponent
 
   // typeahead returns models, we need ids for filtering
   protected getIdsFromAbstractModelArray(items: object[]): Id[] {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return items.map((item: AbstractModel): Id => item.id!);
   }
 
@@ -329,7 +329,7 @@ class AddAnnotationsComponent
     const filesToImport: File[] = bufferedFiles.map((file: File) => {
       const extension = this.extractFileExtension(file);
 
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const fileTypeMapping = this.extensionMappings[extension!.toLowerCase()];
       if (fileTypeMapping) {
         return this.changeFileTypes(file, fileTypeMapping);
@@ -447,12 +447,12 @@ class AddAnnotationsComponent
   }
 
   // sends all import groups to the api if there are no errors
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   protected commitImports(): Promise<void> {
     // importing invalid annotation imports results in an internal server error
     // we should therefore not submit any upload groups if there are any errors
     if (!this.canCommitUploads()) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return;
     }
 
@@ -479,9 +479,9 @@ class AddAnnotationsComponent
 
           this.router.navigateByUrl(
             annotationImportRoute.toRouterLink({
-              // @ts-expect-error: strict mode fix
+              // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
               annotationId: this.audioEventImport.id,
-              // @ts-expect-error: strict mode fix
+              // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
               projectId: this.project.id,
             })
           );

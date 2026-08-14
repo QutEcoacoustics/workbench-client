@@ -116,7 +116,7 @@ export class AudioRecording
 
   /** Routes to the recording listen page */
   public get playUrl(): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return listenRecordingMenuItem.route.format({ audioRecordingId: this.id })!;
   }
 
@@ -126,7 +126,7 @@ export class AudioRecording
     // TODO Remove this, and replace with solution for #1815
     // Set timezone on recorded date
     if (this.recordedDateTimezone) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.recordedDate = this.recordedDate.setZone(this.recordedDateTimezone);
     }
   }
@@ -194,7 +194,7 @@ export class AudioRecording
       routes,
       ensureResolvedId(project)!,
       ensureResolvedId(region)!,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       ensureResolvedId(site)
     );
   }
@@ -214,20 +214,20 @@ export class AudioRecording
 
     if (site) {
       if (region) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         return routes.siteAndRegion.format(routeParams);
       } else {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         return routes.site.format(routeParams);
       }
     } else if (region) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return routes.region.format(routeParams);
     } else if (project) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return routes.project.format(routeParams);
     } else {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return routes.base.format(routeParams);
     }
   }

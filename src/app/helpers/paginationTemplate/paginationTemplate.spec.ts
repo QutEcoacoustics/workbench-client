@@ -335,7 +335,7 @@ describe("PaginationTemplate", () => {
     });
 
     it("should clear filter if not exists in QSP", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spectator.setRouteQueryParam("query", undefined);
       expect(component.filter).toBe("");
     });
@@ -346,7 +346,7 @@ describe("PaginationTemplate", () => {
     });
 
     it("should set page number to 1 if not exists in QSP", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spectator.setRouteQueryParam("page", undefined);
       expect(component.page).toBe(1);
     });

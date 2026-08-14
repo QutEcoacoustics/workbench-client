@@ -48,11 +48,11 @@ function makeDetailsMenuItem(subRoute: RecordingRoute): MenuRoute {
     route: audioRecordingRoutes[subRoute],
     parent: listMenuItems[subRoute],
     // TODO #346 Show local date time of recording date using timezone where sensor was. Should show timezone on highlight?
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     breadcrumbResolve: (pageInfo) =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       retrieveResolvedModel(pageInfo, AudioRecording)?.id.toFixed(0),
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     title: (routeData: RouterStateSnapshot): string => {
       const componentModel = routeData.root.firstChild!.data;
       return componentModel.audioRecording.model.id.toString();
@@ -122,7 +122,7 @@ export const downloadAudioRecordingMenuItem = menuLink({
   label: "Download",
   tooltip: () => "Download audio recording",
   // Relative routes go to api
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   uri: ({ audioRecordingId }) =>
     audioRecordingOriginalEndpoint(audioRecordingId),
 });

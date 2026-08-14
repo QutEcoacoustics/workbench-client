@@ -105,13 +105,13 @@ describe("AnnotationMapPageComponent", () => {
     // We use a document query instead of spec.query here because ng-bootstrap
     // modals are attached to the document body, not within the component's
     // template, meaning that ng-neat spectator queries cannot find them.
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return document.querySelector("baw-annotation-search-form");
   }
 
   function openSearchForm() {
     const toggleButton = getElementByTextContent(spec, "Edit Filters");
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, toggleButton);
     flush();
   }
@@ -327,7 +327,7 @@ describe("AnnotationMapPageComponent", () => {
       setup();
       clickMarker(0);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const showMoreLink = getElementByTextContent(
         spec,
         "Show More",
@@ -338,11 +338,11 @@ describe("AnnotationMapPageComponent", () => {
       expect(showMoreLink).toHaveStrongRoute(annotationSearchRoute.project, {
         queryParams: searchParameters.toQueryParams(),
         routeParams: {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           projectId: project.id,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           regionId: region.id,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           siteId: site.id,
         },
       });
@@ -364,7 +364,7 @@ describe("AnnotationMapPageComponent", () => {
       clickMarker(0);
 
       const previewButton = spec.query(".preview-event");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, previewButton);
 
       expect(modalSpy.open).toHaveBeenCalledOnceWith(
@@ -412,7 +412,7 @@ describe("AnnotationMapPageComponent", () => {
       const form = annotationSearchForm();
       const tagsTypeahead = form.querySelector("#tags-input");
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       selectFromTypeahead(spec, tagsTypeahead, tags[0].text);
 
       // We have to use a root selector here because the update button is
@@ -421,12 +421,12 @@ describe("AnnotationMapPageComponent", () => {
         root: true,
       });
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       clickButton(spec, updateButton);
 
       // We expect that the annotationSearchParameters now include the newly
       // selected tag.
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.component["annotationSearchParameters"]().tags).toContain(
         tags[0].id,
       );

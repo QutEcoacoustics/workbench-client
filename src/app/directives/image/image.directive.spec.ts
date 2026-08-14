@@ -58,10 +58,10 @@ describe("ImageDirective", () => {
     spectator = createDisabledDirective(src);
     const image = getImage();
     expect(image).toHaveImage(src, { alt: "alt" }, { disableAuth: true });
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const directive = getDirective(image);
     directive["errorHandler"] = jasmine.createSpy().and.stub();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     createImgErrorEvent(image);
     expect(directive["errorHandler"]).not.toHaveBeenCalled();
   });
@@ -72,7 +72,7 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(imageUrls);
 
       const image = getImage();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       createImgErrorEvent(image);
       expect(image).toHaveImage(imageUrls[1].url);
     });
@@ -82,7 +82,7 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(imageUrls);
 
       const image = getImage();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       [1, 2, 3].forEach(() => createImgErrorEvent(image));
       expect(image).toHaveImage(imageUrls[3].url);
     });
@@ -95,7 +95,7 @@ describe("ImageDirective", () => {
       const image = getImage();
       imageUrls
         .slice(0, imageUrls.length - 1)
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         .forEach(() => createImgErrorEvent(image));
       expect(image).toHaveImage(imageUrls[0].url);
     });
@@ -105,7 +105,7 @@ describe("ImageDirective", () => {
       spectator = createDefaultDirective(imageUrls);
 
       const image = getImage();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       imageUrls.forEach(() => createImgErrorEvent(image));
       expect(image).toHaveImage(image404Src);
     });
@@ -116,7 +116,7 @@ describe("ImageDirective", () => {
     });
 
     it("given undefined src, it loads 404 image", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spectator = createDefaultDirective(undefined);
       expect(getImage()).toHaveImage(image404Src);
     });
@@ -131,7 +131,7 @@ describe("ImageDirective", () => {
 
       const image = getImage();
       // Spam errors
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       [1, 2, 3, 4].forEach(() => createImgErrorEvent(image));
       // Image url should have only been set once
       expect(spy).toHaveBeenCalledTimes(1);
@@ -213,7 +213,7 @@ describe("ImageDirective", () => {
       const imageUrls = modelData.imageUrls().slice(0, 1);
       imageUrls[0].url = getApiRoot() + "/image.png";
       spectator = createApiDirective(imageUrls);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setLoggedIn(undefined);
       spectator.detectChanges();
 
@@ -252,7 +252,7 @@ describe("ImageDirective", () => {
 
     it("should update with new images", () => {
       const imageUrls = modelData.imageUrls();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spectator = createDefaultDirective(undefined);
 
       const image = getImage();
@@ -262,12 +262,12 @@ describe("ImageDirective", () => {
 
     it("should display 404 image after all urls attempted", () => {
       const imageUrls = modelData.imageUrls();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spectator = createDefaultDirective(undefined);
       const image = getImage();
 
       imageUrls.forEach((imageUrl) => updateDirective([imageUrl]));
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       imageUrls.forEach(() => createImgErrorEvent(image));
       expect(image).toHaveImage(image404Src);
     });

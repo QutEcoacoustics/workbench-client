@@ -211,7 +211,7 @@ describe("RenderFieldComponent", () => {
     it("should display object error when JSON stringy fails", () => {
       // Create cyclic object should fail JSON.stringify
       const cyclicObject = { a: [] };
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       cyclicObject.a.push(cyclicObject);
 
       setup(cyclicObject);
@@ -248,7 +248,7 @@ describe("RenderFieldComponent", () => {
     });
   });
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   withDefaultZone(null, () => {
     describe("DateTime input without zone", () => {
       let dateTime: DateTime;
@@ -383,7 +383,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should handle error output", async () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       await setBlob(undefined, "failure");
       spec.detectChanges();
       assertError();
@@ -419,7 +419,7 @@ describe("RenderFieldComponent", () => {
     });
 
     it("should display ghost user", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(User.getUnknownUser(undefined));
       spec.detectChanges();
       expect(getElement.values().length).toBe(1);
@@ -565,7 +565,7 @@ describe("RenderFieldComponent", () => {
       setup(imageUrls);
       spec.detectChanges();
       const value = getElement.image()[0];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       value.onerror("unit test");
       spec.detectChanges();
       expect(value).toHaveImage(imageUrls[1].url, { alt: "model image alt" });

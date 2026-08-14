@@ -146,7 +146,7 @@ export abstract class FormTemplate<Model extends AbstractModel>
     this.apiAction(event)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         next: (model: Model) => {
           /*
            * First pass attempt a generating success message. This is required

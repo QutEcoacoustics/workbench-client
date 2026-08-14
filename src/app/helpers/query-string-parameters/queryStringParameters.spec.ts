@@ -31,7 +31,7 @@ describe("queryStringParameters", () => {
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const result = serializeObjectToParams(testInput, testSpec);
 
       expect(result).toEqual(expectedOutput);
@@ -42,7 +42,7 @@ describe("queryStringParameters", () => {
       const expectedOutput: Params = {};
       const testSpec: IQueryStringParameterSpec = {};
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const result = serializeObjectToParams(testInput, testSpec);
 
       expect(result).toEqual(expectedOutput);
@@ -184,7 +184,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty object when deserializing a null value", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const testInput: Params = null;
       const expectedOutput = {};
       const testSpec: IQueryStringParameterSpec = {};
@@ -195,7 +195,7 @@ describe("queryStringParameters", () => {
     });
 
     it("should return an empty object when deserializing an undefined value", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const testInput: Params = undefined;
       const expectedOutput = {};
       const testSpec: IQueryStringParameterSpec = {};
@@ -284,9 +284,9 @@ describe("queryStringParameters", () => {
 
       const result = deserializeParamsToObject(testInput, testSpec);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(result["time"][0]).toBeNull();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(result["time"][1].toFormat("hh:mm")).toEqual("12:12");
     });
 
@@ -300,7 +300,7 @@ describe("queryStringParameters", () => {
       };
 
       const result = deserializeParamsToObject(testInput, testSpec);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(result["badId"]).toBeNull();
     });
   });
@@ -326,11 +326,11 @@ describe("queryStringParameters", () => {
 
       // Luxon Duration carries internal locale/cache metadata that can vary
       // across constructors; assert semantic values instead of deep internals.
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(deserialized.time[0]?.toFormat("hh:mm")).toEqual("01:30");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(deserialized.time[1]?.toFormat("hh:mm")).toEqual("02:45");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(deserialized.time[2]).toBeTrue();
     });
   });

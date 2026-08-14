@@ -66,7 +66,7 @@ describe("HomeComponent", () => {
 
     const promise = interceptFilterApiRequest<IRegion, Region>(
       regionApi,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       undefined,
       regions,
       Region
@@ -87,7 +87,7 @@ describe("HomeComponent", () => {
 
     const promise = interceptFilterApiRequest<IProject, Project>(
       projectApi,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       undefined,
       projects,
       Project
@@ -107,7 +107,7 @@ describe("HomeComponent", () => {
   }
 
   function getModelCards(): CardsComponent {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(CardsComponent);
   }
 
@@ -116,7 +116,7 @@ describe("HomeComponent", () => {
   }
 
   function getViewMoreButton(): HTMLAnchorElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query("#viewMore");
   }
 
@@ -227,7 +227,7 @@ describe("HomeComponent", () => {
         const model: any = test.generateModel();
         await test.awaitModel([model]);
         assertModelCardsCount(1);
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getModelCards()!.models()[0]).toEqual(model);
         expect(getViewMoreButton()).toBeTruthy();
       });

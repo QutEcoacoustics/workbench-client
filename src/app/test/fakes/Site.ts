@@ -9,12 +9,12 @@ export function generateSite(
     id: modelData.id(),
     name: modelData.param(),
     imageUrls: modelData.imageUrls(),
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     image: undefined,
     locationObfuscated: modelData.bool(),
     projectIds: modelData.ids(),
     // This is purposefully disabled by default as it changes the behavior of the model
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     regionId: hasRegion ? modelData.id() : undefined,
     latitude: modelData.latitude(),
     customLatitude: modelData.latitude(),

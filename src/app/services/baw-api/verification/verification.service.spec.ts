@@ -88,7 +88,7 @@ describe("ShallowVerificationService", () => {
     spec = createService();
   });
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   validateStandardApi<Model, ShallowParams, ShallowService>(
     () => spec,
     Verification,
@@ -185,7 +185,7 @@ describe("ShallowVerificationService", () => {
           spec.service.showUserVerification(mockAudioEvent, mockTag),
         );
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(response).toEqual(mockFilterResponse[0]);
       });
 

@@ -29,7 +29,7 @@ export function generateAudioRecording(
     id: modelData.id(),
     uuid: modelData.uuid(),
     uploaderId: modelData.id(),
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     recordedDate: recordedDate.toISO(),
     siteId: modelData.id(),
     durationSeconds,
@@ -44,7 +44,7 @@ export function generateAudioRecording(
     status: modelData.helpers.arrayElement(statuses),
     notes: modelData.notes(),
     originalFileName: modelData.system.commonFileName(".mpg"),
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     recordedDateTimezone: recordedDate.zoneName,
     ...modelData.model.generateAllUsers(),
     ...data,

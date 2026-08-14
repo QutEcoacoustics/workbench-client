@@ -57,7 +57,7 @@ describe("AppComponent", () => {
 
   function setPageInfo(pageInfo: IPageInfo) {
     const menuService = spec.inject(MenuService);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     (menuService as Writeable<MenuService>).isFullscreen = pageInfo.fullscreen;
     eventSubject.next(pageInfo);
     spec.detectChanges();

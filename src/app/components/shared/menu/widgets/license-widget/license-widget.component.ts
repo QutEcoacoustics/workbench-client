@@ -60,7 +60,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
 
         if (targetModel instanceof Project) {
           // If the model is a project, we can just use the license directly
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.setLicenses([targetModel.license]);
           return;
         }
@@ -74,7 +74,7 @@ export class LicenseWidgetComponent implements OnInit, WidgetComponent {
               }
 
               const licenses = projects.map((project) => project.license);
-              // @ts-expect-error: strict mode fix
+              // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
               this.setLicenses(licenses);
             }),
           );

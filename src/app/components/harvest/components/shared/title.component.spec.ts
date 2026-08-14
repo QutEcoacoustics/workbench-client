@@ -47,11 +47,11 @@ describe("titleComponent", () => {
   }
 
   const getHarvestTitle = (): HTMLElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.query("form");
 
   const getNameEditButton = (): HTMLElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.query("sub");
 
   const getNameEditInput = (): HTMLInputElement =>
@@ -75,7 +75,7 @@ describe("titleComponent", () => {
   });
 
   it("should not attempt to load the harvest name when a Harvest model is not initialized", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     mockHarvest = undefined;
     setup();
 
@@ -96,7 +96,7 @@ describe("titleComponent", () => {
     tick();
     spectator.detectChanges();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(nameEditInput.value).toEqual(mockHarvest.name);
   }));
 

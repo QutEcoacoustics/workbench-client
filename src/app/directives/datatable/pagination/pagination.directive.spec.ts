@@ -120,7 +120,7 @@ describe("DatatablePaginationDirective", () => {
         const row = getRowValues(index);
         expect(row).toHaveLength(2);
         expect(row[0]).toHaveText(model.id!.toString());
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(row[1]).toHaveText(model["name"].toString());
       });
     });
@@ -130,7 +130,7 @@ describe("DatatablePaginationDirective", () => {
     const delayMs = 10000;
 
     function assertLoading(isLoading: boolean) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(DatatableComponent).loadingIndicator).toBe(isLoading);
     }
 
@@ -216,7 +216,7 @@ describe("DatatablePaginationDirective", () => {
 
   describe("total", () => {
     function assertTotal(total: number) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(DatatableComponent).count).toBe(total);
     }
 
@@ -243,7 +243,7 @@ describe("DatatablePaginationDirective", () => {
   describe("page", () => {
     function assertPage(page: number) {
       // Offset is the current page number, minus one
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(spec!.query(DatatableComponent).offset).toBe(page - 1);
     }
 

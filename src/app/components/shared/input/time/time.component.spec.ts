@@ -17,9 +17,9 @@ describe("TimeComponent", () => {
 
   beforeEach(() => setup());
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const inputElement = (): HTMLInputElement => spectator.query("input");
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const errorsElement = (): HTMLDivElement => spectator.query(".invalid-feedback");
 
   function typeInTimeValue(value: string): void {

@@ -133,14 +133,14 @@ export class AnnotationDownloadComponent
       return this.siteApi.downloadAnnotations(
         this.site,
         this.region?.projectId ?? this.project,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         timezone
       );
     } else if (this.region) {
       return this.regionApi.downloadAnnotations(
         this.region,
         this.region?.projectId ?? this.project,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         timezone
       );
     }

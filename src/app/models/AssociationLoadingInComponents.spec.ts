@@ -92,7 +92,7 @@ describe("Association Decorators Loading In Components", () => {
   ): Promise<void> {
     const subject = new Subject<AssociatedModel>();
     const promise = nStepObservable(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       subject,
       () => (model ? model : error),
       !model
@@ -158,7 +158,7 @@ describe("Association Decorators Loading In Components", () => {
 
   it("should display hasOne error", async () => {
     const promise = interceptSingleModel(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       undefined,
       generateBawApiError(NOT_FOUND)
     );
@@ -178,22 +178,22 @@ describe("Association Decorators Loading In Components", () => {
   });
 
   it("should display empty hasMany resolved model", async () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const associatedModels = [];
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
     fixture.detectChanges(); // Load childModel
     await promise;
     fixture.detectChanges(); // Displays childModel
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     assertOutput(associatedModels);
   });
 
   it("should display single hasMany resolved model", async () => {
     const associatedModels = [new AssociatedModel({ id: 1 })];
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;
@@ -209,7 +209,7 @@ describe("Association Decorators Loading In Components", () => {
       new AssociatedModel({ id: 2 }),
       new AssociatedModel({ id: 3 }),
     ];
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const promise = interceptMultipleModels(undefined, associatedModels);
     component.model = new MockModel({ id: 0, ids: 0 }, injector);
     component.hasMany = true;

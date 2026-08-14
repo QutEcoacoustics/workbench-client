@@ -107,9 +107,9 @@ describe("SiteEditComponent", () => {
       };
 
       if (region) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         resolvers["region"] = "resolver";
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         models["region"] = getResolvedModel(region);
       }
 
@@ -123,17 +123,17 @@ describe("SiteEditComponent", () => {
     }
 
     const longitudeInputElement = (): HTMLInputElement =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.query<HTMLInputElement>("#longitude");
     const latitudeInputElement = (): HTMLInputElement =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.query<HTMLInputElement>("#latitude");
 
     [true, false].forEach((withRegion) => {
       describe(withRegion ? "withRegion" : "withoutRegion", () => {
         beforeEach(() => {
           defaultProject = new Project(generateProject());
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           defaultRegion = withRegion ? new Region(generateRegion()) : undefined;
           defaultSite = new Site(
             generateSite(withRegion ? { regionId: defaultRegion.id } : {})

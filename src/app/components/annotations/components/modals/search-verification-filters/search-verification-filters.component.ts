@@ -34,7 +34,7 @@ export class SearchVerificationFiltersModalComponent implements ModalComponent {
   // TODO: Migrate this to a signal once we add support for signals to the
   // ModalComponent interface.
   @Input()
-  // @ts-expect-error: strict mode override
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public successCallback!: (newModel: ModalReturnValue) => void;
 
   public closeModal(): void {

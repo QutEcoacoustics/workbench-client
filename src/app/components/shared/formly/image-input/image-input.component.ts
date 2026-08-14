@@ -73,7 +73,7 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
     // default image if the user hasn't explicitly set an image on the client.
     const isUsingServerDefaultImage =
       !imageUrls ||
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       imageUrls.every((image: ImageUrl): boolean => image.default);
 
     // Return true if:
@@ -130,9 +130,9 @@ export class ImageInputComponent extends FieldType implements AfterViewInit {
   }
 
   private fileName(filePath: string): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       filePath
         ?.split("/")
         .pop()

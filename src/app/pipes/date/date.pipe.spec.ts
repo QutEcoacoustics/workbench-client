@@ -24,13 +24,13 @@ describe("DatePipe", () => {
   });
 
   it("should handle undefined value", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(undefined);
     expect(spectator.element).toHaveExactText("");
   });
 
   it("should handle null value", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(null);
     expect(spectator.element).toHaveExactText("");
   });

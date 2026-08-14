@@ -131,7 +131,7 @@ describe("CardComponent", () => {
       setup(model);
       spec.detectChanges();
       const title = spec.query<HTMLHeadingElement>("h4");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(title).toContainText(model.name);
     });
 
@@ -173,7 +173,7 @@ describe("CardComponent", () => {
       spec.detectChanges();
 
       const description = spec.query(".card-text");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(description!.innerHTML).toContain(model.descriptionHtmlTagline);
     });
 
@@ -253,7 +253,7 @@ describe("CardComponent", () => {
         const model = createModel();
         setup(model);
         spec.detectChanges();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertSpinner(getNoAudioBadge(), true);
       });
 
@@ -265,7 +265,7 @@ describe("CardComponent", () => {
         spec.detectChanges();
 
         const badge = getNoAudioBadge();
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertSpinner(badge, false);
         expect(badge).toContainText("No audio");
       });

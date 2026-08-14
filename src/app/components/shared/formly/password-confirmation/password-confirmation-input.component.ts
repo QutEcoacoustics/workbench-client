@@ -75,7 +75,7 @@ export class PasswordConfirmationInputComponent
   public ngOnInit() {
     this.formControl.setValidators(() => {
       const error = this.validatePassword();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return error ? { [this.field.key.toString()]: error } : null;
     });
     this.formControl.updateValueAndValidity();
@@ -94,20 +94,20 @@ export class PasswordConfirmationInputComponent
   }
 
   public getError(): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.formControl.getError(this.field.key.toString());
   }
 
   /**
    * Validate location values and return error if any
    */
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   private validatePassword(): string {
     this.passwordError = false;
     this.confirmationError = false;
 
     if (!this.formControl.dirty && this.password.length === 0) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return;
     }
 

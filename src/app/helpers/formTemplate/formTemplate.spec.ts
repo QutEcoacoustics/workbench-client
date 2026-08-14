@@ -72,7 +72,7 @@ describe("formTemplate", () => {
   ) {
     // Set new formTemplateOptions without losing reference
     for (const key of Object.keys(formProps)) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       delete formProps[key];
     }
     Object.assign(formProps, templateProps);
@@ -91,9 +91,9 @@ describe("formTemplate", () => {
   function createResolvers(resolvers: string[], models: ResolvedModel[]) {
     const routeData = { data: { resolvers: {} } };
     resolvers.forEach((resolver, index) => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       routeData.data.resolvers[resolver] = `${resolver}Resolver`;
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       routeData.data[resolver] = models[index];
     });
     return routeData;
@@ -379,7 +379,7 @@ describe("formTemplate", () => {
       const modelData = { id: 1 };
       const successMsg = (model: MockModel) =>
         "custom success message with id: " + model.id;
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(undefined, { successMsg: successMsg });
       stubFormResets();
       spec.detectChanges();

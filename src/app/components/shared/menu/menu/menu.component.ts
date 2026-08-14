@@ -135,7 +135,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     // modal success callbacks should be called with the current page instance
     // the page instance is set from the menu service because the menu item should not have any knowledge of the current route
     if (modal.successCallback) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       modal.successCallback = this.menuService.constructSuccessCallback(modal.successCallback);
     }
 
@@ -164,7 +164,7 @@ export class MenuComponent implements OnChanges, AfterViewInit {
     const temp = this.menuWidget.createComponent(widget.component);
 
     Object.keys(widget.options ?? {}).forEach((key) => {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       temp.instance[key] = widget.options![key];
     });
 

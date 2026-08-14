@@ -37,7 +37,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
 
     jasmine.clock().install();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.component.feature = feature;
     spectator.component.message = message;
 
@@ -66,7 +66,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       }),
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(goodWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).not.toExist();
@@ -90,7 +90,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       }),
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(badWebsiteStatus, "isUploadingHealthy");
 
     expect(warningMessage()).toExist();
@@ -108,7 +108,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       }),
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(mockWebsiteStatus, "isUploadingHealthy", "upload audio");
 
     expect(warningMessage()).not.toExist();
@@ -121,7 +121,7 @@ describe("WebsiteCapabilityWarningComponent", () => {
       }),
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(mockWebsiteStatus, "isStorageHealthy", "download audio");
 
     expect(warningMessage()).toExist();

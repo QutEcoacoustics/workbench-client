@@ -102,10 +102,10 @@ export class MetadataReviewComponent
       isOpen: false,
       page: 1,
       path: rootMappingPath,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       parentFolder: null,
       // Root folder does not have harvestItem, use hard-coded path for search
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       mapping: this.harvest.mappings.find(
         (mapping) => mapping.path === rootMappingPath
       ),
@@ -206,12 +206,12 @@ export class MetadataReviewComponent
   public trackByRow = (_: number, row: MetaReviewRow): string =>
     (row as MetaReviewFolder).isRoot
       ? (row as MetaReviewFolder).path
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       : row.harvestItem?.path;
 
   public updateHarvestWithMappingChange(): void {
     // create a new "temporary" model of the Harvest mappings
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const newMappings = new Map(this.harvest.mappings.map((x) => [x.path, x]));
 
     /**
@@ -335,7 +335,7 @@ export class MetadataReviewComponent
 
     // If no children, don't delete anything
     if (offset === 0) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return;
     }
 
@@ -359,7 +359,7 @@ export class MetadataReviewComponent
       harvestItem: parentFolder!.harvestItem,
       mapping: parentFolder!.mapping,
       page,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       parentFolder,
       isLoading: false,
     };
@@ -420,7 +420,7 @@ export class MetadataReviewComponent
     harvest: Harvest,
     harvestItem: HarvestItem
   ): HarvestMapping | null {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return harvest.mappings!.find(
       (_mapping): boolean => harvestItem.path === _mapping.path
     );
@@ -439,7 +439,7 @@ export class MetadataReviewComponent
           bgColor: "success",
           icon: ["fas", "folder-tree"],
           label: "Total Files",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           value: report!.itemsTotal.toLocaleString(),
         },
       ],
@@ -448,9 +448,9 @@ export class MetadataReviewComponent
           bgColor: "success",
           icon: ["fas", "hard-drive"],
           label: "Total Size",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           value: report!.itemsSize,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           tooltip: report!.itemsSizeBytes.toLocaleString() + " bytes",
         },
       ],
@@ -463,7 +463,7 @@ export class MetadataReviewComponent
             largest: 1,
             maxDecimalPoint: 0,
           }),
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           tooltip: report!.itemsDurationSeconds.toLocaleString() + " seconds",
         },
       ],
@@ -472,7 +472,7 @@ export class MetadataReviewComponent
           bgColor: "warning",
           icon: metaReviewIcons.warning,
           label: "Need Attention",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           value: report!.itemsInvalidFixable.toLocaleString(),
         },
         {
@@ -480,7 +480,7 @@ export class MetadataReviewComponent
           bgColor: "danger",
           icon: metaReviewIcons.failure,
           label: "Problems",
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           value: report!.itemsInvalidNotFixable.toLocaleString(),
         },
       ],

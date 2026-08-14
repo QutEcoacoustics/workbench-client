@@ -399,7 +399,7 @@ class VerificationComponent
     // I have to use "as string" here because the upstream typing is incorrect
     // TODO: We should remove this "as string" and improve the upstream typing
     const mappedDecision =
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       confirmedMapping[(subjectWrapper.verification as any).confirmed];
 
     const tagId = subjectWrapper.tag!.id;
@@ -500,7 +500,7 @@ class VerificationComponent
       searchFilters.filter!,
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const sorting: Sorting<keyof AudioEvent> = {
       ...verificationFilters.sorting,
       ...searchFilters.sorting,
@@ -544,14 +544,14 @@ class VerificationComponent
   // see: https://github.com/ecoacoustics/web-components/issues/444
   private tagVerificationPredicate(): WhenPredicate {
     // The user can only verify a tag if there is a tag applied to the subject.
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (subject: SubjectWrapper) => {
       return subject.tag !== null;
     };
   }
 
   private addTagWhenPredicate(): WhenPredicate {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (subject: SubjectWrapper) => {
       // If there is no tag applied to the subject, we cannot perform a tag
       // correction task.

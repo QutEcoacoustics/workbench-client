@@ -48,7 +48,7 @@ export class Permission
 
   public get viewUrl(): string {
     return editProjectPermissionsRoute.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId: this.projectId,
     });
   }

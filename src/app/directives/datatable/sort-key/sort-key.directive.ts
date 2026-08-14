@@ -15,7 +15,7 @@ export class DatatableSortKeyDirective implements OnChanges {
     // the sortKey is custom property that we add to ngx-datatable columns that
     // does not exist on the normal column type definition.
     // We use this sortKey property inside of our custom pagination.directive
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.column["sortKey"] = this.sortKey;
   }
 }

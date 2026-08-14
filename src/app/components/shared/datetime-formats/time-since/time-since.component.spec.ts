@@ -47,7 +47,7 @@ describe("TimeSince", () => {
     function setup(defaultValue: DateTime | Duration | Date): void {
       // because the tickValue is a singleton, if we don't set it to undefined
       // the tickValue from the previous test will leak into the next test
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       TimeSinceComponent["tickValue"] = undefined;
 
       jasmine.clock().install();
@@ -96,7 +96,7 @@ describe("TimeSince", () => {
 
       // because the tickValue is a singleton, if we don't set it to undefined
       // the tickValue from the previous test will leak into the next test
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       TimeSinceComponent["tickValue"] = undefined;
     });
 
@@ -169,7 +169,7 @@ describe("TimeSince", () => {
         });
 
         it("should have the correct tooltip", () => {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           assertTooltip(timeElement(), testCase.expectedTooltip);
         });
 

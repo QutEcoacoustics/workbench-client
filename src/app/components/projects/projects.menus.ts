@@ -32,7 +32,7 @@ export const projectsMenuItem = menuRoute({
   order: 4,
   route: projectsRoute,
   tooltip: () => "View projects I have access to",
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (_routerState: RouterStateSnapshot, titleOptions: TitleOptionsHash) =>
     titleOptions.hideProjects ? "Sites" : "Projects",
 });
@@ -71,10 +71,10 @@ export const projectMenuItem = menuRoute({
   parent: projectsMenuItem,
   route: projectRoute,
   tooltip: () => "The current project",
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   breadcrumbResolve: (pageInfo) =>
     retrieveResolvedModel(pageInfo, Project)?.name,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (routeData: RouterStateSnapshot): string => {
     const componentModel = routeData.root.firstChild!.data;
     return componentModel?.project?.model?.name ?? "Unknown";

@@ -10,11 +10,11 @@ import { Subject } from "rxjs";
 export function withUnsubscribe<
   T extends Type<{
     constructor: unknown;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     ngOnDestroy?();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     ngOnInit?();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     ngAfterViewInit?();
   }>
 >(base: T = class {} as any) {

@@ -41,7 +41,7 @@ describe("AssignComponent", () => {
 
     mockApi.show = jasmine.createSpy("show") as any;
     mockApi.show.and.callFake((id) =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       of(mockSites.find((site) => site.id === id))
     );
 
@@ -60,12 +60,12 @@ describe("AssignComponent", () => {
     spectator.query<HTMLButtonElement>("button[type='submit']");
 
   function submitForm(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spectator, updateButton());
   }
 
   function getSiteRow(siteName: string): HTMLElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return getElementByTextContent(spectator, siteName)!.parentElement.parentElement;
   }
 
@@ -75,12 +75,12 @@ describe("AssignComponent", () => {
       "input[type='checkbox']"
     );
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return siteCheckbox;
   }
 
   function selectSite(model: Site): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (!siteCheckbox.checked) {
@@ -89,7 +89,7 @@ describe("AssignComponent", () => {
   }
 
   function deselectSite(model: Site): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const siteCheckbox = getSiteCheckbox(model.name);
 
     if (siteCheckbox.checked) {
@@ -132,7 +132,7 @@ describe("AssignComponent", () => {
   it("should display project in title", () => {
     setup();
     const expectedText = mockProject.name;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(projectHeader()).toHaveExactTrimmedText(expectedText);
   });
 

@@ -40,25 +40,25 @@ describe("IsGhostUserPipe", () => {
   ].forEach((testCase) => {
     describe(testCase.type, () => {
       it("should return true for undefined value", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setup(undefined, testCase.type);
         assertPipe(true);
       });
 
       it("should return true for null value", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setup(null, testCase.type);
         assertPipe(true);
       });
 
       it(`should return ${testCase.unknown} for unknown user`, () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setup(User.getUnknownUser(undefined), testCase.type);
         assertPipe(testCase.unknown);
       });
 
       it(`should return ${testCase.deleted} for deleted user`, () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setup(User.getDeletedUser(undefined), testCase.type);
         assertPipe(testCase.deleted);
       });

@@ -156,7 +156,7 @@ export class SecurityService {
    * Logout user and clear session storage values
    */
   public signOut(): Observable<void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return (
       this.api
         // Sign out without notification so that signUp and signIn endpoints
@@ -213,7 +213,7 @@ export class SecurityService {
         // Only accept the first result from the API (can return multiple times)
         first(),
         // Save to local storage
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         tap((user: Session) => (authToken = user.authToken)),
         // Get user details
         switchMap(() => this.userService.showWithoutNotification()),
@@ -243,7 +243,7 @@ export class SecurityService {
     let authToken: AuthToken;
     this.sessionDetails()
       .pipe(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         tap((user) => (authToken = user.authToken)),
         mergeMap(() => this.userService.showWithoutNotification()),
         first(),

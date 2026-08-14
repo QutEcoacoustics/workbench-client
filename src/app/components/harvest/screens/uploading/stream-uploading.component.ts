@@ -58,13 +58,13 @@ export class StreamUploadingComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.mappings = this.stages.harvest.mappings!;
     this.stages.startPolling(5000);
   }
 
   public getMappingUploadUrl(mapping: IHarvestMapping) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.stages.harvest.uploadUrlWithAuth + "/" + mapping.path;
   }
 

@@ -80,7 +80,7 @@ export class TypeaheadInputComponent<T = unknown> {
     const debouncedText$ = text$.pipe(debounceTime(defaultDebounceTime));
 
     return merge(this.focus$, debouncedText$).pipe(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       distinctUntilChanged(),
       switchMap((term: string) => {
         const callback = this.searchCallback();
@@ -104,7 +104,7 @@ export class TypeaheadInputComponent<T = unknown> {
     );
   };
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   protected templateFormatter = (item: T): string => item.toString();
 
   protected onItemSelected(event: NgbTypeaheadSelectItemEvent<T>): void {
@@ -124,7 +124,7 @@ export class TypeaheadInputComponent<T = unknown> {
       this.value.set([selectedItem]);
       this.modelChange.emit([selectedItem]);
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.inputModel.set(selectedItem.toString());
     }
   }

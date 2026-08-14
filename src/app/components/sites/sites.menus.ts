@@ -25,9 +25,9 @@ export const siteMenuItem = menuRoute({
   parent: projectMenuItem,
   route: sitesCategory.route,
   tooltip: () => "The current site",
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   breadcrumbResolve: (pageInfo) => retrieveResolvedModel(pageInfo, Site)?.name,
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   title: (routeData: RouterStateSnapshot) => {
     const componentModel = routeData.root.firstChild!.data;
     return componentModel.site.model?.name;

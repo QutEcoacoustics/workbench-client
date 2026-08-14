@@ -17,7 +17,7 @@ describe("WebsiteStatusIndicatorComponent", () => {
   let mockStatus: BehaviorSubject<WebsiteStatus>;
 
   const indicatorElement = (): HTMLAnchorElement =>
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spectator.query<HTMLAnchorElement>("a");
 
   const createComponent = createComponentFactory({

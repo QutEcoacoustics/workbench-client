@@ -40,7 +40,7 @@ export function assertChart(
 
     function axisLabels(axisElement: Element): string[] {
       const labelGroup = axisElement.querySelector(".role-axis-label");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const labels = Array.from(labelGroup?.querySelectorAll("text"));
 
       const labelText = labels.map((label) => label.textContent?.trim() ?? "");

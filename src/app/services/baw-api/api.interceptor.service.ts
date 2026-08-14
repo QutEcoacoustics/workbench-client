@@ -85,13 +85,13 @@ export class BawApiInterceptor implements HttpInterceptor {
 
       // Need to it this way so that whitelisted key values are respected in conversion
       let converted = {};
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       converted[key] = value;
       converted = toSnakeCase(converted);
 
       newParams = newParams.set(
         Object.keys(converted)[0],
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         converted[Object.keys(converted)[0]]
       );
     }

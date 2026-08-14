@@ -23,19 +23,19 @@ export function embedGoogleAnalytics(key?: string): void {
 
   // Create Create dataLayer for google analytics:
   // developers.google.com/tag-platform/tag-manager/web/datalayer
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   window["dataLayer"] = window["dataLayer"] || [];
   window["gtag"] = function () {
     // Arguments creates an array like object, which is not the same as ...args.
     // Google analytics is dependant on this behaviour, and will not work
     // otherwise
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     // eslint-disable-next-line prefer-rest-params
     window["dataLayer"]!.push(arguments);
   };
 
   gtag("js", new Date());
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   gtag("config", key);
 
   const node: HTMLScriptElement = document.createElement("script");

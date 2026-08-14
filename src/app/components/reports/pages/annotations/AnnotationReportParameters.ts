@@ -238,7 +238,7 @@ export class AnnotationReportParameters
         filter = filterDate(
           filter as InnerFilter<AudioRecording>,
           this.dateStartedAfter!,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.dateFinishedBefore,
         ) as InnerFilter<Model>;
       }
@@ -257,7 +257,7 @@ export class AnnotationReportParameters
           filter as InnerFilter<AudioRecording>,
           this.daylightSavings,
           this.timeStartedAfter!,
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.timeFinishedBefore,
         ) as InnerFilter<Model>;
       }

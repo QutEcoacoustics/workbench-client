@@ -25,7 +25,7 @@ class MockComponent implements OnInit {
   public error!: BawApiError;
 
   public ngOnInit() {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.error = new BawApiError(
       UNAUTHORIZED,
       "You need to log in or register before continuing.",
@@ -151,12 +151,12 @@ describe("ErrorHandlerComponent", () => {
     { test: "undefined", value: undefined },
   ].forEach(({ test, value }) => {
     it(`should handle ${test} status code`, () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       component.error = value;
       fixture.detectChanges();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       assertTitle(undefined);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       assertDescription(undefined);
     });
   });

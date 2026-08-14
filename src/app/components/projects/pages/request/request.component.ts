@@ -57,7 +57,7 @@ class RequestComponent extends withFormCheck(PageComponent) implements OnInit {
       .subscribe({
         next: (projects) => {
           this.projects = projects;
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.fields[0].props.options = projects.map((project) => ({
             value: project.id,
             label: project.name,

@@ -71,7 +71,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     model: IdOr<Site>,
     project: IdOr<Project>
   ): Observable<Site | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
@@ -88,7 +88,7 @@ export class SitesService implements StandardApi<Site, [IdOr<Project>]> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "regionId", region),
       project
     );
@@ -158,7 +158,7 @@ export class ShallowSitesService implements StandardApi<Site> {
   }
 
   public destroy(model: IdOr<Site>): Observable<Site | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 
@@ -173,7 +173,7 @@ export class ShallowSitesService implements StandardApi<Site> {
     user: IdOr<User>
   ): Observable<Site[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "creatorId", user)
     );
   }
@@ -189,7 +189,7 @@ export class ShallowSitesService implements StandardApi<Site> {
     region: IdOr<Region>
   ): Observable<Site[]> {
     return this.filter(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.api.filterThroughAssociation(filters, "regionId", region)
     );
   }

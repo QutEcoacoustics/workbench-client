@@ -255,7 +255,7 @@ describe("PrimaryMenuComponent", () => {
           const profile = spec.query<HTMLAnchorElement>(profileWidgetSelector);
           if (links.profile) {
             expect(profile).toHaveStrongRoute(myAccountMenuItem.route);
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             expect(profile).toContainText(defaultUser!.userName);
           } else {
             expect(profile).toBeFalsy();
@@ -344,7 +344,7 @@ describe("PrimaryMenuComponent", () => {
 
     it("should call signOut when logout button pressed", () => {
       setup({ user: defaultUser });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spyOn(api, "signOut").and.callFake(() => new BehaviorSubject<void>(null));
       spec.detectChanges();
 
@@ -410,14 +410,14 @@ describe("PrimaryMenuComponent", () => {
 
   describe("status indicator", () => {
     const statusIndicatorElement = (): HTMLElement =>
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.query("baw-website-status-indicator");
 
     // the functionality of the status indicator is tested within the website-status-indicator component
     // therefore, we only need to assert that the indicator is shown under the correct conditions
     it("should show the status indicator when not in the sidebar and on desktop", () => {
       setup({
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         user: null,
         isFullscreen: false,
         isSideNav: false,
@@ -431,7 +431,7 @@ describe("PrimaryMenuComponent", () => {
 
     it("should hide the status indicator when in the sidebar", () => {
       setup({
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         user: null,
         isFullscreen: false,
         isSideNav: true,
@@ -528,7 +528,7 @@ describe("PrimaryMenuComponent", () => {
             it(`should ${location}`, () => {
               viewport.set(width);
               setup({
-                // @ts-expect-error: strict mode fix
+                // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
                 user: null,
                 isFullscreen: fullscreen,
                 isSideNav: sideNav,

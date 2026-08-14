@@ -78,15 +78,15 @@ describe("LoginComponent", () => {
     username = modelData.internet.userName(),
     password = modelData.internet.password(),
   ): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(username, usernameField());
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.typeInElement(password, passwordField());
     spec.detectChanges();
   }
 
   function submitForm(): void {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, submitButton());
     spec.detectChanges();
   }
@@ -203,7 +203,7 @@ describe("LoginComponent", () => {
 
   describe("redirection", () => {
     function redirectUser() {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       component()["opts"].redirectUser(undefined);
     }
 
@@ -388,14 +388,14 @@ describe("LoginComponent", () => {
       });
 
       it("should not make any api calls if the toast is dismissed without a response", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         clickButton(spec, communicationsDismissButton());
         expect(accountSpy.optInContactable).not.toHaveBeenCalled();
         expect(accountSpy.optOutContactable).not.toHaveBeenCalled();
       });
 
       it("should make the correct api calls for a 'yes' response", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         clickButton(spec, communicationsYesButton());
         expect(accountSpy.optInContactable).toHaveBeenCalledOnceWith(
           session.currentUser.id,
@@ -403,7 +403,7 @@ describe("LoginComponent", () => {
       });
 
       it("should make the correct api calls for a 'no' response", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         clickButton(spec, communicationsNoButton());
         expect(accountSpy.optOutContactable).toHaveBeenCalledOnceWith(
           session.currentUser.id,

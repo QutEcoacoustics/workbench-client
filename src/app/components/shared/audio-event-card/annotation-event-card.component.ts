@@ -95,7 +95,7 @@ export class AnnotationEventCardComponent {
   // However, I have determined that this edge case is acceptable given that there
   protected readonly lowerRatioThreshold = 0.34;
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   protected readonly tagInfo = computed<TagInfo[]>(() => {
     return this.annotation().tags.map((tagModel) => {
       const verificationSummary = this.annotation().verificationSummary.find(

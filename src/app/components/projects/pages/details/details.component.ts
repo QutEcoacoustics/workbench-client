@@ -181,7 +181,7 @@ class ProjectDetailsComponent
       undefined!,
       "name",
       () => [this.project.id],
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       (models: Region[] | Site[]) => {
         this.apiReturnCount++;
         this.loading = this.apiReturnCount !== 2;
@@ -190,7 +190,7 @@ class ProjectDetailsComponent
           return;
         }
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const collectionSize = models[0]!.getMetadata()!.paging.total || 0;
 
         if (models[0] instanceof Site) {
@@ -244,7 +244,7 @@ class ProjectDetailsComponent
       this.sitesApi.filterByRegion(
         this.generateFilter() as Filters,
         this.project.id,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         null
       )
     );

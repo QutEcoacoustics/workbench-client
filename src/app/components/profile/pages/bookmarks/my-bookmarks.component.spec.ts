@@ -73,12 +73,12 @@ describe("MyBookmarksComponent", () => {
     setup(defaultUser);
     interceptRequest([]);
     spec.detectChanges();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(spec.query("h1 small")).toHaveText(defaultUser.userName);
   });
 
   it("should handle user error", () => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setup(undefined, generateBawApiError());
     interceptRequest([]);
     spec.detectChanges();
@@ -96,7 +96,7 @@ describe("MyBookmarksComponent", () => {
         interceptRequest([defaultBookmark]);
         spec.detectChanges();
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getCells()[0]).toHaveText(defaultBookmark.name);
       });
 
@@ -115,7 +115,7 @@ describe("MyBookmarksComponent", () => {
       interceptRequest([defaultBookmark]);
       spec.detectChanges();
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getCells()[1]).toHaveText(defaultBookmark.category);
     });
 
@@ -125,7 +125,7 @@ describe("MyBookmarksComponent", () => {
       spec.detectChanges();
 
       expect(getCells()![2]!.querySelector("span")!.innerHTML).toContain(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         defaultBookmark.descriptionHtmlTagline,
       );
     });

@@ -51,7 +51,7 @@ export class SiteSettingsService
     return this.api.update(SiteSetting, endpoint(model), model);
   }
 
-  // @ts-expect-error: strict mode override
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public destroy(model: IdOrName<SiteSetting>) {
     return this.api.destroy(endpoint(model));
   }

@@ -66,7 +66,7 @@ describe("RegionsListComponent", () => {
   it("should make the correct API calls when loading the 'map' tab", () => {
     const mapTabLink = getElementByTextContent(spec, "Map")!.querySelector("a");
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.click(mapTabLink);
     spec.detectChanges();
 

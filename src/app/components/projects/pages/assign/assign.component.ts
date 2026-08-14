@@ -64,7 +64,7 @@ class AssignComponent
     super(
       api,
       (sites) =>
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         sites.map((site) => ({
           siteId: site.id,
           name: site.name,
@@ -73,7 +73,7 @@ class AssignComponent
       route,
       undefined,
       (rows) => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.project.siteIds.forEach((id) => {
           rows.forEach((row) => {
             if (id === row.siteId) {
@@ -89,7 +89,7 @@ class AssignComponent
 
   public ngOnInit() {
     super.ngOnInit();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.oldSiteIds = Array.from(this.project.siteIds);
   }
 
@@ -100,7 +100,7 @@ class AssignComponent
   public onSubmit() {
     this.updateProjectSites();
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const newSiteIds = Array.from(this.project.siteIds);
 
     const removedSites = this.oldSiteIds.filter(
@@ -162,12 +162,12 @@ class AssignComponent
   private updateProjectSites() {
     this.rows?.forEach((row) => {
       if (this.selected.find((selection) => selection.siteId === row.siteId)) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         this.project.siteIds.add(row.siteId);
       } else {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         if (this.project.siteIds.has(row.siteId)) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           this.project.siteIds.delete(row.siteId);
         }
       }

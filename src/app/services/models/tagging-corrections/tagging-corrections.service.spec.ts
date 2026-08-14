@@ -53,7 +53,7 @@ describe("TaggingCorrectionsService", () => {
     );
 
     verificationApiSpy = spec.inject(ShallowVerificationService);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     verificationApiSpy.destroyUserVerification.andReturn(of(undefined));
     verificationApiSpy.createOrUpdate.andCallFake(() =>
       of(mockVerifications[0]),

@@ -15,7 +15,7 @@ type BawTimezoneUnion = Zone | TimezoneInformation | string;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZonedDateTimeComponent extends AbstractDatetimeComponent {
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public readonly timezone = input<Zone, BawTimezoneUnion>(null, {
     transform: (newValue: any) => {
       if (isInstantiated(newValue)) {

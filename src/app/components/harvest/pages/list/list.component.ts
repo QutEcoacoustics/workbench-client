@@ -76,7 +76,7 @@ class HarvestListComponent extends PageComponent implements OnInit {
 
     // A BehaviorSubject is need on filters$ to update the ngx-datatable harvest list & models
     // The this.filters$ is triggered in abortUpload()
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.filters$ = new BehaviorSubject({
       sorting: {
         direction: "desc",
@@ -107,7 +107,7 @@ class HarvestListComponent extends PageComponent implements OnInit {
       this.harvestsApi
         .transitionStatus(harvest, "complete")
         .pipe(
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           catchError((err: BawApiError) => {
             if (err.status !== CLIENT_TIMEOUT) {
               return throwError(() => err);

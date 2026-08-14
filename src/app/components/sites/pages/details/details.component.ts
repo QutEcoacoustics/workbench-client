@@ -125,7 +125,7 @@ class SiteDetailsComponent extends PageComponent implements OnInit {
           // if the site is not a point, the parent item is conditional on if projects are hidden
           // if projects are hidden, navigate to the sites list page, if projects are shown, navigate to the parent project details page
           if (this.site.isPoint) {
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             this.router.navigateByUrl(this.region.viewUrl);
           } else {
             const hideProjects = this.config.settings.hideProjects;

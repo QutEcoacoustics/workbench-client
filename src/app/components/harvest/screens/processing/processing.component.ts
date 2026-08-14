@@ -58,7 +58,7 @@ export class ProcessingComponent implements OnInit {
 
   public get errorProgress(): number {
     return this.stages.calculateProgress(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       this.report.itemsFailed + this.report.itemsErrored
     );
   }
@@ -68,7 +68,7 @@ export class ProcessingComponent implements OnInit {
   }
 
   private get report(): HarvestReport {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.stages.harvest.report!;
   }
 }

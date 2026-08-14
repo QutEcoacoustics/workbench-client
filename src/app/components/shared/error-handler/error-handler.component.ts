@@ -64,7 +64,7 @@ export class ErrorHandlerComponent implements OnInit {
   }
 
   public getTitle(): string {
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.titles[this.error.status] ?? "Unknown Error";
   }
 }

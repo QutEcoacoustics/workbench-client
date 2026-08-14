@@ -158,7 +158,7 @@ describe("AnnotationEventCardComponent", () => {
         audioRecording: mockAudioRecording,
         tags: [mockTag],
         verificationSummary: mockVerificationSummary,
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         score: null,
       }),
       injector,
@@ -178,7 +178,7 @@ describe("AnnotationEventCardComponent", () => {
       // We use toHaveExactText here instead of toHaveExactTrimmedText because
       // if there is any leading or trailing whitespace, the underline will
       // appear to extend beyond the text, which looks bad.
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(tagInfoContainer()).toHaveExactText(mockTag.text);
 
       const expectedLinks = mockAnnotation.tags.map((tag) => tag.viewUrl);

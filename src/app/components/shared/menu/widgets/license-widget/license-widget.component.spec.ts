@@ -56,7 +56,7 @@ describe("LicenseWidgetComponent", () => {
     }
 
     for (const model of models) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       model.model!["injector"] = injector;
     }
 
@@ -138,7 +138,7 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
 
     for (const license of expectedLicenses) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(licenseText()).toContainText(license);
     }
   }));
@@ -161,7 +161,7 @@ describe("LicenseWidgetComponent", () => {
     spec.detectChanges();
 
     for (const license of expectedLicenses) {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(licenseText()).toContainText(license);
     }
   }));

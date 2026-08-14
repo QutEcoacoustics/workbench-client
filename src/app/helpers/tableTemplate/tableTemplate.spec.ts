@@ -56,9 +56,9 @@ describe("TableTemplate", () => {
 
   describe("loadTable", () => {
     it("should handle zero rows", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const rows = [];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       createRows(rows);
       fixture.detectChanges();
 
@@ -88,9 +88,9 @@ describe("TableTemplate", () => {
 
   describe("updateFilter", () => {
     it("should handle no rows", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const rows = [];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       createRows(rows);
       checkMatch((filter, cell) => component["checkMatch"](filter, cell.id));
       fixture.detectChanges();

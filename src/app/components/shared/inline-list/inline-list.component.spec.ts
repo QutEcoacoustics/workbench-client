@@ -77,10 +77,10 @@ describe("InlineListComponent", () => {
     spec.setHostInput("items", [item]);
     spec.setHostInput("itemKey", "name");
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const itemElement: HTMLSpanElement =
       getElementByTextContent<HTMLSpanElement>(spec, "test");
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const itemLink: HTMLAnchorElement = itemElement.querySelector("a");
 
     const expectedUrl = new URL(itemViewUrl, window.location.origin);
@@ -110,7 +110,7 @@ describe("InlineListComponent", () => {
   it("should use the empty template if no items are provided", () => {
     spec.setHostInput("items", []);
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const emptyTemplateItem: HTMLSpanElement = spec.query("#template-span");
     expect(emptyTemplateItem).toExist();
   });

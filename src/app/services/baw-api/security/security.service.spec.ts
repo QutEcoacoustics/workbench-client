@@ -343,7 +343,7 @@ describe("SecurityService", () => {
 
       it("should throw error if no recaptcha token", () => {
         const registerDetails = new RegisterDetails(
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           generateRegisterDetails({ recaptchaToken: null }),
         );
         const page = `<input name="authenticity_token" value="${defaults.authToken}"></input>`;

@@ -72,7 +72,7 @@ describe("AdminTagGroupsEditComponent", () => {
     });
 
     it("should handle tag group error", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       configureTestingModule(undefined, generateBawApiError());
       assertErrorHandler(fixture);
     });
@@ -88,7 +88,7 @@ describe("AdminTagGroupsEditComponent", () => {
       it("should make the correct api calls when the deleteModel() method is called", () => {
         configureTestingModule(defaultTagGroup);
         component.model = defaultTagGroup;
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();
@@ -99,7 +99,7 @@ describe("AdminTagGroupsEditComponent", () => {
         const expectedRoute = "/admin/tag_groups";
         configureTestingModule(defaultTagGroup);
         component.model = defaultTagGroup;
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         api.destroy.and.callFake(() => of(null));
 
         component.deleteModel();

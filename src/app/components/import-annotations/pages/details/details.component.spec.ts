@@ -94,7 +94,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   function switchToFileTab(): void {
     const target = fileTabButton();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.click(target);
 
     flush();
@@ -103,7 +103,7 @@ describe("AnnotationsDetailsComponent", () => {
 
   function deleteFirstFile() {
     const deleteButton = getElementByTextContent(spec, "Delete");
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, deleteButton);
     tick();
 
@@ -111,7 +111,7 @@ describe("AnnotationsDetailsComponent", () => {
       "baw-harvest-confirmation-modal #next-btn",
       { root: true },
     );
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     clickButton(spec, confirmationButton);
 
     flush();
@@ -292,7 +292,7 @@ describe("AnnotationsDetailsComponent", () => {
         "Actions",
       ],
       rows: () => expectedAudioEventTable,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       root: () => activeTabContent(),
     }));
 
@@ -327,7 +327,7 @@ describe("AnnotationsDetailsComponent", () => {
         "Actions",
       ],
       rows: () => expectedFilesTable,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       root: () => activeTabContent(),
     }));
 
@@ -341,7 +341,7 @@ describe("AnnotationsDetailsComponent", () => {
       // the re-fetch request maintains the same sorting conditions.
       const fileNameColumn = spec.query(".datatable-header-cell-template-wrap");
       const sortingHandle = fileNameColumn!.querySelector(".sort-btn");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(sortingHandle);
 
       const expectedSortingFilters: Sorting<keyof AudioEventImportFile> = {
@@ -383,7 +383,7 @@ describe("AnnotationsDetailsComponent", () => {
 
         expect(link).toHaveStrongRoute(verificationRoute.project);
 
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(link.routeParams).toEqual(expectedResult.routeParams);
         expect(link.queryParams).toEqual(expectedResult.queryParams);
       });
@@ -399,7 +399,7 @@ describe("AnnotationsDetailsComponent", () => {
       const firstFile = mockAudioEventImportFiles[0];
 
       expect(downloadLink).toBeDefined();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(downloadLink!.getAttribute("href")).toEqual(firstFile.path);
     });
   });

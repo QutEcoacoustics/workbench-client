@@ -128,7 +128,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
   private trackLoggedInState() {
     this.session.authTrigger
       .pipe(takeUntil(this.unsubscribe))
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       .subscribe(({ user }) => (this.user = user))!;
   }
 
@@ -155,7 +155,7 @@ export class PrimaryMenuComponent extends withUnsubscribe() implements OnInit {
    * @param item Item to convert
    */
   private generateLink(item: CustomMenuItem): HeaderItem {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return { label: item.title, uri: () => item.url }!;
   }
 

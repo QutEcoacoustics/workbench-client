@@ -25,10 +25,10 @@ export function ParameterModel<const T extends AbstractModelWithoutId>(
       );
 
       const objectData = {};
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const objectKeys = Object.keys(deserializedObject);
       for (const key of objectKeys) {
-        // @ts-expect-error: strict mode indexing
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         objectData[key] = deserializedObject[key];
       }
 

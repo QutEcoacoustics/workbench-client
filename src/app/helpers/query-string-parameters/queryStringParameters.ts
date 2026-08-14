@@ -161,9 +161,9 @@ export function serializeObjectToParams<T>(
   // queryStringParameter model so that the qsp model can contain getters which
   // would not be returned by Object.entries.
   Object.entries(spec).forEach(
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     ([key, serializer]: [string, SerializationTechnique]) => {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const value = queryStringParameters[key];
 
       // null and undefined values are omitted when used on angular HTTPParams
@@ -206,7 +206,7 @@ export function deserializeParamsToObject<T>(
       return;
     }
 
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     returnedObject[key] = serializer!.deserialize(qspValue);
   });
 
@@ -218,7 +218,7 @@ export function withDefault<Value, QSP>(
   defaultValue: Value,
 ): SerializationTechnique<Value, QSP> {
   return {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     serialize: (value: Value) => {
       // If the current value is the default value, we omit it from the query
       // string to reduce clutter in the URL.

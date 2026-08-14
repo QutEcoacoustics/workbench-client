@@ -85,7 +85,7 @@ export class HarvestsService implements StandardApi<Harvest, [IdOr<Project>]> {
     model: IdOr<Harvest>,
     project: IdOr<Project>
   ): Observable<Harvest | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(project, model, emptyParam));
   }
 
@@ -142,7 +142,7 @@ export class ShallowHarvestsService implements StandardApi<Harvest> {
   }
 
   public destroy(model: IdOr<Harvest>): Observable<Harvest | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(shallowEndpoint(model, emptyParam));
   }
 

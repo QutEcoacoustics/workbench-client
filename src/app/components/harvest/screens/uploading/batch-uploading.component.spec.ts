@@ -94,7 +94,7 @@ describe("BatchUploadingComponent", () => {
 
   function launchModal(btnSelector: any, modalText: any) {
     const btn = spec.query(btnSelector);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.click(btn);
     spec.detectChanges();
     const modal = getModal();
@@ -110,7 +110,7 @@ describe("BatchUploadingComponent", () => {
     } else {
       btn = getModalNextBtn();
     }
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     spec.click(btn);
     spec.detectChanges();
     const interval = setInterval(() => {

@@ -56,7 +56,7 @@ describe("WebsiteStatusComponent", () => {
 
   function assertGridItemText(itemName: string, expectedValue: string) {
     const gridElement = getElementByTextContent(spectator, itemName);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const gridElementValue = gridElement.parentElement!.querySelector("#value");
 
     expect(gridElementValue).toHaveExactTrimmedText(expectedValue);

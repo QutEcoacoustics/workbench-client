@@ -31,7 +31,7 @@ import { IsUnresolvedPipe } from "../../../pipes/is-unresolved/is-unresolved.pip
   ],
 })
 class AllUploadsComponent extends HarvestListComponent {
-  // @ts-expect-error: strict mode override
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public override get project() {
     return null;
   }

@@ -68,7 +68,7 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => audioEvents,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       isInstantiated(audioEvents["status"]),
     );
   }
@@ -97,7 +97,7 @@ describe("SiteComponent", () => {
     return nStepObservable(
       subject,
       () => recordings,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       isInstantiated(recordings["status"]),
     );
   }
@@ -127,7 +127,7 @@ describe("SiteComponent", () => {
 
       const title = spec.query<HTMLHeadingElement>("h1");
       expect(title).toBeTruthy();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(title!.innerText).toContain(defaultSite.name);
     });
 
@@ -152,7 +152,7 @@ describe("SiteComponent", () => {
       spec.detectChanges();
 
       const image = spec.query<HTMLImageElement>("img");
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(image).toHaveImage(defaultSite!.imageUrls.at(0).url, {
         alt: `${defaultSite.name} image`,
       });
@@ -178,7 +178,7 @@ describe("SiteComponent", () => {
 
       const description = spec.query("#site_description");
       expect(description).toBeTruthy();
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(description!.innerHTML).toContain(defaultSite.descriptionHtml);
     });
   });

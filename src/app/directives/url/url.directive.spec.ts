@@ -38,7 +38,7 @@ describe("UrlDirective", () => {
   }
 
   function assertRoute(link: string) {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const href = spec!.query<HTMLAnchorElement>("a").href;
     const url = new URL(href, window.location.origin);
     expect(url.pathname + url.search).toBe(link);
@@ -73,14 +73,14 @@ describe("UrlDirective", () => {
     beforeEach(() => (root = StrongRoute.newRoot()));
 
     it("should handle undefined url", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(undefined);
       spec.detectChanges();
       assertRoute("/");
     });
 
     it("should handle null url", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       setup(null);
       spec.detectChanges();
       assertRoute("/");
@@ -115,7 +115,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle single query parameter", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = root.add("home", ({ id }) => ({ id }));
       setup(childRoute.format(undefined, { id: 5 }));
       spec.detectChanges();
@@ -123,7 +123,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle query parameter with special characters", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = root.add("home", ({ name }) => ({ name }));
       setup(childRoute.format(undefined, { name: "example encoding" }));
       spec.detectChanges();
@@ -131,7 +131,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle multiple query parameters", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = root.add("home", ({ id, name }) => ({ id, name }));
       setup(childRoute.format(undefined, { id: 5, name: "example" }));
       spec.detectChanges();
@@ -139,7 +139,7 @@ describe("UrlDirective", () => {
     });
 
     it("should handle multiple query parameters with special characters", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = root.add("home", ({ id, name }) => ({ id, name }));
       setup(childRoute.format(undefined, { id: 5, name: "example encoding" }));
       spec.detectChanges();
@@ -149,7 +149,7 @@ describe("UrlDirective", () => {
     it("should handle path with route and query parameters", () => {
       const childRoute = root
         .add(":siteId")
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         .add(":siteName", ({ id, name }) => ({ id, name }));
       setup(
         childRoute.format(
@@ -186,7 +186,7 @@ describe("UrlDirective", () => {
     it("should create url tree with query parameters", () => {
       const childRoute = StrongRoute.newRoot().add(
         "home",
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         ({ test, name }) => ({ test, name }),
       );
       setup(childRoute.format(undefined, { name: "example" }));
@@ -196,7 +196,7 @@ describe("UrlDirective", () => {
     });
 
     it("should create url tree with with route and query parameters", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const childRoute = StrongRoute.newRoot().add(":id", ({ test, name }) => ({
         test,
         name,

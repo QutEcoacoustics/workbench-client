@@ -220,7 +220,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   protected tagTaskSearchCallback() {
     const tagIds = this.searchParameters().tags ?? [];
     const filters: InnerFilter<Tag> = {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       id: { in: Array.from(tagIds) },
     };
 
@@ -272,7 +272,7 @@ export class AnnotationSearchFormComponent implements OnInit {
   ): void {
     const ids = subModels.map((subModel) => subModel.id);
     this.searchParameters.update((current) => {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       current[key as any] = ids;
       return current;
     });

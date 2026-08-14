@@ -29,11 +29,11 @@ describe("SiteMapComponent", () => {
   let spec: Spectator<SiteMapComponent>;
   let injector: AssociationInjector;
 
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const defaultProjects: Project[] = [new Project(generateProject(), injector)];
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const defaultRegions: Region[] = [new Region(generateRegion(), injector)];
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const defaultSites: Site[] = [new Site(generateSite(), injector)];
 
   const mapComponent = () => spec.query(MapComponent);
@@ -177,7 +177,7 @@ describe("SiteMapComponent", () => {
         projects: defaultProjects,
         expectedFilter: {
           "projects.id": {
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             in: defaultProjects.map((project) => project.id),
           },
         },
@@ -187,7 +187,7 @@ describe("SiteMapComponent", () => {
         regions: defaultRegions,
         expectedFilter: {
           "regions.id": {
-            // @ts-expect-error: strict mode fix
+            // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
             in: defaultRegions.map((region) => region.id),
           },
         },
@@ -295,7 +295,7 @@ describe("SiteMapComponent", () => {
         const expectedFilters: Filters<Site> = {
           filter: {
             id: {
-              // @ts-expect-error: strict mode fix
+              // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
               in: siteIds,
             },
           },

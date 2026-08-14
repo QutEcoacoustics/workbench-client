@@ -255,7 +255,7 @@ describe("Attribute Decorators", () => {
         }
       }
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return new MockModel(data, injector);
     }
 
@@ -301,7 +301,7 @@ describe("Attribute Decorators", () => {
     });
 
     it("should convert null", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const model = createModel({ images: null });
       expect(model.images).toEqual([defaultImageUrl]);
     });
@@ -432,7 +432,7 @@ describe("Attribute Decorators", () => {
     });
 
     it("should convert null", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const model = createModel({ ids: null });
       expect(model.ids).toEqual(new Set([]));
     });
@@ -477,7 +477,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist option", () => {
       const model = createModel(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         { date: defaultDate.toISO() },
         { persist: true },
       );
@@ -487,7 +487,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on create option", () => {
       const model = createModel(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         { date: defaultDate.toISO() },
         { persist: { create: true, update: false } },
       );
@@ -497,7 +497,7 @@ describe("Attribute Decorators", () => {
 
     it("should handle persist on update option", () => {
       const model = createModel(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         { date: defaultDate.toISO() },
         { persist: { create: false, update: true } },
       );
@@ -507,30 +507,30 @@ describe("Attribute Decorators", () => {
 
     it("should handle override key option", () => {
       const model = createModel(
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         { timestamp: defaultDate.toISO() },
         { key: "timestamp" },
       );
       expect(model.date).toEqual(defaultDate);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.timestamp).toEqual(defaultDate.toISO());
     });
 
     it("should convert undefined", () => {
       const model = createModel({ date: undefined });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.date).toEqual(null);
     });
 
     it("should convert null", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const model = createModel({ date: null });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.date).toEqual(null);
     });
 
     it("should convert timestamp string", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const model = createModel({ date: defaultDate.toISO() });
       expect(model.date).toEqual(defaultDate);
     });
@@ -636,14 +636,14 @@ describe("Attribute Decorators", () => {
 
     it("should convert undefined", () => {
       const model = createModel({ duration: undefined });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.duration).toEqual(null);
     });
 
     it("should convert null", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const model = createModel({ duration: null });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(model.duration).toEqual(null);
     });
 

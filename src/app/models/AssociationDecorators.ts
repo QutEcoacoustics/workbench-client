@@ -71,7 +71,7 @@ export function hasManyFilter<
   const modelFilter = (parent: Parent) =>
     ({
       filter: {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         id: { in: Array.from(parent[identifierKeys] as any) },
       },
     } as Filters<Child>);
@@ -120,11 +120,11 @@ export function hasMany<
     parentModel: Parent,
     params: Params
   ): Observable<Child[]> => {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const associatedModelIds = Array.from(parentModel[identifierKeys] as any);
     // Use zip to combine multiple observables into a single observable that emits an array
     return zip<Child[]>(
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       associatedModelIds.map((model: Id) => service.show(model, ...params))
     );
   };
@@ -264,10 +264,10 @@ function createModelDecorator<
       //
       // TODO: Remove this JSON.stringify hack that was used to get pages like
       // the statistics page working that eagerly destroy and recreate models.
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       parent[storedIdentifierKey] === JSON.stringify(parent[identifierKey])
     ) {
-      // @ts-expect-error: strict mode indexing
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       return parent[backingFieldKey];
     }
 
@@ -276,7 +276,7 @@ function createModelDecorator<
     // we use a different injector for associations so that the the we can
     // inject the correct options for the baw-api service without affecting
     // the options for the rest of the application
-    // @ts-expect-error: strict mode indexing
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     const injector: AssociationInjector = parent["injector"];
     if (!injector) {
       throw new Error(

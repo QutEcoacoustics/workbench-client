@@ -88,12 +88,12 @@ describe("RecentAnnotationsComponent", () => {
 
   function interceptTagsRequest(data: Errorable<Tag>[]): Promise<void>[] {
     const tagsApiResponses = new Map<Id, Errorable<Tag>>();
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     data.forEach((tag: Tag) => {
       tagsApiResponses.set(tag.id, tag);
     });
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return interceptMappedApiRequests(api.tags.show, tagsApiResponses);
   }
 
@@ -126,7 +126,7 @@ describe("RecentAnnotationsComponent", () => {
     tags: Errorable<Tag>[] = defaultTags,
   ) {
     const promise = interceptRequests(site, user, recording, tags);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     setLoggedInState(state?.isLoggedIn);
     setAnnotations(annotations);
     spec.detectChanges();
@@ -248,13 +248,13 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while audio recording unresolved", async () => {
         await setup({ isLoggedIn: true });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getSiteCellElement(), true);
       });
 
       it("should display loading spinner while site unresolved", async () => {
         await setup({ isLoggedIn: true, awaitInitialRequests: true });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getSiteCellElement(), true);
       });
 
@@ -264,7 +264,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getSiteCellElement(), false);
       });
 
@@ -274,7 +274,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getSiteCellElement()).toContainText(defaultSite.name);
       });
 
@@ -311,7 +311,7 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while user is unresolved", async () => {
         await setup({ isLoggedIn: true });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getUsernameCellElement(), true);
       });
 
@@ -321,7 +321,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getUsernameCellElement(), false);
       });
 
@@ -331,7 +331,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         expect(getUsernameCellElement()).toContainText(defaultUser.userName);
       });
     });
@@ -354,7 +354,7 @@ describe("RecentAnnotationsComponent", () => {
 
       it("should display loading spinner while tags are unresolved", async () => {
         await setup({ isLoggedIn: true });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getTagsCellElement(true), true);
       });
 
@@ -364,7 +364,7 @@ describe("RecentAnnotationsComponent", () => {
           awaitInitialRequests: true,
           awaitFinalRequests: true,
         });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertCellLoading(getTagsCellElement(true), false);
       });
 
@@ -397,7 +397,7 @@ describe("RecentAnnotationsComponent", () => {
         });
 
         for (const tag of defaultAnnotation.tags!) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(getTagsCellElement(true)).toContainText(tag.text);
         }
       });
@@ -408,20 +408,20 @@ describe("RecentAnnotationsComponent", () => {
         getCellElements()[isLoggedIn ? 3 : 1];
 
       function assertTimestamp(cell: Element, annotation: AudioEvent) {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         const expectedText = humanizedDuration(annotation.updatedAt);
         expect(cell).toContainText(expectedText);
       }
 
       it("should display time since updated when logged in", async () => {
         await setup({ isLoggedIn: true });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertTimestamp(getUpdatedCellElement(true), defaultAnnotation);
       });
 
       it("should display time since updated when not logged in", async () => {
         await setup({ isLoggedIn: false });
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         assertTimestamp(getUpdatedCellElement(false), defaultAnnotation);
       });
     });

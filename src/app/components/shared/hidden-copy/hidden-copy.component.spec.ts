@@ -103,14 +103,14 @@ describe("HiddenCopyComponent", () => {
       // breaking css and clipping
 
       // if we hover over the "Copied!" tooltip element, it should not show
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.focus(getCopyButton());
 
       // Tooltip should only show on click
       expect(getCopiedTooltip()).not.toBeVisible();
 
       // after the button is clicked, we expect that the tooltip will be visible
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(getCopyButton());
       expect(getCopiedTooltip()).not.toBeVisible();
     });
@@ -125,14 +125,14 @@ describe("HiddenCopyComponent", () => {
     // see: https://github.com/QutEcoacoustics/workbench-client/issues/2146
     it("should copy if the copy icon is clicked", () => {
       setup({ content: modelData.authToken() });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(getCopyIcon());
       expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
     });
 
     it("should copy if the copy button is clicked", () => {
       setup({ content: modelData.authToken() });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(getCopyButton());
       expect(clipboardService.copyFromContent).toHaveBeenCalledTimes(1);
     });
@@ -186,7 +186,7 @@ describe("HiddenCopyComponent", () => {
 
     it("should not copy if disabled and the copy button is clicked", () => {
       setup({ content: modelData.authToken(), disabled: "true" });
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       spec.click(getCopyButton());
       expect(clipboardService.copyFromContent).not.toHaveBeenCalled();
     });

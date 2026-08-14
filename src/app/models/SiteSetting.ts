@@ -22,7 +22,7 @@ export class SiteSetting
   @bawPersistAttr({ update: true })
   public readonly name!: string;
   @bawPersistAttr({ update: true })
-  // @ts-expect-error: strict mode override
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   public readonly value!: number | null;
   public readonly description!: string;
   public readonly typeSpecification!: string;

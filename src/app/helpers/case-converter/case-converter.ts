@@ -111,7 +111,7 @@ type ToSnakeCase<T> = T extends `${infer A}${infer B}${infer C}`
  * @param obj Object to convert
  */
 export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   convertCase(obj, camelCase);
 
 /**
@@ -120,7 +120,7 @@ export const toCamelCase = <T>(obj: T): ToCamelCase<T> =>
  * @param obj Object to convert
  */
 export const toSnakeCase = <T>(obj: T): ToSnakeCase<T> =>
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   convertCase(obj, snakeCase);
 
 // TODO Type this function similar to camel and snake case

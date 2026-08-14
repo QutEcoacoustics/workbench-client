@@ -143,10 +143,10 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
   public deleter?: User;
   @hasOne(PROJECT, "projectId")
   public project?: Project;
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   @hasMany(SCRIPT, "scriptIds"!)
   public scripts?: Script[];
-  // @ts-expect-error: strict mode fix
+  // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   @hasMany(AUDIO_EVENT_IMPORT, "audioEventImportIds"!)
   public audioEventImports?: AudioEventImport[];
 
@@ -161,7 +161,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     }
 
     return analysisJobMenuItem.route.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       analysisJobId: this.id,
       projectId,
     });
@@ -174,7 +174,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
     }
 
     return analysisJobMenuItem.route.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       analysisJobId: this.id,
       projectId,
     });
@@ -185,7 +185,7 @@ export class AnalysisJob extends AbstractModel implements IAnalysisJob {
    */
   public get adminViewUrl(): string {
     return adminAnalysisJobMenuItem.route.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       analysisJobId: this.id,
     });
   }

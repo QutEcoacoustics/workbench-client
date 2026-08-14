@@ -55,7 +55,7 @@ describe("SiteCardComponent", () => {
 
     spec.component["recordingApi"] = recordingApi;
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return nStepObservable(subject, () => recordings);
   }
 
@@ -90,7 +90,7 @@ describe("SiteCardComponent", () => {
           spec.detectChanges();
           const name = spec.query<HTMLHeadingElement>("h5#name");
           expect(name).toBeTruthy();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(name).toContainText(defaultModel.name);
         });
 
@@ -121,7 +121,7 @@ describe("SiteCardComponent", () => {
         it("should display custom model image", () => {
           setup(defaultModel);
           spec.detectChanges();
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           expect(getImage()).toHaveImage(defaultModel!.imageUrls.at(0).url, {
             alt: `${defaultModel.name} alt`,
           });
@@ -134,7 +134,7 @@ describe("SiteCardComponent", () => {
         }
 
         function assertLoading(isLoading: boolean) {
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           assertSpinner(spec.query(".nav"), isLoading);
         }
 

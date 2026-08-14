@@ -153,21 +153,21 @@ export class Harvest extends AbstractModel implements IHarvest {
 
   public get viewUrl(): string {
     return harvestRoute.format({
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       projectId: this.projectId,
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       harvestId: this.id,
     });
   }
 
   /** Is true if mappings array has changes which have not been reviewed */
   public get isMappingsDirty(): boolean {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.lastMetadataReviewAt < this.lastMappingsChangeAt;
   }
 
   public get uploadUrlWithAuth(): string {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.uploadUrl.replace(
       "://",
       `://${this.uploadUser}:${this.uploadPassword}@`

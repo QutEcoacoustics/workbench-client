@@ -52,11 +52,11 @@ describe("AdminTagsComponent", () => {
       defaultModels.push(new Tag(generateTag({ id })));
     }
 
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.defaultModels = defaultModels;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.fixture = fixture;
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     this.api = api;
   });
 
@@ -73,10 +73,10 @@ describe("AdminTagsComponent", () => {
 
     it("should display a modal when confirmTagDeletion() is called", () => {
       const mockTag = new Tag(generateTag());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       tagsApiSpy.destroy.and.returnValue(of(null));
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       fixture.componentInstance.confirmTagDeletion(undefined, mockTag);
 
       expect(modalService.hasOpenModals()).toBeTrue();
@@ -84,7 +84,7 @@ describe("AdminTagsComponent", () => {
 
     it("should make the correct api calls when confirmTagDeletion() is successful", fakeAsync(() => {
       const mockTag = new Tag(generateTag());
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       tagsApiSpy.destroy.and.returnValue(of(null));
 
       // since there is a confirmation modal before the api call, we need to
@@ -95,7 +95,7 @@ describe("AdminTagsComponent", () => {
         }),
       );
 
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       fixture.componentInstance.confirmTagDeletion(null, mockTag);
 
       tick();

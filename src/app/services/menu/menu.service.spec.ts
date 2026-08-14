@@ -126,7 +126,7 @@ describe("MenuService", () => {
     Object.entries(expectedState).forEach((entry) => {
       const key = entry[0];
       const expected = entry[1];
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       const actual = actualState[key];
       expect(actual).toEqual(expected);
     });
@@ -444,13 +444,13 @@ describe("MenuService", () => {
           setup({ fullscreen, menuData: { actions: links } }),
         () => spec.service.actionMenu.links,
         [
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu link", createLink: generateMenuLink },
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu route", createLink: generateMenuRoute },
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu action", createLink: generateMenuAction },
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
         ]
       );
@@ -502,7 +502,7 @@ describe("MenuService", () => {
       });
 
       it("ensures order is stable if not specified", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setLinks(arrange(noOrder, noOrder, noOrder, noOrder));
         assertLinks([linkA, linkB, linkC, linkD]);
       });
@@ -513,7 +513,7 @@ describe("MenuService", () => {
       });
 
       it("should order links with ordered link first", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setLinks(arrange(noOrder, noOrder, noOrder, -3));
         assertLinks([linkD, linkA, linkB, linkC]);
       });
@@ -560,11 +560,11 @@ describe("MenuService", () => {
           }),
         () => spec.service.secondaryMenu.links,
         [
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu link", createLink: generateMenuLink },
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu route", createLink: generateMenuRoute },
-          // @ts-expect-error: strict mode fix
+          // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
           { type: "menu modal", createLink: generateMenuModalWithoutAction },
         ],
         // Home Menu Item is the pageRoute
@@ -690,7 +690,7 @@ describe("MenuService", () => {
       });
 
       it("ensures order is stable if not specified", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setLinks(arrange(noOrder, noOrder, noOrder));
         assertLinks([linkA, linkB, linkC]);
       });
@@ -701,7 +701,7 @@ describe("MenuService", () => {
       });
 
       it("should order links with ordered link first", () => {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         setLinks(arrange(noOrder, noOrder, -3));
         assertLinks([linkC, linkA, linkB]);
       });
@@ -746,7 +746,7 @@ describe("MenuService", () => {
     }
 
     it("should handle undefined links", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       linkSetup(undefined, false);
       assertLinks([]);
     });
@@ -864,7 +864,7 @@ describe("MenuService", () => {
     getWidgets: () => OrderedSet<WidgetMenuItem>
   ) {
     it("should handle undefined widgets", () => {
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       widgetSetup(undefined);
       expect(getWidgets()).toEqual(OrderedSet());
     });

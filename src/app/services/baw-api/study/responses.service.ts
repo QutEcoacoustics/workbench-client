@@ -61,7 +61,7 @@ export class ResponsesService implements StandardApi<Response, [IdOr<Study>]> {
     model: IdOr<Response>,
     study: IdOr<Study>
   ): Observable<Response | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpoint(study, model, emptyParam));
   }
 }
@@ -100,7 +100,7 @@ export class ShallowResponsesService implements StandardApi<Response> {
   }
 
   public destroy(model: IdOr<Response>): Observable<Response | void> {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return this.api.destroy(endpointShallow(model, emptyParam));
   }
 }

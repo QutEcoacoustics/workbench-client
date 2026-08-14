@@ -63,7 +63,7 @@ describe("DownloadTableComponent", () => {
   }
 
   function getRowItem(columnIndex: number): HTMLElement {
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     return spec.query(`datatable-body-cell:nth-child(${columnIndex + 1})`);
   }
 
@@ -107,7 +107,7 @@ describe("DownloadTableComponent", () => {
     it("should show site name when resolved", async () => {
       setup(new BehaviorSubject({}));
       await loadRows([defaultRecording], defaultSite);
-      // @ts-expect-error: strict mode fix
+      // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       expect(getCell()).toHaveText(defaultSite.name);
     });
 
@@ -152,14 +152,14 @@ describe("DownloadTableComponent", () => {
   it("should show media type in table row", async () => {
     setup(new BehaviorSubject({}));
     await loadRows([defaultRecording], defaultSite);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(getRowItem(4)).toContainText(defaultRecording.mediaType);
   });
 
   it("should show original file name in table row", async () => {
     setup(new BehaviorSubject({}));
     await loadRows([defaultRecording], defaultSite);
-    // @ts-expect-error: strict mode fix
+    // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
     expect(getRowItem(5)).toContainText(defaultRecording.originalFileName);
   });
 });

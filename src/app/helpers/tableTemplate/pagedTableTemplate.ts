@@ -134,7 +134,7 @@ export abstract class PagedTableTemplate<TableRow, M extends AbstractModel>
       this.filters.sorting = undefined;
     } else {
       this.filters.sorting = {
-        // @ts-expect-error: strict mode fix
+        // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
         orderBy: this.sortKeys[event.column.prop] as keyof M,
         direction: event.newValue,
       };
