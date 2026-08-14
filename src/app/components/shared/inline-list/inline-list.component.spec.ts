@@ -1,8 +1,8 @@
-import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
-import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
-import { modelData } from "@test/helpers/faker";
 import { provideRouter } from "@angular/router";
+import { provideMockBawApi } from "@baw-api/provide-baw-ApiMock";
 import { listenRecordingMenuItem } from "@components/listen/listen.menus";
+import { SpectatorHost, createHostFactory } from "@ngneat/spectator";
+import { modelData } from "@test/helpers/faker";
 import { getElementByTextContent } from "@test/helpers/html";
 import { InlineListComponent } from "./inline-list.component";
 
@@ -154,9 +154,10 @@ describe("InlineListComponent", () => {
   });
 
   it("should dynamically update the list if an item is added", () => {
-    const initialItemLength = spec.component.items().length;
+    const initialItems = spec.component.items() ?? [];
+    const initialItemLength = initialItems.length;
 
-    const updatedItems = [...spec.component.items(), "new item"];
+    const updatedItems = [...initialItems, "new item"];
 
     const itemElements = inlineListElements();
     expect(itemElements).toHaveLength(initialItemLength);

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthToken, UserConcent } from "@interfaces/apiInterfaces";
 import { User } from "@models/User";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject } from "rxjs";
 
 export type GuestUser = undefined;
 export type GuestAuthToken = undefined;
@@ -18,6 +18,8 @@ export class BawSessionService {
   private _authTrigger = new BehaviorSubject<AuthTriggerData>({
     user: guestUser,
   });
+  private _authTriggerAfterInitialCheck = new ReplaySubject<AuthTriggerData>(1);
+  private _initialAuthCheckComplete = false;
   private _loggedInUser: User | GuestUser;
   private _authToken: AuthToken | GuestAuthToken;
 
@@ -54,11 +56,29 @@ export class BawSessionService {
     return this._authTrigger;
   }
 
+  /** Returns auth changes after the initial sign-in check has completed.
+   *  Use this over `authTrigger` if you want to ensure that the initial sign-in check has completed before subscribing.
+   *  This prevents page churn when the user is logged in and the initial sign-in check has not completed yet.
+   */
+  public get authTriggerAfterInitialCheck(): Observable<AuthTriggerData> {
+    return this._authTriggerAfterInitialCheck;
+  }
+
+  /** Mark the initial sign-in check complete and emit the current auth state. */
+  public completeInitialAuthCheck(): void {
+    if (this._initialAuthCheckComplete) {
+      return;
+    }
+
+    this._initialAuthCheckComplete = true;
+    this._authTriggerAfterInitialCheck.next(this.currentAuthState());
+  }
+
   /** Set user details */
   public setLoggedInUser(user: User, authToken: AuthToken): void {
     this._loggedInUser = user;
     this._authToken = authToken;
-    this._authTrigger.next({ user, authToken });
+    this.emitAuthState({ user, authToken });
   }
 
   /** Clear user details */
@@ -72,7 +92,19 @@ export class BawSessionService {
 
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
-    this._authTrigger.next({ user: guestUser });
+    this.emitAuthState({ user: guestUser, authToken: guestAuthToken });
+  }
+
+  private currentAuthState(): AuthTriggerData {
+    return { user: this._loggedInUser, authToken: this._authToken };
+  }
+
+  private emitAuthState(state: AuthTriggerData): void {
+    this._authTrigger.next(state);
+
+    if (this._initialAuthCheckComplete) {
+      this._authTriggerAfterInitialCheck.next(state);
+    }
   }
 
   public addAuthTokenToUrl(url: string): string {

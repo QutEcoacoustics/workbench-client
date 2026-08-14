@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.section-heading {
+  margin-top: 1rem;
+}
+
+.section-title {
+  display: inline;
+}
+
+.section-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: right;
+  height: 1rem;
+  text-align: center;
+}
+
+.toggle-button {
+  width: 2.5em;
+  height: 2.5em;
+}
+
+@media print {
+  .toggle-button {
+    display: none;
+  }
+}

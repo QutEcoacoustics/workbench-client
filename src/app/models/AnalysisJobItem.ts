@@ -1,23 +1,42 @@
-import { ANALYSIS_JOB, AUDIO_RECORDING } from "@baw-api/ServiceTokens";
-import { DateTimeTimezone, Id } from "@interfaces/apiInterfaces";
+import {
+  ANALYSIS_JOB,
+  AUDIO_EVENT_IMPORT_FILE,
+  AUDIO_RECORDING,
+  SCRIPT,
+} from "@baw-api/ServiceTokens";
+import { DateTimeTimezone, Id, Ids } from "@interfaces/apiInterfaces";
 import { AbstractModel } from "./AbstractModel";
 import type { AnalysisJob } from "./AnalysisJob";
-import { hasOne } from "./AssociationDecorators";
-import { bawDateTime, bawReadonlyConvertCase } from "./AttributeDecorators";
+import { hasMany, hasOne } from "./AssociationDecorators";
+import {
+  bawCollection,
+  bawDateTime,
+  bawReadonlyConvertCase,
+} from "./AttributeDecorators";
+import type { AudioEventImportFile } from "./AudioEventImportFile";
 import type { AudioRecording } from "./AudioRecording";
 import { AssociationInjector } from "./ImplementsInjector";
+import type { Script } from "./Script";
 
 export interface IAnalysisJobItem {
   id?: Id;
   analysisJobId?: Id;
   audioRecordingId?: Id;
+  scriptId?: Id;
   queueId?: string;
   status?: AnalysisJobItemStatus;
   createdAt?: DateTimeTimezone | string;
   queuedAt?: DateTimeTimezone | string;
   workStartedAt?: DateTimeTimezone | string;
-  completedAt?: DateTimeTimezone | string;
-  cancelStartedAt?: DateTimeTimezone | string;
+  finishedAt?: DateTimeTimezone | string;
+  error?: string | null;
+  attempts?: number;
+  result?: AnalysisJobItemResultStatus | null;
+  transition?: AnalysisJobItemTransition | null;
+  usedWalltimeSeconds?: number;
+  usedMemoryBytes?: number;
+  audioEventImportFileIds?: Ids;
+  importSuccess?: boolean | null;
 }
 
 export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
@@ -25,6 +44,7 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   public readonly id?: Id;
   public readonly analysisJobId?: Id;
   public readonly audioRecordingId?: Id;
+  public readonly scriptId?: Id;
   public readonly queueId?: string;
   @bawReadonlyConvertCase()
   public readonly status?: AnalysisJobItemStatus;
@@ -35,17 +55,32 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   @bawDateTime()
   public readonly workStartedAt?: DateTimeTimezone;
   @bawDateTime()
-  public readonly completedAt?: DateTimeTimezone;
-  @bawDateTime()
-  public readonly cancelStartedAt?: DateTimeTimezone;
+  public readonly finishedAt?: DateTimeTimezone;
+  public readonly error?: string | null;
+  public readonly attempts?: number;
+  public readonly result?: AnalysisJobItemResultStatus | null;
+  public readonly transition?: AnalysisJobItemTransition | null;
+  public readonly usedWalltimeSeconds?: number;
+  public readonly usedMemoryBytes?: number;
+  @bawCollection({ persist: false })
+  public readonly audioEventImportFileIds?: Ids;
+  public readonly importSuccess?: boolean | null;
 
   // Associations
   @hasOne(ANALYSIS_JOB, "analysisJobId")
   public analysisJob?: AnalysisJob;
   @hasOne(AUDIO_RECORDING, "audioRecordingId")
   public audioRecording?: AudioRecording;
+  @hasOne(SCRIPT, "scriptId")
+  public script?: Script;
+  // @ts-expect-error: strict mode fix
+  @hasMany(AUDIO_EVENT_IMPORT_FILE, "audioEventImportFileIds"!)
+  public audioEventImportFiles?: AudioEventImportFile[];
 
-  public constructor(analysisJobItem: IAnalysisJobItem, injector?: AssociationInjector) {
+  public constructor(
+    analysisJobItem: IAnalysisJobItem,
+    injector?: AssociationInjector,
+  ) {
     super(analysisJobItem, injector);
   }
 
@@ -55,12 +90,12 @@ export class AnalysisJobItem extends AbstractModel implements IAnalysisJobItem {
   }
 }
 
-export type AnalysisJobItemStatus =
-  | "successful"
-  | "new"
-  | "queued"
-  | "working"
+export type AnalysisJobItemStatus = "new" | "queued" | "working" | "finished";
+
+export type AnalysisJobItemResultStatus =
+  | "success"
   | "failed"
-  | "timedOut"
-  | "cancelling"
+  | "killed"
   | "cancelled";
+
+export type AnalysisJobItemTransition = "queue" | "cancel" | "retry" | "finish";

@@ -49,6 +49,26 @@ describe("BawSessionService", () => {
         done();
       });
     });
+
+    it("should not emit from authTriggerAfterInitialCheck before the initial check", () => {
+      const authSpy = jasmine.createSpy("authTriggerAfterInitialCheck");
+
+      spec.service.authTriggerAfterInitialCheck.subscribe(authSpy);
+
+      expect(authSpy).not.toHaveBeenCalled();
+    });
+
+    it("should emit the current state when the initial check completes", () => {
+      const authSpy = jasmine.createSpy("authTriggerAfterInitialCheck");
+      spec.service.authTriggerAfterInitialCheck.subscribe(authSpy);
+
+      spec.service.completeInitialAuthCheck();
+
+      expect(authSpy).toHaveBeenCalledOnceWith({
+        user: guestUser,
+        authToken: guestAuthToken,
+      });
+    });
   });
 
   describe("login", () => {
@@ -79,6 +99,20 @@ describe("BawSessionService", () => {
         }
       });
       login();
+    });
+
+    it("should emit a restored user once when the initial check completes", () => {
+      const authSpy = jasmine.createSpy("authTriggerAfterInitialCheck");
+      spec.service.authTriggerAfterInitialCheck.subscribe(authSpy);
+
+      login();
+      spec.service.completeInitialAuthCheck();
+      spec.service.completeInitialAuthCheck();
+
+      expect(authSpy).toHaveBeenCalledOnceWith({
+        user: defaultUser,
+        authToken: defaultAuthToken,
+      });
     });
   });
 
@@ -117,6 +151,25 @@ describe("BawSessionService", () => {
       });
       login();
       logout();
+    });
+
+    it("should emit login and logout after the initial check", () => {
+      const authSpy = jasmine.createSpy("authTriggerAfterInitialCheck");
+      spec.service.completeInitialAuthCheck();
+      spec.service.authTriggerAfterInitialCheck.subscribe(authSpy);
+
+      login();
+      logout();
+
+      expect(authSpy).toHaveBeenCalledTimes(3);
+      expect(authSpy).toHaveBeenCalledWith({
+        user: defaultUser,
+        authToken: defaultAuthToken,
+      });
+      expect(authSpy).toHaveBeenCalledWith({
+        user: guestUser,
+        authToken: guestAuthToken,
+      });
     });
   });
 

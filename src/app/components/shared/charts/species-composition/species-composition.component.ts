@@ -1,35 +1,90 @@
-import { ChangeDetectionStrategy, Component, input, viewChild } from "@angular/core";
-import { Id, Param } from "@interfaces/apiInterfaces";
-import { Tag } from "@models/Tag";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  viewChild,
+} from "@angular/core";
+import { Range } from "@baw-api/baw-api.service";
+import { TagFrequencyReportItem } from "@models/Reports";
 import { ChartComponent } from "@shared/chart/chart.component";
-import { Map } from "immutable";
+import { LoadingComponent } from "@shared/loading/loading.component";
+import { Map as ImmutableMap } from "immutable";
+import { DateTime } from "luxon";
+import { createTagFormatter, resolveTags } from "../resolve-tags";
 import chartSchema from "./speciesCompositionCurve.schema.json";
 
-export interface SpeciesCompositionGraphData {
-  date: Param;
-  tagId: Id<Tag>;
-  ratio: number;
+interface SpeciesCompositionChartRow {
+  readonly range: Range<DateTime>;
+  readonly tagId: number;
+  readonly events: number;
+  readonly ratio: number;
+}
+
+export function flattenCompositionRows(
+  rows: readonly TagFrequencyReportItem[],
+): SpeciesCompositionChartRow[] {
+  // collect all tags ids so we can widen the sparse API data into a cartesian product of all ranges and all tags
+  const tagIds = Array.from(
+    rows
+      .flatMap(({ tags }) => tags)
+      .reduce((set, { tagId }) => set.add(tagId), new Set<number>()),
+  );
+
+  return rows.flatMap(({ range, tags }) => {
+    const eventsByTag = new Map<number, number>();
+    let totalEventsThisRange = 0;
+    for (const { tagId, events } of tags) {
+      totalEventsThisRange += events;
+
+      if (eventsByTag.has(tagId)) {
+        // shouldn't happen just checking while debugging
+        throw new Error(`Duplicate tagId ${tagId} found in range ${range}`);
+      }
+
+      eventsByTag.set(tagId, events);
+    }
+
+    // for every bucket emit every tag for a consistent tabular data shape
+    return tagIds.map((tagId) => {
+      const events = eventsByTag.get(tagId) ?? 0;
+      const ratio =
+        totalEventsThisRange === 0 ? 0 : events / totalEventsThisRange;
+      return { range, tagId, events, ratio };
+    });
+  });
 }
 
 @Component({
   selector: "baw-species-composition-graph",
   template: `
-    <baw-chart
-      #chart
-      [spec]="chartSchema"
-      [data]="data()"
-      [formatter]="formatter()"
-    />
- `,
+    @if (tags()) {
+      <baw-chart
+        #chart
+        [spec]="chartSchema"
+        [data]="chartRows()"
+        [formatter]="tagFormatter"
+        logContext="Tag composition"
+      />
+    } @else {
+      <baw-loading />
+    }
+  `,
   styleUrl: "../charts.component.scss",
-  imports: [ChartComponent],
+  imports: [ChartComponent, LoadingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SpeciesCompositionGraphComponent {
-  public readonly data = input.required<SpeciesCompositionGraphData[]>();
-  public readonly formatter = input.required<(tagId: Id<Tag>) => string>();
+  public readonly rows = input.required<TagFrequencyReportItem[]>();
+
+  protected readonly tags = resolveTags(this.rows);
+  protected readonly tagFormatter = createTagFormatter(this.tags);
 
   public readonly chart = viewChild.required<ChartComponent>("chart");
 
-  protected readonly chartSchema = Map(chartSchema);
+  protected readonly chartRows = computed(() =>
+    flattenCompositionRows(this.rows()),
+  );
+
+  protected readonly chartSchema = ImmutableMap(chartSchema);
 }

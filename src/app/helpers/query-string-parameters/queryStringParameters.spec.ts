@@ -322,7 +322,16 @@ describe("queryStringParameters", () => {
       const serialized = serializeObjectToParams(testInput, testSpec);
       const deserialized = deserializeParamsToObject(serialized, testSpec);
 
-      expect(deserialized).toEqual(testInput);
+      expect(serialized).toEqual({ time: "01:30,02:45,DST" });
+
+      // Luxon Duration carries internal locale/cache metadata that can vary
+      // across constructors; assert semantic values instead of deep internals.
+      // @ts-expect-error: strict mode fix
+      expect(deserialized.time[0]?.toFormat("hh:mm")).toEqual("01:30");
+      // @ts-expect-error: strict mode fix
+      expect(deserialized.time[1]?.toFormat("hh:mm")).toEqual("02:45");
+      // @ts-expect-error: strict mode fix
+      expect(deserialized.time[2]).toBeTrue();
     });
   });
 });

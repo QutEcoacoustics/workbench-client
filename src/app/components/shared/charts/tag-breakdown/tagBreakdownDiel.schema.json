@@ -1,0 +1,202 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "params": [
+    {
+      "name": "bawTitleSize",
+      "value": 14
+    },
+    {
+      "name": "bawFontSize",
+      "value": 11
+    }
+  ],
+  "config": {
+    "customFormatTypes": true,
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "graticule": {
+          "extent": [
+            [
+              -180,
+              10
+            ],
+            [
+              180,
+              90
+            ]
+          ],
+          "step": [
+            45,
+            20
+          ]
+        }
+      },
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "mark": {
+        "type": "geoshape",
+        "filled": false,
+        "stroke": "#dddddd",
+        "strokeWidth": 0.5
+      }
+    },
+    {
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "transform": [
+        {
+          "joinaggregate": [
+            {
+              "op": "max",
+              "field": "events",
+              "as": "maxEvents"
+            }
+          ]
+        },
+        {
+          "calculate": "-(datum['range'][0] / 86400) * 360",
+          "as": "lon"
+        },
+        {
+          "calculate": "90 - (datum.events / max(1, datum.maxEvents)) * 80",
+          "as": "lat"
+        },
+        {
+          "calculate": "utcFormat((datum['range'][0] % 86400) * 1000, '%H:%M')",
+          "as": "startLabel"
+        },
+        {
+          "calculate": "utcFormat((datum['range'][1] % 86400) * 1000, '%H:%M')",
+          "as": "endLabel"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "interpolate": "linear-closed",
+        "point": {
+          "size": 16,
+          "filled": true
+        },
+        "strokeWidth": 1.5,
+        "opacity": 0.85
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "order": {
+          "field": "range[0]"
+        },
+        "color": {
+          "field": "color",
+          "type": "nominal",
+          "scale": null,
+          "legend": null
+        },
+        "tooltip": [
+          {
+            "field": "startLabel",
+            "type": "nominal",
+            "title": "From"
+          },
+          {
+            "field": "endLabel",
+            "type": "nominal",
+            "title": "To"
+          },
+          {
+            "field": "events",
+            "type": "quantitative",
+            "title": "Events",
+            "format": ","
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "sequence": {
+          "start": 0,
+          "stop": 86400,
+          "step": 7200,
+          "as": "s"
+        }
+      },
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "transform": [
+        {
+          "calculate": "-(datum.s / 86400) * 360",
+          "as": "lon"
+        },
+        {
+          "calculate": "0",
+          "as": "lat"
+        },
+        {
+          "calculate": "utcFormat(datum.s * 1000, '%H:%M')",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "color": "#666666",
+        "fontSize": {
+          "expr": "bawFontSize"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label",
+          "type": "nominal"
+        }
+      }
+    }
+  ]
+}

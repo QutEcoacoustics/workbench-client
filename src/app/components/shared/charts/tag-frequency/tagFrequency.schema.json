@@ -1,0 +1,156 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "params": [
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 14
+    }
+  ],
+  "config": {
+    "customFormatTypes": true
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "interpolate": "linear"
+      },
+      "encoding": {
+        "x": {
+          "field": "range[0]",
+          "title": "Date",
+          "type": "temporal",
+          "axis": {
+            "title": null,
+            "format": {
+              "year": "%Y",
+              "quarter": "%Y-%m",
+              "month": "%Y-%m",
+              "week": "%Y-%m-%d",
+              "date": "%Y-%m-%d",
+              "day": "%Y-%m-%d",
+              "hours": "%Y-%m-%d %H:%M",
+              "minutes": "%Y-%m-%d %H:%M:%S",
+              "seconds": "%Y-%m-%d %H:%M:%S",
+              "milliseconds": "%Y-%m-%d %H:%M:%S.%L"
+            },
+            "labelAngle": -30,
+            "labelAlign": "right",
+            "labelFlush": true,
+            "labelFlushOffset": 4,
+            "tickSize": 4,
+            "tickWidth": 1,
+            "gridWidth": 0.5,
+            "labelPadding": 4,
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          },
+          "scale": {
+            "padding": 0
+          }
+        },
+        "y": {
+          "title": "Count of Tags",
+          "field": "events",
+          "type": "quantitative",
+          "axis": {
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          }
+        },
+        "color": {
+          "field": "tagId",
+          "type": "nominal",
+          "scale": {
+            "scheme": "category10"
+          },
+          "legend": {
+            "orient": "top",
+            "formatType": "customFormatter",
+            "title": null,
+            "columns": {
+              "expr": "max(1, floor(width / 220))"
+            },
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
+            "titleFontWeight": "normal",
+            "labelLimit": {
+              "expr": "max(100, min(180, width / max(1, floor(width / 220)) - 35))"
+            },
+            "symbolSize": {
+              "expr": "bawFontSize * bawFontSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          }
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 100
+      },
+      "transform": [
+        {
+          "calculate": "customFormatter(datum.tagId)",
+          "as": "formatted_tagId"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "range[0]",
+          "type": "temporal"
+        },
+        "y": {
+          "title": "Count of Events",
+          "field": "events",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "tagId",
+          "type": "nominal"
+        },
+        "tooltip": [
+          {
+            "type": "temporal",
+            "field": "range[0]",
+            "title": "From",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+          },
+          {
+            "type": "temporal",
+            "field": "range[1]",
+            "title": "To",
+            "format": "%Y-%m-%d %H:%M:%S.%L %Z"
+          },
+          {
+            "field": "formatted_tagId",
+            "title": "Event"
+          },
+          {
+            "field": "events",
+            "title": "Count"
+          }
+        ]
+      }
+    }
+  ]
+}

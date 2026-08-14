@@ -140,6 +140,32 @@ This will allow you to compare the bundle size impacts before and after the upda
 
 Check our Wiki pages for help with common problems and using systems custom to our application.
 
+### Vega SSR workaround
+
+The app uses a targeted workaround so Vega charts are only loaded in the browser, while SSR avoids resolving Vega's Node canvas entrypoint.
+
+Why this exists:
+
+- `vega-canvas` includes top-level await in its Node build.
+- Angular's SSR build graph can traverse that Node entrypoint and fail during bundling for our target matrix (top level await is not supported in our browser targets and unfortunately those rules apply to SSR builds too)
+
+How this is implemented:
+
+- `package.json` defines a conditional `imports` alias named `#baw/vega-runtime`.
+- Browser builds resolve `src/app/components/shared/chart/vega-runtime.browser.ts`.
+- Server/SSR builds resolve `src/app/components/shared/chart/vega-runtime.server.ts`.(which throws an error if imported).
+- `ChartComponent` imports only `#baw/vega-runtime`, not `vega-embed` directly and guards against SSR execution before calling `loadBrowserVega()`.
+- `tsconfig.app.json` includes the Vega runtime files in the `files` list so Angular's compiler always includes those modules in the TypeScript program.
+
+Important constraints:
+
+- Do not add a TypeScript `paths` mapping for `#baw/vega-runtime`. That forces one target path for both browser and server builds and breaks conditional resolution.
+- Do not import `vega-embed` directly from `chart.component.ts` or any SSR-executed code path.
+- Keep the SSR stub in `vega-runtime.server.ts` throwing by design. If this code runs on the server, that indicates a guard failure that should be fixed at the callsite.
+- If a new Vega runtime helper file is added, also add it to `tsconfig.app.json` and `tsconfig.spec.json` into `files` so the Angular compiler does not drop it from the program.
+
+If this area is changed, validate with an SSR production build and check for `Top-level await` errors referencing `vega-canvas`.
+
 ## Production deploy
 
 Deploying to production can be as simple as copying the release assets to a statically served directory, setting up your routing, and adding an `environment.json` file.

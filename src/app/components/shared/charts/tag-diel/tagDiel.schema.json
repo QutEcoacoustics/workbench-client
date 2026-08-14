@@ -1,0 +1,232 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "width": "container",
+  "height": "container",
+  "data": {
+    "values": []
+  },
+  "params": [
+    {
+      "name": "bawTitleSize",
+      "value": 20
+    },
+    {
+      "name": "bawFontSize",
+      "value": 14
+    }
+  ],
+  "config": {
+    "customFormatTypes": true,
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "graticule": {
+          "extent": [
+            [
+              -180,
+              10
+            ],
+            [
+              180,
+              90
+            ]
+          ],
+          "step": [
+            45,
+            20
+          ]
+        }
+      },
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "mark": {
+        "type": "geoshape",
+        "filled": false,
+        "stroke": "#dddddd",
+        "strokeWidth": 0.5
+      }
+    },
+    {
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "transform": [
+        {
+          "joinaggregate": [
+            {
+              "op": "max",
+              "field": "events",
+              "as": "maxEvents"
+            }
+          ]
+        },
+        {
+          "calculate": "-(datum['range'][0] / 86400) * 360",
+          "as": "lon"
+        },
+        {
+          "calculate": "90 - (datum.events / max(1, datum.maxEvents)) * 80",
+          "as": "lat"
+        },
+        {
+          "calculate": "utcFormat((datum['range'][0] % 86400) * 1000, '%H:%M')",
+          "as": "startLabel"
+        },
+        {
+          "calculate": "utcFormat((datum['range'][1] % 86400) * 1000, '%H:%M')",
+          "as": "endLabel"
+        },
+        {
+          "calculate": "customFormatter(datum.tagId)",
+          "as": "tagName"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "interpolate": "linear-closed",
+        "point": {
+          "size": 20
+        },
+        "strokeWidth": 1.5,
+        "opacity": 0.85
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "order": {
+          "field": "range[0]"
+        },
+        "color": {
+          "field": "tagId",
+          "type": "nominal",
+          "scale": {
+            "scheme": "category10"
+          },
+          "legend": {
+            "orient": "top",
+            "formatType": "customFormatter",
+            "columns": {
+              "expr": "max(1, floor(width / 220))"
+            },
+            "title": null,
+            "titleFontSize": {
+              "expr": "bawTitleSize"
+            },
+            "titleFontWeight": "normal",
+            "labelLimit": {
+              "expr": "max(100, min(180, width / max(1, floor(width / 220)) - 35))"
+            },
+            "symbolSize": {
+              "expr": "bawFontSize * bawFontSize"
+            },
+            "labelFontSize": {
+              "expr": "bawFontSize"
+            }
+          }
+        },
+        "tooltip": [
+          {
+            "field": "tagName",
+            "type": "nominal",
+            "title": "Tag"
+          },
+          {
+            "field": "startLabel",
+            "type": "nominal",
+            "title": "From"
+          },
+          {
+            "field": "endLabel",
+            "type": "nominal",
+            "title": "To"
+          },
+          {
+            "field": "events",
+            "type": "quantitative",
+            "title": "Events",
+            "format": ","
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "sequence": {
+          "start": 0,
+          "stop": 86400,
+          "step": 3600,
+          "as": "s"
+        }
+      },
+      "projection": {
+        "type": "azimuthalEquidistant",
+        "rotate": [
+          0,
+          -90,
+          180
+        ],
+        "clipAngle": 180
+      },
+      "transform": [
+        {
+          "calculate": "-(datum.s / 86400) * 360",
+          "as": "lon"
+        },
+        {
+          "calculate": "0",
+          "as": "lat"
+        },
+        {
+          "calculate": "utcFormat(datum.s * 1000, '%H:%M')",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "color": "#666666",
+        "fontSize": {
+          "expr": "bawFontSize"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label",
+          "type": "nominal"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+<div class="section-heading">
+  @if (headingLevel() === 3) {
+    <h3 class="section-title">{{ sectionTitle() }}</h3>
+  } @else {
+    <h4 class="section-title">{{ sectionTitle() }}</h4>
+  }
+
+  <span class="section-actions">
+    <ng-content select="[section-actions]" />
+
+    <button
+      class="toggle-button btn btn-secondary btn-sm"
+      type="button"
+      [attr.aria-expanded]="expanded()"
+      [attr.aria-controls]="contentId()"
+      [attr.aria-label]="
+        expanded() ? 'Collapse ' + sectionTitle() : 'Expand ' + sectionTitle()
+      "
+      [title]="expanded() ? 'Collapse ' + sectionTitle() : 'Expand ' + sectionTitle()"
+      [ngbTooltip]="expanded() ? 'Collapse' : 'Expand'"
+      (click)="toggle()"
+    >
+      <span class="visually-hidden">
+        {{
+          expanded()
+            ? "Collapse " + sectionTitle()
+            : "Expand " + sectionTitle()
+        }}
+      </span>
+      <fa-icon [icon]="['fas', expanded() ? 'chevron-up' : 'chevron-down']" />
+    </button>
+  </span>
+</div>
+
+<div [id]="contentId()" [ngbCollapse]="!expanded()">
+  <ng-content />
+</div>

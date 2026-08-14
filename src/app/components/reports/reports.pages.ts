@@ -1,7 +1,7 @@
-import { NewEventReportComponent } from "./pages/event-summary/new/new.component";
-import { ViewEventReportComponent } from "./pages/event-summary/view/view.component";
+import { NewAnnotationReportComponent } from "./pages/annotations/new/new.component";
+import { ViewAnnotationReportComponent } from "./pages/annotations/view/view.component";
 
 export const reportsPageComponents = [
-  NewEventReportComponent,
-  ViewEventReportComponent,
+  NewAnnotationReportComponent,
+  ViewAnnotationReportComponent,
 ];

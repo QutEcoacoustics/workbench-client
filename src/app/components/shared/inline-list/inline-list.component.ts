@@ -7,8 +7,8 @@ import { UrlDirective } from "@directives/url/url.directive";
 @Component({
   selector: "baw-inline-list",
   template: `
-    @if (!!items() && items().length > 0) {
-      @for (item of items(); track item; let isLast = $last) {
+    @if ((items()?.length ?? 0) > 0) {
+      @for (item of items() ?? []; track item; let isLast = $last) {
         <span>
           <a [bawUrl]="item.viewUrl">{{ itemText(item) }}</a>
           @if (!isLast) {, }
@@ -21,7 +21,7 @@ import { UrlDirective } from "@directives/url/url.directive";
   imports: [NgTemplateOutlet, UrlDirective],
 })
 export class InlineListComponent {
-  public readonly items = input.required<AbstractModel[]>();
+  public readonly items = input<AbstractModel[] | null | undefined>(null);
   public readonly withLoading = input(false);
   public readonly emptyTemplate = input<TemplateRef<NgIfContext<boolean>>>();
   public readonly itemKey = input<string>();

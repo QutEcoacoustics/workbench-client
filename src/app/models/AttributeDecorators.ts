@@ -1,3 +1,4 @@
+import { Range } from "@baw-api/baw-api.service";
 import { SortFunction } from "@helpers/advancedTypes";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
@@ -5,7 +6,10 @@ import { API_ROOT } from "@services/config/config.tokens";
 import { filesize } from "filesize";
 import { DateTime, Duration } from "luxon";
 import { AbstractModel, AbstractModelConstructor } from "./AbstractModel";
-import { HasAssociationInjector, ImplementsAssociations } from "./ImplementsInjector";
+import {
+  HasAssociationInjector,
+  ImplementsAssociations,
+} from "./ImplementsInjector";
 
 export interface BawAttributeOptions {
   create: boolean;
@@ -18,6 +22,10 @@ export interface BawAttributeMeta extends BawAttributeOptions {
   key: string;
 }
 
+export function convertApiDateString(dateString: string): DateTime {
+  return DateTime.fromISO(dateString, { setZone: true });
+}
+
 /**
  * Persist an attribute of an abstract model so that the attribute will be sent
  * during a specific type of API request determined by opts set
@@ -25,7 +33,7 @@ export interface BawAttributeMeta extends BawAttributeOptions {
 function persistAttr(
   model: AbstractModel,
   key: string,
-  opts: boolean | Partial<BawAttributeOptions>
+  opts: boolean | Partial<BawAttributeOptions>,
 ): void {
   // If opts is false, cancel early
   if (opts === false) {
@@ -82,7 +90,7 @@ export function bawReadonlyConvertCase(convertCase = true) {
  */
 export function bawImage<Model>(
   defaultUrl: string,
-  opts?: BawDecoratorOptions<Model>
+  opts?: BawDecoratorOptions<Model>,
 ) {
   // Retrieve default image and prepend site url if required
   const defaultImage: ImageUrl = {
@@ -123,7 +131,7 @@ export function bawImage<Model>(
       const apiRoot = model["injector"]?.get?.(API_ROOT) ?? "";
       if (!apiRoot) {
         console.warn(
-          `${model} does not have injector service. Tried to access ${key.toString()}`
+          `${model} does not have injector service. Tried to access ${key.toString()}`,
         );
       }
 
@@ -139,7 +147,7 @@ export function bawImage<Model>(
         // at the moment, default images are defined by the baw-api by returning image urls matching the regex expression below
         // in a future iteration of the api, the image urls attribute will not be returned when the image is a default image
         const defaultImageMatchingRegex = new RegExp(
-          "^/images/(.*)/(\\1)_span.*.png$"
+          "^/images/(.*)/(\\1)_span.*.png$",
         );
         // iterate through the image url's validating if they match the default image url format. If they do, set the default flag
         imageUrls = imageUrls.map((image) => ({
@@ -164,7 +172,7 @@ export function bawImage<Model>(
       } else {
         model[key] = [defaultImage];
       }
-    }
+    },
   );
 }
 
@@ -189,13 +197,13 @@ export function bawCollection<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 export function bawSubModel<ParentModel, SubModel>(
   classConstructor: AbstractModelConstructor<SubModel>,
-  opts?: BawDecoratorOptions<ParentModel>
+  opts?: BawDecoratorOptions<ParentModel>,
 ) {
   return createDecorator<ParentModel>(
     opts,
     (model: HasAssociationInjector, key: symbol, value: SubModel) =>
       // @ts-expect-error: strict mode indexing
-      (model[key] = new classConstructor(value, model["injector"]))
+      (model[key] = new classConstructor(value, model["injector"])),
   );
 }
 
@@ -208,7 +216,7 @@ export function bawSubModel<ParentModel, SubModel>(
  */
 export function bawSubModelCollection<ParentModel, SubModel>(
   classConstructor: AbstractModelConstructor<SubModel>,
-  opts?: BawDecoratorOptions<ParentModel>
+  opts?: BawDecoratorOptions<ParentModel>,
 ) {
   return createDecorator<ParentModel>(
     opts,
@@ -216,8 +224,8 @@ export function bawSubModelCollection<ParentModel, SubModel>(
       // @ts-expect-error: strict mode indexing
       (model[key] = values?.map(
         // @ts-expect-error: strict mode fix
-        (value) => new classConstructor(value, model["injector"])
-      ))
+        (value) => new classConstructor(value, model["injector"]),
+      )),
   );
 }
 
@@ -226,7 +234,7 @@ export function bawSubModelCollection<ParentModel, SubModel>(
  */
 export function bawDateTime<Model>(
   opts?: BawDecoratorOptions<Model>,
-  zoneKey?: keyof Model
+  zoneKey?: keyof Model,
 ) {
   return createDecorator<Model>(
     opts,
@@ -239,10 +247,10 @@ export function bawDateTime<Model>(
         if (zoneKey) {
           model[key] = DateTime.fromISO(timestamp).setZone(model[zoneKey]);
         } else {
-          model[key] = DateTime.fromISO(timestamp, { setZone: true });
+          model[key] = convertApiDateString(timestamp);
         }
       }
-    }
+    },
   );
 }
 
@@ -272,8 +280,37 @@ export function bawDuration<Model>(opts?: BawDecoratorOptions<Model>) {
             seconds,
           }).normalize() // Normalize seconds into other keys (i.e 200 seconds => 3 minutes, 20 seconds)
         : null;
-    }
+    },
   );
+}
+
+interface RangeOptions<T> {
+  convert(value: unknown): T;
+}
+
+export function bawRange<T>(options: RangeOptions<T>) {
+  return function (model: object, key: string): void {
+    Object.defineProperty(model, key, {
+      set(rawRange: Range<unknown>): void {
+        Object.defineProperty(this, key, {
+          value: rawRange.map(options.convert) as Range<T>,
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
+      },
+      configurable: true,
+    });
+  };
+}
+
+export function bawDateTimeRange() {
+  return bawRange<DateTime>({
+    convert: (value) =>
+      DateTime.isDateTime(value)
+        ? value
+        : convertApiDateString(value as string),
+  });
 }
 
 /**
@@ -296,7 +333,7 @@ export function bawBytes<Model>(opts?: BawDecoratorOptions<Model>) {
  */
 function createDecorator<Model>(
   opts: BawDecoratorOptions<Model> = {},
-  setValue: (model: any, key: symbol, ...args: any[]) => void
+  setValue: (model: any, key: symbol, ...args: any[]) => void,
 ) {
   return function (model: ImplementsAssociations, key: string): void {
     // Store decorated keys value

@@ -1,267 +1,178 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "datasets": {},
-  "params": [{ "name": "bawFontSize", "value": 18 }],
-  "resolve": {
-    "scale": {
-      "x": "shared"
-    }
-  },
   "data": {
-    "name": "recordingCoverage"
+    "name": "coverage"
   },
+  "params": [
+    {
+      "name": "bawFontSize",
+      "value": 14
+    }
+  ],
   "config": {
-    "concat": {
-      "spacing": 0
+    "facet": {
+      "spacing": 12
+    },
+    "header": {
+      "labelFontSize": {
+        "expr": "bawFontSize"
+      }
     },
     "style": {
       "cell": {
         "stroke": "transparent"
       }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.coverageType === 'Recordings' ? 4.4 : datum.coverageType === 'success' ? 3.3 : datum.coverageType === 'failed' ? 2.2 : datum.coverageType === 'killed' ? 1.1 : 0",
+      "as": "slotBottom"
     },
-    "legend": {
-      "symbolStrokeWidth": 10,
-      "offset": 0,
-      "orient": "bottom",
-      "labelLimit": 300,
-      "title": null,
-      "labelFontSize": {
-        "expr": "bawFontSize"
+    {
+      "calculate": "datum.coverageType === 'Recordings' ? 2 : 1",
+      "as": "slotHeight"
+    },
+    {
+      "calculate": "datum.slotBottom + datum.density * datum.slotHeight",
+      "as": "barTop"
+    }
+  ],
+  "facet": {
+    "row": {
+      "field": "siteName",
+      "type": "nominal",
+      "sort": {
+        "field": "siteId",
+        "op": "min"
+      },
+      "header": {
+        "title": null,
+        "labelAngle": 0,
+        "labelAlign": "right",
+        "labelBaseline": "middle",
+        "labelPadding": 8
       }
     }
   },
-  "vconcat": [
-    {
-      "resolve": {
+  "spec": {
+    "width": "container",
+    "height": 60,
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "range[0]",
+        "type": "temporal",
+        "axis": {
+          "title": null,
+          "grid": true,
+          "format": {
+            "year": "%Y",
+            "quarter": "%Y-%m",
+            "month": "%Y-%m",
+            "week": "%Y-%m-%d",
+            "date": "%Y-%m-%d",
+            "day": "%Y-%m-%d",
+            "hours": "%Y-%m-%d %H:%M",
+            "minutes": "%Y-%m-%d %H:%M:%S",
+            "seconds": "%Y-%m-%d %H:%M:%S",
+            "milliseconds": "%Y-%m-%d %H:%M:%S.%L"
+          },
+          "labelAngle": -30,
+          "labelAlign": "right",
+          "labelFlush": true,
+          "labelFlushOffset": 4,
+          "tickSize": 4,
+          "tickWidth": 1,
+          "gridWidth": 0.5,
+          "labelPadding": 4,
+          "labelFontSize": {
+            "expr": "bawFontSize"
+          }
+        }
+      },
+      "x2": {
+        "field": "range[1]"
+      },
+      "y": {
+        "field": "barTop",
+        "type": "quantitative",
+        "scale": {
+          "nice": false
+        },
+        "axis": null
+      },
+      "y2": {
+        "field": "slotBottom"
+      },
+      "color": {
+        "field": "coverageType",
+        "type": "nominal",
+        "scale": {
+          "domain": [
+            "Recordings",
+            "success",
+            "failed",
+            "killed",
+            "cancelled"
+          ],
+          "range": [
+            "var(--baw-primary)",
+            "var(--baw-success)",
+            "var(--baw-danger)",
+            "var(--baw-warning)",
+            "var(--baw-secondary)"
+          ]
+        },
         "legend": {
-          "color": "independent"
+          "title": null,
+          "orient": "top",
+          "direction": "horizontal",
+          "columns": 5,
+          "symbolType": "square",
+          "labelFontSize": {
+            "expr": "bawFontSize"
+          },
+          "labelExpr": "datum.label === 'Recordings' ? datum.label : upper(substring(datum.label, 0, 1)) + substring(datum.label, 1)"
         }
       },
-      "view": {
-        "height": 0,
-        "padding": 0
-      },
-      "layer": [
+      "tooltip": [
         {
-          "mark": "text",
-          "encoding": {
-            "color": {
-              "field": "startDate",
-              "legend": {
-                "values": ["Recordings"],
-                "symbolStrokeColor": "var(--baw-primary)"
-              }
-            }
-          }
+          "field": "siteName",
+          "type": "nominal",
+          "title": "Site"
         },
         {
-          "mark": "text",
-          "encoding": {
-            "color": {
-              "field": "startDate",
-              "legend": {
-                "values": ["Analysis"],
-                "symbolStrokeColor": "var(--baw-success)"
-              }
-            }
-          }
+          "field": "coverageType",
+          "type": "nominal",
+          "title": "Coverage"
         },
         {
-          "mark": "text",
-          "encoding": {
-            "color": {
-              "field": "startDate",
-              "legend": {
-                "values": ["Missing Analysis"],
-                "symbolStrokeColor": "var(--baw-warning)"
-              }
-            }
-          }
+          "field": "density",
+          "type": "quantitative",
+          "title": "Density",
+          "format": ".1%"
         },
         {
-          "mark": "text",
-          "encoding": {
-            "color": {
-              "field": "startDate",
-              "legend": {
-                "values": ["Failed Analysis"],
-                "symbolStrokeColor": "var(--baw-danger)"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "title": "",
-      "width": "container",
-      "height": 50,
-      "mark": "bar",
-      "encoding": {
-        "x": {
-          "field": "startDate",
+          "field": "range[0]",
           "type": "temporal",
-          "timeUnit": "yearmonthdate",
-          "axis": {
-            "title": null,
-            "labels": false,
-            "ticks": false,
-            "domain": false,
-            "grid": true,
-            "tickCount": "day"
-          }
-        },
-        "x2": {
-          "timeUnit": "yearmonthdate",
-          "field": "endDate"
-        },
-        "color": {
-          "value": "var(--baw-primary)"
-        },
-        "tooltip": [
-          {
-            "type": "temporal",
-            "field": "startDate",
-            "title": "Recording Start Date",
-            "format": "%Y-%m-%d"
-          },
-          {
-            "type": "temporal",
-            "field": "endDate",
-            "title": "Recording End Date",
-            "format": "%Y-%m-%d"
-          }
-        ]
-      }
-    },
-    {
-      "title": "",
-      "width": "container",
-      "height": 50,
-      "layer": [
-        {
-          "data": {
-            "name": "missingAnalysisCoverage"
-          },
-          "mark": "bar",
-          "encoding": {
-            "x": {
-              "field": "startDate",
-              "type": "temporal",
-              "timeUnit": "yearmonthdate",
-              "axis": {
-                "labelAngle": 45,
-                "title": null,
-                "grid": true,
-                "format": "%Y-%m-%d",
-                "tickCount": "day",
-                "labelFontSize": {
-                  "expr": "bawFontSize"
-                }
-              }
-            },
-            "x2": {
-              "timeUnit": "yearmonthdate",
-              "field": "endDate"
-            },
-            "color": {
-              "value": "var(--baw-warning)"
-            },
-            "tooltip": [
-              {
-                "type": "temporal",
-                "field": "startDate",
-                "title": "Missing Analysis Start Date",
-                "format": "%Y-%m-%d"
-              },
-              {
-                "type": "temporal",
-                "field": "endDate",
-                "title": "Missing Analysis End Date",
-                "format": "%Y-%m-%d"
-              }
-            ]
-          }
+          "title": "Start Date",
+          "format": "%Y-%m-%d %H:%M:%S.%L %Z"
         },
         {
-          "data": {
-            "name": "failedAnalysisCoverage"
-          },
-          "mark": "bar",
-          "encoding": {
-            "x": {
-              "field": "startDate",
-              "type": "temporal",
-              "timeUnit": "yearmonthdate",
-              "axis": {
-                "labelAngle": 45,
-                "title": null,
-                "grid": false,
-                "format": "%Y-%m-%d",
-                "tickCount": "day",
-                "labelFontSize": {
-                  "expr": "bawFontSize"
-                }
-              }
-            },
-            "x2": {
-              "timeUnit": "yearmonthdate",
-              "field": "endDate"
-            },
-            "color": {
-              "value": "var(--baw-danger)"
-            },
-            "tooltip": [
-              {
-                "type": "temporal",
-                "field": "startDate",
-                "title": "Failed Analysis Start Date",
-                "format": "%Y-%m-%d"
-              },
-              {
-                "type": "temporal",
-                "field": "endDate",
-                "title": "Failed Analysis End Date",
-                "format": "%Y-%m-%d"
-              }
-            ]
-          }
-        },
-        {
-          "data": {
-            "name": "analysisCoverage"
-          },
-          "mark": "bar",
-          "encoding": {
-            "x": {
-              "field": "startDate",
-              "type": "temporal",
-              "timeUnit": "yearmonthdate"
-            },
-            "x2": {
-              "timeUnit": "yearmonthdate",
-              "field": "endDate"
-            },
-            "color": {
-              "value": "var(--baw-success)"
-            },
-            "tooltip": [
-              {
-                "type": "temporal",
-                "field": "startDate",
-                "title": "Analysis Start Date",
-                "format": "%Y-%m-%d"
-              },
-              {
-                "type": "temporal",
-                "field": "endDate",
-                "title": "Analysis End Date",
-                "format": "%Y-%m-%d"
-              }
-            ]
-          }
+          "field": "range[1]",
+          "type": "temporal",
+          "title": "End Date",
+          "format": "%Y-%m-%d %H:%M:%S.%L %Z"
         }
       ]
     }
-  ]
+  },
+  "resolve": {
+    "scale": {
+      "x": "shared",
+      "y": "shared"
+    }
+  }
 }

@@ -21,7 +21,6 @@ import type { DataRequest } from "@models/data/DataRequest";
 import type { ReportProblem } from "@models/data/ReportProblem";
 import type { Dataset } from "@models/Dataset";
 import type { DatasetItem } from "@models/DatasetItem";
-import type { EventSummaryReport } from "@models/EventSummaryReport";
 import type { Harvest } from "@models/Harvest";
 import type { HarvestItem } from "@models/HarvestItem";
 import type { Permission } from "@models/Permission";
@@ -82,7 +81,6 @@ import type {
 } from "./region/regions.service";
 import type { ContactUsService } from "./report/contact-us.service";
 import type { ReportProblemService } from "./report/report-problem.service";
-import type { EventSummaryReportService } from "./reports/event-report/event-summary-report.service";
 import type { SavedSearchesService } from "./saved-search/saved-searches.service";
 import type { ScriptsService } from "./script/scripts.service";
 import type { SiteSettingsService } from "./site-settings/site-settings.service";
@@ -161,9 +159,6 @@ export const TAG_GROUP = new ServiceToken<TagGroupsService, TagGroup>("TAG_GROUP
 export const TAGGING = new ServiceToken<TaggingsService, Tagging>("TAGGING");
 export const USER = new ServiceToken<UserService, User>("USER");
 export const AUDIO_EVENT_PROVENANCE = new ServiceToken<ProvenanceService, Provenance>("AUDIO_EVENT_PROVENANCE");
-export const AUDIO_EVENT_SUMMARY_REPORT = new ServiceToken<EventSummaryReportService, EventSummaryReport>(
-  "AUDIO_EVENT_SUMMARY_REPORT",
-);
 export const WEBSITE_STATUS = new ServiceToken<WebsiteStatusService, WebsiteStatus>("WEBSITE_STATUS");
 export const ANNOTATION = new ServiceToken<AnnotationService, Annotation>("ANNOTATION");
 export const VERIFICATION = new ServiceToken<VerificationService, Verification>("VERIFICATION");

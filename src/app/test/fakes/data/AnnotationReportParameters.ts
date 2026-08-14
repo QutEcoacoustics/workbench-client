@@ -1,0 +1,43 @@
+/** A fake parameter data model used in the event summary reports */
+import { Params } from "@angular/router";
+import {
+  BucketSize,
+  Chart,
+} from "@components/reports/pages/annotations/AnnotationReportParameters";
+import { faker } from "@faker-js/faker";
+import { modelData } from "@test/helpers/faker";
+
+export function generateAnnotationReportUrlParams(data?: Params): Params {
+  return {
+    sites: modelData.ids().join(","),
+    regions: modelData.ids().join(","),
+    provenances: modelData.ids().join(","),
+    tags: modelData.ids().join(","),
+    score: modelData.percentage(),
+    bucketSize: faker.helpers.arrayElement<BucketSize>([
+      BucketSize.day,
+      // BucketSize.fortnight,
+      BucketSize.month,
+      // BucketSize.season,
+      BucketSize.week,
+      BucketSize.year,
+    ]),
+    daylightSavings: faker.datatype.boolean(),
+    time: [modelData.time(), modelData.time()].join(","),
+    date: [modelData.dateTime(), modelData.dateTime()].join(","),
+    charts: faker.helpers
+      .shuffle([
+        Chart.coverage,
+        Chart.eventSummary,
+        Chart.speciesAccumulationCurve,
+        Chart.speciesCompositionCurve,
+        Chart.speciesTimeSeries,
+        Chart.tagFrequencyStacked,
+        Chart.dielPlot,
+        Chart.tagBreakdown,
+        Chart.none,
+      ])
+      .join(","),
+    ...data,
+  };
+}

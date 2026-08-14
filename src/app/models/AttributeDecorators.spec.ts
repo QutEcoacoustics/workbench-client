@@ -1,17 +1,18 @@
+import { INJECTOR } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { Id, Ids, ImageSizes, ImageUrl } from "@interfaces/apiInterfaces";
+import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
 import { assetRoot } from "@services/config/config.service";
 import { API_ROOT } from "@services/config/config.tokens";
+import { provideMockConfig } from "@services/config/provide-configMock";
 import { modelData } from "@test/helpers/faker";
 import { DateTime, Duration } from "luxon";
-import { ASSOCIATION_INJECTOR } from "@services/association-injector/association-injector.tokens";
-import { INJECTOR } from "@angular/core";
-import { provideMockConfig } from "@services/config/provide-configMock";
 import { AbstractModel } from "./AbstractModel";
 import {
   BawAttributeMeta,
   bawCollection,
   bawDateTime,
+  bawDateTimeRange,
   BawDecoratorOptions,
   bawDuration,
   bawImage,
@@ -29,7 +30,7 @@ describe("Attribute Decorators", () => {
   function getModelKeys(
     model: AbstractModel,
     supportedFormat: "json" | "formData",
-    callback: (attr: BawAttributeMeta) => boolean
+    callback: (attr: BawAttributeMeta) => boolean,
   ): string[] {
     return model
       .getPersistentAttributes()
@@ -48,19 +49,19 @@ describe("Attribute Decorators", () => {
 
   function assertCreateFormDataAttributes(
     model: AbstractModel,
-    keys: string[]
+    keys: string[],
   ) {
     expect(getModelKeys(model, "formData", (attr) => attr.create)).toEqual(
-      keys
+      keys,
     );
   }
 
   function assertUpdateFormDataAttributes(
     model: AbstractModel,
-    keys: string[]
+    keys: string[],
   ) {
     expect(getModelKeys(model, "formData", (attr) => attr.update)).toEqual(
-      keys
+      keys,
     );
   }
 
@@ -242,7 +243,7 @@ describe("Attribute Decorators", () => {
     function createModel(
       data?: { images?: ImageUrl[] | string; imageUrls?: ImageUrl[] },
       opts?: BawDecoratorOptions<any>,
-      injector?: AssociationInjector
+      injector?: AssociationInjector,
     ) {
       class MockModel extends BaseModel {
         @bawImage(defaultImageUrl.url, opts)
@@ -261,7 +262,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist option", () => {
       const model = createModel(
         { images: defaultImageUrls },
-        { persist: true }
+        { persist: true },
       );
       assertCreateJsonAttributes(model, ["images"]);
       assertUpdateJsonAttributes(model, ["images"]);
@@ -270,7 +271,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { images: defaultImageUrls },
-        { persist: { create: true, update: false } }
+        { persist: { create: true, update: false } },
       );
       assertCreateJsonAttributes(model, ["images"]);
       assertUpdateJsonAttributes(model, []);
@@ -279,7 +280,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { images: defaultImageUrls },
-        { persist: { create: false, update: true } }
+        { persist: { create: false, update: true } },
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["images"]);
@@ -288,7 +289,7 @@ describe("Attribute Decorators", () => {
     it("should handle override key option", () => {
       const model = createModel(
         { imageUrls: defaultImageUrls },
-        { key: "imageUrls" }
+        { key: "imageUrls" },
       );
       expect(model.images).toEqual([...defaultImageUrls, defaultImageUrl]);
       expect(model.imageUrls).toEqual(defaultImageUrls);
@@ -381,7 +382,7 @@ describe("Attribute Decorators", () => {
   describe("BawCollection", () => {
     function createModel(
       data: { ids?: Id[]; overrideIds?: Id[] },
-      opts?: BawDecoratorOptions<any>
+      opts?: BawDecoratorOptions<any>,
     ) {
       class MockModel extends BaseModel {
         @bawCollection(opts)
@@ -401,7 +402,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { create: true, update: false } }
+        { persist: { create: true, update: false } },
       );
       assertCreateJsonAttributes(model, ["ids"]);
       assertUpdateJsonAttributes(model, []);
@@ -410,7 +411,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { ids: [1, 2, 3] },
-        { persist: { create: false, update: true } }
+        { persist: { create: false, update: true } },
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["ids"]);
@@ -419,7 +420,7 @@ describe("Attribute Decorators", () => {
     it("should handle override key option", () => {
       const model = createModel(
         { overrideIds: [1, 2, 3] },
-        { key: "overrideIds" }
+        { key: "overrideIds" },
       );
       expect(model.ids).toEqual(new Set([1, 2, 3]));
       expect(model.overrideIds).toEqual([1, 2, 3]);
@@ -463,7 +464,7 @@ describe("Attribute Decorators", () => {
 
     function createModel(
       data: { date?: string; timestamp?: string },
-      opts?: BawDecoratorOptions<any>
+      opts?: BawDecoratorOptions<any>,
     ) {
       class MockModel extends BaseModel {
         @bawDateTime(opts)
@@ -478,7 +479,7 @@ describe("Attribute Decorators", () => {
       const model = createModel(
         // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
-        { persist: true }
+        { persist: true },
       );
       assertCreateJsonAttributes(model, ["date"]);
       assertUpdateJsonAttributes(model, ["date"]);
@@ -488,7 +489,7 @@ describe("Attribute Decorators", () => {
       const model = createModel(
         // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
-        { persist: { create: true, update: false } }
+        { persist: { create: true, update: false } },
       );
       assertCreateJsonAttributes(model, ["date"]);
       assertUpdateJsonAttributes(model, []);
@@ -498,7 +499,7 @@ describe("Attribute Decorators", () => {
       const model = createModel(
         // @ts-expect-error: strict mode fix
         { date: defaultDate.toISO() },
-        { persist: { create: false, update: true } }
+        { persist: { create: false, update: true } },
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["date"]);
@@ -508,7 +509,7 @@ describe("Attribute Decorators", () => {
       const model = createModel(
         // @ts-expect-error: strict mode fix
         { timestamp: defaultDate.toISO() },
-        { key: "timestamp" }
+        { key: "timestamp" },
       );
       expect(model.date).toEqual(defaultDate);
       // @ts-expect-error: strict mode fix
@@ -535,13 +536,47 @@ describe("Attribute Decorators", () => {
     });
   });
 
+  describe("BawDateTimeRange", () => {
+    class MockModel extends BaseModel {
+      @bawDateTimeRange()
+      public readonly range!: [DateTime, DateTime];
+    }
+
+    it("should convert date strings", () => {
+      const start = modelData.timestamp();
+      const end = modelData.timestamp();
+      const model = new MockModel({ range: [start, end] });
+
+      expect(model.range).toEqual([
+        DateTime.fromISO(start, { setZone: true }),
+        DateTime.fromISO(end, { setZone: true }),
+      ]);
+    });
+
+    it("should preserve date time values", () => {
+      const range: [DateTime, DateTime] = [DateTime.now(), DateTime.now()];
+      const model = new MockModel({ range });
+
+      expect(model.range).toEqual(range);
+    });
+
+    it("should create an enumerable own property", () => {
+      const model = new MockModel({
+        range: [modelData.timestamp(), modelData.timestamp()],
+      });
+
+      expect(Object.keys(model)).toContain("range");
+      expect(Object.hasOwn(model, "range")).toBeTrue();
+    });
+  });
+
   describe("BawDuration", () => {
     const defaultSeconds = 100;
     let defaultDuration: Duration;
 
     function createModel(
       data: { duration?: number; seconds?: number },
-      opts?: BawDecoratorOptions<any>
+      opts?: BawDecoratorOptions<any>,
     ) {
       class MockModel extends BaseModel {
         @bawDuration(opts)
@@ -566,7 +601,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: true }
+        { persist: true },
       );
       assertCreateJsonAttributes(model, ["duration"]);
       assertUpdateJsonAttributes(model, ["duration"]);
@@ -575,7 +610,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on create option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { create: true, update: false } }
+        { persist: { create: true, update: false } },
       );
       assertCreateJsonAttributes(model, ["duration"]);
       assertUpdateJsonAttributes(model, []);
@@ -584,7 +619,7 @@ describe("Attribute Decorators", () => {
     it("should handle persist on update option", () => {
       const model = createModel(
         { duration: defaultSeconds },
-        { persist: { create: false, update: true } }
+        { persist: { create: false, update: true } },
       );
       assertCreateJsonAttributes(model, []);
       assertUpdateJsonAttributes(model, ["duration"]);
@@ -593,7 +628,7 @@ describe("Attribute Decorators", () => {
     it("should handle override key option", () => {
       const model = createModel(
         { seconds: defaultSeconds },
-        { key: "seconds" }
+        { key: "seconds" },
       );
       expect(model.duration).toEqual(defaultDuration);
       expect(model.seconds).toEqual(defaultSeconds);

@@ -81,10 +81,6 @@ import {
 } from "./region/regions.service";
 import { ContactUsService } from "./report/contact-us.service";
 import { ReportProblemService } from "./report/report-problem.service";
-import {
-  EventSummaryReportService,
-  eventSummaryResolvers,
-} from "./reports/event-report/event-summary-report.service";
 import { BawProvider } from "./resolver-common";
 import {
   SavedSearchesService,
@@ -311,11 +307,6 @@ const serviceList = [
     serviceToken: Tokens.AUDIO_EVENT_PROVENANCE,
     service: ProvenanceService,
     resolvers: provenanceResolvers,
-  },
-  {
-    serviceToken: Tokens.AUDIO_EVENT_SUMMARY_REPORT,
-    service: EventSummaryReportService,
-    resolvers: eventSummaryResolvers,
   },
   {
     serviceToken: Tokens.AUDIO_EVENT_IMPORT,

@@ -11,7 +11,8 @@
       "url": "https://development.ecosounds.org:4200",
       "webRoot": "${workspaceFolder}",
       // https://stackoverflow.com/questions/51725854/run-vscode-chrome-debugger-with-its-extensions
-      "userDataDir": "${workspaceFolder}/.vscode/chrome-userdatadir"
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-userdatadir",
+      "breakOnLoad": true
     },
     {
       "type": "firefox",

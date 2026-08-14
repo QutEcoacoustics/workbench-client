@@ -273,6 +273,8 @@ export class SecurityService {
   }
 
   private completeAuthAwait(): void {
+    this.session.completeInitialAuthCheck();
+
     // Because the boolean value stored in the firstAuthAwait behavior subject
     // indicates if the first auth has been completed previously, we have to
     // emit a value before completing the behavior subject.

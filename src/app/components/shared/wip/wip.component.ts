@@ -5,8 +5,8 @@
   ViewEncapsulation,
 } from "@angular/core";
 import { BawSessionService } from "@baw-api/baw-session.service";
-import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Work In Progress Component
@@ -40,6 +40,6 @@ export class WIPComponent {
   private session = inject(BawSessionService);
 
   public get showWipContent(): boolean {
-    return this.session.loggedInUser!.isAdmin;
+    return this.session.loggedInUser?.isAdmin || false;
   }
 }

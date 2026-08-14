@@ -4,19 +4,26 @@
   Component,
   computed,
   ElementRef,
+  inject,
   input,
+  NgZone,
   OnDestroy,
   viewChild,
 } from "@angular/core";
 import { isInstantiated } from "@helpers/isInstantiated/isInstantiated";
-import embed, {
-  EmbedOptions,
-  ExpressionFunction,
-  Result,
-  vega,
-  VisualizationSpec,
+import { IS_SERVER_PLATFORM } from "src/app/app.helper";
+import {
+  type EmbedOptions,
+  type ExpressionFunction,
+  type Result,
+  type VisualizationSpec,
 } from "vega-embed";
-import { Datasets } from "vega-lite/build/src/spec/toplevel";
+// IMPORTANT: import Vega runtime through the conditional alias only.
+// Browser resolves the real runtime module; SSR resolves a throwing stub.
+// This avoids SSR bundling the vega-canvas Node entrypoint. See README.
+import { loadBrowserVega } from "#baw/vega-runtime";
+
+import type { Datasets } from "vega-lite/types_unstable/spec/toplevel.js";
 
 const customFormatterName = "customFormatter";
 
@@ -39,7 +46,9 @@ interface ChartData {
 @Component({
   selector: "baw-chart",
   template: `
-    <div #chartContainer class="chartContainer marks">Chart loading</div>
+    <div #chartContainer class="chartContainer marks">
+      <small>(chart loading)</small>
+    </div>
   `,
   styleUrl: "./chart.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,12 +56,16 @@ interface ChartData {
 export class ChartComponent implements AfterViewInit, OnDestroy {
   public readonly chartContainer = viewChild<ElementRef>("chartContainer");
 
+  private readonly ngZone = inject(NgZone);
+  private readonly isServerPlatform = inject(IS_SERVER_PLATFORM);
+
   // in vega lite the spec and data are the same object, therefore, by separating the two at the component level
   // we can create multiple graphs with different data from the same spec
   // we use an immutable.js object because the only way to recreate a graph is to destroy it and recreate it
   // we therefore don't allow it to be updated with change detection or through an RxJS observable
   /** An immutable spec which describes the layout of the chart. For any reactive values, use vega-lite spec parameters */
-  public readonly spec = input.required<Immutable.Collection<string, string | object>>();
+  public readonly spec =
+    input.required<Immutable.Collection<string, string | object>>();
   /** A single data set */
   public readonly data = input<ChartData>();
   /**
@@ -61,6 +74,10 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    * If your spec contains one graph, use the `[data]` attribute instead
    */
   public readonly datasets = input<Datasets | object>();
+  /** Values for named Vega-Lite parameters declared in the spec. */
+  public readonly params = input<Record<string, unknown>>();
+  /** Identifies the chart in Vega-Lite console messages. */
+  public readonly logContext = input<string>();
   public readonly options = input<EmbedOptions>({ actions: false });
   /**
    * Specifies a way to turn model values into user-facing values
@@ -88,36 +105,48 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // every change detection cycle.
   private readonly specObject = computed(() => this.spec().toObject());
 
-  private vegaView!: Result;
+  private vegaView?: Result;
 
-  public async ngAfterViewInit() {
-    // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
-    // updating by reference will cause all other graphs to update as well
-    const fullSpec = this.addDataToSpec(
-      this.specObject(),
-      this.datasets(),
-      this.data()
-    );
-
-    this.vegaView = await this.generateChart(fullSpec);
-
-    // since node does not have access to the window global namespace, it does not have an implementation of a resize observer, breaking ssr
-    // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
-    // to the window namespace & a resize observer implementation
-    if (!isInstantiated(ChartComponent.resizeObserver)) {
-      ChartComponent.resizeObserver = new ResizeObserver(
-        () => ChartComponent.resizeEvent()
-      );
+  public ngAfterViewInit(): Promise<void> {
+    // We intentionally don't render any charts on SSR.
+    // Data is not authorized, but also Vega-lite uses the window object which is not available on SSR.
+    if (this.isServerPlatform) {
+      return Promise.resolve();
     }
 
-    // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
-    // but vega lite's autosize will only update when the window is resized
-    // therefore, we also need to trigger a resize event when the component is resized
-    ChartComponent.resizeObserver.observe(this.chartContainer()!.nativeElement);
+    // Vega creates many promise microtasks while evaluating charts. Keeping them
+    // outside Angular avoids unnecessary change detection and dev async-stack overhead.
+    return this.ngZone.runOutsideAngular(async () => {
+      // since vega lite graphs are objects, we need to create the new component spec by value, rather than by reference
+      // updating by reference will cause all other graphs to update as well
+      const fullSpec = this.addDataToSpec(
+        this.addParamsToSpec(this.specObject(), this.params()),
+        this.datasets(),
+        this.data(),
+      );
 
-    // under certain conditions using v/h concat will cause the chart to only fit to the first chart
-    // to fix this, we fire a resize event once the component has been loaded
-    ChartComponent.resizeEvent();
+      this.vegaView = await this.generateChart(fullSpec);
+
+      // since node does not have access to the window global namespace, it does not have an implementation of a resize observer, breaking ssr
+      // to fix this, we initialize the resize observer using a singleton/closure pattern so that the resize observer has access
+      // to the window namespace & a resize observer implementation
+      if (!isInstantiated(ChartComponent.resizeObserver)) {
+        ChartComponent.resizeObserver = new ResizeObserver(() =>
+          ChartComponent.resizeEvent(),
+        );
+      }
+
+      // we need to use a resize observer because if the chart is not visible on load, the width and height will be 0
+      // but vega lite's autosize will only update when the window is resized
+      // therefore, we also need to trigger a resize event when the component is resized
+      ChartComponent.resizeObserver.observe(
+        this.chartContainer()!.nativeElement,
+      );
+
+      // under certain conditions using v/h concat will cause the chart to only fit to the first chart
+      // to fix this, we fire a resize event once the component has been loaded
+      ChartComponent.resizeEvent();
+    });
   }
 
   /**
@@ -136,7 +165,9 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     // If this occurs, it is a smell that something is wrong with how the
     // component is being used, but we should still defensively check for it.
     if (ChartComponent.resizeObserver) {
-      ChartComponent.resizeObserver.unobserve(this.chartContainer()!.nativeElement);
+      ChartComponent.resizeObserver.unobserve(
+        this.chartContainer()!.nativeElement,
+      );
     } else {
       console.warn(
         "ChartComponent resize observer was not initialized before " +
@@ -157,11 +188,22 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
    * This will not be optimal if you need to update the chart frequently
    */
   private async generateChart(fullSpec: any): Promise<Result> {
+    // Safe because ngAfterViewInit returns early on server platforms.
+    const { embed, vega } = await loadBrowserVega();
+
+    // because of all the import shenanigans we just redefine the log level const here.
+    const Warn = 2;
+    const logContext = this.logContext();
+    const logPrefix = logContext ? `[Vega-Lite: ${logContext}]` : "[Vega-Lite]";
+
     // default options exist because they are always applied for compatibility reasons and cannot be overwritten by the @Input() options
     const defaultOptions: EmbedOptions = {
       // we always want to use svg as the renderer (unless unless explicitly overridden in the options) as it has sharper text
       // svg is currently buggy on Windows Firefox and results in poorly rendered text https://bugzilla.mozilla.org/show_bug.cgi?id=1747705
       renderer: "svg",
+      logger: vega.logger(Warn, undefined, (method, level, messages) =>
+        console[method](logPrefix, level, ...messages),
+      ),
       config: {
         // for optimization reasons, vega-lite has decided to disable reactive sizing by default
         // however we enable it so that the graph will resize when the window or component resizes
@@ -179,7 +221,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
     if (formatterCallback) {
       vegaFormatterFunction = vega.expressionFunction(
         customFormatterName,
-        (datum: unknown) => formatterCallback(datum)
+        (datum: unknown) => formatterCallback(datum),
       );
     }
 
@@ -192,7 +234,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
         expressionFunctions: {
           [`${customFormatterName}`]: vegaFormatterFunction ?? {},
         },
-      }
+      },
     );
 
     return vegaChart;
@@ -201,6 +243,24 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
   // because data is inherently a field on the vega lite spec, but is separated in our component
   // we have to retroactively add the data to the spec as part of this component
   // we keep the data and the spec separate so that we can create multiple graphs with different data from the same spec
+  private addParamsToSpec(
+    spec: any,
+    values?: Record<string, unknown>,
+  ): VisualizationSpec {
+    if (!values || !spec.params) {
+      return spec;
+    }
+
+    return {
+      ...spec,
+      params: spec.params.map((param: { name: string }) =>
+        Object.hasOwn(values, param.name)
+          ? { ...param, value: values[param.name] }
+          : param,
+      ),
+    };
+  }
+
   private addDataToSpec(
     spec: any,
     datasets?: Datasets | object,
@@ -215,6 +275,9 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       return {
         ...spec,
         data: {
+          // merge in data from spec
+          ...spec.data,
+          // as well as the data from the component
           values: data,
         },
       };

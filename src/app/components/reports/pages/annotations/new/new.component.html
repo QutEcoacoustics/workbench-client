@@ -1,0 +1,134 @@
+<h1 class="text-muted">{{ componentTitle }}</h1>
+<h1 class="mb-5">New Annotation Report</h1>
+
+<form #form="ngForm">
+  <baw-date-time-filter
+    [model]="initialDateTimeModel"
+    (modelChange)="updateViewModelFromDateTimeModel($event)"
+  />
+
+  <!-- We disable the input and use a placeholder value if the form is immutably scoped to a region/site -->
+  @if (!site || site?.isPoint) {
+    <baw-typeahead-input
+      label="Site(s)"
+      [inputPlaceholder]="region ? region.name : 'All'"
+      [searchCallback]="createSearchCallback(regionsApi)"
+      [resultTemplate]="nameTypeaheadTemplate"
+      [inputDisabled]="!!region"
+      (modelChange)="model.sites = getIdsFromAbstractModelArray($event)"
+    />
+  }
+
+  <baw-typeahead-input
+    [label]="site ? (site?.isPoint ? 'Point(s)' : 'Site(s)') : 'Point(s)'"
+    [inputPlaceholder]="site ? site.name : 'All'"
+    [searchCallback]="createSearchCallback(sitesApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    [inputDisabled]="!!site"
+    (modelChange)="model.points = getIdsFromAbstractModelArray($event)"
+  />
+
+  <baw-typeahead-input
+    label="Recogniser(s)"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="createSearchCallback(provenanceApi)"
+    [resultTemplate]="nameTypeaheadTemplate"
+    (modelChange)="model.provenances = getIdsFromAbstractModelArray($event)"
+  />
+
+  <label for="provenancesCutOffInput" class="form-label">
+    Recogniser Score Cut-Off
+  </label>
+  <input
+    #provenanceCutOffInput="ngModel"
+    [(ngModel)]="model.score"
+    id="provenancesCutOffInput"
+    name="provenancesCutOffInput"
+    type="number"
+    class="form-control"
+    placeholder="0"
+    step="0.1"
+  />
+
+  <baw-typeahead-input
+    label="Tags of Interest"
+    [inputPlaceholder]="'All'"
+    [searchCallback]="tagsApi.typeaheadCallback()"
+    [resultTemplate]="tagsTypeaheadTemplate"
+    (modelChange)="model.tags = getIdsFromAbstractModelArray($event)"
+  />
+
+  <hr />
+
+  <div>
+    <label for="bucketSizeInput">Bucket Size</label>
+    <select
+      id="bucketSizeInput"
+      name="bucketSizeInput"
+      class="form-select"
+      [(ngModel)]="model.bucketSize"
+      required
+    >
+      @for (bucketSize of availableBucketSizes; track bucketSize) {
+        <option [value]="bucketSize">
+          {{ bucketSize | titlecase }}
+        </option>
+      }
+    </select>
+  </div>
+
+  <fieldset class="mt-2">
+    <legend class="form-label fs-6">Charts</legend>
+    @for (group of chartGroups; track group.label) {
+      <div class="mb-2">
+        <div class="text-muted small fw-semibold mb-1">{{ group.label }}</div>
+        @for (chart of group.charts; track chart.value) {
+          <div class="form-check form-check-inline mb-1">
+            <label class="form-check-label">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [name]="'chartInput-' + chart.value"
+                [ngModel]="isChartSelected(chart.value)"
+                (ngModelChange)="toggleChartSelection(chart.value, $event)"
+              />
+              {{ chart.label }}
+            </label>
+            @if (chart.value === chartTypes.dielPlot) {
+              <select
+                name="dielBucketSizeInput"
+                title="Diel plot resolution"
+                class="form-select form-select-sm d-inline-block w-auto ms-2"
+                [disabled]="!isChartSelected(chart.value)"
+                [(ngModel)]="model.dielBucketSize"
+              >
+                @for (size of availableDielBucketSizes; track size) {
+                  <option [value]="size">{{ size | titlecase }}</option>
+                }
+              </select>
+            }
+          </div>
+        }
+      </div>
+    }
+  </fieldset>
+
+  <a
+    id="generateReportButton"
+    type="submit"
+    class="btn btn-primary my-3"
+    [strongRoute]="viewReportRoute()"
+    [queryParams]="model.toQueryParams()"
+    [class.disabled]="form.invalid"
+  >
+    Generate
+  </a>
+</form>
+
+<ng-template #nameTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.name" [term]="searchTerm" />
+</ng-template>
+
+<ng-template #tagsTypeaheadTemplate let-result="result" let-searchTerm="term">
+  <ngb-highlight [result]="result.text" [term]="searchTerm" />
+</ng-template>
