@@ -352,10 +352,10 @@ function timeOfDayToQueryString(value: TimeOfDayIntervalTuple | null): string {
   ].join(",");
 }
 
-function arrayToQueryString(value: unknown[]): string {
+function arrayToQueryString(value: unknown[]): string | null {
   const valueArray = Array.from(value);
   if (valueArray.every((arrayItem) => !isInstantiated(arrayItem))) {
-    return "";
+    return null;
   }
 
   return valueArray.join(",");
