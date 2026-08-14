@@ -92,7 +92,7 @@ export class BawSessionService {
 
     this._loggedInUser = guestUser;
     this._authToken = guestAuthToken;
-    this.emitAuthState({ user: guestUser });
+    this.emitAuthState({ user: guestUser, authToken: guestAuthToken });
   }
 
   private currentAuthState(): AuthTriggerData {

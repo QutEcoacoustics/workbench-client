@@ -10,7 +10,7 @@ import { modelData } from "@test/helpers/faker";
 export function generateAnnotationReportUrlParams(data?: Params): Params {
   return {
     sites: modelData.ids().join(","),
-    points: modelData.ids().join(","),
+    regions: modelData.ids().join(","),
     provenances: modelData.ids().join(","),
     tags: modelData.ids().join(","),
     score: modelData.percentage(),
@@ -27,10 +27,14 @@ export function generateAnnotationReportUrlParams(data?: Params): Params {
     date: [modelData.dateTime(), modelData.dateTime()].join(","),
     charts: faker.helpers
       .shuffle([
+        Chart.coverage,
+        Chart.eventSummary,
         Chart.speciesAccumulationCurve,
         Chart.speciesCompositionCurve,
         Chart.speciesTimeSeries,
-        Chart.falseColorSpectrograms,
+        Chart.tagFrequencyStacked,
+        Chart.dielPlot,
+        Chart.tagBreakdown,
         Chart.none,
       ])
       .join(","),

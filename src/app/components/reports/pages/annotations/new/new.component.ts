@@ -1,4 +1,4 @@
-﻿import { TitleCasePipe } from "@angular/common";
+import { TitleCasePipe } from "@angular/common";
 import { Component, inject, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -107,14 +107,14 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
   ];
   protected readonly chartGroups: readonly ChartGroup[] = [
     {
-      label: "Coverage, Summary",
+      label: "Summaries",
       charts: [
         { value: Chart.coverage, label: "Coverage" },
         { value: Chart.eventSummary, label: "Tag Summary" },
       ],
     },
     {
-      label: "Accumulation, Frequency, Composition, Diel",
+      label: "Tags overlaid",
       charts: [
         { value: Chart.speciesAccumulationCurve, label: "Tag Accumulation" },
         { value: Chart.speciesTimeSeries, label: "Tag Frequency" },
@@ -123,7 +123,7 @@ class NewAnnotationReportComponent extends PageComponent implements OnInit {
       ],
     },
     {
-      label: "Stacked, Breakdown",
+      label: "Tags broken down",
       charts: [
         { value: Chart.tagFrequencyStacked, label: "Tag Frequency Stacked" },
         { value: Chart.tagBreakdown, label: "Tag Breakdown" },

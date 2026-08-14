@@ -162,7 +162,7 @@ Important constraints:
 - Do not add a TypeScript `paths` mapping for `#baw/vega-runtime`. That forces one target path for both browser and server builds and breaks conditional resolution.
 - Do not import `vega-embed` directly from `chart.component.ts` or any SSR-executed code path.
 - Keep the SSR stub in `vega-runtime.server.ts` throwing by design. If this code runs on the server, that indicates a guard failure that should be fixed at the callsite.
-- If a new Vega runtime helper file is added, also add it to `tsconfig.app.json` `files` so the Angular compiler does not drop it from the program.
+- If a new Vega runtime helper file is added, also add it to `tsconfig.app.json` and `tsconfig.spec.json` into `files` so the Angular compiler does not drop it from the program.
 
 If this area is changed, validate with an SSR production build and check for `Top-level await` errors referencing `vega-canvas`.
 

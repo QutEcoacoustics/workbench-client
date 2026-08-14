@@ -1,24 +1,26 @@
 import { TagsService } from "@baw-api/tag/tags.service";
-import { TagFrequencyReportItem } from "@models/Reports";
+import {
+  TagDielActivityReportItem,
+  TagFrequencyReportItem,
+} from "@models/Reports";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import {
   expectRenderedPaths,
   expectRenderedSvg,
   resetSharedChartResizeObserver,
-  stubElementWidth,
   stubSharedChartResizeObserver,
   waitForChartRender,
 } from "@test/helpers/vega-chart";
 import { DateTime } from "luxon";
 import { of } from "rxjs";
-import { TagFrequencyComponent } from "./tag-frequency.component";
+import { TagBreakdownComponent } from "./tag-breakdown.component";
 
-describe("TagFrequencyComponent", () => {
-  let spectator: Spectator<TagFrequencyComponent>;
+describe("TagBreakdownComponent", () => {
+  let spectator: Spectator<TagBreakdownComponent>;
   let tagShowSpy: jasmine.Spy;
 
   const createComponent = createComponentFactory({
-    component: TagFrequencyComponent,
+    component: TagBreakdownComponent,
     providers: [
       {
         provide: TagsService,
@@ -36,44 +38,39 @@ describe("TagFrequencyComponent", () => {
     stubSharedChartResizeObserver();
 
     spectator = createComponent({
-      detectChanges: false,
       props: {
-        rows: [
+        frequencyRows: [
           new TagFrequencyReportItem({
             range: [
               DateTime.fromISO("2024-01-01T00:00:00.000Z"),
               DateTime.fromISO("2024-01-02T00:00:00.000Z"),
             ],
-            tags: [
-              { tagId: 1, events: 2 },
-              { tagId: 2, events: 1 },
-            ],
+            tags: [{ tagId: 1, events: 2 }],
           }),
           new TagFrequencyReportItem({
             range: [
               DateTime.fromISO("2024-01-02T00:00:00.000Z"),
               DateTime.fromISO("2024-01-03T00:00:00.000Z"),
             ],
-            tags: [
-              { tagId: 1, events: 3 },
-              { tagId: 2, events: 4 },
-            ],
+            tags: [{ tagId: 1, events: 3 }],
           }),
-          new TagFrequencyReportItem({
-            range: [
-              DateTime.fromISO("2024-01-03T00:00:00.000Z"),
-              DateTime.fromISO("2024-01-04T00:00:00.000Z"),
-            ],
-            tags: [
-              { tagId: 1, events: 1 },
-              { tagId: 2, events: 2 },
-            ],
+        ],
+        dielRows: [
+          new TagDielActivityReportItem({
+            range: [0, 3600],
+            tags: [{ tagId: 1, events: 1 }],
+          }),
+          new TagDielActivityReportItem({
+            range: [3600, 7200],
+            tags: [{ tagId: 1, events: 4 }],
+          }),
+          new TagDielActivityReportItem({
+            range: [7200, 10800],
+            tags: [{ tagId: 1, events: 2 }],
           }),
         ],
       },
     });
-
-    stubElementWidth(spectator.element as HTMLElement, 640);
 
     await waitForChartRender(spectator);
   });
@@ -84,15 +81,15 @@ describe("TagFrequencyComponent", () => {
   });
 
   it("should create", () => {
-    expect(spectator.component).toBeInstanceOf(TagFrequencyComponent);
+    expect(spectator.component).toBeInstanceOf(TagBreakdownComponent);
   });
 
-  it("should render a line mark", () => {
-    expectRenderedSvg(spectator);
-    expectRenderedPaths(spectator);
+  it("should render the two breakdown charts", () => {
+    expectRenderedSvg(spectator, 2);
+    expectRenderedPaths(spectator, 2);
   });
 
   it("should resolve the chart tags", () => {
-    expect(tagShowSpy.calls.allArgs()).toEqual([[1], [2]]);
+    expect(tagShowSpy).toHaveBeenCalledOnceWith(1);
   });
 });

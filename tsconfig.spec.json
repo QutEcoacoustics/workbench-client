@@ -6,6 +6,12 @@
     "types": ["jasmine", "node", "@types/gtag.js"],
     "removeComments": false
   },
-  "files": ["src/test.ts", "src/polyfills.ts"],
+  "files": [
+    "src/test.ts",
+    "src/polyfills.ts",
+    "src/app/components/shared/chart/vega-runtime.browser.ts",
+    "src/app/components/shared/chart/vega-runtime.server.ts",
+    "src/app/components/shared/chart/vega-runtime.types.ts"
+  ],
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 }

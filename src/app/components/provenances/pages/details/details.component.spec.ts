@@ -18,7 +18,7 @@ import { assertPageInfo } from "@test/helpers/pageRoute";
 import { of } from "rxjs";
 import { ProvenanceDetailsComponent } from "./details.component";
 
-fdescribe("ProvenanceDetailsComponent", () => {
+describe("ProvenanceDetailsComponent", () => {
   let spec: SpectatorRouting<ProvenanceDetailsComponent>;
 
   const mockUser = new User(generateUser());
