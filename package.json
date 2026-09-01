@@ -70,7 +70,7 @@
     "just-camel-case": "^6.0.1",
     "just-snake-case": "^3.0.1",
     "luxon": "^3.4.4",
-    "ng-http-caching": "^20.0.1",
+    "ng-http-caching": "^22.2.0",
     "ngx-captcha": "^14.0.0",
     "ngx-clipboard": "^16.0.0",
     "ngx-cookie-service": "^20.1.0",

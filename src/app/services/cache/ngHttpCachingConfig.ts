@@ -55,19 +55,17 @@ export const defaultCachingConfig = {
   //   by the user. E.g. paging through a list of items
   // see: https://github.com/QutEcoacoustics/workbench-client/pull/2171#issuecomment-2484676601
   //
-  // I have temporarily set the cache lifetime to 0 seconds because the
-  // @bawReadonlyConvertCase decorator attempts to modify frozen cached objects
-  // when recalling items from the cache
-  // this causes an an error similar to "status is read-only"
-  // by setting the cache lifetime to 0 seconds, we can get the performance
-  // gains of request debouncing without having potential errors due to items
-  // being recalled from the cache
-  //
-  // in the future we should use a 10 second cache lifetime in the hope that
-  // users doing any quick succession actions, they'll see a benefit from the
-  // cache e.g. flicking through a page of results
+  // we use a 10 second cache lifetime in the hope that users doing any quick
+  // succession actions, they'll see a benefit from the cache e.g. flicking
+  // through a page of results
   // while users who perform actions on a page are likely to take longer than 10
   // seconds, which will hopefully prevent stale caching issues
+  //
+  // note: up to ng-http-caching 21 a cached response was frozen as a whole, the
+  // HttpResponse and its HttpHeaders included, so reading one back could throw
+  // an error similar to "status is read-only"
+  // since version 22.2.0 only the body is frozen, and a `responseSerializer`
+  // can be set here if we ever need to modify a cached body in place
   lifetime: secondsToMilliseconds(10),
 
   // by setting the workbench clients version as the cache version,
