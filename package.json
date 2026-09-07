@@ -62,7 +62,7 @@
     "d3-scale-chromatic": "^3.1.0",
     "express": "^4.22.2",
     "filesize": "^10.1.0",
-    "full-icu": "^1.4.0",
+    "full-icu": "^1.6.0",
     "http-status": "^1.7.3",
     "humanize-duration": "^3.31.0",
     "immutable": "^4.3.9",
