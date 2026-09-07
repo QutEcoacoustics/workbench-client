@@ -20,7 +20,6 @@ import { defaultCachingConfig } from "@services/cache/ngHttpCachingConfig";
 import { API_ROOT } from "@services/config/config.tokens";
 import { ToastService } from "@services/toasts/toasts.service";
 import {
-  NgHttpCachingConfig,
   NgHttpCachingContext,
   NgHttpCachingService,
   withNgHttpCachingContext,
@@ -62,7 +61,7 @@ export interface BawServiceOptions {
    * api.show("/status", { isCacheable: disableCache })
    * ```
    */
-  cacheOptions?: NgHttpCachingConfig;
+  cacheOptions?: NgHttpCachingContext;
 }
 
 /** Default headers for API requests */
