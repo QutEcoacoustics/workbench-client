@@ -1,5 +1,7 @@
 # Check that this version matches the node versions in CI
-FROM node:24-alpine AS BUILD_IMAGE
+# fulmine.js runs on uWebSockets.js, whose prebuilt binary needs glibc 2.38 (Debian trixie, not
+# Alpine) and is fetched from GitHub by git, so the build stage is the full image
+FROM node:24-trixie AS BUILD_IMAGE
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -27,7 +29,18 @@ RUN sed -i "s|<<VERSION_REPLACED_WHEN_BUILT>>|${WORKBENCH_CLIENT_VERSION}|" ./sr
 
 RUN npm run build
 
-FROM node:24-alpine
+# the server bundle keeps fulmine.js and uWebSockets.js external, so the runtime image needs them
+# installed: only those two, at the version the lock file pins
+FROM node:24-trixie AS RUNTIME_DEPS
+
+USER node
+WORKDIR /home/node/runtime
+
+COPY --chown=node package-lock.json ./
+RUN npm install --omit=dev --no-audit --no-fund \
+  "fulmine.js@$(node -p "require('./package-lock.json').packages['node_modules/fulmine.js'].version")"
+
+FROM node:24-trixie-slim
 
 ARG GIT_COMMIT
 ARG WORKBENCH_CLIENT_VERSION
@@ -45,7 +58,7 @@ LABEL maintainer="Hudson Newey <neweyh@qut.edu.au>" \
   schema-version="1.0"
 
 # Add ability to make https wget requests
-RUN apk add wget ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # drop privileges
 USER node
@@ -54,6 +67,7 @@ RUN mkdir -p /home/node/workbench-client
 WORKDIR /home/node/workbench-client
 
 COPY --from=BUILD_IMAGE /home/node/workbench-client/dist ./dist
+COPY --from=RUNTIME_DEPS /home/node/runtime/node_modules ./node_modules
 COPY --from=BUILD_IMAGE /home/node/workbench-client/package.json ./package.json
 
 EXPOSE 4000

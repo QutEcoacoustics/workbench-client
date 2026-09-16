@@ -61,7 +61,11 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "outputMode": "server"
+            "outputMode": "server",
+            "externalDependencies": [
+              "fulmine.js",
+              "uWebSockets.js"
+            ]
           },
           "configurations": {
             "production": {
