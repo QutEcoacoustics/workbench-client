@@ -84,13 +84,13 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^20.0.0",
+    "@angular-builders/custom-webpack": "^22.0.1",
     "@angular-eslint/builder": "20.3.0",
     "@angular-eslint/eslint-plugin": "20.3.0",
     "@angular-eslint/eslint-plugin-template": "20.3.0",
     "@angular-eslint/schematics": "20.3.0",
     "@angular-eslint/template-parser": "20.3.0",
-    "@angular/build": "^20.3.11",
+    "@angular/build": "^22.2.1",
     "@angular/cli": "21.0.4",
     "@angular/compiler-cli": "20.3.13",
     "@angular/language-service": "20.3.13",
