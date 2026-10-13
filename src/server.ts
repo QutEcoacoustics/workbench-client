@@ -17,7 +17,7 @@ import {
   createNodeRequestHandler,
 } from "@angular/ssr/node";
 import { assetRoot } from "@services/config/config.service";
-import express from "express";
+import express from "fulmine.js";
 import { environment } from "src/environments/environment";
 import angularConfig from "../angular.json";
 
@@ -42,6 +42,9 @@ export function app(path: string): express.Express {
   console.log("Using config file ", configPath);
   // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
   const rawConfig = readFileSync(configPath, "utf-8");
+
+  // pages and API answers go out compressed; the static files below come pre-compressed
+  server.use(express.compression());
 
   server.set("view engine", "html");
   server.set("views", browserDistFolder);
@@ -77,11 +80,13 @@ export function app(path: string): express.Express {
       maxAge: "1y",
       index: false,
       redirect: false,
+      // serve the .br or .gz twin written by scripts/precompress.mjs
+      preCompressed: true,
     }),
   );
 
   // All regular routes use the Angular engine
-  server.get("/**", (req, res, next) => {
+  server.get("/{*splat}", (req, res, next) => {
     angularApp
       .handle(req)
       .then((response) =>
