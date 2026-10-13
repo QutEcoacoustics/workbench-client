@@ -6,6 +6,7 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterDetails } from "@models/data/RegisterDetails";
+import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
 import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { ToastService } from "@services/toasts/toasts.service";
@@ -166,6 +167,36 @@ describe("RegisterComponent", () => {
 
         expect(externalRedirect).not.toHaveBeenCalled();
         expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
+      });
+
+      it("should wait for the email preference request to complete before leaving the page", () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const consent = new Subject<User>();
+        spyOn(api, "signUp").and.returnValue(of(undefined));
+        accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        expect(externalRedirect).not.toHaveBeenCalled();
+        consent.complete();
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+      });
+
+      it("should still return to the caller if saving the email preference fails after registration", () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const consent = new Subject<User>();
+        spyOn(api, "signUp").and.returnValue(of(undefined));
+        accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        consent.error(new Error("Preference update failed"));
+
+        expect(notifications.error).toHaveBeenCalledWith(
+          "Account created, but your email preference could not be saved.",
+        );
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
       });
     });
 

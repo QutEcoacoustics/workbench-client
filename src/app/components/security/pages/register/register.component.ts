@@ -13,11 +13,11 @@ import {
   RegisterDetails,
 } from "@models/data/RegisterDetails";
 import { RecaptchaState , FormComponent } from "@shared/form/form.component";
-import { map, takeUntil } from "rxjs/operators";
+import { catchError, concatMap, endWith, ignoreElements, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { firstValueFrom } from "rxjs";
+import { of } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./register.schema.json";
 
@@ -98,20 +98,23 @@ class RegisterComponent
   }
 
   protected apiAction(model: IRegisterDetails) {
-    const signUpObservable = this.securityApi
+    return this.securityApi
       .signUp(new RegisterDetails(model))
       .pipe(
-        map(() => {
-          firstValueFrom(
-            this.accountsApi.updateContactableConcent(
-              this.session.currentUser.id,
-              model.contactable ? UserConcent.yes : UserConcent.no
-            )
-          );
-        })
+        concatMap(() =>
+          this.accountsApi.updateContactableConcent(
+            this.session.currentUser.id,
+            model.contactable ? UserConcent.yes : UserConcent.no
+          ).pipe(
+            ignoreElements(),
+            endWith(undefined),
+            catchError(() => {
+              this.notifications.error("Account created, but your email preference could not be saved.");
+              return of(undefined);
+            })
+          )
+        )
       );
-
-    return signUpObservable;
   }
 }
 
