@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from "@angular/router";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
@@ -5,7 +6,9 @@ import { BawSessionService } from "@baw-api/baw-session.service";
 import { SecurityService } from "@baw-api/security/security.service";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterDetails } from "@models/data/RegisterDetails";
+import { User } from "@models/User";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -118,6 +121,88 @@ describe("RegisterComponent", () => {
       expect(api.signUp).toHaveBeenCalledOnceWith(
         new RegisterDetails(registerDetails),
       );
+    });
+
+    describe("redirection", () => {
+      const redirect = "https://caller.example/callback";
+
+      beforeEach(() => {
+        spec.inject(ActivatedRoute).snapshot.queryParams.redirect = redirect;
+        spyOn(spec.inject(Router), "navigateByUrl").and.returnValue(Promise.resolve(true));
+        isSignedIn(false);
+      });
+
+      it("should return to an approved caller after successful registration", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
+        const response = mockSignUp(false);
+        spec.detectChanges();
+        expect(externalRedirect).not.toHaveBeenCalled();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
+      });
+
+      it("should fall back home when the external redirect is rejected", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(false);
+        const response = mockSignUp(false);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        expect(spec.inject(Router).navigateByUrl).toHaveBeenCalledWith("/");
+      });
+
+      it("should not return to a caller when registration fails", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
+        const response = mockSignUp(true);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).not.toHaveBeenCalled();
+        expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
+      });
+
+      it("should redirect immediately without waiting for the email preference request", () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
+        const consent = new Subject<User>();
+        spyOn(api, "signUp").and.returnValue(of(undefined));
+        accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        consent.next(new User({}));
+        consent.complete();
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+      });
+
+      it("should not delay or repeat the redirect if saving the email preference fails", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
+        const warning = spyOn(console, "warn");
+        const consent = new Subject<User>();
+        spyOn(api, "signUp").and.returnValue(of(undefined));
+        accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        consent.error(new Error("Preference update failed"));
+        await Promise.resolve();
+
+        expect(warning).toHaveBeenCalledOnceWith(
+          "Account created, but your email preference could not be saved.",
+        );
+        expect(notifications.error).not.toHaveBeenCalled();
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+      });
     });
 
     describe("recaptcha", () => {

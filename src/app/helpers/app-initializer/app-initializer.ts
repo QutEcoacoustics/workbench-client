@@ -51,6 +51,11 @@ export interface Settings {
   hideProjects: boolean;
   homePageAndProjectListMaps: boolean;
   customMenu: CustomMenuItem[];
+  /**
+   * Trusted HTTPS authentication callback domains. "*.example.com" matches
+   * subdomains only. Omit or leave empty to disable external token redirects.
+   */
+  authRedirectDomains?: string[];
   theme?: BawTheme;
 }
 

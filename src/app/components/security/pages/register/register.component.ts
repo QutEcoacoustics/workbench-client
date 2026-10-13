@@ -15,6 +15,7 @@ import {
 import { RecaptchaState , FormComponent } from "@shared/form/form.component";
 import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
+import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
@@ -43,6 +44,7 @@ class RegisterComponent
   private readonly securityApi = inject(SecurityService);
   private readonly session = inject(BawSessionService);
   private readonly accountsApi = inject(AccountsService);
+  private readonly authRedirect = inject(AuthRedirectService);
   protected readonly notifications: ToastService;
   protected readonly route: ActivatedRoute;
   protected readonly router: Router;
@@ -59,6 +61,9 @@ class RegisterComponent
       hasFormCheck: false,
       successMsg: () => "Successfully registered new account",
       redirectUser: () => {
+        if (this.authRedirect.willRedirectExternally(this.route.snapshot.queryParams.redirect)) {
+          return;
+        }
         this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
       },
     });
@@ -93,20 +98,21 @@ class RegisterComponent
   }
 
   protected apiAction(model: IRegisterDetails) {
-    const signUpObservable = this.securityApi
+    return this.securityApi
       .signUp(new RegisterDetails(model))
       .pipe(
         map(() => {
+          // Saving the preference is best effort; do not delay the authentication callback.
           firstValueFrom(
             this.accountsApi.updateContactableConcent(
               this.session.currentUser.id,
               model.contactable ? UserConcent.yes : UserConcent.no
             )
-          );
+          ).catch(() => {
+            console.warn("Account created, but your email preference could not be saved.");
+          });
         })
       );
-
-    return signUpObservable;
   }
 }
 

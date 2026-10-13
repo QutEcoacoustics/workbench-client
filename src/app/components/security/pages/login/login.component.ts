@@ -17,6 +17,7 @@ import { ILoginDetails, LoginDetails } from "@models/data/LoginDetails";
 import { API_ROOT } from "@services/config/config.tokens";
 import { List } from "immutable";
 import { ToastService } from "@services/toasts/toasts.service";
+import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { ToastComponent } from "@shared/toast/toast.component";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { firstValueFrom } from "rxjs";
@@ -75,6 +76,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
   private readonly session = inject(BawSessionService);
   private readonly location = inject(Location);
   private readonly accountsApi = inject(AccountsService);
+  private readonly authRedirect = inject(AuthRedirectService);
   protected readonly notifications: ToastService;
   protected readonly route: ActivatedRoute;
   protected readonly router: Router;
@@ -95,6 +97,10 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       hasFormCheck: false,
       successMsg: () => "Successfully signed in",
       redirectUser: () => {
+        if (this.authRedirect.willRedirectExternally(this.route.snapshot.queryParams.redirect)) {
+          return;
+        }
+
         // The order of these if conditions is important.
         // If the redirect url is a string, it has been passed into this
         // component through the "redirect" url parameter, the typeof
@@ -158,16 +164,19 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
 
     // If external redirect
     if (typeof redirect === "string") {
-      const redirectUrl = new URL(redirect, window.location.origin);
-      const validUrl = new URL(this.apiRoot, window.location.origin);
+      try {
+        const redirectUrl = new URL(redirect, window.location.origin);
+        const validUrl = new URL(this.apiRoot, window.location.origin);
 
-      // Check if redirect url is safe
-      if (
-        redirect.startsWith("/") ||
-        redirectUrl.protocol + "//" + redirectUrl.hostname ===
-          validUrl.protocol + "//" + validUrl.hostname
-      ) {
-        this.redirectUrl = redirect;
+        // Only treat paths resolving to this client as internal redirects.
+        if (
+          (redirect.startsWith("/") && redirectUrl.origin === window.location.origin) ||
+          redirectUrl.origin === validUrl.origin
+        ) {
+          this.redirectUrl = redirect;
+        }
+      } catch {
+        // Invalid redirect URLs use the normal home/history fallback.
       }
     }
 
