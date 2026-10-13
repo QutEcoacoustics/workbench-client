@@ -13,11 +13,11 @@ import {
   RegisterDetails,
 } from "@models/data/RegisterDetails";
 import { RecaptchaState , FormComponent } from "@shared/form/form.component";
-import { catchError, concatMap, endWith, ignoreElements, takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
 import { ToastService } from "@services/toasts/toasts.service";
 import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { AccountsService } from "@baw-api/account/accounts.service";
-import { of } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import schema from "./register.schema.json";
 
@@ -61,7 +61,7 @@ class RegisterComponent
       hasFormCheck: false,
       successMsg: () => "Successfully registered new account",
       redirectUser: () => {
-        if (this.authRedirect.redirect(this.route.snapshot.queryParams.redirect)) {
+        if (this.authRedirect.willRedirectExternally(this.route.snapshot.queryParams.redirect)) {
           return;
         }
         this.router.navigateByUrl(homeMenuItem.route.toRouterLink());
@@ -101,19 +101,17 @@ class RegisterComponent
     return this.securityApi
       .signUp(new RegisterDetails(model))
       .pipe(
-        concatMap(() =>
-          this.accountsApi.updateContactableConcent(
-            this.session.currentUser.id,
-            model.contactable ? UserConcent.yes : UserConcent.no
-          ).pipe(
-            ignoreElements(),
-            endWith(undefined),
-            catchError(() => {
-              this.notifications.error("Account created, but your email preference could not be saved.");
-              return of(undefined);
-            })
-          )
-        )
+        map(() => {
+          // Saving the preference is best effort; do not delay the authentication callback.
+          firstValueFrom(
+            this.accountsApi.updateContactableConcent(
+              this.session.currentUser.id,
+              model.contactable ? UserConcent.yes : UserConcent.no
+            )
+          ).catch(() => {
+            console.warn("Account created, but your email preference could not be saved.");
+          });
+        })
       );
   }
 }

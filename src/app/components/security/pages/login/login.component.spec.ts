@@ -213,7 +213,7 @@ describe("LoginComponent", () => {
       setup(redirect, 2);
       isSignedIn(false);
       isContactable(UserConcent.no);
-      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
       const response = mockSignIn();
       spec.detectChanges();
       expect(externalRedirect).not.toHaveBeenCalled();
@@ -229,7 +229,7 @@ describe("LoginComponent", () => {
     it("should not return to a caller when login fails", async () => {
       setup("https://caller.example/callback");
       isSignedIn(false);
-      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
       const response = setLoginError();
       spec.detectChanges();
 

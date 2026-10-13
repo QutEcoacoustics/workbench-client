@@ -97,7 +97,7 @@ class LoginComponent extends FormTemplate<LoginDetails> implements OnInit {
       hasFormCheck: false,
       successMsg: () => "Successfully signed in",
       redirectUser: () => {
-        if (this.authRedirect.redirect(this.route.snapshot.queryParams.redirect)) {
+        if (this.authRedirect.willRedirectExternally(this.route.snapshot.queryParams.redirect)) {
           return;
         }
 

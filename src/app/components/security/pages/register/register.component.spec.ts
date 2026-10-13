@@ -133,7 +133,7 @@ describe("RegisterComponent", () => {
       });
 
       it("should return to an approved caller after successful registration", async () => {
-        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
         const response = mockSignUp(false);
         spec.detectChanges();
         expect(externalRedirect).not.toHaveBeenCalled();
@@ -146,7 +146,7 @@ describe("RegisterComponent", () => {
       });
 
       it("should fall back home when the external redirect is rejected", async () => {
-        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(false);
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(false);
         const response = mockSignUp(false);
         spec.detectChanges();
 
@@ -158,7 +158,7 @@ describe("RegisterComponent", () => {
       });
 
       it("should not return to a caller when registration fails", async () => {
-        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
         const response = mockSignUp(true);
         spec.detectChanges();
 
@@ -169,33 +169,38 @@ describe("RegisterComponent", () => {
         expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
       });
 
-      it("should wait for the email preference request to complete before leaving the page", () => {
-        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      it("should redirect immediately without waiting for the email preference request", () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
         const consent = new Subject<User>();
         spyOn(api, "signUp").and.returnValue(of(undefined));
         accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
         spec.detectChanges();
 
         spec.component.submit(generateRegisterDetails());
-        expect(externalRedirect).not.toHaveBeenCalled();
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        consent.next(new User({}));
         consent.complete();
 
         expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
       });
 
-      it("should still return to the caller if saving the email preference fails after registration", () => {
-        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      it("should not delay or repeat the redirect if saving the email preference fails", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "willRedirectExternally").and.returnValue(true);
+        const warning = spyOn(console, "warn");
         const consent = new Subject<User>();
         spyOn(api, "signUp").and.returnValue(of(undefined));
         accounts.updateContactableConcent = jasmine.createSpy().and.returnValue(consent);
         spec.detectChanges();
 
         spec.component.submit(generateRegisterDetails());
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
         consent.error(new Error("Preference update failed"));
+        await Promise.resolve();
 
-        expect(notifications.error).toHaveBeenCalledWith(
+        expect(warning).toHaveBeenCalledOnceWith(
           "Account created, but your email preference could not be saved.",
         );
+        expect(notifications.error).not.toHaveBeenCalled();
         expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
       });
     });
