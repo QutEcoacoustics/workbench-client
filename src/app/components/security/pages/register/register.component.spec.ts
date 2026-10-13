@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from "@angular/router";
 import { ACCOUNT } from "@baw-api/ServiceTokens";
 import { AccountsService } from "@baw-api/account/accounts.service";
 import { RecaptchaSettings } from "@baw-api/baw-form-api.service";
@@ -6,6 +7,7 @@ import { SecurityService } from "@baw-api/security/security.service";
 import { UserConcent } from "@interfaces/apiInterfaces";
 import { RegisterDetails } from "@models/data/RegisterDetails";
 import { createComponentFactory, Spectator } from "@ngneat/spectator";
+import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { generateBawApiError } from "@test/fakes/BawApiError";
@@ -118,6 +120,53 @@ describe("RegisterComponent", () => {
       expect(api.signUp).toHaveBeenCalledOnceWith(
         new RegisterDetails(registerDetails),
       );
+    });
+
+    describe("redirection", () => {
+      const redirect = "https://caller.example/callback";
+
+      beforeEach(() => {
+        spec.inject(ActivatedRoute).snapshot.queryParams.redirect = redirect;
+        spyOn(spec.inject(Router), "navigateByUrl").and.returnValue(Promise.resolve(true));
+        isSignedIn(false);
+      });
+
+      it("should return to an approved caller after successful registration", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const response = mockSignUp(false);
+        spec.detectChanges();
+        expect(externalRedirect).not.toHaveBeenCalled();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
+      });
+
+      it("should fall back home when the external redirect is rejected", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(false);
+        const response = mockSignUp(false);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+        expect(spec.inject(Router).navigateByUrl).toHaveBeenCalledWith("/");
+      });
+
+      it("should not return to a caller when registration fails", async () => {
+        const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+        const response = mockSignUp(true);
+        spec.detectChanges();
+
+        spec.component.submit(generateRegisterDetails());
+        await response;
+
+        expect(externalRedirect).not.toHaveBeenCalled();
+        expect(spec.inject(Router).navigateByUrl).not.toHaveBeenCalled();
+      });
     });
 
     describe("recaptcha", () => {

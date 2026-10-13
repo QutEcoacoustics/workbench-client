@@ -76,6 +76,25 @@ This website can be customised through the environment file located at `./src/as
 To use the embedded Google Maps in both development and production, it is required that the `keys.googleMaps` property is set.
 If you have not set this value the embedded maps will not work, and an error will be thrown in the console with the message "Google Maps JavaScript API error: InvalidKeyMapError".
 
+#### Authentication callbacks
+
+To return users to a third-party site after successful login or registration, set
+`settings.authRedirectDomains` in `src/assets/environment.json`, for example
+`["caller.example", "*.trusted.example"]`. The default empty (or omitted) list
+disables external authentication redirects. Entries are domain names, not URLs;
+`*.trusted.example` matches subdomains at any depth, but not `trusted.example`
+itself. Only absolute HTTPS callback URLs without embedded credentials are accepted.
+
+Link to `/security/login?redirect=<URL-encoded callback URL>` or
+`/security/register?redirect=<URL-encoded callback URL>`. After authentication,
+the callback receives the session token as the `user_token` query parameter;
+existing query parameters and the fragment are preserved.
+
+Only allow domains you trust with full access to users' accounts. Tokens in URLs
+can appear in browser history, server logs, and referrers. Caller sites should
+consume the token and promptly remove it from the URL, avoid logging it, and set
+a restrictive referrer policy. This is a temporary integration, not an OIDC flow.
+
 ### Testing
 
 #### Unit tests

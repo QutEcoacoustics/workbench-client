@@ -27,6 +27,7 @@
     },
     "hideProjects": false,
     "homePageAndProjectListMaps": true,
+    "authRedirectDomains": [],
     "customMenu": [
       {
         "title": "Research",

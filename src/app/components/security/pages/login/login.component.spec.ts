@@ -10,6 +10,7 @@ import { LoginDetails } from "@models/data/LoginDetails";
 import { User } from "@models/User";
 import { createRoutingFactory, SpectatorRouting } from "@ngneat/spectator";
 import { testApiConfig } from "@services/config/configMock.service";
+import { AuthRedirectService } from "@services/security/auth-redirect.service";
 import { ToastService } from "@services/toasts/toasts.service";
 import { FormComponent } from "@shared/form/form.component";
 import { IconsModule } from "@shared/icons/icons.module";
@@ -205,6 +206,49 @@ describe("LoginComponent", () => {
     function redirectUser() {
       // @ts-ignore: TODO: remove once strict mode is fully enabled, see https://github.com/QutEcoacoustics/workbench-client/issues/2686
       component()["opts"].redirectUser(undefined);
+    }
+
+    it("should return to an approved caller after successful login before using history", async () => {
+      const redirect = "https://caller.example/callback";
+      setup(redirect, 2);
+      isSignedIn(false);
+      isContactable(UserConcent.no);
+      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      const response = mockSignIn();
+      spec.detectChanges();
+      expect(externalRedirect).not.toHaveBeenCalled();
+
+      component()!.submit({ login: "username", password: "password" });
+      await response;
+
+      expect(externalRedirect).toHaveBeenCalledOnceWith(redirect);
+      expect(router.navigateByUrl).not.toHaveBeenCalled();
+      expect(location.back).not.toHaveBeenCalled();
+    });
+
+    it("should not return to a caller when login fails", async () => {
+      setup("https://caller.example/callback");
+      isSignedIn(false);
+      const externalRedirect = spyOn(spec.inject(AuthRedirectService), "redirect").and.returnValue(true);
+      const response = setLoginError();
+      spec.detectChanges();
+
+      component()!.submit({ login: "username", password: "password" });
+      await response;
+
+      expect(externalRedirect).not.toHaveBeenCalled();
+    });
+
+    for (const redirect of ["https://[", "//attacker.example/callback", "/\\attacker.example/callback"]) {
+      it(`should fall back home for unsafe internal redirect ${redirect}`, () => {
+        setup(redirect);
+        isSignedIn(false);
+        spec.detectChanges();
+
+        redirectUser();
+
+        expect(router.navigateByUrl).toHaveBeenCalledWith("/");
+      });
     }
 
     it("should redirect user to previous page on login", async () => {
