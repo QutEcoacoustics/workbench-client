@@ -58,9 +58,14 @@ describe("ListenRecordingComponent", () => {
       await spec.fixture.whenStable();
     }
 
-    it("should clamp a start time that would load audio past the end of the recording", async () => {
+    it("should set the end time when the start time would load audio past the end of the recording", async () => {
       await setup("/listen/123?start=3590");
-      expect(spec.router.url).toEqual("/listen/123?start=3570");
+      expect(spec.router.url).toEqual("/listen/123?start=3590&end=3600");
+    });
+
+    it("should clamp a provided end time to the end of the recording", async () => {
+      await setup("/listen/123?start=3590&end=3620");
+      expect(spec.router.url).toEqual("/listen/123?start=3590&end=3600");
     });
 
     it("should not change a start time inside the recording", async () => {

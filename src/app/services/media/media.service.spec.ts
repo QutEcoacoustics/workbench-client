@@ -45,35 +45,37 @@ describe("MediaService", () => {
           expect(testFn).toThrowError(test.error);
         });
       }
+    });
 
-      // test tests are not in the test matrix because they depend on the
-      // instance of the audio recording for their start/end times
-      it("should throw an error if the start time is greater than the duration of the audio recording", () => {
-        const expectedError =
-          "Start time is greater than the duration of the audio recording";
-        const test = () => {
-          spec.service.createMediaUrl(
-            mockAudio,
-            mockAudio.durationSeconds! + 0.01,
-            mockAudio.durationSeconds! + 10
-          );
-        };
-
-        expect(test).toThrowError(expectedError);
+    // these tests are not in the error test matrix because they depend on the
+    // instance of the audio recording for their start/end times
+    describe("times past the end of the recording", () => {
+      beforeEach(() => {
+        mockAudio = new AudioRecording(
+          generateAudioRecording({ durationSeconds: 3600 }),
+        );
+        spyOn(console, "warn");
       });
 
-      it("should throw an error if the end time is greater than the duration of the audio recording", () => {
-        const expectedError =
-          "End time is greater than the duration of the audio recording";
-        const test = () => {
-          spec.service.createMediaUrl(
-            mockAudio,
-            0,
-            mockAudio.durationSeconds! + 0.01
-          );
-        };
+      it("should trim the end time to the duration of the audio recording", () => {
+        const url = spec.service.createMediaUrl(mockAudio, 3590, 3620);
 
-        expect(test).toThrowError(expectedError);
+        expect(url).toContain("start_offset=3590");
+        expect(url).toContain("end_offset=3600");
+        expect(console.warn).toHaveBeenCalled();
+      });
+
+      it("should not throw if the start time is past the end of the audio recording", () => {
+        const test = () => spec.service.createMediaUrl(mockAudio, 3700, 3710);
+
+        expect(test).not.toThrow();
+        expect(console.warn).toHaveBeenCalled();
+      });
+
+      it("should not warn if the times are inside the audio recording", () => {
+        spec.service.createMediaUrl(mockAudio, 3570, 3600);
+
+        expect(console.warn).not.toHaveBeenCalled();
       });
     });
 
