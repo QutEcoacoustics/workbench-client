@@ -10,6 +10,35 @@ export class MediaService {
   private readonly apiRoot = inject(API_ROOT);
 
   /**
+   * Clamps a start and end time to the duration of an audio recording.
+   * Logs a warning if the times had to be trimmed.
+   * This is static so that it can be used outside of dependency injection
+   * (e.g. when generating listen urls).
+   *
+   * @param audioRecording - The audio recording to clamp to.
+   * @param start - The start offset in seconds.
+   * @param end - The end offset in seconds.
+   * @returns The start and end offsets, trimmed to the recording duration.
+   */
+  public static clampToRecordingDuration(
+    audioRecording: AudioRecording,
+    start: number,
+    end: number,
+  ): [start: number, end: number] {
+    const duration = audioRecording.durationSeconds!;
+    if (start <= duration && end <= duration) {
+      return [start, end];
+    }
+
+    console.warn(
+      `Times ${start}-${end} exceed the duration of audio recording ` +
+        `${audioRecording.id} (${duration} seconds). Trimming to the recording duration.`,
+    );
+
+    return [Math.min(start, duration), Math.min(end, duration)];
+  }
+
+  /**
    * Generates a media URL for an audio recording with specified start and end offsets.
    * Optionally includes an authentication token if the user is logged in and additional query parameters.
    *
@@ -35,16 +64,12 @@ export class MediaService {
       throw new Error("End time must be greater than start time");
     }
 
-    // check the start and end times fit inside the audio recording
-    if (start > audioRecording.durationSeconds!) {
-      throw new Error(
-        "Start time is greater than the duration of the audio recording",
-      );
-    } else if (end > audioRecording.durationSeconds!) {
-      throw new Error(
-        "End time is greater than the duration of the audio recording",
-      );
-    }
+    // trim the start and end times to fit inside the audio recording
+    [start, end] = MediaService.clampToRecordingDuration(
+      audioRecording,
+      start,
+      end,
+    );
 
     // this is here to get around a rounding bug with range requests in the api
     // see: https://github.com/QutEcoacoustics/baw-server/issues/681
