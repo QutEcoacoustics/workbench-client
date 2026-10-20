@@ -91,7 +91,7 @@
     "@angular-eslint/schematics": "20.3.0",
     "@angular-eslint/template-parser": "20.3.0",
     "@angular/build": "^20.3.11",
-    "@angular/cli": "21.0.4",
+    "@angular/cli": "22.2.3",
     "@angular/compiler-cli": "20.3.13",
     "@angular/language-service": "20.3.13",
     "@faker-js/faker": "^7.3.0",
