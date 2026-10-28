@@ -22,10 +22,10 @@ describe("ListenRecordingComponent", () => {
       recordingApi.show.andCallFake(
         (id: number) =>
           new BehaviorSubject(
-            new AudioRecording(generateAudioRecording({ id }))
-          )
+            new AudioRecording(generateAudioRecording({ id })),
+          ),
       );
-    }
+    },
   );
 
   assertPageInfo(ListenRecordingComponent, "Play");

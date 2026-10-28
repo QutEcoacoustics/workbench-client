@@ -11,7 +11,7 @@ import { MediaService } from "@services/media/media.service";
 
 export const listenRoute = StrongRoute.newRoot().add("listen");
 
-/** The duration of audio the old client loads if no `end` is provided */
+/** The default duration of audio the old client loads if no `end` is provided */
 const oldClientListenSeconds = 30;
 
 const listenRouteQueryParamResolver = (
@@ -24,12 +24,15 @@ const listenRouteQueryParamResolver = (
   end = isInstantiated(end) ? Math.ceil(end) + (padding ?? 0) : undefined;
 
   // stop the old client requesting media past the end of the recording
-  const recording = Object.values(models).find(
-    (model): model is AudioRecording =>
-      model instanceof AudioRecording && model.id === Number(audioRecordingId),
-  );
+  // the recording is only available when this is called with resolved models
+  // (e.g. on the listen page), so links generated without it are clamped
+  // when the listen page loads
+  const recording = models["audioRecording"] as AudioRecording | undefined;
   const windowEnd = end ?? start + oldClientListenSeconds;
-  if (recording && windowEnd > recording.durationSeconds!) {
+  if (
+    recording?.id === Number(audioRecordingId) &&
+    windowEnd > recording.durationSeconds!
+  ) {
     [, end] = MediaService.clampToRecordingDuration(
       recording,
       start ?? 0,

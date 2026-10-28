@@ -27,6 +27,10 @@ class ListenRecordingComponent extends PageComponent implements OnInit {
       retrieveResolvers(data as IPageInfo),
     );
 
+    // only redirect if the end was clamped. If the url has no end, any clamped
+    // end is a change, so we compare against Infinity. We only update the end
+    // (instead of navigating to the formatted url) so that other query params
+    // are kept
     const requestedEnd = Number(queryParams["end"] ?? Infinity);
     if (clampedParams["end"] < requestedEnd) {
       this.router.navigate([], {
